@@ -20,7 +20,7 @@ a{color:#163300}a:hover{color:#0e2100}
     <dc-import name="Sidebar" active="dashboard" hint-size="100%,1180px"></dc-import>
   </div>
 
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px clamp(16px, 4vw, 40px) 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
     <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
         <div style="font-size: 13px; font-weight: 600; color: #454745;">Saturday, October 3, 2026</div>
@@ -96,11 +96,24 @@ a{color:#163300}a:hover{color:#0e2100}
             <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #468A1A;"></span>Inflow</span>
             <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #2B7FC4;"></span>Outflow</span>
           </div>
-          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Last 12 months</button>
+          <div style="position: relative;">
+            <button type="button" onClick="{{toggleRange}}" aria-haspopup="true" aria-expanded="{{rangeExpanded}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">
+              {{rangeLabel}}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{rangeOpen}}" hint-placeholder-val="{{false}}">
+              <div role="menu" aria-label="Cash flow period" style="position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; min-width: 180px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 6px; box-shadow: 0 6px 20px rgba(22,51,0,0.12); display: flex; flex-direction: column;">
+                <sc-for list="{{rangeOptions}}" as="o" hint-placeholder-count="3">
+                  <button type="button" role="menuitemradio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="display: flex; align-items: center; min-height: 38px; padding: 0 12px; border: 0; border-radius: 10px; background: {{o.bg}}; color: #163300; font: 500 14px Inter, sans-serif; text-align: left; cursor: pointer; white-space: nowrap;">{{o.label}}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
         </div>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
         <div style="flex: 1 1 560px; min-width: 0;">
+          <sc-if value="{{chart12}}" hint-placeholder-val="{{true}}">
           <svg viewBox="0 0 848 264" width="100%" role="img" aria-label="Monthly cash inflow and outflow, October 2025 to September 2026. Inflow ranges from $12,600 in January to $26,100 in September; outflow stays between $12,700 and $17,900." style="display: block; font-family: Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums;">
 <line x1="52" y1="236.0" x2="836" y2="236.0" stroke="#C9CEC3" stroke-width="1"></line>
 <text x="44" y="240.0" text-anchor="end" font-size="12" fill="#5D605B">$0k</text>
@@ -147,21 +160,73 @@ a{color:#163300}a:hover{color:#0e2100}
 <path d="M804.3 236.0V106.3a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Sep 2026 outflow: $17,900</title></path>
 <text x="803.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Sep</text>
           </svg>
+          </sc-if>
+<sc-if value="{{chart6}}" hint-placeholder-val="{{false}}">
+          <svg viewBox="0 0 848 264" width="100%" role="img" aria-label="Monthly cash inflow and outflow, April 2026 to September 2026. Inflow ranges from $18,900 in July to $26,100 in September; outflow stays between $15,500 and $17,900." style="display: block; font-family: Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums;">
+<line x1="52" y1="236.0" x2="836" y2="236.0" stroke="#C9CEC3" stroke-width="1"></line>
+<text x="44" y="240.0" text-anchor="end" font-size="12" fill="#5D605B">$0k</text>
+<line x1="52" y1="161.3" x2="836" y2="161.3" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="165.3" text-anchor="end" font-size="12" fill="#5D605B">$10k</text>
+<line x1="52" y1="86.7" x2="836" y2="86.7" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="90.7" text-anchor="end" font-size="12" fill="#5D605B">$20k</text>
+<line x1="52" y1="12.0" x2="836" y2="12.0" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="16.0" text-anchor="end" font-size="12" fill="#5D605B">$30k</text>
+<path d="M77.3 236.0V73.5a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Apr 2026 inflow: $22,300</title></path>
+<path d="M118.3 236.0V122.0a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Apr 2026 outflow: $15,800</title></path>
+<text x="117.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Apr</text>
+<path d="M208.0 236.0V89.9a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>May 2026 inflow: $20,100</title></path>
+<path d="M249.0 236.0V119.0a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>May 2026 outflow: $16,200</title></path>
+<text x="248.0" y="256" text-anchor="middle" font-size="12" fill="#5D605B">May</text>
+<path d="M338.7 236.0V56.3a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Jun 2026 inflow: $24,600</title></path>
+<path d="M379.7 236.0V113.1a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Jun 2026 outflow: $17,000</title></path>
+<text x="378.7" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Jun</text>
+<path d="M469.3 236.0V98.9a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Jul 2026 inflow: $18,900</title></path>
+<path d="M510.3 236.0V124.3a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Jul 2026 outflow: $15,500</title></path>
+<text x="509.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Jul</text>
+<path d="M600.0 236.0V65.3a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Aug 2026 inflow: $23,400</title></path>
+<path d="M641.0 236.0V114.6a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Aug 2026 outflow: $16,800</title></path>
+<text x="640.0" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Aug</text>
+<path d="M730.7 236.0V45.1a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Sep 2026 inflow: $26,100</title></path>
+<path d="M771.7 236.0V106.3a4 4 0 0 1 4 -4h31a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Sep 2026 outflow: $17,900</title></path>
+<text x="770.7" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Sep</text>
+          </svg>
+          </sc-if>
+<sc-if value="{{chart3}}" hint-placeholder-val="{{false}}">
+          <svg viewBox="0 0 848 264" width="100%" role="img" aria-label="Monthly cash inflow and outflow, July 2026 to September 2026. Inflow ranges from $18,900 in July to $26,100 in September; outflow stays between $15,500 and $17,900." style="display: block; font-family: Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums;">
+<line x1="52" y1="236.0" x2="836" y2="236.0" stroke="#C9CEC3" stroke-width="1"></line>
+<text x="44" y="240.0" text-anchor="end" font-size="12" fill="#5D605B">$0k</text>
+<line x1="52" y1="161.3" x2="836" y2="161.3" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="165.3" text-anchor="end" font-size="12" fill="#5D605B">$10k</text>
+<line x1="52" y1="86.7" x2="836" y2="86.7" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="90.7" text-anchor="end" font-size="12" fill="#5D605B">$20k</text>
+<line x1="52" y1="12.0" x2="836" y2="12.0" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="16.0" text-anchor="end" font-size="12" fill="#5D605B">$30k</text>
+<path d="M141.7 236.0V98.9a4 4 0 0 1 4 -4h32a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Jul 2026 inflow: $18,900</title></path>
+<path d="M183.7 236.0V124.3a4 4 0 0 1 4 -4h32a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Jul 2026 outflow: $15,500</title></path>
+<text x="182.7" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Jul</text>
+<path d="M403.0 236.0V65.3a4 4 0 0 1 4 -4h32a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Aug 2026 inflow: $23,400</title></path>
+<path d="M445.0 236.0V114.6a4 4 0 0 1 4 -4h32a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Aug 2026 outflow: $16,800</title></path>
+<text x="444.0" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Aug</text>
+<path d="M664.3 236.0V45.1a4 4 0 0 1 4 -4h32a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Sep 2026 inflow: $26,100</title></path>
+<path d="M706.3 236.0V106.3a4 4 0 0 1 4 -4h32a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Sep 2026 outflow: $17,900</title></path>
+<text x="705.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Sep</text>
+          </svg>
+          </sc-if>
         </div>
         <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 14px; padding: 4px 0 0 20px; border-left: 1px solid #EEF0EB;">
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <div style="font-size: 13px; font-weight: 600; color: #454745;">Inflow</div>
-            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$237,900</div>
+            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{cf.inflow}}</div>
           </div>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <div style="font-size: 13px; font-weight: 600; color: #454745;">Outflow</div>
-            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$183,300</div>
+            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{cf.outflow}}</div>
           </div>
           <div style="height: 1px; background: #EEF0EB;"></div>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <div style="font-size: 13px; font-weight: 600; color: #454745;">Net cash change</div>
-            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">+$54,600</div>
-            <div style="font-size: 13px; color: #454745; line-height: 1.45;">Inflow beat outflow in 11 of 12 months. January was the only negative month (−$1,300).</div>
+            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{cf.net}}</div>
+            <div style="font-size: 13px; color: #454745; line-height: 1.45;">{{cf.note}}</div>
           </div>
           <a href="Reports.dc.html" style="font-size: 14px; font-weight: 600; color: #163300;">Cash flow statement</a>
         </div>
@@ -305,7 +370,7 @@ a{color:#163300}a:hover{color:#0e2100}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2140}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { done: { bank: true, invoice: true, payments: false, customer: false } }; }
+  constructor(props) { super(props); this.state = { done: { bank: true, invoice: true, payments: false, customer: false }, range: 12, rangeOpen: false }; }
   renderVals() {
     const done = this.state.done;
     const defs = [
@@ -363,7 +428,24 @@ class Component extends DCLogic {
       { desc: 'STAPLES 01142', date: 'Sep 29', account: 'Chase ••4417', suggest: 'Office supplies?', amount: '−$64.18' },
       { desc: 'COMCAST BUSINESS', date: 'Sep 28', account: 'Chase ••4417', suggest: 'Utilities?', amount: '−$149.00' }
     ];
-    return { steps, doneCount, progressPct, kpis, netIncome, buckets, actions, txns };
+    const CF = {
+      12: { inflow: '$237,900', outflow: '$183,300', net: '+$54,600', note: 'Inflow beat outflow in 11 of 12 months. January was the only negative month (−$1,300).' },
+      6: { inflow: '$135,400', outflow: '$99,200', net: '+$36,200', note: 'Inflow beat outflow in all 6 months, led by September at +$8,200.' },
+      3: { inflow: '$68,400', outflow: '$50,200', net: '+$18,200', note: 'Inflow beat outflow in all 3 months. July was the slimmest at +$3,400.' }
+    };
+    const range = this.state.range;
+    const rangeDefs = [[12, 'Last 12 months'], [6, 'Last 6 months'], [3, 'Last 3 months']];
+    const rangeOptions = rangeDefs.map(([n, label]) => ({
+      label, checked: range === n ? 'true' : 'false', bg: range === n ? '#E2F6D5' : 'transparent',
+      pick: () => this.setState({ range: n, rangeOpen: false })
+    }));
+    return {
+      steps, doneCount, progressPct, kpis, netIncome, buckets, actions, txns,
+      cf: CF[range], chart12: range === 12, chart6: range === 6, chart3: range === 3,
+      rangeLabel: rangeDefs.find(r => r[0] === range)[1], rangeOptions,
+      rangeOpen: this.state.rangeOpen, rangeExpanded: this.state.rangeOpen ? 'true' : 'false',
+      toggleRange: () => this.setState({ rangeOpen: !this.state.rangeOpen })
+    };
   }
 }
 </script>

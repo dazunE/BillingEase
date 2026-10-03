@@ -266,7 +266,7 @@
   // ---- attributes ----------------------------------------------------------
 
   var EVENT_MAP = { doubleclick: 'dblclick' };
-  var PROPS = { value: 1, checked: 1, selected: 1, disabled: 1, readonly: 1, readOnly: 1, multiple: 1, hidden: 1, open: 1 };
+  var PROPS = { checked: 1, selected: 1, disabled: 1, readonly: 1, readOnly: 1, multiple: 1, hidden: 1, open: 1 };
 
   function applyAttrs(el, node, scope) {
     for (var i = 0; i < node.attributes.length; i++) {

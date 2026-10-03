@@ -20,7 +20,7 @@ a{color:#163300}a:hover{color:#0e2100}
     <dc-import name="Sidebar" active="reconciliation" hint-size="100%,1180px"></dc-import>
   </div>
 
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px clamp(16px, 4vw, 40px) 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
     <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
         <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Reconciliation</h1>
@@ -29,30 +29,35 @@ a{color:#163300}a:hover{color:#0e2100}
       <a href="Transactions.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: rgba(22,51,0,0.08); color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">View transactions</a>
     </header>
 
-    <section aria-label="Accounts to reconcile" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+        <section aria-label="Accounts to reconcile" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px;">
       <sc-for list="{{accounts}}" as="a" hint-placeholder-count="3">
-        <div style="background: #FFFFFF; border: {{a.border}}; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
-            <div style="display: flex; flex-direction: column; gap: 2px;">
+        <div style="background: #FFFFFF; border: {{a.border}}; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; min-width: 0;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px 10px;">
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
               <span style="font-weight: 700; font-size: 15px;">{{a.name}}</span>
               <span style="font-size: 13px; color: #5D605B;">{{a.type}}</span>
             </div>
             <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{a.badgeBg}}; color: {{a.badgeFg}}; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{a.badgeFg}};"></span>{{a.status}}</span>
           </div>
-          <div style="font-size: 14px; color: #454745;">{{a.detail}}</div>
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <div style="font-size: 14px; color: #454745; flex: 1;">{{a.detail}}</div>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
             <span style="font-size: 13px; color: #5D605B;">{{a.last}}</span>
-            <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">{{a.action}}</button>
+            <sc-if value="{{a.active}}" hint-placeholder-val="{{false}}">
+              <a href="#recon-panel" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 13px Inter, sans-serif; text-decoration: none;">{{a.action}}</a>
+            </sc-if>
+            <sc-if value="{{a.inactive}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{a.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">{{a.action}}</button>
+            </sc-if>
           </div>
         </div>
       </sc-for>
     </section>
 
-    <section aria-label="Reconcile Chase Business Checking, September 2026" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+    <section id="recon-panel" aria-label="Reconcile {{acct.name}}, {{acct.month}}" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column; min-width: 0; scroll-margin-top: 16px;">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 20px 24px; border-bottom: 1px solid #E1E5DC;">
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">Chase Business Checking ••4417</h2>
-          <p style="margin: 0; font-size: 14px; color: #454745;">Statement period Sep 1 – Sep 30, 2026 · Opening balance $18,240.55 (reconciled Aug 31)</p>
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+          <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{acct.name}}</h2>
+          <p style="margin: 0; font-size: 14px; color: #454745;">{{acct.periodNote}}</p>
         </div>
         <ol aria-label="Reconciliation steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
           <sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
@@ -64,18 +69,36 @@ a{color:#163300}a:hover{color:#0e2100}
         </ol>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 20px 24px; border-bottom: 1px solid #E1E5DC; align-items: end;">
+      <sc-if value="{{done}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 48px 24px;">
+          <span style="width: 64px; height: 64px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+          <h3 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em;">{{acct.month}} is reconciled</h3>
+          <p style="margin: 0; max-width: 520px; font-size: 15px; color: #454745; line-height: 1.5;">{{doneNote}}</p>
+          <dl style="margin: 8px 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+            <div style="background: #F7F8F5; border-radius: 12px; padding: 12px 18px; min-width: 140px;"><dt style="font-size: 13px; font-weight: 600; color: #454745;">Statement balance</dt><dd style="margin: 4px 0 0; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums;">{{statementFmt}}</dd></div>
+            <div style="background: #F7F8F5; border-radius: 12px; padding: 12px 18px; min-width: 140px;"><dt style="font-size: 13px; font-weight: 600; color: #454745;">Transactions locked</dt><dd style="margin: 4px 0 0; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums;">{{matchedCount}}</dd></div>
+            <div style="background: #E2F6D5; border-radius: 12px; padding: 12px 18px; min-width: 140px;"><dt style="font-size: 13px; font-weight: 600; color: #2F5711;">Difference</dt><dd style="margin: 4px 0 0; font-weight: 800; font-size: 20px; color: #2F5711; font-variant-numeric: tabular-nums;">$0.00</dd></div>
+          </dl>
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px;">
+            <a href="Transactions.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">View transactions</a>
+            <button type="button" onClick="{{undo}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Undo reconciliation</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{working}}" hint-placeholder-val="{{true}}">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; padding: 20px 24px; border-bottom: 1px solid #E1E5DC; align-items: end;">
         <div style="display: flex; flex-direction: column; gap: 6px;">
-          <label for="stmt-bal" style="font-size: 13px; font-weight: 600;">Statement ending balance (Sep 30)</label>
-          <input id="stmt-bal" type="text" value="$10,337.13" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 600 16px Inter, sans-serif; color: #163300; background: #FFFFFF; font-variant-numeric: tabular-nums;">
+          <label for="stmt-bal" style="font-size: 13px; font-weight: 600;">{{acct.stmtLabel}}</label>
+          <input id="stmt-bal" type="text" inputmode="decimal" value="{{stmtInput}}" onChange="{{setStmt}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 600 16px Inter, sans-serif; color: #163300; background: #FFFFFF; font-variant-numeric: tabular-nums;">
         </div>
         <div style="display: flex; flex-direction: column; gap: 6px; padding-bottom: 4px;">
-          <span style="font-size: 13px; font-weight: 600; color: #454745;">BillingEase cleared balance</span>
+          <span style="font-size: 13px; font-weight: 600; color: #454745;">{{acct.clearedLabel}}</span>
           <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{cleared}}</span>
         </div>
         <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; border-radius: 12px; background: {{diffBg}};" aria-live="polite">
           <span style="font-size: 13px; font-weight: 600; color: {{diffFg}};">Difference</span>
-          <span style="display: flex; align-items: center; gap: 10px;">
+          <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
             <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: {{diffFg}};">{{diff}}</span>
             <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #FFFFFF; color: {{diffFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{diffFg}};"></span>{{diffLabel}}</span>
           </span>
@@ -85,12 +108,12 @@ a{color:#163300}a:hover{color:#0e2100}
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid #E1E5DC;">
         <span style="font-size: 14px; color: #454745;"><strong style="color: #163300;">{{matchedCount}} of {{total}}</strong> transactions matched to your statement · tick each one that appears on it</span>
         <span style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" onClick="{{matchAll}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Match all</button>
-          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Add missing transaction</button>
+          <button type="button" onClick="{{matchAll}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer; opacity: {{matchAllOpacity}};">Match all</button>
+          <button type="button" onClick="{{openAdd}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Add missing transaction</button>
         </span>
       </div>
 
-      <div style="overflow-x: auto;">
+      <div style="overflow-x: auto; position: relative;">
         <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px;">
           <thead>
             <tr style="text-align: left; color: #454745;">
@@ -98,8 +121,8 @@ a{color:#163300}a:hover{color:#0e2100}
               <th scope="col" style="padding: 10px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Date</th>
               <th scope="col" style="padding: 10px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Description</th>
               <th scope="col" style="padding: 10px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Category</th>
-              <th scope="col" style="padding: 10px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Deposit</th>
-              <th scope="col" style="padding: 10px 24px 10px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Withdrawal</th>
+              <th scope="col" style="padding: 10px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">{{acct.inLabel}}</th>
+              <th scope="col" style="padding: 10px 24px 10px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">{{acct.outLabel}}</th>
             </tr>
           </thead>
           <tbody>
@@ -114,7 +137,7 @@ a{color:#163300}a:hover{color:#0e2100}
                   </sc-if>
                 </td>
                 <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; white-space: nowrap;">{{r.date}}</td>
-                <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB; font-weight: 600;">{{r.desc}}</td>
+                <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB; font-weight: 600;">{{r.desc}} <sc-if value="{{r.added}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; padding: 2px 8px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 12px; font-weight: 700;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #1F5E91;"></span>Added</span></sc-if></td>
                 <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.cat}}</td>
                 <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-variant-numeric: tabular-nums; color: #2F5711; font-weight: 600;">{{r.dep}}</td>
                 <td style="padding: 12px 24px 12px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-variant-numeric: tabular-nums; font-weight: 600;">{{r.wd}}</td>
@@ -132,85 +155,258 @@ a{color:#163300}a:hover{color:#0e2100}
       </div>
 
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 24px; border-top: 1px solid #E1E5DC;">
-        <span style="font-size: 14px; color: #454745;">{{footNote}}</span>
+        <span id="rec-foot" style="font-size: 14px; color: #454745; flex: 1 1 280px;">{{footNote}}</span>
         <span style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Save and finish later</button>
-          <sc-if value="{{balanced}}" hint-placeholder-val="{{true}}">
-            <button type="button" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Finish reconciliation</button>
-          </sc-if>
-          <sc-if value="{{unbalanced}}" hint-placeholder-val="{{false}}">
-            <button type="button" disabled aria-disabled="true" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #E8EBE6; color: #454745; font: 600 15px Inter, sans-serif; cursor: not-allowed;">Finish reconciliation</button>
-          </sc-if>
+          <button type="button" onClick="{{saveLater}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Save and finish later</button>
+          <button type="button" onClick="{{finish}}" aria-describedby="rec-foot" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: {{finishBg}}; color: {{finishFg}}; font: 600 15px Inter, sans-serif; cursor: {{finishCursor}};">Finish reconciliation</button>
         </span>
       </div>
+      </sc-if>
     </section>
   </main>
+
+  <sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}">
+    <div style="position: fixed; inset: 0; z-index: 50; background: rgba(14,15,12,0.45); display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px; box-sizing: border-box; overflow-y: auto;">
+      <div role="dialog" aria-modal="true" aria-labelledby="rec-add-title" style="background: #FFFFFF; border-radius: 16px; width: calc(100% - 32px); max-width: 520px; box-sizing: border-box; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+          <div>
+            <h2 id="rec-add-title" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">Add missing transaction</h2>
+            <p style="margin: 4px 0 0; font-size: 14px; color: #454745;">For something on your statement that isn’t in BillingEase yet. It’s added as matched.</p>
+          </div>
+          <button type="button" aria-label="Close" onClick="{{closeAdd}}" style="width: 40px; height: 40px; flex: none; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+        <div role="radiogroup" aria-label="Direction" style="display: flex; gap: 4px; background: #F2F4EF; padding: 4px; border-radius: 9999px; align-self: flex-start;">
+          <sc-for list="{{dirs}}" as="d" hint-placeholder-count="2">
+            <button type="button" role="radio" aria-checked="{{d.on}}" onClick="{{d.pick}}" style="min-height: 36px; padding: 0 16px; border-radius: 9999px; border: 0; background: {{d.bg}}; color: {{d.fg}}; font: 600 14px Inter, sans-serif; cursor: pointer;">{{d.label}}</button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <label style="flex: 1 1 140px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Date
+            <input type="text" value="{{form.date}}" onChange="{{setDate}}" style="min-height: 44px; border: 1px solid #C9CEC3; border-radius: 10px; padding: 0 12px; font: 400 15px Inter, sans-serif; color: #163300; box-sizing: border-box; width: 100%;">
+          </label>
+          <label style="flex: 1 1 140px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
+            <input type="text" inputmode="decimal" value="{{form.amount}}" onChange="{{setAmount}}" placeholder="0.00" style="min-height: 44px; border: 1px solid #C9CEC3; border-radius: 10px; padding: 0 12px; font: 400 15px Inter, sans-serif; color: #163300; box-sizing: border-box; width: 100%; font-variant-numeric: tabular-nums;">
+          </label>
+        </div>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Description
+          <input type="text" value="{{form.desc}}" onChange="{{setDesc}}" placeholder="As it appears on the statement" style="min-height: 44px; border: 1px solid #C9CEC3; border-radius: 10px; padding: 0 12px; font: 400 15px Inter, sans-serif; color: #163300; box-sizing: border-box; width: 100%;">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
+          <select value="{{form.cat}}" onChange="{{setCat}}" style="min-height: 44px; border: 1px solid #C9CEC3; border-radius: 10px; padding: 0 12px; font: 400 15px Inter, sans-serif; color: #163300; background: #FFFFFF;">
+            <sc-for list="{{cats}}" as="c" hint-placeholder-count="6"><option>{{c}}</option></sc-for>
+          </select>
+        </label>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding-top: 4px;">
+          <button type="button" onClick="{{closeAdd}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Cancel</button>
+          <button type="button" onClick="{{saveAdd}}" disabled="{{addInvalid}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer; opacity: {{addOpacity}};">Save transaction</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1480}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { off: {} }; }
+  constructor(props) {
+    super(props);
+    this.state = { cur: 'chase', work: {}, status: { chase: 'progress', amex: 'attention', cash: 'reconciled' }, form: null, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  money(c) { return (c < 0 ? '−' : '') + '$' + (Math.abs(c) / 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  cents(s) { const neg = /^\s*[−-]/.test(s); const v = parseFloat(String(s || '').replace(/[^0-9.]/g, '')); return isNaN(v) ? null : Math.round(v * 100) * (neg ? -1 : 1); }
+  books() {
+    return {
+      chase: {
+        name: 'Chase Business Checking ••4417', type: 'Bank account', card: false, month: 'September 2026', end: 'Sep 30, 2026',
+        periodNote: 'Statement period Sep 1 – Sep 30, 2026 · Opening balance $18,240.55 (reconciled Aug 31)',
+        stmtLabel: 'Statement ending balance (Sep 30)', clearedLabel: 'BillingEase cleared balance', inLabel: 'Deposit', outLabel: 'Withdrawal',
+        open: 1824055, statement: 1033713, balanceNote: 'Balance $15,257.13', prior: 'Reconciled through Aug 31, 2026.',
+        T: [
+          ['x1', 'Sep 2, 2026', 'BILLINGEASE PAYOUT HARBOR PINE', 'Sales — design services', 196000],
+          ['x2', 'Sep 3, 2026', 'WEWORK 090126', 'Rent expense', -145000],
+          ['x3', 'Sep 5, 2026', 'BILLINGEASE PAYROLL 09/05', 'Salaries & wages', -681240],
+          ['x4', 'Sep 10, 2026', 'COMCAST BUSINESS 8774', 'Internet & phone', -18999],
+          ['x5', 'Sep 15, 2026', 'AMEX AUTOPAY ••1009', 'Transfer to Amex Business', -231675],
+          ['x6', 'Sep 18, 2026', 'BILLINGEASE PAYOUT ATLAS FREIGHT', 'Sales — design services', 514000],
+          ['x7', 'Sep 19, 2026', 'BILLINGEASE PAYROLL 09/19', 'Salaries & wages', -681240],
+          ['x8', 'Sep 20, 2026', 'INTEREST PAYMENT', 'Interest earned', 312],
+          ['x9', 'Sep 24, 2026', 'ZELLE FROM BLUEBIRD YOGA', 'Uncategorized income', 36000],
+          ['x10', 'Sep 25, 2026', 'ATM WITHDRAWAL 0417', 'Transfer to Cash on hand', -20000],
+          ['x11', 'Sep 28, 2026', 'DEPOSIT MOBILE CHECK 1029', 'Uncategorized income', 54000],
+          ['x12', 'Sep 30, 2026', 'BILLINGEASE PAYOUT GREENLINE ARCH', 'Sales — design services', 187500]
+        ]
+      },
+      amex: {
+        name: 'Amex Business ••1009', type: 'Credit card', card: true, month: 'August 2026', end: 'Aug 31, 2026',
+        periodNote: 'Statement period Aug 1 – Aug 31, 2026 · Opening balance owed $2,316.75 (reconciled Jul 31)',
+        stmtLabel: 'Statement balance owed (Aug 31)', clearedLabel: 'BillingEase cleared balance owed', inLabel: 'Payment', outLabel: 'Charge',
+        open: 231675, statement: 151333, balanceNote: 'Balance $3,184.27 owed', prior: 'Reconciled through Jul 31, 2026.',
+        T: [
+          ['a1', 'Aug 1, 2026', 'ADOBE *CREATIVE CLOUD', 'Software & subscriptions', -5999],
+          ['a2', 'Aug 3, 2026', 'FIGMA MONTHLY', 'Software & subscriptions', -4500],
+          ['a3', 'Aug 9, 2026', 'DELTA AIR LINES 0062', 'Travel expense', -48620],
+          ['a4', 'Aug 14, 2026', 'STAPLES 01142', 'Office supplies', -8734],
+          ['a5', 'Aug 15, 2026', 'AUTOPAY PAYMENT — THANK YOU', 'Transfer from Chase Business Checking', 231675],
+          ['a6', 'Aug 22, 2026', 'LOCAL PRINT SHOP', 'Printing & production costs', -62000],
+          ['a7', 'Aug 28, 2026', 'DELTA AIR LINES 0119', 'Travel expense', -21480]
+        ]
+      },
+      cash: {
+        name: 'Cash on hand', type: 'Cash', card: false, month: 'September 2026', end: 'Sep 30, 2026',
+        periodNote: 'Count period Sep 1 – Sep 30, 2026 · Opening balance $120.42 (counted Aug 31)',
+        stmtLabel: 'Counted cash (Sep 30)', clearedLabel: 'BillingEase cleared balance', inLabel: 'Cash in', outLabel: 'Cash out',
+        open: 12042, statement: 17582, balanceNote: 'Balance $175.82', prior: 'Reconciled through Aug 31, 2026.',
+        T: [
+          ['c1', 'Sep 25, 2026', 'ATM WITHDRAWAL 0417', 'Transfer from Chase Business Checking', 20000],
+          ['c2', 'Sep 26, 2026', 'STAPLES CASH PURCHASE', 'Office supplies', -8640],
+          ['c3', 'Sep 29, 2026', 'PARKING — CLIENT VISIT', 'Travel expense', -5820]
+        ]
+      }
+    };
+  }
+  getWork(id, B) {
+    const w = this.state.work[id];
+    return w || { off: {}, added: [], stmt: this.money(B[id].statement), done: false };
+  }
+  setWork(patch) {
+    const B = this.books();
+    const id = this.state.cur;
+    const w = Object.assign({}, this.getWork(id, B), patch);
+    this.setState({ work: Object.assign({}, this.state.work, { [id]: w }) });
+  }
   renderVals() {
-    const money = (c) => (c < 0 ? '−' : '') + '$' + (Math.abs(c) / 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    const OPEN = 1824055;
-    const STATEMENT = 1033713;
-    const T = [
-      ['x1', 'Sep 2, 2026', 'BILLINGEASE PAYOUT HARBOR PINE', 'Sales — design services', 196000],
-      ['x2', 'Sep 3, 2026', 'WEWORK 090126', 'Rent expense', -145000],
-      ['x3', 'Sep 5, 2026', 'BILLINGEASE PAYROLL 09/05', 'Salaries & wages', -681240],
-      ['x4', 'Sep 10, 2026', 'COMCAST BUSINESS 8774', 'Internet & phone', -18999],
-      ['x5', 'Sep 15, 2026', 'AMEX AUTOPAY ••1009', 'Transfer to Amex Business', -231675],
-      ['x6', 'Sep 18, 2026', 'BILLINGEASE PAYOUT ATLAS FREIGHT', 'Sales — design services', 514000],
-      ['x7', 'Sep 19, 2026', 'BILLINGEASE PAYROLL 09/19', 'Salaries & wages', -681240],
-      ['x8', 'Sep 20, 2026', 'INTEREST PAYMENT', 'Interest earned', 312],
-      ['x9', 'Sep 24, 2026', 'ZELLE FROM BLUEBIRD YOGA', 'Uncategorized income', 36000],
-      ['x10', 'Sep 25, 2026', 'ATM WITHDRAWAL 0417', 'Transfer to Cash on hand', -20000],
-      ['x11', 'Sep 28, 2026', 'DEPOSIT MOBILE CHECK 1029', 'Uncategorized income', 54000],
-      ['x12', 'Sep 30, 2026', 'BILLINGEASE PAYOUT GREENLINE ARCH', 'Sales — design services', 187500]
-    ];
-    const off = this.state.off || {};
+    const B = this.books();
+    const id = this.state.cur;
+    const A = B[id];
+    const w = this.getWork(id, B);
+    const sign = A.card ? -1 : 1;
+    const all = A.T.map((t) => ({ id: t[0], date: t[1], desc: t[2], cat: t[3], amt: t[4], added: false })).concat(w.added);
     let sum = 0, dep = 0, wd = 0, matched = 0;
-    const rows = T.map(([id, date, desc, cat, amt]) => {
-      const on = !off[id];
-      if (on) { sum += amt; matched += 1; if (amt > 0) dep += amt; else wd -= amt; }
+    const rows = all.map((t) => {
+      const on = !w.off[t.id];
+      if (on) { sum += t.amt; matched += 1; if (t.amt > 0) dep += t.amt; else wd -= t.amt; }
       return {
-        date, desc, cat, on, off: !on,
-        dep: amt > 0 ? money(amt) : '', wd: amt < 0 ? money(-amt) : '',
+        date: t.date, desc: t.desc, cat: t.cat, on, off: !on, added: t.added,
+        dep: t.amt > 0 ? this.money(t.amt) : '', wd: t.amt < 0 ? this.money(-t.amt) : '',
         rowBg: on ? '#FFFFFF' : '#F7F8F5',
-        toggle: () => this.setState({ off: { ...off, [id]: on } })
+        toggle: () => this.setWork({ off: Object.assign({}, w.off, { [t.id]: on }) })
       };
     });
-    const clearedC = OPEN + sum;
-    const diffC = STATEMENT - clearedC;
+    const clearedC = A.open + sign * sum;
+    const stmtC = this.cents(w.stmt);
+    const diffC = stmtC == null ? null : stmtC - clearedC;
     const balanced = diffC === 0;
-    const step = (n, label, state) => ({
-      label, current: state === 'current' ? 'step' : 'false',
-      mark: state === 'done' ? '✓' : String(n),
-      bg: state === 'current' ? '#163300' : (state === 'done' ? '#E2F6D5' : '#F2F4EF'),
-      fg: state === 'current' ? '#FFFFFF' : '#163300',
-      dotBg: state === 'current' ? '#9FE870' : (state === 'done' ? '#163300' : '#FFFFFF'),
-      dotFg: state === 'done' ? '#FFFFFF' : '#163300'
+    const done = !!w.done;
+    const step = (n, label, st) => ({
+      label, current: st === 'current' ? 'step' : 'false',
+      mark: st === 'done' ? '✓' : String(n),
+      bg: st === 'current' ? '#163300' : (st === 'done' ? '#E2F6D5' : '#F2F4EF'),
+      fg: st === 'current' ? '#FFFFFF' : '#163300',
+      dotBg: st === 'current' ? '#9FE870' : (st === 'done' ? '#163300' : '#FFFFFF'),
+      dotFg: st === 'done' ? '#FFFFFF' : '#163300'
     });
     const steps = [
-      step(1, 'Enter statement balance', 'done'),
-      step(2, 'Match transactions', balanced ? 'done' : 'current'),
-      step(3, 'Done', balanced ? 'current' : 'todo')
+      step(1, 'Enter statement balance', stmtC == null ? 'current' : 'done'),
+      step(2, 'Match transactions', stmtC == null ? 'todo' : (balanced ? 'done' : 'current')),
+      step(3, 'Done', done ? 'done' : (balanced ? 'current' : 'todo'))
     ];
-    const accounts = [
-      { name: 'Chase Business Checking ••4417', type: 'Bank account', status: 'In progress', badgeBg: '#E1EEF8', badgeFg: '#1F5E91', detail: 'Reconciled through Aug 31, 2026. Reconciling September now.', last: 'Balance $15,257.13', action: 'Continue', border: '2px solid #163300' },
-      { name: 'Amex Business ••1009', type: 'Credit card', status: 'Needs attention', badgeBg: '#FBE3DF', badgeFg: '#A8200D', detail: 'Reconciled through Jul 31, 2026. August and September statements are waiting.', last: 'Balance $3,184.27 owed', action: 'Reconcile', border: '1px solid #E1E5DC' },
-      { name: 'Cash on hand', type: 'Cash', status: 'Reconciled', badgeBg: '#E2F6D5', badgeFg: '#2F5711', detail: 'Reconciled through Aug 31, 2026. Count cash at month end to keep it current.', last: 'Balance $175.82', action: 'Reconcile', border: '1px solid #E1E5DC' }
-    ];
+    const ST = {
+      progress: { status: 'In progress', badgeBg: '#E1EEF8', badgeFg: '#1F5E91' },
+      attention: { status: 'Needs attention', badgeBg: '#FBE3DF', badgeFg: '#A8200D' },
+      reconciled: { status: 'Reconciled', badgeBg: '#E2F6D5', badgeFg: '#2F5711' }
+    };
+    const details = {
+      chase: { progress: 'Reconciled through Aug 31, 2026. Reconciling September now.', reconciled: 'Reconciled through Sep 30, 2026. Next statement arrives Oct 31.' },
+      amex: { attention: 'Reconciled through Jul 31, 2026. August and September statements are waiting.', progress: 'Reconciled through Jul 31, 2026. Reconciling August now.', reconciled: 'Reconciled through Aug 31, 2026. The September statement is ready next.' },
+      cash: { reconciled: 'Reconciled through Aug 31, 2026. Count cash at month end to keep it current.', progress: 'Reconciled through Aug 31, 2026. Counting September now.' }
+    };
+    const accounts = ['chase', 'amex', 'cash'].map((k) => {
+      const st = this.state.status[k];
+      const active = k === id;
+      const wk = this.state.work[k];
+      const isDone = wk && wk.done;
+      const detail = isDone ? (k === 'cash' ? 'Reconciled through Sep 30, 2026. Count again at the end of October.' : details[k].reconciled) : (details[k][st] || details[k].progress);
+      return Object.assign({
+        name: B[k].name, type: B[k].type, detail, last: B[k].balanceNote,
+        active, inactive: !active,
+        action: active ? 'Continue' : (st === 'reconciled' ? 'Review' : 'Reconcile'),
+        border: active ? '2px solid #163300' : '1px solid #E1E5DC',
+        pick: () => {
+          const status = Object.assign({}, this.state.status);
+          if (status[k] === 'attention') status[k] = 'progress';
+          this.setState({ cur: k, status });
+          this.notify('Now reconciling ' + B[k].name + ' · ' + B[k].month);
+        }
+      }, ST[st]);
+    });
+    const f = this.state.form;
+    const upd = (patch) => this.setState({ form: Object.assign({}, this.state.form, patch) });
+    const addAmt = f ? this.cents(f.amount) : null;
+    const addInvalid = !f || !f.desc.trim() || !addAmt || addAmt <= 0;
+    const inOut = [A.inLabel, A.outLabel];
+    const cats = ['Uncategorized income', 'Uncategorized expense', 'Sales — design services', 'Interest earned', 'Bank fees', 'Office supplies', 'Software & subscriptions', 'Travel expense'];
+    let diffLabel = 'Not balanced', diffBg = '#FFF0B8', diffFg = '#6B5000';
+    if (diffC == null) diffLabel = 'Enter a balance';
+    else if (balanced) { diffLabel = 'Balanced'; diffBg = '#E2F6D5'; diffFg = '#2F5711'; }
     return {
-      accounts, steps, rows,
-      cleared: money(clearedC), diff: money(diffC),
-      diffBg: balanced ? '#E2F6D5' : '#FFF0B8', diffFg: balanced ? '#2F5711' : '#6B5000',
-      diffLabel: balanced ? 'Balanced' : 'Not balanced',
-      balanced, unbalanced: !balanced,
-      matchedCount: matched, total: T.length,
-      depTotal: money(dep), wdTotal: money(wd),
-      matchAll: () => this.setState({ off: {} }),
-      footNote: balanced ? 'Your books match the Sep 30 statement. Finish to lock these transactions.' : 'Untick anything not on the statement, or add what is missing, until the difference is $0.00.'
+      accounts, steps, rows, acct: A, done, working: !done,
+      stmtInput: w.stmt, setStmt: (e) => this.setWork({ stmt: e.target.value }),
+      statementFmt: stmtC == null ? '—' : this.money(stmtC) + (A.card ? ' owed' : ''),
+      cleared: this.money(clearedC), diff: diffC == null ? '—' : this.money(diffC),
+      diffBg, diffFg, diffLabel,
+      matchedCount: matched, total: all.length,
+      depTotal: this.money(dep), wdTotal: this.money(wd),
+      allMatched: matched === all.length, matchAllOpacity: matched === all.length ? 0.5 : 1,
+      matchAll: () => { if (matched === all.length) { this.notify('All ' + all.length + ' transactions are already matched'); return; } this.setWork({ off: {} }); },
+      footNote: balanced ? 'Your books match the ' + A.end.replace(', 2026', '') + ' statement. Finish to lock these transactions.' : 'Untick anything not on the statement, or add what is missing, until the difference is $0.00.',
+      finishBlocked: !balanced, finishBg: balanced ? '#9FE870' : '#E8EBE6', finishFg: balanced ? '#163300' : '#454745', finishCursor: balanced ? 'pointer' : 'not-allowed',
+      finish: () => {
+        if (!balanced) { this.notify('The difference must be $0.00 before you can finish'); return; }
+        this.setWork({ done: true });
+        this.setState({ status: Object.assign({}, this.state.status, { [id]: 'reconciled' }) });
+        this.notify(A.name + ' reconciled through ' + A.end);
+      },
+      doneNote: matched + ' transactions are now locked for ' + A.month + '. Your BillingEase balance matches the ' + A.end + ' statement to the cent.',
+      undo: () => {
+        this.setWork({ done: false });
+        this.setState({ status: Object.assign({}, this.state.status, { [id]: 'progress' }) });
+        this.notify('Reconciliation reopened for ' + A.month);
+      },
+      saveLater: () => {
+        this.setState({ status: Object.assign({}, this.state.status, { [id]: this.state.status[id] === 'reconciled' && !done ? 'progress' : (done ? 'reconciled' : 'progress') }) });
+        this.notify('Progress saved · ' + matched + ' of ' + all.length + ' matched for ' + A.month);
+      },
+      openAdd: () => this.setState({ form: { dir: 0, date: A.end, amount: '', desc: '', cat: 'Uncategorized expense' } }),
+      closeAdd: () => this.setState({ form: null }),
+      addOpen: !!f,
+      form: f || { date: '', amount: '', desc: '', cat: '' },
+      dirs: inOut.map((label, i) => {
+        const on = !!f && f.dir === i;
+        return { label, on: on ? 'true' : 'false', bg: on ? '#163300' : 'transparent', fg: on ? '#FFFFFF' : '#163300',
+          pick: () => upd({ dir: i, cat: i === 0 ? 'Uncategorized income' : 'Uncategorized expense' }) };
+      }),
+      cats,
+      setDate: (e) => upd({ date: e.target.value }), setAmount: (e) => upd({ amount: e.target.value }),
+      setDesc: (e) => upd({ desc: e.target.value }), setCat: (e) => upd({ cat: e.target.value }),
+      addInvalid, addOpacity: addInvalid ? 0.5 : 1,
+      saveAdd: () => {
+        if (addInvalid) return;
+        const amt = f.dir === 0 ? addAmt : -addAmt;
+        const row = { id: 'n' + Date.now(), date: f.date || A.end, desc: f.desc.trim().toUpperCase(), cat: f.cat, amt, added: true };
+        this.setWork({ added: w.added.concat([row]) });
+        this.setState({ form: null });
+        this.notify('Added ' + this.money(addAmt) + ' ' + inOut[f.dir].toLowerCase() + ' and marked it matched');
+      },
+      toast: this.state.toast
     };
   }
 }

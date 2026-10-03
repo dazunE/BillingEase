@@ -27,11 +27,85 @@ a{color:#163300}a:hover{color:#0e2100}
         <p style="margin: 0; font-size: 15px; color: #454745;">Get paid by card, bank payment and Apple Pay, right from your invoices.</p>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Payment settings</button>
-        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+        <button type="button" onClick="{{openSettings}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Payment settings</button>
+        <button type="button" onClick="{{openLinkModal}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>
           Create payment link
         </button>
+        <sc-if value="{{modalOpen}}" hint-placeholder-val="{{false}}">
+          <div style="position: fixed; inset: 0; z-index: 50; background: rgba(14,15,12,0.45); display: flex; align-items: center; justify-content: center; padding: 16px 0; overflow-y: auto;">
+            <div role="dialog" aria-modal="true" aria-labelledby="pl-modal-h" style="width: calc(100% - 32px); max-width: 520px; box-sizing: border-box; margin: auto; background: #FFFFFF; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px; color: #163300;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <h2 id="pl-modal-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{modalTitle}}</h2>
+                  <p style="margin: 0; font-size: 14px; color: #454745; line-height: 1.45;">{{modalSub}}</p>
+                </div>
+                <button type="button" aria-label="Close" onClick="{{closeModal}}" style="flex: none; width: 40px; height: 40px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+                </button>
+              </div>
+              <sc-if value="{{modalForm}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label for="ml-name" style="font-size: 13px; font-weight: 600;">What is it for?</label>
+                    <input id="ml-name" type="text" placeholder="e.g. Website refresh deposit" value="{{mName}}" onChange="{{onMName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+                    <div style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px;">
+                      <label for="ml-amt" style="font-size: 13px; font-weight: 600;">Amount (USD)</label>
+                      <input id="ml-amt" type="text" inputmode="decimal" placeholder="0.00" value="{{mAmt}}" onChange="{{onMAmt}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; font-variant-numeric: tabular-nums;">
+                    </div>
+                    <div style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px;">
+                      <label for="ml-use" style="font-size: 13px; font-weight: 600;">Link can be paid</label>
+                      <select id="ml-use" value="{{mUse}}" onChange="{{onMUse}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; padding: 0 12px;">
+                        <option value="multi">Any number of times</option>
+                        <option value="once">Once only</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label for="ml-note" style="font-size: 13px; font-weight: 600;">Note for the customer (optional)</label>
+                    <textarea id="ml-note" rows="3" placeholder="Shown on the checkout page" value="{{mNote}}" onChange="{{onMNote}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; padding: 10px 14px; resize: vertical; font-family: Inter, sans-serif;"></textarea>
+                  </div>
+                  <div style="font-size: 13px; color: #454745;">Customers can pay by card, bank payment (ACH) or Apple Pay. Payouts go to Chase Business Checking ••4417.</div>
+                  <sc-if value="{{mError}}" hint-placeholder-val="{{false}}">
+                    <div role="alert" style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 10px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{mError}}</div>
+                  </sc-if>
+
+                  <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onClick="{{closeModal}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Cancel</button>
+                    <button type="button" onClick="{{saveLink}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Create link</button>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{modalDone}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                  <div style="display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; background: #E2F6D5;">
+                    <span style="width: 32px; height: 32px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+                    <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                      <span style="font-weight: 700; font-size: 15px;">{{created.name}} · {{created.amount}}</span>
+                      <span style="font-size: 13px; color: #2F5711;">{{created.usage}}</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label for="ml-url" style="font-size: 13px; font-weight: 600;">Payment link</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                      <input id="ml-url" type="text" readonly value="{{created.full}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; flex: 1 1 220px; width: auto; min-width: 0; background: #F2F4EF;">
+                      <button type="button" onClick="{{copyCreated}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h11v11H9zM5 15H4V4h11v1"></path></svg>
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onClick="{{anotherLink}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Create another</button>
+                    <button type="button" onClick="{{closeModal}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Done</button>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
       </div>
     </header>
 
@@ -156,7 +230,7 @@ a{color:#163300}a:hover{color:#0e2100}
                 <button type="button" role="switch" aria-checked="false" aria-labelledby="instant-l" onClick="{{toggleInstant}}" style="flex: none; width: 48px; height: 28px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #E8EBE6; padding: 2px; display: flex; justify-content: flex-start; cursor: pointer;"><span style="width: 22px; height: 22px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #C9CEC3; box-sizing: border-box;"></span></button>
               </sc-if>
             </div>
-            <div style="font-size: 13px; color: #454745;">Deposits go to <strong style="font-weight: 600; color: #163300;">Chase Business Checking ••4417</strong> · <a href="#change-bank" style="color: #163300; font-weight: 600;">Change</a></div>
+            <div style="font-size: 13px; color: #454745;">Deposits go to <strong style="font-weight: 600; color: #163300;">Chase Business Checking ••4417</strong> · <button type="button" onClick="{{changeBank}}" aria-label="Change payout bank account" style="border: 0; background: transparent; padding: 0; color: #163300; font: 600 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Change</button></div>
           </section>
 
           <section aria-labelledby="link-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
@@ -166,13 +240,13 @@ a{color:#163300}a:hover{color:#0e2100}
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label for="link-name" style="font-size: 13px; font-weight: 600;">What is it for?</label>
-              <input id="link-name" type="text" value="Brand workshop deposit" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300;">
+              <input id="link-name" type="text" value="{{qName}}" onChange="{{onQName}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300;">
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label for="link-amt" style="font-size: 13px; font-weight: 600;">Amount (USD)</label>
-              <input id="link-amt" type="text" inputmode="decimal" value="500.00" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300; font-variant-numeric: tabular-nums;">
+              <input id="link-amt" type="text" inputmode="decimal" value="{{qAmt}}" onChange="{{onQAmt}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300; font-variant-numeric: tabular-nums;">
             </div>
-            <button type="button" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Create link</button>
+            <button type="button" onClick="{{quickCreate}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Create link</button>
             <div style="display: flex; flex-direction: column; gap: 0;">
               <sc-for list="{{links}}" as="l" hint-placeholder-count="2">
                 <div style="display: flex; align-items: center; gap: 10px; padding: 12px 0; border-top: 1px solid #EEF0EB;">
@@ -180,7 +254,7 @@ a{color:#163300}a:hover{color:#0e2100}
                     <span style="font-weight: 600; font-size: 14px;">{{l.name}} · {{l.amount}}</span>
                     <span style="font-size: 13px; color: #5D605B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{l.url}} · {{l.paid}}</span>
                   </div>
-                  <button type="button" aria-label="{{l.copyLabel}}" style="flex: none; width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                  <button type="button" aria-label="{{l.copyLabel}}" onClick="{{l.copy}}" style="flex: none; width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h11v11H9zM5 15H4V4h11v1"></path></svg>
                   </button>
                 </div>
@@ -196,9 +270,33 @@ a{color:#163300}a:hover{color:#0e2100}
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #E1E5DC;">
           <h2 id="pay-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">{{payTitle}}</h2>
           <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">All methods</button>
-            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Sep 1 – Oct 3, 2026</button>
-            <button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">Export CSV</button>
+            <div style="position: relative;">
+              <button type="button" aria-haspopup="menu" aria-expanded="{{methodMenuOpen}}" onClick="{{toggleMethodMenu}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">{{methodLabel}} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+              <sc-if value="{{methodMenuOpen}}" hint-placeholder-val="{{false}}">
+                <div role="menu" style="position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; min-width: 220px; max-width: calc(100vw - 32px); box-sizing: border-box; padding: 6px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; box-shadow: 0 1px 2px rgba(22,51,0,0.06); display: flex; flex-direction: column; gap: 2px;">
+                  <sc-for list="{{methodOpts}}" as="o" hint-placeholder-count="4">
+                    <button type="button" role="menuitemradio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: {{o.bg}}; color: #163300; font: {{o.weight}} 14px Inter, sans-serif; text-align: left; cursor: pointer;">
+                      <span>{{o.label}}</span>
+                      <span style="font-size: 13px; color: #454745;">{{o.count}}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+            <div style="position: relative;">
+              <button type="button" aria-haspopup="menu" aria-expanded="{{rangeMenuOpen}}" onClick="{{toggleRangeMenu}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">{{rangeLabel}} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+              <sc-if value="{{rangeMenuOpen}}" hint-placeholder-val="{{false}}">
+                <div role="menu" style="position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; min-width: 220px; max-width: calc(100vw - 32px); box-sizing: border-box; padding: 6px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; box-shadow: 0 1px 2px rgba(22,51,0,0.06); display: flex; flex-direction: column; gap: 2px;">
+                  <sc-for list="{{rangeOpts}}" as="o" hint-placeholder-count="4">
+                    <button type="button" role="menuitemradio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: {{o.bg}}; color: #163300; font: {{o.weight}} 14px Inter, sans-serif; text-align: left; cursor: pointer;">
+                      <span>{{o.label}}</span>
+                      <span style="font-size: 13px; color: #454745;">{{o.count}}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+            <button type="button" onClick="{{exportPayments}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">Export CSV</button>
           </div>
         </div>
         <div style="overflow-x: auto;">
@@ -226,8 +324,13 @@ a{color:#163300}a:hover{color:#0e2100}
                   <td style="padding: 14px 20px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.net}}</td>
                 </tr>
               </sc-for>
+              <sc-if value="{{noPayRows}}" hint-placeholder-val="{{false}}">
+                <tr>
+                  <td colspan="7" style="padding: 24px 20px; border-bottom: 1px solid #EEF0EB; color: #454745;">No payments match these filters. <button type="button" onClick="{{clearFilters}}" style="border: 0; background: transparent; padding: 0; color: #163300; font: 600 14px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Clear filters</button></td>
+                </tr>
+              </sc-if>
               <tr style="background: #F2F4EF;">
-                <th scope="row" colspan="4" style="padding: 14px 20px; text-align: left; font-weight: 700;">Total ({{payCount}} payments)</th>
+                <th scope="row" colspan="4" style="padding: 14px 20px; text-align: left; font-weight: 700;">Total ({{payCount}})</th>
                 <td style="padding: 14px 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{payTot.gross}}</td>
                 <td style="padding: 14px 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{payTot.fee}}</td>
                 <td style="padding: 14px 20px; text-align: right; font-weight: 800; font-variant-numeric: tabular-nums;">{{payTot.net}}</td>
@@ -242,7 +345,7 @@ a{color:#163300}a:hover{color:#0e2100}
       <section aria-labelledby="po-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #E1E5DC;">
           <h2 id="po-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Payouts to Chase Business Checking ••4417</h2>
-          <button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">Export CSV</button>
+          <button type="button" onClick="{{exportPayouts}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">Export CSV</button>
         </div>
         <div style="overflow-x: auto;">
           <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px;">
@@ -274,11 +377,41 @@ a{color:#163300}a:hover{color:#0e2100}
       </section>
     </sc-if>
   </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1680}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { tab: 'overview', schedule: 'daily', instant: false }; }
+  constructor(props) { super(props); this.state = {
+      tab: 'overview', schedule: 'daily', instant: false, toast: null,
+      method: 'all', range: 'all', menu: null,
+      qName: 'Brand workshop deposit', qAmt: '500.00',
+      modal: null, mName: '', mAmt: '', mUse: 'multi', mNote: '', mError: null, created: null,
+      links: [
+        { name: 'Logo design package', amount: 1200, slug: 'logo-package', paid: 4, once: false },
+        { name: 'Monthly retainer', amount: 2500, slug: 'retainer', paid: 2, once: false }
+      ]
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  copyText(text, msg) {
+    try { if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {}); } catch (e) { /* clipboard unavailable */ }
+    this.notify(msg);
+  }
+  makeLink(name, amtText, once) {
+    const amount = Math.round(parseFloat(String(amtText).replace(/[$,\s]/g, '')) * 100) / 100;
+    if (!name.trim()) return { error: 'Add a name so customers know what they’re paying for.' };
+    if (!(amount > 0)) return { error: 'Enter an amount greater than $0.00.' };
+    let base = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'link';
+    let slug = base, n = 2;
+    while (this.state.links.some((l) => l.slug === slug)) slug = base + '-' + n++;
+    return { link: { name: name.trim(), amount, slug, paid: 0, once } };
+  }
   renderVals() {
     const tab = this.state.tab;
     const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -295,8 +428,19 @@ class Component extends DCLogic {
       ['Sep 24, 2026', 'Harbor & Pine Café', 'INV-0152', 'Apple Pay', 'card', 1320, 'p1'],
       ['Sep 23, 2026', 'Bluebird Yoga', 'INV-0148', 'Visa ••7719', 'card', 540, 'p1']
     ];
-    const pays = raw.map(([date, customer, invoice, method, type, gross, po]) => { const fee = feeFor(type, gross); return { date, customer, invoice, method, po, g: gross, f: fee, n: r2(gross - fee) }; });
-    const payRowsAll = pays.map((p) => ({ date: p.date, customer: p.customer, invoice: p.invoice, method: p.method, gross: fmt(p.g), fee: '−' + fmt(p.f), net: fmt(p.n) }));
+    const pays = raw.map(([date, customer, invoice, method, type, gross, po]) => { const fee = feeFor(type, gross); return { date, customer, invoice, method, type, po, g: gross, f: fee, n: r2(gross - fee), day: (date.slice(0, 3) === 'Oct' ? 30 : 0) + parseInt(date.slice(4), 10) }; });
+    const kindOf = (p) => p.method.indexOf('Apple Pay') === 0 ? 'apple' : p.type === 'bank' ? 'bank' : 'card';
+    const METHODS = [['all', 'All methods'], ['card', 'Cards'], ['bank', 'Bank payment (ACH)'], ['apple', 'Apple Pay']];
+    const RANGES = [['all', 'Sep 1 – Oct 3, 2026', 1, 33], ['oct', 'Oct 1 – Oct 3, 2026', 31, 33], ['7d', 'Last 7 days', 27, 33], ['sep', 'September 2026', 1, 30]];
+    const st = this.state;
+    const rDef = RANGES.find((r) => r[0] === st.range);
+    const inRange = (p, r) => p.day >= r[2] && p.day <= r[3];
+    const byMethod = (p, m) => m === 'all' || kindOf(p) === m;
+    const filtered = pays.filter((p) => byMethod(p, st.method) && inRange(p, rDef));
+    const menuOpts = (defs, cur, key, countFn) => defs.map((d) => ({ label: d[1], count: String(countFn(d)), checked: String(cur === d[0]), bg: cur === d[0] ? '#E2F6D5' : '#FFFFFF', weight: cur === d[0] ? 600 : 400, pick: () => this.setState({ [key]: d[0], menu: null }) }));
+    const methodOpts = menuOpts(METHODS, st.method, 'method', (d) => pays.filter((p) => byMethod(p, d[0]) && inRange(p, rDef)).length);
+    const rangeOpts = menuOpts(RANGES, st.range, 'range', (d) => pays.filter((p) => byMethod(p, st.method) && inRange(p, d)).length);
+    const payRowsAll = filtered.map((p) => ({ date: p.date, customer: p.customer, invoice: p.invoice, method: p.method, gross: fmt(p.g), fee: '−' + fmt(p.f), net: fmt(p.n) }));
     const sum = (list, k) => r2(list.reduce((a, p) => a + p[k], 0));
     const S = { 'In transit': ['#E1EEF8', '#1F5E91'], Deposited: ['#E2F6D5', '#2F5711'] };
     const poDefs = [['p4', 'Oct 6, 2026', 'In transit'], ['p3', 'Oct 2, 2026', 'Deposited'], ['p2', 'Sep 30, 2026', 'Deposited'], ['p1', 'Sep 28, 2026', 'Deposited']];
@@ -322,23 +466,61 @@ class Component extends DCLogic {
     ];
     const sch = this.state.schedule;
     const schedules = [['daily', 'Daily (standard)', 'Each day’s payments arrive in 2 business days'], ['weekly', 'Weekly on Mondays', 'One deposit a week, 2 business days after Monday']].map(([id, label, note]) => ({ label, note, on: sch === id, off: sch !== id, pick: () => this.setState({ schedule: id }) }));
-    const links = [
-      { name: 'Logo design package', amount: '$1,200.00', url: 'pay.billingease.com/northwind/logo-package', paid: 'Paid 4 times', copyLabel: 'Copy link for Logo design package' },
-      { name: 'Monthly retainer', amount: '$2,500.00', url: 'pay.billingease.com/northwind/retainer', paid: 'Paid 2 times', copyLabel: 'Copy link for Monthly retainer' }
-    ];
+    const urlOf = (l) => 'pay.billingease.com/northwind/' + l.slug;
+    const paidText = (l) => l.paid === 0 ? (l.once ? 'Single use · not paid yet' : 'Not paid yet') : 'Paid ' + l.paid + (l.paid === 1 ? ' time' : ' times');
+    const links = st.links.map((l) => ({ name: l.name, amount: fmt(l.amount), url: urlOf(l), paid: paidText(l), copyLabel: 'Copy link for ' + l.name, copy: () => this.copyText('https://' + urlOf(l), 'Link for ' + l.name + ' copied') }));
+    const cr = st.created;
+    const created = cr ? { name: cr.name, amount: fmt(cr.amount), full: 'https://' + urlOf(cr), usage: cr.once ? 'Single-use link · ready to share' : 'Reusable link · ready to share' } : { name: '', amount: '', full: '', usage: '' };
+    const blankModal = { mName: '', mAmt: '', mUse: 'multi', mNote: '', mError: null, created: null };
     const isOverview = tab === 'overview';
     const payRows = isOverview ? payRowsAll.slice(0, 5) : payRowsAll;
-    const shown = isOverview ? pays.slice(0, 5) : pays;
+    const shown = isOverview ? filtered.slice(0, 5) : filtered;
+    const toggleMenu = (m) => () => this.setState({ menu: st.menu === m ? null : m });
     return {
       tabs, stats, methods, feeRows, schedules, links, payouts, payRows,
       recentPayouts: payouts.slice(0, 3),
-      payCount: shown.length,
+      payCount: shown.length + (shown.length === 1 ? " payment" : " payments"),
       payTot: { gross: fmt(sum(shown, 'g')), fee: '−' + fmt(sum(shown, 'f')), net: fmt(sum(shown, 'n')) },
       payTitle: isOverview ? 'Recent payments' : 'All payments',
       isOverview, showPayments: tab !== 'payouts', isPayouts: tab === 'payouts',
       goPayouts: () => this.setState({ tab: 'payouts' }),
       instantOn: this.state.instant, instantOff: !this.state.instant,
       toggleInstant: () => this.setState({ instant: !this.state.instant }),
+      toast: st.toast,
+      methodLabel: METHODS.find((m) => m[0] === st.method)[1], rangeLabel: rDef[1],
+      methodMenuOpen: st.menu === 'method', rangeMenuOpen: st.menu === 'range', methodOpts, rangeOpts,
+      toggleMethodMenu: toggleMenu('method'), toggleRangeMenu: toggleMenu('range'),
+      noPayRows: payRows.length === 0,
+      clearFilters: () => this.setState({ method: 'all', range: 'all', menu: null }),
+      exportPayments: () => this.notify('Exported payments.csv · ' + filtered.length + ' payments, ' + rDef[1]),
+      exportPayouts: () => this.notify('Exported payouts.csv · ' + payouts.length + ' payouts'),
+      openSettings: () => this.notify('Payment settings aren’t part of this prototype yet'),
+      changeBank: () => this.notify('Changing the payout bank isn’t part of this prototype yet'),
+      qName: st.qName, qAmt: st.qAmt,
+      onQName: (e) => this.setState({ qName: e.target.value }), onQAmt: (e) => this.setState({ qAmt: e.target.value }),
+      quickCreate: () => {
+        const r = this.makeLink(st.qName, st.qAmt, false);
+        if (r.error) { this.notify(r.error); return; }
+        this.setState({ links: [r.link].concat(st.links), qName: '', qAmt: '' });
+        this.notify('Payment link created for ' + r.link.name);
+      },
+      modalOpen: st.modal === 'link', modalForm: !st.created, modalDone: !!st.created, created,
+      modalTitle: st.created ? 'Your payment link is ready' : 'Create a payment link',
+      modalSub: st.created ? 'Share it by email, text or on your website. It also appears under Payment links & checkouts.' : 'Collect a deposit or sell a service without sending an invoice.',
+      mName: st.mName, mAmt: st.mAmt, mUse: st.mUse, mNote: st.mNote, mError: st.mError,
+      onMName: (e) => this.setState({ mName: e.target.value, mError: null }),
+      onMAmt: (e) => this.setState({ mAmt: e.target.value, mError: null }),
+      onMUse: (e) => this.setState({ mUse: e.target.value }),
+      onMNote: (e) => this.setState({ mNote: e.target.value }),
+      openLinkModal: () => this.setState(Object.assign({ modal: 'link', menu: null }, blankModal, { mName: 'Brand workshop deposit', mAmt: '500.00' })),
+      closeModal: () => this.setState(Object.assign({ modal: null }, blankModal)),
+      anotherLink: () => this.setState(blankModal),
+      saveLink: () => {
+        const r = this.makeLink(st.mName, st.mAmt, st.mUse === 'once');
+        if (r.error) { this.setState({ mError: r.error }); return; }
+        this.setState({ links: [r.link].concat(st.links), created: r.link, tab: 'overview' });
+      },
+      copyCreated: () => cr && this.copyText('https://' + urlOf(cr), 'Payment link copied'),
       instantNote: this.state.instant ? 'On · get paid to your debit card in minutes for 1.5% [placeholder]' : 'Off · cash out to a debit card in minutes for 1.5% [placeholder]'
     };
   }

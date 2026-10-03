@@ -52,10 +52,10 @@ a{color:#163300}a:hover{color:#0e2100}
   </section>
 
   <div style="position: absolute; top: 488px; left: 0; right: 0; display: flex; align-items: center; justify-content: space-around; padding: 0 40px;">
-    <button type="button" aria-label="Choose from gallery" style="width: 48px; height: 48px; border-radius: 9999px; border: 0; background: rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+    <button type="button" onClick="{{gallery}}" aria-label="Choose from gallery" style="width: 48px; height: 48px; border-radius: 9999px; border: 0; background: rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center; cursor: pointer;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM4 16l5-5 4 4 3-3 4 4"></path><path d="M15.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path></svg>
     </button>
-    <button type="button" aria-label="Take photo" style="width: 76px; height: 76px; border-radius: 9999px; border: 4px solid #FFFFFF; background: #9FE870; box-sizing: border-box; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+    <button type="button" onClick="{{capture}}" aria-label="Take photo" style="width: 76px; height: 76px; border-radius: 9999px; border: 4px solid #FFFFFF; background: #9FE870; box-sizing: border-box; display: flex; align-items: center; justify-content: center; cursor: pointer;">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"></path></svg>
     </button>
     <button type="button" onClick="{{toggleFlash}}" aria-label="Flash" aria-pressed="{{flashPressed}}" style="width: 48px; height: 48px; border-radius: 9999px; border: 0; background: {{flashBg}}; display: flex; align-items: center; justify-content: center; cursor: pointer;">
@@ -66,49 +66,99 @@ a{color:#163300}a:hover{color:#0e2100}
   <section aria-labelledby="rs-title" style="position: absolute; left: 0; right: 0; bottom: 0; height: 252px; box-sizing: border-box; background: #FFFFFF; color: #163300; border-radius: 24px 24px 0 0; padding: 10px 16px 24px; display: flex; flex-direction: column; gap: 8px;">
     <span aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 9999px; background: #C9CEC3;"></span>
     <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 4px;">
-      <h2 id="rs-title" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Recent scans</h2>
+      <h2 id="rs-title" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Recent scans <span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; color: #5D605B; letter-spacing: 0;">· {{scanCount}} today</span></h2>
       <a href="Receipts.dc.html" style="font-size: 13px; font-weight: 600;">View all</a>
     </div>
-    <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+    <ul aria-live="polite" style="flex: 1; min-height: 0; overflow-y: auto; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
       <sc-for list="{{scans}}" as="s" hint-placeholder-count="2">
-        <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF0EB;">
+        <li style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF0EB;">
           <span aria-hidden="true" style="flex: none; width: 40px; height: 52px; border-radius: 6px; background: #F2F4EF; border: 1px solid #E1E5DC; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 0 7px; box-sizing: border-box;">
             <span style="height: 3px; border-radius: 9999px; background: #C9CEC3;"></span>
             <span style="height: 3px; width: 70%; border-radius: 9999px; background: #C9CEC3;"></span>
             <span style="height: 3px; border-radius: 9999px; background: #C9CEC3;"></span>
           </span>
           <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-            <span style="font-weight: 600; font-size: 14px;">{{s.vendor}}</span>
-            <span style="font-size: 12px; color: #5D605B;">{{s.meta}}</span>
+            <span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{s.vendor}}</span>
+            <span style="font-size: 12px; color: #5D605B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{s.meta}}</span>
           </span>
-          <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+          <span style="flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
             <span style="font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums;">{{s.amount}}</span>
             <span style="display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; background: {{s.bg}}; color: {{s.fg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{s.fg}};"></span>{{s.status}}</span>
           </span>
         </li>
       </sc-for>
     </ul>
-    <p style="margin: 0; font-size: 12px; color: #5D605B;">Tip: forward receipts to receipts@northwind.billingease.com</p>
+    <p style="flex: none; margin: 0; font-size: 12px; color: #5D605B; overflow-wrap: anywhere;">Tip: forward receipts to receipts@northwind.billingease.com</p>
   </section>
+<sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+  <div role="status" aria-live="polite" style="pointer-events: none; position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: max-content; z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+    <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+    <span>{{toast}}</span>
+  </div>
+</sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { auto: true, flash: false }; }
-  renderVals() {
-    const { auto, flash } = this.state;
-    const scans = [
-      { vendor: 'Reading receipt…', meta: 'Scanned just now · Office supplies?', amount: '—', status: 'Processing', bg: '#E1EEF8', fg: '#1F5E91' },
-      { vendor: 'Staples', meta: 'Oct 2 · Office supplies · Amex ••1009', amount: '$86.42', status: 'Ready', bg: '#E2F6D5', fg: '#2F5711' }
+  constructor(props) {
+    super(props);
+    this.nextId = 3;
+    this.queue = [
+      ['Figma', 'Software & subscriptions', '$45.00', 'Amex ••1009'],
+      ['Local Print Shop', 'Printing', '$132.50', 'Chase ••4417'],
+      ['Delta Air Lines', 'Travel', '$418.60', 'Amex ••1009'],
+      ['Comcast Business', 'Utilities', '$129.99', 'Chase ••4417'],
+      ['WeWork', 'Rent', '$650.00', 'Chase ••4417']
     ];
+    this.state = {
+      auto: true, flash: false, justCaptured: false, toast: null,
+      scans: [
+        { id: 1, processing: true, vendor: 'Reading receipt…', meta: 'Scanned just now · Office supplies?', amount: '—', result: ['Adobe Creative Cloud', 'Software & subscriptions', '$54.99', 'Amex ••1009'] },
+        { id: 2, processing: false, vendor: 'Staples', meta: 'Oct 2 · Office supplies · Amex ••1009', amount: '$86.42' }
+      ]
+    };
+    this.finishLater(1, 2600);
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  finishLater(id, ms) {
+    setTimeout(() => {
+      const scans = this.state.scans.map((x) => {
+        if (x.id !== id || !x.processing) return x;
+        const [vendor, cat, amount, card] = x.result;
+        return { id: x.id, processing: false, vendor, meta: 'Oct 3 · ' + cat + ' · ' + card, amount };
+      });
+      this.setState({ scans });
+    }, ms);
+  }
+  capture() {
+    const id = this.nextId++;
+    const result = this.queue[(id - 3) % this.queue.length];
+    const scan = { id, processing: true, vendor: 'Reading receipt…', meta: 'Scanned just now · ' + result[1] + '?', amount: '—', result };
+    this.setState({ scans: [scan].concat(this.state.scans), justCaptured: true });
+    clearTimeout(this._capTimer);
+    this._capTimer = setTimeout(() => this.setState({ justCaptured: false }), 1200);
+    this.finishLater(id, 2200);
+  }
+  renderVals() {
+    const { auto, flash, justCaptured } = this.state;
+    const scans = this.state.scans.map((x) => ({
+      vendor: x.vendor, meta: x.meta, amount: x.amount,
+      status: x.processing ? 'Processing' : 'Ready',
+      bg: x.processing ? '#E1EEF8' : '#E2F6D5',
+      fg: x.processing ? '#1F5E91' : '#2F5711'
+    }));
     return {
       scans,
+      scanCount: this.state.scans.filter((x) => x.id !== 2).length,
+      toast: this.state.toast,
+      capture: () => this.capture(),
+      gallery: () => this.notify('Photo library isn’t part of this prototype yet'),
       autoLabel: auto ? 'Auto-capture on' : 'Auto-capture off',
       autoPressed: auto ? 'true' : 'false',
       autoBg: auto ? '#9FE870' : 'rgba(255,255,255,0.14)',
       autoFg: auto ? '#163300' : '#FFFFFF',
       toggleAuto: () => this.setState({ auto: !auto }),
-      hint: auto ? 'Hold steady, capturing automatically' : 'Tap the shutter to capture',
+      hint: justCaptured ? 'Captured · reading the details' : (auto ? 'Hold steady, capturing automatically' : 'Tap the shutter to capture'),
       flashPressed: flash ? 'true' : 'false',
       flashBg: flash ? '#9FE870' : 'rgba(255,255,255,0.14)',
       flashFg: flash ? '#163300' : '#FFFFFF',

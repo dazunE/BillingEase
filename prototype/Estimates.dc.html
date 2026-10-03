@@ -20,14 +20,14 @@ a{color:#163300}a:hover{color:#0e2100}
     <dc-import name="Sidebar" active="estimates" hint-size="100%,1180px"></dc-import>
   </div>
 
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px clamp(16px, 4vw, 40px) 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
     <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
         <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Estimates</h1>
         <p style="margin: 0; font-size: 15px; color: #454745;">Quote your work, get approval online, then turn it into an invoice in one click.</p>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Estimate settings</button>
+        <button type="button" onClick="{{toggleSettings}}" aria-expanded="{{settingsExpanded}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Estimate settings</button>
         <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Create an estimate
@@ -35,7 +35,47 @@ a{color:#163300}a:hover{color:#0e2100}
       </div>
     </header>
 
-    <section aria-label="Estimate summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+    <sc-if value="{{settingsOpen}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="set-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <h2 id="set-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Estimate settings</h2>
+            <span style="font-size: 13px; color: #454745;">Defaults for every new estimate.</span>
+          </div>
+          <button type="button" onClick="{{toggleSettings}}" aria-label="Close estimate settings" style="flex: none; width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="est-expiry" style="font-size: 13px; font-weight: 600;">Estimates expire after</label>
+            <select id="est-expiry" value="{{expiry}}" onChange="{{setExpiry}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+              <option value="14">14 days</option>
+              <option value="30">30 days</option>
+              <option value="60">60 days</option>
+              <option value="90">90 days</option>
+            </select>
+          </div>
+          <sc-for list="{{settingSwitches}}" as="p" hint-placeholder-count="2">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 10px 12px; background: #F7F8F5; border-radius: 12px;">
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 600; font-size: 14px;">{{p.label}}</span>
+                <span style="font-size: 12px; color: #5D605B; line-height: 1.4;">{{p.note}}</span>
+              </div>
+              <button type="button" role="switch" aria-checked="{{p.checked}}" aria-label="{{p.label}}" onClick="{{p.flip}}" style="flex: none; width: 48px; height: 28px; padding: 3px; box-sizing: border-box; border-radius: 9999px; border: 1px solid {{p.border}}; background: {{p.track}}; display: flex; justify-content: {{p.justify}}; cursor: pointer;">
+                <span style="width: 20px; height: 20px; border-radius: 9999px; background: {{p.knob}};"></span>
+              </button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;">
+          <button type="button" onClick="{{toggleSettings}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Cancel</button>
+          <button type="button" onClick="{{saveSettings}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Save settings</button>
+        </div>
+      </section>
+    </sc-if>
+
+    <section aria-label="Estimate summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px;">
       <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
         <div style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
           <div style="font-size: 13px; font-weight: 600; color: #454745;">{{s.label}}</div>
@@ -57,18 +97,42 @@ a{color:#163300}a:hover{color:#0e2100}
             </sc-if>
           </sc-for>
         </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-          <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; max-width: 100%;">
+          <label style="position: relative; display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; max-width: 100%; box-sizing: border-box;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none;"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search estimates</span>
-            <input type="search" placeholder="Search customer or estimate #" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 220px; background: transparent;">
+            <input type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="Search customer or estimate #" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 220px; max-width: 100%; min-width: 0; background: transparent;">
           </label>
-          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">All customers</button>
-          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Last 90 days</button>
+          <div style="position: relative;">
+            <button type="button" onClick="{{toggleCustMenu}}" aria-haspopup="true" aria-expanded="{{custExpanded}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">
+              {{custLabel}}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{custMenuOpen}}" hint-placeholder-val="{{false}}">
+              <div role="menu" aria-label="Filter by customer" style="position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; min-width: 220px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 6px; box-shadow: 0 6px 20px rgba(22,51,0,0.12); display: flex; flex-direction: column;">
+                <sc-for list="{{custOptions}}" as="o" hint-placeholder-count="5">
+                  <button type="button" role="menuitemradio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 38px; padding: 0 12px; border: 0; border-radius: 10px; background: {{o.bg}}; color: #163300; font: 500 14px Inter, sans-serif; text-align: left; cursor: pointer; white-space: nowrap;">{{o.label}}<span style="font-size: 12px; color: #5D605B;">{{o.count}}</span></button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="position: relative;">
+            <button type="button" onClick="{{toggleRangeMenu}}" aria-haspopup="true" aria-expanded="{{rangeExpanded}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">
+              {{rangeLabel}}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{rangeMenuOpen}}" hint-placeholder-val="{{false}}">
+              <div role="menu" aria-label="Filter by date" style="position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; min-width: 200px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 6px; box-shadow: 0 6px 20px rgba(22,51,0,0.12); display: flex; flex-direction: column;">
+                <sc-for list="{{rangeOptions}}" as="o" hint-placeholder-count="4">
+                  <button type="button" role="menuitemradio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="display: flex; align-items: center; min-height: 38px; padding: 0 12px; border: 0; border-radius: 10px; background: {{o.bg}}; color: #163300; font: 500 14px Inter, sans-serif; text-align: left; cursor: pointer; white-space: nowrap;">{{o.label}}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
         </div>
       </div>
 
-      <div style="overflow-x: auto;">
+      <div style="position: relative; overflow-x: auto;">
         <table style="width: 100%; min-width: 900px; border-collapse: collapse; font-size: 14px;">
           <thead>
             <tr style="text-align: left; color: #454745;">
@@ -82,13 +146,13 @@ a{color:#163300}a:hover{color:#0e2100}
             </tr>
           </thead>
           <tbody>
-            <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
               <tr>
                 <td style="padding: 14px 20px; border-bottom: 1px solid #EEF0EB;">
-                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{r.badgeBg}}; color: {{r.badgeFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.status}}</span>
+                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{r.badgeBg}}; color: {{r.badgeFg}}; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.status}}</span>
                 </td>
-                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.date}}</td>
-                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.expires}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; white-space: nowrap;">{{r.date}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; white-space: nowrap;">{{r.expires}}</td>
                 <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; font-variant-numeric: tabular-nums;">{{r.num}}</td>
                 <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB;">
                   <div style="font-weight: 600;">{{r.customer}}</div>
@@ -101,17 +165,30 @@ a{color:#163300}a:hover{color:#0e2100}
                       <button type="button" onClick="{{r.convert}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer; white-space: nowrap;">Convert to invoice</button>
                     </sc-if>
                     <sc-if value="{{r.hasSecondary}}" hint-placeholder-val="{{false}}">
-                      <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer; white-space: nowrap;">{{r.secondary}}</button>
+                      <button type="button" onClick="{{r.secondaryAct}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer; white-space: nowrap;">{{r.secondary}}</button>
                     </sc-if>
                     <sc-if value="{{r.isConverted}}" hint-placeholder-val="{{false}}">
                       <a href="Invoices.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; color: #163300; font-weight: 600; font-size: 13px; text-decoration: none; white-space: nowrap;">View {{r.invoice}}</a>
                     </sc-if>
-                    <button type="button" aria-label="More actions" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                    <button type="button" onClick="{{r.toggleMenu}}" aria-label="More actions for {{r.num}}" aria-expanded="{{r.menuExpanded}}" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: {{r.kebabBg}}; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="#163300" aria-hidden="true"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg>
                     </button>
                   </span>
                 </td>
               </tr>
+              <sc-if value="{{r.menuOpen}}" hint-placeholder-val="{{false}}">
+                <tr>
+                  <td colspan="7" style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB; background: #F7F8F5;">
+                    <div role="menu" aria-label="Actions for {{r.num}}" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px;">
+                      <span style="margin-right: auto; font-size: 13px; font-weight: 600; color: #454745;">{{r.num}} · {{r.customer}}</span>
+                      <a role="menuitem" href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #C9CEC3; color: #163300; font-weight: 600; font-size: 13px; text-decoration: none;">Edit</a>
+                      <button type="button" role="menuitem" onClick="{{r.duplicate}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Duplicate</button>
+                      <button type="button" role="menuitem" onClick="{{r.download}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Download PDF</button>
+                      <button type="button" role="menuitem" onClick="{{r.remove}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #A8200D; background: #FFFFFF; color: #A8200D; font: 600 13px Inter, sans-serif; cursor: pointer;">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              </sc-if>
             </sc-for>
           </tbody>
         </table>
@@ -120,15 +197,15 @@ a{color:#163300}a:hover{color:#0e2100}
         <div style="padding: 32px 20px; text-align: center; font-size: 14px; color: #454745;">No estimates in this view. Create an estimate to quote your next project.</div>
       </sc-if>
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; font-size: 13px; color: #454745;">
-        <span>Showing {{shown}} estimates · Total {{shownTotal}}</span>
+        <span>{{showing}} · Total {{shownTotal}}</span>
         <span style="display: flex; gap: 8px;">
-          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif;">Previous</button>
-          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif;">Next</button>
+          <button type="button" onClick="{{prevPage}}" disabled="{{prevDisabled}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif; cursor: pointer; opacity: {{prevOpacity}};">Previous</button>
+          <button type="button" onClick="{{nextPage}}" disabled="{{nextDisabled}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif; cursor: pointer; opacity: {{nextOpacity}};">Next</button>
         </span>
       </div>
     </section>
 
-    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px;">
       <sc-for list="{{tips}}" as="t" hint-placeholder-count="3">
         <div style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
           <div style="font-weight: 700; font-size: 15px;">{{t.title}}</div>
@@ -137,22 +214,19 @@ a{color:#163300}a:hover{color:#0e2100}
       </sc-for>
     </section>
   </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1260}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { tab: 'active', converted: {} }; }
-  renderVals() {
-    const S = {
-      Saved: { bg: '#E8EBE6', fg: '#454745' },
-      Sent: { bg: '#E1EEF8', fg: '#1F5E91' },
-      Viewed: { bg: '#FFF0B8', fg: '#6B5000' },
-      Approved: { bg: '#E2F6D5', fg: '#2F5711' },
-      Expired: { bg: '#FBE3DF', fg: '#A8200D' },
-      Converted: { bg: '#E2F6D5', fg: '#2F5711' },
-      Draft: { bg: '#E8EBE6', fg: '#454745' }
-    };
-    const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  constructor(props) {
+    super(props);
     const data = [
       ['EST-0048', 'Approved', 'Sep 28, 2026', 'Oct 28, 2026', 'Ridge Outdoor Supply', 'Spring catalog design', 7450],
       ['EST-0047', 'Viewed', 'Sep 25, 2026', 'Oct 25, 2026', 'Greenline Architects', 'Website refresh', 9800],
@@ -164,42 +238,145 @@ class Component extends DCLogic {
       ['EST-0041', 'Converted', 'Jul 30, 2026', 'Aug 29, 2026', 'Harbor & Pine Café', 'Fall menu refresh', 2480, 'INV-0142'],
       ['EST-0042', 'Converted', 'Aug 6, 2026', 'Sep 5, 2026', 'Atlas Freight Co.', 'Annual report layout', 6300, 'INV-0156']
     ];
-    const conv = this.state.converted;
-    const all = data.map(([num, st, date, expires, customer, project, amt, inv]) => {
-      const status = conv[num] ? 'Converted' : st;
-      const invoice = conv[num] || inv || '';
-      return {
-        num, status, date, expires, customer, project, amt, amount: fmt(amt), invoice,
-        badgeBg: S[status].bg, badgeFg: S[status].fg,
-        canConvert: status === 'Approved',
-        isConverted: status === 'Converted',
-        hasSecondary: ['Saved', 'Sent', 'Viewed', 'Expired', 'Draft'].includes(status),
-        secondary: status === 'Saved' || status === 'Draft' ? 'Send' : status === 'Expired' ? 'Renew' : 'Resend',
-        convert: () => this.setState({ converted: Object.assign({}, conv, { [num]: 'INV-0' + (163 + Object.keys(conv).length) }) })
-      };
-    });
+    this.state = {
+      tab: 'active', query: '', cust: 'all', range: '90', menu: null, rowMenu: null, page: 0,
+      settingsOpen: false, expiry: '30', settings: { signature: true, deposit: false }, draftSettings: null,
+      nextInv: 163, nextEst: 51, toast: null,
+      estimates: data.map(([num, status, date, expires, customer, project, amt, invoice]) => ({ num, status, date, expires, customer, project, amt, invoice: invoice || '' }))
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const s = this.state;
+    const S = {
+      Saved: { bg: '#E8EBE6', fg: '#454745' },
+      Sent: { bg: '#E1EEF8', fg: '#1F5E91' },
+      Viewed: { bg: '#FFF0B8', fg: '#6B5000' },
+      Approved: { bg: '#E2F6D5', fg: '#2F5711' },
+      Expired: { bg: '#FBE3DF', fg: '#A8200D' },
+      Converted: { bg: '#E2F6D5', fg: '#2F5711' },
+      Draft: { bg: '#E8EBE6', fg: '#454745' }
+    };
+    const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const update = (num, patch) => this.setState({ estimates: s.estimates.map(e => e.num === num ? Object.assign({}, e, patch) : e) });
+    const fmtDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const expiryDate = fmtDate(new Date(2026, 9, 3 + parseInt(s.expiry, 10)));
+    const day = (d) => new Date(d).getTime();
+    const ranges = [
+      ['30', 'Last 30 days', (e) => day(e.date) >= day('Sep 3, 2026')],
+      ['90', 'Last 90 days', (e) => day(e.date) >= day('Jul 5, 2026')],
+      ['q3', 'Jul 1 – Sep 30, 2026', (e) => day(e.date) >= day('Jul 1, 2026') && day(e.date) <= day('Sep 30, 2026')],
+      ['all', 'All dates', () => true]
+    ];
+    const rangeDef = ranges.find(r => r[0] === s.range) || ranges[1];
+    const q = s.query.trim().toLowerCase();
+    const base = s.estimates.filter(e => (s.cust === 'all' || e.customer === s.cust) && rangeDef[2](e) && (!q || e.customer.toLowerCase().includes(q) || e.num.toLowerCase().includes(q) || e.project.toLowerCase().includes(q)));
     const filters = {
       active: (r) => ['Saved', 'Sent', 'Viewed', 'Approved'].includes(r.status),
       draft: (r) => r.status === 'Draft',
       all: () => true
     };
     const defs = [['active', 'Active'], ['draft', 'Draft'], ['all', 'All']];
-    const tabs = defs.map(([id, label]) => ({ label, count: all.filter(filters[id]).length, on: this.state.tab === id, off: this.state.tab !== id, pick: () => this.setState({ tab: id }) }));
-    const rows = all.filter(filters[this.state.tab]);
+    const tabs = defs.map(([id, label]) => ({ label, count: base.filter(filters[id]).length, on: s.tab === id, off: s.tab !== id, pick: () => this.setState({ tab: id, page: 0, rowMenu: null }) }));
+    const filtered = base.filter(filters[s.tab]);
+    const PER = 6;
+    const pages = Math.max(1, Math.ceil(filtered.length / PER));
+    const page = Math.min(s.page, pages - 1);
+    const slice = filtered.slice(page * PER, page * PER + PER);
+    const rows = slice.map(e => {
+      const status = e.status;
+      const open = s.rowMenu === e.num;
+      const secondary = status === 'Saved' || status === 'Draft' ? 'Send' : status === 'Expired' ? 'Renew' : 'Resend';
+      const secondaryAct = secondary === 'Send'
+        ? () => { update(e.num, { status: 'Sent', date: 'Oct 3, 2026', expires: expiryDate }); this.notify(e.num + ' sent to ' + e.customer); }
+        : secondary === 'Renew'
+          ? () => { update(e.num, { status: 'Sent', date: 'Oct 3, 2026', expires: expiryDate }); this.notify(e.num + ' renewed and resent to ' + e.customer + ', expires ' + expiryDate); }
+          : () => this.notify(e.num + ' resent to ' + e.customer);
+      return {
+        num: e.num, status, date: e.date, expires: e.expires, customer: e.customer, project: e.project, amount: fmt(e.amt), invoice: e.invoice,
+        badgeBg: S[status].bg, badgeFg: S[status].fg,
+        canConvert: status === 'Approved',
+        isConverted: status === 'Converted',
+        hasSecondary: ['Saved', 'Sent', 'Viewed', 'Expired', 'Draft'].includes(status),
+        secondary, secondaryAct,
+        convert: () => {
+          const inv = 'INV-0' + s.nextInv;
+          this.setState({ nextInv: s.nextInv + 1, estimates: s.estimates.map(x => x.num === e.num ? Object.assign({}, x, { status: 'Converted', invoice: inv }) : x) });
+          this.notify(e.num + ' converted to draft invoice ' + inv);
+        },
+        menuOpen: open, menuExpanded: open ? 'true' : 'false', kebabBg: open ? 'rgba(22,51,0,0.08)' : 'transparent',
+        toggleMenu: () => this.setState({ rowMenu: open ? null : e.num, menu: null }),
+        duplicate: () => {
+          const num = 'EST-00' + s.nextEst;
+          const copy = { num, status: 'Draft', date: 'Oct 3, 2026', expires: expiryDate, customer: e.customer, project: e.project, amt: e.amt, invoice: '' };
+          this.setState({ estimates: [copy].concat(s.estimates), nextEst: s.nextEst + 1, rowMenu: null });
+          this.notify('Duplicated ' + e.num + ' as draft ' + num);
+        },
+        download: () => { this.setState({ rowMenu: null }); this.notify('Downloaded ' + e.num + '.pdf'); },
+        remove: () => { this.setState({ estimates: s.estimates.filter(x => x.num !== e.num), rowMenu: null }); this.notify(e.num + ' deleted'); }
+      };
+    });
+    const customers = Array.from(new Set(s.estimates.map(e => e.customer))).sort();
+    const custOptions = [['all', 'All customers']].concat(customers.map(c => [c, c])).map(([id, label]) => ({
+      label, count: id === 'all' ? s.estimates.length : s.estimates.filter(e => e.customer === id).length,
+      checked: s.cust === id ? 'true' : 'false', bg: s.cust === id ? '#E2F6D5' : 'transparent',
+      pick: () => this.setState({ cust: id, menu: null, page: 0, rowMenu: null })
+    }));
+    const rangeOptions = ranges.map(([id, label]) => ({
+      label, checked: s.range === id ? 'true' : 'false', bg: s.range === id ? '#E2F6D5' : 'transparent',
+      pick: () => this.setState({ range: id, menu: null, page: 0, rowMenu: null })
+    }));
+    const all = s.estimates;
     const sum = (f) => all.filter(f).reduce((a, r) => a + r.amt, 0);
-    const open = all.filter(r => ['Sent', 'Viewed'].includes(r.status));
+    const openCount = all.filter(r => ['Sent', 'Viewed'].includes(r.status)).length;
     const stats = [
-      { label: 'Awaiting response', value: fmt(sum(r => ['Sent', 'Viewed'].includes(r.status))), note: open.length + ' estimates sent or viewed' },
+      { label: 'Awaiting response', value: fmt(sum(r => ['Sent', 'Viewed'].includes(r.status))), note: openCount + ' estimates sent or viewed' },
       { label: 'Approved, not invoiced', value: fmt(sum(r => r.status === 'Approved')), note: all.filter(r => r.status === 'Approved').length + ' ready to convert' },
       { label: 'Converted this quarter', value: fmt(sum(r => r.status === 'Converted')), note: all.filter(r => r.status === 'Converted').length + ' invoices created' },
       { label: 'Win rate, last 90 days', value: '80%', note: '4 of 5 decided estimates' }
     ];
     const tips = [
       { title: 'Customers approve online', body: 'Each estimate email has a link where the customer can review line items and click Approve. You get notified right away.' },
-      { title: 'Expiry dates keep quotes fresh', body: 'Estimates expire 30 days after they are sent by default. Renew an expired estimate to resend it with a new date.' },
+      { title: 'Expiry dates keep quotes fresh', body: 'Estimates expire ' + s.expiry + ' days after they are sent. Renew an expired estimate to resend it with a new date.' },
       { title: 'Converting keeps everything', body: 'Line items, taxes, notes and the customer carry over to a draft invoice so nothing is retyped.' }
     ];
-    return { tabs, rows, stats, tips, empty: rows.length === 0, shown: rows.length, shownTotal: fmt(rows.reduce((a, r) => a + r.amt, 0)) };
+    const ds = s.draftSettings || s.settings;
+    const sw = (k, label, note) => {
+      const on = !!ds[k];
+      return {
+        label, note, checked: on ? 'true' : 'false',
+        flip: () => this.setState({ draftSettings: Object.assign({}, ds, { [k]: !on }) }),
+        track: on ? '#163300' : '#E8EBE6', border: on ? '#163300' : '#5D605B',
+        knob: on ? '#9FE870' : '#5D605B', justify: on ? 'flex-end' : 'flex-start'
+      };
+    };
+    const settingSwitches = [
+      sw('signature', 'Require a signature to approve', 'Customers type their name when they click Approve.'),
+      sw('deposit', 'Ask for a deposit on approval', 'Collect 25% by card or bank when the estimate is approved.')
+    ];
+    const start = filtered.length ? page * PER + 1 : 0;
+    return {
+      tabs, rows, stats, tips, empty: filtered.length === 0,
+      showing: 'Showing ' + start + '–' + (page * PER + slice.length) + ' of ' + filtered.length + ' estimates',
+      shownTotal: fmt(filtered.reduce((a, r) => a + r.amt, 0)),
+      prevDisabled: page === 0, nextDisabled: page >= pages - 1,
+      prevOpacity: page === 0 ? '0.5' : '1', nextOpacity: page >= pages - 1 ? '0.5' : '1',
+      prevPage: () => this.setState({ page: Math.max(0, page - 1), rowMenu: null }),
+      nextPage: () => this.setState({ page: Math.min(pages - 1, page + 1), rowMenu: null }),
+      query: s.query, setQuery: (e) => this.setState({ query: e.target.value, page: 0 }),
+      custLabel: s.cust === 'all' ? 'All customers' : s.cust, custOptions,
+      custMenuOpen: s.menu === 'cust', custExpanded: s.menu === 'cust' ? 'true' : 'false',
+      toggleCustMenu: () => this.setState({ menu: s.menu === 'cust' ? null : 'cust' }),
+      rangeLabel: rangeDef[1], rangeOptions,
+      rangeMenuOpen: s.menu === 'range', rangeExpanded: s.menu === 'range' ? 'true' : 'false',
+      toggleRangeMenu: () => this.setState({ menu: s.menu === 'range' ? null : 'range' }),
+      settingsOpen: s.settingsOpen, settingsExpanded: s.settingsOpen ? 'true' : 'false',
+      toggleSettings: () => this.setState({ settingsOpen: !s.settingsOpen, draftSettings: null }),
+      expiry: s.expiry, setExpiry: (e) => this.setState({ expiry: e.target.value }),
+      settingSwitches,
+      saveSettings: () => { this.setState({ settings: ds, draftSettings: null, settingsOpen: false }); this.notify('Estimate settings saved'); },
+      toast: s.toast
+    };
   }
 }
 </script>

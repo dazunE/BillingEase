@@ -61,16 +61,17 @@ a{color:#163300}a:hover{color:#0e2100}
   </section>
 
   <main style="flex: 1 1 480px; min-width: 0; box-sizing: border-box; padding: 48px 32px; display: flex; align-items: center; justify-content: center;">
+    <sc-if value="{{formOn}}" hint-placeholder-val="{{true}}">
     <div style="width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 22px;">
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Create your account</h2>
         <p style="margin: 0; font-size: 15px; color: #454745;">Start on the free Starter plan. No credit card needed, and you can upgrade to Pro any time.</p>
       </div>
 
-      <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+      <a href="Onboarding.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; box-sizing: border-box; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; text-decoration: none;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M20.5 12.2c0-.6-.1-1.2-.2-1.7H12v3.3h4.8a4.2 4.2 0 0 1-1.8 2.7"></path><path d="M15 16.5a6.9 6.9 0 0 1-3 .9 5.5 5.5 0 0 1-5.2-3.7"></path><path d="M6.8 13.7a5.6 5.6 0 0 1 0-3.4"></path><path d="M6.8 10.3A5.5 5.5 0 0 1 12 6.6c1.4 0 2.6.5 3.6 1.4"></path></svg>
         Continue with Google
-      </button>
+      </a>
 
       <div style="display: flex; align-items: center; gap: 12px; font-size: 13px; color: #5D605B;">
         <span style="flex: 1; height: 1px; background: #E1E5DC;"></span>or<span style="flex: 1; height: 1px; background: #E1E5DC;"></span>
@@ -79,32 +80,42 @@ a{color:#163300}a:hover{color:#0e2100}
       <div style="display: flex; flex-direction: column; gap: 18px;">
         <div style="display: flex; flex-direction: column; gap: 6px;">
           <label for="su-email" style="font-size: 13px; font-weight: 600;">Work email</label>
-          <input id="su-email" type="email" autocomplete="email" placeholder="maya@northwindstudio.com" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+          <input id="su-email" type="email" autocomplete="email" placeholder="maya@northwindstudio.com" value="{{email}}" onChange="{{setEmail}}" aria-invalid="{{emailInvalid}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{emailBorder}}; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+          <sc-if value="{{emailErr}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{emailErr}}</span>
+          </sc-if>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 6px;">
           <label for="su-pass" style="font-size: 13px; font-weight: 600;">Password</label>
-          <div style="display: flex; align-items: center; min-height: 44px; box-sizing: border-box; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; padding: 0 4px 0 14px;">
-            <input id="su-pass" type="{{pwType}}" autocomplete="new-password" value="Northwind-2026" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px Inter, sans-serif; color: #163300;">
+          <div style="display: flex; align-items: center; min-height: 44px; box-sizing: border-box; border: 1px solid {{pwBorder}}; border-radius: 10px; background: #FFFFFF; padding: 0 4px 0 14px;">
+            <input id="su-pass" type="{{pwType}}" autocomplete="new-password" value="{{password}}" onChange="{{setPassword}}" aria-invalid="{{pwInvalid}}" style="flex: 1; min-width: 0; min-height: 40px; border: 0; outline: 0; background: transparent; font: 400 15px Inter, sans-serif; color: #163300;">
             <button type="button" onClick="{{togglePw}}" aria-pressed="{{pwShown}}" style="min-height: 36px; padding: 0 12px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">{{pwLabel}}</button>
           </div>
           <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #454745;">
-            <span aria-hidden="true" style="display: flex; gap: 4px;">
-              <span style="width: 28px; height: 4px; border-radius: 9999px; background: #468A1A;"></span>
-              <span style="width: 28px; height: 4px; border-radius: 9999px; background: #468A1A;"></span>
-              <span style="width: 28px; height: 4px; border-radius: 9999px; background: #468A1A;"></span>
-              <span style="width: 28px; height: 4px; border-radius: 9999px; background: #E8EBE6;"></span>
+            <span aria-hidden="true" style="display: flex; gap: 4px; flex: none;">
+              <sc-for list="{{meter}}" as="m" hint-placeholder-count="4">
+                <span style="width: 28px; height: 4px; border-radius: 9999px; background: {{m.bg}};"></span>
+              </sc-for>
             </span>
-            <span><strong style="color: #2F5711;">Good</strong> · Use 12+ characters with a mix of letters, numbers and symbols.</span>
+            <span><strong style="color: {{strengthColor}};">{{strengthLabel}}</strong> · Use 12+ characters with a mix of letters, numbers and symbols.</span>
           </div>
+          <sc-if value="{{pwErr}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{pwErr}}</span>
+          </sc-if>
         </div>
 
-        <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; color: #454745; cursor: pointer;">
-          <input type="checkbox" style="width: 18px; height: 18px; margin: 2px 0 0; accent-color: #163300; flex: none;">
-          <span>I agree to the BillingEase <a href="#terms" style="font-weight: 600;">Terms of Use</a> and <a href="#privacy" style="font-weight: 600;">Privacy Policy</a>.</span>
-        </label>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; color: #454745;">
+            <input id="su-terms" type="checkbox" checked="{{agree}}" onChange="{{toggleAgree}}" aria-invalid="{{termsInvalid}}" style="width: 18px; height: 18px; margin: 2px 0 0; accent-color: #163300; flex: none; cursor: pointer;">
+            <span><label for="su-terms" style="cursor: pointer;">I agree to the BillingEase</label> <button type="button" onClick="{{showTerms}}" style="padding: 0; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Terms of Use</button> and <button type="button" onClick="{{showPrivacy}}" style="padding: 0; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Privacy Policy</button>.</span>
+          </div>
+          <sc-if value="{{termsErr}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{termsErr}}</span>
+          </sc-if>
+        </div>
 
-        <a href="Onboarding.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Create account</a>
+        <button type="button" onClick="{{submit}}" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Create account</button>
       </div>
 
       <div style="display: flex; align-items: center; gap: 10px; background: #F7F8F5; border: 1px solid #E1E5DC; border-radius: 16px; padding: 12px 14px; font-size: 13px; line-height: 1.45; color: #454745;">
@@ -114,25 +125,99 @@ a{color:#163300}a:hover{color:#0e2100}
 
       <p style="margin: 0; font-size: 14px; color: #454745; text-align: center;">Already have an account? <a href="SignIn.dc.html" style="font-weight: 600;">Sign in</a></p>
     </div>
+    </sc-if>
+
+    <sc-if value="{{created}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 22px;">
+      <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+      </span>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Account created</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #454745;">You&#39;re signed in as <strong style="color: #163300; overflow-wrap: anywhere;">{{email}}</strong>. We sent a confirmation link to that address. Next, tell us a little about your business so we can set up your books.</p>
+      </div>
+      <a href="Onboarding.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Set up your business</a>
+      <button type="button" onClick="{{backToForm}}" style="align-self: center; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Use a different email</button>
+    </div>
+    </sc-if>
   </main>
+<sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+  <div role="status" aria-live="polite" style="pointer-events: none; position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: max-content; z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+    <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+    <span>{{toast}}</span>
+  </div>
+</sc-if>
 </div>
+
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { showPw: false }; }
+  constructor(props) {
+    super(props);
+    this.state = { showPw: false, email: '', password: '', agree: false, tried: false, created: false, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  errors() {
+    const s = this.state;
+    const e = {};
+    const email = (s.email || '').trim();
+    if (!email) e.email = 'Enter your work email.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) e.email = 'Enter a valid email address, like maya@northwindstudio.com.';
+    if (!s.password) e.pw = 'Create a password.';
+    else if (s.password.length < 12) e.pw = 'Use at least 12 characters (' + s.password.length + ' so far).';
+    if (!s.agree) e.terms = 'Agree to the Terms of Use and Privacy Policy to continue.';
+    return e;
+  }
   renderVals() {
     const benefits = [
       { title: 'Invoice and get paid online.', body: 'Card, bank transfer and Apple Pay, with automatic reminders.' },
       { title: 'Bookkeeping that keeps itself.', body: 'Connect your bank and transactions flow into your accounts.' },
       { title: 'Tax-ready all year.', body: 'Scan receipts, track sales tax and run reports in a click.' }
     ];
-    const showPw = this.state.showPw;
+    const s = this.state;
+    const showPw = s.showPw;
+    const err = s.tried ? this.errors() : {};
+    const pw = s.password || '';
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (pw.length >= 12) score++;
+    if (/[0-9]/.test(pw) && /[a-zA-Z]/.test(pw)) score++;
+    if (/[^a-zA-Z0-9]/.test(pw) && /[A-Z]/.test(pw)) score++;
+    const labels = ['Too short', 'Weak', 'Fair', 'Good', 'Strong'];
+    const meter = [0, 1, 2, 3].map(i => ({ bg: i < score ? (score <= 1 ? '#A8200D' : '#468A1A') : '#E8EBE6' }));
     return {
       benefits,
+      meter,
+      strengthLabel: pw ? labels[score] : 'Strength',
+      strengthColor: pw && score <= 1 ? '#A8200D' : '#2F5711',
+      email: s.email,
+      password: s.password,
+      agree: s.agree,
+      formOn: !s.created,
+      created: s.created,
+      emailErr: err.email || null,
+      pwErr: err.pw || null,
+      termsErr: err.terms || null,
+      emailInvalid: err.email ? 'true' : 'false',
+      pwInvalid: err.pw ? 'true' : 'false',
+      termsInvalid: err.terms ? 'true' : 'false',
+      emailBorder: err.email ? '#A8200D' : '#C9CEC3',
+      pwBorder: err.pw ? '#A8200D' : '#C9CEC3',
       pwType: showPw ? 'text' : 'password',
       pwLabel: showPw ? 'Hide' : 'Show',
       pwShown: showPw ? 'true' : 'false',
-      togglePw: () => this.setState({ showPw: !showPw })
+      toast: s.toast,
+      togglePw: () => this.setState({ showPw: !showPw }),
+      setEmail: (e) => this.setState({ email: e.target.value }),
+      setPassword: (e) => this.setState({ password: e.target.value }),
+      toggleAgree: (e) => this.setState({ agree: e.target.checked }),
+      showTerms: () => this.notify('Terms of Use isn’t part of this prototype yet'),
+      showPrivacy: () => this.notify('Privacy Policy isn’t part of this prototype yet'),
+      submit: () => {
+        if (Object.keys(this.errors()).length) { this.setState({ tried: true }); return; }
+        this.setState({ tried: false, created: true, email: s.email.trim() });
+      },
+      backToForm: () => this.setState({ created: false, tried: false })
     };
   }
 }

@@ -69,7 +69,7 @@ a{color:#163300}a:hover{color:#0e2100}
                       <td style="padding: 10px 12px; border-bottom: 1px solid #EEF0EB;">
                         <sc-if value="{{e.hourly}}" hint-placeholder-val="{{true}}">
                           <span style="display: inline-flex; align-items: center; gap: 4px; border: 1px solid #C9CEC3; border-radius: 9999px; padding: 3px;">
-                            <button type="button" aria-label="{{e.regDecLabel}}" onClick="{{e.regDec}}" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 700 16px Inter, sans-serif; cursor: pointer;">−</button>
+                            <button type="button" aria-label="{{e.regDecLabel}}" onClick="{{e.regDec}}" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 700 16px Inter, sans-serif; cursor: {{e.regDecCursor}}; opacity: {{e.regDecOpacity}};">−</button>
                             <output aria-label="{{e.regLabel}}" style="min-width: 40px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums;">{{e.reg}}</output>
                             <button type="button" aria-label="{{e.regIncLabel}}" onClick="{{e.regInc}}" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 700 16px Inter, sans-serif; cursor: pointer;">+</button>
                           </span>
@@ -81,7 +81,7 @@ a{color:#163300}a:hover{color:#0e2100}
                       <td style="padding: 10px 12px; border-bottom: 1px solid #EEF0EB;">
                         <sc-if value="{{e.hourly}}" hint-placeholder-val="{{true}}">
                           <span style="display: inline-flex; align-items: center; gap: 4px; border: 1px solid #C9CEC3; border-radius: 9999px; padding: 3px;">
-                            <button type="button" aria-label="{{e.otDecLabel}}" onClick="{{e.otDec}}" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 700 16px Inter, sans-serif; cursor: pointer;">−</button>
+                            <button type="button" aria-label="{{e.otDecLabel}}" onClick="{{e.otDec}}" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 700 16px Inter, sans-serif; cursor: {{e.otDecCursor}}; opacity: {{e.otDecOpacity}};">−</button>
                             <output aria-label="{{e.otLabel}}" style="min-width: 40px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums;">{{e.ot}}</output>
                             <button type="button" aria-label="{{e.otIncLabel}}" onClick="{{e.otInc}}" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 700 16px Inter, sans-serif; cursor: pointer;">+</button>
                           </span>
@@ -228,9 +228,12 @@ a{color:#163300}a:hover{color:#0e2100}
             <span style="font-size: 13px; font-weight: 600; color: #454745;">{{footLabel}}</span>
             <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{footValue}}</span>
           </div>
-          <div style="display: flex; gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
             <sc-if value="{{canBack}}" hint-placeholder-val="{{false}}">
               <button type="button" onClick="{{back}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Back</button>
+            </sc-if>
+            <sc-if value="{{isStep3}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{restart}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Start a new run</button>
             </sc-if>
             <button type="button" onClick="{{next}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">{{nextLabel}}</button>
           </div>
@@ -266,11 +269,18 @@ a{color:#163300}a:hover{color:#0e2100}
       </aside>
     </div>
   </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { step: 1, hours: { priya: 80, sam: 72 }, ot: { priya: 0, sam: 4 } }; }
+  constructor(props) { super(props); this.state = { step: 1, hours: { priya: 80, sam: 72 }, ot: { priya: 0, sam: 4 }, toast: null }; }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
     const st = this.state;
     const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -280,7 +290,8 @@ class Component extends DCLogic {
       { id: 'priya', name: 'Priya Nair', role: 'Production Designer', type: 'hourly', rate: 32, fed: 0.09, ded: () => 95, dedNote: 'Health $95' },
       { id: 'sam', name: 'Sam Ortiz', role: 'Studio Assistant', type: 'hourly', rate: 24, fed: 0.07, ded: () => 0, dedNote: 'No deductions' }
     ];
-    const setH = (key, id, d) => () => { const m = Object.assign({}, st[key]); m[id] = Math.max(0, m[id] + d); this.setState({ [key]: m }); };
+    const MAX = { hours: 120, ot: 40 };
+    const setH = (key, id, d) => () => { const m = Object.assign({}, st[key]); m[id] = Math.min(MAX[key], Math.max(0, m[id] + d)); this.setState({ [key]: m }); };
     const emps = defs.map((e) => {
       const hourly = e.type === 'hourly';
       const reg = hourly ? st.hours[e.id] : 0;
@@ -297,6 +308,8 @@ class Component extends DCLogic {
         regLabel: e.name + ' regular hours', otLabel: e.name + ' overtime hours',
         regDecLabel: 'Decrease regular hours for ' + e.name, regIncLabel: 'Increase regular hours for ' + e.name,
         otDecLabel: 'Decrease overtime hours for ' + e.name, otIncLabel: 'Increase overtime hours for ' + e.name,
+        regDecCursor: reg <= 0 ? 'default' : 'pointer', regDecOpacity: reg <= 0 ? 0.4 : 1,
+        otDecCursor: ot <= 0 ? 'default' : 'pointer', otDecOpacity: ot <= 0 ? 0.4 : 1,
         regDec: setH('hours', e.id, -1), regInc: setH('hours', e.id, 1), otDec: setH('ot', e.id, -1), otInc: setH('ot', e.id, 1)
       };
     });
@@ -310,7 +323,7 @@ class Component extends DCLogic {
     const allGross = r2(eGross + conTotal);
     const netAll = r2(eNet + conTotal);
     const debitTotal = r2(allGross + eEr);
-    const review = emps.map((e) => ({ name: e.name, sub: e.dedNote, gross: fmt(e.gross), tax: '−' + fmt(e.tax), ded: '−' + fmt(e.ded), net: fmt(e.net), er: fmt(e.er) }))
+    const review = emps.map((e) => ({ name: e.name, sub: e.dedNote, gross: fmt(e.gross), tax: '−' + fmt(e.tax), ded: e.ded ? '−' + fmt(e.ded) : '$0.00', net: fmt(e.net), er: fmt(e.er) }))
       .concat(cons.map((c) => ({ name: c.name, sub: 'Contractor · no withholding', gross: fmt(c.amount), tax: '$0.00', ded: '$0.00', net: fmt(c.amount), er: '$0.00' })));
     const tot = { allGross: fmt(allGross), tax: '−' + fmt(eTax), ded: '−' + fmt(eDed), net: fmt(netAll), er: fmt(eEr), debit: fmt(debitTotal) };
     const debit = [
@@ -345,8 +358,14 @@ class Component extends DCLogic {
       canBack: step === 2,
       footLabel: step === 1 ? 'Total gross pay' : step === 2 ? 'Total debit on Oct 1' : 'Next payroll: Oct 1 – 15',
       footValue: step === 1 ? fmt(allGross) : step === 2 ? fmt(debitTotal) : 'Pay date Oct 20',
-      nextLabel: step === 1 ? 'Continue to review' : step === 2 ? 'Approve payroll' : 'Back to step 1',
-      next: () => this.setState({ step: step === 3 ? 1 : step + 1 }),
+      toast: st.toast,
+      nextLabel: step === 1 ? 'Continue to review' : step === 2 ? 'Approve payroll' : 'Download payroll summary',
+      next: () => {
+        if (step === 3) { this.notify('Downloaded payroll-summary_2026-10-03.pdf'); return; }
+        if (step === 2) this.notify('Payroll approved · ' + fmt(netAll) + ' net pay goes out Oct 3');
+        this.setState({ step: step + 1 });
+      },
+      restart: () => this.setState({ step: 1, hours: { priya: 80, sam: 72 }, ot: { priya: 0, sam: 4 } }),
       back: () => this.setState({ step: Math.max(1, step - 1) })
     };
   }

@@ -27,7 +27,7 @@ a{color:#163300}a:hover{color:#0e2100}
         <p style="margin: 0; font-size: 15px; color: #454745;">Payroll tax filings and payments we handle for you, plus year-end forms and sales tax.</p>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Tax settings</button>
+        <button type="button" onClick="{{openSettings}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Tax settings</button>
         <a href="Reports.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 1px solid #163300; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Payroll tax report</a>
       </div>
     </header>
@@ -119,7 +119,7 @@ a{color:#163300}a:hover{color:#0e2100}
                   <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{h.badgeBg}}; color: {{h.badgeFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{h.badgeFg}};"></span>{{h.status}}</span></td>
                   <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{h.amount}}</td>
                   <td style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB; text-align: right;">
-                    <button type="button" aria-label="{{h.dl}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">PDF</button>
+                    <button type="button" aria-label="{{h.dl}}" onClick="{{h.download}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">PDF</button>
                   </td>
                 </tr>
               </sc-for>
@@ -175,11 +175,18 @@ a{color:#163300}a:hover{color:#0e2100}
       </div>
     </section>
   </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1720}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { filter: 'all' }; }
+  constructor(props) { super(props); this.state = { filter: 'all', toast: null }; }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
     const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const B = { Filed: ['#E2F6D5', '#2F5711'], Paid: ['#E2F6D5', '#2F5711'], Scheduled: ['#E1EEF8', '#1F5E91'], 'Prepared automatically': ['#E1EEF8', '#1F5E91'], 'Needs info': ['#FFF0B8', '#6B5000'] };
@@ -198,7 +205,8 @@ class Component extends DCLogic {
       ['FUTA deposit (Form 940)', 'IRS (EFTPS)', 'Jan 1 – Jun 30', 'Jul 30, 2026', 'Paid', 168.00],
       ['Federal tax deposit', 'IRS (EFTPS)', 'Sep 2026', 'Oct 15, 2026', 'Scheduled', 3763.48],
       ['Form 941 · Q1 2026', 'IRS', 'Jan 1 – Mar 31', 'Apr 29, 2026', 'Filed', 10619.52]
-    ].map(([name, agency, period, date, status, amt]) => ({ name, agency, period, date, status, amount: fmt(amt), dl: 'Download PDF for ' + name + ', ' + period, badgeBg: B[status][0], badgeFg: B[status][1] }));
+    ].map(([name, agency, period, date, status, amt]) => ({ name, agency, period, date, status, amount: fmt(amt), dl: 'Download PDF for ' + name + ', ' + period,
+      download: () => this.notify(status === 'Scheduled' ? 'Downloaded payment confirmation for ' + name + ' (' + period + ')' : 'Downloaded ' + name + ' (' + period + ').pdf'), badgeBg: B[status][0], badgeFg: B[status][1] }));
     const f = this.state.filter;
     const filters = [['all', 'All'], ['Filed', 'Filed'], ['Paid', 'Paid'], ['Scheduled', 'Scheduled']].map(([id, label]) => ({
       label, count: id === 'all' ? hist.length : hist.filter((h) => h.status === id).length,
@@ -222,7 +230,7 @@ class Component extends DCLogic {
       { label: 'Payroll taxes paid in 2026', value: fmt(31547.70), note: 'Federal and NY, Jan – Sep' },
       { label: 'Sales tax collected (Q)', value: fmt(stCollected), note: 'NY and NJ, Jun – Aug' }
     ];
-    return { stats, upcoming: up, upTotal, filters, history, salesTax: st, yearEnd };
+    return { stats, upcoming: up, upTotal, filters, history, salesTax: st, yearEnd, toast: this.state.toast, openSettings: () => this.notify('Tax settings aren’t part of this prototype yet') };
   }
 }
 </script>

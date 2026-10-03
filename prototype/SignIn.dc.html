@@ -27,71 +27,195 @@ a{color:#163300}a:hover{color:#0e2100}
   </header>
 
   <main style="flex: 1; display: flex; align-items: center; justify-content: center;">
-    <div style="width: 100%; max-width: 460px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 24px; padding: 40px; display: flex; flex-direction: column; gap: 20px;">
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 900; font-size: 56px; line-height: 1.0; letter-spacing: -0.035em;">Welcome back.</h1>
-        <p style="margin: 0; font-size: 15px; color: #454745;">Sign in to manage invoices, payments and your books.</p>
-      </div>
+    <div style="width: 100%; max-width: 460px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 24px; padding: clamp(24px, 6vw, 40px); display: flex; flex-direction: column; gap: 20px;">
 
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <label for="si-email" style="font-size: 13px; font-weight: 600;">Email</label>
-        <input id="si-email" type="email" autocomplete="email" value="maya@northwindstudio.com" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
-          <label for="si-pass" style="font-size: 13px; font-weight: 600;">Password</label>
-          <a href="#reset" style="font-size: 13px; font-weight: 600;">Forgot password?</a>
+      <sc-if value="{{modeSignin}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 900; font-size: 56px; line-height: 1.0; letter-spacing: -0.035em;">Welcome back.</h1>
+          <p style="margin: 0; font-size: 15px; color: #454745;">Sign in to manage invoices, payments and your books.</p>
         </div>
-        <div style="display: flex; align-items: center; min-height: 44px; box-sizing: border-box; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; padding: 0 4px 0 14px;">
-          <input id="si-pass" type="{{pwType}}" autocomplete="current-password" value="Northwind-2026" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px Inter, sans-serif; color: #163300;">
-          <button type="button" onClick="{{togglePw}}" aria-pressed="{{pwShown}}" style="min-height: 36px; padding: 0 12px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">{{pwLabel}}</button>
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="si-email" style="font-size: 13px; font-weight: 600;">Email</label>
+          <input id="si-email" type="email" autocomplete="email" value="{{email}}" onChange="{{setEmail}}" aria-invalid="{{emailInvalid}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{emailBorder}}; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+          <sc-if value="{{emailErr}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{emailErr}}</span>
+          </sc-if>
         </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+            <label for="si-pass" style="font-size: 13px; font-weight: 600;">Password</label>
+            <button type="button" onClick="{{openReset}}" style="padding: 0; border: 0; background: transparent; color: #163300; font: 600 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Forgot password?</button>
+          </div>
+          <div style="display: flex; align-items: center; min-height: 44px; box-sizing: border-box; border: 1px solid {{pwBorder}}; border-radius: 10px; background: #FFFFFF; padding: 0 4px 0 14px;">
+            <input id="si-pass" type="{{pwType}}" autocomplete="current-password" value="{{password}}" onChange="{{setPassword}}" aria-invalid="{{pwInvalid}}" style="flex: 1; min-width: 0; min-height: 40px; border: 0; outline: 0; background: transparent; font: 400 15px Inter, sans-serif; color: #163300;">
+            <button type="button" onClick="{{togglePw}}" aria-pressed="{{pwShown}}" style="min-height: 36px; padding: 0 12px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">{{pwLabel}}</button>
+          </div>
+          <sc-if value="{{pwErr}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{pwErr}}</span>
+          </sc-if>
+        </div>
+
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #454745; cursor: pointer;">
+          <input type="checkbox" checked="{{remember}}" onChange="{{toggleRemember}}" style="width: 18px; height: 18px; margin: 0; accent-color: #163300;">
+          Keep me signed in on this device
+        </label>
+
+        <button type="button" onClick="{{submit}}" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Sign in</button>
+
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 13px; color: #5D605B;">
+          <span style="flex: 1; height: 1px; background: #E1E5DC;"></span>or<span style="flex: 1; height: 1px; background: #E1E5DC;"></span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="Dashboard.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; box-sizing: border-box; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; text-decoration: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M20.5 12.2c0-.6-.1-1.2-.2-1.7H12v3.3h4.8a4.2 4.2 0 0 1-1.8 2.7"></path><path d="M15 16.5a6.9 6.9 0 0 1-3 .9 5.5 5.5 0 0 1-5.2-3.7"></path><path d="M6.8 13.7a5.6 5.6 0 0 1 0-3.4"></path><path d="M6.8 10.3A5.5 5.5 0 0 1 12 6.6c1.4 0 2.6.5 3.6 1.4"></path></svg>
+            Continue with Google
+          </a>
+          <a href="Dashboard.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; border-radius: 9999px; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; text-decoration: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 9.5-4.9"></path><path d="M18 14a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM18 14v7M18 18h2"></path></svg>
+            Sign in with a passkey
+          </a>
+        </div>
+
+        <p style="margin: 0; font-size: 14px; color: #454745; text-align: center;">Don&#39;t have an account? <a href="SignUp.dc.html" style="font-weight: 600;">Sign up free</a></p>
       </div>
+      </sc-if>
 
-      <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #454745; cursor: pointer;">
-        <input type="checkbox" style="width: 18px; height: 18px; margin: 0; accent-color: #163300;">
-        Keep me signed in on this device
-      </label>
-
-      <a href="Dashboard.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Sign in</a>
-
-      <div style="display: flex; align-items: center; gap: 12px; font-size: 13px; color: #5D605B;">
-        <span style="flex: 1; height: 1px; background: #E1E5DC;"></span>or<span style="flex: 1; height: 1px; background: #E1E5DC;"></span>
+      <sc-if value="{{modeReset}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 900; font-size: 44px; line-height: 1.0; letter-spacing: -0.035em;">Reset your password.</h1>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #454745;">Enter the email you use for BillingEase and we&#39;ll send you a link to choose a new password.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="si-reset-email" style="font-size: 13px; font-weight: 600;">Email</label>
+          <input id="si-reset-email" type="email" autocomplete="email" value="{{resetEmail}}" onChange="{{setResetEmail}}" aria-invalid="{{resetInvalid}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{resetBorder}}; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+          <sc-if value="{{resetErr}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{resetErr}}</span>
+          </sc-if>
+        </div>
+        <button type="button" onClick="{{sendReset}}" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Send reset link</button>
+        <button type="button" onClick="{{backToSignin}}" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Back to sign in</button>
       </div>
+      </sc-if>
 
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M20.5 12.2c0-.6-.1-1.2-.2-1.7H12v3.3h4.8a4.2 4.2 0 0 1-1.8 2.7"></path><path d="M15 16.5a6.9 6.9 0 0 1-3 .9 5.5 5.5 0 0 1-5.2-3.7"></path><path d="M6.8 13.7a5.6 5.6 0 0 1 0-3.4"></path><path d="M6.8 10.3A5.5 5.5 0 0 1 12 6.6c1.4 0 2.6.5 3.6 1.4"></path></svg>
-          Continue with Google
-        </button>
-        <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 9.5-4.9"></path><path d="M18 14a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM18 14v7M18 18h2"></path></svg>
-          Sign in with a passkey
-        </button>
+      <sc-if value="{{modeSent}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="display: flex; flex-direction: column; gap: 20px;">
+        <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3z"></path><path d="m3 7 9 6 9-6"></path></svg>
+        </span>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 900; font-size: 44px; line-height: 1.0; letter-spacing: -0.035em;">Check your inbox.</h1>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #454745;">We sent a password reset link to <strong style="color: #163300; overflow-wrap: anywhere;">{{resetEmail}}</strong>. It expires in 30 minutes. Didn&#39;t get it? Check your spam folder or send it again.</p>
+        </div>
+        <button type="button" onClick="{{resend}}" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Resend link</button>
+        <button type="button" onClick="{{backToSignin}}" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Back to sign in</button>
       </div>
+      </sc-if>
 
-      <p style="margin: 0; font-size: 14px; color: #454745; text-align: center;">Don&#39;t have an account? <a href="SignUp.dc.html" style="font-weight: 600;">Sign up free</a></p>
+      <sc-if value="{{modeDone}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="display: flex; flex-direction: column; gap: 20px;">
+        <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+        </span>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 900; font-size: 44px; line-height: 1.0; letter-spacing: -0.035em;">You&#39;re signed in.</h1>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #454745;">Signed in as <strong style="color: #163300; overflow-wrap: anywhere;">{{email}}</strong> · Northwind Studio. {{rememberNote}}</p>
+        </div>
+        <a href="Dashboard.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Go to your dashboard</a>
+        <button type="button" onClick="{{backToSignin}}" style="align-self: center; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Not you? Sign out</button>
+      </div>
+      </sc-if>
     </div>
   </main>
 
   <footer style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; font-size: 13px; color: #5D605B;">
-    <a href="#privacy" style="color: #454745;">Privacy</a>
-    <a href="#terms" style="color: #454745;">Terms</a>
-    <a href="#help" style="color: #454745;">Help center</a>
+    <button type="button" onClick="{{showPrivacy}}" style="padding: 0; border: 0; background: transparent; color: #454745; font: 400 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Privacy</button>
+    <button type="button" onClick="{{showTerms}}" style="padding: 0; border: 0; background: transparent; color: #454745; font: 400 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Terms</button>
+    <button type="button" onClick="{{showHelp}}" style="padding: 0; border: 0; background: transparent; color: #454745; font: 400 13px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Help center</button>
   </footer>
+
+<sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+  <div role="status" aria-live="polite" style="pointer-events: none; position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: max-content; z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+    <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+    <span>{{toast}}</span>
+  </div>
+</sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { showPw: false }; }
+  constructor(props) {
+    super(props);
+    this.state = { showPw: false, mode: 'signin', email: 'maya@northwindstudio.com', password: 'Northwind-2026', remember: false, tried: false, resetEmail: '', resetTried: false, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim()); }
+  errors() {
+    const s = this.state;
+    const e = {};
+    if (!(s.email || '').trim()) e.email = 'Enter your email.';
+    else if (!this.validEmail(s.email)) e.email = 'Enter a valid email address.';
+    if (!s.password) e.pw = 'Enter your password.';
+    else if (s.password.length < 8) e.pw = 'That password is too short. Passwords are at least 8 characters.';
+    return e;
+  }
+  resetError() {
+    const v = (this.state.resetEmail || '').trim();
+    if (!v) return 'Enter the email for your account.';
+    if (!this.validEmail(v)) return 'Enter a valid email address.';
+    return null;
+  }
   renderVals() {
-    const showPw = this.state.showPw;
+    const s = this.state;
+    const showPw = s.showPw;
+    const err = s.tried ? this.errors() : {};
+    const resetErr = s.resetTried ? this.resetError() : null;
     return {
+      modeSignin: s.mode === 'signin',
+      modeReset: s.mode === 'reset',
+      modeSent: s.mode === 'sent',
+      modeDone: s.mode === 'done',
+      email: s.email,
+      password: s.password,
+      remember: s.remember,
+      rememberNote: s.remember ? 'You’ll stay signed in on this device for 30 days.' : 'You’ll be signed out when you close your browser.',
+      resetEmail: s.resetEmail,
+      emailErr: err.email || null,
+      pwErr: err.pw || null,
+      resetErr,
+      emailInvalid: err.email ? 'true' : 'false',
+      pwInvalid: err.pw ? 'true' : 'false',
+      resetInvalid: resetErr ? 'true' : 'false',
+      emailBorder: err.email ? '#A8200D' : '#C9CEC3',
+      pwBorder: err.pw ? '#A8200D' : '#C9CEC3',
+      resetBorder: resetErr ? '#A8200D' : '#C9CEC3',
       pwType: showPw ? 'text' : 'password',
       pwLabel: showPw ? 'Hide' : 'Show',
       pwShown: showPw ? 'true' : 'false',
-      togglePw: () => this.setState({ showPw: !showPw })
+      toast: s.toast,
+      togglePw: () => this.setState({ showPw: !showPw }),
+      setEmail: (e) => this.setState({ email: e.target.value }),
+      setPassword: (e) => this.setState({ password: e.target.value }),
+      setResetEmail: (e) => this.setState({ resetEmail: e.target.value }),
+      toggleRemember: (e) => this.setState({ remember: e.target.checked }),
+      openReset: () => this.setState({ mode: 'reset', resetEmail: s.email, resetTried: false }),
+      sendReset: () => {
+        if (this.resetError()) { this.setState({ resetTried: true }); return; }
+        this.setState({ mode: 'sent', resetTried: false, resetEmail: s.resetEmail.trim() });
+      },
+      resend: () => this.notify('Reset link sent again to ' + s.resetEmail),
+      backToSignin: () => this.setState({ mode: 'signin', tried: false }),
+      submit: () => {
+        if (Object.keys(this.errors()).length) { this.setState({ tried: true }); return; }
+        this.setState({ tried: false, mode: 'done', email: s.email.trim() });
+      },
+      showPrivacy: () => this.notify('Privacy Policy isn’t part of this prototype yet'),
+      showTerms: () => this.notify('Terms of Use isn’t part of this prototype yet'),
+      showHelp: () => this.notify('Help center isn’t part of this prototype yet')
     };
   }
 }

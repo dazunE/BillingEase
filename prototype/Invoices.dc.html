@@ -20,14 +20,14 @@ a{color:#163300}a:hover{color:#0e2100}
     <dc-import name="Sidebar" active="invoices" hint-size="100%,1180px"></dc-import>
   </div>
 
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px clamp(16px, 4vw, 40px) 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
     <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
         <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Invoices</h1>
         <p style="margin: 0; font-size: 15px; color: #454745;">Send professional invoices, get paid online and track every balance.</p>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Recurring invoices</button>
+        <button type="button" onClick="{{toggleRecurring}}" aria-expanded="{{recurringExpanded}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Recurring invoices</button>
         <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Create an invoice
@@ -35,11 +35,37 @@ a{color:#163300}a:hover{color:#0e2100}
       </div>
     </header>
 
-    <section aria-label="Invoice summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+    <sc-if value="{{recurringOpen}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="rec-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 4px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <h2 id="rec-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Recurring invoices</h2>
+            <span style="font-size: 13px; color: #454745;">Schedules that create and send invoices automatically.</span>
+          </div>
+          <button type="button" onClick="{{toggleRecurring}}" aria-label="Close recurring invoices" style="flex: none; width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+        <sc-for list="{{recurring}}" as="s" hint-placeholder-count="3">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid #EEF0EB;">
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+              <span style="font-weight: 600; font-size: 14px;">{{s.customer}} · <span style="font-variant-numeric: tabular-nums;">{{s.amount}}</span></span>
+              <span style="font-size: 13px; color: #454745;">{{s.schedule}} · {{s.next}}</span>
+            </div>
+            <span style="display: inline-flex; align-items: center; gap: 10px;">
+              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{s.badgeBg}}; color: {{s.badgeFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{s.badgeFg}};"></span>{{s.status}}</span>
+              <button type="button" onClick="{{s.toggle}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">{{s.toggleLabel}}</button>
+            </span>
+          </div>
+        </sc-for>
+      </section>
+    </sc-if>
+
+    <section aria-label="Invoice summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px;">
       <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
         <div style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
           <div style="font-size: 13px; font-weight: 600; color: #454745;">{{s.label}}</div>
-          <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em;">{{s.value}}</div>
+          <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{s.value}}</div>
           <div style="font-size: 13px; color: #5D605B;">{{s.note}}</div>
         </div>
       </sc-for>
@@ -48,7 +74,7 @@ a{color:#163300}a:hover{color:#0e2100}
     <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #E1E5DC;">
         <div role="tablist" aria-label="Invoice status" style="display: flex; flex-wrap: wrap; gap: 4px; background: #F2F4EF; padding: 4px; border-radius: 9999px;">
-          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
             <sc-if value="{{t.on}}" hint-placeholder-val="{{false}}">
               <button type="button" role="tab" aria-selected="true" onClick="{{t.pick}}" style="min-height: 36px; padding: 0 16px; border-radius: 9999px; border: 0; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; cursor: pointer;">{{t.label}} <span style="opacity: 0.75;">{{t.count}}</span></button>
             </sc-if>
@@ -57,18 +83,42 @@ a{color:#163300}a:hover{color:#0e2100}
             </sc-if>
           </sc-for>
         </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-          <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; max-width: 100%;">
+          <label style="position: relative; display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; max-width: 100%; box-sizing: border-box;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none;"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search invoices</span>
-            <input type="search" placeholder="Search customer or invoice #" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 220px; background: transparent;">
+            <input type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="Search customer or invoice #" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 220px; max-width: 100%; min-width: 0; background: transparent;">
           </label>
-          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">All customers</button>
-          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Jan 1 – Sep 30, 2026</button>
+          <div style="position: relative;">
+            <button type="button" onClick="{{toggleCustMenu}}" aria-haspopup="true" aria-expanded="{{custExpanded}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">
+              {{custLabel}}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{custMenuOpen}}" hint-placeholder-val="{{false}}">
+              <div role="menu" aria-label="Filter by customer" style="position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; min-width: 220px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 6px; box-shadow: 0 6px 20px rgba(22,51,0,0.12); display: flex; flex-direction: column;">
+                <sc-for list="{{custOptions}}" as="o" hint-placeholder-count="5">
+                  <button type="button" role="menuitemradio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 38px; padding: 0 12px; border: 0; border-radius: 10px; background: {{o.bg}}; color: #163300; font: 500 14px Inter, sans-serif; text-align: left; cursor: pointer; white-space: nowrap;">{{o.label}}<span style="font-size: 12px; color: #5D605B;">{{o.count}}</span></button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="position: relative;">
+            <button type="button" onClick="{{toggleRangeMenu}}" aria-haspopup="true" aria-expanded="{{rangeExpanded}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">
+              {{rangeLabel}}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{rangeMenuOpen}}" hint-placeholder-val="{{false}}">
+              <div role="menu" aria-label="Filter by date" style="position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; min-width: 220px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 6px; box-shadow: 0 6px 20px rgba(22,51,0,0.12); display: flex; flex-direction: column;">
+                <sc-for list="{{rangeOptions}}" as="o" hint-placeholder-count="4">
+                  <button type="button" role="menuitemradio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="display: flex; align-items: center; min-height: 38px; padding: 0 12px; border: 0; border-radius: 10px; background: {{o.bg}}; color: #163300; font: 500 14px Inter, sans-serif; text-align: left; cursor: pointer; white-space: nowrap;">{{o.label}}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
         </div>
       </div>
 
-      <div style="overflow-x: auto;">
+      <div style="position: relative; overflow-x: auto;">
         <table style="width: 100%; min-width: 860px; border-collapse: collapse; font-size: 14px;">
           <thead>
             <tr style="text-align: left; color: #454745;">
@@ -82,62 +132,162 @@ a{color:#163300}a:hover{color:#0e2100}
             </tr>
           </thead>
           <tbody>
-            <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
               <tr>
                 <td style="padding: 14px 20px; border-bottom: 1px solid #EEF0EB;">
-                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{r.badgeBg}}; color: {{r.badgeFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.status}}</span>
+                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{r.badgeBg}}; color: {{r.badgeFg}}; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.status}}</span>
                 </td>
-                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.due}}</td>
-                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.date}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; white-space: nowrap;">{{r.dueLabel}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; white-space: nowrap;">{{r.date}}</td>
                 <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; font-variant-numeric: tabular-nums;">{{r.num}}</td>
                 <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; font-weight: 600;">{{r.customer}}</td>
                 <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.amount}}</td>
                 <td style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB; text-align: right;">
                   <span style="display: inline-flex; gap: 6px; align-items: center;">
-                    <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; color: #163300; font-weight: 600; font-size: 13px; text-decoration: none;">{{r.action}}</a>
-                    <button type="button" aria-label="More actions" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                    <sc-if value="{{r.isView}}" hint-placeholder-val="{{false}}">
+                      <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; color: #163300; font-weight: 600; font-size: 13px; text-decoration: none; white-space: nowrap;">View</a>
+                    </sc-if>
+                    <sc-if value="{{r.isAction}}" hint-placeholder-val="{{true}}">
+                      <button type="button" onClick="{{r.act}}" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer; white-space: nowrap;">{{r.action}}</button>
+                    </sc-if>
+                    <button type="button" onClick="{{r.toggleMenu}}" aria-label="More actions for {{r.num}}" aria-expanded="{{r.menuExpanded}}" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: {{r.kebabBg}}; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="#163300" aria-hidden="true"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg>
                     </button>
                   </span>
                 </td>
               </tr>
+              <sc-if value="{{r.menuOpen}}" hint-placeholder-val="{{false}}">
+                <tr>
+                  <td colspan="7" style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB; background: #F7F8F5;">
+                    <div role="menu" aria-label="Actions for {{r.num}}" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px;">
+                      <span style="margin-right: auto; font-size: 13px; font-weight: 600; color: #454745;">{{r.num}} · {{r.customer}}</span>
+                      <a role="menuitem" href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #C9CEC3; color: #163300; font-weight: 600; font-size: 13px; text-decoration: none;">Edit</a>
+                      <button type="button" role="menuitem" onClick="{{r.duplicate}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Duplicate</button>
+                      <button type="button" role="menuitem" onClick="{{r.download}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Download PDF</button>
+                      <button type="button" role="menuitem" onClick="{{r.remove}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #A8200D; background: #FFFFFF; color: #A8200D; font: 600 13px Inter, sans-serif; cursor: pointer;">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              </sc-if>
             </sc-for>
           </tbody>
         </table>
       </div>
+      <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+        <div style="padding: 32px 20px; text-align: center; font-size: 14px; color: #454745;">No invoices match these filters. Try another customer or date range.</div>
+      </sc-if>
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; font-size: 13px; color: #454745;">
-        <span>Showing {{shown}} invoices</span>
+        <span>{{showing}}</span>
         <span style="display: flex; gap: 8px;">
-          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif;">Previous</button>
-          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif;">Next</button>
+          <button type="button" onClick="{{prevPage}}" disabled="{{prevDisabled}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif; cursor: pointer; opacity: {{prevOpacity}};">Previous</button>
+          <button type="button" onClick="{{nextPage}}" disabled="{{nextDisabled}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif; cursor: pointer; opacity: {{nextOpacity}};">Next</button>
         </span>
       </div>
     </section>
   </main>
+
+  <sc-if value="{{payOpen}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closePay}}" style="position: fixed; inset: 0; z-index: 50; background: rgba(14,15,12,0.45); display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
+      <div role="dialog" aria-modal="true" aria-labelledby="pay-h" onClick="{{stop}}" style="width: calc(100% - 32px); max-width: 520px; max-height: calc(100vh - 32px); overflow-y: auto; box-sizing: border-box; background: #FFFFFF; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="pay-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">Record a payment</h2>
+            <span style="font-size: 14px; color: #454745;">{{pay.num}} · {{pay.customer}} · {{pay.dueText}} due</span>
+          </div>
+          <button type="button" onClick="{{closePay}}" aria-label="Close" style="flex: none; width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="pay-date" style="font-size: 13px; font-weight: 600;">Payment date</label>
+            <input id="pay-date" type="text" value="Oct 3, 2026" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="pay-amt" style="font-size: 13px; font-weight: 600;">Amount (USD)</label>
+            <input id="pay-amt" type="text" inputmode="decimal" value="{{payAmount}}" onChange="{{setPayAmount}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300; font-variant-numeric: tabular-nums;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="pay-method" style="font-size: 13px; font-weight: 600;">Payment method</label>
+            <select id="pay-method" value="{{payMethod}}" onChange="{{setPayMethod}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+              <option>Bank payment (ACH)</option>
+              <option>Credit card</option>
+              <option>Check</option>
+              <option>Cash</option>
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="pay-acct" style="font-size: 13px; font-weight: 600;">Deposit to</label>
+            <select id="pay-acct" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+              <option>Chase Business Checking ••4417</option>
+              <option>Cash on hand</option>
+            </select>
+          </div>
+        </div>
+        <div style="background: #F7F8F5; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: #454745;">{{payHint}}</div>
+        <sc-if value="{{payError}}" hint-placeholder-val="{{false}}">
+          <div role="alert" style="background: #FBE3DF; color: #A8200D; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-weight: 600;">{{payError}}</div>
+        </sc-if>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;">
+          <button type="button" onClick="{{closePay}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Cancel</button>
+          <button type="button" onClick="{{savePay}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Save payment</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { tab: 'all' }; }
+  constructor(props) {
+    super(props);
+    const seed = [
+      ['Overdue', '32 days ago', 'Aug 1, 2026', 'INV-0142', 'Harbor & Pine Café', 2480],
+      ['Overdue', '6 days ago', 'Aug 27, 2026', 'INV-0151', 'Lumen Dental Group', 1150],
+      ['Unpaid', 'In 4 days', 'Sep 7, 2026', 'INV-0156', 'Atlas Freight Co.', 6300],
+      ['Partial', 'In 9 days', 'Sep 12, 2026', 'INV-0157', 'Greenline Architects', 1875],
+      ['Unpaid', 'In 21 days', 'Sep 24, 2026', 'INV-0160', 'Oak Street Bakery', 720],
+      ['Draft', '—', 'Sep 30, 2026', 'INV-0161', 'Bluebird Yoga', 540],
+      ['Draft', '—', 'Oct 1, 2026', 'INV-0162', 'Ridge Outdoor Supply', 3960],
+      ['Paid', 'Paid Sep 18', 'Aug 19, 2026', 'INV-0153', 'Atlas Freight Co.', 0],
+      ['Paid', 'Paid Sep 2', 'Aug 3, 2026', 'INV-0145', 'Harbor & Pine Café', 0]
+    ];
+    this.state = {
+      tab: 'all', query: '', cust: 'all', range: 'all', menu: null, rowMenu: null, page: 0,
+      recurringOpen: false, paused: {}, payFor: null, payAmount: '', payMethod: 'Bank payment (ACH)', payError: '',
+      nextNum: 164, toast: null,
+      invoices: seed.map(([status, dueLabel, date, num, customer, due]) => ({ status, dueLabel, date, num, customer, due }))
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
+    const s = this.state;
+    const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const S = {
       Overdue: { bg: '#FBE3DF', fg: '#A8200D', action: 'Send reminder' },
       Unpaid: { bg: '#FFF0B8', fg: '#6B5000', action: 'Record payment' },
       Draft: { bg: '#E8EBE6', fg: '#454745', action: 'Approve' },
       Paid: { bg: '#E2F6D5', fg: '#2F5711', action: 'View' },
-      'Partial': { bg: '#E1EEF8', fg: '#1F5E91', action: 'Record payment' }
+      Partial: { bg: '#E1EEF8', fg: '#1F5E91', action: 'Record payment' }
     };
-    const all = [
-      ['Overdue', '32 days ago', 'Aug 1, 2026', 'INV-0142', 'Harbor & Pine Café', '$2,480.00'],
-      ['Overdue', '6 days ago', 'Aug 27, 2026', 'INV-0151', 'Lumen Dental Group', '$1,150.00'],
-      ['Unpaid', 'In 4 days', 'Sep 7, 2026', 'INV-0156', 'Atlas Freight Co.', '$6,300.00'],
-      ['Partial', 'In 9 days', 'Sep 12, 2026', 'INV-0157', 'Greenline Architects', '$1,875.00'],
-      ['Unpaid', 'In 21 days', 'Sep 24, 2026', 'INV-0160', 'Oak Street Bakery', '$720.00'],
-      ['Draft', '—', 'Sep 30, 2026', 'INV-0161', 'Bluebird Yoga', '$540.00'],
-      ['Draft', '—', 'Oct 1, 2026', 'INV-0162', 'Ridge Outdoor Supply', '$3,960.00'],
-      ['Paid', 'Paid Sep 18', 'Aug 19, 2026', 'INV-0153', 'Atlas Freight Co.', '$0.00'],
-      ['Paid', 'Paid Sep 2', 'Aug 3, 2026', 'INV-0145', 'Harbor & Pine Café', '$0.00']
-    ].map(([status, due, date, num, customer, amount]) => ({ status, due, date, num, customer, amount, badgeBg: S[status].bg, badgeFg: S[status].fg, action: S[status].action }));
+    const update = (num, patch) => this.setState({ invoices: s.invoices.map(i => i.num === num ? Object.assign({}, i, patch) : i) });
+    const day = (d) => new Date(d).getTime();
+    const ranges = [
+      ['all', 'All dates', () => true],
+      ['30', 'Last 30 days', (i) => day(i.date) >= day('Sep 3, 2026')],
+      ['q3', 'Jul 1 – Sep 30, 2026', (i) => day(i.date) >= day('Jul 1, 2026') && day(i.date) <= day('Sep 30, 2026')],
+      ['oct', 'This month (October)', (i) => day(i.date) >= day('Oct 1, 2026')]
+    ];
+    const rangeDef = ranges.find(r => r[0] === s.range) || ranges[0];
+    const q = s.query.trim().toLowerCase();
+    const base = s.invoices.filter(i => (s.cust === 'all' || i.customer === s.cust) && rangeDef[2](i) && (!q || i.customer.toLowerCase().includes(q) || i.num.toLowerCase().includes(q)));
     const filters = {
       unpaid: (r) => ['Overdue', 'Unpaid', 'Partial'].includes(r.status),
       draft: (r) => r.status === 'Draft',
@@ -145,15 +295,110 @@ class Component extends DCLogic {
       all: () => true
     };
     const defs = [['unpaid', 'Unpaid'], ['draft', 'Draft'], ['paid', 'Paid'], ['all', 'All invoices']];
-    const tabs = defs.map(([id, label]) => ({ label, count: all.filter(filters[id]).length, on: this.state.tab === id, off: this.state.tab !== id, pick: () => this.setState({ tab: id }) }));
-    const rows = all.filter(filters[this.state.tab]);
+    const tabs = defs.map(([id, label]) => ({ label, count: base.filter(filters[id]).length, on: s.tab === id, off: s.tab !== id, pick: () => this.setState({ tab: id, page: 0, rowMenu: null }) }));
+    const filtered = base.filter(filters[s.tab]);
+    const PER = 6;
+    const pages = Math.max(1, Math.ceil(filtered.length / PER));
+    const page = Math.min(s.page, pages - 1);
+    const slice = filtered.slice(page * PER, page * PER + PER);
+    const rows = slice.map(i => {
+      const st = S[i.status];
+      const act = i.status === 'Overdue' ? () => this.notify('Reminder sent to ' + i.customer)
+        : i.status === 'Draft' ? () => { update(i.num, { status: 'Unpaid', dueLabel: 'In 30 days' }); this.notify(i.num + ' approved and marked Unpaid'); }
+        : () => this.setState({ payFor: i.num, payAmount: i.due.toFixed(2), payError: '', rowMenu: null });
+      const open = s.rowMenu === i.num;
+      return {
+        num: i.num, customer: i.customer, status: i.status, date: i.date, dueLabel: i.dueLabel, amount: fmt(i.due),
+        badgeBg: st.bg, badgeFg: st.fg, action: st.action, isView: i.status === 'Paid', isAction: i.status !== 'Paid', act,
+        menuOpen: open, menuExpanded: open ? 'true' : 'false', kebabBg: open ? 'rgba(22,51,0,0.08)' : 'transparent',
+        toggleMenu: () => this.setState({ rowMenu: open ? null : i.num, menu: null }),
+        duplicate: () => {
+          const num = 'INV-0' + s.nextNum;
+          const copy = { status: 'Draft', dueLabel: '—', date: 'Oct 3, 2026', num, customer: i.customer, due: i.due || 540 };
+          this.setState({ invoices: [copy].concat(s.invoices), nextNum: s.nextNum + 1, rowMenu: null, page: 0 });
+          this.notify('Duplicated ' + i.num + ' as draft ' + num);
+        },
+        download: () => { this.setState({ rowMenu: null }); this.notify('Downloaded ' + i.num + '.pdf'); },
+        remove: () => { this.setState({ invoices: s.invoices.filter(x => x.num !== i.num), rowMenu: null }); this.notify(i.num + ' deleted'); }
+      };
+    });
+    const customers = Array.from(new Set(s.invoices.map(i => i.customer))).sort();
+    const custOptions = [['all', 'All customers']].concat(customers.map(c => [c, c])).map(([id, label]) => ({
+      label, count: id === 'all' ? s.invoices.length : s.invoices.filter(i => i.customer === id).length,
+      checked: s.cust === id ? 'true' : 'false', bg: s.cust === id ? '#E2F6D5' : 'transparent',
+      pick: () => this.setState({ cust: id, menu: null, page: 0, rowMenu: null })
+    }));
+    const rangeOptions = ranges.map(([id, label]) => ({
+      label, checked: s.range === id ? 'true' : 'false', bg: s.range === id ? '#E2F6D5' : 'transparent',
+      pick: () => this.setState({ range: id, menu: null, page: 0, rowMenu: null })
+    }));
+    const overdue = s.invoices.filter(i => i.status === 'Overdue');
+    const soon = s.invoices.filter(i => ['Unpaid', 'Partial'].includes(i.status));
+    const sum = (xs) => xs.reduce((a, i) => a + i.due, 0);
+    const plural = (n) => n + (n === 1 ? ' invoice' : ' invoices');
     const stats = [
-      { label: 'Overdue', value: '$3,630.00', note: '2 invoices' },
-      { label: 'Due within 30 days', value: '$8,895.00', note: '3 invoices' },
+      { label: 'Overdue', value: fmt(sum(overdue)), note: plural(overdue.length) },
+      { label: 'Due within 30 days', value: fmt(sum(soon)), note: plural(soon.length) },
       { label: 'Average time to get paid', value: '11 days', note: 'Last 90 days' },
       { label: 'Upcoming payout', value: '$1,412.60', note: 'Arrives Oct 6 to Chase ••4417' }
     ];
-    return { tabs, rows, stats, shown: rows.length };
+    const recurringDefs = [
+      ['r1', 'Bluebird Yoga', 540, 'Monthly on the 1st', 'Next invoice Nov 1, 2026'],
+      ['r2', 'Harbor & Pine Café', 320, 'Monthly on the 15th', 'Next invoice Oct 15, 2026'],
+      ['r3', 'Lumen Dental Group', 1150, 'Every 3 months', 'Next invoice Nov 27, 2026']
+    ];
+    const recurring = recurringDefs.map(([id, customer, amt, schedule, next]) => {
+      const paused = !!s.paused[id];
+      return {
+        customer, amount: fmt(amt), schedule, next: paused ? 'Paused, no invoices will be sent' : next,
+        status: paused ? 'Paused' : 'Active', badgeBg: paused ? '#E8EBE6' : '#E2F6D5', badgeFg: paused ? '#454745' : '#2F5711',
+        toggleLabel: paused ? 'Resume' : 'Pause',
+        toggle: () => { this.setState({ paused: Object.assign({}, s.paused, { [id]: !paused }) }); this.notify((paused ? 'Resumed' : 'Paused') + ' recurring invoice for ' + customer); }
+      };
+    });
+    const payInv = s.invoices.find(i => i.num === s.payFor);
+    const amtNum = parseFloat(String(s.payAmount).replace(/[$,\s]/g, ''));
+    const payHint = !payInv ? '' : !(amtNum > 0) ? 'Enter the amount you received.'
+      : amtNum >= payInv.due ? 'This pays the invoice in full. It will be marked Paid.'
+      : 'Partial payment. ' + fmt(Math.round((payInv.due - amtNum) * 100) / 100) + ' will stay due.';
+    const savePay = () => {
+      if (!payInv) return;
+      if (!(amtNum > 0)) { this.setState({ payError: 'Enter an amount greater than $0.00.' }); return; }
+      const full = amtNum >= payInv.due;
+      const rest = Math.round((payInv.due - amtNum) * 100) / 100;
+      this.setState({
+        payFor: null, payError: '',
+        invoices: s.invoices.map(i => i.num === payInv.num ? Object.assign({}, i, full ? { status: 'Paid', due: 0, dueLabel: 'Paid Oct 3' } : { status: 'Partial', due: rest }) : i)
+      });
+      this.notify('Payment of ' + fmt(Math.min(amtNum, payInv.due)) + ' recorded for ' + payInv.num);
+    };
+    const start = filtered.length ? page * PER + 1 : 0;
+    return {
+      tabs, rows, stats, empty: filtered.length === 0,
+      showing: 'Showing ' + start + '–' + (page * PER + slice.length) + ' of ' + filtered.length + ' invoices',
+      prevDisabled: page === 0, nextDisabled: page >= pages - 1,
+      prevOpacity: page === 0 ? '0.5' : '1', nextOpacity: page >= pages - 1 ? '0.5' : '1',
+      prevPage: () => this.setState({ page: Math.max(0, page - 1), rowMenu: null }),
+      nextPage: () => this.setState({ page: Math.min(pages - 1, page + 1), rowMenu: null }),
+      query: s.query, setQuery: (e) => this.setState({ query: e.target.value, page: 0 }),
+      custLabel: s.cust === 'all' ? 'All customers' : s.cust, custOptions,
+      custMenuOpen: s.menu === 'cust', custExpanded: s.menu === 'cust' ? 'true' : 'false',
+      toggleCustMenu: () => this.setState({ menu: s.menu === 'cust' ? null : 'cust' }),
+      rangeLabel: rangeDef[1], rangeOptions,
+      rangeMenuOpen: s.menu === 'range', rangeExpanded: s.menu === 'range' ? 'true' : 'false',
+      toggleRangeMenu: () => this.setState({ menu: s.menu === 'range' ? null : 'range' }),
+      recurringOpen: s.recurringOpen, recurringExpanded: s.recurringOpen ? 'true' : 'false', recurring,
+      toggleRecurring: () => this.setState({ recurringOpen: !s.recurringOpen }),
+      payOpen: !!payInv,
+      pay: payInv ? { num: payInv.num, customer: payInv.customer, dueText: fmt(payInv.due) } : {},
+      payAmount: s.payAmount, payMethod: s.payMethod, payHint, payError: s.payError,
+      setPayAmount: (e) => this.setState({ payAmount: e.target.value, payError: '' }),
+      setPayMethod: (e) => this.setState({ payMethod: e.target.value }),
+      closePay: () => this.setState({ payFor: null, payError: '' }),
+      stop: (e) => e.stopPropagation(),
+      savePay,
+      toast: s.toast
+    };
   }
 }
 </script>

@@ -20,49 +20,192 @@ a{color:#163300}a:hover{color:#0e2100}
     <dc-import name="Sidebar" active="invoices" hint-size="100%,1180px"></dc-import>
   </div>
 
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px clamp(16px, 4vw, 40px) 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
     <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <a href="Invoices.dc.html" style="font-size: 13px; font-weight: 600; color: #163300; display: inline-flex; align-items: center; gap: 4px;">
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+        <a href="Invoices.dc.html" style="font-size: 13px; font-weight: 600; color: #163300; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
           Back to invoices
         </a>
-        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">New invoice</h1>
-        <p style="margin: 0; font-size: 15px; color: #454745;">Draft · INV-0163 · Amount due <strong style="font-variant-numeric: tabular-nums; color: #163300;">{{total}}</strong></p>
+        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">{{heading}}</h1>
+        <p style="margin: 0; font-size: 15px; color: #454745;">{{statusText}} · {{num}} · Amount due <strong style="font-variant-numeric: tabular-nums; color: #163300;">{{total}}</strong></p>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>
-          Preview
-        </button>
-        <a href="Invoices.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Save and continue</a>
+        <sc-if value="{{editing}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{showPreview}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>
+            Preview
+          </button>
+        </sc-if>
+        <sc-if value="{{previewing}}" hint-placeholder-val="{{false}}">
+          <button type="button" onClick="{{showEdit}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"></path></svg>
+            Edit
+          </button>
+        </sc-if>
+        <sc-if value="{{unsaved}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{save}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Save and continue</button>
+        </sc-if>
+        <sc-if value="{{saved}}" hint-placeholder-val="{{false}}">
+          <a href="Invoices.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Go to invoices</a>
+        </sc-if>
       </div>
     </header>
 
+    <sc-if value="{{saved}}" hint-placeholder-val="{{false}}">
+      <section role="status" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 14px 20px; background: #E2F6D5; border-radius: 16px;">
+        <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600;">
+          <span style="width: 24px; height: 24px; border-radius: 9999px; background: #163300; display: inline-flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9FE870" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+          {{savedText}}
+        </span>
+        <span style="display: inline-flex; flex-wrap: wrap; gap: 8px;">
+          <sc-if value="{{notSent}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{send}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 0; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; cursor: pointer;">Send to {{cust.contact}}</button>
+          </sc-if>
+          <a href="Invoices.dc.html" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #163300; color: #163300; font-weight: 600; font-size: 14px; text-decoration: none;">View all invoices</a>
+        </span>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{previewing}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+        <div style="font-size: 13px; color: #454745; text-align: center;">This is what {{cust.name}} sees. It is read-only; choose Edit to make changes.</div>
+        <article aria-label="Invoice preview" style="width: 100%; max-width: 860px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: clamp(20px, 5vw, 48px); display: flex; flex-direction: column; gap: 28px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+              <sc-if value="{{logo}}" hint-placeholder-val="{{false}}">
+                <span style="width: 56px; height: 56px; border-radius: 14px; background: #9FE870; color: #163300; font: 800 20px 'Inter Tight', Inter, sans-serif; display: inline-flex; align-items: center; justify-content: center;">NS</span>
+              </sc-if>
+              <div style="font-size: 14px; line-height: 1.55; color: #454745;">
+                <strong style="color: #163300; font-size: 15px;">Northwind Studio</strong><br>
+                1180 Folsom Street, Suite 300<br>
+                San Francisco, CA 94103<br>
+                hello@northwind.studio · (415) 555-0148
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; text-align: right; margin-left: auto;">
+              <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 32px; letter-spacing: -0.03em; line-height: 1.05; text-transform: uppercase;">{{title}}</div>
+              <div style="font-size: 14px; color: #454745;">{{summary}}</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 20px; padding: 20px 0; border-top: 1px solid #E1E5DC; border-bottom: 1px solid #E1E5DC;">
+            <div style="font-size: 14px; line-height: 1.55; color: #454745;">
+              <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #5D605B; margin-bottom: 4px;">Bill to</div>
+              <strong style="color: #163300;">{{cust.name}}</strong><br>
+              Attn: {{cust.contact}}<br>
+              {{cust.street}}<br>
+              {{cust.city}}<br>
+              {{cust.email}}
+            </div>
+            <dl style="margin: 0; display: grid; grid-template-columns: auto auto; justify-content: start; column-gap: 16px; row-gap: 6px; font-size: 14px; align-content: start;">
+              <dt style="color: #454745;">Invoice number</dt><dd style="margin: 0; font-weight: 600; font-variant-numeric: tabular-nums;">{{num}}</dd>
+              <dt style="color: #454745;">P.O./S.O. number</dt><dd style="margin: 0; font-weight: 600;">{{po}}</dd>
+              <dt style="color: #454745;">Invoice date</dt><dd style="margin: 0; font-weight: 600;">{{date}}</dd>
+              <dt style="color: #454745;">Payment due</dt><dd style="margin: 0; font-weight: 600;">{{dueDate}}</dd>
+              <dt style="color: #454745;">Amount due (USD)</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{total}}</dd>
+            </dl>
+          </div>
+
+          <div style="position: relative; overflow-x: auto;">
+            <table style="width: 100%; min-width: 520px; border-collapse: collapse; font-size: 14px;">
+              <thead>
+                <tr style="text-align: left; color: #FFFFFF; background: #163300;">
+                  <th scope="col" style="padding: 10px 14px; font-weight: 600; font-size: 13px; border-radius: 10px 0 0 10px;">Items</th>
+                  <th scope="col" style="padding: 10px 8px; font-weight: 600; font-size: 13px; text-align: center;">Quantity</th>
+                  <th scope="col" style="padding: 10px 8px; font-weight: 600; font-size: 13px; text-align: right;">Price</th>
+                  <th scope="col" style="padding: 10px 14px; font-weight: 600; font-size: 13px; text-align: right; border-radius: 0 10px 10px 0;">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{lines}}" as="l" hint-placeholder-count="3">
+                  <tr style="vertical-align: top;">
+                    <td style="padding: 14px; border-bottom: 1px solid #EEF0EB;">
+                      <div style="font-weight: 600;">{{l.item}}</div>
+                      <div style="font-size: 13px; color: #454745; line-height: 1.45;">{{l.desc}}</div>
+                      <sc-if value="{{l.taxed}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #5D605B;">{{l.taxLabel}}</div></sc-if>
+                    </td>
+                    <td style="padding: 14px 8px; border-bottom: 1px solid #EEF0EB; text-align: center; font-variant-numeric: tabular-nums;">{{l.qty}}</td>
+                    <td style="padding: 14px 8px; border-bottom: 1px solid #EEF0EB; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap;">{{l.priceFmt}}</td>
+                    <td style="padding: 14px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;">{{l.amount}}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+            <div style="font-size: 14px; color: #454745; text-align: center;">This invoice has no items yet.</div>
+          </sc-if>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <dl style="margin: 0; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-variant-numeric: tabular-nums;">
+              <div style="display: flex; justify-content: space-between; gap: 12px;"><dt style="color: #454745;">Subtotal</dt><dd style="margin: 0; font-weight: 600;">{{subtotal}}</dd></div>
+              <div style="display: flex; justify-content: space-between; gap: 12px;"><dt style="color: #454745;">CA sales tax (7.25%)</dt><dd style="margin: 0; font-weight: 600;">{{tax}}</dd></div>
+              <div style="display: flex; justify-content: space-between; gap: 12px; padding-top: 8px; border-top: 1px solid #E1E5DC;"><dt style="font-weight: 600;">Total</dt><dd style="margin: 0; font-weight: 700;">{{total}}</dd></div>
+              <sc-if value="{{deposit}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; justify-content: space-between; gap: 12px; color: #454745;"><dt>Deposit due on receipt (25%)</dt><dd style="margin: 0; font-weight: 600; color: #163300;">{{depositAmt}}</dd></div>
+              </sc-if>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 14px; background: #E2F6D5; border-radius: 12px;">
+                <dt style="font-weight: 700;">Amount due (USD)</dt>
+                <dd style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{total}}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <sc-if value="{{hasPay}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; background: #F7F8F5; border-radius: 12px;">
+              <span style="font-size: 14px; font-weight: 600;">Pay online by {{dueDate}}</span>
+              <span style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <sc-for list="{{payBadges}}" as="b" hint-placeholder-count="2">
+                  <span style="display: inline-flex; align-items: center; min-height: 30px; padding: 0 12px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #C9CEC3; font-size: 13px; font-weight: 600;">{{b}}</span>
+                </sc-for>
+              </span>
+            </div>
+          </sc-if>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #5D605B;">Notes / Terms</div>
+            <div style="font-size: 14px; line-height: 1.55; color: #454745; white-space: pre-wrap;">{{notes}}</div>
+          </div>
+          <div style="padding-top: 16px; border-top: 1px solid #E1E5DC; font-size: 12px; color: #5D605B; text-align: center;">{{footer}}</div>
+        </article>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{editing}}" hint-placeholder-val="{{true}}">
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
       <div style="flex: 999 1 620px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
 
         <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px;">
-          <button type="button" onClick="{{toggleBiz}}" aria-expanded="{{bizExpanded}}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 24px; border: 0; background: transparent; font: 600 15px Inter, sans-serif; color: #163300; cursor: pointer; text-align: left;">
+          <button type="button" onClick="{{toggleBiz}}" aria-expanded="{{bizExpanded}}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px clamp(16px, 3vw, 24px); border: 0; background: transparent; font: 600 15px Inter, sans-serif; color: #163300; cursor: pointer; text-align: left;">
             <span>Business address and contact details, title, summary, and logo</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{bizChevron}};"><path d="m6 9 6 6 6-6"></path></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{bizChevron}};"><path d="m6 9 6 6 6-6"></path></svg>
           </button>
           <sc-if value="{{bizOpen}}" hint-placeholder-val="{{true}}">
-            <div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 4px 24px 24px; border-top: 1px solid #EEF0EB;">
-              <button type="button" style="flex: 0 0 220px; min-height: 140px; margin-top: 20px; border: 1.5px dashed #C9CEC3; border-radius: 12px; background: #F7F8F5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font: 500 13px Inter, sans-serif; color: #454745; cursor: pointer;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"></path></svg>
-                <span style="font-weight: 600; color: #163300;">Upload your logo</span>
-                <span>PNG or JPG, up to 10 MB</span>
-              </button>
-              <div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 14px; padding-top: 20px;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
-                  <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 4px clamp(16px, 3vw, 24px) 24px; border-top: 1px solid #EEF0EB;">
+              <sc-if value="{{noLogo}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{addLogo}}" style="flex: 0 1 220px; max-width: 100%; min-height: 140px; margin-top: 20px; border: 1.5px dashed #C9CEC3; border-radius: 12px; background: #F7F8F5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font: 500 13px Inter, sans-serif; color: #454745; cursor: pointer;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"></path></svg>
+                  <span style="font-weight: 600; color: #163300;">Upload your logo</span>
+                  <span>PNG or JPG, up to 10 MB</span>
+                </button>
+              </sc-if>
+              <sc-if value="{{logo}}" hint-placeholder-val="{{false}}">
+                <div style="flex: 0 1 220px; max-width: 100%; min-height: 140px; margin-top: 20px; box-sizing: border-box; border: 1px solid #E1E5DC; border-radius: 12px; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 12px;">
+                  <span style="width: 56px; height: 56px; border-radius: 14px; background: #9FE870; color: #163300; font: 800 20px 'Inter Tight', Inter, sans-serif; display: inline-flex; align-items: center; justify-content: center;">NS</span>
+                  <span style="font-size: 12px; color: #454745;">northwind-logo.png</span>
+                  <button type="button" onClick="{{removeLogo}}" style="min-height: 32px; padding: 0 12px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Remove logo</button>
+                </div>
+              </sc-if>
+              <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 14px; padding-top: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px;">
+                  <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
                     <label for="inv-title" style="font-size: 13px; font-weight: 600;">Invoice title</label>
-                    <input id="inv-title" type="text" value="Invoice" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
+                    <input id="inv-title" type="text" value="{{title}}" onChange="{{setField.title}}" style="width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
                     <label for="inv-summary" style="font-size: 13px; font-weight: 600;">Summary (e.g. project name)</label>
-                    <input id="inv-summary" type="text" value="Fall menu refresh" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
+                    <input id="inv-summary" type="text" value="{{summary}}" onChange="{{setField.summary}}" style="width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
                   </div>
                 </div>
                 <div style="font-size: 14px; line-height: 1.55; color: #454745;">
@@ -70,90 +213,84 @@ a{color:#163300}a:hover{color:#0e2100}
                   1180 Folsom Street, Suite 300, San Francisco, CA 94103<br>
                   hello@northwind.studio · (415) 555-0148
                 </div>
-                <a href="#business-settings" style="font-size: 13px; font-weight: 600;">Edit your business address and contact details</a>
+                <button type="button" onClick="{{bizSettings}}" style="align-self: flex-start; padding: 0; border: 0; background: transparent; font: 600 13px Inter, sans-serif; color: #163300; text-decoration: underline; cursor: pointer; text-align: left;">Edit your business address and contact details</button>
               </div>
             </div>
           </sc-if>
         </section>
 
-        <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px;">
-          <div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 10px;">
+        <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: clamp(16px, 3vw, 24px); display: flex; flex-wrap: wrap; gap: 24px;">
+          <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
             <label for="inv-customer" style="font-size: 13px; font-weight: 600;">Bill to</label>
-            <select id="inv-customer" style="min-height: 44px; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 500 15px Inter, sans-serif; color: #163300;">
-              <option selected="selected">Harbor &amp; Pine Café</option>
-              <option>Lumen Dental Group</option>
-              <option>Atlas Freight Co.</option>
-              <option>Greenline Architects</option>
-              <option>Oak Street Bakery</option>
-              <option>Bluebird Yoga</option>
-              <option>Ridge Outdoor Supply</option>
+            <select id="inv-customer" value="{{cust.name}}" onChange="{{setCustomer}}" style="width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 500 15px Inter, sans-serif; color: #163300;">
+              <sc-for list="{{customerNames}}" as="c" hint-placeholder-count="7">
+                <option>{{c}}</option>
+              </sc-for>
             </select>
-            <div style="background: #F7F8F5; border: 1px solid #E1E5DC; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.55; color: #454745;">
-              <strong style="color: #163300;">Harbor &amp; Pine Café</strong><br>
-              Attn: Daniel Okafor<br>
-              214 Harbor Way<br>
-              Sausalito, CA 94965<br>
-              daniel@harborandpine.cafe · (415) 555-0193
+            <div style="background: #F7F8F5; border: 1px solid #E1E5DC; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.55; color: #454745; overflow-wrap: anywhere;">
+              <strong style="color: #163300;">{{cust.name}}</strong><br>
+              Attn: {{cust.contact}}<br>
+              {{cust.street}}<br>
+              {{cust.city}}<br>
+              {{cust.email}} · {{cust.phone}}
             </div>
-            <div style="display: flex; gap: 14px; font-size: 13px; font-weight: 600;">
-              <a href="Customers.dc.html">Edit Harbor &amp; Pine Café</a>
-              <a href="Customers.dc.html">Choose a different customer</a>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; font-weight: 600;">
+              <a href="Customers.dc.html">Edit {{cust.name}}</a>
+              <a href="Customers.dc.html">Manage customers</a>
             </div>
           </div>
-          <div style="flex: 1 1 300px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-content: start;">
-            <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="flex: 1 1 260px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 14px; align-content: start;">
+            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
               <label for="inv-num" style="font-size: 13px; font-weight: 600;">Invoice number</label>
-              <input id="inv-num" type="text" value="INV-0163" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300; font-variant-numeric: tabular-nums;">
+              <input id="inv-num" type="text" value="{{num}}" onChange="{{setField.num}}" style="width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300; font-variant-numeric: tabular-nums;">
             </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
               <label for="inv-po" style="font-size: 13px; font-weight: 600;">P.O./S.O. number</label>
-              <input id="inv-po" type="text" value="HP-2026-31" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
+              <input id="inv-po" type="text" value="{{po}}" onChange="{{setField.po}}" style="width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
             </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
               <label for="inv-date" style="font-size: 13px; font-weight: 600;">Invoice date</label>
-              <input id="inv-date" type="text" value="Oct 3, 2026" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
+              <input id="inv-date" type="text" value="{{date}}" readonly="readonly" style="width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
             </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
               <label for="inv-terms" style="font-size: 13px; font-weight: 600;">Payment due</label>
-              <select id="inv-terms" style="min-height: 44px; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
-                <option>On receipt</option>
-                <option>Net 15</option>
-                <option selected="selected">Net 30</option>
-                <option>Net 45</option>
-                <option>Net 60</option>
-                <option>Custom date</option>
+              <select id="inv-terms" value="{{terms}}" onChange="{{setTerms}}" style="width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+                <option value="0">On receipt</option>
+                <option value="15">Net 15</option>
+                <option value="30">Net 30</option>
+                <option value="45">Net 45</option>
+                <option value="60">Net 60</option>
               </select>
             </div>
-            <div style="grid-column: 1 / -1; font-size: 13px; color: #454745;">Due on Nov 2, 2026 (in 30 days)</div>
+            <div style="grid-column: 1 / -1; font-size: 13px; color: #454745;">{{dueNote}}</div>
           </div>
         </section>
 
         <section aria-label="Line items" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; min-width: 820px; border-collapse: collapse; font-size: 14px;">
+          <div style="position: relative; overflow-x: auto; border-radius: 16px 16px 0 0;">
+            <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px;">
               <thead>
                 <tr style="text-align: left; color: #454745; background: #F2F4EF;">
-                  <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-radius: 16px 0 0 0;">Item</th>
-                  <th scope="col" style="padding: 12px 8px; font-weight: 600; font-size: 13px;">Description</th>
+                  <th scope="col" style="padding: 12px 8px 12px 20px; font-weight: 600; font-size: 13px;">Item and description</th>
                   <th scope="col" style="padding: 12px 8px; font-weight: 600; font-size: 13px; text-align: center;">Quantity</th>
                   <th scope="col" style="padding: 12px 8px; font-weight: 600; font-size: 13px; text-align: right;">Price</th>
                   <th scope="col" style="padding: 12px 8px; font-weight: 600; font-size: 13px;">Tax</th>
                   <th scope="col" style="padding: 12px 8px; font-weight: 600; font-size: 13px; text-align: right;">Amount</th>
-                  <th scope="col" style="padding: 12px 20px 12px 4px; font-weight: 600; font-size: 13px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Remove</span></th>
+                  <th scope="col" style="position: relative; padding: 12px 20px 12px 4px; font-weight: 600; font-size: 13px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Remove</span></th>
                 </tr>
               </thead>
               <tbody>
                 <sc-for list="{{lines}}" as="l" hint-placeholder-count="3">
                   <tr style="vertical-align: top;">
                     <td style="padding: 14px 8px 14px 20px; border-bottom: 1px solid #EEF0EB;">
-                      <input type="text" aria-label="Item name" value="{{l.item}}" style="width: 100%; min-width: 160px; min-height: 40px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; font: 600 14px Inter, sans-serif; color: #163300;">
-                    </td>
-                    <td style="padding: 14px 8px; border-bottom: 1px solid #EEF0EB;">
-                      <input type="text" aria-label="Description" value="{{l.desc}}" style="width: 100%; min-width: 180px; min-height: 40px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <input type="text" aria-label="Item name" value="{{l.item}}" onChange="{{l.setItem}}" style="width: 100%; min-width: 200px; min-height: 40px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; font: 600 14px Inter, sans-serif; color: #163300;">
+                        <input type="text" aria-label="Description" value="{{l.desc}}" onChange="{{l.setDesc}}" style="width: 100%; min-width: 200px; min-height: 36px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 13px Inter, sans-serif; color: #454745;">
+                      </div>
                     </td>
                     <td style="padding: 14px 8px; border-bottom: 1px solid #EEF0EB;">
                       <div style="display: inline-flex; align-items: center; gap: 4px; border: 1px solid #C9CEC3; border-radius: 9999px; padding: 2px;">
-                        <button type="button" onClick="{{l.dec}}" aria-label="Decrease quantity" style="width: 34px; height: 34px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                        <button type="button" onClick="{{l.dec}}" disabled="{{l.atMin}}" aria-label="Decrease quantity" style="width: 34px; height: 34px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; opacity: {{l.decOpacity}};">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg>
                         </button>
                         <span style="min-width: 32px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums;">{{l.qty}}</span>
@@ -163,10 +300,10 @@ a{color:#163300}a:hover{color:#0e2100}
                       </div>
                     </td>
                     <td style="padding: 14px 8px; border-bottom: 1px solid #EEF0EB;">
-                      <input type="text" aria-label="Price" value="{{l.priceText}}" style="width: 100px; min-height: 40px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300; text-align: right; font-variant-numeric: tabular-nums;">
+                      <input type="text" inputmode="decimal" aria-label="Price" value="{{l.priceText}}" onChange="{{l.setPrice}}" style="width: 90px; min-height: 40px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300; text-align: right; font-variant-numeric: tabular-nums;">
                     </td>
                     <td style="padding: 14px 8px; border-bottom: 1px solid #EEF0EB;">
-                      <button type="button" onClick="{{l.cycleTax}}" aria-label="Sales tax for this line, click to change" style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 150px; min-height: 40px; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; cursor: pointer; white-space: nowrap;">
+                      <button type="button" onClick="{{l.cycleTax}}" aria-label="Sales tax for this line, click to change" style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 140px; min-height: 40px; padding: 0 10px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; cursor: pointer; white-space: nowrap;">
                         {{l.taxLabel}}
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
                       </button>
@@ -193,13 +330,13 @@ a{color:#163300}a:hover{color:#0e2100}
           </div>
           <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; padding: 20px;">
             <dl style="margin: 0; width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; font-variant-numeric: tabular-nums;">
-              <div style="display: flex; justify-content: space-between;"><dt style="color: #454745;">Subtotal</dt><dd style="margin: 0; font-weight: 600;">{{subtotal}}</dd></div>
-              <div style="display: flex; justify-content: space-between;"><dt style="color: #454745;">CA sales tax (7.25%)</dt><dd style="margin: 0; font-weight: 600;">{{tax}}</dd></div>
-              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #E1E5DC;">
+              <div style="display: flex; justify-content: space-between; gap: 12px;"><dt style="color: #454745;">Subtotal</dt><dd style="margin: 0; font-weight: 600;">{{subtotal}}</dd></div>
+              <div style="display: flex; justify-content: space-between; gap: 12px;"><dt style="color: #454745;">CA sales tax (7.25%)</dt><dd style="margin: 0; font-weight: 600;">{{tax}}</dd></div>
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; padding-top: 10px; border-top: 1px solid #E1E5DC;">
                 <dt style="font-weight: 600;">Total</dt>
-                <dd style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                <dd style="position: relative; margin: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; min-width: 0;">
                   <label for="inv-cur" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Currency</label>
-                  <select id="inv-cur" style="min-height: 36px; padding: 0 8px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 500 13px Inter, sans-serif; color: #163300;">
+                  <select id="inv-cur" style="max-width: 100%; min-height: 36px; padding: 0 8px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 500 13px Inter, sans-serif; color: #163300;">
                     <option selected="selected">USD ($) – U.S. dollar</option>
                     <option>CAD ($) – Canadian dollar</option>
                     <option>EUR (€) – Euro</option>
@@ -209,9 +346,9 @@ a{color:#163300}a:hover{color:#0e2100}
                 </dd>
               </div>
               <sc-if value="{{deposit}}" hint-placeholder-val="{{false}}">
-                <div style="display: flex; justify-content: space-between; color: #454745;"><dt>Deposit requested (25%)</dt><dd style="margin: 0; font-weight: 600; color: #163300;">{{depositAmt}}</dd></div>
+                <div style="display: flex; justify-content: space-between; gap: 12px; color: #454745;"><dt>Deposit requested (25%)</dt><dd style="margin: 0; font-weight: 600; color: #163300;">{{depositAmt}}</dd></div>
               </sc-if>
-              <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 12px 14px; background: #E2F6D5; border-radius: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 14px; background: #E2F6D5; border-radius: 12px;">
                 <dt style="font-weight: 700;">Amount due (USD)</dt>
                 <dd style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{total}}</dd>
               </div>
@@ -219,14 +356,14 @@ a{color:#163300}a:hover{color:#0e2100}
           </div>
         </section>
 
-        <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: clamp(16px, 3vw, 24px); display: flex; flex-direction: column; gap: 16px;">
           <div style="display: flex; flex-direction: column; gap: 6px;">
             <label for="inv-notes" style="font-size: 13px; font-weight: 600;">Notes / Terms</label>
-            <textarea id="inv-notes" rows="4" style="box-sizing: border-box; padding: 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px/1.5 Inter, sans-serif; color: #163300; resize: vertical;">Thank you, Harbor &amp; Pine! Printed menus ship 5 business days after proof approval. Payment due within 30 days. A 1.5% monthly late fee applies to balances over 30 days past due.</textarea>
+            <textarea id="inv-notes" rows="4" value="{{notes}}" onChange="{{setField.notes}}" style="box-sizing: border-box; width: 100%; padding: 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px/1.5 Inter, sans-serif; color: #163300; resize: vertical;"></textarea>
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px;">
             <label for="inv-footer" style="font-size: 13px; font-weight: 600;">Footer</label>
-            <input id="inv-footer" type="text" value="Northwind Studio · EIN 84-2917730 · northwind.studio" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300;">
+            <input id="inv-footer" type="text" value="{{footer}}" onChange="{{setField.footer}}" style="width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300;">
           </div>
         </section>
       </div>
@@ -274,7 +411,15 @@ a{color:#163300}a:hover{color:#0e2100}
         </section>
       </aside>
     </div>
+    </sc-if>
   </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1720}}'>
@@ -283,6 +428,21 @@ class Component extends DCLogic {
     super(props);
     this.state = {
       bizOpen: true,
+      preview: false,
+      saved: false,
+      sent: false,
+      logo: false,
+      toast: null,
+      customer: 'Harbor & Pine Café',
+      terms: '30',
+      fields: {
+        title: 'Invoice',
+        summary: 'Fall menu refresh',
+        num: 'INV-0163',
+        po: 'HP-2026-31',
+        notes: 'Thank you, Harbor & Pine! Printed menus ship 5 business days after proof approval. Payment due within 30 days. A 1.5% monthly late fee applies to balances over 30 days past due.',
+        footer: 'Northwind Studio · EIN 84-2917730 · northwind.studio'
+      },
       nextId: 4,
       addIdx: 0,
       lines: [
@@ -293,16 +453,27 @@ class Component extends DCLogic {
       opts: { card: true, bank: true, apple: false, recurring: false, remind: true, deposit: false }
     };
   }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
     const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const TAX = [{ label: 'No tax', rate: 0 }, { label: 'CA sales tax 7.25%', rate: 0.0725 }];
+    const CUSTOMERS = [
+      { name: 'Harbor & Pine Café', contact: 'Daniel Okafor', street: '214 Harbor Way', city: 'Sausalito, CA 94965', email: 'daniel@harborandpine.cafe', phone: '(415) 555-0193' },
+      { name: 'Lumen Dental Group', contact: 'Dr. Priya Raman', street: '88 Grand Avenue, Suite 210', city: 'Oakland, CA 94612', email: 'office@lumendental.com', phone: '(510) 555-0127' },
+      { name: 'Atlas Freight Co.', contact: 'Marcus Bell', street: '1500 Industrial Road', city: 'San Carlos, CA 94070', email: 'ap@atlasfreight.co', phone: '(650) 555-0175' },
+      { name: 'Greenline Architects', contact: 'Sofia Lindqvist', street: '600 Battery Street, Floor 4', city: 'San Francisco, CA 94111', email: 'sofia@greenline.archi', phone: '(415) 555-0162' },
+      { name: 'Oak Street Bakery', contact: 'Hannah Cole', street: '1932 Oak Street', city: 'San Francisco, CA 94117', email: 'hannah@oakstreetbakery.com', phone: '(415) 555-0119' },
+      { name: 'Bluebird Yoga', contact: 'Leah Martins', street: '45 Kentucky Street', city: 'Petaluma, CA 94952', email: 'studio@bluebirdyoga.com', phone: '(707) 555-0140' },
+      { name: 'Ridge Outdoor Supply', contact: 'Tom Alvarez', street: '310 Commercial Row', city: 'Truckee, CA 96161', email: 'tom@ridgeoutdoor.com', phone: '(530) 555-0108' }
+    ];
     const catalog = [
       { item: 'Brand photography', desc: 'Half-day on-location shoot, 40 edited selects', qty: 1, price: 850, tax: 0 },
       { item: 'Window decals', desc: 'Vinyl storefront decal, 24×36', qty: 2, price: 95, tax: 1 },
       { item: 'Design consultation', desc: 'Hourly creative direction', qty: 2, price: 140, tax: 0 }
     ];
     const s = this.state;
-    const setLine = (id, patch) => this.setState({ lines: s.lines.map(l => l.id === id ? Object.assign({}, l, patch) : l) });
+    const cust = CUSTOMERS.find(c => c.name === s.customer) || CUSTOMERS[0];
+    const setLine = (id, patch) => this.setState({ lines: this.state.lines.map(l => l.id === id ? Object.assign({}, l, patch) : l) });
     let subtotal = 0, tax = 0;
     const lines = s.lines.map(l => {
       const amt = l.qty * l.price;
@@ -310,11 +481,20 @@ class Component extends DCLogic {
       tax += Math.round(amt * TAX[l.tax].rate * 100) / 100;
       return {
         item: l.item, desc: l.desc, qty: l.qty,
-        priceText: l.price.toFixed(2), taxLabel: TAX[l.tax].label, amount: fmt(amt),
+        priceText: l.priceText != null ? l.priceText : l.price.toFixed(2), priceFmt: fmt(l.price),
+        taxLabel: TAX[l.tax].label, taxed: l.tax > 0, amount: fmt(amt),
+        atMin: l.qty <= 1, decOpacity: l.qty <= 1 ? '0.45' : '1',
         inc: () => setLine(l.id, { qty: l.qty + 1 }),
         dec: () => setLine(l.id, { qty: Math.max(1, l.qty - 1) }),
         cycleTax: () => setLine(l.id, { tax: (l.tax + 1) % TAX.length }),
-        remove: () => this.setState({ lines: s.lines.filter(x => x.id !== l.id) })
+        remove: () => this.setState({ lines: s.lines.filter(x => x.id !== l.id) }),
+        setItem: (e) => setLine(l.id, { item: e.target.value }),
+        setDesc: (e) => setLine(l.id, { desc: e.target.value }),
+        setPrice: (e) => {
+          const v = e.target.value;
+          const n = parseFloat(v.replace(/[$,\s]/g, ''));
+          setLine(l.id, { priceText: v, price: isNaN(n) ? 0 : n });
+        }
       };
     });
     const total = subtotal + tax;
@@ -331,6 +511,9 @@ class Component extends DCLogic {
         knob: on ? '#9FE870' : '#5D605B', justify: on ? 'flex-end' : 'flex-start'
       };
     };
+    const days = parseInt(s.terms, 10);
+    const due = new Date(2026, 9, 3 + days);
+    const dueDate = due.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const cardFee = fmt(Math.round((total * 0.029 + 0.6) * 100) / 100);
     const bankFee = fmt(Math.min(Math.round(total * 0.01 * 100) / 100, 10));
     const payOpts = [
@@ -340,16 +523,45 @@ class Component extends DCLogic {
     ];
     const autoOpts = [
       sw('recurring', 'Make it recurring', 'Send this invoice on a schedule.', 'Repeats monthly on the 3rd, starting Nov 3, 2026. Ends never. Auto-charges the card on file when one is saved.'),
-      sw('remind', 'Remind customer', 'Email Harbor & Pine before and after the due date.', 'Reminders go out 3 days before due, on the due date, and 7 and 14 days after. Sent from hello@northwind.studio.'),
-      sw('deposit', 'Request a deposit', 'Collect part of the total up front.', '25% deposit of ' + fmt(Math.round(total * 25) / 100) + ' is due on receipt. The remaining balance stays due Nov 2, 2026.')
+      sw('remind', 'Remind customer', 'Email ' + cust.name + ' before and after the due date.', 'Reminders go out 3 days before due, on the due date, and 7 and 14 days after. Sent from hello@northwind.studio.'),
+      sw('deposit', 'Request a deposit', 'Collect part of the total up front.', '25% deposit of ' + fmt(Math.round(total * 25) / 100) + ' is due on receipt. The remaining balance stays due ' + dueDate + '.')
     ];
+    const payBadges = [];
+    if (s.opts.card) payBadges.push('Card');
+    if (s.opts.bank) payBadges.push('Bank (ACH)');
+    if (s.opts.apple) payBadges.push('Apple Pay');
+    const setField = {};
+    ['title', 'summary', 'num', 'po', 'notes', 'footer'].forEach(k => {
+      setField[k] = (e) => this.setState({ fields: Object.assign({}, this.state.fields, { [k]: e.target.value }) });
+    });
+    const f = s.fields;
     return {
       lines, empty: lines.length === 0, addLine,
       subtotal: fmt(subtotal), tax: fmt(tax), total: fmt(total),
       deposit: !!s.opts.deposit, depositAmt: fmt(Math.round(total * 25) / 100),
-      payOpts, autoOpts,
+      payOpts, autoOpts, payBadges, hasPay: payBadges.length > 0,
       bizOpen: s.bizOpen, bizExpanded: s.bizOpen ? 'true' : 'false', bizChevron: s.bizOpen ? 'rotate(180deg)' : 'none',
-      toggleBiz: () => this.setState({ bizOpen: !s.bizOpen })
+      toggleBiz: () => this.setState({ bizOpen: !s.bizOpen }),
+      bizSettings: () => this.notify('Business settings aren’t part of this prototype yet'),
+      logo: s.logo, noLogo: !s.logo,
+      addLogo: () => { this.setState({ logo: true }); this.notify('Uploaded northwind-logo.png'); },
+      removeLogo: () => this.setState({ logo: false }),
+      title: f.title, summary: f.summary, num: f.num, po: f.po, notes: f.notes, footer: f.footer, setField,
+      date: 'Oct 3, 2026', dueDate, terms: s.terms,
+      dueNote: days === 0 ? 'Due on receipt (Oct 3, 2026)' : 'Due on ' + dueDate + ' (in ' + days + ' days)',
+      setTerms: (e) => this.setState({ terms: e.target.value }),
+      cust, customerNames: CUSTOMERS.map(c => c.name),
+      setCustomer: (e) => this.setState({ customer: e.target.value }),
+      editing: !s.preview, previewing: s.preview,
+      showPreview: () => this.setState({ preview: true }),
+      showEdit: () => this.setState({ preview: false }),
+      heading: s.preview ? 'Invoice preview' : 'New invoice',
+      statusText: s.sent ? 'Sent' : s.saved ? 'Saved draft' : 'Draft',
+      saved: s.saved, unsaved: !s.saved, notSent: !s.sent,
+      savedText: s.sent ? f.num + ' was emailed to ' + cust.email + '.' : f.num + ' is saved. Send it now or find it later under Invoices.',
+      save: () => { this.setState({ saved: true }); this.notify(f.num + ' saved for ' + cust.name); },
+      send: () => { this.setState({ sent: true }); this.notify('Invoice sent to ' + cust.name); },
+      toast: s.toast
     };
   }
 }

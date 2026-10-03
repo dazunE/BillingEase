@@ -20,39 +20,71 @@ a{color:#163300}a:hover{color:#0e2100}
     <dc-import name="Sidebar" active="customers" hint-size="100%,1180px"></dc-import>
   </div>
 
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px clamp(16px, 4vw, 40px) 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
     <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
         <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Customers</h1>
-        <p style="margin: 0; font-size: 15px; color: #454745;">7 customers · $12,525.00 outstanding, $3,630.00 of it overdue</p>
+        <p style="margin: 0; font-size: 15px; color: #454745;">{{subtitle}}</p>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+        <button type="button" onClick="{{importCsv}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"></path></svg>
           Import from CSV
         </button>
-        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Import from Google Contacts</button>
-        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+        <button type="button" onClick="{{importGoogle}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Import from Google Contacts</button>
+        <button type="button" onClick="{{openAdd}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Add a customer
         </button>
       </div>
     </header>
 
+    <sc-if value="{{formOpen}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="cust-form-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <h2 id="cust-form-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">{{formTitle}}</h2>
+          <button type="button" onClick="{{closeForm}}" aria-label="Close form" style="flex: none; width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 14px;">
+          <sc-for list="{{formFields}}" as="f" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+              <label for="{{f.id}}" style="font-size: 13px; font-weight: 600;">{{f.label}}</label>
+              <input id="{{f.id}}" type="{{f.type}}" value="{{f.value}}" onChange="{{f.set}}" placeholder="{{f.placeholder}}" style="width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 15px Inter, sans-serif; color: #163300;">
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{formError}}" hint-placeholder-val="{{false}}">
+          <div role="alert" style="background: #FBE3DF; color: #A8200D; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-weight: 600;">{{formError}}</div>
+        </sc-if>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;">
+          <button type="button" onClick="{{closeForm}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Cancel</button>
+          <button type="button" onClick="{{saveForm}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">{{saveLabel}}</button>
+        </div>
+      </section>
+    </sc-if>
+
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
       <section aria-label="Customer list" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
         <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #E1E5DC;">
-          <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; flex: 1 1 260px; max-width: 360px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+          <label style="position: relative; display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; flex: 1 1 240px; max-width: 360px; box-sizing: border-box;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none;"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search customers</span>
-            <input type="search" placeholder="Search by name, email or phone" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 100%; background: transparent;">
+            <input type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="Search by name, email or phone" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 100%; min-width: 0; background: transparent;">
           </label>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">With balance</button>
-            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Export</button>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <button type="button" onClick="{{toggleBalance}}" aria-pressed="{{balancePressed}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{balanceBorder}}; background: {{balanceBg}}; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">
+              <sc-if value="{{withBalance}}" hint-placeholder-val="{{false}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></sc-if>
+              With balance
+            </button>
+            <button type="button" onClick="{{exportCsv}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"></path></svg>
+              Export
+            </button>
           </div>
         </div>
-        <div style="overflow-x: auto;">
+        <div style="position: relative; overflow-x: auto;">
           <table style="width: 100%; min-width: 680px; border-collapse: collapse; font-size: 14px;">
             <thead>
               <tr style="text-align: left; color: #454745;">
@@ -85,17 +117,20 @@ a{color:#163300}a:hover{color:#0e2100}
                   </td>
                 </tr>
               </sc-for>
+              <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+                <tr><td colspan="5" style="padding: 28px 20px; text-align: center; color: #454745; border-bottom: 1px solid #EEF0EB;">No customers match. Clear the search or the With balance filter.</td></tr>
+              </sc-if>
               <tr>
                 <th scope="row" colspan="3" style="text-align: left; padding: 14px 20px; font-weight: 700;">Total</th>
-                <td style="padding: 14px 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">$12,525.00</td>
-                <td style="padding: 14px 20px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">$3,630.00</td>
+                <td style="padding: 14px 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{totalBalance}}</td>
+                <td style="padding: 14px 20px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{totalOverdue}}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      <aside aria-label="Customer details" style="flex: 1 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+      <aside aria-label="Customer details" style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
         <div style="padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid #EEF0EB;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span style="width: 48px; height: 48px; border-radius: 9999px; background: #163300; color: #9FE870; font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; flex: none;">{{sel.initials}}</span>
@@ -103,34 +138,34 @@ a{color:#163300}a:hover{color:#0e2100}
               <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1;">{{sel.name}}</h2>
               <div style="font-size: 13px; color: #454745;">Customer since {{sel.since}}</div>
             </div>
-            <button type="button" aria-label="Edit customer" style="width: 40px; height: 40px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+            <button type="button" onClick="{{openEdit}}" aria-label="Edit customer" style="flex: none; width: 40px; height: 40px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"></path></svg>
             </button>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div style="background: #F7F8F5; border-radius: 12px; padding: 12px;">
+            <div style="background: #F7F8F5; border-radius: 12px; padding: 12px; min-width: 0;">
               <div style="font-size: 12px; font-weight: 600; color: #454745;">Balance</div>
-              <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums;">{{sel.balance}}</div>
+              <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums;">{{sel.balanceText}}</div>
             </div>
-            <div style="background: #F7F8F5; border-radius: 12px; padding: 12px;">
+            <div style="background: #F7F8F5; border-radius: 12px; padding: 12px; min-width: 0;">
               <div style="font-size: 12px; font-weight: 600; color: #454745;">Overdue</div>
-              <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums;">{{sel.overdue}}</div>
+              <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums;">{{sel.overdueText}}</div>
             </div>
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 8px;">
             <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 14px; text-decoration: none;">Create invoice</a>
-            <a href="#statement" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #163300; color: #163300; font-weight: 600; font-size: 14px; text-decoration: none;">Send statement</a>
+            <button type="button" onClick="{{sendStatement}}" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">Send statement</button>
           </div>
         </div>
 
-        <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; border-bottom: 1px solid #EEF0EB; font-size: 14px;">
+        <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; border-bottom: 1px solid #EEF0EB; font-size: 14px; overflow-wrap: anywhere;">
           <h3 style="margin: 0 0 4px; font-size: 13px; font-weight: 600; color: #454745;">Contact</h3>
           <div style="font-weight: 600;">{{sel.contact}}</div>
           <a href="mailto:{{sel.email}}" style="color: #163300;">{{sel.email}}</a>
           <div style="color: #454745;">{{sel.phone}}</div>
         </div>
 
-        <div style="padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-bottom: 1px solid #EEF0EB; font-size: 14px; line-height: 1.5;">
+        <div style="padding: 16px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 16px; border-bottom: 1px solid #EEF0EB; font-size: 14px; line-height: 1.5;">
           <div>
             <h3 style="margin: 0 0 4px; font-size: 13px; font-weight: 600; color: #454745;">Billing address</h3>
             <div>{{sel.street}}</div>
@@ -147,7 +182,7 @@ a{color:#163300}a:hover{color:#0e2100}
           <h3 style="margin: 0; font-size: 13px; font-weight: 600; color: #454745;">Payment methods on file</h3>
           <sc-for list="{{sel.methods}}" as="m" hint-placeholder-count="1">
             <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E1E5DC; border-radius: 12px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h3"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M3 6h18v12H3zM3 10h18M7 15h3"></path></svg>
               <span style="flex: 1; font-weight: 600;">{{m.label}}</span>
               <span style="font-size: 12px; color: #5D605B;">{{m.note}}</span>
             </div>
@@ -158,77 +193,148 @@ a{color:#163300}a:hover{color:#0e2100}
         </div>
 
         <div style="padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 4px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
             <h3 style="margin: 0; font-size: 13px; font-weight: 600; color: #454745;">Invoice history</h3>
-            <a href="#statement" style="font-size: 13px; font-weight: 600;">View statement</a>
+            <button type="button" onClick="{{downloadStatement}}" style="padding: 0; border: 0; background: transparent; font: 600 13px Inter, sans-serif; color: #163300; text-decoration: underline; cursor: pointer;">Download statement</button>
           </div>
           <sc-for list="{{sel.history}}" as="h" hint-placeholder-count="3">
-            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #EEF0EB; font-size: 14px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 10px 0; border-bottom: 1px solid #EEF0EB; font-size: 14px;">
               <a href="Invoices.dc.html" style="font-weight: 600; font-variant-numeric: tabular-nums;">{{h.num}}</a>
-              <span style="color: #454745; font-size: 13px; flex: 1;">{{h.date}}</span>
+              <span style="color: #454745; font-size: 13px; flex: 1; white-space: nowrap;">{{h.date}}</span>
               <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{h.bg}}; color: {{h.fg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{h.fg}};"></span>{{h.status}}</span>
-              <span style="width: 88px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{h.amount}}</span>
+              <span style="min-width: 80px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{h.amount}}</span>
             </div>
           </sc-for>
+          <sc-if value="{{sel.noHistory}}" hint-placeholder-val="{{false}}">
+            <div style="font-size: 13px; color: #454745; padding: 6px 0;">No invoices yet. Create the first one for this customer.</div>
+          </sc-if>
         </div>
       </aside>
     </div>
   </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { sel: 0 }; }
-  renderVals() {
-    const B = {
-      Paid: ['#E2F6D5', '#2F5711'], Overdue: ['#FBE3DF', '#A8200D'], Unpaid: ['#FFF0B8', '#6B5000'],
-      Partial: ['#E1EEF8', '#1F5E91'], Draft: ['#E8EBE6', '#454745']
-    };
-    const H = (list) => list.map(([num, date, status, amount]) => ({ num, date, status, amount, bg: B[status][0], fg: B[status][1] }));
-    const C = [
-      { name: 'Harbor & Pine Café', initials: 'HP', contact: 'Daniel Okafor', email: 'daniel@harborandpine.cafe', phone: '(415) 555-0193', balance: '$2,480.00', overdue: '$2,480.00', since: 'Mar 2024',
+  constructor(props) {
+    super(props);
+    const H = (list) => list.map(([num, date, status, amount]) => ({ num, date, status, amount }));
+    const customers = [
+      { id: 1, name: 'Harbor & Pine Café', contact: 'Daniel Okafor', email: 'daniel@harborandpine.cafe', phone: '(415) 555-0193', balance: 2480, overdue: 2480, since: 'Mar 2024',
         street: '214 Harbor Way', city: 'Sausalito, CA 94965', shipStreet: 'Same as billing', shipCity: '',
         methods: [{ label: 'Visa ••4242', note: 'Expires 08/28' }],
         history: H([['INV-0142', 'Aug 1, 2026', 'Overdue', '$2,480.00'], ['INV-0145', 'Aug 3, 2026', 'Paid', '$960.00'], ['INV-0131', 'Jun 12, 2026', 'Paid', '$1,320.00']]) },
-      { name: 'Lumen Dental Group', initials: 'LD', contact: 'Dr. Priya Raman', email: 'office@lumendental.com', phone: '(510) 555-0127', balance: '$1,150.00', overdue: '$1,150.00', since: 'Jan 2025',
+      { id: 2, name: 'Lumen Dental Group', contact: 'Dr. Priya Raman', email: 'office@lumendental.com', phone: '(510) 555-0127', balance: 1150, overdue: 1150, since: 'Jan 2025',
         street: '88 Grand Avenue, Suite 210', city: 'Oakland, CA 94612', shipStreet: '88 Grand Avenue, Suite 210', shipCity: 'Oakland, CA 94612',
         methods: [{ label: 'Bank account ••6620', note: 'ACH, verified' }],
         history: H([['INV-0151', 'Aug 27, 2026', 'Overdue', '$1,150.00'], ['INV-0138', 'Jul 9, 2026', 'Paid', '$2,400.00']]) },
-      { name: 'Atlas Freight Co.', initials: 'AF', contact: 'Marcus Bell', email: 'ap@atlasfreight.co', phone: '(650) 555-0175', balance: '$6,300.00', overdue: '$0.00', since: 'Nov 2023',
+      { id: 3, name: 'Atlas Freight Co.', contact: 'Marcus Bell', email: 'ap@atlasfreight.co', phone: '(650) 555-0175', balance: 6300, overdue: 0, since: 'Nov 2023',
         street: '1500 Industrial Road', city: 'San Carlos, CA 94070', shipStreet: 'Dock 4, 1520 Industrial Road', shipCity: 'San Carlos, CA 94070',
         methods: [{ label: 'Bank account ••3381', note: 'ACH, verified' }, { label: 'Amex ••3005', note: 'Expires 02/27' }],
         history: H([['INV-0156', 'Sep 7, 2026', 'Unpaid', '$6,300.00'], ['INV-0153', 'Aug 19, 2026', 'Paid', '$4,150.00'], ['INV-0140', 'Jul 21, 2026', 'Paid', '$3,800.00']]) },
-      { name: 'Greenline Architects', initials: 'GA', contact: 'Sofia Lindqvist', email: 'sofia@greenline.archi', phone: '(415) 555-0162', balance: '$1,875.00', overdue: '$0.00', since: 'Apr 2025',
+      { id: 4, name: 'Greenline Architects', contact: 'Sofia Lindqvist', email: 'sofia@greenline.archi', phone: '(415) 555-0162', balance: 1875, overdue: 0, since: 'Apr 2025',
         street: '600 Battery Street, Floor 4', city: 'San Francisco, CA 94111', shipStreet: 'Same as billing', shipCity: '',
         methods: [],
         history: H([['INV-0157', 'Sep 12, 2026', 'Partial', '$1,875.00'], ['INV-0134', 'Jun 30, 2026', 'Paid', '$2,750.00']]) },
-      { name: 'Oak Street Bakery', initials: 'OB', contact: 'Hannah Cole', email: 'hannah@oakstreetbakery.com', phone: '(415) 555-0119', balance: '$720.00', overdue: '$0.00', since: 'Aug 2025',
+      { id: 5, name: 'Oak Street Bakery', contact: 'Hannah Cole', email: 'hannah@oakstreetbakery.com', phone: '(415) 555-0119', balance: 720, overdue: 0, since: 'Aug 2025',
         street: '1932 Oak Street', city: 'San Francisco, CA 94117', shipStreet: 'Same as billing', shipCity: '',
         methods: [{ label: 'Mastercard ••5510', note: 'Expires 11/27' }],
         history: H([['INV-0160', 'Sep 24, 2026', 'Unpaid', '$720.00'], ['INV-0128', 'May 18, 2026', 'Paid', '$1,080.00']]) },
-      { name: 'Bluebird Yoga', initials: 'BY', contact: 'Leah Martins', email: 'studio@bluebirdyoga.com', phone: '(707) 555-0140', balance: '$0.00', overdue: '$0.00', since: 'Feb 2026',
+      { id: 6, name: 'Bluebird Yoga', contact: 'Leah Martins', email: 'studio@bluebirdyoga.com', phone: '(707) 555-0140', balance: 0, overdue: 0, since: 'Feb 2026',
         street: '45 Kentucky Street', city: 'Petaluma, CA 94952', shipStreet: 'Same as billing', shipCity: '',
         methods: [],
         history: H([['INV-0161', 'Sep 30, 2026', 'Draft', '$540.00'], ['INV-0122', 'Mar 4, 2026', 'Paid', '$680.00']]) },
-      { name: 'Ridge Outdoor Supply', initials: 'RO', contact: 'Tom Alvarez', email: 'tom@ridgeoutdoor.com', phone: '(530) 555-0108', balance: '$0.00', overdue: '$0.00', since: 'Sep 2024',
+      { id: 7, name: 'Ridge Outdoor Supply', contact: 'Tom Alvarez', email: 'tom@ridgeoutdoor.com', phone: '(530) 555-0108', balance: 0, overdue: 0, since: 'Sep 2024',
         street: '310 Commercial Row', city: 'Truckee, CA 96161', shipStreet: 'Warehouse, 12 Pioneer Trail', shipCity: 'Truckee, CA 96161',
         methods: [{ label: 'Visa ••8831', note: 'Expires 05/29' }],
         history: H([['INV-0162', 'Oct 1, 2026', 'Draft', '$3,960.00'], ['INV-0119', 'Feb 10, 2026', 'Paid', '$5,200.00']]) }
     ];
-    const selIdx = this.state.sel;
-    const rows = C.map((c, i) => {
-      const on = i === selIdx;
+    this.state = { customers, sel: 1, query: '', withBalance: false, form: null, formMode: null, formError: '', nextId: 8, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const s = this.state;
+    const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const B = {
+      Paid: ['#E2F6D5', '#2F5711'], Overdue: ['#FBE3DF', '#A8200D'], Unpaid: ['#FFF0B8', '#6B5000'],
+      Partial: ['#E1EEF8', '#1F5E91'], Draft: ['#E8EBE6', '#454745']
+    };
+    const initials = (name) => name.replace(/&/g, ' ').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+    const q = s.query.trim().toLowerCase();
+    const visible = s.customers.filter(c => (!s.withBalance || c.balance > 0) && (!q || [c.name, c.email, c.phone, c.contact].join(' ').toLowerCase().includes(q)));
+    const rows = visible.map(c => {
+      const on = c.id === s.sel;
       return {
-        name: c.name, initials: c.initials, email: c.email, phone: c.phone, balance: c.balance, overdue: c.overdue,
-        isOverdue: c.overdue !== '$0.00', notOverdue: c.overdue === '$0.00',
+        name: c.name, initials: initials(c.name), email: c.email, phone: c.phone, balance: fmt(c.balance), overdue: fmt(c.overdue),
+        isOverdue: c.overdue > 0, notOverdue: !(c.overdue > 0),
         rowBg: on ? '#E2F6D5' : '#FFFFFF', pressed: on ? 'true' : 'false',
         avatarBg: on ? '#163300' : '#E8EBE6', avatarFg: on ? '#9FE870' : '#163300',
-        pick: () => this.setState({ sel: i })
+        pick: () => this.setState({ sel: c.id })
       };
     });
-    const c = C[selIdx];
-    const sel = Object.assign({}, c, { noMethods: c.methods.length === 0 });
-    return { rows, sel };
+    const c = s.customers.find(x => x.id === s.sel) || s.customers[0];
+    const sel = Object.assign({}, c, {
+      initials: initials(c.name), balanceText: fmt(c.balance), overdueText: fmt(c.overdue),
+      noMethods: c.methods.length === 0, noHistory: c.history.length === 0,
+      history: c.history.map(h => Object.assign({}, h, { bg: B[h.status][0], fg: B[h.status][1] }))
+    });
+    const totalB = visible.reduce((a, x) => a + x.balance, 0);
+    const totalO = visible.reduce((a, x) => a + x.overdue, 0);
+    const allB = s.customers.reduce((a, x) => a + x.balance, 0);
+    const allO = s.customers.reduce((a, x) => a + x.overdue, 0);
+    const blank = { name: '', contact: '', email: '', phone: '', street: '', city: '' };
+    const f = s.form || blank;
+    const setF = (k) => (e) => this.setState({ form: Object.assign({}, this.state.form, { [k]: e.target.value }), formError: '' });
+    const formFields = [
+      ['name', 'Customer or business name', 'text', 'e.g. Mission Street Florist'],
+      ['contact', 'Contact name', 'text', 'First and last name'],
+      ['email', 'Email', 'email', 'name@example.com'],
+      ['phone', 'Phone', 'tel', '(415) 555-0100'],
+      ['street', 'Billing address', 'text', 'Street and number'],
+      ['city', 'City, state and ZIP', 'text', 'San Francisco, CA 94110']
+    ].map(([k, label, type, placeholder]) => ({ id: 'cf-' + k, label, type, placeholder, value: f[k] || '', set: setF(k) }));
+    const saveForm = () => {
+      const name = (f.name || '').trim();
+      if (!name) { this.setState({ formError: 'Enter a customer or business name.' }); return; }
+      if (s.formMode === 'edit') {
+        this.setState({ customers: s.customers.map(x => x.id === s.sel ? Object.assign({}, x, f, { name }) : x), form: null, formMode: null });
+        this.notify('Saved changes to ' + name);
+      } else {
+        const n = { id: s.nextId, name, contact: f.contact || '—', email: f.email || '—', phone: f.phone || '—', balance: 0, overdue: 0, since: 'Oct 2026',
+          street: f.street || '—', city: f.city || '', shipStreet: 'Same as billing', shipCity: '', methods: [], history: [] };
+        this.setState({ customers: s.customers.concat([n]), sel: s.nextId, nextId: s.nextId + 1, form: null, formMode: null, query: '', withBalance: false });
+        this.notify(name + ' added to customers');
+      }
+    };
+    const slug = c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return {
+      rows, sel, empty: rows.length === 0,
+      subtitle: s.customers.length + ' customers · ' + fmt(allB) + ' outstanding, ' + fmt(allO) + ' of it overdue',
+      totalBalance: fmt(totalB), totalOverdue: fmt(totalO),
+      query: s.query, setQuery: (e) => this.setState({ query: e.target.value }),
+      withBalance: s.withBalance, balancePressed: s.withBalance ? 'true' : 'false',
+      balanceBg: s.withBalance ? '#E2F6D5' : '#FFFFFF', balanceBorder: s.withBalance ? '#163300' : '#C9CEC3',
+      toggleBalance: () => this.setState({ withBalance: !s.withBalance }),
+      exportCsv: () => this.notify('Exported customers.csv (' + visible.length + ' customers)'),
+      importCsv: () => this.notify('CSV import isn’t part of this prototype yet'),
+      importGoogle: () => this.notify('Google Contacts import isn’t part of this prototype yet'),
+      sendStatement: () => this.notify('Statement sent to ' + c.email),
+      downloadStatement: () => this.notify('Downloaded statement-' + slug + '.pdf'),
+      openAdd: () => this.setState({ form: Object.assign({}, blank), formMode: 'add', formError: '' }),
+      openEdit: () => this.setState({ form: { name: c.name, contact: c.contact, email: c.email, phone: c.phone, street: c.street, city: c.city }, formMode: 'edit', formError: '' }),
+      formOpen: !!s.form, formTitle: s.formMode === 'edit' ? 'Edit ' + c.name : 'Add a customer',
+      saveLabel: s.formMode === 'edit' ? 'Save changes' : 'Add customer',
+      formFields, formError: s.formError, saveForm,
+      closeForm: () => this.setState({ form: null, formMode: null, formError: '' }),
+      toast: s.toast
+    };
   }
 }
 </script>

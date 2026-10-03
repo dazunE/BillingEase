@@ -27,8 +27,65 @@ a{color:#163300}a:hover{color:#0e2100}
         <p style="margin: 0; font-size: 15px; color: #454745;">Everyone you pay through BillingEase payroll, with their pay, tax setup and paystubs.</p>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Add a contractor</button>
-        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+        <button type="button" onClick="{{addCon}}" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Add a contractor</button>
+        <sc-if value="{{modalOpen}}" hint-placeholder-val="{{false}}">
+          <div style="position: fixed; inset: 0; z-index: 50; background: rgba(14,15,12,0.45); display: flex; align-items: center; justify-content: center; padding: 16px 0; overflow-y: auto;">
+            <div role="dialog" aria-modal="true" aria-labelledby="add-h" style="width: calc(100% - 32px); max-width: 520px; box-sizing: border-box; margin: auto; background: #FFFFFF; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px; color: #163300; text-align: left;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <h2 id="add-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{m.title}}</h2>
+                  <p style="margin: 0; font-size: 14px; color: #454745; line-height: 1.45;">{{m.sub}}</p>
+                </div>
+                <button type="button" aria-label="Close" onClick="{{closeModal}}" style="flex: none; width: 40px; height: 40px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+                </button>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+                <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
+                  <label for="add-name" style="font-size: 13px; font-weight: 600;">Full name</label>
+                  <input id="add-name" type="text" placeholder="e.g. Taylor Brooks" value="{{m.name}}" onChange="{{m.onName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+                </div>
+                <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
+                  <label for="add-role" style="font-size: 13px; font-weight: 600;">{{m.roleLabel}}</label>
+                  <input id="add-role" type="text" placeholder="{{m.rolePh}}" value="{{m.role}}" onChange="{{m.onRole}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <label for="add-email" style="font-size: 13px; font-weight: 600;">Email (we&#39;ll send them an invite to add their own details)</label>
+                <input id="add-email" type="email" placeholder="name@example.com" value="{{m.email}}" onChange="{{m.onEmail}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+                <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
+                  <label for="add-pay" style="font-size: 13px; font-weight: 600;">Pay type</label>
+                  <sc-if value="{{m.isEmp}}" hint-placeholder-val="{{false}}">
+                    <select id="add-pay" value="{{m.payType}}" onChange="{{m.onPay}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; padding: 0 12px;">
+                      <option value="Hourly">Hourly</option>
+                      <option value="Salary">Salary</option>
+                    </select>
+                  </sc-if>
+                  <sc-if value="{{m.isCon}}" hint-placeholder-val="{{true}}">
+                    <select id="add-pay" value="{{m.payType}}" onChange="{{m.onPay}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; padding: 0 12px;">
+                      <option value="Per project">Per project</option>
+                      <option value="Hourly">Hourly</option>
+                    </select>
+                  </sc-if>
+                </div>
+                <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
+                  <label for="add-rate" style="font-size: 13px; font-weight: 600;">{{m.rateLabel}}</label>
+                  <input id="add-rate" type="text" inputmode="decimal" placeholder="0.00" value="{{m.rate}}" onChange="{{m.onRate}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; font-variant-numeric: tabular-nums;">
+                </div>
+              </div>
+              <sc-if value="{{m.error}}" hint-placeholder-val="{{false}}">
+                <div role="alert" style="padding: 10px 14px; border-radius: 10px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{m.error}}</div>
+              </sc-if>
+              <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;">
+                <button type="button" onClick="{{closeModal}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Cancel</button>
+                <button type="button" onClick="{{savePerson}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">{{m.saveLabel}}</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <button type="button" onClick="{{addEmp}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Add an employee
         </button>
@@ -43,9 +100,9 @@ a{color:#163300}a:hover{color:#0e2100}
       <div style="flex: 1 1 340px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
         <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
           <label for="inv-email" style="font-size: 13px; font-weight: 600; color: #FFFFFF;">Work email</label>
-          <input id="inv-email" type="email" placeholder="new.hire@northwind.studio" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+          <input id="inv-email" type="email" placeholder="new.hire@northwind.studio" value="{{invEmail}}" onChange="{{onInvEmail}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
         </div>
-        <button type="button" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Send invite</button>
+        <button type="button" onClick="{{sendInvite}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Send invite</button>
       </div>
     </section>
 
@@ -65,17 +122,15 @@ a{color:#163300}a:hover{color:#0e2100}
           <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search people</span>
-            <input type="search" placeholder="Search by name or role" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 180px; background: transparent;">
+            <input type="search" placeholder="Search by name or role" value="{{query}}" onChange="{{onQuery}}" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 180px; max-width: 100%; min-width: 0; background: transparent;">
           </label>
         </div>
         <div style="overflow-x: auto;">
-          <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px;">
+          <table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px;">
             <thead>
               <tr style="text-align: left; color: #454745;">
                 <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Name</th>
-                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Role</th>
-                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Pay type</th>
-                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Rate</th>
+                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Pay</th>
                 <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Status</th>
                 <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Direct deposit</th>
               </tr>
@@ -85,17 +140,26 @@ a{color:#163300}a:hover{color:#0e2100}
                 <tr style="background: {{r.rowBg}};">
                   <td style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB;">
                     <button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="display: flex; align-items: center; gap: 10px; border: 0; background: transparent; padding: 4px 0; font: 600 14px Inter, sans-serif; color: #163300; cursor: pointer; text-align: left;">
-                      <span style="width: 32px; height: 32px; border-radius: 9999px; background: #E8EBE6; color: #163300; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">{{r.initials}}</span>
-                      <span style="text-decoration: underline; text-underline-offset: 3px;">{{r.name}}</span>
+                      <span style="width: 32px; height: 32px; border-radius: 9999px; background: #E8EBE6; color: #163300; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none;">{{r.initials}}</span>
+                      <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                        <span style="text-decoration: underline; text-underline-offset: 3px; white-space: nowrap;">{{r.name}}</span>
+                        <span style="font-weight: 400; font-size: 13px; color: #454745;">{{r.role}}</span>
+                      </span>
                     </button>
                   </td>
-                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.role}}</td>
-                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.payType}}</td>
-                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.rate}}</td>
+                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; text-align: right;">
+                    <div style="font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;">{{r.rate}}</div>
+                    <div style="font-size: 13px; color: #454745;">{{r.payType}}</div>
+                  </td>
                   <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{r.badgeBg}}; color: {{r.badgeFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.status}}</span></td>
                   <td style="padding: 14px 20px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.dd}}</td>
                 </tr>
               </sc-for>
+              <sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+                <tr>
+                  <td colspan="4" style="padding: 24px 20px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{noRowsText}}</td>
+                </tr>
+              </sc-if>
             </tbody>
           </table>
         </div>
@@ -103,55 +167,135 @@ a{color:#163300}a:hover{color:#0e2100}
       </section>
 
       <aside aria-labelledby="det-h" style="flex: 1 1 360px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
-        <div style="padding: 20px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #E1E5DC;">
-          <span style="width: 48px; height: 48px; border-radius: 9999px; background: #163300; color: #9FE870; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; flex: none;">{{sel.initials}}</span>
-          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
-            <h2 id="det-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{sel.name}}</h2>
-            <span style="font-size: 13px; color: #454745;">{{sel.role}} · since {{sel.start}}</span>
+        <sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+          <div style="padding: 20px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #E1E5DC;">
+            <span style="width: 48px; height: 48px; border-radius: 9999px; background: #163300; color: #9FE870; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; flex: none;">{{sel.initials}}</span>
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+              <h2 id="det-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{sel.name}}</h2>
+              <span style="font-size: 13px; color: #454745;">{{sel.role}} · since {{sel.start}}</span>
+            </div>
+            <sc-if value="{{viewMode}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{startEdit}}" aria-label="{{sel.editLabel}}" style="flex: none; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Edit</button>
+            </sc-if>
           </div>
-          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Edit</button>
-        </div>
-        <sc-for list="{{sel.sections}}" as="sec" hint-placeholder-count="5">
-          <div style="padding: 16px 20px; border-bottom: 1px solid #EEF0EB; display: flex; flex-direction: column; gap: 8px;">
-            <h3 style="margin: 0; font-size: 13px; font-weight: 700; color: #163300;">{{sec.title}}</h3>
-            <sc-for list="{{sec.items}}" as="it" hint-placeholder-count="3">
-              <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;">
-                <span style="color: #454745;">{{it.k}}</span>
-                <span style="font-weight: 600; text-align: right; font-variant-numeric: tabular-nums;">{{it.v}}</span>
+          <sc-if value="{{editMode}}" hint-placeholder-val="{{false}}">
+          <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+            <h3 style="margin: 0; font-size: 13px; font-weight: 700;">Edit details</h3>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="ed-name" style="font-size: 13px; font-weight: 600;">Full name</label>
+              <input id="ed-name" type="text" value="{{ed.name}}" onChange="{{ed.onName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="ed-role" style="font-size: 13px; font-weight: 600;">Role</label>
+              <input id="ed-role" type="text" value="{{ed.role}}" onChange="{{ed.onRole}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="ed-email" style="font-size: 13px; font-weight: 600;">Email</label>
+              <input id="ed-email" type="email" value="{{ed.email}}" onChange="{{ed.onEmail}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="ed-status" style="font-size: 13px; font-weight: 600;">Status</label>
+              <select id="ed-status" value="{{ed.status}}" onChange="{{ed.onStatus}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300; padding: 0 12px;">
+                <option value="Active">Active</option>
+                <option value="Onboarding">Onboarding</option>
+                <option value="Terminated">Terminated</option>
+              </select>
+            </div>
+            <sc-if value="{{ed.error}}" hint-placeholder-val="{{false}}">
+              <div role="alert" style="padding: 10px 14px; border-radius: 10px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{ed.error}}</div>
+            </sc-if>
+            <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;">
+              <button type="button" onClick="{{cancelEdit}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Cancel</button>
+              <button type="button" onClick="{{saveEdit}}" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Save changes</button>
+            </div>
+          </div>
+          </sc-if>
+          <sc-if value="{{viewMode}}" hint-placeholder-val="{{true}}">
+            <sc-for list="{{sel.sections}}" as="sec" hint-placeholder-count="5">
+              <div style="padding: 16px 20px; border-bottom: 1px solid #EEF0EB; display: flex; flex-direction: column; gap: 8px;">
+                <h3 style="margin: 0; font-size: 13px; font-weight: 700; color: #163300;">{{sec.title}}</h3>
+                <sc-for list="{{sec.items}}" as="it" hint-placeholder-count="3">
+                  <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;">
+                    <span style="color: #454745;">{{it.k}}</span>
+                    <span style="font-weight: 600; text-align: right; font-variant-numeric: tabular-nums;">{{it.v}}</span>
+                  </div>
+                </sc-for>
               </div>
             </sc-for>
+            <div style="padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 8px;">
+              <h3 style="margin: 0; font-size: 13px; font-weight: 700;">{{sel.stubTitle}}</h3>
+              <sc-if value="{{sel.hasStubs}}" hint-placeholder-val="{{true}}">
+                <sc-for list="{{sel.stubs}}" as="p" hint-placeholder-count="3">
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #EEF0EB; font-size: 14px;">
+                    <span style="flex: 1; display: flex; flex-direction: column; gap: 1px;">
+                      <span style="font-weight: 600;">{{p.date}}</span>
+                      <span style="font-size: 13px; color: #5D605B;">{{p.period}}</span>
+                    </span>
+                    <span style="font-weight: 600; font-variant-numeric: tabular-nums;">{{p.net}}</span>
+                    <button type="button" aria-label="{{p.dl}}" onClick="{{p.download}}" style="flex: none; width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+                    </button>
+                  </div>
+                </sc-for>
+              </sc-if>
+              <sc-if value="{{sel.noStubs}}" hint-placeholder-val="{{false}}">
+                <div style="padding: 12px; border-radius: 12px; background: #F2F4EF; font-size: 14px; color: #454745;">{{sel.emptyStubs}}</div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{noSel}}" hint-placeholder-val="{{false}}">
+          <div style="padding: 32px 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+            <span style="width: 48px; height: 48px; border-radius: 9999px; background: #E8EBE6; display: flex; align-items: center; justify-content: center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"></path></svg>
+            </span>
+            <h2 id="det-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">{{emptyTitle}}</h2>
+            <p style="margin: 0; font-size: 14px; color: #454745; line-height: 1.5;">{{emptyText}}</p>
           </div>
-        </sc-for>
-        <div style="padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 8px;">
-          <h3 style="margin: 0; font-size: 13px; font-weight: 700;">{{sel.stubTitle}}</h3>
-          <sc-if value="{{sel.hasStubs}}" hint-placeholder-val="{{true}}">
-            <sc-for list="{{sel.stubs}}" as="p" hint-placeholder-count="3">
-              <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #EEF0EB; font-size: 14px;">
-                <span style="flex: 1; display: flex; flex-direction: column; gap: 1px;">
-                  <span style="font-weight: 600;">{{p.date}}</span>
-                  <span style="font-size: 13px; color: #5D605B;">{{p.period}}</span>
-                </span>
-                <span style="font-weight: 600; font-variant-numeric: tabular-nums;">{{p.net}}</span>
-                <button type="button" aria-label="{{p.dl}}" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
-                </button>
-              </div>
-            </sc-for>
-          </sc-if>
-          <sc-if value="{{sel.noStubs}}" hint-placeholder-val="{{false}}">
-            <div style="padding: 12px; border-radius: 12px; background: #F2F4EF; font-size: 14px; color: #454745;">{{sel.emptyStubs}}</div>
-          </sc-if>
-        </div>
+        </sc-if>
       </aside>
     </div>
   </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { tab: 'emp', sel: 'jordan' }; }
-  renderVals() {
-    const S = { Active: ['#E2F6D5', '#2F5711'], Onboarding: ['#E1EEF8', '#1F5E91'], Terminated: ['#E8EBE6', '#454745'] };
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'emp', selByTab: { emp: 'jordan', con: null }, people: this.seedPeople(), query: '', invEmail: '', modal: null, edit: null, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
+  initialsOf(name) { const parts = name.trim().split(/\s+/); return ((parts[0] || '')[0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase(); }
+  newPerson(kind, f) {
+    const amt = Math.round(parseFloat(String(f.rate).replace(/[$,\s]/g, '')) * 100) / 100;
+    const money = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const rate = f.payType === 'Hourly' ? money(amt) + '/hr' : f.payType === 'Salary' ? '$' + Math.round(amt).toLocaleString('en-US') + '/yr' : money(amt);
+    const rateLong = f.payType === 'Hourly' ? money(amt) + ' per hour' : f.payType === 'Salary' ? money(amt) + ' per year' : money(amt) + ' per project';
+    const id = 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1000);
+    const invite = f.email ? 'Sent Oct 3 · not completed' : 'Not sent yet';
+    const base = { id, kind, name: f.name, initials: this.initialsOf(f.name), role: f.role, payType: f.payType, rate, status: 'Onboarding', start: 'Oct 2026', stubs: [], email: f.email };
+    if (kind === 'emp') {
+      return Object.assign(base, { dd: 'Waiting on employee', sections: [
+        { title: 'Personal info', items: [{ k: 'Email', v: f.email || '—' }, { k: 'Invite', v: invite }] },
+        { title: 'Tax setup (W-4)', items: [{ k: 'Status', v: 'Waiting on employee' }, { k: 'Work state', v: 'New York' }] },
+        { title: 'Pay', items: [{ k: 'Pay rate', v: rateLong }, { k: 'Schedule', v: 'Semi-monthly' }, { k: 'First pay date', v: 'Oct 20, 2026' }] },
+        { title: 'Deductions & benefits', items: [{ k: 'Health insurance', v: 'Eligible Jan 1, 2027' }] },
+        { title: 'Time off', items: [{ k: 'Vacation', v: 'Accrues from start date' }] }
+      ] });
+    }
+    return Object.assign(base, { dd: 'Waiting on contractor', sections: [
+      { title: 'Contractor info', items: [{ k: 'Email', v: f.email || '—' }, { k: 'Invite', v: invite }] },
+      { title: 'Tax forms', items: [{ k: 'W-9', v: 'Waiting on contractor' }] },
+      { title: 'Payments', items: [{ k: 'Paid in 2026', v: '$0.00' }, { k: 'Default amount', v: rateLong }] }
+    ] });
+  }
+  seedPeople() {
     const stubs = (nets) => [['Sep 19, 2026', 'Sep 1 – 15'], ['Sep 4, 2026', 'Aug 16 – 31'], ['Aug 20, 2026', 'Aug 1 – 15']].map(([date, period], i) => ({ date, period, net: nets[i], dl: 'Download paystub for ' + date }));
     const people = [
       { id: 'jordan', kind: 'emp', name: 'Jordan Lee', initials: 'JL', role: 'Senior Designer', payType: 'Salary', rate: '$78,000/yr', status: 'Active', dd: 'Set up · Chase ••2281', start: 'Mar 2023',
@@ -213,29 +357,109 @@ class Component extends DCLogic {
           { title: 'Payments', items: [{ k: 'Paid in 2026', v: '$0.00' }] }
         ], stubs: [] }
     ];
-    const tab = this.state.tab;
-    const list = people.filter((p) => p.kind === tab);
-    const selP = list.find((p) => p.id === this.state.sel) || list[0];
+    people.forEach((p) => { const e = p.sections[0].items.find((it) => it.k === 'Email'); p.email = e ? e.v : ''; });
+    return people;
+  }
+  renderVals() {
+    const st = this.state;
+    const S = { Active: ['#E2F6D5', '#2F5711'], Onboarding: ['#E1EEF8', '#1F5E91'], Terminated: ['#E8EBE6', '#454745'] };
+    const people = st.people;
+    const tab = st.tab;
+    const q = (st.query || '').trim().toLowerCase();
+    const all = people.filter((p) => p.kind === tab);
+    const list = all.filter((p) => !q || (p.name + ' ' + p.role + ' ' + p.status).toLowerCase().indexOf(q) >= 0);
+    const selP = people.find((p) => p.id === st.selByTab[tab] && p.kind === tab) || null;
+    const selectId = (id) => this.setState({ selByTab: Object.assign({}, st.selByTab, { [tab]: id }), edit: null });
     const rows = list.map((p) => ({
       name: p.name, initials: p.initials, role: p.role, payType: p.payType, rate: p.rate, status: p.status, dd: p.dd,
       badgeBg: S[p.status][0], badgeFg: S[p.status][1],
-      rowBg: p.id === selP.id ? '#E2F6D5' : '#FFFFFF', pressed: p.id === selP.id ? 'true' : 'false',
-      pick: () => this.setState({ sel: p.id })
+      rowBg: selP && p.id === selP.id ? '#E2F6D5' : '#FFFFFF', pressed: selP && p.id === selP.id ? 'true' : 'false',
+      pick: () => selectId(p.id)
     }));
     const tabs = [['emp', 'Employees'], ['con', 'Contractors']].map(([id, label]) => ({
       label, count: people.filter((p) => p.kind === id).length, on: tab === id, off: tab !== id,
-      pick: () => this.setState({ tab: id, sel: people.find((p) => p.kind === id).id })
+      pick: () => this.setState({ tab: id, edit: null })
     }));
-    const isCon = selP.kind === 'con';
+    const P = selP || { name: '', initials: '', role: '', start: '', sections: [], stubs: [], kind: tab };
+    const isCon = P.kind === 'con';
     const sel = {
-      name: selP.name, initials: selP.initials, role: selP.role, start: selP.start, sections: selP.sections,
-      stubs: selP.stubs, hasStubs: selP.stubs.length > 0, noStubs: selP.stubs.length === 0,
+      name: P.name, initials: P.initials, role: P.role, start: P.start, sections: P.sections, editLabel: 'Edit ' + P.name,
+      stubs: P.stubs.map((x) => Object.assign({}, x, { download: () => this.notify('Downloaded ' + (isCon ? 'payment receipt' : 'paystub') + ' for ' + P.name + ' · ' + x.date) })),
+      hasStubs: P.stubs.length > 0, noStubs: P.stubs.length === 0,
       stubTitle: isCon ? 'Recent payments' : 'Paystubs',
       emptyStubs: isCon ? 'No payments yet. Payments appear here once the W-9 is on file.' : 'No paystubs yet. The first one will appear after the Oct 20 payroll.'
     };
+    // add-person modal
+    const md = st.modal;
+    const setM = (k) => (e) => this.setState({ modal: Object.assign({}, st.modal, { [k]: e.target.value, error: null }) });
+    const openAdd = (kind) => () => this.setState({ modal: { kind, name: '', role: '', email: '', payType: kind === 'emp' ? 'Hourly' : 'Per project', rate: '', error: null }, edit: null });
+    const m = md ? {
+      title: md.kind === 'emp' ? 'Add an employee' : 'Add a contractor',
+      sub: md.kind === 'emp' ? 'They’ll be added as Onboarding and can join the Oct 20 payroll once their W-4 and bank details are in.' : 'Contractors are paid without withholding. We’ll ask them for a W-9 so you can file their 1099-NEC.',
+      roleLabel: md.kind === 'emp' ? 'Job title' : 'Work they do', rolePh: md.kind === 'emp' ? 'e.g. Junior Designer' : 'e.g. Motion graphics',
+      rateLabel: md.payType === 'Hourly' ? 'Hourly rate (USD)' : md.payType === 'Salary' ? 'Annual salary (USD)' : 'Amount per project (USD)',
+      saveLabel: md.kind === 'emp' ? 'Add employee' : 'Add contractor',
+      name: md.name, role: md.role, email: md.email, payType: md.payType, rate: md.rate, error: md.error, isEmp: md.kind === 'emp', isCon: md.kind === 'con',
+      onName: setM('name'), onRole: setM('role'), onEmail: setM('email'), onPay: setM('payType'), onRate: setM('rate')
+    } : {};
+    const validEmail = (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
+    const savePerson = () => {
+      if (!md) return;
+      const f = { name: md.name.trim(), role: md.role.trim(), email: md.email.trim(), payType: md.payType, rate: md.rate };
+      let error = null;
+      if (!f.name) error = 'Enter their full name.';
+      else if (!f.role) error = md.kind === 'emp' ? 'Add a job title.' : 'Describe the work they do.';
+      else if (f.email && !validEmail(f.email)) error = 'That email address doesn’t look right.';
+      else if (!(parseFloat(String(f.rate).replace(/[$,\s]/g, '')) > 0)) error = 'Enter a pay amount greater than $0.';
+      if (error) { this.setState({ modal: Object.assign({}, md, { error }) }); return; }
+      const person = this.newPerson(md.kind, f);
+      this.setState({ people: st.people.concat([person]), tab: md.kind, query: '', selByTab: Object.assign({}, st.selByTab, { [md.kind]: person.id }), modal: null, edit: null });
+      this.notify(f.name + ' added' + (f.email ? ' · invite sent to ' + f.email : ''));
+    };
+    // inline edit
+    const ed0 = st.edit;
+    const setE = (k) => (e) => this.setState({ edit: Object.assign({}, st.edit, { [k]: e.target.value, error: null }) });
+    const ed = ed0 ? { name: ed0.name, role: ed0.role, email: ed0.email, status: ed0.status, error: ed0.error, onName: setE('name'), onRole: setE('role'), onEmail: setE('email'), onStatus: setE('status') } : {};
+    const saveEdit = () => {
+      if (!ed0 || !selP) return;
+      const name = ed0.name.trim(), role = ed0.role.trim(), email = ed0.email.trim();
+      let error = null;
+      if (!name) error = 'Name can’t be empty.'; else if (!role) error = 'Role can’t be empty.'; else if (email && !validEmail(email)) error = 'That email address doesn’t look right.';
+      if (error) { this.setState({ edit: Object.assign({}, ed0, { error }) }); return; }
+      const people2 = st.people.map((p) => p.id !== selP.id ? p : Object.assign({}, p, {
+        name, role, email, status: ed0.status, initials: this.initialsOf(name),
+        dd: ed0.status === 'Terminated' ? 'Removed' : p.dd === 'Removed' ? 'Waiting on ' + (p.kind === 'emp' ? 'employee' : 'contractor') : p.dd,
+        sections: p.sections.map((sec, i) => i === 0 ? Object.assign({}, sec, { items: sec.items.map((it) => it.k === 'Email' ? { k: 'Email', v: email || '—' } : it) }) : sec)
+      }));
+      this.setState({ people: people2, edit: null });
+      this.notify('Saved changes to ' + name);
+    };
+    const sendInvite = () => {
+      const email = (st.invEmail || '').trim();
+      if (!validEmail(email)) { this.notify('Enter a work email address first'); return; }
+      const local = email.split('@')[0].replace(/[._-]+/g, ' ').trim();
+      const name = local.split(' ').filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join(' ') || email;
+      const person = this.newPerson('emp', { name, role: 'New hire · role not set', email, payType: 'Hourly', rate: '0' });
+      person.rate = 'Not set'; person.payType = 'Not set';
+      person.sections[2].items[0].v = 'Set when you approve';
+      this.setState({ people: st.people.concat([person]), invEmail: '', tab: 'emp', query: '', selByTab: Object.assign({}, st.selByTab, { emp: person.id }), edit: null });
+      this.notify('Invite sent to ' + email);
+    };
+    const tabWord = tab === 'emp' ? 'employee' : 'contractor';
     return {
-      tabs, rows, sel,
-      tableNote: tab === 'emp' ? '3 active employees are included in the Sep 16 – 30 payroll. Terminated employees stay here for year-end W-2s.' : 'Contractors are paid without tax withholding. BillingEase files 1099-NEC forms for anyone paid $600 or more in a year.'
+      tabs, rows, sel, m, ed, toast: st.toast,
+      hasSel: !!selP, noSel: !selP,
+      emptyTitle: 'Select a ' + tabWord,
+      emptyText: tab === 'emp' ? 'Pick someone in the list to see their pay, W-4 tax setup, benefits and paystubs.' : 'Pick a contractor in the list to see their W-9, 1099-NEC status and payments.',
+      editMode: !!ed0, viewMode: !ed0,
+      startEdit: () => selP && this.setState({ edit: { name: selP.name, role: selP.role, email: selP.email || '', status: selP.status, error: null } }),
+      cancelEdit: () => this.setState({ edit: null }), saveEdit,
+      modalOpen: !!md, addEmp: openAdd('emp'), addCon: openAdd('con'), closeModal: () => this.setState({ modal: null }), savePerson,
+      invEmail: st.invEmail, onInvEmail: (e) => this.setState({ invEmail: e.target.value }), sendInvite,
+      query: st.query, onQuery: (e) => this.setState({ query: e.target.value }),
+      noRows: list.length === 0,
+      noRowsText: all.length === 0 ? 'No ' + tabWord + 's yet.' : 'No ' + tabWord + 's match “' + st.query + '”.',
+      tableNote: tab === 'emp' ? all.filter((p) => p.status === 'Active').length + ' active employees are included in the Sep 16 – 30 payroll. Terminated employees stay here for year-end W-2s.' : 'Contractors are paid without tax withholding. BillingEase files 1099-NEC forms for anyone paid $600 or more in a year.'
     };
   }
 }

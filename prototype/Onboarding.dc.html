@@ -17,7 +17,7 @@ a{color:#163300}a:hover{color:#0e2100}
 </helmet>
 <div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #FFFFFF; font-family: Inter, system-ui, sans-serif; color: #163300;">
 
-  <main style="flex: 999 1 640px; min-width: 0; box-sizing: border-box; padding: 28px 56px 32px; display: flex; flex-direction: column; gap: 28px;">
+  <main style="flex: 999 1 640px; min-width: 0; box-sizing: border-box; padding: 28px clamp(20px, 5vw, 56px) 32px; display: flex; flex-direction: column; gap: 28px;">
     <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
       <a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
         <span style="width: 32px; height: 32px; border-radius: 10px; background: #9FE870; display: flex; align-items: center; justify-content: center;">
@@ -51,11 +51,12 @@ a{color:#163300}a:hover{color:#0e2100}
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label for="ob-name" style="font-size: 13px; font-weight: 600;">Business name</label>
-              <input id="ob-name" type="text" value="Northwind Studio" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+              <input id="ob-name" type="text" value="{{bizName}}" onChange="{{setBizName}}" aria-invalid="{{nameInvalid}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{nameBorder}}; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+              <sc-if value="{{nameErr}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{nameErr}}</span></sc-if>
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label for="ob-owner" style="font-size: 13px; font-weight: 600;">Your name</label>
-              <input id="ob-owner" type="text" value="Maya Chen" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+              <input id="ob-owner" type="text" value="{{owner}}" onChange="{{setOwner}}" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
             </div>
           </div>
           <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px;">
@@ -77,8 +78,8 @@ a{color:#163300}a:hover{color:#0e2100}
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label for="ob-country" style="font-size: 13px; font-weight: 600;">Country</label>
-              <select id="ob-country" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
-                <option selected="selected">United States</option>
+              <select id="ob-country" value="{{country}}" onChange="{{setCountry}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+                <option>United States</option>
                 <option>Canada</option>
                 <option>United Kingdom</option>
                 <option>Australia</option>
@@ -86,8 +87,8 @@ a{color:#163300}a:hover{color:#0e2100}
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label for="ob-currency" style="font-size: 13px; font-weight: 600;">Business currency</label>
-              <select id="ob-currency" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
-                <option selected="selected">USD – US dollar</option>
+              <select id="ob-currency" value="{{currency}}" onChange="{{setCurrency}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 15px Inter, sans-serif; color: #163300;">
+                <option>USD – US dollar</option>
                 <option>CAD – Canadian dollar</option>
                 <option>GBP – British pound</option>
                 <option>AUD – Australian dollar</option>
@@ -146,7 +147,7 @@ a{color:#163300}a:hover{color:#0e2100}
           <label style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search for your bank</span>
-            <input type="search" placeholder="Search 10,000+ banks and credit unions" style="flex: 1; border: 0; outline: 0; font: 400 15px Inter, sans-serif; color: #163300; background: transparent;">
+            <input type="search" placeholder="Search 10,000+ banks and credit unions" value="{{bankQuery}}" onChange="{{setBankQuery}}" style="flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; font: 400 15px Inter, sans-serif; color: #163300; background: transparent;">
           </label>
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;">
             <sc-for list="{{banks}}" as="b" hint-placeholder-count="8">
@@ -164,9 +165,15 @@ a{color:#163300}a:hover{color:#0e2100}
               </sc-if>
             </sc-for>
           </div>
+          <sc-if value="{{noBanks}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 20px; border: 1px dashed #C9CEC3; border-radius: 16px; background: #F7F8F5; font-size: 14px; color: #454745;">
+              <strong style="color: #163300; font-weight: 600;">No banks match &#8220;{{bankQuery}}&#8221;</strong>
+              <span>Check the spelling, upload a CSV statement, or skip this step and connect later from Transactions.</span>
+            </div>
+          </sc-if>
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: 14px; color: #454745;">
             <span>Can&#39;t find it?</span>
-            <a href="#upload" style="font-weight: 600;">Upload a bank statement (CSV)</a>
+            <button type="button" onClick="{{upload}}" style="min-height: 36px; padding: 0; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Upload a bank statement (CSV)</button>
             <button type="button" onClick="{{skip}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; text-decoration: underline; cursor: pointer;">Skip for now</button>
           </div>
         </div>
@@ -175,8 +182,8 @@ a{color:#163300}a:hover{color:#0e2100}
       <sc-if value="{{s4}}" hint-placeholder-val="{{false}}">
         <div style="display: flex; flex-direction: column; gap: 24px;">
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 900; font-size: 56px; line-height: 1.02; letter-spacing: -0.035em;">You&#39;re all set, Maya.</h1>
-            <p style="margin: 0; font-size: 15px; color: #454745;">Here&#39;s what we set up for Northwind Studio. You can change any of this later in Settings.</p>
+            <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 900; font-size: 56px; line-height: 1.02; letter-spacing: -0.035em;">You&#39;re all set, {{firstName}}.</h1>
+            <p style="margin: 0; font-size: 15px; color: #454745;">Here&#39;s what we set up for {{bizLabel}}. You can change any of this later in Settings.</p>
           </div>
           <dl style="margin: 0; background: #F7F8F5; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
             <sc-for list="{{summary}}" as="r" hint-placeholder-count="5">
@@ -242,13 +249,21 @@ a{color:#163300}a:hover{color:#0e2100}
       Bank-level encryption. Your data is never sold.
     </div>
   </aside>
+<sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+  <div role="status" aria-live="polite" style="pointer-events: none; position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: max-content; z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+    <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+    <span>{{toast}}</span>
+  </div>
+</sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: 1, bizType: 'Agency', goals: ['invoices', 'online', 'expenses'], bank: 'Chase' };
+    this.state = { step: 1, bizName: 'Northwind Studio', owner: 'Maya Chen', country: 'United States', currency: 'USD – US dollar', bizType: 'Agency', goals: ['invoices', 'online', 'expenses'], bank: 'Chase', bankQuery: '', nameTried: false, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600);
   }
   renderVals() {
     const st = this.state;
@@ -284,22 +299,26 @@ class Component extends DCLogic {
       };
     });
     const B = [['Chase', 'CH'], ['Bank of America', 'BA'], ['Wells Fargo', 'WF'], ['Capital One', 'C1'], ['American Express', 'AE'], ['U.S. Bank', 'US'], ['PNC', 'PN'], ['Citi', 'CI'], ['TD Bank', 'TD'], ['Navy Federal CU', 'NF']];
-    const banks = B.map(([name, mono]) => ({
+    const q = (st.bankQuery || '').trim().toLowerCase();
+    const banks = B.filter(([name]) => !q || name.toLowerCase().includes(q)).map(([name, mono]) => ({
       name, mono, on: st.bank === name, off: st.bank !== name,
       pick: () => this.setState({ bank: st.bank === name ? null : name })
     }));
+    const bizLabel = (st.bizName || '').trim() || 'your business';
+    const nameErr = st.nameTried && !(st.bizName || '').trim() ? 'Enter your business name.' : null;
     const goalLabels = G.filter(([id]) => st.goals.includes(id)).map((g) => g[1]);
     const summary = [
-      { label: 'Business', value: 'Northwind Studio · ' + st.bizType },
-      { label: 'Location & currency', value: 'United States · USD' },
+      { label: 'Business', value: bizLabel + ' · ' + st.bizType },
+      { label: 'Owner', value: (st.owner || '').trim() || 'Not added' },
+      { label: 'Location & currency', value: st.country + ' · ' + st.currency.split(' ')[0] },
       { label: 'Starting with', value: goalLabels.length ? goalLabels.join(', ') : 'Nothing picked yet' },
-      { label: 'Bank connection', value: st.bank ? st.bank + ' (connect from Transactions)' : 'Skipped for now' },
+      { label: 'Bank connection', value: st.bank ? st.bank + ' · connected, importing last 90 days' : 'Skipped for now · connect from Transactions' },
       { label: 'Plan', value: 'Starter (free)' }
     ];
     const tips = {
       1: ['Pick the closest match.', 'Your business type sets up a starter chart of accounts with the right income and expense categories. You can rename or add accounts any time.', 'Starter accounts for ' + st.bizType, [['Sales', 'Income'], ['Software & subscriptions', 'Expense'], ['Contractor fees', 'Expense']]],
       2: ['Start with one or two.', 'Most businesses begin with invoicing and connecting a bank. The rest of BillingEase is always one click away in the sidebar.', 'Your dashboard will show', goalLabels.slice(0, 3).map((g) => [g, 'Pinned'])],
-      3: ['Read-only and encrypted.', 'Connecting your bank lets BillingEase import and match transactions automatically, so reconciliation takes minutes instead of hours.', 'Example import · Chase ••4417', [['Figma', '−$45.00'], ['Atlas Freight Co.', '+$4,120.00'], ['WeWork', '−$650.00']]],
+      3: ['Read-only and encrypted.', 'Connecting your bank lets BillingEase import and match transactions automatically, so reconciliation takes minutes instead of hours.', 'Example import · ' + (st.bank || 'Chase') + ' ••4417', [['Figma', '−$45.00'], ['Atlas Freight Co.', '+$4,120.00'], ['WeWork', '−$650.00']]],
       4: ['Send your first invoice today.', 'Customers can pay online straight from the invoice. Payouts usually land in your bank in 2 business days.', 'Next steps', [['Add your logo', '1 min'], ['Create an invoice', '3 min'], ['Turn on online payments', '5 min']]]
     };
     const [tipTitle, tipBody, previewLabel, pr] = tips[step];
@@ -313,7 +332,21 @@ class Component extends DCLogic {
       nextOn: step < 4, nextOff: step === 4,
       nextLabel: step === 3 ? (st.bank ? 'Connect ' + st.bank : 'Continue') : 'Continue',
       back: () => this.setState({ step: Math.max(1, step - 1) }),
-      next: () => this.setState({ step: Math.min(4, step + 1) }),
+      next: () => {
+        if (step === 1 && !(st.bizName || '').trim()) { this.setState({ nameTried: true }); return; }
+        this.setState({ step: Math.min(4, step + 1), nameTried: false });
+      },
+      bizName: st.bizName, owner: st.owner, country: st.country, currency: st.currency, bizLabel,
+      firstName: ((st.owner || '').trim().split(/\s+/)[0]) || 'there',
+      nameErr, nameInvalid: nameErr ? 'true' : 'false', nameBorder: nameErr ? '#A8200D' : '#C9CEC3',
+      setBizName: (e) => this.setState({ bizName: e.target.value }),
+      setOwner: (e) => this.setState({ owner: e.target.value }),
+      setCountry: (e) => this.setState({ country: e.target.value }),
+      setCurrency: (e) => this.setState({ currency: e.target.value }),
+      bankQuery: st.bankQuery, noBanks: banks.length === 0,
+      setBankQuery: (e) => this.setState({ bankQuery: e.target.value }),
+      upload: () => this.notify('Statement upload isn\u2019t part of this prototype yet'),
+      toast: st.toast,
       tipTitle, tipBody, previewLabel, previewRows
     };
   }
