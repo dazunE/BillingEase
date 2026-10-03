@@ -14,7 +14,7 @@
 body{margin:0}
 a{color:#163300}a:hover{color:#0e2100}
 .be-mtoggle{display:none!important}
-@media (max-width: 767px){
+@media (min-width: 320px) and (max-width: 767px){
   .be-mtoggle{display:inline-flex!important}
   .be-nav-body{display:none!important}
   .be-nav.be-open .be-nav-body{display:flex!important}
@@ -116,14 +116,14 @@ a{color:#163300}a:hover{color:#0e2100}
   </div>
   </div>
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
-    <div role="status" aria-live="polite" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; box-shadow: 0 6px 20px rgba(22,51,0,0.22);">
       <span style="width: 24px; height: 24px; border-radius: 9999px; background: #9FE870; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
       <span>{{toast}}</span>
     </div>
   </sc-if>
 </nav>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","default":"dashboard","options":["dashboard","invoices","estimates","payments","customers","products","bills","receipts","vendors","transactions","reconciliation","accounts","payroll","employees","taxes","reports"]},"$preview":{"width":248,"height":1180}}'>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","default":"dashboard","options":["dashboard","invoices","estimates","payments","customers","products","bills","receipts","vendors","transactions","reconciliation","accounts","payroll","employees","taxes","reports"]},"$preview":{"width":248,"height":1380}}'>
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { menuOpen: false, navOpen: false, toast: null }; }
   notify(msg) { this.setState({ toast: msg, menuOpen: false }); clearTimeout(this._toastTimer); this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600); }
