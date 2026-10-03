@@ -85,12 +85,11 @@ a{color:#163300}a:hover{color:#0e2100}
           </div>
         </div>
         <div style="position: relative; overflow-x: auto;">
-          <table style="width: 100%; min-width: 680px; border-collapse: collapse; font-size: 14px;">
+          <table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px;">
             <thead>
               <tr style="text-align: left; color: #454745;">
                 <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Name</th>
-                <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Email</th>
-                <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Phone</th>
+                <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Contact</th>
                 <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Balance</th>
                 <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Overdue</th>
               </tr>
@@ -101,11 +100,13 @@ a{color:#163300}a:hover{color:#0e2100}
                   <td style="padding: 8px 20px; border-bottom: 1px solid #EEF0EB;">
                     <button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0; border: 0; background: transparent; font: 600 14px Inter, sans-serif; color: #163300; cursor: pointer; text-align: left;">
                       <span style="width: 32px; height: 32px; border-radius: 9999px; background: {{r.avatarBg}}; color: {{r.avatarFg}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex: none;">{{r.initials}}</span>
-                      <span style="text-decoration: underline; text-underline-offset: 3px;">{{r.name}}</span>
+                      <span style="text-decoration: underline; text-underline-offset: 3px; white-space: nowrap;">{{r.name}}</span>
                     </button>
                   </td>
-                  <td style="padding: 8px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.email}}</td>
-                  <td style="padding: 8px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; white-space: nowrap;">{{r.phone}}</td>
+                  <td style="padding: 8px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; font-size: 13px; line-height: 1.4;">
+                    <div>{{r.email}}</div>
+                    <div style="white-space: nowrap;">{{r.phone}}</div>
+                  </td>
                   <td style="padding: 8px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.balance}}</td>
                   <td style="padding: 8px 20px; border-bottom: 1px solid #EEF0EB; text-align: right; font-variant-numeric: tabular-nums;">
                     <sc-if value="{{r.isOverdue}}" hint-placeholder-val="{{false}}">
@@ -118,10 +119,10 @@ a{color:#163300}a:hover{color:#0e2100}
                 </tr>
               </sc-for>
               <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
-                <tr><td colspan="5" style="padding: 28px 20px; text-align: center; color: #454745; border-bottom: 1px solid #EEF0EB;">No customers match. Clear the search or the With balance filter.</td></tr>
+                <tr><td colspan="4" style="padding: 28px 20px; text-align: center; color: #454745; border-bottom: 1px solid #EEF0EB;">No customers match. Clear the search or the With balance filter.</td></tr>
               </sc-if>
               <tr>
-                <th scope="row" colspan="3" style="text-align: left; padding: 14px 20px; font-weight: 700;">Total</th>
+                <th scope="row" colspan="2" style="text-align: left; padding: 14px 20px; font-weight: 700;">Total</th>
                 <td style="padding: 14px 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{totalBalance}}</td>
                 <td style="padding: 14px 20px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{totalOverdue}}</td>
               </tr>
@@ -198,11 +199,15 @@ a{color:#163300}a:hover{color:#0e2100}
             <button type="button" onClick="{{downloadStatement}}" style="padding: 0; border: 0; background: transparent; font: 600 13px Inter, sans-serif; color: #163300; text-decoration: underline; cursor: pointer;">Download statement</button>
           </div>
           <sc-for list="{{sel.history}}" as="h" hint-placeholder-count="3">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 10px 0; border-bottom: 1px solid #EEF0EB; font-size: 14px;">
-              <a href="Invoices.dc.html" style="font-weight: 600; font-variant-numeric: tabular-nums;">{{h.num}}</a>
-              <span style="color: #454745; font-size: 13px; flex: 1; white-space: nowrap;">{{h.date}}</span>
-              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{h.bg}}; color: {{h.fg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{h.fg}};"></span>{{h.status}}</span>
-              <span style="min-width: 80px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{h.amount}}</span>
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-bottom: 1px solid #EEF0EB; font-size: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <a href="Invoices.dc.html" style="font-weight: 600; font-variant-numeric: tabular-nums;">{{h.num}}</a>
+                <span style="font-weight: 600; font-variant-numeric: tabular-nums;">{{h.amount}}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <span style="color: #454745; font-size: 13px;">{{h.date}}</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{h.bg}}; color: {{h.fg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{h.fg}};"></span>{{h.status}}</span>
+              </div>
             </div>
           </sc-for>
           <sc-if value="{{sel.noHistory}}" hint-placeholder-val="{{false}}">
