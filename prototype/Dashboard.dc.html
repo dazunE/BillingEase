@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#163300}a:hover{color:#0e2100}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F7F8F5; font-family: Inter, system-ui, sans-serif; color: #163300;">
+  <div style="flex: 1 0 248px; max-width: 100%; display: flex;">
+    <dc-import name="Sidebar" active="dashboard" hint-size="100%,1180px"></dc-import>
+  </div>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="font-size: 13px; font-weight: 600; color: #454745;">Saturday, October 3, 2026</div>
+        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Good morning, Maya</h1>
+        <p style="margin: 0; font-size: 15px; color: #454745;">Here is where Northwind Studio stands today.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <a href="Reports.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: rgba(22,51,0,0.08); color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">View reports</a>
+        <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Create an invoice
+        </a>
+      </div>
+    </header>
+
+    <section aria-labelledby="setup-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 id="setup-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Finish setting up BillingEase</h2>
+          <div style="font-size: 14px; color: #454745;">{{doneCount}} of 4 steps complete</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; min-width: 220px;">
+          <div role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="4" aria-valuenow="{{doneCount}}" style="flex: 1; height: 8px; border-radius: 9999px; background: #E8EBE6; overflow: hidden;">
+            <div style="height: 100%; width: {{progressPct}}; background: #468A1A; border-radius: 9999px;"></div>
+          </div>
+          <span style="font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;">{{progressPct}}</span>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+        <sc-for list="{{steps}}" as="st" hint-placeholder-count="4">
+          <div style="border: 1px solid #E1E5DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: {{st.bg}};">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <sc-if value="{{st.done}}" hint-placeholder-val="{{true}}">
+                <span style="width: 28px; height: 28px; border-radius: 9999px; background: #163300; display: inline-flex; align-items: center; justify-content: center; flex: none;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9FE870" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+                </span>
+              </sc-if>
+              <sc-if value="{{st.todo}}" hint-placeholder-val="{{false}}">
+                <span style="width: 28px; height: 28px; border-radius: 9999px; border: 2px dashed #C9CEC3; box-sizing: border-box; flex: none;"></span>
+              </sc-if>
+              <span style="font-weight: 600; font-size: 15px;">{{st.title}}</span>
+            </div>
+            <div style="font-size: 13px; line-height: 1.45; color: #454745;">{{st.note}}</div>
+            <sc-if value="{{st.done}}" hint-placeholder-val="{{true}}">
+              <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #E2F6D5; color: #2F5711;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Done</span>
+            </sc-if>
+            <sc-if value="{{st.todo}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{st.complete}}" style="align-self: flex-start; min-height: 36px; padding: 0 16px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">{{st.cta}}</button>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-label="Key figures" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 13px; font-weight: 600; color: #454745;">{{k.label}}</div>
+          <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{k.value}}</div>
+          <div style="font-size: 13px; color: #5D605B;">{{k.note}}</div>
+        </div>
+      </sc-for>
+    </section>
+
+    <section aria-labelledby="cf-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 id="cf-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Cash flow</h2>
+          <div style="font-size: 13px; color: #454745;">Cash coming in and going out of Chase Business Checking ••4417 and Amex Business ••1009</div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px;">
+          <div aria-label="Legend" style="display: flex; gap: 16px; font-size: 13px; color: #454745;">
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #468A1A;"></span>Inflow</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #2B7FC4;"></span>Outflow</span>
+          </div>
+          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Last 12 months</button>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+        <div style="flex: 1 1 560px; min-width: 0;">
+          <svg viewBox="0 0 848 264" width="100%" role="img" aria-label="Monthly cash inflow and outflow, October 2025 to September 2026. Inflow ranges from $12,600 in January to $26,100 in September; outflow stays between $12,700 and $17,900." style="display: block; font-family: Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums;">
+<line x1="52" y1="236.0" x2="836" y2="236.0" stroke="#C9CEC3" stroke-width="1"></line>
+<text x="44" y="240.0" text-anchor="end" font-size="12" fill="#5D605B">$0k</text>
+<line x1="52" y1="161.3" x2="836" y2="161.3" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="165.3" text-anchor="end" font-size="12" fill="#5D605B">$10k</text>
+<line x1="52" y1="86.7" x2="836" y2="86.7" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="90.7" text-anchor="end" font-size="12" fill="#5D605B">$20k</text>
+<line x1="52" y1="12.0" x2="836" y2="12.0" stroke="#EEF0EB" stroke-width="1"></line>
+<text x="44" y="16.0" text-anchor="end" font-size="12" fill="#5D605B">$30k</text>
+<path d="M61.7 236.0V104.1a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Oct 2025 inflow: $18,200</title></path>
+<path d="M85.7 236.0V134.7a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Oct 2025 outflow: $14,100</title></path>
+<text x="84.7" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Oct</text>
+<path d="M127.0 236.0V117.5a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Nov 2025 inflow: $16,400</title></path>
+<path d="M151.0 236.0V137.0a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Nov 2025 outflow: $13,800</title></path>
+<text x="150.0" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Nov</text>
+<path d="M192.3 236.0V83.2a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Dec 2025 inflow: $21,000</title></path>
+<path d="M216.3 236.0V126.5a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Dec 2025 outflow: $15,200</title></path>
+<text x="215.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Dec</text>
+<path d="M257.7 236.0V145.9a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Jan 2026 inflow: $12,600</title></path>
+<path d="M281.7 236.0V136.2a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Jan 2026 outflow: $13,900</title></path>
+<text x="280.7" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Jan</text>
+<path d="M323.0 236.0V129.5a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Feb 2026 inflow: $14,800</title></path>
+<path d="M347.0 236.0V145.2a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Feb 2026 outflow: $12,700</title></path>
+<text x="346.0" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Feb</text>
+<path d="M388.3 236.0V94.4a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Mar 2026 inflow: $19,500</title></path>
+<path d="M412.3 236.0V132.5a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Mar 2026 outflow: $14,400</title></path>
+<text x="411.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Mar</text>
+<path d="M453.7 236.0V73.5a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Apr 2026 inflow: $22,300</title></path>
+<path d="M477.7 236.0V122.0a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Apr 2026 outflow: $15,800</title></path>
+<text x="476.7" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Apr</text>
+<path d="M519.0 236.0V89.9a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>May 2026 inflow: $20,100</title></path>
+<path d="M543.0 236.0V119.0a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>May 2026 outflow: $16,200</title></path>
+<text x="542.0" y="256" text-anchor="middle" font-size="12" fill="#5D605B">May</text>
+<path d="M584.3 236.0V56.3a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Jun 2026 inflow: $24,600</title></path>
+<path d="M608.3 236.0V113.1a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Jun 2026 outflow: $17,000</title></path>
+<text x="607.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Jun</text>
+<path d="M649.7 236.0V98.9a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Jul 2026 inflow: $18,900</title></path>
+<path d="M673.7 236.0V124.3a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Jul 2026 outflow: $15,500</title></path>
+<text x="672.7" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Jul</text>
+<path d="M715.0 236.0V65.3a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Aug 2026 inflow: $23,400</title></path>
+<path d="M739.0 236.0V114.6a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Aug 2026 outflow: $16,800</title></path>
+<text x="738.0" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Aug</text>
+<path d="M780.3 236.0V45.1a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#468A1A"><title>Sep 2026 inflow: $26,100</title></path>
+<path d="M804.3 236.0V106.3a4 4 0 0 1 4 -4h14a4 4 0 0 1 4 4V236.0z" fill="#2B7FC4"><title>Sep 2026 outflow: $17,900</title></path>
+<text x="803.3" y="256" text-anchor="middle" font-size="12" fill="#5D605B">Sep</text>
+          </svg>
+        </div>
+        <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 14px; padding: 4px 0 0 20px; border-left: 1px solid #EEF0EB;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 13px; font-weight: 600; color: #454745;">Inflow</div>
+            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$237,900</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 13px; font-weight: 600; color: #454745;">Outflow</div>
+            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$183,300</div>
+          </div>
+          <div style="height: 1px; background: #EEF0EB;"></div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 13px; font-weight: 600; color: #454745;">Net cash change</div>
+            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">+$54,600</div>
+            <div style="font-size: 13px; color: #454745; line-height: 1.45;">Inflow beat outflow in 11 of 12 months. January was the only negative month (−$1,300).</div>
+          </div>
+          <a href="Reports.dc.html" style="font-size: 14px; font-weight: 600; color: #163300;">Cash flow statement</a>
+        </div>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
+      <section aria-labelledby="pl-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <h2 id="pl-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Profit &amp; loss</h2>
+          <span style="font-size: 13px; color: #454745;">Jan 1 – Sep 30, 2026</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 600;">Income</span><span style="font-weight: 600; font-variant-numeric: tabular-nums;">$182,300.00</span></div>
+            <svg viewBox="0 0 400 16" width="100%" height="16" preserveAspectRatio="none" aria-hidden="true" style="display: block;"><rect x="0" y="0" width="400" height="16" rx="4" fill="#F2F4EF"></rect><rect x="0" y="0" width="400" height="16" rx="4" fill="#468A1A"><title>Income: $182,300</title></rect></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 600;">Expenses</span><span style="font-weight: 600; font-variant-numeric: tabular-nums;">$140,200.00</span></div>
+            <svg viewBox="0 0 400 16" width="100%" height="16" preserveAspectRatio="none" aria-hidden="true" style="display: block;"><rect x="0" y="0" width="400" height="16" rx="4" fill="#F2F4EF"></rect><rect x="0" y="0" width="307.6" height="16" rx="4" fill="#2B7FC4"><title>Expenses: $140,200</title></rect></svg>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; border-top: 1px solid #EEF0EB;">
+          <span style="font-size: 14px; font-weight: 600; color: #454745;">Net income</span>
+          <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$42,100.00</span>
+        </div>
+        <div style="font-size: 13px; color: #454745;">23.1% profit margin. Biggest expense: Contractors ($48,600).</div>
+        <a href="ProfitLoss.dc.html" style="align-self: flex-start; font-size: 14px; font-weight: 600; color: #163300;">View full profit &amp; loss</a>
+      </section>
+
+      <section aria-labelledby="ni-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+        <div style="padding: 24px 24px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <h2 id="ni-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Net income</h2>
+          <span style="font-size: 13px; color: #454745;">Fiscal year ends Dec 31</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; min-width: 380px; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums;">
+            <thead>
+              <tr style="color: #454745;">
+                <th scope="col" style="text-align: left; padding: 10px 24px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #E1E5DC;">Fiscal year</th>
+                <th scope="col" style="text-align: right; padding: 10px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #E1E5DC;">Income</th>
+                <th scope="col" style="text-align: right; padding: 10px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #E1E5DC;">Expenses</th>
+                <th scope="col" style="text-align: right; padding: 10px 24px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #E1E5DC;">Net income</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{netIncome}}" as="n" hint-placeholder-count="3">
+                <tr>
+                  <th scope="row" style="text-align: left; padding: 14px 24px; font-weight: 600; border-bottom: 1px solid #EEF0EB;">{{n.year}}</th>
+                  <td style="text-align: right; padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{n.income}}</td>
+                  <td style="text-align: right; padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{n.expenses}}</td>
+                  <td style="text-align: right; padding: 14px 24px; border-bottom: 1px solid #EEF0EB; font-weight: 700;">{{n.net}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding: 14px 24px 20px; font-size: 13px; color: #454745;">2026 is year to date through September 30.</div>
+      </section>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
+      <sc-for list="{{buckets}}" as="b" hint-placeholder-count="2">
+        <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">{{b.title}}</h2>
+            <a href="{{b.href}}" style="font-size: 14px; font-weight: 600; color: #163300;">{{b.link}}</a>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="background: #FBE3DF; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;">
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #A8200D;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #A8200D;"></span>Overdue</span>
+              <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; color: #163300; font-variant-numeric: tabular-nums;">{{b.overdue}}</span>
+            </div>
+            <div style="background: #FFF0B8; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;">
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #6B5000;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #6B5000;"></span>Coming due</span>
+              <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; color: #163300; font-variant-numeric: tabular-nums;">{{b.coming}}</span>
+            </div>
+          </div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums;">
+            <thead>
+              <tr style="color: #454745;">
+                <th scope="col" style="text-align: left; padding: 8px 0; font-size: 13px; font-weight: 600; border-bottom: 1px solid #E1E5DC;">Bucket</th>
+                <th scope="col" style="text-align: right; padding: 8px 0; font-size: 13px; font-weight: 600; border-bottom: 1px solid #E1E5DC;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{b.rows}}" as="br" hint-placeholder-count="5">
+                <tr>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #EEF0EB; color: #454745;">{{br.label}}</td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600;">{{br.amount}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </section>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
+      <section aria-labelledby="do-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+        <h2 id="do-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Things you can do</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+          <sc-for list="{{actions}}" as="a" hint-placeholder-count="6">
+            <a href="{{a.href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #E1E5DC; border-radius: 12px; text-decoration: none; color: #163300;">
+              <span style="width: 36px; height: 36px; border-radius: 9999px; background: #E2F6D5; display: inline-flex; align-items: center; justify-content: center; flex: none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{a.icon}}"></path></svg>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                <span style="font-weight: 600; font-size: 14px;">{{a.label}}</span>
+                <span style="font-size: 12px; color: #5D605B;">{{a.note}}</span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+
+      <section aria-labelledby="tx-h" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+        <div style="padding: 24px 24px 8px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="tx-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em;">Transactions to review</h2>
+            <span style="font-size: 13px; color: #454745;">12 imported from your bank need a category</span>
+          </div>
+          <a href="Transactions.dc.html" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: rgba(22,51,0,0.08); color: #163300; font-weight: 600; font-size: 14px; text-decoration: none;">Review all 12</a>
+        </div>
+        <div style="display: flex; flex-direction: column; padding: 0 24px 16px;">
+          <sc-for list="{{txns}}" as="t" hint-placeholder-count="5">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF0EB;">
+              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 600; font-size: 14px;">{{t.desc}}</span>
+                <span style="font-size: 12px; color: #5D605B;">{{t.date}} · {{t.account}}</span>
+              </div>
+              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #FFF0B8; color: #6B5000;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #6B5000;"></span>{{t.suggest}}</span>
+              <span style="width: 96px; text-align: right; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums;">{{t.amount}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2140}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { done: { bank: true, invoice: true, payments: false, customer: false } }; }
+  renderVals() {
+    const done = this.state.done;
+    const defs = [
+      ['bank', 'Connect your bank', 'Chase Business Checking ••4417 is connected and importing daily.', 'Connect'],
+      ['invoice', 'Customize your invoice', 'Logo, brand color and payment terms are set.', 'Customize'],
+      ['payments', 'Turn on online payments', 'Let customers pay by card, bank payment or Apple Pay.', 'Turn on payments'],
+      ['customer', 'Add your first customer', 'Save contact and billing details to invoice faster.', 'Add a customer']
+    ];
+    const steps = defs.map(([id, title, note, cta]) => ({
+      title, note, cta, done: !!done[id], todo: !done[id],
+      bg: done[id] ? '#F7F8F5' : '#FFFFFF',
+      complete: () => this.setState({ done: Object.assign({}, done, { [id]: true }) })
+    }));
+    const doneCount = steps.filter(s => s.done).length;
+    const progressPct = Math.round(doneCount / 4 * 100) + '%';
+    const kpis = [
+      { label: 'Cash on hand', value: '$48,216.40', note: 'Chase ••4417 · synced 7:42 AM' },
+      { label: 'Owed to you', value: '$12,525.00', note: '$3,630.00 overdue' },
+      { label: 'You owe', value: '$3,355.00', note: '$420.00 overdue' },
+      { label: 'Net income, 2026 YTD', value: '$42,100.00', note: 'Up from $31,880 at this point in 2025' }
+    ];
+    const netIncome = [
+      { year: '2026 (YTD)', income: '$182,300.00', expenses: '$140,200.00', net: '$42,100.00' },
+      { year: '2025', income: '$214,800.00', expenses: '$171,350.00', net: '$43,450.00' },
+      { year: '2024', income: '$168,400.00', expenses: '$139,900.00', net: '$28,500.00' }
+    ];
+    const buckets = [
+      { title: 'Invoices payable to you', link: 'Go to invoices', href: 'Invoices.dc.html', overdue: '$3,630.00', coming: '$8,895.00', rows: [
+        { label: 'Coming due within 30 days', amount: '$8,895.00' },
+        { label: '1–30 days overdue', amount: '$1,150.00' },
+        { label: '31–60 days overdue', amount: '$2,480.00' },
+        { label: '61–90 days overdue', amount: '$0.00' },
+        { label: 'More than 90 days overdue', amount: '$0.00' }
+      ] },
+      { title: 'Bills you owe', link: 'Go to bills', href: 'Bills.dc.html', overdue: '$420.00', coming: '$2,935.00', rows: [
+        { label: 'Coming due within 30 days', amount: '$2,935.00' },
+        { label: '1–30 days overdue', amount: '$420.00' },
+        { label: '31–60 days overdue', amount: '$0.00' },
+        { label: '61–90 days overdue', amount: '$0.00' },
+        { label: 'More than 90 days overdue', amount: '$0.00' }
+      ] }
+    ];
+    const actions = [
+      { label: 'Create an invoice', note: 'Bill a customer', href: 'InvoiceEditor.dc.html', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M12 11v6M9 14h6' },
+      { label: 'Send an estimate', note: 'Quote a new project', href: 'Estimates.dc.html', icon: 'M9 3h6v3H9zM7 4.5H6a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5.5a1 1 0 0 0-1-1h-1M9 12h6M9 16h4' },
+      { label: 'Scan a receipt', note: 'Snap or email it in', href: 'Receipts.dc.html', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+      { label: 'Add a bill', note: 'Track what you owe', href: 'Bills.dc.html', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+      { label: 'Run payroll', note: 'Next pay date Oct 15', href: 'Payroll.dc.html', icon: 'M12 3v18M16.5 7.5c0-1.9-2-3-4.5-3s-4.5 1.1-4.5 3 2 2.6 4.5 3 4.5 1.4 4.5 3.4-2 3-4.5 3-4.5-1.1-4.5-3' },
+      { label: 'Reconcile accounts', note: 'September is ready', href: 'Reconciliation.dc.html', icon: 'M4 4h16v16H4zM8 12l3 3 5-6' }
+    ];
+    const txns = [
+      { desc: 'ADOBE *CREATIVE CLOUD', date: 'Oct 2', account: 'Amex ••1009', suggest: 'Software?', amount: '−$89.99' },
+      { desc: 'STRIPE TRANSFER HARBOR PINE', date: 'Oct 1', account: 'Chase ••4417', suggest: 'Invoice payment?', amount: '+$1,200.00' },
+      { desc: 'DELTA AIR 0062391847', date: 'Sep 30', account: 'Amex ••1009', suggest: 'Travel?', amount: '−$412.60' },
+      { desc: 'STAPLES 01142', date: 'Sep 29', account: 'Chase ••4417', suggest: 'Office supplies?', amount: '−$64.18' },
+      { desc: 'COMCAST BUSINESS', date: 'Sep 28', account: 'Chase ••4417', suggest: 'Utilities?', amount: '−$149.00' }
+    ];
+    return { steps, doneCount, progressPct, kpis, netIncome, buckets, actions, txns };
+  }
+}
+</script>
+</body>
+</html>

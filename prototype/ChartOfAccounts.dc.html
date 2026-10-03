@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chart of accounts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#163300}a:hover{color:#0e2100}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F7F8F5; font-family: Inter, system-ui, sans-serif; color: #163300;">
+  <div style="flex: 1 0 248px; max-width: 100%; display: flex;">
+    <dc-import name="Sidebar" active="accounts" hint-size="100%,1180px"></dc-import>
+  </div>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Chart of accounts</h1>
+        <p style="margin: 0; font-size: 15px; color: #454745;">The accounts behind every transaction, grouped the way they appear on your balance sheet and profit &amp; loss.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Add a new account</button>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Add a journal entry
+        </button>
+      </div>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+      <div role="tablist" aria-label="Account type" style="display: flex; flex-wrap: wrap; gap: 4px; background: #F2F4EF; padding: 4px; border-radius: 9999px;">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+          <sc-if value="{{t.on}}" hint-placeholder-val="{{false}}">
+            <button type="button" role="tab" aria-selected="true" onClick="{{t.pick}}" style="min-height: 40px; padding: 0 18px; border-radius: 9999px; border: 0; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; cursor: pointer;">{{t.label}} <span style="opacity: 0.75;">{{t.count}}</span></button>
+          </sc-if>
+          <sc-if value="{{t.off}}" hint-placeholder-val="{{true}}">
+            <button type="button" role="tab" aria-selected="false" onClick="{{t.pick}}" style="min-height: 40px; padding: 0 18px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">{{t.label}} <span style="color: #5D605B;">{{t.count}}</span></button>
+          </sc-if>
+        </sc-for>
+      </div>
+      <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search accounts</span>
+        <input type="search" placeholder="Search account name or ID" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 200px; background: transparent;">
+      </label>
+    </div>
+
+    <section aria-label="{{tabLabel}} summary" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 18px 22px;">
+      <div style="display: flex; flex-direction: column; gap: 4px; max-width: 640px;">
+        <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{tabLabel}}</h2>
+        <p style="margin: 0; font-size: 14px; color: #454745; line-height: 1.45;">{{tabBlurb}}</p>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+        <span style="font-size: 13px; font-weight: 600; color: #454745;">{{totalLabel}}</span>
+        <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{totalValue}}</span>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <sc-for list="{{groups}}" as="g" hint-placeholder-count="8">
+        <section aria-label="{{g.name}}" style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; padding: 14px 20px; border-bottom: 1px solid #E1E5DC;">
+            <h3 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.01em;">{{g.name}}</h3>
+            <span style="font-size: 13px; color: #5D605B;">{{g.hint}}</span>
+          </div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px; table-layout: fixed;">
+              <thead>
+                <tr style="text-align: left; color: #454745;">
+                  <th scope="col" style="width: 90px; padding: 10px 20px; font-weight: 600; font-size: 12px; border-bottom: 1px solid #EEF0EB;">Account ID</th>
+                  <th scope="col" style="padding: 10px 12px; font-weight: 600; font-size: 12px; border-bottom: 1px solid #EEF0EB;">Account</th>
+                  <th scope="col" style="width: 150px; padding: 10px 12px; font-weight: 600; font-size: 12px; border-bottom: 1px solid #EEF0EB; text-align: right;">Balance</th>
+                  <th scope="col" style="width: 170px; padding: 10px 12px; font-weight: 600; font-size: 12px; border-bottom: 1px solid #EEF0EB;">Last transaction</th>
+                  <th scope="col" style="width: 60px; padding: 10px 20px 10px 12px; border-bottom: 1px solid #EEF0EB;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{g.accounts}}" as="a" hint-placeholder-count="2">
+                  <tr>
+                    <td style="padding: 12px 20px; border-bottom: 1px solid #EEF0EB; color: #454745; font-variant-numeric: tabular-nums;">{{a.id}}</td>
+                    <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB;">
+                      <div style="font-weight: 600;">{{a.name}}</div>
+                      <div style="font-size: 13px; color: #5D605B; margin-top: 2px;">{{a.desc}}</div>
+                    </td>
+                    <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{a.balance}}</td>
+                    <td style="padding: 12px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{a.last}}</td>
+                    <td style="padding: 6px 20px 6px 12px; border-bottom: 1px solid #EEF0EB; text-align: right;">
+                      <button type="button" aria-label="Edit {{a.name}}" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"></path></svg>
+                      </button>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding: 10px 20px 14px;">
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 8px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer; text-decoration: underline;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+              Add a new account
+            </button>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2440}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'assets' }; }
+  renderVals() {
+    const a = (id, name, desc, balance, last) => ({ id, name, desc, balance, last });
+    const D = {
+      assets: {
+        label: 'Assets', totalLabel: 'Total assets', total: '$43,612.10',
+        blurb: 'What your business owns or is owed: cash, money on its way to you, equipment and prepaid costs.',
+        groups: [
+          { name: 'Cash and bank', hint: 'Bank accounts and cash you hold', accounts: [
+            a('1010', 'Chase Business Checking ••4417', 'Operating account · connected, imports daily', '$15,257.13', 'Oct 2, 2026'),
+            a('1020', 'Cash on hand', 'Petty cash kept at the studio', '$175.82', 'Sep 25, 2026')
+          ] },
+          { name: 'Money in transit', hint: 'Payments received but not yet in your bank', accounts: [
+            a('1100', 'BillingEase Payments clearing', 'Card and bank payments waiting for payout', '$1,412.60', 'Oct 1, 2026')
+          ] },
+          { name: 'Expected payments from customers', hint: 'Accounts receivable', accounts: [
+            a('1200', 'Accounts Receivable', 'Unpaid balances on sent invoices', '$12,525.00', 'Sep 24, 2026')
+          ] },
+          { name: 'Inventory', hint: 'Goods held for client work or sale', accounts: [
+            a('1300', 'Inventory — print stock', 'Paper and packaging held for client print jobs', '$1,240.00', 'Aug 14, 2026')
+          ] },
+          { name: 'Property, plant, equipment', hint: 'Long-term assets at cost', accounts: [
+            a('1500', 'Computer equipment', 'Workstations, displays and drawing tablets', '$8,460.00', 'Mar 3, 2026'),
+            a('1510', 'Furniture and fixtures', 'Studio desks, shelving and lighting', '$3,200.00', 'Jan 15, 2026')
+          ] },
+          { name: 'Depreciation and amortization', hint: 'Value used up over time', accounts: [
+            a('1550', 'Accumulated depreciation — computer equipment', 'Straight line over 3 years', '−$2,115.00', 'Sep 30, 2026'),
+            a('1560', 'Accumulated depreciation — furniture', 'Straight line over 7 years', '−$480.00', 'Sep 30, 2026')
+          ] },
+          { name: 'Vendor prepayments and vendor credits', hint: 'Paid in advance or credit owed to you', accounts: [
+            a('1400', 'Prepaid expenses', 'Annual software plans paid upfront', '$2,436.55', 'Jan 4, 2026')
+          ] },
+          { name: 'Other short-term asset', hint: 'Assets you expect to use or collect within a year', accounts: [
+            a('1460', 'Security deposit — WeWork', 'Refundable office deposit', '$1,500.00', 'Feb 1, 2026'),
+            a('1450', 'Employee advances', 'No balance', '$0.00', 'No transactions')
+          ] }
+        ]
+      },
+      liabilities: {
+        label: 'Liabilities & credit cards', totalLabel: 'Total liabilities', total: '$11,044.39',
+        blurb: 'What your business owes: card balances, unpaid bills, sales tax collected and payroll amounts due.',
+        groups: [
+          { name: 'Credit card', hint: 'Business cards', accounts: [
+            a('2010', 'Amex Business ••1009', 'Connected, imports daily', '$3,184.27', 'Oct 1, 2026')
+          ] },
+          { name: 'Loan and line of credit', hint: 'Borrowed money', accounts: [
+            a('2100', 'Chase business line of credit', '$25,000 limit · nothing drawn', '$0.00', 'Apr 2, 2026')
+          ] },
+          { name: 'Expected payments to vendors', hint: 'Accounts payable', accounts: [
+            a('2200', 'Accounts Payable', 'Unpaid balances on bills', '$3,077.33', 'Oct 1, 2026')
+          ] },
+          { name: 'Sales taxes', hint: 'Collected on invoices, owed to the state', accounts: [
+            a('2300', 'NY sales tax payable', '8.875% on taxable sales · filed quarterly', '$864.19', 'Sep 24, 2026')
+          ] },
+          { name: 'Due for payroll', hint: 'Withholdings and taxes not yet remitted', accounts: [
+            a('2400', 'Payroll liabilities', 'Federal and NY withholding, FICA', '$2,918.60', 'Sep 19, 2026')
+          ] },
+          { name: 'Customer prepayments and customer credits', hint: 'Money received before work is delivered', accounts: [
+            a('2500', 'Customer deposits', 'Ridge Outdoor Supply rebrand deposit', '$1,000.00', 'Sep 12, 2026')
+          ] }
+        ]
+      },
+      income: {
+        label: 'Income', totalLabel: 'Income this year', total: '$201,407.84',
+        blurb: 'Money your business earns. These accounts feed the top of your profit and loss report.',
+        groups: [
+          { name: 'Income', hint: 'Revenue from your services', accounts: [
+            a('4000', 'Sales — design services', 'Brand, web and packaging projects', '$148,320.00', 'Sep 30, 2026'),
+            a('4010', 'Sales — print production', 'Printing managed for clients', '$12,480.00', 'Sep 18, 2026'),
+            a('4020', 'Retainers', 'Monthly design retainers', '$36,000.00', 'Sep 1, 2026')
+          ] },
+          { name: 'Discount', hint: 'Reductions given to customers', accounts: [
+            a('4100', 'Discounts given', 'Early payment and loyalty discounts', '−$1,240.00', 'Aug 19, 2026')
+          ] },
+          { name: 'Other income', hint: 'Income outside your main business', accounts: [
+            a('4200', 'Interest earned', 'Chase checking interest', '$27.84', 'Sep 20, 2026'),
+            a('4900', 'Uncategorized income', '4 deposits waiting to be categorized', '$5,820.00', 'Oct 2, 2026')
+          ] }
+        ]
+      },
+      expenses: {
+        label: 'Expenses', totalLabel: 'Expenses this year', total: '$166,885.73',
+        blurb: 'What it costs to run the business. Categorize spending here to see where money goes and claim every deduction.',
+        groups: [
+          { name: 'Operating expense', hint: 'Day-to-day costs', accounts: [
+            a('5010', 'Rent expense', 'WeWork studio membership', '$13,050.00', 'Oct 1, 2026'),
+            a('5020', 'Software & subscriptions', 'Adobe, Figma and other tools', '$4,544.39', 'Oct 1, 2026'),
+            a('5030', 'Office supplies', 'Staples and small purchases', '$1,312.66', 'Sep 22, 2026'),
+            a('5040', 'Travel expense', 'Flights and client travel', '$3,940.12', 'Sep 29, 2026'),
+            a('5060', 'Internet & phone', 'Comcast Business', '$1,709.91', 'Sep 10, 2026'),
+            a('5070', 'Vehicle — fuel', 'Fuel for client visits', '$412.08', 'Sep 30, 2026')
+          ] },
+          { name: 'Cost of goods sold', hint: 'Direct costs of client deliverables', accounts: [
+            a('5500', 'Printing & production costs', 'Local Print Shop and print vendors', '$5,860.00', 'Sep 27, 2026')
+          ] },
+          { name: 'Payment processing fee', hint: 'Fees on online payments', accounts: [
+            a('5600', 'BillingEase payment fees', 'Card and bank payment fees', '$3,912.45', 'Oct 1, 2026')
+          ] },
+          { name: 'Payroll expense', hint: 'Wages and employer taxes', accounts: [
+            a('5700', 'Salaries & wages', 'Two employees, paid twice a month', '$122,616.00', 'Sep 19, 2026'),
+            a('5710', 'Payroll employer taxes', 'Employer FICA, FUTA and NY SUI', '$9,380.12', 'Sep 19, 2026')
+          ] },
+          { name: 'Uncategorized expense', hint: 'Spending waiting to be categorized', accounts: [
+            a('5900', 'Uncategorized expense', '1 transaction needs a category', '$148.00', 'Sep 27, 2026')
+          ] }
+        ]
+      },
+      equity: {
+        label: 'Equity', totalLabel: 'Total equity', total: '$43,236.54',
+        blurb: 'What the owner has put in and taken out, plus profits kept in the business from earlier years.',
+        groups: [
+          { name: 'Business owner contribution and drawing', hint: 'Money moved between Maya Chen and the business', accounts: [
+            a('3000', 'Owner investment — Maya Chen', 'Capital contributed to the business', '$20,000.00', 'Jan 6, 2026'),
+            a('3010', 'Owner drawings — Maya Chen', 'Money taken out for personal use', '−$18,000.00', 'Sep 15, 2026')
+          ] },
+          { name: 'Retained earnings: profit', hint: 'Profit kept from prior years', accounts: [
+            a('3100', 'Retained earnings', 'Closed from 2025 profit and loss', '$41,236.54', 'Dec 31, 2025')
+          ] }
+        ]
+      }
+    };
+    const order = ['assets', 'liabilities', 'income', 'expenses', 'equity'];
+    const cur = D[this.state.tab] || D.assets;
+    const tabs = order.map((id) => ({
+      label: D[id].label, count: D[id].groups.reduce((n, g) => n + g.accounts.length, 0),
+      on: this.state.tab === id, off: this.state.tab !== id, pick: () => this.setState({ tab: id })
+    }));
+    return { tabs, groups: cur.groups, tabLabel: cur.label, tabBlurb: cur.blurb, totalLabel: cur.totalLabel, totalValue: cur.total };
+  }
+}
+</script>
+</body>
+</html>

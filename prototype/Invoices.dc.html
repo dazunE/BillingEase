@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invoices</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#163300}a:hover{color:#0e2100}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F7F8F5; font-family: Inter, system-ui, sans-serif; color: #163300;">
+  <div style="flex: 1 0 248px; max-width: 100%; display: flex;">
+    <dc-import name="Sidebar" active="invoices" hint-size="100%,1180px"></dc-import>
+  </div>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Invoices</h1>
+        <p style="margin: 0; font-size: 15px; color: #454745;">Send professional invoices, get paid online and track every balance.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Recurring invoices</button>
+        <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Create an invoice
+        </a>
+      </div>
+    </header>
+
+    <section aria-label="Invoice summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 13px; font-weight: 600; color: #454745;">{{s.label}}</div>
+          <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em;">{{s.value}}</div>
+          <div style="font-size: 13px; color: #5D605B;">{{s.note}}</div>
+        </div>
+      </sc-for>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #E1E5DC;">
+        <div role="tablist" aria-label="Invoice status" style="display: flex; flex-wrap: wrap; gap: 4px; background: #F2F4EF; padding: 4px; border-radius: 9999px;">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+            <sc-if value="{{t.on}}" hint-placeholder-val="{{false}}">
+              <button type="button" role="tab" aria-selected="true" onClick="{{t.pick}}" style="min-height: 36px; padding: 0 16px; border-radius: 9999px; border: 0; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; cursor: pointer;">{{t.label}} <span style="opacity: 0.75;">{{t.count}}</span></button>
+            </sc-if>
+            <sc-if value="{{t.off}}" hint-placeholder-val="{{true}}">
+              <button type="button" role="tab" aria-selected="false" onClick="{{t.pick}}" style="min-height: 36px; padding: 0 16px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">{{t.label}} <span style="color: #5D605B;">{{t.count}}</span></button>
+            </sc-if>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+          <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search invoices</span>
+            <input type="search" placeholder="Search customer or invoice #" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 220px; background: transparent;">
+          </label>
+          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">All customers</button>
+          <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Jan 1 – Sep 30, 2026</button>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; min-width: 860px; border-collapse: collapse; font-size: 14px;">
+          <thead>
+            <tr style="text-align: left; color: #454745;">
+              <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Status</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Due</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Date</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Number</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Customer</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Amount due</th>
+              <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+              <tr>
+                <td style="padding: 14px 20px; border-bottom: 1px solid #EEF0EB;">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{r.badgeBg}}; color: {{r.badgeFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.status}}</span>
+                </td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.due}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.date}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; font-variant-numeric: tabular-nums;">{{r.num}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; font-weight: 600;">{{r.customer}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.amount}}</td>
+                <td style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB; text-align: right;">
+                  <span style="display: inline-flex; gap: 6px; align-items: center;">
+                    <a href="InvoiceEditor.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; color: #163300; font-weight: 600; font-size: 13px; text-decoration: none;">{{r.action}}</a>
+                    <button type="button" aria-label="More actions" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#163300" aria-hidden="true"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg>
+                    </button>
+                  </span>
+                </td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; font-size: 13px; color: #454745;">
+        <span>Showing {{shown}} invoices</span>
+        <span style="display: flex; gap: 8px;">
+          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif;">Previous</button>
+          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 13px Inter, sans-serif;">Next</button>
+        </span>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'all' }; }
+  renderVals() {
+    const S = {
+      Overdue: { bg: '#FBE3DF', fg: '#A8200D', action: 'Send reminder' },
+      Unpaid: { bg: '#FFF0B8', fg: '#6B5000', action: 'Record payment' },
+      Draft: { bg: '#E8EBE6', fg: '#454745', action: 'Approve' },
+      Paid: { bg: '#E2F6D5', fg: '#2F5711', action: 'View' },
+      'Partial': { bg: '#E1EEF8', fg: '#1F5E91', action: 'Record payment' }
+    };
+    const all = [
+      ['Overdue', '32 days ago', 'Aug 1, 2026', 'INV-0142', 'Harbor & Pine Café', '$2,480.00'],
+      ['Overdue', '6 days ago', 'Aug 27, 2026', 'INV-0151', 'Lumen Dental Group', '$1,150.00'],
+      ['Unpaid', 'In 4 days', 'Sep 7, 2026', 'INV-0156', 'Atlas Freight Co.', '$6,300.00'],
+      ['Partial', 'In 9 days', 'Sep 12, 2026', 'INV-0157', 'Greenline Architects', '$1,875.00'],
+      ['Unpaid', 'In 21 days', 'Sep 24, 2026', 'INV-0160', 'Oak Street Bakery', '$720.00'],
+      ['Draft', '—', 'Sep 30, 2026', 'INV-0161', 'Bluebird Yoga', '$540.00'],
+      ['Draft', '—', 'Oct 1, 2026', 'INV-0162', 'Ridge Outdoor Supply', '$3,960.00'],
+      ['Paid', 'Paid Sep 18', 'Aug 19, 2026', 'INV-0153', 'Atlas Freight Co.', '$0.00'],
+      ['Paid', 'Paid Sep 2', 'Aug 3, 2026', 'INV-0145', 'Harbor & Pine Café', '$0.00']
+    ].map(([status, due, date, num, customer, amount]) => ({ status, due, date, num, customer, amount, badgeBg: S[status].bg, badgeFg: S[status].fg, action: S[status].action }));
+    const filters = {
+      unpaid: (r) => ['Overdue', 'Unpaid', 'Partial'].includes(r.status),
+      draft: (r) => r.status === 'Draft',
+      paid: (r) => r.status === 'Paid',
+      all: () => true
+    };
+    const defs = [['unpaid', 'Unpaid'], ['draft', 'Draft'], ['paid', 'Paid'], ['all', 'All invoices']];
+    const tabs = defs.map(([id, label]) => ({ label, count: all.filter(filters[id]).length, on: this.state.tab === id, off: this.state.tab !== id, pick: () => this.setState({ tab: id }) }));
+    const rows = all.filter(filters[this.state.tab]);
+    const stats = [
+      { label: 'Overdue', value: '$3,630.00', note: '2 invoices' },
+      { label: 'Due within 30 days', value: '$8,895.00', note: '3 invoices' },
+      { label: 'Average time to get paid', value: '11 days', note: 'Last 90 days' },
+      { label: 'Upcoming payout', value: '$1,412.60', note: 'Arrives Oct 6 to Chase ••4417' }
+    ];
+    return { tabs, rows, stats, shown: rows.length };
+  }
+}
+</script>
+</body>
+</html>

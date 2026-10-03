@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Employees</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#163300}a:hover{color:#0e2100}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F7F8F5; font-family: Inter, system-ui, sans-serif; color: #163300;">
+  <div style="flex: 1 0 248px; max-width: 100%; display: flex;">
+    <dc-import name="Sidebar" active="employees" hint-size="100%,1180px"></dc-import>
+  </div>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Employees</h1>
+        <p style="margin: 0; font-size: 15px; color: #454745;">Everyone you pay through BillingEase payroll, with their pay, tax setup and paystubs.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Add a contractor</button>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Add an employee
+        </button>
+      </div>
+    </header>
+
+    <section aria-labelledby="inv-h" style="background: #163300; border-radius: 16px; padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
+      <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 4px;">
+        <h2 id="inv-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.02em; color: #9FE870;">Invite employees to self-onboard</h2>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #E2F6D5;">They enter their own address, W-4 tax details and bank account for direct deposit. You just approve.</p>
+      </div>
+      <div style="flex: 1 1 340px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+        <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
+          <label for="inv-email" style="font-size: 13px; font-weight: 600; color: #FFFFFF;">Work email</label>
+          <input id="inv-email" type="email" placeholder="new.hire@northwind.studio" style="min-height: 44px; box-sizing: border-box; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; font: 400 14px Inter, sans-serif; color: #163300;">
+        </div>
+        <button type="button" style="min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Send invite</button>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #E1E5DC;">
+          <div role="tablist" aria-label="People" style="display: flex; gap: 4px; background: #F2F4EF; padding: 4px; border-radius: 9999px;">
+            <sc-for list="{{tabs}}" as="t" hint-placeholder-count="2">
+              <sc-if value="{{t.on}}" hint-placeholder-val="{{false}}">
+                <button type="button" role="tab" aria-selected="true" onClick="{{t.pick}}" style="min-height: 36px; padding: 0 16px; border-radius: 9999px; border: 0; background: #163300; color: #FFFFFF; font: 600 14px Inter, sans-serif; cursor: pointer;">{{t.label}} <span style="opacity: 0.75;">{{t.count}}</span></button>
+              </sc-if>
+              <sc-if value="{{t.off}}" hint-placeholder-val="{{true}}">
+                <button type="button" role="tab" aria-selected="false" onClick="{{t.pick}}" style="min-height: 36px; padding: 0 16px; border-radius: 9999px; border: 0; background: transparent; color: #163300; font: 600 14px Inter, sans-serif; cursor: pointer;">{{t.label}} <span style="color: #5D605B;">{{t.count}}</span></button>
+              </sc-if>
+            </sc-for>
+          </div>
+          <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search people</span>
+            <input type="search" placeholder="Search by name or role" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 180px; background: transparent;">
+          </label>
+        </div>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="text-align: left; color: #454745;">
+                <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Name</th>
+                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Role</th>
+                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Pay type</th>
+                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Rate</th>
+                <th scope="col" style="padding: 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Status</th>
+                <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Direct deposit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+                <tr style="background: {{r.rowBg}};">
+                  <td style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB;">
+                    <button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="display: flex; align-items: center; gap: 10px; border: 0; background: transparent; padding: 4px 0; font: 600 14px Inter, sans-serif; color: #163300; cursor: pointer; text-align: left;">
+                      <span style="width: 32px; height: 32px; border-radius: 9999px; background: #E8EBE6; color: #163300; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">{{r.initials}}</span>
+                      <span style="text-decoration: underline; text-underline-offset: 3px;">{{r.name}}</span>
+                    </button>
+                  </td>
+                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.role}}</td>
+                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.payType}}</td>
+                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.rate}}</td>
+                  <td style="padding: 14px 12px; border-bottom: 1px solid #EEF0EB;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{r.badgeBg}}; color: {{r.badgeFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.status}}</span></td>
+                  <td style="padding: 14px 20px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.dd}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; padding: 14px 20px; font-size: 13px; color: #454745;">{{tableNote}}</p>
+      </section>
+
+      <aside aria-labelledby="det-h" style="flex: 1 1 360px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+        <div style="padding: 20px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #E1E5DC;">
+          <span style="width: 48px; height: 48px; border-radius: 9999px; background: #163300; color: #9FE870; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; flex: none;">{{sel.initials}}</span>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+            <h2 id="det-h" style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{sel.name}}</h2>
+            <span style="font-size: 13px; color: #454745;">{{sel.role}} · since {{sel.start}}</span>
+          </div>
+          <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 13px Inter, sans-serif; cursor: pointer;">Edit</button>
+        </div>
+        <sc-for list="{{sel.sections}}" as="sec" hint-placeholder-count="5">
+          <div style="padding: 16px 20px; border-bottom: 1px solid #EEF0EB; display: flex; flex-direction: column; gap: 8px;">
+            <h3 style="margin: 0; font-size: 13px; font-weight: 700; color: #163300;">{{sec.title}}</h3>
+            <sc-for list="{{sec.items}}" as="it" hint-placeholder-count="3">
+              <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;">
+                <span style="color: #454745;">{{it.k}}</span>
+                <span style="font-weight: 600; text-align: right; font-variant-numeric: tabular-nums;">{{it.v}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <div style="padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 8px;">
+          <h3 style="margin: 0; font-size: 13px; font-weight: 700;">{{sel.stubTitle}}</h3>
+          <sc-if value="{{sel.hasStubs}}" hint-placeholder-val="{{true}}">
+            <sc-for list="{{sel.stubs}}" as="p" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #EEF0EB; font-size: 14px;">
+                <span style="flex: 1; display: flex; flex-direction: column; gap: 1px;">
+                  <span style="font-weight: 600;">{{p.date}}</span>
+                  <span style="font-size: 13px; color: #5D605B;">{{p.period}}</span>
+                </span>
+                <span style="font-weight: 600; font-variant-numeric: tabular-nums;">{{p.net}}</span>
+                <button type="button" aria-label="{{p.dl}}" style="width: 36px; height: 36px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{sel.noStubs}}" hint-placeholder-val="{{false}}">
+            <div style="padding: 12px; border-radius: 12px; background: #F2F4EF; font-size: 14px; color: #454745;">{{sel.emptyStubs}}</div>
+          </sc-if>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'emp', sel: 'jordan' }; }
+  renderVals() {
+    const S = { Active: ['#E2F6D5', '#2F5711'], Onboarding: ['#E1EEF8', '#1F5E91'], Terminated: ['#E8EBE6', '#454745'] };
+    const stubs = (nets) => [['Sep 19, 2026', 'Sep 1 – 15'], ['Sep 4, 2026', 'Aug 16 – 31'], ['Aug 20, 2026', 'Aug 1 – 15']].map(([date, period], i) => ({ date, period, net: nets[i], dl: 'Download paystub for ' + date }));
+    const people = [
+      { id: 'jordan', kind: 'emp', name: 'Jordan Lee', initials: 'JL', role: 'Senior Designer', payType: 'Salary', rate: '$78,000/yr', status: 'Active', dd: 'Set up · Chase ••2281', start: 'Mar 2023',
+        sections: [
+          { title: 'Personal info', items: [{ k: 'Email', v: 'jordan@northwind.studio' }, { k: 'Address', v: 'Brooklyn, NY 11217' }, { k: 'SSN', v: '•••-••-4821' }] },
+          { title: 'Tax setup (W-4)', items: [{ k: 'Filing status', v: 'Single' }, { k: 'Dependents', v: '$0' }, { k: 'Extra withholding', v: '$25.00 per pay' }, { k: 'Work state', v: 'New York' }] },
+          { title: 'Pay', items: [{ k: 'Pay rate', v: '$78,000.00 per year' }, { k: 'Schedule', v: 'Semi-monthly' }, { k: 'Per paycheck', v: '$3,250.00' }] },
+          { title: 'Deductions & benefits', items: [{ k: '401(k)', v: '5% pre-tax' }, { k: 'Health insurance', v: '$120.00 per pay' }] },
+          { title: 'Time off', items: [{ k: 'Vacation', v: '62.5 hrs available' }, { k: 'Sick leave', v: '24 hrs available' }] }
+        ], stubs: stubs(['$2,231.37', '$2,231.37', '$2,231.37']) },
+      { id: 'priya', kind: 'emp', name: 'Priya Nair', initials: 'PN', role: 'Production Designer', payType: 'Hourly', rate: '$32.00/hr', status: 'Active', dd: 'Set up · Ally ••0937', start: 'Jun 2024',
+        sections: [
+          { title: 'Personal info', items: [{ k: 'Email', v: 'priya@northwind.studio' }, { k: 'Address', v: 'Jersey City, NJ 07302' }, { k: 'SSN', v: '•••-••-1176' }] },
+          { title: 'Tax setup (W-4)', items: [{ k: 'Filing status', v: 'Married filing jointly' }, { k: 'Dependents', v: '$2,000' }, { k: 'Extra withholding', v: '$0.00' }, { k: 'Work state', v: 'New York' }] },
+          { title: 'Pay', items: [{ k: 'Pay rate', v: '$32.00 per hour' }, { k: 'Overtime', v: '1.5× after 40 hrs/week' }, { k: 'Schedule', v: 'Semi-monthly' }] },
+          { title: 'Deductions & benefits', items: [{ k: 'Health insurance', v: '$95.00 per pay' }] },
+          { title: 'Time off', items: [{ k: 'Vacation', v: '31 hrs available' }, { k: 'Sick leave', v: '18 hrs available' }] }
+        ], stubs: stubs(['$1,936.36', '$2,024.47', '$1,936.36']) },
+      { id: 'sam', kind: 'emp', name: 'Sam Ortiz', initials: 'SO', role: 'Studio Assistant', payType: 'Hourly', rate: '$24.00/hr', status: 'Active', dd: 'Set up · Chase ••5530', start: 'Jan 2026',
+        sections: [
+          { title: 'Personal info', items: [{ k: 'Email', v: 'sam@northwind.studio' }, { k: 'Address', v: 'Queens, NY 11101' }, { k: 'SSN', v: '•••-••-9043' }] },
+          { title: 'Tax setup (W-4)', items: [{ k: 'Filing status', v: 'Single' }, { k: 'Dependents', v: '$0' }, { k: 'Extra withholding', v: '$0.00' }, { k: 'Work state', v: 'New York' }] },
+          { title: 'Pay', items: [{ k: 'Pay rate', v: '$24.00 per hour' }, { k: 'Overtime', v: '1.5× after 40 hrs/week' }, { k: 'Schedule', v: 'Semi-monthly' }] },
+          { title: 'Deductions & benefits', items: [{ k: 'None', v: 'Not enrolled' }] },
+          { title: 'Time off', items: [{ k: 'Vacation', v: '12 hrs available' }, { k: 'Sick leave', v: '20 hrs available' }] }
+        ], stubs: stubs(['$1,522.87', '$1,463.04', '$1,404.00']) },
+      { id: 'alex', kind: 'emp', name: 'Alex Kim', initials: 'AK', role: 'Junior Designer', payType: 'Hourly', rate: '$22.00/hr', status: 'Onboarding', dd: 'Waiting on employee', start: 'Oct 2026',
+        sections: [
+          { title: 'Personal info', items: [{ k: 'Email', v: 'alex@northwind.studio' }, { k: 'Invite', v: 'Sent Sep 29 · not completed' }] },
+          { title: 'Tax setup (W-4)', items: [{ k: 'Status', v: 'Waiting on employee' }, { k: 'Work state', v: 'New York' }] },
+          { title: 'Pay', items: [{ k: 'Pay rate', v: '$22.00 per hour' }, { k: 'First pay date', v: 'Oct 20, 2026' }] },
+          { title: 'Deductions & benefits', items: [{ k: 'Health insurance', v: 'Eligible Jan 1, 2027' }] },
+          { title: 'Time off', items: [{ k: 'Vacation', v: 'Accrues from start date' }] }
+        ], stubs: [] },
+      { id: 'rae', kind: 'emp', name: 'Rae Morgan', initials: 'RM', role: 'Copywriter', payType: 'Salary', rate: '$62,000/yr', status: 'Terminated', dd: 'Removed', start: 'Feb 2024',
+        sections: [
+          { title: 'Personal info', items: [{ k: 'Email', v: 'rae.morgan@mail.com' }, { k: 'Last day', v: 'Jun 30, 2026' }] },
+          { title: 'Tax setup (W-4)', items: [{ k: 'Filing status', v: 'Single' }, { k: 'Work state', v: 'New York' }] },
+          { title: 'Pay', items: [{ k: 'Final pay rate', v: '$62,000.00 per year' }, { k: 'Final paycheck', v: 'Jul 3, 2026' }] },
+          { title: 'Deductions & benefits', items: [{ k: 'Health insurance', v: 'Ended Jun 30, 2026' }] },
+          { title: 'Year-end', items: [{ k: '2026 W-2', v: 'Will be mailed by Jan 31, 2027' }] }
+        ], stubs: [{ date: 'Jul 3, 2026', period: 'Jun 16 – 30 · final', net: '$1,742.18', dl: 'Download paystub for Jul 3, 2026' }] },
+      { id: 'elena', kind: 'con', name: 'Elena Rossi', initials: 'ER', role: 'Illustrator', payType: 'Per project', rate: '$1,800.00', status: 'Active', dd: 'Set up · Wells ••6602', start: 'Apr 2025',
+        sections: [
+          { title: 'Contractor info', items: [{ k: 'Email', v: 'hello@elenarossi.art' }, { k: 'Business type', v: 'Individual' }, { k: 'TIN', v: '•••-••-3390' }] },
+          { title: 'Tax forms', items: [{ k: 'W-9', v: 'On file · Apr 2025' }, { k: '2026 1099-NEC', v: 'Due Jan 31, 2027' }] },
+          { title: 'Payments', items: [{ k: 'Paid in 2026', v: '$12,600.00' }, { k: 'Default amount', v: '$1,800.00' }] }
+        ], stubs: [{ date: 'Oct 3, 2026', period: 'Book cover illustrations', net: '$1,800.00', dl: 'Download receipt for Oct 3, 2026' }, { date: 'Sep 4, 2026', period: 'Café menu artwork', net: '$1,800.00', dl: 'Download receipt for Sep 4, 2026' }] },
+      { id: 'dev', kind: 'con', name: 'Dev Patel', initials: 'DP', role: 'Web developer', payType: 'Per project', rate: '$2,400.00', status: 'Active', dd: 'Set up · Chase ••7714', start: 'Jul 2025',
+        sections: [
+          { title: 'Contractor info', items: [{ k: 'Email', v: 'dev@patelbuilds.dev' }, { k: 'Business type', v: 'Single-member LLC' }, { k: 'EIN', v: '••-•••4410' }] },
+          { title: 'Tax forms', items: [{ k: 'W-9', v: 'On file · Jul 2025' }, { k: '2026 1099-NEC', v: 'Due Jan 31, 2027' }] },
+          { title: 'Payments', items: [{ k: 'Paid in 2026', v: '$14,400.00' }, { k: 'Default amount', v: '$2,400.00' }] }
+        ], stubs: [{ date: 'Oct 3, 2026', period: 'Ridge Outdoor site build', net: '$2,400.00', dl: 'Download receipt for Oct 3, 2026' }] },
+      { id: 'marco', kind: 'con', name: 'Marco Diaz', initials: 'MD', role: 'Photographer', payType: 'Hourly', rate: '$85.00/hr', status: 'Onboarding', dd: 'Waiting on contractor', start: 'Oct 2026',
+        sections: [
+          { title: 'Contractor info', items: [{ k: 'Email', v: 'marco@diazphoto.co' }, { k: 'Invite', v: 'Sent Oct 1 · not completed' }] },
+          { title: 'Tax forms', items: [{ k: 'W-9', v: 'Waiting on contractor' }] },
+          { title: 'Payments', items: [{ k: 'Paid in 2026', v: '$0.00' }] }
+        ], stubs: [] }
+    ];
+    const tab = this.state.tab;
+    const list = people.filter((p) => p.kind === tab);
+    const selP = list.find((p) => p.id === this.state.sel) || list[0];
+    const rows = list.map((p) => ({
+      name: p.name, initials: p.initials, role: p.role, payType: p.payType, rate: p.rate, status: p.status, dd: p.dd,
+      badgeBg: S[p.status][0], badgeFg: S[p.status][1],
+      rowBg: p.id === selP.id ? '#E2F6D5' : '#FFFFFF', pressed: p.id === selP.id ? 'true' : 'false',
+      pick: () => this.setState({ sel: p.id })
+    }));
+    const tabs = [['emp', 'Employees'], ['con', 'Contractors']].map(([id, label]) => ({
+      label, count: people.filter((p) => p.kind === id).length, on: tab === id, off: tab !== id,
+      pick: () => this.setState({ tab: id, sel: people.find((p) => p.kind === id).id })
+    }));
+    const isCon = selP.kind === 'con';
+    const sel = {
+      name: selP.name, initials: selP.initials, role: selP.role, start: selP.start, sections: selP.sections,
+      stubs: selP.stubs, hasStubs: selP.stubs.length > 0, noStubs: selP.stubs.length === 0,
+      stubTitle: isCon ? 'Recent payments' : 'Paystubs',
+      emptyStubs: isCon ? 'No payments yet. Payments appear here once the W-9 is on file.' : 'No paystubs yet. The first one will appear after the Oct 20 payroll.'
+    };
+    return {
+      tabs, rows, sel,
+      tableNote: tab === 'emp' ? '3 active employees are included in the Sep 16 – 30 payroll. Terminated employees stay here for year-end W-2s.' : 'Contractors are paid without tax withholding. BillingEase files 1099-NEC forms for anyone paid $600 or more in a year.'
+    };
+  }
+}
+</script>
+</body>
+</html>

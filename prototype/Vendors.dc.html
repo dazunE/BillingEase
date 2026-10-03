@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vendors</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#163300}a:hover{color:#0e2100}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F7F8F5; font-family: Inter, system-ui, sans-serif; color: #163300;">
+  <div style="flex: 1 0 248px; max-width: 100%; display: flex;">
+    <dc-import name="Sidebar" active="vendors" hint-size="100%,1180px"></dc-import>
+  </div>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 56px; display: flex; flex-direction: column; gap: 24px; max-width: 1280px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; letter-spacing: -0.025em;">Vendors</h1>
+        <p style="margin: 0; font-size: 15px; color: #454745;">Everyone you buy from, what you owe them, and who needs a 1099 at year end.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 0; background: rgba(22,51,0,0.08); color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Import from CSV</button>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; border: 0; background: #9FE870; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Add a vendor
+        </button>
+      </div>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+      <section aria-label="Vendor summary" style="flex: 2 1 460px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
+        <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+          <div style="background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 13px; font-weight: 600; color: #454745;">{{s.label}}</div>
+            <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{s.value}}</div>
+            <div style="font-size: 13px; color: #5D605B;">{{s.note}}</div>
+          </div>
+        </sc-for>
+      </section>
+      <section aria-label="Pay vendors by bank transfer" style="flex: 1 1 320px; min-width: 0; box-sizing: border-box; background: #163300; color: #FFFFFF; border-radius: 16px; padding: 20px; display: flex; gap: 14px; align-items: flex-start;">
+        <span style="width: 40px; height: 40px; flex: 0 0 auto; border-radius: 9999px; background: #9FE870; display: inline-flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#163300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 4l9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"></path></svg>
+        </span>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.01em; color: #9FE870;">Pay vendors by bank transfer</div>
+          <div style="font-size: 13px; line-height: 1.5; color: #E2F6D5;">Send ACH payments to vendors straight from Chase ••4417. Bills are marked paid and recorded in your books automatically.</div>
+          <a href="#vendor-payments" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 13px; text-decoration: none;">Set up vendor payments</a>
+        </div>
+      </section>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+      <section aria-label="Vendor list" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; display: flex; flex-direction: column;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #E1E5DC;">
+          <label style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #C9CEC3; border-radius: 10px; background: #FFFFFF; flex: 1 1 240px; max-width: 360px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#454745" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search vendors</span>
+            <input type="search" placeholder="Search by name, email or phone" style="border: 0; outline: 0; font: 400 14px Inter, sans-serif; color: #163300; width: 100%; background: transparent;">
+          </label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">All vendors</button>
+            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEC3; background: #FFFFFF; color: #163300; font: 500 14px Inter, sans-serif; cursor: pointer;">Sort: Balance owed</button>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="text-align: left; color: #454745;">
+                <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Name</th>
+                <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Email</th>
+                <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Phone</th>
+                <th scope="col" style="padding: 12px 12px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC; text-align: right;">Balance owed</th>
+                <th scope="col" style="padding: 12px 20px; font-weight: 600; font-size: 13px; border-bottom: 1px solid #E1E5DC;">Last bill</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+                <tr style="background: {{r.rowBg}};">
+                  <td style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB;">
+                    <button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="display: flex; align-items: center; gap: 10px; border: 0; background: transparent; padding: 4px 0; font: 600 14px Inter, sans-serif; color: #163300; cursor: pointer; text-align: left;">
+                      <span style="width: 32px; height: 32px; flex: 0 0 auto; border-radius: 9999px; background: #E8EBE6; color: #163300; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{r.initials}}</span>
+                      <span style="display: flex; flex-direction: column; gap: 2px;">
+                        <span>{{r.name}}</span>
+                        <sc-if value="{{r.is1099}}" hint-placeholder-val="{{false}}">
+                          <span style="align-self: flex-start; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91;">1099</span>
+                        </sc-if>
+                      </span>
+                    </button>
+                  </td>
+                  <td style="padding: 10px 12px; border-bottom: 1px solid #EEF0EB; color: #454745;">{{r.email}}</td>
+                  <td style="padding: 10px 12px; border-bottom: 1px solid #EEF0EB; color: #454745; font-variant-numeric: tabular-nums; white-space: nowrap;">{{r.phone}}</td>
+                  <td style="padding: 10px 12px; border-bottom: 1px solid #EEF0EB; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.balance}}</td>
+                  <td style="padding: 10px 20px; border-bottom: 1px solid #EEF0EB; color: #454745; white-space: nowrap;">{{r.lastBill}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" style="padding: 14px 20px; font-weight: 600; font-size: 13px; color: #454745;">Total owed to 7 vendors</td>
+                <td style="padding: 14px 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">$3,077.33</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <aside aria-label="Vendor details" style="flex: 1 1 340px; min-width: 0; max-width: 100%; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E1E5DC; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 48px; height: 48px; flex: 0 0 auto; border-radius: 9999px; background: #163300; color: #9FE870; font-size: 16px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{sel.initials}}</span>
+          <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <h2 style="margin: 0; font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">{{sel.name}}</h2>
+            <span style="font-size: 13px; color: #5D605B;">{{sel.contact}}</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #F7F8F5; border-radius: 12px; padding: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 12px; font-weight: 600; color: #5D605B;">Balance owed</span>
+            <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; font-variant-numeric: tabular-nums;">{{sel.balance}}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 12px; font-weight: 600; color: #5D605B;">Paid this year</span>
+            <span style="font-family: 'Inter Tight', Inter, sans-serif; font-weight: 800; font-size: 22px; font-variant-numeric: tabular-nums;">{{sel.ytd}}</span>
+          </div>
+        </div>
+
+        <dl style="margin: 0; display: grid; grid-template-columns: 110px 1fr; gap: 10px 12px; font-size: 14px;">
+          <dt style="font-weight: 600; color: #454745;">Email</dt><dd style="margin: 0; word-break: break-all;">{{sel.email}}</dd>
+          <dt style="font-weight: 600; color: #454745;">Phone</dt><dd style="margin: 0;">{{sel.phone}}</dd>
+          <dt style="font-weight: 600; color: #454745;">Address</dt><dd style="margin: 0;">{{sel.address}}</dd>
+          <dt style="font-weight: 600; color: #454745;">Default category</dt><dd style="margin: 0;">{{sel.category}}</dd>
+          <dt style="font-weight: 600; color: #454745;">Bank details</dt><dd style="margin: 0;">{{sel.bank}}</dd>
+        </dl>
+
+        <div style="border: 1px solid #E1E5DC; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="display: flex; flex-direction: column; gap: 2px;">
+              <span id="c1099-label" style="font-weight: 600; font-size: 14px;">1099 contractor</span>
+              <span style="font-size: 13px; color: #5D605B;">Track payments for year-end 1099-NEC filing</span>
+            </span>
+            <sc-if value="{{sel.on1099}}" hint-placeholder-val="{{false}}">
+              <button type="button" role="switch" aria-checked="true" aria-labelledby="c1099-label" onClick="{{toggle1099}}" style="flex: 0 0 auto; width: 48px; height: 28px; border-radius: 9999px; border: 0; background: #163300; padding: 3px; display: flex; justify-content: flex-end; cursor: pointer;"><span style="width: 22px; height: 22px; border-radius: 9999px; background: #9FE870;"></span></button>
+            </sc-if>
+            <sc-if value="{{sel.off1099}}" hint-placeholder-val="{{true}}">
+              <button type="button" role="switch" aria-checked="false" aria-labelledby="c1099-label" onClick="{{toggle1099}}" style="flex: 0 0 auto; width: 48px; height: 28px; border-radius: 9999px; border: 1px solid #C9CEC3; background: #E8EBE6; padding: 2px; display: flex; justify-content: flex-start; cursor: pointer;"><span style="width: 22px; height: 22px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #C9CEC3; box-sizing: border-box;"></span></button>
+            </sc-if>
+          </div>
+          <sc-if value="{{sel.on1099}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="v-tin" style="font-size: 13px; font-weight: 600;">Taxpayer ID (EIN or SSN)</label>
+              <input id="v-tin" type="text" value="{{sel.tin}}" placeholder="XX-XXXXXXX" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CEC3; border-radius: 10px; font: 400 14px Inter, sans-serif; color: #163300; background: #FFFFFF;">
+              <span style="font-size: 13px; color: #454745;">{{sel.ytd}} paid in 2026 · counts toward the $600 1099 threshold</span>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h3 style="margin: 0; font-size: 14px; font-weight: 600;">Recent bills</h3>
+          <sc-for list="{{sel.bills}}" as="b" hint-placeholder-count="2">
+            <div style="display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid #EEF0EB; font-size: 14px;">
+              <span style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 600; font-variant-numeric: tabular-nums;">{{b.num}}</span>
+                <span style="font-size: 12px; color: #5D605B;">{{b.date}}</span>
+              </span>
+              <span style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-variant-numeric: tabular-nums;">{{b.amount}}</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: {{b.bg}}; color: {{b.fg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{b.fg}};"></span>{{b.status}}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <a href="Bills.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #9FE870; color: #163300; font-weight: 600; font-size: 15px; text-decoration: none;">Create a bill</a>
+          <button type="button" style="min-height: 44px; padding: 0 20px; border-radius: 9999px; border: 1px solid #163300; background: #FFFFFF; color: #163300; font: 600 15px Inter, sans-serif; cursor: pointer;">Edit vendor</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1260}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 'lps', c1099: { lps: true } }; }
+  renderVals() {
+    const B = {
+      Overdue: ['#FBE3DF', '#A8200D'], Unpaid: ['#FFF0B8', '#6B5000'], Partial: ['#E1EEF8', '#1F5E91'], Paid: ['#E2F6D5', '#2F5711']
+    };
+    const bill = (num, date, amount, status) => ({ num, date, amount, status, bg: B[status][0], fg: B[status][1] });
+    const V = [
+      { id: 'ww', name: 'WeWork', initials: 'WW', contact: 'Ana Ortiz, Community lead', email: 'billing@wework.com', phone: '(646) 389-3922', balance: '$1,450.00', lastBill: 'Oct 1, 2026', ytd: '$11,600.00', address: '115 W 18th St, New York, NY 10011', category: 'Rent expense', bank: 'Not added', tin: '', bills: [bill('WW-100926', 'Oct 1, 2026', '$1,450.00', 'Unpaid'), bill('WW-090126', 'Sep 1, 2026', '$1,450.00', 'Paid')] },
+      { id: 'lps', name: 'Local Print Shop', initials: 'LP', contact: 'Dan Kowalski, Owner', email: 'dan@localprintshop.com', phone: '(718) 555-0142', balance: '$640.00', lastBill: 'Aug 28, 2026', ytd: '$4,210.00', address: '42 Bergen St, Brooklyn, NY 11201', category: 'Printing & production costs', bank: 'Checking ••7781 · ACH ready', tin: '84-2291736', bills: [bill('LPS-2041', 'Aug 28, 2026', '$640.00', 'Overdue'), bill('LPS-1987', 'Jul 30, 2026', '$1,180.00', 'Paid')] },
+      { id: 'adb', name: 'Adobe Creative Cloud', initials: 'AC', contact: 'Accounts receivable', email: 'ar@adobe.com', phone: '(800) 833-6687', balance: '$359.88', lastBill: 'Sep 28, 2026', ytd: '$719.76', address: '345 Park Ave, San Jose, CA 95110', category: 'Software & subscriptions', bank: 'Not added', tin: '', bills: [bill('ADB-55102', 'Sep 28, 2026', '$359.88', 'Unpaid')] },
+      { id: 'fig', name: 'Figma', initials: 'FG', contact: 'Billing team', email: 'billing@figma.com', phone: '(415) 890-5404', balance: '$225.00', lastBill: 'Sep 15, 2026', ytd: '$3,825.00', address: '760 Market St, San Francisco, CA 94102', category: 'Software & subscriptions', bank: 'Not added', tin: '', bills: [bill('FIG-2026-09', 'Sep 15, 2026', '$450.00', 'Partial')] },
+      { id: 'stp', name: 'Staples', initials: 'ST', contact: 'Business advantage desk', email: 'advantage@staples.com', phone: '(800) 378-2753', balance: '$212.46', lastBill: 'Sep 22, 2026', ytd: '$1,312.66', address: '500 Staples Dr, Framingham, MA 01702', category: 'Office supplies', bank: 'Not added', tin: '', bills: [bill('STP-77310', 'Sep 22, 2026', '$212.46', 'Unpaid')] },
+      { id: 'cb', name: 'Comcast Business', initials: 'CB', contact: 'Account 8774 1029 3381', email: 'business.billing@comcast.com', phone: '(800) 391-3000', balance: '$189.99', lastBill: 'Sep 1, 2026', ytd: '$1,519.92', address: '1701 JFK Blvd, Philadelphia, PA 19103', category: 'Internet & phone', bank: 'Not added', tin: '', bills: [bill('CB-88213', 'Sep 1, 2026', '$189.99', 'Overdue'), bill('CB-87104', 'Aug 1, 2026', '$189.99', 'Paid')] },
+      { id: 'dl', name: 'Delta Air Lines', initials: 'DL', contact: 'Corporate travel', email: 'skybonus@delta.com', phone: '(800) 221-1212', balance: '$0.00', lastBill: 'Sep 10, 2026', ytd: '$3,940.12', address: '1030 Delta Blvd, Atlanta, GA 30354', category: 'Travel expense', bank: 'Not added', tin: '', bills: [bill('DL-0098812', 'Sep 10, 2026', '$684.20', 'Paid')] }
+    ];
+    const c1099 = this.state.c1099 || {};
+    const rows = V.map((v) => ({
+      ...v, is1099: !!c1099[v.id],
+      pressed: v.id === this.state.sel ? 'true' : 'false',
+      rowBg: v.id === this.state.sel ? '#F2F4EF' : '#FFFFFF',
+      pick: () => this.setState({ sel: v.id })
+    }));
+    const s = V.find((v) => v.id === this.state.sel) || V[0];
+    const on = !!c1099[s.id];
+    const sel = { ...s, on1099: on, off1099: !on };
+    const toggle1099 = () => this.setState({ c1099: { ...c1099, [s.id]: !on } });
+    const n1099 = V.filter((v) => c1099[v.id]).length;
+    const stats = [
+      { label: 'Total owed', value: '$3,077.33', note: '6 vendors with open bills' },
+      { label: 'Overdue', value: '$829.99', note: '2 bills' },
+      { label: '1099 contractors', value: String(n1099), note: 'Forms due Jan 31, 2027' }
+    ];
+    return { rows, sel, toggle1099, stats };
+  }
+}
+</script>
+</body>
+</html>
