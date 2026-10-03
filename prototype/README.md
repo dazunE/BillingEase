@@ -29,4 +29,6 @@ Data is in-memory, so it resets when you reload or move to another screen. Areas
 
 ## Design language
 
-Wise-inspired: forest green `#163300` for text and dark sections, lime `#9FE870` for primary actions, pill-shaped controls, Inter Tight (heavy, tightly tracked) for headlines and Inter for UI text, loaded from Google Fonts.
+Option E, "Graphite & Violet": near-black graphite `#18161F` for text and dark sections, soft electric violet `#B9A3FF` for primary actions with graphite text, a violet tint `#EEE8FF` for selected states, and pill-shaped controls. Headlines use Sora and UI text uses DM Sans, both loaded from Google Fonts. Status colors (Paid, Overdue, Unpaid and so on) keep their usual green, red, yellow and blue.
+
+The five color and typography options that were compared are kept under "Theme options" on the start page (`Theme*.dc.html`).
