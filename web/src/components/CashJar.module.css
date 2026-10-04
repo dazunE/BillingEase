@@ -1,0 +1,60 @@
+/* Cash jar illustration (port of prototype/CashJar.dc.html). Class and keyframe names are scoped by CSS modules. */
+.jar {
+  display: block;
+  overflow: visible;
+  max-width: 100%;
+  height: auto;
+}
+
+@keyframes coin {
+  0% { transform: translate(0, -80px); opacity: 0; }
+  12% { opacity: 1; }
+  68% { transform: translate(0, 92px); opacity: 1; }
+  78%, 100% { transform: translate(0, 98px); opacity: 0; }
+}
+@keyframes bill {
+  0% { transform: translate(0, -90px) rotate(-18deg); opacity: 0; }
+  14% { opacity: 1; }
+  72% { transform: translate(8px, 84px) rotate(14deg); opacity: 1; }
+  82%, 100% { transform: translate(8px, 90px) rotate(14deg); opacity: 0; }
+}
+@keyframes tax {
+  0%, 18% { transform: translate(0, 0); opacity: 0; }
+  26% { opacity: 1; transform: translate(24px, -46px); }
+  52% { transform: translate(110px, -34px); }
+  78% { transform: translate(168px, 128px); opacity: 1; }
+  88%, 100% { transform: translate(168px, 134px); opacity: 0; }
+}
+@keyframes settle {
+  0%, 100% { transform: translateY(0); }
+  6% { transform: translateY(3px); }
+  12% { transform: translateY(0); }
+}
+@keyframes env {
+  0%, 76% { transform: rotate(0); }
+  82% { transform: rotate(-5deg); }
+  88% { transform: rotate(4deg); }
+  94%, 100% { transform: rotate(0); }
+}
+@keyframes glint {
+  0%, 60% { opacity: 0; }
+  72% { opacity: 0.95; }
+  86%, 100% { opacity: 0; }
+}
+
+.spin {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.settle { animation: settle 2.6s ease-out infinite; animation-delay: 1.6s; }
+.coin { animation: coin 2.6s ease-in infinite; opacity: 0; }
+.bill { animation: bill 3.4s ease-in-out infinite; animation-delay: 0.9s; opacity: 0; }
+.taxCoin { animation: tax 3.4s ease-in-out infinite; animation-delay: 1.7s; opacity: 0; }
+.env { animation: env 3.4s ease-in-out infinite; animation-delay: 1.7s; }
+.glint { animation: glint 3.4s ease-in-out infinite; opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jar * {
+    animation: none !important;
+  }
+}
