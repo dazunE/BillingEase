@@ -128,10 +128,16 @@ export default async function PayPage({ params, searchParams }: { params: Promis
             <span className="font-display font-bold tabular">{formatMoney(invoice.totalCents)}</span>
           </div>
           <span className="text-[13px] text-muted">Issued {formatDate(invoice.issueDate, long)}</span>
-          <Link href={`/i/${token}/print`} className="inline-flex min-h-10 items-center gap-1.5 self-start text-sm font-semibold underline underline-offset-4">
-            <Icon d={ICONS.doc} size={16} />
-            View or download the full invoice
-          </Link>
+          <div className="flex flex-wrap gap-x-5 gap-y-1">
+            <a href={`/i/${token}/pdf`} download className="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold underline underline-offset-4">
+              <Icon d={ICONS.download} size={16} />
+              Download PDF
+            </a>
+            <Link href={`/i/${token}/print`} className="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold underline underline-offset-4">
+              <Icon d={ICONS.doc} size={16} />
+              View the full invoice
+            </Link>
+          </div>
         </section>
 
         <p className="mt-auto text-center text-xs text-muted">

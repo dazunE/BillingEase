@@ -9,6 +9,7 @@ import { LedgerError } from "@/lib/ledger";
 import { formatMoney, parseMoney } from "@/lib/money";
 import { OpError, type InvoiceLineInput } from "@/lib/ops";
 import { createAndSendInvoice } from "@/lib/ops-in";
+import { deliverOutbox, withDelivery } from "@/lib/email";
 import { DUE_DAYS, NEW_CUSTOMER } from "@/components/in/shared";
 import { baseUrl } from "./run";
 
@@ -79,9 +80,10 @@ export async function billSomeoneAction(_prev: BillState, formData: FormData): P
     if (err instanceof OpError || err instanceof LedgerError) return { errors: { form: err.message } };
     throw err;
   }
+  const delivery = await deliverOutbox(db, business.id, { appUrl: url });
   revalidatePath("/app", "layout");
   const { invoice, customer, emailed } = result;
-  if (emailed) redirectWithFlash("/app/in", `Sent ${invoice.number} to ${customer.name} for ${formatMoney(invoice.totalCents)}`);
+  if (emailed) redirectWithFlash("/app/in", withDelivery(`Sent ${invoice.number} to ${customer.name} for ${formatMoney(invoice.totalCents)}`, delivery));
   // Nobody was emailed: go to the invoice, where the pay link is ready to copy.
   redirectWithFlash(`/app/invoices/${invoice.id}`, `${invoice.number} is ready, but ${customer.name} has no email address, so nothing was emailed. Copy the pay link below.`);
 }

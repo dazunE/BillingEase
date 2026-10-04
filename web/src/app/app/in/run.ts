@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { requireBusiness } from "@/lib/auth";
 import { redirectWithFlash } from "@/lib/flash";
+import { deliverOutbox, withDelivery } from "@/lib/email";
 import { LedgerError, type Tx } from "@/lib/ledger";
 import { OpError } from "@/lib/ops";
 
@@ -11,7 +12,7 @@ export type ActionCtx = { db: Tx; business: Business };
 
 /**
  * Runs a one-tap action for the Coming in screens: checks the session, runs
- * in a transaction, then returns to `back` with a confirmation (or the
+ * in a transaction, sends any emails it queued, then returns to `back` with a confirmation (or the
  * problem, in plain words).
  */
 export async function runAction(back: string, fn: (ctx: ActionCtx) => Promise<string>): Promise<never> {
@@ -23,8 +24,10 @@ export async function runAction(back: string, fn: (ctx: ActionCtx) => Promise<st
     if (err instanceof OpError || err instanceof LedgerError) redirectWithFlash(back, err.message);
     throw err;
   }
+  // Emails go out only once the books are saved.
+  const delivery = await deliverOutbox(ctx.db, ctx.business.id, { appUrl: await baseUrl() });
   revalidatePath("/app", "layout");
-  redirectWithFlash(back, done);
+  redirectWithFlash(back, withDelivery(done, delivery));
 }
 
 /** Only ever go back to a page inside the app. */

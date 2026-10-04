@@ -299,6 +299,8 @@ export const activity = pgTable(
 );
 
 // Development mail transport: emails are stored here instead of being sent.
+export type OutboxStatus = "kept" | "queued" | "sending" | "sent" | "failed";
+
 export const outboxEmails = pgTable("outbox_emails", {
   id: id(),
   businessId: uuid("business_id").references(() => businesses.id, { onDelete: "cascade" }),
@@ -306,5 +308,14 @@ export const outboxEmails = pgTable("outbox_emails", {
   subject: text("subject").notNull(),
   bodyText: text("body_text").notNull(),
   link: text("link"),
+  // the invoice attached as a PDF, if any
+  invoiceId: uuid("invoice_id").references(() => invoices.id, { onDelete: "set null" }),
+  // kept = stored here only (no email provider set up); queued → sending → sent | failed
+  status: text("status").$type<OutboxStatus>().notNull().default("kept"),
+  error: text("error"),
+  sentAt: timestamp("sent_at", { withTimezone: true }),
   createdAt: createdAt(),
-});
+}, (t) => [
+  index("outbox_status").on(t.status),
+  check("outbox_status_valid", sql`${t.status} in ('kept','queued','sending','sent','failed')`),
+]);

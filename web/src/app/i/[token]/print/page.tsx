@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getDb } from "@/db/client";
 import { InvoiceDocument } from "@/components/in/InvoiceDocument";
 import { PRINT_CSS } from "@/components/in/print";
+import { DownloadPdfLink } from "@/components/in/DownloadPdfLink";
 import { PrintButton } from "@/components/in/PrintButton";
 import { ICONS, Icon } from "@/components/ui";
 import { invoiceByToken } from "@/lib/ops-in";
@@ -22,7 +23,10 @@ export default async function PublicPrintPage({ params }: { params: Promise<{ to
           <Icon d={ICONS.arrowLeft} size={16} />
           {d.invoice.status === "paid" ? "Back" : "Back to pay"}
         </Link>
-        <PrintButton />
+        <div className="flex flex-wrap gap-2">
+          <DownloadPdfLink href={`/i/${token}/pdf`} />
+          <PrintButton />
+        </div>
       </div>
       <InvoiceDocument doc={d} className="print-sheet" />
     </main>

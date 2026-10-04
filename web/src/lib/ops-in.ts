@@ -216,10 +216,11 @@ export async function invoiceDetail(db: Exec, businessId: string, invoiceId: str
 
   const timeline: TimelineEvent[] = [{ at: row.invoice.createdAt, label: "Created" }];
   if (row.invoice.sentAt) {
-    const first = mail.find((m) => !m.subject.startsWith("A friendly reminder"));
+    const first = mail.find((m) => !m.subject.startsWith("A friendly reminder") && !m.subject.includes(" a copy of invoice "));
     timeline.push({ at: row.invoice.sentAt, label: "Sent", detail: first ? `Emailed to ${first.toEmail}` : "No email on file, so nothing was emailed" });
   }
   for (const m of mail.filter((m) => m.subject.startsWith("A friendly reminder"))) timeline.push({ at: m.createdAt, label: "Reminder sent", detail: `Emailed to ${m.toEmail}` });
+  for (const m of mail.filter((m) => m.subject.includes(" a copy of invoice "))) timeline.push({ at: m.createdAt, label: "PDF emailed", detail: `To ${m.toEmail}` });
   for (const a of log) timeline.push({ at: a.createdAt, label: a.message.includes(VIEWED) ? "Opened by your customer" : a.message.startsWith("Discarded") ? "Discarded" : "Voided" });
   for (const p of paid) {
     timeline.push({ at: new Date(p.receivedOn + "T12:00:00"), label: `Payment of ${formatMoney(p.amountCents)}`, detail: `${methodLabel(p.method)}${p.providerRef ? ` · ref ${p.providerRef}` : ""}` });
@@ -319,7 +320,14 @@ export async function payInvoiceOnline(
 // Dev outbox
 
 export async function listOutbox(db: Exec, businessId: string, limit = 100) {
-  return db.select().from(outboxEmails).where(eq(outboxEmails.businessId, businessId)).orderBy(desc(outboxEmails.createdAt)).limit(limit);
+  const rows = await db
+    .select({ email: outboxEmails, invoiceNumber: invoices.number })
+    .from(outboxEmails)
+    .leftJoin(invoices, eq(outboxEmails.invoiceId, invoices.id))
+    .where(eq(outboxEmails.businessId, businessId))
+    .orderBy(desc(outboxEmails.createdAt))
+    .limit(limit);
+  return rows.map((r) => ({ ...r.email, invoiceNumber: r.invoiceNumber }));
 }
 
 export async function nextInvoiceNumber(db: Exec, businessId: string) {

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireBusiness } from "@/lib/auth";
 import { today } from "@/lib/dates";
 import { appUrl, redirectWithFlash } from "@/lib/flash";
+import { deliverOutbox, withDelivery } from "@/lib/email";
 import { LedgerError, type Tx } from "@/lib/ledger";
 import { approvePayroll, connectBank, OpError, payBill, sendInvoice, sendReminder } from "@/lib/ops";
 
@@ -21,8 +22,10 @@ async function run(back: string, done: string, fn: (ctx: Ctx) => Promise<void>):
     if (err instanceof OpError || err instanceof LedgerError) redirectWithFlash(back, err.message);
     throw err;
   }
+  // Emails go out only once the books are saved.
+  const delivery = await deliverOutbox(ctx.db, ctx.business.id, { appUrl: appUrl() });
   revalidatePath("/app", "layout");
-  redirectWithFlash(back, done);
+  redirectWithFlash(back, withDelivery(done, delivery));
 }
 
 const safeBack = (v: FormDataEntryValue | null) => (typeof v === "string" && v.startsWith("/app") ? v : "/app");

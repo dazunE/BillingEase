@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { InvoiceDocument } from "@/components/in/InvoiceDocument";
+import { DownloadPdfLink } from "@/components/in/DownloadPdfLink";
 import { PrintButton } from "@/components/in/PrintButton";
 import { ICONS, Icon } from "@/components/ui";
 import { requireBusiness } from "@/lib/auth";
@@ -25,7 +26,10 @@ export default async function PrintInvoicePage({ params }: { params: Promise<{ i
           <Icon d={ICONS.arrowLeft} size={16} />
           Back to {d.invoice.number}
         </Link>
-        <PrintButton />
+        <div className="flex flex-wrap gap-2">
+          <DownloadPdfLink href={`/app/invoices/${d.invoice.id}/pdf`} />
+          <PrintButton />
+        </div>
       </div>
       <div className="mx-auto w-full max-w-[820px]">
         <InvoiceDocument doc={d} className="print-sheet" />

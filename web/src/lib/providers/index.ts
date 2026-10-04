@@ -106,3 +106,56 @@ export const sandboxPayroll: PayrollProvider = {
 export function payrollProvider(): PayrollProvider {
   return sandboxPayroll;
 }
+
+// ---------------------------------------------------------------------------
+// Email (Resend). Without RESEND_API_KEY, emails stay in the in-app outbox.
+
+export type OutgoingEmail = {
+  /** Used as an idempotency key, so a retry never sends twice. */
+  id: string;
+  to: string;
+  replyTo?: string;
+  subject: string;
+  text: string;
+  attachments?: { filename: string; content: Uint8Array }[];
+};
+
+export interface EmailProvider {
+  readonly name: string;
+  send(msg: OutgoingEmail): Promise<{ ok: true; id: string } | { ok: false; message: string }>;
+}
+
+export function resendEmail(apiKey: string, from: string): EmailProvider {
+  return {
+    name: "resend",
+    async send(msg) {
+      try {
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", "Idempotency-Key": `outbox-${msg.id}` },
+          body: JSON.stringify({
+            from,
+            to: [msg.to],
+            reply_to: msg.replyTo ? [msg.replyTo] : undefined,
+            subject: msg.subject,
+            text: msg.text,
+            attachments: msg.attachments?.map((a) => ({ filename: a.filename, content: Buffer.from(a.content).toString("base64") })),
+          }),
+          signal: AbortSignal.timeout(20_000),
+        });
+        const body = (await res.json().catch(() => ({}))) as { id?: string; message?: string };
+        if (!res.ok) return { ok: false, message: body.message ?? `Email service answered ${res.status}` };
+        return { ok: true, id: body.id ?? "" };
+      } catch (err) {
+        return { ok: false, message: err instanceof Error && err.name === "TimeoutError" ? "The email service didn't answer in time" : "Couldn't reach the email service" };
+      }
+    },
+  };
+}
+
+/** The configured email service, or null when emails should stay in the outbox. */
+export function emailProvider(): EmailProvider | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  return resendEmail(key, process.env.EMAIL_FROM ?? "BillingEase <onboarding@resend.dev>");
+}

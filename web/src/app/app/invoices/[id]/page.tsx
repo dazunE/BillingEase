@@ -13,7 +13,7 @@ import { formatMoney } from "@/lib/money";
 import { threeNumbers } from "@/lib/numbers";
 import { invoiceDetail, invoiceStatus } from "@/lib/ops-in";
 import { baseUrl } from "../../in/run";
-import { recordPaymentAction, sendDraftAction, voidAction } from "../actions";
+import { emailPdfAction, recordPaymentAction, sendDraftAction, voidAction } from "../actions";
 
 export const metadata: Metadata = { title: "Invoice" };
 
@@ -81,9 +81,17 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
       <div className="flex flex-wrap items-start gap-6">
         <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-3">
           <InvoiceDocument doc={d} />
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-            <Link href={`/app/invoices/${invoice.id}/print`} className="inline-flex min-h-9 items-center gap-1.5 font-semibold underline underline-offset-4">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <a href={`/app/invoices/${invoice.id}/pdf`} download className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-ink px-4 font-semibold text-white hover:bg-black">
+              <Icon d={ICONS.download} size={16} />
+              Download PDF
+            </a>
+            <a href={`/app/invoices/${invoice.id}/pdf?view=1`} target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center gap-1.5 font-semibold underline underline-offset-4">
               <Icon d={ICONS.doc} size={16} />
+              Open PDF
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+            <Link href={`/app/invoices/${invoice.id}/print`} className="inline-flex min-h-9 items-center gap-1.5 font-semibold underline underline-offset-4">
               Printable version
             </Link>
             {invoice.status !== "draft" && invoice.status !== "void" && (
@@ -102,7 +110,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
               <h2 className="font-display text-lg font-bold tracking-[-0.02em]">Ready to send?</h2>
               <p className="text-sm text-ink2">
                 {customer.email
-                  ? `We'll email it to ${customer.email} with a link to pay online.`
+                  ? `We'll email it to ${customer.email} with the PDF attached and a link to pay online.`
                   : `${customer.name} has no email on file, so sending puts it on the books and gives you a pay link to share yourself.`}
               </p>
               <form action={sendDraftAction}>
@@ -173,6 +181,34 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
               {customer.email && payLinkCard}
             </>
+          )}
+
+          {(invoice.status === "sent" || invoice.status === "paid") && (
+            <section aria-labelledby="pdf-h" className="flex flex-col gap-3 rounded-[20px] border border-line bg-white p-5">
+              <h2 id="pdf-h" className="font-display text-lg font-bold tracking-[-0.02em]">
+                Email the PDF
+              </h2>
+              <p className="text-sm text-ink2">
+                Sends {invoice.number} as a PDF attachment{invoice.status === "sent" ? ", with the pay link" : ""}. Send it to {customer.name} again, their accounts team or your accountant.
+              </p>
+              <form action={emailPdfAction} className="flex flex-col gap-3">
+                <input type="hidden" name="invoiceId" value={invoice.id} />
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[13px] font-semibold">Send to</span>
+                  <input name="to" type="email" required autoComplete="email" defaultValue={customer.email ?? ""} placeholder="name@company.com" className={inputClass} />
+                </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[13px] font-semibold">
+                    Note <span className="font-normal text-muted">(optional)</span>
+                  </span>
+                  <textarea name="note" rows={2} maxLength={2000} className={cx(inputClass, "py-2.5")} />
+                </label>
+                <button className={primary}>
+                  <Icon d={ICONS.mail} size={16} />
+                  Email PDF
+                </button>
+              </form>
+            </section>
           )}
 
           {(invoice.status === "sent" || invoice.status === "draft") && invoice.paidCents === 0 && (

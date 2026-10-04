@@ -3,7 +3,8 @@ import { expect, test, type Page } from "@playwright/test";
 /**
  * The whole loop, end to end, against a fresh in-memory database with
  * "today" fixed at 2026-10-04: sign up → set up with a sample month → nudge a
- * late customer → bill someone → the customer pays online → sort card
+ * late customer → bill someone → the customer downloads the PDF and pays
+ * online → the owner emails the PDF → sort card
  * charges → approve payroll → record an expense → change the tax rate →
  * read the reports. The three numbers must move as money moves.
  */
@@ -59,6 +60,9 @@ test("the three-numbers loop works end to end", async ({ page }) => {
   const url = new URL(payLink!, page.url());
   await page.goto(url.pathname);
   await expect(page.getByText(/Test mode/)).toBeVisible();
+  // The customer can download the invoice as a PDF
+  const [pdf] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "Download PDF" }).click()]);
+  expect(pdf.suggestedFilename()).toMatch(/^INV-\d+\.pdf$/);
   await page.locator("input[name=name]").fill("Daniel Okafor");
   await page.locator("input[name=cardNumber]").fill("4242 4242 4242 4242");
   await page.locator("input[name=expiry]").fill("12/29");
@@ -74,6 +78,17 @@ test("the three-numbers loop works end to end", async ({ page }) => {
     await page.waitForTimeout(400);
   }
   await expect(page.locator("#sort")).toContainText(/All sorted|Nothing to sort/);
+
+  // The owner downloads the PDF and emails it to someone else
+  await page.goto("/app/invoices?status=paid");
+  await page.getByRole("row").filter({ hasText: "Logo refresh" }).getByRole("link").first().click();
+  const [own] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "Download PDF" }).click()]);
+  expect(own.suggestedFilename()).toMatch(/^INV-\d+\.pdf$/);
+  await page.getByLabel("Send to").fill("accounts@greenline.example");
+  await page.getByRole("button", { name: "Email PDF" }).click();
+  await expect(page.getByRole("status")).toContainText("PDF emailed to accounts@greenline.example");
+  await page.goto("/app/outbox");
+  await expect(page.getByText("To accounts@greenline.example")).toBeVisible();
 
   // Approve payroll
   await page.goto("/app");

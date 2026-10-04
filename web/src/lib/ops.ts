@@ -143,8 +143,9 @@ export async function sendInvoice(db: Exec, businessId: string, invoiceId: strin
       businessId,
       to: customer.email,
       subject: `${opts.businessName} sent you invoice ${invoice.number} for ${formatMoney(invoice.totalCents)}`,
-      text: `Hi ${customer.name},\n\nHere's invoice ${invoice.number} for ${formatMoney(invoice.totalCents)}, due ${formatDate(invoice.dueDate, { month: "long", day: "numeric" })}.\n\nView and pay it online: ${link}\n\nThanks,\n${opts.businessName}`,
+      text: `Hi ${customer.name},\n\nHere's invoice ${invoice.number} for ${formatMoney(invoice.totalCents)}, due ${formatDate(invoice.dueDate, { month: "long", day: "numeric" })}. The PDF is attached.\n\nView and pay it online: ${link}\n\nThanks,\n${opts.businessName}`,
       link,
+      invoiceId: invoice.id,
     });
   }
   await logActivity(db, businessId, `Sent invoice ${invoice.number} to ${customer.name} for ${formatMoney(invoice.totalCents)}`);
@@ -199,8 +200,9 @@ export async function sendReminder(db: Exec, businessId: string, invoiceId: stri
     businessId,
     to: customer.email,
     subject: `A friendly reminder: ${invoice.number} for ${formatMoney(open)}`,
-    text: `Hi ${customer.name},\n\n${opts.personalNote?.trim() || `Just a friendly note that invoice ${invoice.number} for ${formatMoney(open)} was due ${formatDate(invoice.dueDate, { month: "long", day: "numeric" })}.`}\n\nYou can pay it online here: ${link}\n\nThanks,\n${opts.businessName}`,
+    text: `Hi ${customer.name},\n\n${opts.personalNote?.trim() || `Just a friendly note that invoice ${invoice.number} for ${formatMoney(open)} was due ${formatDate(invoice.dueDate, { month: "long", day: "numeric" })}.`}\n\nYou can pay it online here: ${link}\n\nThe invoice is attached as a PDF.\n\nThanks,\n${opts.businessName}`,
     link,
+    invoiceId: invoice.id,
   });
   await db
     .update(invoices)

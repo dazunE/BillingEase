@@ -1,4 +1,5 @@
-import { payrollRuns } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
+import { outboxEmails, payrollRuns } from "@/db/schema";
 import { addDays, startOfMonth } from "./dates";
 import { accountByCode, accountBySubtype, postEntry, type Exec } from "./ledger";
 import { connectBank, createBill, createCustomer, createInvoice, recordPayment, sendInvoice } from "./ops";
@@ -92,4 +93,10 @@ export async function seedSampleData(db: Exec, businessId: string, opts: { today
       { name: "Sam Ortiz", netCents: 190457, grossCents: 249600 },
     ],
   });
+
+  // Sample customers are made up: their emails stay in the outbox, never sent.
+  await db
+    .update(outboxEmails)
+    .set({ status: "kept" })
+    .where(and(eq(outboxEmails.businessId, businessId), eq(outboxEmails.status, "queued")));
 }
