@@ -269,7 +269,7 @@ export async function payBill(db: Exec, businessId: string, billId: string, inpu
   if (row.bill.status === "paid") throw new OpError("This bill is already paid.");
   const ap = await accountBySubtype(db, businessId, "ap");
   const from = input.fromAccountId ? { id: input.fromAccountId } : await accountBySubtype(db, businessId, "cash");
-  await postEntry(db, {
+  const entryId = await postEntry(db, {
     businessId,
     date: input.paidOn,
     memo: `Paid ${row.vendor.name}: ${row.bill.description}`,
@@ -282,6 +282,7 @@ export async function payBill(db: Exec, businessId: string, billId: string, inpu
   });
   await db.update(bills).set({ status: "paid", paidOn: input.paidOn }).where(eq(bills.id, row.bill.id));
   await logActivity(db, businessId, `Paid ${row.vendor.name} ${formatMoney(row.bill.amountCents)}`);
+  return entryId;
 }
 
 export async function recordExpense(
@@ -382,7 +383,26 @@ export async function importTransactions(db: Exec, businessId: string, feedId: s
       }
     }
 
-    // 2. A merchant the user taught us, or one we already know.
+    // 2. A charge that pays a bill we already know about settles that bill
+    //    (otherwise the cost would be counted twice).
+    if (t.amountCents < 0) {
+      const open = await db
+        .select({ bill: bills, vendor: vendors })
+        .from(bills)
+        .innerJoin(vendors, eq(bills.vendorId, vendors.id))
+        .where(and(eq(bills.businessId, businessId), eq(bills.status, "unpaid"), eq(bills.amountCents, -t.amountCents)))
+        .orderBy(asc(bills.dueDate));
+      const desc = t.description.toUpperCase();
+      const hit = open.find(({ vendor }) => vendor.name.toUpperCase().split(/\W+/).some((w) => w.length >= 3 && desc.includes(w)));
+      if (hit) {
+        const entryId = await payBill(db, businessId, hit.bill.id, { paidOn: t.postedOn, fromAccountId: feed.accountId });
+        await db.update(bankTransactions).set({ status: "matched", journalEntryId: entryId }).where(eq(bankTransactions.id, tx.id));
+        autoSorted++;
+        continue;
+      }
+    }
+
+    // 3. A merchant the user taught us, or one we already know.
     const key = merchantKey(t.description);
     const rule = rules.find((r) => key.includes(r.pattern));
     const known = KNOWN_MERCHANTS.find(([re]) => re.test(t.description));
@@ -393,7 +413,7 @@ export async function importTransactions(db: Exec, businessId: string, feedId: s
       continue;
     }
 
-    // 3. Otherwise ask, with our best guess.
+    // 4. Otherwise ask, with our best guess.
     const guess = GUESSES.find(([re]) => re.test(t.description));
     const fallback = t.amountCents > 0 ? "4000" : "6900";
     const suggested = await accountByCode(db, businessId, guess ? guess[1] : fallback);

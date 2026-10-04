@@ -101,3 +101,20 @@ describe("sample business", () => {
     expect(n3.outScheduled).toBe(n2.outScheduled);
   });
 });
+
+describe("bank charges that pay known bills", () => {
+  it("settle the bill instead of counting the cost twice", async () => {
+    const rent = await accountByCode(db, businessId, "6050");
+    await createBill(db, businessId, { vendorName: "WeWork", description: "October rent", categoryAccountId: rent.id, amountCents: 120000, billDate: "2026-10-01", dueDate: "2026-10-05" });
+    const { importTransactions } = await import("@/lib/ops");
+    const { bankFeeds } = await import("@/db/schema");
+    const cash = await accountBySubtype(db, businessId, "cash");
+    const [feed] = await db.insert(bankFeeds).values({ businessId, accountId: cash.id, provider: "sandbox", institution: "Chase", mask: "4417" }).returning();
+    await importTransactions(db, businessId, feed.id, [{ externalId: "x1", postedOn: "2026-10-03", description: "WEWORK RENT", amountCents: -120000 }]);
+    const pl = await profitAndLoss(db, businessId, "2026-10-01", "2026-10-31");
+    expect(pl.totalExpenses).toBe(120000);
+    const n = await threeNumbers(db, businessId, "month", T);
+    expect(n.outPaid).toBe(120000);
+    expect(n.outScheduled).toBe(0);
+  });
+});

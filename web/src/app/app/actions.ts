@@ -42,7 +42,7 @@ export async function approvePayrollAction(formData: FormData) {
 
 export async function payBillAction(formData: FormData) {
   const id = String(formData.get("billId"));
-  return run(safeBack(formData.get("back")), "Bill paid", ({ db, business }) => payBill(db, business.id, id, { paidOn: today() }));
+  return run(safeBack(formData.get("back")), "Bill paid", ({ db, business }) => payBill(db, business.id, id, { paidOn: today() }).then(() => undefined));
 }
 
 export async function sendDraftAction(formData: FormData) {
