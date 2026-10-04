@@ -18,6 +18,26 @@ a{color:#18161F}a:hover{color:#000000}
 .tl-eq-card{transition:transform .15s ease, box-shadow .15s ease}
 @media (max-width: 900px){.tl-op{flex-basis:100%!important;height:22px;font-size:28px!important}}
 @media (max-width: 640px){.tl-anchors{display:none!important}}
+@keyframes tl-slide{0%{left:0;opacity:0}12%{opacity:1}78%{opacity:1}100%{left:100%;opacity:0}}
+@keyframes tl-fill{0%,100%{height:42%}50%{height:74%}}
+@keyframes tl-type{0%{max-width:0}55%,100%{max-width:340px}}
+@keyframes tl-caret{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes tl-paper{0%,30%{opacity:0;transform:translateY(14px)}42%,100%{opacity:1;transform:none}}
+@keyframes tl-stamp{0%,58%{opacity:0;transform:rotate(-14deg) scale(2.2)}66%{opacity:1;transform:rotate(-14deg) scale(1)}92%{opacity:1;transform:rotate(-14deg) scale(1)}100%{opacity:0;transform:rotate(-14deg) scale(1)}}
+@keyframes tl-scan{0%{top:6%}50%{top:86%}100%{top:6%}}
+@keyframes tl-pop{0%,30%{opacity:0;transform:translateY(8px) scale(.96)}40%,100%{opacity:1;transform:none}}
+@keyframes tl-pop2{0%,55%{opacity:0;transform:translateY(8px) scale(.96)}65%,100%{opacity:1;transform:none}}
+@keyframes tl-drop{0%{top:-24px;opacity:0}10%{opacity:1}70%{top:58%;opacity:1}85%,100%{top:62%;opacity:0}}
+@keyframes tl-drop-tax{0%{top:-24px;left:30%;opacity:0}10%{opacity:1}40%{top:20%;left:30%}75%{top:60%;left:84%;opacity:1}90%,100%{top:64%;left:84%;opacity:0}}
+@keyframes tl-rowin{0%,8%{opacity:0;transform:translateX(-10px)}16%,100%{opacity:1;transform:none}}
+@keyframes tl-swap-a{0%,45%{opacity:1}55%,100%{opacity:0}}
+@keyframes tl-swap-b{0%,45%{opacity:0}55%,100%{opacity:1}}
+@keyframes tl-grow{0%{width:0}35%,100%{width:75%}}
+@keyframes tl-grow-tax{0%,35%{width:0}55%,100%{width:25%}}
+@keyframes tl-pulse{0%{box-shadow:0 0 0 0 rgba(47,87,17,.45)}70%,100%{box-shadow:0 0 0 8px rgba(47,87,17,0)}}
+@keyframes tl-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media (max-width: 760px){.tl-side{display:none!important}}
+@media (prefers-reduced-motion: reduce){.tl-anim,.tl-anim *{animation:none!important}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
@@ -46,6 +66,53 @@ a{color:#18161F}a:hover{color:#000000}
       <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;">
         <h1 id="hero-h" style="margin: 0; max-width: 980px; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 6.6vw, 88px); line-height: 1.02; letter-spacing: -0.035em;">Your whole business in three numbers.</h1>
         <p style="margin: 0; max-width: 640px; text-wrap: balance; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; color: #47444F;">BillingEase does the bookkeeping quietly in the background. You just see what’s coming in, what’s going out, and what’s yours to keep.</p>
+      </div>
+
+      <!-- Illustration: money flowing in, out, and settling in the jar -->
+      <div class="tl-anim" aria-hidden="true" style="width: 100%; max-width: 1080px; margin: 0 auto; display: flex; align-items: center;">
+        <div class="tl-side" style="flex: 0 0 180px; display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{scene.ins}}" as="c" hint-placeholder-count="3">
+            <span style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px 0 6px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden;">
+              <span style="width: 32px; height: 32px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none;">{{c.i}}</span>{{c.n}}
+            </span>
+          </sc-for>
+        </div>
+        <div style="flex: 1 1 120px; min-width: 70px; display: flex; flex-direction: column; gap: 10px; padding: 0 6px; overflow: hidden;">
+          <span style="font-size: 11px; font-weight: 700; color: #5F5B68; text-align: center; letter-spacing: 0.02em;">FROM CUSTOMERS</span>
+          <sc-for list="{{scene.ins}}" as="c" hint-placeholder-count="3">
+            <span style="position: relative; display: block; height: 34px;">
+              <span style="position: absolute; left: 0; right: 0; top: 50%; border-top: 2px dashed #C9BCFB;"></span>
+              <span style="position: absolute; top: 4px; left: 40%; margin-left: -34px; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 9999px; background: #7A5AF8; color: #FFFFFF; font-size: 12px; font-weight: 700; white-space: nowrap; animation: tl-slide 3.6s linear infinite; animation-delay: {{c.delay}};">{{c.amt}}</span>
+            </span>
+          </sc-for>
+        </div>
+        <div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <span style="width: 64px; height: 14px; border-radius: 6px 6px 3px 3px; background: #18161F;"></span>
+          <span style="position: relative; width: 128px; height: 150px; box-sizing: border-box; border: 3px solid #18161F; border-top-width: 2px; border-radius: 18px 18px 40px 40px; background: #FFFFFF; overflow: hidden;">
+            <span style="position: absolute; left: 0; right: 0; bottom: 0; height: 64%; background: #B9A3FF; animation: tl-fill 6s ease-in-out infinite;">
+              <span style="position: absolute; left: 0; right: 0; top: 0; height: 26%; background: repeating-linear-gradient(135deg, #D9CCFF 0 6px, #C9BCFB 6px 12px);"></span>
+            </span>
+            <span style="position: absolute; left: 10px; top: 10px; width: 8px; height: 60px; border-radius: 9999px; background: rgba(255,255,255,0.7);"></span>
+          </span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: -0.01em;">Yours to keep</span>
+          <span style="font-size: 11px; color: #5F5B68;">striped part = set aside for tax</span>
+        </div>
+        <div style="flex: 1 1 120px; min-width: 70px; display: flex; flex-direction: column; gap: 10px; padding: 0 6px; overflow: hidden;">
+          <span style="font-size: 11px; font-weight: 700; color: #5F5B68; text-align: center; letter-spacing: 0.02em;">TO BILLS &amp; TEAM</span>
+          <sc-for list="{{scene.outs}}" as="c" hint-placeholder-count="3">
+            <span style="position: relative; display: block; height: 34px;">
+              <span style="position: absolute; left: 0; right: 0; top: 50%; border-top: 2px dashed #F4C3A1;"></span>
+              <span style="position: absolute; top: 4px; left: 40%; margin-left: -34px; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 9999px; background: #FDE6D6; border: 1px solid #E0752D; box-sizing: border-box; color: #18161F; font-size: 12px; font-weight: 700; white-space: nowrap; animation: tl-slide 4.2s linear infinite; animation-delay: {{c.delay}};">{{c.amt}}</span>
+            </span>
+          </sc-for>
+        </div>
+        <div class="tl-side" style="flex: 0 0 150px; display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{scene.outs}}" as="c" hint-placeholder-count="3">
+            <span style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden;">
+              <span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D; flex: none;"></span>{{c.n}}
+            </span>
+          </sc-for>
+        </div>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 18px;">
@@ -120,6 +187,55 @@ a{color:#18161F}a:hover{color:#000000}
                   <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(20px, 2.2vw, 26px); line-height: 1.25; letter-spacing: -0.02em;">{{panel.lead}}</h2>
                 </div>
                 <button type="button" aria-label="Close" onClick="{{closePanel}}" style="flex: none; width: 40px; height: 40px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+              </div>
+              <div class="tl-anim" aria-hidden="true" style="background: #F7F6F9; border-radius: 20px; padding: 20px; min-height: 170px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap;">
+                <sc-if value="{{panel.isIn}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 14px; color: #47444F; max-width: 100%; box-sizing: border-box;">
+                    <span style="display: inline-block; overflow: hidden; white-space: nowrap; max-width: 340px; animation: tl-type 5s steps(34) infinite;">{{panel.sentence}}</span>
+                    <span style="width: 2px; height: 18px; margin-left: 2px; background: #7A5AF8; animation: tl-caret 0.8s step-end infinite;"></span>
+                  </span>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                  <span style="position: relative; width: 150px; height: 128px; box-sizing: border-box; padding: 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E2DFE8; display: flex; flex-direction: column; gap: 8px; animation: tl-paper 5s ease-out infinite;">
+                    <span style="display: flex; justify-content: space-between; font-size: 10px; font-weight: 700;"><span>INVOICE</span><span style="color: #5F5B68;">{{panel.inv}}</span></span>
+                    <span style="height: 6px; width: 80%; border-radius: 4px; background: #EFEDF3;"></span>
+                    <span style="height: 6px; width: 60%; border-radius: 4px; background: #EFEDF3;"></span>
+                    <span style="margin-top: auto; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px;">{{panel.amt}}</span>
+                    <span style="position: absolute; right: 8px; top: 40px; padding: 4px 10px; border: 3px solid #2F5711; border-radius: 8px; color: #2F5711; font-family: Sora, sans-serif; font-weight: 800; font-size: 18px; letter-spacing: 0.06em; transform: rotate(-14deg); background: rgba(226,246,213,0.85); animation: tl-stamp 5s ease-out infinite;">PAID</span>
+                  </span>
+                </sc-if>
+                <sc-if value="{{panel.isOut}}" hint-placeholder-val="{{false}}">
+                  <span style="position: relative; width: 92px; height: 150px; box-sizing: border-box; border-radius: 22px; background: #18161F; padding: 10px 8px; animation: tl-bob 4s ease-in-out infinite;">
+                    <span style="position: relative; display: flex; flex-direction: column; gap: 6px; height: 100%; box-sizing: border-box; padding: 10px 8px; border-radius: 14px; background: #FFFFFF; overflow: hidden;">
+                      <span style="font-size: 9px; font-weight: 700; text-align: center;">{{panel.vendor}}</span>
+                      <span style="height: 4px; border-radius: 3px; background: #EFEDF3;"></span>
+                      <span style="height: 4px; width: 70%; border-radius: 3px; background: #EFEDF3;"></span>
+                      <span style="height: 4px; border-radius: 3px; background: #EFEDF3;"></span>
+                      <span style="margin-top: auto; font-family: Sora, sans-serif; font-weight: 700; font-size: 13px; text-align: right;">{{panel.amt}}</span>
+                      <span style="position: absolute; left: 0; right: 0; top: 10%; height: 3px; background: #7A5AF8; box-shadow: 0 0 12px 3px rgba(122,90,248,0.55); animation: tl-scan 2.4s ease-in-out infinite;"></span>
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column; gap: 10px;">
+                    <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 13px; font-weight: 600; animation: tl-pop 4.8s ease-out infinite;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Read: {{panel.vendor}} · {{panel.amt}}</span>
+                    <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 9999px; background: #FDE6D6; font-size: 13px; font-weight: 600; animation: tl-pop2 4.8s ease-out infinite;">Filed under {{panel.category}}</span>
+                    <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 13px; font-weight: 600; animation: tl-pop2 4.8s ease-out infinite; animation-delay: 0.4s;">Matched to your card charge</span>
+                  </span>
+                </sc-if>
+                <sc-if value="{{panel.isKeep}}" hint-placeholder-val="{{false}}">
+                  <span style="position: relative; width: 260px; height: 150px;">
+                    <span style="position: absolute; left: 6%; bottom: 0; width: 120px; height: 120px; box-sizing: border-box; border: 3px solid #18161F; border-radius: 16px 16px 36px 36px; background: #FFFFFF; overflow: hidden;">
+                      <span style="position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: #B9A3FF; animation: tl-fill 6s ease-in-out infinite;"></span>
+                    </span>
+                    <span style="position: absolute; left: 6%; bottom: -22px; width: 120px; text-align: center; font-size: 12px; font-weight: 700;">Yours · 75%</span>
+                    <span style="position: absolute; right: 2%; bottom: 0; width: 70px; height: 78px; box-sizing: border-box; border: 3px solid #18161F; border-radius: 12px 12px 24px 24px; background: #FFFFFF; overflow: hidden;">
+                      <span style="position: absolute; left: 0; right: 0; bottom: 0; height: 46%; background: repeating-linear-gradient(135deg, #D9CCFF 0 6px, #C9BCFB 6px 12px);"></span>
+                    </span>
+                    <span style="position: absolute; right: 2%; bottom: -22px; width: 70px; text-align: center; font-size: 12px; font-weight: 700;">Tax · 25%</span>
+                    <span style="position: absolute; left: 16%; top: 0; width: 22px; height: 22px; border-radius: 9999px; background: #FFC53D; border: 2px solid #18161F; box-sizing: border-box; animation: tl-drop 2.4s ease-in infinite;"></span>
+                    <span style="position: absolute; left: 26%; top: 0; width: 22px; height: 22px; border-radius: 9999px; background: #FFC53D; border: 2px solid #18161F; box-sizing: border-box; animation: tl-drop 2.4s ease-in infinite; animation-delay: 0.6s;"></span>
+                    <span style="position: absolute; left: 36%; top: 0; width: 22px; height: 22px; border-radius: 9999px; background: #FFC53D; border: 2px solid #18161F; box-sizing: border-box; animation: tl-drop 2.4s ease-in infinite; animation-delay: 1.2s;"></span>
+                    <span style="position: absolute; left: 30%; top: 0; width: 22px; height: 22px; border-radius: 9999px; background: #FFC53D; border: 2px solid #18161F; box-sizing: border-box; animation: tl-drop-tax 2.4s ease-in-out infinite; animation-delay: 1.8s;"></span>
+                  </span>
+                </sc-if>
               </div>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px;">
                 <sc-for list="{{panel.items}}" as="it" hint-placeholder-count="3">
@@ -225,10 +341,19 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Connect your bank</span>
             <span style="font-size: 15px; line-height: 1.5; color: #47444F;">Transactions flow in and sort themselves every morning.</span>
           </span>
-          <span aria-hidden="true" style="margin-top: auto; background: #F7F6F9; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 12px;">
-            <span style="width: 36px; height: 36px; border-radius: 10px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10 12 4l9 6M5 10v8M19 10v8M9.5 10v8M14.5 10v8M3 20h18"></path></svg></span>
-            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">Chase ••4417</span><span style="font-size: 12px; color: #5F5B68;">23 new today</span></span>
-            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Connected</span>
+          <span aria-hidden="true" class="tl-anim" style="margin-top: auto; background: #F7F6F9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="width: 36px; height: 36px; border-radius: 10px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10 12 4l9 6M5 10v8M19 10v8M9.5 10v8M14.5 10v8M3 20h18"></path></svg></span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">Chase ••4417</span><span style="font-size: 12px; color: #5F5B68;">23 new today</span></span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711; animation: tl-pulse 1.6s ease-out infinite;"></span>Connected</span>
+            </span>
+            <sc-for list="{{feedRows}}" as="r" hint-placeholder-count="3">
+              <span style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border-radius: 10px; padding: 8px 10px; font-size: 12px; animation: tl-rowin 6s ease-out infinite; animation-delay: {{r.delay}};">
+                <span style="flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.n}}</span>
+                <span style="padding: 2px 8px; border-radius: 9999px; background: #EEE8FF; font-weight: 600; white-space: nowrap;">{{r.c}}</span>
+                <span style="font-weight: 700; font-variant-numeric: tabular-nums;">{{r.a}}</span>
+              </span>
+            </sc-for>
           </span>
         </li>
         <li style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 22px;">
@@ -237,11 +362,14 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Bill and get paid</span>
             <span style="font-size: 15px; line-height: 1.5; color: #47444F;">Write a sentence; customers pay online and get reminded for you.</span>
           </span>
-          <span aria-hidden="true" style="margin-top: auto; background: #F7F6F9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-            <span style="background: #FFFFFF; border-radius: 9999px; padding: 9px 14px; font-size: 13px; color: #47444F;">Bill Atlas Freight <strong style="color: #18161F;">$6,300</strong> for October logistics</span>
+          <span aria-hidden="true" class="tl-anim" style="margin-top: auto; background: #F7F6F9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="display: flex; align-items: center; background: #FFFFFF; border-radius: 9999px; padding: 9px 14px; font-size: 13px; color: #47444F;"><span style="display: inline-block; overflow: hidden; white-space: nowrap; max-width: 340px; animation: tl-type 6s steps(30) infinite;">Bill Atlas Freight <strong style="color: #18161F;">$6,300</strong> for freight</span><span style="width: 2px; height: 15px; margin-left: 2px; background: #7A5AF8; flex: none; animation: tl-caret 0.8s step-end infinite;"></span></span>
             <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px;">
               <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>INV-0153</span>
-              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Paid Oct 2</span>
+              <span style="position: relative; display: inline-flex; justify-content: flex-end;">
+                <span style="position: absolute; right: 0; top: 0; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; animation: tl-swap-a 6s step-end infinite;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #1F5E91;"></span>Sent</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600; white-space: nowrap; animation: tl-swap-b 6s step-end infinite;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Paid Oct 2</span>
+              </span>
             </span>
           </span>
         </li>
@@ -251,9 +379,9 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Keep what’s yours</span>
             <span style="font-size: 15px; line-height: 1.5; color: #47444F;">Tax is set aside as you earn, so the rest is truly yours.</span>
           </span>
-          <span aria-hidden="true" style="margin-top: auto; background: #18161F; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+          <span aria-hidden="true" class="tl-anim" style="margin-top: auto; background: #18161F; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
             <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;"><span style="font-size: 12px; font-weight: 600; color: #EEE8FF;">Yours to keep</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #B9A3FF;">$8,407</span></span>
-            <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; gap: 2px;"><span style="width: 75%; background: #B9A3FF;"></span><span style="width: 25%; background: rgba(238,232,255,0.45);"></span></span>
+            <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; gap: 2px; background: rgba(238,232,255,0.08);"><span style="width: 75%; background: #B9A3FF; animation: tl-grow 5s ease-out infinite;"></span><span style="width: 25%; background: rgba(238,232,255,0.45); animation: tl-grow-tax 5s ease-out infinite;"></span></span>
             <span style="font-size: 12px; color: #EEE8FF;">$2,803 set aside for tax</span>
           </span>
         </li>
@@ -354,11 +482,29 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4680}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5030}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { biz: 'studio', open: null, done: {}, faq: 0, toast: null };
+    this.state = { biz: 'studio', open: null, done: {}, faq: 0, toast: null, tw: 1 };
+  }
+  componentDidMount() {
+    this._reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.countUp();
+  }
+  componentWillUnmount() { cancelAnimationFrame(this._raf); }
+  // Numbers roll up from zero when the page opens or the sample business changes.
+  countUp() {
+    if (this._reduce || typeof requestAnimationFrame === 'undefined') { this.setState({ tw: 1 }); return; }
+    cancelAnimationFrame(this._raf);
+    const t0 = performance.now();
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / 1100);
+      this.setState({ tw: k });
+      if (k < 1) this._raf = requestAnimationFrame(step);
+    };
+    this.setState({ tw: 0 });
+    this._raf = requestAnimationFrame(step);
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
@@ -421,10 +567,12 @@ class Component extends DCLogic {
     const inT = b.inPaid + b.inExp, outT = b.outPaid + b.outSch, profit = inT - outT;
     const tax = Math.round(profit * 0.25), keep = profit - tax;
     const pct = (a, t) => Math.max(2, Math.round(a / t * 100));
+    const ease = 1 - Math.pow(1 - (st.tw == null ? 1 : st.tw), 3);
+    const roll = (v) => money(Math.round(v * ease));
     const n = {
-      in: money(inT), inPaid: money(b.inPaid), inExp: money(b.inExp), inPaidPct: pct(b.inPaid, inT), inExpPct: 100 - pct(b.inPaid, inT),
-      out: money(outT), outPaid: money(b.outPaid), outSch: money(b.outSch), outPaidPct: pct(b.outPaid, outT), outSchPct: 100 - pct(b.outPaid, outT),
-      keep: money(keep), tax: money(tax), keepPct: pct(keep, profit), taxPct: 100 - pct(keep, profit)
+      in: roll(inT), inPaid: money(b.inPaid), inExp: money(b.inExp), inPaidPct: pct(b.inPaid, inT), inExpPct: 100 - pct(b.inPaid, inT),
+      out: roll(outT), outPaid: money(b.outPaid), outSch: money(b.outSch), outPaidPct: pct(b.outPaid, outT), outSchPct: 100 - pct(b.outPaid, outT),
+      keep: roll(keep), tax: money(tax), keepPct: pct(keep, profit), taxPct: 100 - pct(keep, profit)
     };
     const PANELS = {
       in: { name: 'Coming in', dot: '#7A5AF8', tint: '#EEE8FF', lead: 'Getting paid, without chasing anyone.',
@@ -458,7 +606,7 @@ class Component extends DCLogic {
       eq[k + 'Chev'] = on ? 'm6 15 6-6 6 6' : 'm6 9 6 6 6-6';
       eq['pick' + K] = pick(k);
     });
-    const bizPills = Object.keys(BIZ).map((k) => ({ label: BIZ[k].label, on: st.biz === k, off: st.biz !== k, pick: () => this.setState({ biz: k }) }));
+    const bizPills = Object.keys(BIZ).map((k) => ({ label: BIZ[k].label, on: st.biz === k, off: st.biz !== k, pick: () => { if (st.biz !== k) { this.setState({ biz: k }); this.countUp(); } } }));
 
     const T = [
       { id: 'late', icon: 'M12 8v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', tint: '#FBE3DF', title: 'Harbor & Pine Café is 32 days late', body: '$2,480 for August menu design. Two automatic reminders didn’t work, so a personal note might.', cta: 'Send a friendly nudge', doneText: 'Nudge sent to Daniel at Harbor & Pine Café', log: 'Sent your note to Harbor & Pine Café' },
@@ -497,9 +645,28 @@ class Component extends DCLogic {
     });
     const footLinks = ['Help center', 'Privacy', 'Terms', 'Contact us'].map((l) => ({ label: l, go: () => this.notify(l + ' isn’t part of this prototype yet') }));
 
-    const panel = st.open ? PANELS[st.open] : false;
+    const SCENE = {
+      studio: { ins: [['AF', 'Atlas Freight', '$6,300'], ['RO', 'Ridge Outdoor', '$3,960'], ['BY', 'Bluebird Yoga', '$540']], outs: [['Payroll', '$7,231'], ['Rent', '$1,200'], ['Software', '$135']],
+        sentence: 'Bill Atlas Freight $6,300 for October', inv: 'INV-0156', amt: '$6,300', vendor: 'Staples', vamt: '$84.19', category: 'Office supplies' },
+      cafe: { ins: [['FL', 'Fairview Library', '$1,850'], ['WI', 'Walk-ins', '$812'], ['CT', 'Catering', '$640']], outs: [['Rent', '$4,200'], ['Roaster', '$1,380'], ['Payroll', '$5,940']],
+        sentence: 'Bill Fairview Library $1,850 for catering', inv: 'INV-0412', amt: '$1,850', vendor: 'Farmers market', vamt: '$86.40', category: 'Food costs' },
+      contractor: { ins: [['HE', 'Hendersons', '$14,500'], ['PA', 'Patel deck', '$7,300'], ['MO', 'Moreno bath', '$4,100']], outs: [['Subs', '$9,400'], ['Lumber yard', '$6,820'], ['Crew pay', '$3,600']],
+        sentence: 'Bill the Hendersons $14,500, half up front', inv: 'INV-0087', amt: '$7,250', vendor: 'Hardware store', vamt: '$212.65', category: 'Materials' }
+    };
+    const sc = SCENE[st.biz];
+    const scene = {
+      ins: sc.ins.map((c, i) => ({ i: c[0], n: c[1], amt: c[2], delay: (-i * 1.2) + 's' })),
+      outs: sc.outs.map((c, i) => ({ n: c[0], amt: c[1], delay: (-i * 1.4 - 0.6) + 's' }))
+    };
+    const feedRows = [['ADOBE CREATIVE CLOUD', 'Software', '−$90'], ['STRIPE PAYOUT', 'Sales', '+$1,412'], ['SHELL 57412', 'Vehicle', '−$48']]
+      .map((r, i) => ({ n: r[0], c: r[1], a: r[2], delay: (i * 0.5) + 's' }));
+    const basePanel = st.open ? PANELS[st.open] : false;
+    const panel = basePanel ? Object.assign({}, basePanel, {
+      isIn: st.open === 'in', isOut: st.open === 'out', isKeep: st.open === 'keep',
+      sentence: sc.sentence, inv: sc.inv, amt: st.open === 'out' ? sc.vamt : sc.amt, vendor: sc.vendor, category: sc.category
+    }) : false;
     return {
-      bizPills, biz: b, n, eq, panel, noPanel: !panel,
+      bizPills, biz: b, n, eq, panel, noPanel: !panel, scene, feedRows,
       closePanel: () => this.setState({ open: null }),
       tasks, openCount, allClear: openCount === 0, handled,
       resetDemo: () => this.setState({ done: {} }),

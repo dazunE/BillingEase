@@ -157,25 +157,59 @@
       console.error('[dc] renderVals failed in ' + this.name, e);
       return;
     }
-    var focus = rememberFocus(this.host);
     this.seen = {};
     this.importCount = 0;
-    var frag = document.createDocumentFragment();
+    var next = document.createElement('div');
     var kids = this.parsed.root ? this.parsed.root.childNodes : [];
-    for (var i = 0; i < kids.length; i++) this.renderNode(kids[i], vals, frag);
-    this.host.replaceChildren(frag);
-    // drop child instances that were not rendered this time
+    for (var i = 0; i < kids.length; i++) this.renderNode(kids[i], vals, next);
+    // Patch the live DOM instead of replacing it, so CSS animations, focus,
+    // scroll positions and input state survive re-renders.
+    if (!this.host.firstChild) {
+      while (next.firstChild) this.host.appendChild(next.firstChild);
+    } else {
+      morphChildren(this.host, next);
+    }
     var self = this;
     Object.keys(this.children).forEach(function (k) {
       if (!self.seen[k]) delete self.children[k];
     });
-    restoreFocus(this.host, focus);
+    this.syncChildren();
     if (!this.mounted) {
       this.mounted = true;
       if (typeof this.logic.componentDidMount === 'function') this.logic.componentDidMount();
     } else if (typeof this.logic.componentDidUpdate === 'function') {
       this.logic.componentDidUpdate();
     }
+  };
+
+  // Point each child component at its live holder element and render it there.
+  Instance.prototype.syncChildren = function () {
+    var holders = {};
+    (function walk(node) {
+      for (var c = node.firstElementChild; c; c = c.nextElementSibling) {
+        if (c.hasAttribute('data-dc-import')) { holders[c.__dcKey] = c; continue; }
+        walk(c);
+      }
+    })(this.host);
+    var self = this;
+    Object.keys(this.children).forEach(function (key) {
+      var rec = self.children[key];
+      var live = holders[key];
+      if (!live) return;
+      rec.host = live;
+      if (rec.inst) {
+        rec.inst.host = live;
+        rec.inst.setProps(rec.props);
+      } else if (!rec.loading) {
+        rec.loading = true;
+        loadFile(rec.name + '.dc.html').then(function (parsed) {
+          rec.inst = new Instance(parsed, rec.props, rec.host, rec.name);
+          rec.inst.render();
+        }).catch(function (e) {
+          console.error('[dc] import failed: ' + rec.name, e);
+        });
+      }
+    });
   };
 
   Instance.prototype.renderNode = function (node, scope, out) {
@@ -241,27 +275,78 @@
     var holder = document.createElement('div');
     holder.style.display = 'contents';
     holder.setAttribute('data-dc-import', name);
+    holder.__dcKey = key;
     out.appendChild(holder);
-    var self = this;
-    var existing = this.children[key];
-    if (existing && existing.ready) {
-      existing.host = holder;
-      existing.setProps(props);
+    var rec = this.children[key] || (this.children[key] = { name: name });
+    rec.props = props;
+  };
+
+  // ---- DOM patching ------------------------------------------------------
+
+  function sameNode(a, b) {
+    if (a.nodeType !== b.nodeType) return false;
+    if (a.nodeType !== 1) return true;
+    return a.namespaceURI === b.namespaceURI && a.tagName === b.tagName &&
+      a.getAttribute('data-dc-import') === b.getAttribute('data-dc-import');
+  }
+
+  function morphChildren(oldP, newP) {
+    var o = Array.prototype.slice.call(oldP.childNodes);
+    var n = Array.prototype.slice.call(newP.childNodes);
+    var len = Math.max(o.length, n.length);
+    for (var i = 0; i < len; i++) {
+      var on = o[i], nn = n[i];
+      if (!nn) { oldP.removeChild(on); continue; }
+      if (!on) { oldP.appendChild(nn); continue; }
+      if (sameNode(on, nn)) patchNode(on, nn);
+      else oldP.replaceChild(nn, on);
+    }
+  }
+
+  function patchNode(on, nn) {
+    if (on.nodeType !== 1) {
+      if (on.nodeValue !== nn.nodeValue) on.nodeValue = nn.nodeValue;
       return;
     }
-    var rec = { ready: false };
-    this.children[key] = rec;
-    loadFile(name + '.dc.html').then(function (parsed) {
-      var inst = new Instance(parsed, props, holder, name);
-      rec.ready = true;
-      rec.host = holder;
-      rec.setProps = function (p) { inst.host = rec.host; inst.setProps(p); };
-      inst.render();
-    }).catch(function (e) {
-      console.error('[dc] import failed: ' + name, e);
-    });
-    void self;
-  };
+    var i, a;
+    for (i = 0; i < nn.attributes.length; i++) {
+      a = nn.attributes[i];
+      if (on.getAttribute(a.name) !== a.value) on.setAttribute(a.name, a.value);
+    }
+    for (i = on.attributes.length - 1; i >= 0; i--) {
+      a = on.attributes[i];
+      if (!nn.hasAttribute(a.name)) on.removeAttribute(a.name);
+    }
+    on.__dcH = nn.__dcH;
+    if (nn.__dcH) Object.keys(nn.__dcH).forEach(function (t) { listen(on, t); });
+    if (on.__dcValue !== nn.__dcValue || (nn.__dcValue !== undefined && on.value !== nn.__dcValue)) {
+      on.__dcValue = nn.__dcValue;
+    }
+    if (on.hasAttribute('data-dc-import')) {
+      on.__dcKey = nn.__dcKey;
+      return;
+    }
+    morphChildren(on, nn);
+    if (nn.__dcValue !== undefined && on.value !== nn.__dcValue) on.value = nn.__dcValue;
+    var tag = on.localName;
+    if (tag === 'input' || tag === 'option' || tag === 'button' || tag === 'select' || tag === 'textarea' || tag === 'details') {
+      ['checked', 'selected', 'disabled', 'open'].forEach(function (p) {
+        if (p in nn && on[p] !== nn[p]) on[p] = nn[p];
+      });
+    }
+  }
+
+  function dispatch(e) {
+    var h = this.__dcH && this.__dcH[e.type];
+    if (h) return h.call(this, e);
+  }
+
+  function listen(el, type) {
+    el.__dcL = el.__dcL || {};
+    if (el.__dcL[type]) return;
+    el.__dcL[type] = true;
+    el.addEventListener(type, dispatch);
+  }
 
   // ---- attributes ----------------------------------------------------------
 
@@ -285,7 +370,9 @@
           var isText = (node.localName === 'input' && ['checkbox', 'radio', 'file'].indexOf(t) < 0) || node.localName === 'textarea';
           evt = isText ? 'input' : 'change';
         }
-        el.addEventListener(evt, value);
+        el.__dcH = el.__dcH || {};
+        el.__dcH[evt] = value;
+        listen(el, evt);
         continue;
       }
       if (name === 'value' && (node.localName === 'input' || node.localName === 'textarea' || node.localName === 'select')) {
@@ -329,37 +416,6 @@
       for (var j = 0; j < k.attributes.length; j++) el.setAttribute(k.attributes[j].name, k.attributes[j].value);
       el.textContent = k.textContent;
       document.head.appendChild(el);
-    }
-  }
-
-  // ---- focus preservation across re-renders --------------------------------
-
-  function pathOf(el, root) {
-    var path = [];
-    while (el && el !== root) {
-      var p = el.parentNode;
-      if (!p) return null;
-      path.unshift(Array.prototype.indexOf.call(p.childNodes, el));
-      el = p;
-    }
-    return el === root ? path : null;
-  }
-
-  function rememberFocus(root) {
-    var a = document.activeElement;
-    if (!a || a === document.body || !root.contains(a)) return null;
-    var info = { path: pathOf(a, root) };
-    try { info.start = a.selectionStart; info.end = a.selectionEnd; } catch (e) { /* not text */ }
-    return info;
-  }
-
-  function restoreFocus(root, info) {
-    if (!info || !info.path) return;
-    var el = root;
-    for (var i = 0; i < info.path.length && el; i++) el = el.childNodes[info.path[i]];
-    if (el && el.focus) {
-      el.focus({ preventScroll: true });
-      try { if (info.start != null) el.setSelectionRange(info.start, info.end); } catch (e) { /* ignore */ }
     }
   }
 
