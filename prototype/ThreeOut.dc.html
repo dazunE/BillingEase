@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Going out</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
+                <a href="{{v.href}}" role="menuitem" onClick="{{closeNew}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <button type="button" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{account}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Back + compact equation strip -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-weight: 600; font-size: 14px; text-decoration: none; color: #47444F;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        Home
+      </a>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FDE6D6; border: 2px solid #E0752D; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- The big number -->
+    <section aria-labelledby="out-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+        <h1 id="out-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Going out this October</h1>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(44px, 6vw, 64px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{n.out}}</span>
+        <span style="display: flex; height: 12px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;">
+          <span style="width: {{n.paidPct}}%; background: #E0752D;"></span>
+          <span style="width: {{n.schPct}}%; background: #F4C3A1;"></span>
+        </span>
+        <span style="display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 14px; color: #47444F;">
+          <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D;"></span><strong style="color: #18161F;">{{n.paid}}</strong> paid</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1;"></span><strong style="color: #18161F;">{{n.sch}}</strong> still to pay</span>
+        </span>
+      </div>
+      <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">Everything leaving the business this month: what you’ve paid, plus payroll, bills and subscriptions still to come. We sort most of it on our own.</p>
+        <a href="#expense" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Record an expense
+        </a>
+      </div>
+    </section>
+
+    <!-- Sort these -->
+    <section aria-labelledby="sort-h" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+        <h2 id="sort-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Sort these <span style="color: #5F5B68; font-weight: 600;">{{sortLeft}}</span></h2>
+        <span style="font-size: 13px; color: #5F5B68;">We sorted 19 card charges on our own. These four are new to us.</span>
+      </div>
+      <sc-if value="{{sorting}}" hint-placeholder-val="{{true}}">
+        <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-size: 13px; font-weight: 700;">{{ch.step}}</span>
+            <span style="flex: 1 1 120px; display: flex; gap: 4px; min-width: 120px;">
+              <sc-for list="{{dots}}" as="dt" hint-placeholder-count="4">
+                <span style="flex: 1; height: 6px; border-radius: 9999px; background: {{dt.bg}};"></span>
+              </sc-for>
+            </span>
+            <sc-if value="{{ch.canBack}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{back}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Back</button>
+            </sc-if>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
+            <span style="width: 56px; height: 56px; border-radius: 18px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h3"></path></svg>
+            </span>
+            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: #47444F;">{{ch.raw}}</span>
+              <span style="font-weight: 700; font-size: 20px;">{{ch.nice}}</span>
+              <span style="font-size: 14px; color: #47444F;">{{ch.date}} · {{ch.card}}</span>
+            </div>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 32px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{ch.amount}}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 13px; font-weight: 600; color: #47444F;">What was it for? Our guess:</span>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+              <button type="button" onClick="{{ch.pickSug}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+                {{ch.sug}}
+              </button>
+              <span style="font-size: 14px; color: #5F5B68; padding: 0 4px;">or</span>
+              <sc-for list="{{ch.others}}" as="o" hint-placeholder-count="3">
+                <button type="button" onClick="{{o.pick}}" style="min-height: 40px; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{sortDone}}" hint-placeholder-val="{{false}}">
+        <div style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+            <span style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; color: #B9A3FF;">All sorted. We’ll remember these.</span>
+              <span style="font-size: 14px; color: #EEE8FF;">Next time these merchants show up, they go straight to the right place.</span>
+            </span>
+            <button type="button" onClick="{{resetSort}}" style="min-height: 40px; padding: 0 16px; border: 1px solid rgba(238,232,255,0.4); border-radius: 9999px; background: transparent; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Change answers</button>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{sortedList}}" as="sl" hint-placeholder-count="4">
+              <li style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 9999px; background: rgba(238,232,255,0.12); font-size: 13px; color: #EEE8FF;"><strong style="color: #FFFFFF;">{{sl.nice}}</strong> {{sl.amount}} → {{sl.cat}}</li>
+            </sc-for>
+          </ul>
+        </div>
+      </sc-if>
+    </section>
+
+    <!-- Coming up -->
+    <section aria-labelledby="up-h" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+        <h2 id="up-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Coming up</h2>
+        <span style="font-size: 13px; color: #5F5B68;">{{n.sch}} still to pay before Oct 31</span>
+      </div>
+
+      <!-- Payroll -->
+      <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px;">
+          <span style="width: 44px; height: 44px; border-radius: 14px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8"></path></svg>
+          </span>
+          <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
+              <span style="font-weight: 700; font-size: 16px;">Payroll for Friday, Oct 9</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{pr.badgeBg}}; color: {{pr.badgeFg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{pr.badgeFg}};"></span>{{pr.badge}}</span>
+            </span>
+            <span style="font-size: 14px; color: #47444F; line-height: 1.45;">3 people, paid by direct deposit. Payroll taxes are filed for you.</span>
+          </div>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;">$7,231</span>
+          <sc-if value="{{pr.idle}}" hint-placeholder-val="{{true}}">
+            <button type="button" aria-expanded="false" onClick="{{pr.review}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Approve</button>
+          </sc-if>
+        </div>
+        <sc-if value="{{pr.reviewing}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #EFEDF3; padding-top: 14px;">
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{people}}" as="pp" hint-placeholder-count="3">
+                <li style="display: flex; align-items: center; gap: 12px;">
+                  <span style="width: 36px; height: 36px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex: none;">{{pp.ini}}</span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 15px;">{{pp.name}}</span><span style="font-size: 13px; color: #5F5B68;">{{pp.role}}</span></span>
+                  <span style="font-variant-numeric: tabular-nums; font-weight: 600;">{{pp.amount}}</span>
+                </li>
+              </sc-for>
+            </ul>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 14px; border-radius: 14px; background: #F7F6F9; font-size: 14px; color: #47444F;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18"></path></svg>
+              <span style="flex: 1 1 200px;">Paid from <strong style="color: #18161F;">Chase Business Checking ••4417</strong>. Money leaves Oct 7 and lands Oct 9.</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" onClick="{{pr.confirm}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Confirm and approve $7,231</button>
+              <button type="button" onClick="{{pr.cancel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Not yet</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{pr.approved}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+            <span style="flex: 1; min-width: 0;">Approved. Jordan, Priya and Sam get paid Friday.</span>
+            <button type="button" onClick="{{pr.undo}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
+          </div>
+        </sc-if>
+      </article>
+
+      <!-- Bills -->
+      <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 4px 20px;">
+        <ul style="margin: 0; padding: 0; list-style: none;">
+          <sc-for list="{{bills}}" as="b" hint-placeholder-count="5">
+            <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 0; border-top: {{b.border}};">
+              <span style="width: 40px; height: 40px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 13px;">{{b.ini}}</span>
+              <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 700; font-size: 15px;">{{b.who}}</span>
+                <span style="font-size: 14px; color: #47444F;">{{b.what}}</span>
+              </span>
+              <span style="display: flex; align-items: center; gap: 16px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{b.bg}}; color: {{b.fg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{b.fg}};"></span>{{b.due}}</span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; min-width: 64px; text-align: right;">{{b.amount}}</span>
+                <button type="button" onClick="{{b.pay}}" aria-label="{{b.payLabel}}" style="min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Pay</button>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{billsClear}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; padding: 16px 0; font-size: 14px; color: #47444F;">No bills waiting. Every bill this month is paid.</p>
+        </sc-if>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 12px 0 14px; border-top: 1px solid #EFEDF3; font-size: 14px; color: #47444F;">
+          <span style="flex: 1 1 220px;">Plus <strong style="color: #18161F;">$782</strong> in subscriptions and insurance, paid automatically by Oct 31.</span>
+          <a href="#monthly" style="font-weight: 600;">See every month</a>
+        </div>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <!-- Every month -->
+      <section id="monthly" aria-labelledby="mo-h" style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+          <h2 id="mo-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Every month</h2>
+          <span style="font-size: 13px; color: #5F5B68;">$2,246 a month</span>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 4px 20px;">
+          <ul style="margin: 0; padding: 0; list-style: none;">
+            <sc-for list="{{monthly}}" as="m" hint-placeholder-count="8">
+              <li style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: {{m.border}};">
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: {{m.dot}}; flex: none;"></span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 15px;">{{m.who}}</span><span style="font-size: 13px; color: #5F5B68;">{{m.when}}</span></span>
+                <span style="font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px;">{{m.amount}}</span>
+              </li>
+            </sc-for>
+          </ul>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 12px 0 14px; border-top: 1px solid #E2DFE8; font-size: 14px;">
+            <span style="color: #47444F;"><strong style="color: #18161F;">$1,464</strong> paid · <strong style="color: #18161F;">$782</strong> still to come</span>
+            <span style="font-weight: 700;">$2,246 total</span>
+          </div>
+        </div>
+      </section>
+
+      <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+        <!-- Record an expense -->
+        <section id="expense" aria-labelledby="exp-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="exp-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Record an expense</h2>
+            <span style="font-size: 14px; color: #47444F;">Cash or card you’ve already spent. We’ll file it for you.</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <label style="flex: 1 1 120px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
+              <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{e.amount}}" onChange="{{setAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+            </label>
+            <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What for
+              <input class="be-field" type="text" placeholder="e.g. Client lunch, printer ink" value="{{e.what}}" onChange="{{setWhat}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+            </label>
+            <label style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid with
+              <select class="be-field" value="{{e.paidWith}}" onChange="{{setPaidWith}}" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                <option value="Amex Business ••1009">Amex Business ••1009</option>
+                <option value="Chase Business Checking ••4417">Chase Business Checking ••4417</option>
+                <option value="Cash">Cash</option>
+                <option value="Personal card">Personal card (we’ll track what you’re owed)</option>
+              </select>
+            </label>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 13px; font-weight: 600;">{{catHint}}</span>
+            <div role="group" aria-label="Category" style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+                <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{c.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+            <button type="button" onClick="{{addExpense}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{addLabel}}</button>
+            <a href="MobileReceipt.dc.html" style="font-size: 14px; font-weight: 600;">Scan a receipt instead</a>
+          </div>
+          <sc-if value="{{hasErrors}}" hint-placeholder-val="{{false}}">
+            <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
+              <sc-for list="{{errors}}" as="er" hint-placeholder-count="1">
+                <span>{{er}}</span>
+              </sc-for>
+            </div>
+          </sc-if>
+        </section>
+
+        <!-- Paid this month -->
+        <section aria-labelledby="paid-h" style="display: flex; flex-direction: column; gap: 12px;">
+          <h2 id="paid-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Paid this month <span style="color: #5F5B68; font-weight: 600;">{{paidCount}}</span></h2>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px 20px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 0;">
+              <span style="width: 40px; height: 40px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+              <span style="flex: 1 1 200px; min-width: 0; font-size: 15px; line-height: 1.45;"><strong>{{n.paid}}</strong> across {{paidCount}} payments, each one categorized and matched to a receipt where we have one.</span>
+              <button type="button" aria-expanded="{{paidOpen}}" onClick="{{togglePaid}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{paidToggle}}</button>
+            </div>
+            <sc-if value="{{paidOpen}}" hint-placeholder-val="{{false}}">
+              <ul style="margin: 0; padding: 0; list-style: none;">
+                <sc-for list="{{paid}}" as="pd" hint-placeholder-count="9">
+                  <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; padding: 11px 0; border-top: 1px solid #EFEDF3;">
+                    <span style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                      <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 600; font-size: 15px;">{{pd.who}}</span><sc-if value="{{pd.isNew}}" hint-placeholder-val="{{false}}"><span style="padding: 1px 8px; border-radius: 9999px; background: #FDE6D6; font-size: 12px; font-weight: 700;">Just now</span></sc-if></span>
+                      <span style="font-size: 13px; color: #5F5B68;">{{pd.cat}} · {{pd.how}}</span>
+                    </span>
+                    <span style="font-size: 13px; color: #5F5B68; margin-left: auto;">{{pd.when}}</span>
+                    <span style="font-variant-numeric: tabular-nums; font-weight: 700; font-size: 15px; min-width: 64px; text-align: right;">{{pd.amount}}</span>
+                  </li>
+                </sc-for>
+              </ul>
+            </sc-if>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Quiet way into the full screens -->
+    <nav aria-label="Full detail" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Need more detail?</span>
+      <a href="Bills.dc.html" style="font-weight: 600;">Bills</a>
+      <a href="Receipts.dc.html" style="font-weight: 600;">Receipts</a>
+      <a href="Vendors.dc.html" style="font-weight: 600;">Vendors</a>
+      <a href="Transactions.dc.html" style="font-weight: 600;">Transactions</a>
+      <a href="Payroll.dc.html" style="font-weight: 600;">Payroll</a>
+    </nav>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newOpen: false, toast: null,
+      sortIdx: 0, picks: [], payroll: 'idle', paidBills: [], paidOpen: false,
+      e: { amount: '', what: '', paidWith: 'Amex Business ••1009', cat: '' }, errors: [], expenses: []
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  setE(patch) { this.setState({ e: Object.assign({}, this.state.e, patch), errors: [] }); }
+  renderVals() {
+    const st = this.state;
+    const money = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+    const num = (s) => { const v = parseFloat(String(s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; };
+    const ini = (s) => s.replace(/&/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+
+    // Bills still to pay
+    const BILLS = [
+      { id: 'lps', who: 'Local Print Shop', what: 'Brochure print run for Lumen Dental', amount: 640, due: 'Due Oct 12', when: 'Oct 4', cat: 'Printing', soon: true },
+      { id: 'cc', who: 'Comcast Business', what: 'Fiber upgrade, one-time install', amount: 190, due: 'Due Oct 15', when: 'Oct 4', cat: 'Internet & phone', soon: false },
+      { id: 'st', who: 'Staples', what: 'Paper, ink and mailers', amount: 212, due: 'Due Oct 22', when: 'Oct 4', cat: 'Office supplies', soon: false },
+      { id: 'ad', who: 'Adobe Creative Cloud', what: 'Annual Stock add-on', amount: 360, due: 'Due Oct 28', when: 'Oct 4', cat: 'Software', soon: false },
+      { id: 'er', who: 'Elena Rossi', what: 'Contract illustration, September', amount: 1045, due: 'Due Oct 30', when: 'Oct 4', cat: 'Contractors', soon: false }
+    ];
+    const open = BILLS.filter((b) => st.paidBills.indexOf(b.id) < 0);
+    const paidBillTotal = BILLS.filter((b) => st.paidBills.indexOf(b.id) >= 0).reduce((a, b) => a + b.amount, 0);
+    const expTotal = st.expenses.reduce((a, x) => a + x.amount, 0);
+    const outPaid = 3180 + paidBillTotal + expTotal, outSch = 10460 - paidBillTotal, outT = outPaid + outSch;
+    const inT = 24850, profit = inT - outT, keep = profit - Math.round(profit * 0.25);
+    const paidPct = Math.max(2, Math.round(outPaid / outT * 100));
+    const n = { in: money(inT), out: money(Math.round(outT * 100) / 100), keep: money(Math.round(keep)), paid: money(Math.round(outPaid * 100) / 100), sch: money(outSch), paidPct, schPct: 100 - paidPct };
+
+    const bills = open.map((b, i) => ({
+      who: b.who, what: b.what, amount: money(b.amount), due: b.due, ini: ini(b.who),
+      bg: b.soon ? '#FFF0B8' : '#EFEDF3', fg: b.soon ? '#6B5000' : '#47444F', border: i === 0 ? '0' : '1px solid #EFEDF3',
+      payLabel: 'Pay ' + b.who + ' ' + money(b.amount),
+      pay: () => { this.setState({ paidBills: st.paidBills.concat([b.id]) }); this.notify('Paid ' + b.who + ' ' + money(b.amount) + ' from Chase ••4417'); }
+    }));
+
+    // Card sorter
+    const CH = [
+      { raw: 'SQ *BLUE BOTTLE', nice: 'Blue Bottle Coffee', amount: 18.5, date: 'Oct 3', sug: 'Meals', others: ['Client gifts', 'Office supplies', 'Personal'] },
+      { raw: 'AMZN MKTP US', nice: 'Amazon', amount: 64.2, date: 'Oct 2', sug: 'Office supplies', others: ['Equipment', 'Software', 'Personal'] },
+      { raw: 'UBER *TRIP', nice: 'Uber', amount: 27.8, date: 'Oct 2', sug: 'Travel', others: ['Meals', 'Client meetings', 'Personal'] },
+      { raw: 'CANVA PRO', nice: 'Canva', amount: 14.99, date: 'Oct 1', sug: 'Software', others: ['Advertising', 'Office supplies', 'Personal'] }
+    ];
+    const idx = st.sortIdx, sorting = idx < CH.length;
+    const pick = (cat) => this.setState({ picks: st.picks.slice(0, idx).concat([cat]), sortIdx: idx + 1 });
+    const c = sorting ? CH[idx] : CH[0];
+    const ch = {
+      step: (sorting ? idx + 1 : CH.length) + ' of ' + CH.length, raw: c.raw, nice: c.nice, amount: money(c.amount), date: c.date, card: 'Amex Business ••1009',
+      sug: c.sug, pickSug: () => pick(c.sug), others: c.others.map((o) => ({ label: o, pick: () => pick(o) })), canBack: idx > 0
+    };
+    const dots = CH.map((x, i) => ({ bg: i < idx ? '#E0752D' : (i === idx ? '#F4C3A1' : '#EFEDF3') }));
+    const sortedList = CH.map((x, i) => ({ nice: x.nice, amount: money(x.amount), cat: st.picks[i] || x.sug }));
+
+    // Payroll
+    const ps = st.payroll;
+    const pr = {
+      idle: ps === 'idle', reviewing: ps === 'review', approved: ps === 'approved',
+      badge: ps === 'approved' ? 'Approved' : 'Needs approval', badgeBg: ps === 'approved' ? '#E2F6D5' : '#FFF0B8', badgeFg: ps === 'approved' ? '#2F5711' : '#6B5000',
+      review: () => this.setState({ payroll: 'review' }),
+      cancel: () => this.setState({ payroll: 'idle' }),
+      confirm: () => { this.setState({ payroll: 'approved' }); this.notify('Payroll approved · $7,231 goes out Oct 9'); },
+      undo: () => this.setState({ payroll: 'idle' })
+    };
+    const people = [
+      { name: 'Jordan Lee', role: 'Senior designer · salaried', amount: '$3,240' },
+      { name: 'Priya Nair', role: 'Designer · salaried', amount: '$2,086' },
+      { name: 'Sam Ortiz', role: 'Studio coordinator · 76 hours', amount: '$1,905' }
+    ].map((p) => Object.assign({ ini: ini(p.name) }, p));
+
+    // Every month
+    const MO = [
+      { who: 'WeWork rent', when: 'Paid Oct 1', amount: 1200, paid: true },
+      { who: 'Adobe Creative Cloud', when: 'Paid Oct 1', amount: 90, paid: true },
+      { who: 'Figma', when: 'Paid Oct 2', amount: 45, paid: true },
+      { who: 'Comcast Business', when: 'Paid Oct 3', amount: 129, paid: true },
+      { who: 'Google Workspace', when: 'Oct 15 · automatic', amount: 144, paid: false },
+      { who: 'Notion', when: 'Oct 18 · automatic', amount: 96, paid: false },
+      { who: 'Dropbox', when: 'Oct 22 · automatic', amount: 60, paid: false },
+      { who: 'Business insurance', when: 'Oct 31 · automatic', amount: 482, paid: false }
+    ];
+    const monthly = MO.map((m, i) => ({ who: m.who, when: m.when, amount: money(m.amount), dot: m.paid ? '#E0752D' : '#F4C3A1', border: i === 0 ? '0' : '1px solid #EFEDF3' }));
+
+    // Paid this month
+    const BASE = [
+      { who: 'Elena Rossi', cat: 'Contractors', how: 'Bank transfer', when: 'Oct 3', amount: 936 },
+      { who: 'Comcast Business', cat: 'Internet & phone', how: 'Chase ••4417', when: 'Oct 3', amount: 129 },
+      { who: 'Shell', cat: 'Fuel', how: 'Amex ••1009', when: 'Oct 3', amount: 48 },
+      { who: 'Local Print Shop', cat: 'Printing', how: 'Amex ••1009', when: 'Oct 2', amount: 236 },
+      { who: 'Delta Air Lines', cat: 'Travel', how: 'Amex ••1009', when: 'Oct 2', amount: 412 },
+      { who: 'Figma', cat: 'Software', how: 'Amex ••1009', when: 'Oct 2', amount: 45 },
+      { who: 'Staples', cat: 'Office supplies', how: 'Amex ••1009', when: 'Oct 1', amount: 84 },
+      { who: 'Adobe Creative Cloud', cat: 'Software', how: 'Amex ••1009', when: 'Oct 1', amount: 90 },
+      { who: 'WeWork', cat: 'Rent', how: 'Chase ••4417', when: 'Oct 1', amount: 1200 }
+    ];
+    const paidBillsRows = st.paidBills.slice().reverse().map((id) => { const b = BILLS.filter((x) => x.id === id)[0]; return { who: b.who, cat: b.cat, how: 'Chase ••4417', when: 'Oct 4', amount: b.amount, isNew: true }; });
+    const expRows = st.expenses.slice().map((x) => Object.assign({ isNew: true }, x));
+    const paid = expRows.concat(paidBillsRows).concat(BASE.map((x) => Object.assign({ isNew: false }, x))).map((x) => Object.assign({}, x, { amount: money(x.amount) }));
+
+    // Record an expense
+    const e = st.e;
+    const w = e.what.toLowerCase();
+    const RULES = [
+      [/coffee|lunch|dinner|breakfast|meal|cafe|café|restaurant/, 'Meals'],
+      [/uber|lyft|taxi|flight|train|hotel|parking|airbnb|travel/, 'Travel'],
+      [/paper|ink|printer|pens|staples|amazon|supplies|toner/, 'Office supplies'],
+      [/software|subscription|app|license|canva|figma|adobe/, 'Software'],
+      [/ad |ads|advert|facebook|instagram|promo|marketing/, 'Advertising'],
+      [/gas|fuel|shell/, 'Fuel']
+    ];
+    let sugg = '';
+    for (let i = 0; i < RULES.length; i++) { if (RULES[i][0].test(w + ' ')) { sugg = RULES[i][1]; break; } }
+    const chosen = e.cat || sugg;
+    const CATS = ['Meals', 'Travel', 'Office supplies', 'Software', 'Advertising', 'Fuel', 'Other'];
+    const cats = CATS.map((k) => ({
+      label: k, on: chosen === k, bg: chosen === k ? '#FDE6D6' : '#FFFFFF', border: chosen === k ? '#E0752D' : '#CBC7D3',
+      pick: () => this.setE({ cat: e.cat === k ? '' : k })
+    }));
+    const catHint = e.cat ? 'Category: ' + e.cat : (sugg ? 'Looks like ' + sugg + '. Tap another if we’re wrong.' : 'Category (we’ll guess from what you type)');
+    const amt = num(e.amount);
+    const addExpense = () => {
+      const errs = [];
+      if (!(amt > 0)) errs.push('Add an amount above $0.');
+      if (!e.what.trim()) errs.push('Say what it was for.');
+      if (errs.length) { this.setState({ errors: errs }); return; }
+      const how = e.paidWith.replace('Amex Business', 'Amex').replace('Chase Business Checking', 'Chase');
+      const row = { who: e.what.trim(), cat: chosen || 'Other', how, when: 'Oct 4', amount: amt };
+      this.setState({ expenses: [row].concat(st.expenses), e: { amount: '', what: '', paidWith: e.paidWith, cat: '' }, errors: [] });
+      this.notify(money(amt) + ' for ' + row.who + ' added to Paid this month');
+    };
+
+    const verbs = [
+      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+      { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: '#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'MobileReceipt.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+      { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: '#up-h', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+    ];
+    return {
+      n, bills, billsClear: open.length === 0,
+      sorting, sortDone: !sorting, sortLeft: sorting ? CH.length - idx : '', ch, dots, sortedList,
+      back: () => this.setState({ sortIdx: Math.max(0, idx - 1) }),
+      resetSort: () => this.setState({ sortIdx: 0 }),
+      pr, people, monthly,
+      paid, paidCount: paid.length, paidOpen: st.paidOpen, paidToggle: st.paidOpen ? 'Hide' : 'Show all',
+      togglePaid: () => this.setState({ paidOpen: !st.paidOpen }),
+      e, cats, catHint,
+      setAmt: (ev) => this.setE({ amount: ev.target.value }),
+      setWhat: (ev) => this.setE({ what: ev.target.value }),
+      setPaidWith: (ev) => this.setE({ paidWith: ev.target.value }),
+      addExpense, addLabel: amt > 0 ? 'Add ' + money(amt) + ' expense' : 'Add expense',
+      errors: st.errors, hasErrors: st.errors.length > 0,
+      newOpen: st.newOpen, verbs,
+      toggleNew: () => this.setState({ newOpen: !st.newOpen }),
+      closeNew: () => this.setState({ newOpen: false }),
+      account: () => this.notify('Account settings aren’t part of this prototype yet'),
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -16,6 +16,21 @@ npx serve prototype -l 8000
 
 Then open http://localhost:8000/. The index lists every screen; "Start on the landing page" walks the full flow: landing → sign up → business setup → dashboard.
 
+## The concept
+
+BillingEase is built around one equation: **Coming in − Going out = Yours to keep.** The app home shows those three numbers, a short "Needs you" list (only what BillingEase can't do on its own) and a "Handled for you" log. Every feature sits one tap behind one of the numbers:
+
+| Screen | File |
+|---|---|
+| Landing page | `ThreeLanding.dc.html` |
+| App home | `ThreeHome.dc.html` |
+| Coming in (invoices, getting paid, "Bill someone") | `ThreeIn.dc.html` |
+| Going out (sorting charges, bills, payroll, expenses) | `ThreeOut.dc.html` |
+| Yours to keep (tax set-aside, safe to spend, reports) | `ThreeKeep.dc.html` |
+| Mobile home | `ThreeMobile.dc.html` |
+
+The earlier feature-by-feature screens (labelled v1 on the start page) are still here and are linked from the new screens as "the full books".
+
 ## What's inside
 
 | File | What it is |
