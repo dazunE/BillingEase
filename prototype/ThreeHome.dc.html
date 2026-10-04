@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+@media (max-width: 900px){.be-op{flex-basis:100%!important;height:20px;font-size:26px!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <!-- Top bar: no sidebar, the three numbers are the navigation -->
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
+                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <button type="button" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{account}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 36px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- The headline sentence -->
+    <section style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 760px;">
+        <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">Saturday, October 4 · Northwind Studio</span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">{{p.sentenceA}} <span style="background: #EEE8FF; border-radius: 12px; padding: 0 10px; box-decoration-break: clone; -webkit-box-decoration-break: clone;">{{p.keep}}</span> {{p.sentenceB}}</h1>
+      </div>
+      <div role="group" aria-label="Period" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+        <sc-for list="{{periods}}" as="pd" hint-placeholder-count="3">
+          <sc-if value="{{pd.on}}" hint-placeholder-val="{{false}}">
+            <button type="button" aria-pressed="true" onClick="{{pd.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{pd.label}}</button>
+          </sc-if>
+          <sc-if value="{{pd.off}}" hint-placeholder-val="{{true}}">
+            <button type="button" aria-pressed="false" onClick="{{pd.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{pd.label}}</button>
+          </sc-if>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- The equation: Coming in − Going out = Yours to keep -->
+    <section aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px;">
+      <a href="ThreeIn.dc.html" style="flex: 1 1 260px; min-width: 0; text-decoration: none; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 4vw, 46px); letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.in}}</span>
+        <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;">
+          <span style="width: {{p.inPaidPct}}%; background: #7A5AF8;"></span>
+          <span style="width: {{p.inExpPct}}%; background: #C9BCFB;"></span>
+        </span>
+        <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 13px; color: #47444F;">
+          <span><strong style="color: #18161F;">{{p.inPaid}}</strong> received</span>
+          <span><strong style="color: #18161F;">{{p.inExp}}</strong> on the way</span>
+        </span>
+      </a>
+      <div aria-hidden="true" class="be-op" style="flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 34px; color: #5F5B68; padding: 0 2px;">−</div>
+      <a href="ThreeOut.dc.html" style="flex: 1 1 260px; min-width: 0; text-decoration: none; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Going out</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 4vw, 46px); letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.out}}</span>
+        <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;">
+          <span style="width: {{p.outPaidPct}}%; background: #E0752D;"></span>
+          <span style="width: {{p.outSchPct}}%; background: #F4C3A1;"></span>
+        </span>
+        <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 13px; color: #47444F;">
+          <span><strong style="color: #18161F;">{{p.outPaid}}</strong> paid</span>
+          <span><strong style="color: #18161F;">{{p.outSch}}</strong> still to pay</span>
+        </span>
+      </a>
+      <div aria-hidden="true" class="be-op" style="flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 34px; color: #5F5B68; padding: 0 2px;">=</div>
+      <a href="ThreeKeep.dc.html" style="flex: 1 1 260px; min-width: 0; text-decoration: none; color: #FFFFFF; background: #18161F; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EEE8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 4vw, 46px); letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{p.keep}}</span>
+        <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;">
+          <span style="width: {{p.keepPct}}%; background: #B9A3FF;"></span>
+          <span style="width: {{p.taxPct}}%; background: rgba(238,232,255,0.45);"></span>
+        </span>
+        <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 13px; color: #EEE8FF;">
+          <span>after <strong style="color: #FFFFFF;">{{p.tax}}</strong> set aside for tax</span>
+        </span>
+      </a>
+    </section>
+
+    <!-- Needs you + Handled for you -->
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section aria-labelledby="needs-h" style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+          <h2 id="needs-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Needs you <span style="color: #5F5B68; font-weight: 600;">{{openCount}}</span></h2>
+          <span style="font-size: 13px; color: #5F5B68;">Only things we can&#39;t do without you</span>
+        </div>
+        <sc-for list="{{tasks}}" as="t" hint-placeholder-count="3">
+          <sc-if value="{{t.open}}" hint-placeholder-val="{{true}}">
+            <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px;">
+              <span style="width: 44px; height: 44px; border-radius: 14px; background: {{t.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+              </span>
+              <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                <span style="font-weight: 700; font-size: 16px;">{{t.title}}</span>
+                <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{t.body}}</span>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-if value="{{t.alt}}" hint-placeholder-val="{{false}}">
+                  <a href="{{t.altHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.alt}}</a>
+                </sc-if>
+                <sc-if value="{{t.href}}" hint-placeholder-val="{{false}}">
+                  <a href="{{t.href}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.cta}}</a>
+                </sc-if>
+                <sc-if value="{{t.isBtn}}" hint-placeholder-val="{{true}}">
+                  <button type="button" onClick="{{t.act}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{t.cta}}</button>
+                </sc-if>
+              </div>
+            </article>
+          </sc-if>
+          <sc-if value="{{t.done}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+              <span style="flex: 1;">{{t.doneText}}</span>
+              <button type="button" onClick="{{t.undo}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
+            </div>
+          </sc-if>
+        </sc-for>
+        <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
+          <div style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; color: #B9A3FF;">All clear.</span>
+            <span style="font-size: 15px; color: #EEE8FF;">Nothing needs you today. Your books are up to date.</span>
+          </div>
+        </sc-if>
+      </section>
+
+      <section aria-labelledby="handled-h" style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+          <h2 id="handled-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Handled for you</h2>
+          <span style="font-size: 13px; color: #5F5B68;">This week</span>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{handledShown}}" as="h" hint-placeholder-count="5">
+            <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45;">
+              <span style="width: 22px; height: 22px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; margin-top: 1px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+              </span>
+              <span style="display: flex; flex-direction: column;"><span>{{h.t}}</span><span style="font-size: 12px; color: #5F5B68;">{{h.when}}</span></span>
+            </li>
+          </sc-for>
+        </ul>
+        <button type="button" onClick="{{toggleHandled}}" style="align-self: flex-start; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">{{handledToggle}}</button>
+      </section>
+    </div>
+
+    <!-- Quiet way into the full books -->
+    <nav aria-label="Full books" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Need the full books?</span>
+      <a href="ThreeKeep.dc.html" style="font-weight: 600;">Reports</a>
+      <a href="ChartOfAccounts.dc.html" style="font-weight: 600;">Chart of accounts</a>
+      <a href="Reconciliation.dc.html" style="font-weight: 600;">Reconciliation</a>
+      <a href="Customers.dc.html" style="font-weight: 600;">Customers</a>
+      <a href="Vendors.dc.html" style="font-weight: 600;">Vendors</a>
+    </nav>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { period: 'month', done: {}, newOpen: false, showAllHandled: false, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const st = this.state;
+    const money = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    // Coming in − Going out = profit; 25% of profit is set aside for tax; the rest is yours to keep.
+    const DATA = {
+      month: { label: 'This month', inPaid: 12400, inExp: 12450, outPaid: 3180, outSch: 10460, a: 'You’re on track to keep', b: 'this October.' },
+      quarter: { label: 'This quarter', inPaid: 12400, inExp: 12450, outPaid: 3180, outSch: 10460, a: 'October has just started. You’re on track to keep', b: 'so far this quarter.' },
+      year: { label: 'This year', inPaid: 194700, inExp: 12450, outPaid: 144140, outSch: 10460, a: 'So far in 2026 you’ve kept', b: 'after tax.' }
+    };
+    const d = DATA[st.period];
+    const inT = d.inPaid + d.inExp, outT = d.outPaid + d.outSch, profit = inT - outT;
+    const tax = Math.round(profit * 0.25), keep = profit - tax;
+    const pct = (a, b) => Math.max(2, Math.round(a / b * 100));
+    const p = {
+      in: money(inT), inPaid: money(d.inPaid), inExp: money(d.inExp), inPaidPct: pct(d.inPaid, inT), inExpPct: 100 - pct(d.inPaid, inT),
+      out: money(outT), outPaid: money(d.outPaid), outSch: money(d.outSch), outPaidPct: pct(d.outPaid, outT), outSchPct: 100 - pct(d.outPaid, outT),
+      keep: money(keep), tax: money(tax), keepPct: pct(keep, profit), taxPct: 100 - pct(keep, profit),
+      sentenceA: d.a, sentenceB: d.b
+    };
+    const periods = Object.keys(DATA).map((k) => ({ label: DATA[k].label, on: st.period === k, off: st.period !== k, pick: () => this.setState({ period: k }) }));
+    const T = [
+      { id: 'late', icon: 'M12 8v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', tint: '#FBE3DF', title: 'Harbor & Pine Café is 32 days late', body: '$2,480 for August menu design. Two automatic reminders didn’t work, so a personal note might.', cta: 'Send a friendly nudge', alt: 'See invoice', altHref: 'ThreeIn.dc.html', doneText: 'Nudge sent to Daniel at Harbor & Pine Café' },
+      { id: 'sort', icon: 'M4 6h16M4 12h10M4 18h6', tint: '#FFF0B8', title: '4 card charges need a category', body: 'We sorted 19 on our own. These four are new to us, so it takes about 20 seconds.', cta: 'Sort them', alt: false, altHref: '', doneText: '4 charges sorted. We’ll remember these next time.', href: 'ThreeOut.dc.html' },
+      { id: 'payroll', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8', tint: '#EEE8FF', title: 'Approve Friday’s payroll · $7,231', body: '3 people, paid Oct 9 by direct deposit. Payroll taxes are filed for you.', cta: 'Approve', alt: 'Review', altHref: 'ThreeOut.dc.html', doneText: 'Payroll approved. Jordan, Priya and Sam get paid Friday.' }
+    ];
+    const tasks = T.map((t) => {
+      const isDone = !!st.done[t.id];
+      return Object.assign({}, t, {
+        open: !isDone, done: isDone,
+        href: t.href || false, isBtn: !t.href,
+        act: () => this.setState({ done: Object.assign({}, st.done, { [t.id]: true }) }),
+        undo: () => { const n = Object.assign({}, st.done); delete n[t.id]; this.setState({ done: n }); }
+      });
+    });
+    const openCount = tasks.filter((t) => t.open).length;
+    const handled = [
+      { t: 'Matched Atlas Freight’s $6,300 payment to invoice INV-0153', when: 'Today, 7:42 AM' },
+      { t: 'Imported 23 transactions from Chase and Amex', when: 'Today, 6:00 AM' },
+      { t: 'Sorted 19 expenses into the right categories', when: 'Yesterday' },
+      { t: 'Moved $2,803 into your tax set-aside', when: 'Oct 1' },
+      { t: 'Sent automatic reminders to Lumen Dental Group', when: 'Sep 30' },
+      { t: 'Matched the Staples receipt to an Amex charge', when: 'Sep 29' },
+      { t: 'Reconciled Chase Business Checking through Sep 30', when: 'Sep 30' },
+      { t: 'Filed Q3 payroll tax deposit with the IRS', when: 'Sep 28' }
+    ];
+    const verbs = [
+      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+      { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'MobileReceipt.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+      { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+    ];
+    return {
+      p, periods, tasks, openCount, allClear: openCount === 0,
+      handledShown: st.showAllHandled ? handled : handled.slice(0, 5),
+      handledToggle: st.showAllHandled ? 'Show less' : 'Show all ' + handled.length,
+      toggleHandled: () => this.setState({ showAllHandled: !st.showAllHandled }),
+      newOpen: st.newOpen, verbs,
+      toggleNew: () => this.setState({ newOpen: !st.newOpen }),
+      account: () => this.notify('Account settings aren’t part of this prototype yet'),
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
