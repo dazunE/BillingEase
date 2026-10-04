@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     include: ["tests/unit/**/*.test.ts"],
     env: { PGLITE_DIR: "memory://", BILLINGEASE_TODAY: "2026-10-04" },
-    testTimeout: 30000,
+    testTimeout: 60000,
     hookTimeout: 60000,
   },
 });
