@@ -1,6 +1,6 @@
 # BillingEase clickable prototype
 
-A static, clickable prototype of BillingEase: the marketing site, sign-up and onboarding, the full app (sales, purchases, accounting, reports, payments, payroll) and three mobile screens. Every screen links to the others, and the buttons, tabs, filters, forms and wizards work using sample data for a fictional business, Northwind Studio.
+A static, clickable prototype of BillingEase as one connected flow: the landing page, sign-up and setup, home with the three numbers, every feature behind them, and your business settings. The buttons, tabs, filters, forms and wizards work using sample data for a fictional business, Northwind Studio.
 
 ## Run it locally
 
