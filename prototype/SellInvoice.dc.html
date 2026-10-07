@@ -2,12 +2,604 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · SellInvoice</title>
+<title>BillingEase · New invoice</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="5">
+                <a href="{{v.href}}" role="menuitem" onClick="{{closeNew}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;">
+                <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">Your business</span>
+                <span style="font-weight: 700; font-size: 15px;">Northwind Studio</span>
+                <span style="font-size: 13px; color: #47444F;">Maya Chen · Owner</span>
+              </span>
+              <sc-for list="{{acctItems}}" as="ai" hint-placeholder-count="4">
+                <a href="{{ai.href}}" role="menuitem" onClick="{{closeAcct}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ai.label}}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Back + compact equation strip -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-weight: 600; font-size: 14px; text-decoration: none; color: #47444F;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        Coming in
+      </a>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #EEE8FF; border: 2px solid #7A5AF8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- Title -->
+    <section aria-labelledby="inv-h" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px;">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>{{inv.num}} · {{inv.state}}</span>
+        <h1 id="inv-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;">New invoice</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 640px;">The full editor, for when one sentence isn’t enough: several lines, products, discounts, other currencies. For a quick one, use <a href="ThreeIn.dc.html#bill" style="font-weight: 600;">Bill someone</a>.</p>
+      </div>
+    </section>
+
+    <!-- Sent state -->
+    <sc-if value="{{sent.on}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="sent-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: center; gap: 18px 24px;">
+        <span style="width: 52px; height: 52px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+          <h2 id="sent-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{sent.title}}</h2>
+          <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{sent.body}}</span>
+          <sc-if value="{{sent.repeat}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; color: #47444F;">It repeats every month. <a href="SellRecurring.dc.html" style="font-weight: 600;">Manage repeating invoices</a></span></sc-if>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">See it in Coming in</a>
+          <button type="button" onClick="{{startOver}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Start another invoice</button>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{sent.off}}" hint-placeholder-val="{{true}}">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <!-- Editor -->
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- Who + currency + terms -->
+        <section aria-labelledby="who-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+          <h2 id="who-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Who and when</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+            <label style="flex: 2 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Customer</span>
+              <select class="be-field" value="{{f.who}}" onChange="{{setWho}}" aria-invalid="{{whoErr}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: {{whoBorder}}; border-radius: 10px; background: #FFFFFF; color: #18161F; font: 400 15px DM Sans, sans-serif; cursor: pointer;">
+                <option value="">Choose a customer</option>
+                <sc-for list="{{customers}}" as="cu" hint-placeholder-count="9"><option value="{{cu.name}}">{{cu.label}}</option></sc-for>
+              </select>
+              <sc-if value="{{whoErr}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">Choose who you’re billing.</span></sc-if>
+              <sc-if value="{{cust.hasInfo}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F;">{{cust.info}}</span></sc-if>
+            </label>
+            <label style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Payment terms</span>
+              <select class="be-field" value="{{f.terms}}" onChange="{{setTerms}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; color: #18161F; font: 400 15px DM Sans, sans-serif; cursor: pointer;">
+                <option value="0">Due on receipt</option>
+                <option value="7">Within 7 days</option>
+                <option value="14">Within 14 days</option>
+                <option value="30">Within 30 days (net 30)</option>
+                <option value="45">Within 45 days</option>
+                <option value="60">Within 60 days</option>
+              </select>
+              <span style="font-size: 13px; color: #47444F;">Dated Oct 4 · due {{dueDate}}</span>
+            </label>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;">
+            <span id="cur-l" style="font-size: 13px; font-weight: 600;">Currency</span>
+            <div role="group" aria-labelledby="cur-l" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+              <sc-for list="{{curs}}" as="cr" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{cr.on}}" onClick="{{cr.pick}}" style="min-height: 36px; min-width: 60px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{cr.bg}}; color: {{cr.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{cr.label}}</button>
+              </sc-for>
+            </div>
+            <span style="font-size: 13px; color: #47444F;">{{curNote}}</span>
+          </div>
+          <sc-if value="{{cust.reverse}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #E1EEF8; color: #1F5E91; font-size: 14px; line-height: 1.45;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5E91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5"></path></svg>
+              <span>Kaffeehaus Berlin is a business in the EU, so you don’t charge VAT. The invoice says “VAT reverse charged to the customer” and shows their VAT ID. US sales tax is off too.</span>
+            </div>
+          </sc-if>
+        </section>
+
+        <!-- Lines -->
+        <section aria-labelledby="lines-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+            <h2 id="lines-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">What you’re billing for</h2>
+            <span style="font-size: 13px; color: #5F5B68;">Products get NY sales tax (8.875%). Services don’t.</span>
+          </div>
+          <sc-if value="{{noLines}}" hint-placeholder-val="{{false}}">
+            <span style="padding: 14px 16px; border-radius: 14px; border: 1px dashed #CBC7D3; font-size: 14px; color: #5F5B68;">No lines yet. Add something from your catalog or type your own.</span>
+          </sc-if>
+          <sc-for list="{{lines}}" as="ln" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: #F7F6F9; border: {{ln.border}};">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input class="be-field" type="text" aria-label="Line description" placeholder="Description" value="{{ln.name}}" onChange="{{ln.setName}}" style="flex: 1 1 auto; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{ln.kindBg}}; font-size: 12px; font-weight: 600; white-space: nowrap;">{{ln.kindLabel}}</span>
+                <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #47444F;">
+                  <span>{{ln.qtyWord}}</span>
+                  <input class="be-field" type="text" inputmode="decimal" value="{{ln.qty}}" onChange="{{ln.setQty}}" style="width: 64px; min-height: 40px; box-sizing: border-box; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
+                </label>
+                <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #47444F;">
+                  <span>{{ln.rateWord}}</span>
+                  <span style="display: inline-flex; align-items: center; gap: 2px; min-height: 40px; padding: 0 0 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font-size: 15px; color: #47444F;">{{sym}}<input class="be-field" type="text" inputmode="decimal" value="{{ln.rate}}" onChange="{{ln.setRate}}" style="width: 76px; min-height: 38px; box-sizing: border-box; padding: 0 8px 0 2px; border: 0; border-radius: 10px; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                </label>
+                <button type="button" aria-pressed="{{ln.taxOn}}" disabled="{{ln.taxLocked}}" onClick="{{ln.toggleTax}}" title="Sales tax on this line" style="min-height: 32px; padding: 0 12px; border-radius: 9999px; border: 1px solid {{ln.taxBorder}}; background: {{ln.taxBg}}; color: #18161F; font: 600 12px DM Sans, sans-serif; cursor: pointer;">{{ln.taxLabel}}</button>
+                <span style="margin-left: auto; font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{ln.amount}}</span>
+              </div>
+              <sc-if value="{{ln.hasWarn}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: {{ln.warnFg}};">{{ln.warn}}</span></sc-if>
+            </div>
+          </sc-for>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+            <div style="position: relative;">
+              <button type="button" aria-haspopup="menu" aria-expanded="{{catOpen}}" onClick="{{toggleCat}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                Add from catalog
+              </button>
+              <sc-if value="{{catOpen}}" hint-placeholder-val="{{false}}">
+                <div role="menu" style="position: absolute; left: 0; top: calc(100% + 8px); z-index: 20; width: 320px; max-width: calc(100vw - 48px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+                  <sc-for list="{{catalog}}" as="ci" hint-placeholder-count="9">
+                    <sc-if value="{{ci.isHead}}" hint-placeholder-val="{{false}}"><span style="padding: 8px 12px 4px; font-size: 12px; font-weight: 700; color: #5F5B68;">{{ci.label}}</span></sc-if>
+                    <sc-if value="{{ci.isItem}}" hint-placeholder-val="{{true}}">
+                      <button type="button" role="menuitem" onClick="{{ci.add}}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: transparent; color: #18161F; font: 500 14px DM Sans, sans-serif; text-align: left; cursor: pointer;">
+                        <span style="display: flex; flex-direction: column;"><span>{{ci.label}}</span><span style="font-size: 12px; color: {{ci.subFg}};">{{ci.sub}}</span></span>
+                        <span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{ci.price}}</span>
+                      </button>
+                    </sc-if>
+                  </sc-for>
+                  <a href="SellCatalog.dc.html" style="display: flex; align-items: center; min-height: 40px; padding: 0 12px; font-size: 13px; font-weight: 600; border-top: 1px solid #EFEDF3; margin-top: 4px;">Edit your catalog</a>
+                </div>
+              </sc-if>
+            </div>
+            <button type="button" onClick="{{addBlank}}" style="min-height: 40px; padding: 0 12px; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Type your own line</button>
+            <span style="font-size: 13px; color: #5F5B68;">Unbilled time? <a href="SellCatalog.dc.html" style="font-weight: 600;">Priya has 6.5 hours for Greenline</a></span>
+          </div>
+        </section>
+
+        <!-- Adjustments -->
+        <section aria-labelledby="adj-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+          <h2 id="adj-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Discount, shipping and deposit</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+            <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span id="disc-l" style="font-size: 13px; font-weight: 600;">Discount</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div role="group" aria-labelledby="disc-l" style="display: flex; gap: 2px; background: #EFEDF3; padding: 3px; border-radius: 9999px; flex: none;">
+                  <sc-for list="{{discTypes}}" as="dt" hint-placeholder-count="2">
+                    <button type="button" aria-pressed="{{dt.on}}" aria-label="{{dt.aria}}" onClick="{{dt.pick}}" style="min-height: 36px; min-width: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: {{dt.bg}}; color: {{dt.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{dt.label}}</button>
+                  </sc-for>
+                </div>
+                <input class="be-field" type="text" inputmode="decimal" aria-label="Discount value" placeholder="0" value="{{f.disc}}" onChange="{{setDisc}}" style="flex: 1 1 auto; width: 60px; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
+              </div>
+            </div>
+            <label style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Shipping ({{sym}})</span>
+              <input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.ship}}" onChange="{{setShip}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
+            </label>
+            <label style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Deposit already paid ({{sym}})</span>
+              <input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.dep}}" onChange="{{setDep}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid {{depBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
+            </label>
+          </div>
+          <span style="font-size: 13px; color: #5F5B68;">The discount is taken before tax. A deposit you already received is subtracted from what’s due, so it isn’t counted twice in Coming in.</span>
+        </section>
+
+        <!-- Getting paid -->
+        <section aria-labelledby="paid-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+          <h2 id="paid-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Getting paid</h2>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 13px; font-weight: 600;">Let them pay by</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{methods}}" as="m" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{m.on}}" onClick="{{m.toggle}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{m.border}}; background: {{m.bg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.icon}}"></path></svg>
+                  {{m.label}}
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">Repeat every month</span><span style="font-size: 13px; color: #5F5B68;">{{repeatHint}}</span></span>
+            <button type="button" role="switch" aria-checked="{{f.repeat}}" aria-label="Repeat every month" onClick="{{toggleRepeat}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{repeatBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{repeatLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
+          </div>
+          <label style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 13px; font-weight: 600;">Note to your customer</span>
+            <textarea class="be-field" rows="2" value="{{f.notes}}" onChange="{{setNotes}}" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+          </label>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button type="button" aria-expanded="{{moreOpen}}" onClick="{{toggleMore}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{moreIcon}}"></path></svg>
+              More options
+            </button>
+            <sc-if value="{{moreOpen}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+                <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 13px; font-weight: 600;">Their purchase order number</span>
+                  <input class="be-field" type="text" placeholder="Optional" value="{{f.po}}" onChange="{{setPo}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+                <div style="flex: 1 1 200px; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                  <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Send me a copy</span><span style="font-size: 13px; color: #5F5B68;">To maya@northwind.studio</span></span>
+                  <button type="button" role="switch" aria-checked="{{f.copy}}" aria-label="Send me a copy" onClick="{{toggleCopy}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{copyBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{copyLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </section>
+
+        <sc-if value="{{hasErrors}}" hint-placeholder-val="{{false}}">
+          <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
+            <span>Before you send:</span>
+            <sc-for list="{{errors}}" as="er" hint-placeholder-count="1"><span style="font-weight: 500;">· {{er}}</span></sc-for>
+          </div>
+        </sc-if>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+          <button type="button" onClick="{{send}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 16px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg>
+            {{sendLabel}}
+          </button>
+          <button type="button" onClick="{{saveDraft}}" style="min-height: 48px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Save draft</button>
+          <span style="font-size: 13px; color: #5F5B68;">{{feed}}</span>
+        </div>
+      </div>
+
+      <!-- Preview + totals -->
+      <aside aria-label="Invoice preview" style="flex: 1 1 340px; min-width: 0; position: sticky; top: 16px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="background: #EFEDF3; border-radius: 24px; padding: 16px;">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 1px 2px rgba(24,22,31,0.06);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+              <span style="display: flex; flex-direction: column; gap: 4px;">
+                <span style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 8px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span><span style="font-weight: 700; font-size: 14px;">Northwind Studio</span></span>
+                <span style="font-size: 12px; color: #5F5B68;">Brooklyn, NY · maya@northwind.studio</span>
+              </span>
+              <span style="font-size: 12px; color: #5F5B68; text-align: right; white-space: nowrap;">Invoice<br><strong style="color: #18161F; font-size: 13px;">{{inv.num}}</strong></span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                <span style="font-size: 12px; color: #5F5B68;">Bill to</span>
+                <span style="font-weight: 700; font-size: 15px; color: {{pv.custColor}};">{{pv.cust}}</span>
+                <sc-if value="{{cust.hasInfo}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F;">{{cust.info}}</span></sc-if>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #47444F;"><span>Dated Oct 4, 2026</span><span>Due {{dueDate}}</span><sc-if value="{{pv.hasPo}}" hint-placeholder-val="{{false}}"><span>PO {{f.po}}</span></sc-if></span>
+            </div>
+            <div style="display: flex; flex-direction: column; border-top: 1px solid #EFEDF3;">
+              <sc-for list="{{pv.rows}}" as="pr" hint-placeholder-count="2">
+                <div style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #EFEDF3; font-size: 13px;">
+                  <span style="display: flex; flex-direction: column; min-width: 0;"><span style="overflow-wrap: anywhere; color: {{pr.color}};">{{pr.name}}</span><span style="color: #5F5B68; font-size: 12px;">{{pr.qty}}</span></span>
+                  <span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{pr.amount}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <sc-for list="{{pv.sums}}" as="s" hint-placeholder-count="3">
+                <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #47444F;"><span>{{s.label}}</span><span style="font-variant-numeric: tabular-nums; color: #18161F;">{{s.value}}</span></span>
+              </sc-for>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 10px; border-top: 1px solid #E2DFE8;">
+              <span style="font-size: 13px; font-weight: 600;">Amount due</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{pv.due}}</span>
+            </div>
+            <sc-if value="{{pv.foreign}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F; text-align: right;">{{pv.usd}}</span></sc-if>
+            <sc-if value="{{cust.reverse}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 600; color: #18161F;">VAT reverse charged to the customer.</span></sc-if>
+            <span style="display: flex; align-items: center; justify-content: center; min-height: 40px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-weight: 600; font-size: 14px;">Pay {{pv.due}}</span>
+            <span style="font-size: 12px; color: #5F5B68; text-align: center;">{{pv.methods}}</span>
+            <sc-if value="{{pv.hasNotes}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F; line-height: 1.5;">{{f.notes}}</span></sc-if>
+            <sc-if value="{{f.repeat}}" hint-placeholder-val="{{false}}">
+              <span style="align-self: center; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #1F5E91;"></span>Repeats monthly</span>
+            </sc-if>
+          </div>
+          <span style="display: block; margin-top: 10px; font-size: 12px; color: #5F5B68; text-align: center;">Live preview · this is what your customer sees</span>
+        </div>
+        <span style="display: flex; gap: 8px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; background: #EEE8FF; font-size: 13px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 5px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{feedLong}}</span></span>
+      </aside>
+    </div>
+    </sc-if>
+
+    <nav aria-label="Related" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Also in Coming in:</span>
+      <a href="SellQuotes.dc.html" style="font-weight: 600;">Quotes</a>
+      <a href="SellRecurring.dc.html" style="font-weight: 600;">Repeating invoices and money back</a>
+      <a href="SellCatalog.dc.html" style="font-weight: 600;">Products and services</a>
+      <a href="BizProfile.dc.html" style="font-weight: 600;">Invoice look and logo</a>
+    </nav>  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  common(inDelta) {
+    const st = this.state;
+    const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+    const inT = 24850 + (inDelta || 0), outT = 13640, profit = inT - outT, keep = profit - Math.round(profit * 0.25);
+    const verbs = [
+      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+      { label: 'Write a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 20h4L19 9l-4-4L4 16zM13 7l4 4' },
+      { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' }
+    ];
+    const acctItems = [
+      { label: 'Business profile and invoice look', href: 'BizProfile.dc.html' },
+      { label: 'Team and permissions', href: 'BizTeam.dc.html' },
+      { label: 'Security and your data', href: 'BizSecurity.dc.html' },
+      { label: 'Switch to Maya Chen Photography', href: 'BizTeam.dc.html' }
+    ];
+    return {
+      n: { in: money(inT), out: money(outT), keep: money(keep) },
+      verbs, acctItems, newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
+      toggleNew: () => this.setState({ newOpen: !this.state.newOpen, acctOpen: false }),
+      closeNew: () => this.setState({ newOpen: false }),
+      toggleAcct: () => this.setState({ acctOpen: !this.state.acctOpen, newOpen: false }),
+      closeAcct: () => this.setState({ acctOpen: false }),
+      toast: st.toast || null
+    };
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      newOpen: false, acctOpen: false, toast: null, inDelta: 0, seq: 10, num: 166,
+      catOpen: false, moreOpen: false, errors: [], tried: false, sent: null,
+      f: this.blank()
+    };
+  }
+  blank() {
+    return {
+      who: '', cur: 'USD', terms: '30', discType: '%', disc: '', ship: '', dep: '', notes: 'Thank you for working with Northwind Studio.', po: '', repeat: false, copy: true,
+      pay: { card: true, bank: true, apple: true },
+      lines: [
+        { id: 1, name: 'Website page design', kind: 'service', unit: 'page', rateType: 'Flat · per page', qty: '3', rate: '950', base: 950, tax: false },
+        { id: 2, name: 'Printed brand kit', kind: 'product', unit: 'kit', stock: 48, qty: '20', rate: '65', base: 65, tax: true }
+      ]
+    };
+  }
+  renderVals() {
+    const st = this.state, f = st.f;
+    const SYM = { USD: '$', EUR: '€', GBP: '£' }, FX = { USD: 1, EUR: 1.09, GBP: 1.27 };
+    const num = (s) => { const v = parseFloat(String(s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; };
+    const r2 = (n) => Math.round(n * 100) / 100;
+    const fmt = (n) => SYM[f.cur] + r2(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
+    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dayOn = (days) => { const d = new Date(2026, 9, 4 + days); return MON[d.getMonth()] + ' ' + d.getDate(); };
+    const setF = (patch) => this.setState({ f: Object.assign({}, this.state.f, patch) });
+    const CUST = [
+      { name: 'Atlas Freight Co.', cur: 'USD', region: 'US' }, { name: 'Bluebird Yoga', cur: 'USD', region: 'US' },
+      { name: 'Greenline Architects', cur: 'USD', region: 'US' }, { name: 'Harbor & Pine Café', cur: 'USD', region: 'US' },
+      { name: 'Kaffeehaus Berlin GmbH', cur: 'EUR', region: 'EU', info: 'Berlin, Germany · VAT ID DE 812 345 678' },
+      { name: 'Lumen Dental Group', cur: 'USD', region: 'US' }, { name: 'Oak Street Bakery', cur: 'USD', region: 'US' },
+      { name: 'Ridge Outdoor Supply', cur: 'USD', region: 'US' }, { name: 'Thistle & Co. Ltd', cur: 'GBP', region: 'UK', info: 'United Kingdom · no US sales tax' }
+    ];
+    const cu = CUST.find((x) => x.name === f.who);
+    const region = cu ? cu.region : 'US';
+    const taxable = region === 'US';
+    const CAT = [
+      { head: 'Services · not taxed' },
+      { name: 'Brand strategy workshop', kind: 'service', unit: 'workshop', rateType: 'Flat', price: 1800, sub: 'Flat price' },
+      { name: 'Design hours', kind: 'service', unit: 'hour', rateType: 'Hourly', price: 120, sub: 'Per hour' },
+      { name: 'Website page design', kind: 'service', unit: 'page', rateType: 'Flat · per page', price: 950, sub: 'Per page' },
+      { name: 'Photo editing', kind: 'service', unit: 'hour', rateType: 'Hourly', price: 85, sub: 'Per hour' },
+      { name: 'Monthly social retainer', kind: 'service', unit: 'month', rateType: 'Monthly', price: 540, sub: 'Per month' },
+      { head: 'Products · NY sales tax' },
+      { name: 'Printed brand kit', kind: 'product', unit: 'kit', price: 65, stock: 48 },
+      { name: 'Enamel logo pin', kind: 'product', unit: 'pin', price: 8, stock: 310 },
+      { name: 'Letterpress card set', kind: 'product', unit: 'set', price: 24, stock: 9, low: true },
+      { name: 'Tote bag', kind: 'product', unit: 'bag', price: 28, stock: 0 }
+    ];
+    const convTo = (usdPrice, cur) => cur === 'USD' ? usdPrice : Math.max(1, Math.round(usdPrice / FX[cur] / (usdPrice >= 100 ? 5 : 1)) * (usdPrice >= 100 ? 5 : 1));
+    const conv = (usdPrice) => convTo(usdPrice, f.cur);
+    const reprice = (l, from, to) => Object.assign({}, l, { rate: String(l.base ? convTo(l.base, to) : r2(num(l.rate) * FX[from] / FX[to])) });
+
+    // totals
+    const amt = (l) => num(l.qty) * num(l.rate);
+    const sub = f.lines.reduce((a, l) => a + amt(l), 0);
+    const discRaw = f.discType === '%' ? sub * Math.min(num(f.disc), 100) / 100 : Math.min(num(f.disc), sub);
+    const disc = r2(discRaw);
+    const ratio = sub ? disc / sub : 0;
+    const taxBase = taxable ? f.lines.filter((l) => l.tax).reduce((a, l) => a + amt(l), 0) * (1 - ratio) : 0;
+    const tax = r2(taxBase * 0.08875);
+    const ship = num(f.ship), dep = num(f.dep);
+    const total = sub - disc + tax + ship;
+    const due = total - dep;
+    const dueUsd = due * FX[f.cur];
+
+    const lineSet = (id, patch) => setF({ lines: this.state.f.lines.map((l) => l.id === id ? Object.assign({}, l, patch) : l) });
+    const errLine = (l) => st.tried && (!l.name.trim() || !(amt(l) > 0));
+    const lines = f.lines.map((l) => {
+      const taxOn = taxable && l.tax;
+      const unitPl = l.unit + (num(l.qty) === 1 ? '' : 's');
+      let warn = '', warnFg = '#6B5000';
+      if (l.kind === 'product' && l.stock !== undefined) {
+        if (l.stock === 0) { warn = 'Out of stock. You can still bill it; it will show as a back order.'; warnFg = '#A8200D'; }
+        else if (num(l.qty) > l.stock) { warn = 'Only ' + l.stock + ' in stock.'; warnFg = '#A8200D'; }
+        else warn = (l.stock - num(l.qty)) + ' left in stock after this invoice' + (l.stock - num(l.qty) < 15 ? ' (below your reorder point)' : '');
+      }
+      if (errLine(l)) { warn = !l.name.trim() ? 'Add a description.' : 'Add a quantity and a rate.'; warnFg = '#A8200D'; }
+      return {
+        name: l.name, qty: l.qty, rate: l.rate,
+        qtyWord: l.unit === 'hour' ? 'Hours' : 'Qty', rateWord: l.unit === 'hour' ? 'Rate / hour' : 'Price',
+        kindLabel: l.kind === 'product' ? 'Product' : (l.rateType ? 'Service · ' + l.rateType.toLowerCase() : 'Service'),
+        kindBg: l.kind === 'product' ? '#FDE6D6' : '#EEE8FF',
+        amount: fmt(amt(l)), removeLabel: 'Remove ' + (l.name || 'line'),
+        taxOn, taxLocked: !taxable, taxLabel: !taxable ? 'No sales tax' : l.tax ? 'NY tax 8.875%' : 'No tax',
+        taxBg: taxOn ? '#EEE8FF' : '#FFFFFF', taxBorder: taxOn ? '#7A5AF8' : '#CBC7D3',
+        hasWarn: !!warn, warn, warnFg, border: errLine(l) ? '1px solid #A8200D' : '1px solid transparent',
+        setName: (e) => lineSet(l.id, { name: e.target.value }), setQty: (e) => lineSet(l.id, { qty: e.target.value }), setRate: (e) => lineSet(l.id, { rate: e.target.value, base: null }),
+        toggleTax: () => lineSet(l.id, { tax: !l.tax }),
+        remove: () => setF({ lines: this.state.f.lines.filter((x) => x.id !== l.id) }),
+        unitPl
+      };
+    });
+    const catalog = CAT.map((c) => c.head ? { isHead: true, isItem: false, label: c.head } : {
+      isHead: false, isItem: true, label: c.name, price: SYM[f.cur] + conv(c.price).toLocaleString('en-US'),
+      sub: c.kind === 'product' ? (c.stock === 0 ? 'Out of stock' : c.stock + ' in stock' + (c.low ? ' · low' : '')) : c.sub,
+      subFg: c.kind === 'product' && (c.stock === 0 || c.low) ? '#A8200D' : '#5F5B68',
+      add: () => {
+        this.setState({ seq: st.seq + 1, catOpen: false, f: Object.assign({}, f, { lines: f.lines.concat([{ id: st.seq + 1, name: c.name, kind: c.kind, unit: c.unit, rateType: c.rateType, stock: c.stock, qty: '1', rate: String(conv(c.price)), base: c.price, tax: c.kind === 'product' }]) }) });
+        this.notify(c.name + ' added');
+      }
+    });
+    const curs = ['USD', 'EUR', 'GBP'].map((k) => ({
+      label: SYM[k] + ' ' + k, on: f.cur === k, bg: f.cur === k ? '#18161F' : 'transparent', fg: f.cur === k ? '#FFFFFF' : '#18161F',
+      pick: () => {
+        if (k === f.cur) return;
+        const fx = FX[f.cur] / FX[k];
+        setF({ cur: k, lines: f.lines.map((l) => reprice(l, f.cur, k)), ship: f.ship ? String(r2(num(f.ship) * fx)) : '', dep: f.dep ? String(r2(num(f.dep) * fx)) : '', disc: f.discType === 'amt' && f.disc ? String(r2(num(f.disc) * fx)) : f.disc });
+      }
+    }));
+    const M = [
+      { k: 'card', label: 'Card', icon: 'M3 6h18v12H3zM3 10h18' },
+      { k: 'bank', label: 'Bank transfer', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18' },
+      { k: 'apple', label: 'Apple Pay', icon: 'M5 12h14M12 5v14' }
+    ];
+    const methods = M.map((m) => ({
+      label: m.label, on: !!f.pay[m.k], icon: f.pay[m.k] ? 'm5 12 5 5 9-10' : m.icon,
+      bg: f.pay[m.k] ? '#EEE8FF' : '#FFFFFF', border: f.pay[m.k] ? '#7A5AF8' : '#CBC7D3',
+      toggle: () => setF({ pay: Object.assign({}, f.pay, { [m.k]: !f.pay[m.k] }) })
+    }));
+    const mNames = M.filter((m) => f.pay[m.k]).map((m) => m.k === 'apple' ? 'Apple Pay' : m.label.toLowerCase());
+
+    const sums = [{ label: 'Subtotal', value: fmt(sub) }];
+    if (disc) sums.push({ label: 'Discount' + (f.discType === '%' ? ' ' + num(f.disc) + '%' : ''), value: '−' + fmt(disc) });
+    if (taxable) sums.push({ label: 'NY sales tax 8.875% on products', value: fmt(tax) });
+    if (ship) sums.push({ label: 'Shipping', value: fmt(ship) });
+    if (dep) { sums.push({ label: 'Total', value: fmt(total) }); sums.push({ label: 'Deposit already paid', value: '−' + fmt(dep) }); }
+
+    const pv = {
+      cust: f.who || 'Choose a customer', custColor: f.who ? '#18161F' : '#5F5B68', hasPo: !!f.po.trim(),
+      rows: f.lines.length ? f.lines.map((l) => ({ name: l.name || 'Untitled line', color: l.name ? '#18161F' : '#5F5B68', qty: num(l.qty) + ' ' + l.unit + (num(l.qty) === 1 ? '' : 's') + ' × ' + fmt(num(l.rate)) + (taxable && l.tax ? ' · taxed' : ''), amount: fmt(amt(l)) })) : [{ name: 'No lines yet', color: '#5F5B68', qty: '', amount: '' }],
+      sums, due: fmt(due), foreign: f.cur !== 'USD', usd: '≈ ' + usd(dueUsd) + ' at 1 ' + f.cur + ' = ' + FX[f.cur] + ' USD',
+      methods: mNames.length ? 'They can pay by ' + mNames.join(', ') : 'No online payment; they pay you directly',
+      hasNotes: !!f.notes.trim()
+    };
+
+    const validate = () => {
+      const e = [];
+      if (!f.who) e.push('Choose who you’re billing.');
+      if (!f.lines.length) e.push('Add at least one line.');
+      if (f.lines.some((l) => !l.name.trim())) e.push('Every line needs a description.');
+      if (f.lines.some((l) => l.name.trim() && !(amt(l) > 0))) e.push('Every line needs a quantity and a rate above zero.');
+      if (dep > total) e.push('The deposit is more than the invoice total.');
+      return e;
+    };
+    const liveErr = st.tried ? validate() : [];
+    const invNum = 'INV-0' + st.num;
+    const send = () => {
+      const e = validate();
+      if (e.length) { this.setState({ tried: true }); return; }
+      this.setState({ sent: { who: f.who, due, dueUsd, cur: f.cur, dueDate: dayOn(+f.terms), repeat: f.repeat, num: invNum }, inDelta: st.inDelta + dueUsd, errors: [], tried: false });
+      this.notify(invNum + ' sent to ' + f.who + ' · ' + usd(dueUsd) + ' added to Coming in');
+    };
+    const s = st.sent;
+    const sent = s ? {
+      on: true, off: false, repeat: s.repeat,
+      title: s.num + ' is on its way to ' + s.who,
+      body: (s.cur === 'USD' ? usd(s.dueUsd) : SYM[s.cur] + r2(s.due).toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' (≈ ' + usd(s.dueUsd) + ')') + ' is now in Coming in as money on the way, due ' + s.dueDate + '. We’ll send a reminder 3 days before, and match the payment when it lands.'
+    } : { on: false, off: true, repeat: false, title: '', body: '' };
+
+    const feedAmt = f.cur === 'USD' ? usd(dueUsd) : '≈ ' + usd(dueUsd);
+    return Object.assign(this.common(st.inDelta), {
+      inv: { num: invNum, state: s ? 'Sent' : 'Draft' }, sent, f, customers: CUST.map((x) => ({ name: x.name, label: x.name + (x.cur !== 'USD' ? ' · ' + x.cur : '') })),
+      cust: { hasInfo: !!(cu && cu.info), info: cu && cu.info ? cu.info : '', reverse: region === 'EU' },
+      whoErr: st.tried && !f.who, whoBorder: st.tried && !f.who ? '2px solid #A8200D' : '1px solid #CBC7D3',
+      dueDate: f.terms === '0' ? 'on receipt (Oct 4)' : dayOn(+f.terms),
+      curs, curNote: f.cur === 'USD' ? 'Your home currency' : 'Converted for your books: ' + feedAmt + ' at 1 ' + f.cur + ' = ' + FX[f.cur] + ' USD (Oct 4)',
+      sym: SYM[f.cur], lines, noLines: f.lines.length === 0, catalog, catOpen: st.catOpen,
+      toggleCat: () => this.setState({ catOpen: !st.catOpen }),
+      addBlank: () => this.setState({ seq: st.seq + 1, f: Object.assign({}, f, { lines: f.lines.concat([{ id: st.seq + 1, name: '', kind: 'service', unit: 'item', qty: '1', rate: '', tax: false }]) }) }),
+      discTypes: [{ k: '%', label: '%', aria: 'Discount as a percentage' }, { k: 'amt', label: SYM[f.cur], aria: 'Discount as an amount' }].map((d) => ({
+        label: d.label, aria: d.aria, on: f.discType === d.k, bg: f.discType === d.k ? '#18161F' : 'transparent', fg: f.discType === d.k ? '#FFFFFF' : '#18161F',
+        pick: () => setF({ discType: d.k })
+      })),
+      setDisc: (e) => setF({ disc: e.target.value }), setShip: (e) => setF({ ship: e.target.value }), setDep: (e) => setF({ dep: e.target.value }),
+      depBorder: dep > total ? '#A8200D' : '#CBC7D3',
+      methods, setNotes: (e) => setF({ notes: e.target.value }), setPo: (e) => setF({ po: e.target.value }),
+      setWho: (e) => {
+        const c2 = CUST.find((x) => x.name === e.target.value);
+        const cur = c2 ? c2.cur : f.cur;
+        const fx = FX[f.cur] / FX[cur];
+        setF({ who: e.target.value, cur, lines: cur === f.cur ? f.lines : f.lines.map((l) => reprice(l, f.cur, cur)), ship: f.ship && cur !== f.cur ? String(r2(num(f.ship) * fx)) : f.ship });
+      },
+      setTerms: (e) => setF({ terms: e.target.value }),
+      toggleRepeat: () => setF({ repeat: !f.repeat }), repeatBg: f.repeat ? '#7A5AF8' : '#CBC7D3', repeatLeft: f.repeat ? '25px' : '3px',
+      repeatHint: f.repeat ? 'Goes out on the 4th of every month. Next one Nov 4. Change it later in repeating invoices.' : 'Sends the same invoice on this day each month.',
+      toggleCopy: () => setF({ copy: !f.copy }), copyBg: f.copy ? '#7A5AF8' : '#CBC7D3', copyLeft: f.copy ? '25px' : '3px',
+      moreOpen: st.moreOpen, moreIcon: st.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
+      pv, errors: liveErr, hasErrors: liveErr.length > 0,
+      sendLabel: 'Send · ' + fmt(due),
+      feed: 'Sending adds ' + feedAmt + ' to Coming in.',
+      feedLong: 'When you send it, ' + feedAmt + ' is added to Coming in as money on the way' + (dep ? ' (the ' + fmt(dep) + ' deposit was already counted when it arrived)' : '') + '. Drafts don’t count.',
+      send,
+      saveDraft: () => this.notify(invNum + ' saved as a draft. Drafts don’t count in Coming in.'),
+      startOver: () => this.setState({ sent: null, num: st.num + 1, f: this.blank(), errors: [], tried: false })
+    });
+  }
+
+}
+</script>
 </body>
 </html>
