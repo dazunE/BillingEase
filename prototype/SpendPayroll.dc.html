@@ -2,12 +2,517 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · SpendPayroll</title>
+<title>BillingEase · Payroll</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+@media (max-width: 640px){.be-hide-sm{display:none!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
+                <a href="{{v.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Your business: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 270px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Northwind Studio</span><span style="font-size: 13px; color: #5F5B68;">Maya Chen · Owner</span></span>
+              <sc-for list="{{acct}}" as="ac" hint-placeholder-count="4">
+                <a href="{{ac.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ac.label}}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Back + compact equation strip -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
+        <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+          Home
+        </a>
+        <span aria-hidden="true">/</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">Going out</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page" style="color: #18161F;">Payroll</span>
+      </nav>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FDE6D6; border: 2px solid #E0752D; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- Title -->
+    <section aria-labelledby="pr-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+        <h1 id="pr-h" style="margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 16px; font-weight: 700;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Next payroll · Friday, Oct 9 <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{run.badgeBg}}; color: {{run.badgeFg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{run.badgeFg}};"></span>{{run.badge}}</span></h1>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5.5vw, 58px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$7,231</span>
+        <span style="font-size: 14px; color: #47444F;">Take-home pay for Jordan, Priya and Sam · direct deposit from Chase Business Checking ••4417</span>
+      </div>
+      <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">{{run.lead}}</p>
+        <sc-if value="{{run.idle}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{startReview}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Review and approve</button>
+        </sc-if>
+      </div>
+    </section>
+
+    <!-- Sandbox note -->
+    <div role="note" style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-radius: 16px; background: #E1EEF8; color: #1F5E91; font-size: 14px; line-height: 1.45;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5E91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5M12 8h.01"></path></svg>
+      <span><strong>Sandbox.</strong> This is a practice run: approving here moves no real money and files nothing with the IRS or New York State.</span>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+        <!-- This run -->
+        <section id="run" aria-labelledby="run-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+            <h2 id="run-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">The Oct 9 run</h2>
+            <span style="font-size: 13px; color: #5F5B68;">Pay period Sep 10 – Oct 9 · monthly</span>
+          </div>
+          <div role="table" aria-label="Pay for the Oct 9 run" style="display: flex; flex-direction: column; font-size: 14px;">
+            <div role="row" style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 16px; padding-bottom: 10px; color: #5F5B68; font-size: 12.5px; font-weight: 600;">
+              <span role="columnheader" style="flex: 1 1 200px; min-width: 0;">Person</span>
+              <span style="flex: 1 1 320px; min-width: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: right;"><span role="columnheader">Gross pay</span><span role="columnheader">Taxes withheld</span><span role="columnheader" style="color: #18161F;">Take-home</span></span>
+            </div>
+            <sc-for list="{{lines}}" as="l" hint-placeholder-count="3">
+              <div role="row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0; border-top: 1px solid #EFEDF3;">
+                <span role="cell" style="flex: 1 1 200px; min-width: 0; display: flex; align-items: center; gap: 12px;">
+                  <span style="width: 36px; height: 36px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 12px;">{{l.ini}}</span>
+                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700;">{{l.name}}</span><span style="font-size: 12.5px; color: #5F5B68;">{{l.basis}}</span></span>
+                </span>
+                <span style="flex: 1 1 320px; min-width: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: right; font-variant-numeric: tabular-nums;">
+                  <span role="cell">{{l.gross}}</span>
+                  <span role="cell" style="color: #47444F;">−{{l.tax}}</span>
+                  <span role="cell" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px;">{{l.net}}</span>
+                </span>
+              </div>
+            </sc-for>
+            <div role="row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0 0; border-top: 2px solid #E2DFE8; font-weight: 700;">
+              <span role="rowheader" style="flex: 1 1 200px; min-width: 0;">Total</span>
+              <span style="flex: 1 1 320px; min-width: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: right; font-variant-numeric: tabular-nums;">
+                <span role="cell">$9,632</span>
+                <span role="cell">−$2,401</span>
+                <span role="cell" style="font-family: Sora, sans-serif; font-size: 17px;">$7,231</span>
+              </span>
+            </div>
+          </div>
+          <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">Taxes withheld are federal and New York income tax, Social Security and Medicare. We send them to the right place for each person.</span>
+
+          <!-- Approve flow -->
+          <sc-if value="{{run.idle}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
+              <button type="button" onClick="{{startReview}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Review and approve $7,231</button>
+              <span style="font-size: 13px; color: #47444F;">Approve by Wednesday, Oct 7 so everyone is paid on time.</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{run.reviewing}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 18px; background: #F7F6F9;">
+              <span style="font-size: 16px; font-weight: 700;">Before you approve</span>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+                <sc-for list="{{checks}}" as="c" hint-placeholder-count="4">
+                  <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45;">
+                    <span style="width: 22px; height: 22px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+                    <span><strong>{{c.title}}</strong> {{c.text}}</span>
+                  </li>
+                </sc-for>
+              </ul>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                <button type="button" onClick="{{approve}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Approve $7,231</button>
+                <button type="button" onClick="{{cancelReview}}" style="min-height: 46px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Not yet</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{run.approved}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 14px 18px; border-radius: 18px; background: #E2F6D5; color: #2F5711; font-size: 14px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+              <span style="flex: 1 1 240px; min-width: 0; line-height: 1.45;"><strong>Approved, money moves Oct 8.</strong> Jordan, Priya and Sam see it in their accounts Friday, Oct 9. You can undo until Oct 7, 5 pm.</span>
+              <button type="button" onClick="{{undo}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
+            </div>
+          </sc-if>
+        </section>
+
+        <!-- People -->
+        <section aria-labelledby="ppl-h" style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+            <h2 id="ppl-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">People on payroll <span style="color: #5F5B68; font-weight: 600;">{{peopleCount}}</span></h2>
+            <sc-if value="{{addClosed}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{openAdd}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a person</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}">
+            <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Add a person</span>
+                <span style="font-size: 14px; color: #47444F;">We’ll email them to fill in their W-4 and bank details. They join the next run after that.</span>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Name
+                  <input class="be-field" type="text" value="{{f.name}}" onChange="{{setName}}" placeholder="Full name" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Job
+                  <input class="be-field" type="text" value="{{f.job}}" onChange="{{setJob}}" placeholder="e.g. Junior designer" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email
+                  <input class="be-field" type="email" value="{{f.email}}" onChange="{{setEmail}}" placeholder="name@example.com" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <span id="paytype-l" style="font-size: 13px; font-weight: 600;">Paid by</span>
+                  <div role="group" aria-labelledby="paytype-l" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+                    <sc-for list="{{payTypes}}" as="t" hint-placeholder-count="2">
+                      <button type="button" aria-pressed="{{t.on}}" onClick="{{t.pick}}" style="min-height: 36px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{t.bg}}; color: {{t.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{t.label}}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <label style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">{{f.rateLabel}}
+                  <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{f.rate}}" onChange="{{setRate}}" placeholder="{{f.ratePh}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                </label>
+                <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Pay schedule
+                  <select class="be-field" value="{{f.sched}}" onChange="{{setSched}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                    <option value="Monthly, on the 9th">Monthly, on the 9th</option><option value="Every other Friday">Every other Friday</option>
+                  </select>
+                </label>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                <button type="button" onClick="{{savePerson}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Add to payroll</button>
+                <button type="button" onClick="{{closeAdd}}" style="min-height: 46px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+              </div>
+              <sc-if value="{{hasErrors}}" hint-placeholder-val="{{false}}">
+                <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
+                  <sc-for list="{{errors}}" as="er" hint-placeholder-count="1"><span>{{er}}</span></sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 4px 20px;">
+            <ul style="margin: 0; padding: 0; list-style: none;">
+              <sc-for list="{{people}}" as="pp" hint-placeholder-count="3">
+                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 0; border-top: {{pp.border}};">
+                  <span style="width: 40px; height: 40px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 13px;">{{pp.ini}}</span>
+                  <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 700; font-size: 15px;">{{pp.name}}</span><sc-if value="{{pp.isNew}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 1px 9px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #1F5E91;"></span>{{pp.newText}}</span></sc-if></span>
+                    <span style="font-size: 13px; color: #5F5B68;">{{pp.job}}</span>
+                  </span>
+                  <span style="flex: 0 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px; margin-left: auto;">
+                    <span style="font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums;">{{pp.rate}}</span>
+                    <span style="font-size: 13px; color: #5F5B68;">{{pp.sched}}</span>
+                  </span>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Past runs -->
+        <section aria-labelledby="past-h" style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+            <h2 id="past-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Past runs</h2>
+            <span style="font-size: 13px; color: #5F5B68;">$64,229 take-home paid Jan – Sep</span>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 4px 20px;">
+            <ul style="margin: 0; padding: 0; list-style: none;">
+              <sc-for list="{{past}}" as="r" hint-placeholder-count="4">
+                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 13px 0; border-top: {{r.border}};">
+                  <span style="width: 40px; height: 40px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+                  <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 15px;">{{r.date}}</span><span style="font-size: 13px; color: #5F5B68;">{{r.note}}</span></span>
+                  <span style="display: inline-flex; align-items: center; gap: 14px; margin-left: auto;">
+                    <strong style="font-family: Sora, sans-serif; font-size: 16px; font-variant-numeric: tabular-nums;">{{r.amt}}</strong>
+                    <button type="button" onClick="{{r.stubs}}" aria-label="{{r.stubsLabel}}" style="min-height: 38px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Pay stubs</button>
+                  </span>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- Side -->
+      <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+        <!-- How it counts -->
+        <section aria-labelledby="cnt-h" style="display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 24px; background: #FDE6D6; font-size: 14px; line-height: 1.5;">
+          <h2 id="cnt-h" style="margin: 0; font-size: 16px; font-weight: 700;">How payroll counts in Going out</h2>
+          <span>{{run.countText}}</span>
+          <span style="display: flex; height: 12px; border-radius: 9999px; overflow: hidden; background: #FFFFFF; gap: 2px;">
+            <span title="Paid so far: {{g.paid}}" style="width: {{g.paidPct}}%; background: #E0752D;"></span>
+            <span title="{{run.barTitle}}" style="width: {{g.prPct}}%; background: {{run.barColor}};"></span>
+            <span title="Other bills and subscriptions still to pay: {{g.other}}" style="width: {{g.otherPct}}%; background: #F4C3A1;"></span>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 6px; color: #47444F;">
+            <span style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D; flex: none;"></span><span style="flex: 1;">Paid so far</span><strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{g.paid}}</strong></span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{run.barColor}}; flex: none;"></span><span style="flex: 1;">{{run.barLabel}}</span><strong style="color: #18161F; font-variant-numeric: tabular-nums;">$7,231</strong></span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1; flex: none;"></span><span style="flex: 1;">Other bills, still to pay</span><strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{g.other}}</strong></span>
+            <span style="display: flex; align-items: center; gap: 8px; padding-top: 6px; border-top: 1px solid #F4C3A1;"><span style="width: 10px; flex: none;"></span><strong style="flex: 1; color: #18161F;">Going out in October</strong><strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{n.out}}</strong></span>
+          </span>
+        </section>
+
+        <!-- Payroll taxes -->
+        <section aria-labelledby="tax-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="tax-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Payroll taxes, handled</h2>
+            <span style="font-size: 14px; color: #47444F; line-height: 1.45;">We work out what to withhold, send it to the IRS and New York State, and file every form for you.</span>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{filings}}" as="fi" hint-placeholder-count="4">
+              <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 14px; background: {{fi.rowBg}};">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 14px;">{{fi.title}}</span><span style="font-size: 12.5px; color: #5F5B68; line-height: 1.4;">{{fi.forms}}</span></span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{fi.bg}}; color: {{fi.fg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{fi.fg}};"></span>{{fi.status}}</span>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+
+        <!-- Contractors -->
+        <section aria-labelledby="con-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="con-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Contractor payments</h2>
+            <span style="font-size: 14px; color: #47444F; line-height: 1.45;">Contractors aren’t on payroll and nothing is withheld. You pay their bills, and we count it toward their 1099.</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="width: 40px; height: 40px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 13px;">ER</span>
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+              <span style="font-weight: 700; font-size: 15px;">Elena Rossi</span>
+              <span style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12.5px; color: #5F5B68;">Illustrator · <span style="display: inline-flex; align-items: center; gap: 5px; color: #2F5711; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>W-9 on file</span></span>
+            </span>
+          </div>
+          <ul style="margin: 0; padding: 0 14px; list-style: none; border-radius: 14px; background: #F7F6F9; font-size: 14px;">
+            <li style="display: flex; justify-content: space-between; gap: 12px; padding: 11px 0;"><span>Paid Oct 3 · invoice ER-013</span><strong style="font-variant-numeric: tabular-nums;">$936</strong></li>
+            <li style="display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid #E2DFE8;"><span>{{con.dueText}}</span><strong style="font-variant-numeric: tabular-nums;">$1,045</strong></li>
+            <li style="display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid #E2DFE8;"><span>Paid in 2026 · 1099-NEC in January</span><strong style="font-variant-numeric: tabular-nums;">{{con.ytd}}</strong></li>
+          </ul>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;">
+            <sc-if value="{{con.open}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{payElena}}" style="min-height: 42px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Pay $1,045 now</button>
+            </sc-if>
+            <a href="SpendVendors.dc.html" style="font-size: 14px; font-weight: 600;">Elena’s vendor profile</a>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <nav aria-label="Full detail" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>More for Going out:</span>
+      <a href="SpendVendors.dc.html" style="font-weight: 600;">Who you pay</a>
+      <a href="SpendBill.dc.html" style="font-weight: 600;">Bills</a>
+      <a href="SpendEveryMonth.dc.html" style="font-weight: 600;">Every month</a>
+      <a href="BizTeam.dc.html" style="font-weight: 600;">Team and access</a>
+    </nav>
+
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1870}}'>
+class Component extends DCLogic {
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  money2(n) { return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  num(s) { const v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; }
+  base(outT) {
+    const st = this.state;
+    const inT = 24850, profit = inT - outT, keep = Math.round(profit - Math.round(profit * 0.25));
+    return {
+      n: { in: this.money(inT), out: this.money(outT), keep: this.money(keep) },
+      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
+      verbs: [
+        { label: 'Bill someone', hint: 'Invoice a customer', href: 'SellInvoice.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+        { label: 'Record an expense', hint: 'Cash or card you already spent', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+        { label: 'Add a receipt', hint: 'Snap, upload or forward it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+        { label: 'Enter a bill', hint: 'Something to pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+      ],
+      acct: [
+        { label: 'Business profile & invoice look', href: 'BizProfile.dc.html' },
+        { label: 'Team & permissions', href: 'BizTeam.dc.html' },
+        { label: 'Switch to Maya Chen Photography', href: 'BizTeam.dc.html' },
+        { label: 'Security & your data', href: 'BizSecurity.dc.html' },
+        { label: 'Everything BillingEase does', href: 'Everything.dc.html' }
+      ],
+      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
+      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
+      closeMenus: () => this.setState({ newOpen: false, acctOpen: false }),
+      toast: st.toast
+    };
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      newOpen: false, acctOpen: false, toast: null,
+      run: 'idle', addOpen: false, errors: [], elenaPaid: false,
+      f: { name: '', job: '', email: '', type: 'salary', rate: '', sched: 'Monthly, on the 9th' },
+      people: [
+        { name: 'Jordan Lee', job: 'Senior designer · direct deposit ••2291', rate: '$52,800 a year', sched: 'Monthly, on the 9th', isNew: false },
+        { name: 'Priya Nair', job: 'Designer · direct deposit ••7340', rate: '$33,600 a year', sched: 'Monthly, on the 9th', isNew: false },
+        { name: 'Sam Ortiz', job: 'Studio coordinator · direct deposit ••0618', rate: '$32 an hour', sched: 'Monthly, on the 9th · hours from timesheets', isNew: false }
+      ]
+    };
+  }
+  setF(patch) { this.setState({ f: Object.assign({}, this.state.f, patch), errors: [] }); }
+  renderVals() {
+    const st = this.state;
+    const money = (n) => this.money(n);
+    const ini = (s) => s.replace(/&/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+    const out = this.base(13640);
+    const rs = st.run;
+
+    const run = {
+      idle: rs === 'idle', reviewing: rs === 'review', approved: rs === 'approved',
+      badge: rs === 'approved' ? 'Approved' : 'Needs your approval', badgeBg: rs === 'approved' ? '#E2F6D5' : '#FFF0B8', badgeFg: rs === 'approved' ? '#2F5711' : '#6B5000',
+      lead: rs === 'approved'
+        ? 'Approved. The money leaves Chase on Wednesday, Oct 8 and lands Friday. Nothing else for you to do.'
+        : 'We worked out everyone’s pay, taxes and take-home. Check it over and approve by Wednesday, Oct 7.',
+      countText: rs === 'approved'
+        ? 'You approved it, but the $7,231 stays in Going out as still to pay until pay day. On Oct 9, when it lands, it moves to paid. Your total doesn’t change.'
+        : 'The $7,231 already counts in Going out as still to pay, so Yours to keep is honest today. On pay day, Oct 9, it moves to paid. Approving doesn’t change your numbers.',
+      barColor: '#EE9A62',
+      barLabel: rs === 'approved' ? 'Payroll Oct 9, approved, still to pay' : 'Payroll Oct 9, still to pay',
+      barTitle: 'Payroll Oct 9, still to pay: $7,231'
+    };
+
+    const LINES = [
+      { name: 'Jordan Lee', basis: 'Salary, monthly', gross: 4400, tax: 1160, net: 3240 },
+      { name: 'Priya Nair', basis: 'Salary, monthly', gross: 2800, tax: 714, net: 2086 },
+      { name: 'Sam Ortiz', basis: '76 hours × $32', gross: 2432, tax: 527, net: 1905 }
+    ];
+    const lines = LINES.map((l) => ({ name: l.name, basis: l.basis, ini: ini(l.name), gross: money(l.gross), tax: money(l.tax), net: money(l.net) }));
+
+    const checks = [
+      { title: 'Hours are in.', text: 'Sam logged 76 hours this period. Jordan and Priya are salaried.' },
+      { title: 'Enough in the bank.', text: 'Chase ••4417 has $42,918, so $7,231 leaves plenty.' },
+      { title: 'Taxes are worked out.', text: '$2,401 withheld for federal and New York income tax, Social Security and Medicare.' },
+      { title: 'Timing.', text: 'Money moves Wednesday, Oct 8 and lands in everyone’s account Friday, Oct 9.' }
+    ];
+
+    const people = st.people.map((p, i) => ({
+      name: p.name, job: p.job, rate: p.rate, sched: p.sched, ini: ini(p.name), isNew: p.isNew, newText: 'Starts with the Nov 9 run',
+      border: i === 0 ? '0' : '1px solid #EFEDF3'
+    }));
+
+    const f = st.f;
+    const payTypes = [['salary', 'Salary'], ['hourly', 'Hourly']].map(([k, label]) => ({
+      label, on: f.type === k, bg: f.type === k ? '#18161F' : 'transparent', fg: f.type === k ? '#FFFFFF' : '#18161F',
+      pick: () => this.setF({ type: k })
+    }));
+    const savePerson = () => {
+      const errs = [];
+      const amt = parseFloat(String(f.rate).replace(/[^0-9.]/g, ''));
+      if (!f.name.trim()) errs.push('Add their name.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) errs.push('Add an email so they can fill in their W-4 and bank details.');
+      if (!(amt > 0)) errs.push(f.type === 'salary' ? 'Add a yearly salary.' : 'Add an hourly rate.');
+      if (errs.length) { this.setState({ errors: errs }); return; }
+      const rate = f.type === 'salary' ? money(Math.round(amt)) + ' a year' : money(amt) + ' an hour';
+      const job = (f.job.trim() || 'Team member') + ' · waiting for W-4 and bank details';
+      this.setState({ people: st.people.concat([{ name: f.name.trim(), job, rate, sched: f.sched, isNew: true }]), addOpen: false, errors: [], f: { name: '', job: '', email: '', type: 'salary', rate: '', sched: 'Monthly, on the 9th' } });
+      this.notify(f.name.trim() + ' added · we emailed ' + f.email.trim());
+    };
+
+    const PAST = [
+      { date: 'Wednesday, Sep 9', note: '3 people · direct deposit', amt: 7231 },
+      { date: 'Friday, Aug 7', note: '3 people · Sam worked 74 hours', amt: 7180 },
+      { date: 'Thursday, Jul 9', note: '3 people · direct deposit', amt: 7231 },
+      { date: 'Tuesday, Jun 9', note: '3 people · Sam worked 66 hours', amt: 6950 }
+    ];
+    const past = PAST.map((r, i) => ({
+      date: r.date, note: r.note, amt: money(r.amt), border: i === 0 ? '0' : '1px solid #EFEDF3',
+      stubsLabel: 'Pay stubs for ' + r.date,
+      stubs: () => this.notify('Downloaded 3 pay stubs for ' + r.date.split(', ')[1])
+    }));
+
+    const filings = [
+      { title: 'Q1 2026 (Jan – Mar)', forms: 'Federal 941 and New York NYS-45 · filed Apr 28', status: 'Done', bg: '#E2F6D5', fg: '#2F5711', rowBg: '#F7F6F9' },
+      { title: 'Q2 2026 (Apr – Jun)', forms: 'Federal 941 and New York NYS-45 · filed Jul 27', status: 'Done', bg: '#E2F6D5', fg: '#2F5711', rowBg: '#F7F6F9' },
+      { title: 'Q3 2026 (Jul – Sep)', forms: 'Federal 941 and NYS-45 · we file Oct 26, due Oct 31', status: 'Next', bg: '#E1EEF8', fg: '#1F5E91', rowBg: '#FFFFFF; border: 1px solid #E2DFE8' },
+      { title: 'Year-end 2026', forms: 'W-2s for your team, Form 940, and Elena’s 1099-NEC · due Jan 31, 2027', status: 'Later', bg: '#EFEDF3', fg: '#47444F', rowBg: '#F7F6F9' }
+    ];
+
+    const con = {
+      open: !st.elenaPaid,
+      dueText: st.elenaPaid ? 'Paid today · invoice ER-014' : 'Due Oct 30 · invoice ER-014',
+      ytd: money(9860 + (st.elenaPaid ? 1045 : 0))
+    };
+
+    const ep = st.elenaPaid ? 1045 : 0;
+    const pPct = Math.round((3180 + ep) / 13640 * 1000) / 10, rPct = Math.round(7231 / 13640 * 1000) / 10;
+    const g = { paid: money(3180 + ep), other: money(3229 - ep), paidPct: pPct, prPct: rPct, otherPct: Math.round((100 - pPct - rPct) * 10) / 10 };
+    return Object.assign(out, {
+      g, run, lines, checks, people, peopleCount: st.people.length,
+      startReview: () => this.setState({ run: 'review' }),
+      cancelReview: () => this.setState({ run: 'idle' }),
+      approve: () => { this.setState({ run: 'approved' }); this.notify('Approved, money moves Oct 8'); },
+      undo: () => { this.setState({ run: 'idle' }); this.notify('Approval undone · the Oct 9 run is waiting for you'); },
+      addOpen: st.addOpen, addClosed: !st.addOpen,
+      openAdd: () => this.setState({ addOpen: true, errors: [] }),
+      closeAdd: () => this.setState({ addOpen: false, errors: [] }),
+      f: { name: f.name, job: f.job, email: f.email, rate: f.rate, sched: f.sched, rateLabel: f.type === 'salary' ? 'Salary, per year' : 'Rate, per hour', ratePh: f.type === 'salary' ? '48,000' : '30' },
+      payTypes,
+      setName: (e) => this.setF({ name: e.target.value }),
+      setJob: (e) => this.setF({ job: e.target.value }),
+      setEmail: (e) => this.setF({ email: e.target.value }),
+      setRate: (e) => this.setF({ rate: e.target.value }),
+      setSched: (e) => this.setF({ sched: e.target.value }),
+      savePerson, errors: st.errors, hasErrors: st.errors.length > 0,
+      past, filings, con,
+      payElena: () => { this.setState({ elenaPaid: true }); this.notify('Paid Elena Rossi $1,045 from Chase ••4417'); }
+    });
+  }
+}
+</script>
 </body>
 </html>
