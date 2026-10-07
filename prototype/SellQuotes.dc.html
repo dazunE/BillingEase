@@ -2,12 +2,765 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · SellQuotes</title>
+<title>BillingEase · Quotes</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="5">
+                <a href="{{v.href}}" role="menuitem" onClick="{{closeNew}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;">
+                <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">Your business</span>
+                <span style="font-weight: 700; font-size: 15px;">Northwind Studio</span>
+                <span style="font-size: 13px; color: #47444F;">Maya Chen · Owner</span>
+              </span>
+              <sc-for list="{{acctItems}}" as="ai" hint-placeholder-count="4">
+                <a href="{{ai.href}}" role="menuitem" onClick="{{closeAcct}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ai.label}}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Back + compact equation strip -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-weight: 600; font-size: 14px; text-decoration: none; color: #47444F;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        Coming in
+      </a>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #EEE8FF; border: 2px solid #7A5AF8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- Title -->
+    <section aria-labelledby="q-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="q-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span>Quotes</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">A price you send before the work starts. Your customer can accept it online, and you turn it into an invoice in one step. <span style="color: #5F5B68;">Some apps call these estimates.</span></p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{tiles}}" as="t" hint-placeholder-count="3">
+            <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #F7F6F9; border: 1px solid #E2DFE8; font-size: 13px; color: #47444F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{t.dot}};"></span>{{t.label}} <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{t.value}}</strong></span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">Quotes don’t count in Coming in. The moment you invoice an accepted quote, it’s added as money on the way.</p>
+        <button type="button" onClick="{{newQuote}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          New quote
+        </button>
+      </div>
+    </section>
+
+    <!-- Composer -->
+    <sc-if value="{{c.open}}" hint-placeholder-val="{{false}}">
+      <section id="composer" aria-labelledby="comp-h" style="background: #FFFFFF; border: 2px solid #7A5AF8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start;">
+        <div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px 16px;">
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+              <h2 id="comp-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">{{c.heading}}</h2>
+              <span style="font-size: 14px; color: #47444F;">Pick lines from your catalog or type your own. Nothing goes out until you press Send.</span>
+            </div>
+            <button type="button" aria-label="Close the quote composer" onClick="{{closeComposer}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+            <label style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Customer</span>
+              <select class="be-field" value="{{c.who}}" onChange="{{setWho}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid {{c.whoBorder}}; border-radius: 10px; background: #FFFFFF; color: #18161F; font: 400 15px DM Sans, sans-serif; cursor: pointer;">
+                <option value="">Choose a customer</option>
+                <sc-for list="{{customers}}" as="cu" hint-placeholder-count="9">
+                  <option value="{{cu.name}}">{{cu.label}}</option>
+                </sc-for>
+              </select>
+            </label>
+            <label style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">What it’s for</span>
+              <input class="be-field" type="text" placeholder="e.g. Lobby wayfinding signage" value="{{c.title}}" onChange="{{setTitle}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+            </label>
+          </div>
+          <sc-if value="{{c.foreign}}" hint-placeholder-val="{{false}}">
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: #1F5E91; background: #E1EEF8; padding: 10px 14px; border-radius: 14px; line-height: 1.45;"><span>{{c.curNote}}</span></span>
+          </sc-if>
+
+          <!-- Lines -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 13px; font-weight: 600;">Lines</span>
+            <sc-if value="{{c.noLines}}" hint-placeholder-val="{{false}}">
+              <span style="padding: 14px 16px; border-radius: 14px; background: #F7F6F9; font-size: 14px; color: #47444F;">Add a line from your catalog below, or type your own.</span>
+            </sc-if>
+            <sc-for list="{{c.lines}}" as="ln" hint-placeholder-count="2">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 10px 12px; border-radius: 14px; background: #F7F6F9;">
+                <input class="be-field" type="text" aria-label="Line description" placeholder="Description" value="{{ln.name}}" onChange="{{ln.setName}}" style="flex: 1 1 200px; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #47444F;">
+                  <input class="be-field" type="text" inputmode="decimal" aria-label="{{ln.qtyLabel}}" value="{{ln.qty}}" onChange="{{ln.setQty}}" style="width: 64px; min-height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">{{ln.unit}} ×
+                </span>
+                <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: #47444F;">{{c.sym}}<input class="be-field" type="text" inputmode="decimal" aria-label="Rate" value="{{ln.rate}}" onChange="{{ln.setRate}}" style="width: 90px; min-height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                <span style="margin-left: auto; min-width: 84px; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums;">{{ln.amount}}</span>
+                <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+              </div>
+            </sc-for>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px;">
+              <span style="font-size: 13px; color: #5F5B68;">Add from your catalog</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <sc-for list="{{catalog}}" as="ci" hint-placeholder-count="9">
+                  <button type="button" onClick="{{ci.add}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 500 13px DM Sans, sans-serif; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{ci.label}} <span style="color: #5F5B68;">{{ci.price}}</span></button>
+                </sc-for>
+                <button type="button" onClick="{{addBlank}}" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Type your own line</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expiry + deposit -->
+          <div style="display: flex; flex-wrap: wrap; gap: 16px 32px; padding-top: 14px; border-top: 1px solid #EFEDF3;">
+            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Expires</span><span style="font-size: 13px; color: #5F5B68;">Optional. After this the price no longer holds.</span></span>
+                <button type="button" role="switch" aria-checked="{{c.expOn}}" aria-label="Quote expires" onClick="{{toggleExp}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{c.expBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{c.expLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
+              </div>
+              <sc-if value="{{c.expOn}}" hint-placeholder-val="{{true}}">
+                <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F;">
+                  <span>After</span>
+                  <select class="be-field" aria-label="Expires after" value="{{c.expDays}}" onChange="{{setExpDays}}" style="min-height: 40px; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; color: #18161F; font: 400 14px DM Sans, sans-serif;">
+                    <option value="14">14 days</option>
+                    <option value="30">30 days</option>
+                    <option value="60">60 days</option>
+                  </select>
+                  <span>· {{c.expDate}}</span>
+                </label>
+              </sc-if>
+            </div>
+            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+              <span style="display: flex; flex-direction: column; gap: 2px;"><span id="dep-l" style="font-size: 14px; font-weight: 600;">Deposit when they accept</span><span style="font-size: 13px; color: #5F5B68;">You can invoice it on its own before the work starts.</span></span>
+              <div role="group" aria-labelledby="dep-l" style="align-self: flex-start; display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+                <sc-for list="{{c.depOpts}}" as="d" hint-placeholder-count="4">
+                  <button type="button" aria-pressed="{{d.on}}" onClick="{{d.pick}}" style="min-height: 36px; min-width: 52px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{d.bg}}; color: {{d.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{d.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <!-- More options -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button type="button" aria-expanded="{{c.moreOpen}}" onClick="{{toggleMore}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.moreIcon}}"></path></svg>
+              More options
+            </button>
+            <sc-if value="{{c.moreOpen}}" hint-placeholder-val="{{false}}">
+              <label style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600;">Message to your customer</span>
+                <textarea class="be-field" rows="3" value="{{c.note}}" onChange="{{setNote}}" placeholder="A short note that appears above the price" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+              </label>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{c.hasErrors}}" hint-placeholder-val="{{false}}">
+            <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
+              <sc-for list="{{c.errors}}" as="er" hint-placeholder-count="1"><span>{{er}}</span></sc-for>
+            </div>
+          </sc-if>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+            <button type="button" onClick="{{sendQuote}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 16px DM Sans, sans-serif; cursor: pointer;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg>
+              {{c.sendLabel}}
+            </button>
+            <button type="button" onClick="{{saveDraft}}" style="min-height: 48px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Save as draft</button>
+          </div>
+        </div>
+
+        <!-- Composer totals -->
+        <aside aria-label="Quote total" style="flex: 1 1 280px; min-width: 0; background: #F7F6F9; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-size: 13px; font-weight: 600; color: #47444F;">{{c.numLabel}}</span>
+          <sc-for list="{{c.sums}}" as="s" hint-placeholder-count="2">
+            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #47444F;"><span>{{s.label}}</span><span style="font-variant-numeric: tabular-nums; color: #18161F;">{{s.value}}</span></span>
+          </sc-for>
+          <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 10px; border-top: 1px solid #E2DFE8;"><span style="font-weight: 600;">Total</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{c.total}}</span></span>
+          <sc-if value="{{c.foreign}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F; text-align: right;">{{c.usd}}</span></sc-if>
+          <sc-if value="{{c.depOn}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F;">{{c.depText}}</span></sc-if>
+          <sc-if value="{{c.reverse}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F;">VAT reverse charged to the customer · VAT ID DE 812 345 678</span></sc-if>
+          <span style="display: flex; gap: 8px; align-items: flex-start; margin-top: 6px; padding: 12px; border-radius: 14px; background: #EEE8FF; font-size: 13px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 5px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{c.feed}}</span></span>
+        </aside>
+      </section>
+    </sc-if>
+
+    <!-- List + detail -->
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section aria-label="Your quotes" style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+        <sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <h2 style="margin: 0; display: flex; align-items: baseline; gap: 8px; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">{{g.label}} <span style="color: #5F5B68; font-weight: 600; font-size: 15px;">{{g.count}}</span></h2>
+            <sc-if value="{{g.empty}}" hint-placeholder-val="{{false}}">
+              <span style="padding: 14px 16px; border-radius: 16px; border: 1px dashed #CBC7D3; font-size: 14px; color: #5F5B68;">{{g.emptyText}}</span>
+            </sc-if>
+            <sc-for list="{{g.items}}" as="q" hint-placeholder-count="1">
+              <button type="button" aria-pressed="{{q.sel}}" onClick="{{q.pick}}" style="display: flex; flex-direction: column; gap: 6px; width: 100%; text-align: left; padding: 14px 16px; border-radius: 18px; border: {{q.border}}; background: {{q.bg}}; color: #18161F; font: 400 14px DM Sans, sans-serif; cursor: pointer;">
+                <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; width: 100%;">
+                  <span style="font-weight: 700; font-size: 15px; min-width: 0;">{{q.who}}</span>
+                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap;">{{q.total}}</span>
+                </span>
+                <span style="color: #47444F;">{{q.title}} · {{q.num}}</span>
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{q.pbg}}; color: {{q.pfg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{q.pfg}};"></span>{{q.status}}</span>
+                  <span style="font-size: 13px; color: #5F5B68;">{{q.meta}}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </section>
+
+      <!-- Detail -->
+      <section aria-labelledby="d-h" style="flex: 1.5 1 440px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 16px;">
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+            <span style="font-size: 13px; color: #5F5B68;">{{d.num}} · {{d.cur}}</span>
+            <h2 id="d-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{d.who}}</h2>
+            <span style="font-size: 14px; color: #47444F;">{{d.title}}</span>
+          </div>
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{d.pbg}}; color: {{d.pfg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{d.pfg}};"></span>{{d.status}}</span>
+        </div>
+        <div role="tablist" aria-label="Quote view" style="align-self: flex-start; display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+          <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="2">
+            <button type="button" role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="min-height: 38px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{tb.bg}}; color: {{tb.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{tb.label}}</button>
+          </sc-for>
+        </div>
+
+        <!-- Details tab -->
+        <sc-if value="{{tabDetails}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 18px;">
+            <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px;">
+              <sc-for list="{{d.steps}}" as="sp" hint-placeholder-count="3">
+                <li style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: {{sp.fg}};"><span style="width: 10px; height: 10px; border-radius: 9999px; background: {{sp.dot}}; flex: none;"></span>{{sp.label}}</li>
+              </sc-for>
+            </ol>
+            <sc-if value="{{d.hasChange}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 16px; background: #FFF0B8; color: #6B5000; font-size: 14px;"><strong>{{d.changeTitle}}</strong><span style="color: #18161F;">“{{d.changeNote}}”</span></div>
+            </sc-if>
+            <sc-if value="{{d.isDeclined}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 16px; background: #FBE3DF; color: #A8200D; font-size: 14px;"><strong>Declined {{d.declinedOn}}. Their reason:</strong><span style="color: #18161F;">“{{d.reason}}”</span></div>
+            </sc-if>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; min-width: 360px; border-collapse: collapse; font-size: 14px;">
+                <thead><tr style="color: #5F5B68; font-size: 12px; text-align: left;"><th scope="col" style="padding: 0 0 8px; font-weight: 600;">Line</th><th scope="col" style="padding: 0 0 8px; font-weight: 600; text-align: right;">Qty</th><th scope="col" style="padding: 0 0 8px; font-weight: 600; text-align: right;">Rate</th><th scope="col" style="padding: 0 0 8px; font-weight: 600; text-align: right;">Amount</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{d.lines}}" as="dl" hint-placeholder-count="2">
+                    <tr style="border-top: 1px solid #EFEDF3;"><td style="padding: 10px 8px 10px 0;">{{dl.name}}</td><td style="padding: 10px 0; text-align: right; white-space: nowrap; color: #47444F;">{{dl.qty}}</td><td style="padding: 10px 0 10px 12px; text-align: right; white-space: nowrap; color: #47444F; font-variant-numeric: tabular-nums;">{{dl.rate}}</td><td style="padding: 10px 0 10px 12px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;">{{dl.amount}}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; padding-top: 10px; border-top: 1px solid #E2DFE8;">
+              <span style="font-size: 13px; color: #47444F;">{{d.sub}}</span>
+              <span style="display: flex; align-items: baseline; gap: 10px;"><span style="font-weight: 600;">Total</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{d.total}}</span></span>
+            </div>
+            <span style="display: flex; gap: 8px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #EEE8FF; font-size: 14px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 6px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{d.feed}}</span></span>
+
+            <!-- Actions by state -->
+            <sc-if value="{{d.isOpen}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                <button type="button" onClick="{{remind}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{d.remindLabel}}</button>
+                <button type="button" onClick="{{editSel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Edit quote</button>
+                <button type="button" onClick="{{markAccepted}}" style="min-height: 44px; padding: 0 6px; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">They said yes another way</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{d.isDraft}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                <button type="button" onClick="{{editSel}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Finish and send</button>
+                <button type="button" onClick="{{deleteDraft}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Delete draft</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{d.isDeclined}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button type="button" onClick="{{copySel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Copy into a new quote</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{d.isInvoiced}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+                <span style="flex: 1 1 200px; min-width: 0;">{{d.invoicedText}}</span>
+                <a href="ThreeIn.dc.html" style="color: #2F5711; font-weight: 600;">See it in Coming in</a>
+              </div>
+            </sc-if>
+
+            <!-- Turn into invoice -->
+            <sc-if value="{{d.canConvert}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 20px; background: #F7F6F9; border: 1px solid #E2DFE8;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Turn into an invoice</span><span style="font-size: 14px; color: #47444F;">{{d.who}} said yes. Bill it all now, or start with the deposit.</span></span>
+                <div role="radiogroup" aria-label="How much to invoice" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                  <sc-for list="{{conv.opts}}" as="co" hint-placeholder-count="2">
+                    <button type="button" role="radio" aria-checked="{{co.on}}" onClick="{{co.pick}}" style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 14px 16px; border-radius: 16px; border: {{co.border}}; background: {{co.bg}}; color: #18161F; font: 400 14px DM Sans, sans-serif; cursor: pointer;">
+                      <span style="font-weight: 700; font-size: 15px;">{{co.label}}</span>
+                      <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;">{{co.amount}}</span>
+                      <span style="font-size: 13px; color: #47444F;">{{co.hint}}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <span style="display: flex; gap: 8px; align-items: flex-start; font-size: 14px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 6px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{conv.explain}}</span></span>
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+                  <button type="button" onClick="{{convert}}" style="min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{conv.btn}}</button>
+                  <a href="SellInvoice.dc.html" style="font-size: 14px; font-weight: 600;">Open in the full invoice editor</a>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- Customer view tab -->
+        <sc-if value="{{tabCustomer}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 13px; color: #5F5B68;">{{cv.hint}}</span>
+            <div style="background: #F7F6F9; border-radius: 20px; padding: clamp(10px, 2vw, 18px);">
+              <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; padding: clamp(16px, 2.5vw, 24px); display: flex; flex-direction: column; gap: 16px; box-shadow: 0 1px 2px rgba(24,22,31,0.06);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                  <span style="display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 26px; height: 26px; border-radius: 8px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+                    <span style="font-weight: 700; font-size: 14px;">Northwind Studio</span>
+                  </span>
+                  <span style="font-size: 12px; color: #5F5B68; text-align: right;">Quote<br><strong style="color: #18161F; font-size: 13px;">{{d.num}}</strong></span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-size: 13px; color: #5F5B68;">For {{d.who}}</span>
+                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{d.title}}</span>
+                  <sc-if value="{{cv.hasNote}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; color: #47444F; line-height: 1.5;">{{cv.note}}</span></sc-if>
+                </div>
+                <div style="display: flex; flex-direction: column; border-top: 1px solid #EFEDF3;">
+                  <sc-for list="{{d.lines}}" as="cl" hint-placeholder-count="2">
+                    <div style="display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #EFEDF3; font-size: 14px;"><span style="min-width: 0;">{{cl.name}} <span style="color: #5F5B68;">· {{cl.qty}}</span></span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{cl.amount}}</span></div>
+                  </sc-for>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+                  <span style="font-size: 13px; color: #47444F;">{{cv.valid}}</span>
+                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{d.total}}</span>
+                </div>
+                <sc-if value="{{cv.depOn}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F;">{{cv.depText}}</span></sc-if>
+                <sc-if value="{{cv.reverse}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #5F5B68;">VAT reverse charged to the customer. Customer VAT ID DE 812 345 678.</span></sc-if>
+
+                <sc-if value="{{cv.canAnswer}}" hint-placeholder-val="{{true}}">
+                  <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <sc-if value="{{cv.modeNone}}" hint-placeholder-val="{{true}}">
+                      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" onClick="{{cvAccept}}" style="flex: 2 1 160px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Accept quote</button>
+                        <button type="button" onClick="{{cvChanges}}" style="flex: 1 1 140px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Ask for changes</button>
+                        <button type="button" onClick="{{cvDecline}}" style="flex: 1 1 100px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Decline</button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{cv.modeChanges}}" hint-placeholder-val="{{false}}">
+                      <label style="display: flex; flex-direction: column; gap: 6px;">
+                        <span style="font-size: 13px; font-weight: 600;">What would you like changed?</span>
+                        <textarea class="be-field" rows="3" value="{{cv.text}}" onChange="{{cvSetText}}" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+                      </label>
+                      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" onClick="{{cvSendChanges}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Send to Northwind Studio</button>
+                        <button type="button" onClick="{{cvCancel}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Back</button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{cv.modeDecline}}" hint-placeholder-val="{{false}}">
+                      <span style="font-size: 13px; font-weight: 600;">Could you tell us why? (optional)</span>
+                      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <sc-for list="{{cv.reasons}}" as="rs" hint-placeholder-count="4">
+                          <button type="button" aria-pressed="{{rs.on}}" onClick="{{rs.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{rs.border}}; background: {{rs.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{rs.label}}</button>
+                        </sc-for>
+                      </div>
+                      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" onClick="{{cvSendDecline}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Decline quote</button>
+                        <button type="button" onClick="{{cvCancel}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Back</button>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+                <sc-if value="{{cv.closed}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 9999px; background: {{cv.closedBg}}; color: {{cv.closedFg}}; font-weight: 600; font-size: 14px; text-align: center; padding: 0 16px;">{{cv.closedText}}</span>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+    </div>
+
+    <nav aria-label="Related" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Also in Coming in:</span>
+      <a href="SellInvoice.dc.html" style="font-weight: 600;">Full invoice editor</a>
+      <a href="SellRecurring.dc.html" style="font-weight: 600;">Repeating invoices and money back</a>
+      <a href="SellCatalog.dc.html" style="font-weight: 600;">Products and services</a>
+    </nav>  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  common(inDelta) {
+    const st = this.state;
+    const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+    const inT = 24850 + (inDelta || 0), outT = 13640, profit = inT - outT, keep = profit - Math.round(profit * 0.25);
+    const verbs = [
+      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+      { label: 'Write a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 20h4L19 9l-4-4L4 16zM13 7l4 4' },
+      { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' }
+    ];
+    const acctItems = [
+      { label: 'Business profile and invoice look', href: 'BizProfile.dc.html' },
+      { label: 'Team and permissions', href: 'BizTeam.dc.html' },
+      { label: 'Security and your data', href: 'BizSecurity.dc.html' },
+      { label: 'Switch to Maya Chen Photography', href: 'BizTeam.dc.html' }
+    ];
+    return {
+      n: { in: money(inT), out: money(outT), keep: money(keep) },
+      verbs, acctItems, newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
+      toggleNew: () => this.setState({ newOpen: !this.state.newOpen, acctOpen: false }),
+      closeNew: () => this.setState({ newOpen: false }),
+      toggleAcct: () => this.setState({ acctOpen: !this.state.acctOpen, newOpen: false }),
+      closeAcct: () => this.setState({ acctOpen: false }),
+      toast: st.toast || null
+    };
+  }
+  constructor(props) {
+    super(props);
+    const L = (id, name, kind, unit, qty, rate) => ({ id, name, kind, unit, qty: String(qty), rate: String(rate) });
+    this.state = {
+      newOpen: false, acctOpen: false, toast: null, inDelta: 0, seq: 100, qseq: 33, invSeq: 166,
+      sel: 'Q-0031', tab: 'details', convMode: 'full',
+      cvMode: null, cvText: '', cvReason: 'Price',
+      quotes: [
+        { num: 'Q-0031', who: 'Greenline Architects', title: 'Lobby wayfinding signage', cur: 'USD', state: 'waiting', sent: 'Sep 30', viewed: 'Oct 3', expires: 'Oct 30', deposit: 30, note: 'Thanks for the walkthrough last week. Here’s the plan we talked about: a strategy session with your team, then design time for the lobby and floor signs.',
+          lines: [L(1, 'Brand strategy workshop', 'service', 'jobs', 1, 1800), L(2, 'Design hours', 'service', 'hours', 20, 120)] },
+        { num: 'Q-0032', who: 'Kaffeehaus Berlin GmbH', title: 'Café rebrand', cur: 'EUR', state: 'draft', expires: null, deposit: 50, note: '',
+          lines: [L(3, 'Brand strategy workshop', 'service', 'jobs', 1, 1650), L(4, 'Design hours', 'service', 'hours', 35, 110), L(5, 'Website page design', 'service', 'pages', 1, 1000)] },
+        { num: 'Q-0029', who: 'Lumen Dental Group', title: 'Patient brochure set', cur: 'USD', state: 'accepted', sent: 'Sep 8', accepted: 'Sep 12', invoice: 'INV-0163', invoiceAmt: 3200, deposit: 0, note: '',
+          lines: [L(6, 'Design hours', 'service', 'hours', 20, 120), L(7, 'Brochure print proofs', 'service', 'jobs', 1, 800)] },
+        { num: 'Q-0027', who: 'Harbor & Pine Café', title: 'Menu and window refresh', cur: 'USD', state: 'declined', sent: 'Sep 15', declined: 'Sep 22', reason: 'Going with a cheaper option', deposit: 0, note: '',
+          lines: [L(8, 'Brand strategy workshop', 'service', 'jobs', 1, 1800), L(9, 'Menu photo touch-ups', 'service', 'jobs', 1, 100)] }
+      ],
+      c: { open: false, editId: null, who: '', cur: 'USD', title: '', lines: [], expOn: true, expDays: '30', deposit: 0, note: '', moreOpen: false, errors: [] }
+    };
+  }
+  renderVals() {
+    const st = this.state;
+    const SYM = { USD: '$', EUR: '€', GBP: '£' }, FX = { USD: 1, EUR: 1.09, GBP: 1.27 };
+    const num = (s) => { const v = parseFloat(String(s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; };
+    const fmt = (n, cur) => (SYM[cur || 'USD']) + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+    const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
+    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dayOn = (days) => { const d = new Date(2026, 9, 4 + days); return MON[d.getMonth()] + ' ' + d.getDate(); };
+    const CUST = [
+      { name: 'Atlas Freight Co.', cur: 'USD', region: 'US' }, { name: 'Bluebird Yoga', cur: 'USD', region: 'US' },
+      { name: 'Greenline Architects', cur: 'USD', region: 'US' }, { name: 'Harbor & Pine Café', cur: 'USD', region: 'US' },
+      { name: 'Kaffeehaus Berlin GmbH', cur: 'EUR', region: 'EU' }, { name: 'Lumen Dental Group', cur: 'USD', region: 'US' },
+      { name: 'Oak Street Bakery', cur: 'USD', region: 'US' }, { name: 'Ridge Outdoor Supply', cur: 'USD', region: 'US' },
+      { name: 'Thistle & Co. Ltd', cur: 'GBP', region: 'UK' }
+    ];
+    const region = (who) => (CUST.find((c) => c.name === who) || { region: 'US' }).region;
+    const CAT = [
+      { name: 'Brand strategy workshop', kind: 'service', unit: 'jobs', price: 1800, short: 'Strategy workshop' },
+      { name: 'Design hours', kind: 'service', unit: 'hours', price: 120, short: 'Design hours' },
+      { name: 'Website page design', kind: 'service', unit: 'pages', price: 950, short: 'Web page design' },
+      { name: 'Photo editing', kind: 'service', unit: 'hours', price: 85, short: 'Photo editing' },
+      { name: 'Monthly social retainer', kind: 'service', unit: 'months', price: 540, short: 'Social retainer' },
+      { name: 'Printed brand kit', kind: 'product', unit: 'kits', price: 65, short: 'Printed brand kit' },
+      { name: 'Enamel logo pin', kind: 'product', unit: 'pins', price: 8, short: 'Enamel logo pin' },
+      { name: 'Letterpress card set', kind: 'product', unit: 'sets', price: 24, short: 'Letterpress cards' }
+    ];
+    const unitOf = (l) => num(l.qty) === 1 ? l.unit.replace(/s$/, '') : l.unit;
+    const totals = (q) => {
+      const sub = q.lines.reduce((a, l) => a + num(l.qty) * num(l.rate), 0);
+      const prod = q.lines.filter((l) => l.kind === 'product').reduce((a, l) => a + num(l.qty) * num(l.rate), 0);
+      const tax = region(q.who) === 'US' ? Math.round(prod * 0.08875 * 100) / 100 : 0;
+      return { sub, tax, total: sub + tax };
+    };
+    const setQ = (numId, patch) => this.setState({ quotes: this.state.quotes.map((q) => q.num === numId ? Object.assign({}, q, patch) : q) });
+
+    // ---------- list ----------
+    const PILL = {
+      waiting: { bg: '#E1EEF8', fg: '#1F5E91' }, changes: { bg: '#FFF0B8', fg: '#6B5000' }, draft: { bg: '#EFEDF3', fg: '#47444F' },
+      accepted: { bg: '#E2F6D5', fg: '#2F5711' }, declined: { bg: '#FBE3DF', fg: '#A8200D' }
+    };
+    const statusOf = (q) => q.state === 'waiting' ? (q.viewed ? 'Viewed ' + q.viewed : 'Sent ' + q.sent)
+      : q.state === 'changes' ? 'Asked for changes' : q.state === 'draft' ? 'Draft'
+      : q.state === 'accepted' ? (q.invoice ? 'Accepted · invoiced' : 'Accepted ' + q.accepted) : 'Declined';
+    const metaOf = (q) => q.state === 'waiting' || q.state === 'changes' ? (q.expires ? 'Expires ' + q.expires : 'No expiry')
+      : q.state === 'draft' ? 'Not sent yet' : q.state === 'accepted' ? (q.invoice ? 'Became ' + q.invoice : 'Ready to invoice') : '“' + q.reason + '”';
+    const item = (q) => {
+      const t = totals(q), on = q.num === st.sel, p = PILL[q.state];
+      return {
+        num: q.num, who: q.who, title: q.title, total: fmt(t.total, q.cur), status: statusOf(q), meta: metaOf(q), pbg: p.bg, pfg: p.fg, sel: on,
+        bg: on ? '#EEE8FF' : '#FFFFFF', border: on ? '2px solid #7A5AF8' : '1px solid #E2DFE8',
+        pick: () => this.setState({ sel: q.num, cvMode: null })
+      };
+    };
+    const G = [
+      { k: ['waiting', 'changes'], label: 'Waiting for an answer', empty: 'Quotes you’ve sent show up here until the customer answers.' },
+      { k: ['draft'], label: 'Drafts', empty: 'Quotes you’ve started but not sent.' },
+      { k: ['accepted'], label: 'Accepted', empty: 'Accepted quotes wait here until you invoice them.' },
+      { k: ['declined'], label: 'Declined', empty: 'Nothing declined. Reasons customers give will show here.' }
+    ];
+    const groups = G.map((g) => {
+      const items = st.quotes.filter((q) => g.k.indexOf(q.state) >= 0).map(item);
+      return { label: g.label, count: items.length, items, empty: items.length === 0, emptyText: g.empty };
+    });
+    const waitingUsd = st.quotes.filter((q) => q.state === 'waiting' || q.state === 'changes').reduce((a, q) => a + totals(q).total * FX[q.cur], 0);
+    const draftUsd = st.quotes.filter((q) => q.state === 'draft').reduce((a, q) => a + totals(q).total * FX[q.cur], 0);
+    const readyUsd = st.quotes.filter((q) => q.state === 'accepted' && !q.invoice).reduce((a, q) => a + totals(q).total * FX[q.cur], 0);
+    const tiles = [
+      { label: 'Waiting', value: usd(waitingUsd), dot: '#7A5AF8' },
+      { label: 'Drafts', value: '≈ ' + usd(draftUsd), dot: '#C9BCFB' },
+      { label: 'Ready to invoice', value: usd(readyUsd), dot: '#2F5711' }
+    ];
+
+    // ---------- detail ----------
+    const q = st.quotes.find((x) => x.num === st.sel) || st.quotes[0];
+    const t = totals(q), p = PILL[q.state];
+    const foreignNote = q.cur !== 'USD' ? ' (≈ ' + usd(t.total * FX[q.cur]) + ' at 1 ' + q.cur + ' = ' + FX[q.cur] + ' USD)' : '';
+    const steps = [];
+    if (q.state === 'draft') steps.push({ label: 'Draft, not sent', on: true });
+    else {
+      steps.push({ label: 'Sent ' + q.sent, on: true });
+      if (q.viewed) steps.push({ label: 'Viewed ' + q.viewed, on: true });
+      if (q.state === 'waiting') steps.push({ label: q.expires ? 'Expires ' + q.expires : 'No expiry', on: false });
+      if (q.state === 'changes') steps.push({ label: 'Changes asked Oct 4', on: true });
+      if (q.state === 'accepted') steps.push({ label: 'Accepted ' + q.accepted, on: true });
+      if (q.state === 'accepted' && q.invoice) steps.push({ label: 'Invoiced as ' + q.invoice, on: true });
+      if (q.state === 'declined') steps.push({ label: 'Declined ' + q.declined, on: true });
+    }
+    const subBits = [];
+    if (t.tax) subBits.push('Includes ' + fmt(t.tax, q.cur) + ' NY sales tax on products');
+    if (q.deposit) subBits.push(q.deposit + '% deposit on acceptance');
+    if (q.cur !== 'USD') subBits.push('≈ ' + usd(t.total * FX[q.cur]));
+    const feed = q.state === 'draft' ? 'Drafts don’t count anywhere yet. Once sent and accepted, invoicing it adds ≈ ' + usd(t.total * FX[q.cur]) + ' to Coming in.'
+      : q.state === 'declined' ? 'Declined quotes never touch your three numbers.'
+      : q.state === 'accepted' && q.invoice ? 'This quote is now ' + q.invoice + ', counted in Coming in as ' + usd(q.invoiceAmt) + ' on the way.'
+      : q.state === 'accepted' ? 'Accepted, but not in Coming in yet. Turning it into an invoice adds it as money on the way.'
+      : 'Accepting this quote adds ' + fmt(t.total, q.cur) + foreignNote + ' to Coming in when you invoice it.';
+    const d = {
+      num: q.num, cur: q.cur === 'USD' ? 'US dollars' : q.cur === 'EUR' ? 'Euros' : 'Pounds', who: q.who, title: q.title,
+      status: statusOf(q), pbg: p.bg, pfg: p.fg,
+      steps: steps.map((s) => ({ label: s.label, dot: s.on ? '#7A5AF8' : '#CBC7D3', fg: s.on ? '#18161F' : '#5F5B68' })),
+      lines: q.lines.map((l) => ({ name: l.name, qty: num(l.qty) + ' ' + unitOf(l), rate: fmt(num(l.rate), q.cur), amount: fmt(num(l.qty) * num(l.rate), q.cur) })),
+      total: fmt(t.total, q.cur), sub: subBits.join(' · ') || 'No tax: services aren’t taxed in NY', feed,
+      isOpen: q.state === 'waiting' || q.state === 'changes', isDraft: q.state === 'draft', isDeclined: q.state === 'declined',
+      isInvoiced: q.state === 'accepted' && !!q.invoice, canConvert: q.state === 'accepted' && !q.invoice,
+      hasChange: q.state === 'changes', changeTitle: q.who + ' asked for changes', changeNote: q.changeNote || '',
+      declinedOn: q.declined, reason: q.reason,
+      remindLabel: q.state === 'changes' ? 'Edit and resend' : 'Send a reminder',
+      invoicedText: 'Became ' + q.invoice + ' for ' + usd(q.invoiceAmt || 0) + (q.invoice === 'INV-0163' ? ', due Oct 20' : ', due ' + dayOn(30))
+    };
+
+    // convert
+    const depPct = q.deposit || 30;
+    const depAmt = Math.round(t.total * depPct) / 100;
+    const conv = {
+      opts: [
+        { k: 'full', label: 'Full amount', amount: fmt(t.total, q.cur), hint: 'One invoice, due in 30 days' },
+        { k: 'deposit', label: depPct + '% deposit now', amount: fmt(depAmt, q.cur), hint: 'Then ' + fmt(t.total - depAmt, q.cur) + ' when the work is done' }
+      ].map((o) => {
+        const on = st.convMode === o.k;
+        return Object.assign(o, { on, bg: on ? '#EEE8FF' : '#FFFFFF', border: on ? '2px solid #7A5AF8' : '1px solid #E2DFE8', pick: () => this.setState({ convMode: o.k }) });
+      }),
+      explain: st.convMode === 'full'
+        ? 'INV-0' + st.invSeq + ' goes to ' + q.who + ' for ' + fmt(t.total, q.cur) + ', due ' + dayOn(30) + '. It’s added to Coming in as ' + usd(t.total * FX[q.cur]) + ' on the way.'
+        : 'INV-0' + st.invSeq + ' asks for ' + fmt(depAmt, q.cur) + ' now. Only that is added to Coming in. We’ll remind you to bill the other ' + fmt(t.total - depAmt, q.cur) + ' when the work is done.',
+      btn: 'Create INV-0' + st.invSeq + ' · ' + (st.convMode === 'full' ? fmt(t.total, q.cur) : fmt(depAmt, q.cur))
+    };
+    const convert = () => {
+      const amt = (st.convMode === 'full' ? t.total : depAmt) * FX[q.cur];
+      const inv = 'INV-0' + st.invSeq;
+      this.setState({ invSeq: st.invSeq + 1, inDelta: st.inDelta + amt });
+      setQ(q.num, { invoice: inv, invoiceAmt: amt });
+      this.notify(inv + ' sent to ' + q.who + ' · ' + usd(amt) + ' added to Coming in');
+    };
+
+    // customer view
+    const cvReasons = ['Price', 'Timing', 'Going with someone else', 'Other'];
+    const canAnswer = q.state === 'waiting' || q.state === 'changes';
+    const cv = {
+      hint: q.state === 'draft' ? 'Preview only. Your customer can’t see a draft until you send it.' : canAnswer ? 'This is the page ' + q.who + ' sees. Try the buttons: they act as the customer would.' : 'This is the page ' + q.who + ' sees now.',
+      hasNote: !!q.note, note: q.note,
+      valid: q.expires ? 'Price holds until ' + q.expires : 'Total',
+      depOn: !!q.deposit, depText: q.deposit ? 'A ' + q.deposit + '% deposit (' + fmt(depAmt, q.cur) + ') is due when you accept.' : '',
+      reverse: region(q.who) === 'EU',
+      canAnswer, modeNone: !st.cvMode, modeChanges: st.cvMode === 'changes', modeDecline: st.cvMode === 'decline', text: st.cvText,
+      reasons: cvReasons.map((r) => ({ label: r, on: st.cvReason === r, bg: st.cvReason === r ? '#EEE8FF' : '#FFFFFF', border: st.cvReason === r ? '#7A5AF8' : '#CBC7D3', pick: () => this.setState({ cvReason: r }) })),
+      closed: !canAnswer,
+      closedText: q.state === 'draft' ? 'Accept · Ask for changes · Decline appear once sent' : q.state === 'accepted' ? 'You accepted this quote on ' + (q.accepted || 'Oct 4') + '. Thank you.' : 'You declined this quote.',
+      closedBg: q.state === 'accepted' ? '#E2F6D5' : '#EFEDF3', closedFg: q.state === 'accepted' ? '#2F5711' : '#47444F'
+    };
+
+    // ---------- composer ----------
+    const c = st.c;
+    const setC = (patch) => this.setState({ c: Object.assign({}, this.state.c, patch) });
+    const ct = totals({ who: c.who, lines: c.lines });
+    const cDep = Math.round(ct.total * c.deposit) / 100;
+    const lineIx = (id, patch) => setC({ lines: this.state.c.lines.map((l) => l.id === id ? Object.assign({}, l, patch) : l), errors: [] });
+    const nextNum = c.editId || ('Q-00' + st.qseq);
+    const composer = {
+      open: c.open, heading: c.editId ? 'Finish ' + c.editId : 'New quote', who: c.who, title: c.title, note: c.note, cur: c.cur, sym: SYM[c.cur],
+      whoBorder: c.errors.length && !c.who ? '#A8200D' : '#CBC7D3',
+      foreign: c.cur !== 'USD', curNote: c.cur === 'EUR' ? 'Quoted in euros (€). Your bank sees dollars: 1 EUR = 1.09 USD today. EU business customer, so VAT is reverse charged.' : 'Quoted in pounds (£). Your bank sees dollars: 1 GBP = 1.27 USD today.',
+      noLines: c.lines.length === 0,
+      lines: c.lines.map((l) => ({
+        name: l.name, qty: l.qty, rate: l.rate, unit: unitOf(l), qtyLabel: 'Quantity in ' + l.unit, removeLabel: 'Remove ' + (l.name || 'line'),
+        amount: fmt(num(l.qty) * num(l.rate), c.cur),
+        setName: (e) => lineIx(l.id, { name: e.target.value }), setQty: (e) => lineIx(l.id, { qty: e.target.value }), setRate: (e) => lineIx(l.id, { rate: e.target.value }),
+        remove: () => setC({ lines: this.state.c.lines.filter((x) => x.id !== l.id) })
+      })),
+      expOn: c.expOn, expBg: c.expOn ? '#7A5AF8' : '#CBC7D3', expLeft: c.expOn ? '25px' : '3px', expDays: c.expDays, expDate: 'until ' + dayOn(+c.expDays),
+      depOpts: [0, 25, 30, 50].map((v) => ({ label: v ? v + '%' : 'None', on: c.deposit === v, bg: c.deposit === v ? '#18161F' : 'transparent', fg: c.deposit === v ? '#FFFFFF' : '#18161F', pick: () => setC({ deposit: v }) })),
+      moreOpen: c.moreOpen, moreIcon: c.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
+      errors: c.errors, hasErrors: c.errors.length > 0,
+      numLabel: nextNum + (c.who ? ' · ' + c.who : ''),
+      sums: [{ label: 'Lines', value: fmt(ct.sub, c.cur) }].concat(ct.tax ? [{ label: 'NY sales tax 8.875% on products', value: fmt(ct.tax, c.cur) }] : []),
+      total: fmt(ct.total, c.cur), usd: '≈ ' + usd(ct.total * FX[c.cur]) + ' in your bank',
+      depOn: c.deposit > 0, depText: c.deposit + '% deposit due when they accept: ' + fmt(cDep, c.cur),
+      reverse: region(c.who) === 'EU',
+      feed: ct.total > 0 ? 'Sending doesn’t change Coming in. If they accept and you invoice it, ' + (c.cur === 'USD' ? fmt(ct.total, 'USD') : '≈ ' + usd(ct.total * FX[c.cur])) + ' is added.' : 'Quotes don’t count in Coming in until they become invoices.',
+      sendLabel: ct.total > 0 ? 'Send quote · ' + fmt(ct.total, c.cur) : 'Send quote'
+    };
+    const customers = CUST.map((x) => ({ name: x.name, label: x.name + (x.cur !== 'USD' ? ' · ' + x.cur : '') }));
+    const catalog = CAT.map((it) => ({
+      label: it.short, price: c.cur === 'USD' ? fmt(it.price) : SYM[c.cur] + Math.round(it.price / FX[c.cur] / 5) * 5,
+      add: () => {
+        const rate = c.cur === 'USD' ? it.price : Math.round(it.price / FX[c.cur] / 5) * 5;
+        setC({ lines: this.state.c.lines.concat([{ id: this.state.seq + 1, name: it.name, kind: it.kind, unit: it.unit, qty: it.unit === 'hours' ? '10' : '1', rate: String(rate) }]), errors: [] });
+        this.setState({ seq: this.state.seq + 1 });
+      }
+    }));
+    const blank = { open: true, editId: null, who: '', cur: 'USD', title: '', lines: [], expOn: true, expDays: '30', deposit: 0, note: '', moreOpen: false, errors: [] };
+    const loadInto = (src, editId) => {
+      this.setState({ c: { open: true, editId, who: src.who, cur: src.cur, title: src.title, lines: src.lines.map((l) => Object.assign({}, l)), expOn: true, expDays: '30', deposit: src.deposit || 0, note: src.note || '', moreOpen: !!src.note, errors: [] } });
+      this.notify(editId ? editId + ' opened in the composer above' : 'Copied into a new quote above');
+    };
+    const validate = (forSend) => {
+      const errs = [];
+      if (!c.who) errs.push('Choose who the quote is for.');
+      if (forSend && !c.title.trim()) errs.push('Say what it’s for, in a few words.');
+      if (forSend && c.lines.length === 0) errs.push('Add at least one line.');
+      if (c.lines.some((l) => !l.name.trim())) errs.push('Every line needs a description.');
+      if (forSend && c.lines.length && !(ct.total > 0)) errs.push('The total needs to be above zero.');
+      return errs;
+    };
+    const commit = (state) => {
+      const qn = c.editId || ('Q-00' + st.qseq);
+      const base = { num: qn, who: c.who, title: c.title.trim() || 'Untitled quote', cur: c.cur, lines: c.lines, deposit: c.deposit, note: c.note.trim(),
+        state, sent: state === 'waiting' ? 'Oct 4' : null, viewed: null, expires: state === 'waiting' && c.expOn ? dayOn(+c.expDays) : null };
+      const exists = st.quotes.some((x) => x.num === qn);
+      const quotes = exists ? st.quotes.map((x) => x.num === qn ? Object.assign({}, x, base) : x) : [base].concat(st.quotes);
+      this.setState({ quotes, sel: qn, tab: 'details', cvMode: null, qseq: exists ? st.qseq : st.qseq + 1, c: Object.assign({}, blank, { open: false }) });
+      return qn;
+    };
+    const sendQuote = () => {
+      const errs = validate(true);
+      if (errs.length) { setC({ errors: errs }); return; }
+      const qn = commit('waiting');
+      this.notify(qn + ' sent to ' + c.who + '. We’ll tell you when they open it.');
+    };
+    const saveDraft = () => {
+      const errs = validate(false);
+      if (errs.length) { setC({ errors: errs }); return; }
+      const qn = commit('draft');
+      this.notify(qn + ' saved as a draft');
+    };
+
+    const tabs = [{ k: 'details', label: 'Details' }, { k: 'customer', label: 'Customer view' }].map((x) => ({
+      label: x.label, on: st.tab === x.k, bg: st.tab === x.k ? '#18161F' : 'transparent', fg: st.tab === x.k ? '#FFFFFF' : '#18161F',
+      pick: () => this.setState({ tab: x.k, cvMode: null })
+    }));
+
+    return Object.assign(this.common(st.inDelta), {
+      tiles, groups, d, conv, convert, cv, tabs, tabDetails: st.tab === 'details', tabCustomer: st.tab === 'customer',
+      c: composer, customers, catalog,
+      newQuote: () => { if (c.open && !c.editId) { this.notify('Your new quote is open below'); return; } this.setState({ c: blank }); },
+      closeComposer: () => setC({ open: false, errors: [] }),
+      setWho: (e) => {
+        const cu = CUST.find((x) => x.name === e.target.value);
+        const cur = cu ? cu.cur : 'USD';
+        const f = FX[c.cur] / FX[cur];
+        setC({ who: e.target.value, cur, errors: [], lines: cur === c.cur ? c.lines : c.lines.map((l) => Object.assign({}, l, { rate: String(Math.round(num(l.rate) * f / 5) * 5) })) });
+      },
+      setTitle: (e) => setC({ title: e.target.value }),
+      setNote: (e) => setC({ note: e.target.value }),
+      setExpDays: (e) => setC({ expDays: e.target.value }),
+      toggleExp: () => setC({ expOn: !c.expOn }),
+      toggleMore: () => setC({ moreOpen: !c.moreOpen }),
+      addBlank: () => { setC({ lines: c.lines.concat([{ id: st.seq + 1, name: '', kind: 'service', unit: 'jobs', qty: '1', rate: '' }]) }); this.setState({ seq: st.seq + 1 }); },
+      sendQuote, saveDraft,
+      remind: () => q.state === 'changes' ? loadInto(q, q.num) : this.notify('Reminder sent to ' + q.who + ' about ' + q.num),
+      editSel: () => loadInto(q, q.num),
+      copySel: () => loadInto(Object.assign({}, q, { title: q.title }), null),
+      deleteDraft: () => { this.setState({ quotes: st.quotes.filter((x) => x.num !== q.num), sel: 'Q-0031' }); this.notify(q.num + ' deleted'); },
+      markAccepted: () => { setQ(q.num, { state: 'accepted', accepted: 'Oct 4' }); this.setState({ convMode: 'full' }); this.notify(q.num + ' marked as accepted. Turn it into an invoice below.'); },
+      cvAccept: () => { setQ(q.num, { state: 'accepted', accepted: 'Oct 4' }); this.setState({ tab: 'details', convMode: 'full', cvMode: null }); this.notify(q.who + ' accepted ' + q.num + '. Ready to invoice.'); },
+      cvChanges: () => this.setState({ cvMode: 'changes', cvText: 'Could we add 5 more hours for the parking garage signs?' }),
+      cvDecline: () => this.setState({ cvMode: 'decline', cvReason: 'Price' }),
+      cvCancel: () => this.setState({ cvMode: null }),
+      cvSetText: (e) => this.setState({ cvText: e.target.value }),
+      cvSendChanges: () => { setQ(q.num, { state: 'changes', changeNote: st.cvText || 'Could we talk about the scope?' }); this.setState({ cvMode: null, tab: 'details' }); this.notify(q.who + ' asked for changes on ' + q.num); },
+      cvSendDecline: () => { setQ(q.num, { state: 'declined', declined: 'Oct 4', reason: st.cvReason === 'Going with someone else' ? 'Going with someone else' : st.cvReason === 'Other' ? 'No reason given' : st.cvReason + ' doesn’t work for us right now' }); this.setState({ cvMode: null, tab: 'details' }); this.notify(q.who + ' declined ' + q.num); }
+    });
+  }
+
+}
+</script>
 </body>
 </html>

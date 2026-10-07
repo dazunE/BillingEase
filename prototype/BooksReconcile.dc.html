@@ -2,12 +2,463 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · BooksReconcile</title>
+<title>BillingEase · Check against your bank</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+@media (max-width: 560px){.be-hide-sm{display:none}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <!-- Top bar: same as ThreeHome -->
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-sizing: border-box; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
+                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-sizing: border-box; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Maya Chen</span><span style="font-size: 12px; color: #5F5B68;">Owner · Northwind Studio</span></span>
+              <sc-for list="{{acctLinks}}" as="al" hint-placeholder-count="4">
+                <a href="{{al.href}}" role="menuitem" style="display: flex; flex-direction: column; justify-content: center; min-height: 44px; padding: 4px 12px; border-radius: 12px; text-decoration: none; color: #18161F;"><span style="font-weight: 600; font-size: 14px;">{{al.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{al.hint}}</span></a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+
+    <!-- Back + compact equation strip (Yours to keep highlighted) -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-weight: 600; font-size: 14px; text-decoration: none; color: #47444F;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        Home
+      </a>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$24,850</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$13,640</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 2px solid #B9A3FF; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- Page intro -->
+    <section aria-labelledby="pg-h" style="display: flex; flex-direction: column; gap: 10px;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF; box-shadow: 0 0 0 2px #18161F;"></span>Yours to keep · Your books</span>
+      <h1 id="pg-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Check against your bank statement</h1>
+      <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;">
+        <span style="padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Bank reconciliation</span>
+        <span style="font-size: 12px; color: #5F5B68;">Most people do this once a month, when the statement arrives.</span>
+      </span>
+      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 700px;">Tick off everything that&#39;s on your statement. When the difference reaches $0.00, your books and your bank agree, and that month is done.</p>
+    </section>
+
+    <!-- Which statement -->
+    <section aria-labelledby="pick-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+      <h2 id="pick-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Which statement?</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px;">
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Account
+          <select class="be-field" value="{{acct}}" onChange="{{setAcct}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+            <option value="chase">Chase Business Checking ••4417</option>
+            <option value="amex">Amex Business ••1009</option>
+          </select>
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Statement
+          <select class="be-field" value="{{stmt}}" onChange="{{setStmt}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+            <option value="sep">September 2026 (Sep 1 – 30)</option>
+            <option value="aug">August 2026 (checked)</option>
+          </select>
+        </label>
+        <sc-if value="{{active}}" hint-placeholder-val="{{true}}">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;"><span>Ending balance <span style="font-weight: 400; color: #5F5B68;">· last line of the statement</span></span>
+            <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{endInput}}" onChange="{{setEnd}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 600 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+          </label>
+        </sc-if>
+      </div>
+      <sc-if value="{{active}}" hint-placeholder-val="{{true}}">
+        <span style="font-size: 13px; color: #5F5B68;">Starting balance <strong style="color: #18161F;">$38,267.40</strong>, carried over from August, which you checked on Sep 6.</span>
+      </sc-if>
+      <sc-if value="{{doneNote}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711; font-size: 14px; line-height: 1.45;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+          <span style="flex: 1 1 240px;">{{doneNote}}</span>
+        </div>
+      </sc-if>
+    </section>
+
+    <!-- Working area -->
+    <sc-if value="{{working}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-wrap: wrap-reverse; gap: 24px; align-items: flex-end;">
+        <!-- Transactions -->
+        <section aria-labelledby="tx-h" style="flex: 3 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <h2 id="tx-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">September in BillingEase</h2>
+              <span style="font-size: 13px; color: #5F5B68;">{{tickedCount}} · we ticked the ones we matched to your bank feed</span>
+            </div>
+            <div role="group" aria-label="Show" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+              <sc-for list="{{filters}}" as="fi" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{fi.on}}" onClick="{{fi.pick}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{fi.bg}}; color: {{fi.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{fi.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+              <li style="display: flex; align-items: center; gap: 12px; padding: 10px 8px; border-top: 1px solid #EFEDF3; border-radius: 12px; background: {{r.bg}};">
+                <button type="button" role="checkbox" aria-checked="{{r.on}}" aria-label="{{r.aria}}" onClick="{{r.toggle}}" style="width: 44px; height: 44px; margin: -6px -4px -6px -6px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; flex: none; cursor: pointer;">
+                  <span style="width: 24px; height: 24px; border-radius: 8px; box-sizing: border-box; border: 2px solid {{r.boxBorder}}; background: {{r.boxBg}}; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{r.tickFg}}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+                </button>
+                <span style="flex: none; width: 48px; font-size: 13px; color: #5F5B68; font-variant-numeric: tabular-nums;">{{r.date}}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 600; font-size: 15px;">{{r.name}}</span><sc-if value="{{r.tag}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border-radius: 9999px; background: {{r.tagBg}}; color: {{r.tagFg}}; font-size: 11px; font-weight: 600;"><span style="width: 5px; height: 5px; border-radius: 9999px; background: {{r.tagFg}};"></span>{{r.tag}}</span></sc-if></span>
+                  <span style="font-size: 12px; color: #5F5B68; display: inline-flex; align-items: center; gap: 6px;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.dot}}; flex: none;"></span>{{r.sub}}</span>
+                </span>
+                <span style="flex: none; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">{{r.amount}}</span>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{emptyFilter}}" hint-placeholder-val="{{false}}">
+            <span style="padding: 12px 8px; font-size: 14px; color: #5F5B68;">Everything is ticked. Nothing left that isn&#39;t on your statement.</span>
+          </sc-if>
+        </section>
+
+        <!-- Difference + help -->
+        <section aria-labelledby="diff-h" style="flex: 2 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+          <div style="background: {{d.cardBg}}; color: {{d.cardFg}}; border: 1px solid {{d.cardBorder}}; border-radius: 24px; padding: clamp(18px, 2.5vw, 26px); display: flex; flex-direction: column; gap: 14px;">
+            <dl style="margin: 0; display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0;">
+                <dt style="font-size: 14px;">Your statement says</dt>
+                <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{d.stmt}}</dd>
+              </div>
+              <div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid {{d.rule}};">
+                <dt style="font-size: 14px;">Ticked in BillingEase</dt>
+                <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{d.cleared}}</dd>
+              </div>
+            </dl>
+            <div style="display: flex; flex-direction: column; gap: 4px;" aria-live="polite">
+              <h2 id="diff-h" style="margin: 0; font-size: 14px; font-weight: 700; color: {{d.labelFg}};">Difference</h2>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5vw, 52px); line-height: 1; letter-spacing: -0.03em; color: {{d.numFg}}; font-variant-numeric: tabular-nums;">{{d.diff}}</span>
+              <span style="font-size: 14px; line-height: 1.45; color: {{d.labelFg}};">{{d.text}}</span>
+            </div>
+            <button type="button" disabled="{{d.blocked}}" onClick="{{finish}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: {{d.btnBg}}; color: {{d.btnFg}}; font: 600 15px DM Sans, sans-serif; cursor: {{d.cursor}};">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+              Finish September
+            </button>
+          </div>
+
+          <sc-if value="{{hasHints}}" hint-placeholder-val="{{true}}">
+            <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 24px); display: flex; flex-direction: column; gap: 12px;">
+              <h3 style="margin: 0; font-size: 16px; font-weight: 700;">What we think it is</h3>
+              <sc-if value="{{h.check}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 16px; background: #F7F6F9;">
+                  <span style="font-weight: 700; font-size: 15px;">Check #1042 · $73.00</span>
+                  <span style="font-size: 13px; color: #47444F; line-height: 1.45;">You wrote it to Local Print Shop on Sep 22. Your statement shows it cleared on Sep 29. Checks arrive without a name, so we couldn&#39;t tick it for you.</span>
+                  <button type="button" onClick="{{h.tickCheck}}" style="align-self: flex-start; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Tick it</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{h.fee}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 16px; background: #F7F6F9;">
+                  <span style="font-weight: 700; font-size: 15px;">A $15.00 bank fee</span>
+                  <span style="font-size: 13px; color: #47444F; line-height: 1.45;">Chase takes a monthly service fee on the last day of the month. It&#39;s on your statement but not in BillingEase yet.</span>
+                  <sc-if value="{{h.feeIdle}}" hint-placeholder-val="{{true}}">
+                    <button type="button" aria-expanded="false" onClick="{{h.openFee}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                      Add the missing bank fee
+                    </button>
+                  </sc-if>
+                  <sc-if value="{{h.feeOpen}}" hint-placeholder-val="{{false}}">
+                    <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 6px;">
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 10px;">
+                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
+                          <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{h.feeAmt}}" onChange="{{h.setFeeAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Date
+                          <select class="be-field" value="{{h.feeDate}}" onChange="{{h.setFeeDate}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                            <option value="Sep 30">Sep 30</option>
+                            <option value="Sep 29">Sep 29</option>
+                            <option value="Sep 1">Sep 1</option>
+                          </select>
+                        </label>
+                      </div>
+                      <span style="font-size: 13px; color: #47444F; line-height: 1.45;">Goes in <strong style="color: #18161F;">Bank fees</strong>, and adds {{h.feeMoney}} to Going out for September.</span>
+                      <sc-if value="{{h.feeErr}}" hint-placeholder-val="{{false}}">
+                        <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{h.feeErr}}</span>
+                      </sc-if>
+                      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" onClick="{{h.addFee}}" style="min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Add and tick it</button>
+                        <button type="button" onClick="{{h.closeFee}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{h.other}}" hint-placeholder-val="{{false}}">
+                <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{h.otherText}}</span>
+              </sc-if>
+            </div>
+          </sc-if>
+          <span style="font-size: 13px; color: #5F5B68; line-height: 1.45; padding: 0 4px;">Checking doesn&#39;t change your three numbers, unless it turns up something missing, like a fee. Then that goes in Going out.</span>
+        </section>
+      </div>
+    </sc-if>
+
+    <!-- Finished -->
+    <sc-if value="{{finished}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="fin-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px;">
+        <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+          <h2 id="fin-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: #B9A3FF;">September matches your bank</h2>
+          <span style="font-size: 15px; color: #EEE8FF; line-height: 1.5;">{{finText}} October starts from $41,286.40. We&#39;ll nudge you when the next statement is ready, around Nov 2.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <button type="button" onClick="{{download}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Download the report</button>
+          <button type="button" onClick="{{reopen}}" style="min-height: 44px; padding: 0 16px; border: 1px solid rgba(238,232,255,0.4); border-radius: 9999px; background: transparent; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Reopen September</button>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Past checks -->
+    <section aria-labelledby="past-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+        <h2 id="past-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Past checks</h2>
+        <span style="font-size: 13px; color: #5F5B68;">Each one is locked once it matches. Reopen it if something changes.</span>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+        <sc-for list="{{past}}" as="pc" hint-placeholder-count="4">
+          <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 12px 0; border-top: 1px solid #EFEDF3;">
+            <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{pc.month}}</span><span style="font-size: 12px; color: #5F5B68;">{{pc.acct}}</span></span>
+            <span style="flex: 1 1 160px; font-size: 13px; color: #47444F;">Checked {{pc.when}} by {{pc.who}}</span>
+            <span style="flex: none; min-width: 110px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{pc.bal}}</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Matches</span>
+            <button type="button" aria-label="{{pc.dl}}" onClick="{{pc.download}}" style="width: 40px; height: 40px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+            </button>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <!-- More in your books -->
+    <nav aria-label="More in your books" style="display: flex; flex-direction: column; gap: 10px;">
+      <span style="font-size: 13px; font-weight: 600; color: #47444F;">More in your books</span>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px;">
+        <sc-for list="{{more}}" as="mo" hint-placeholder-count="4">
+          <a href="{{mo.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; color: #18161F;">
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{mo.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{mo.formal}}</span></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        </sc-for>
+      </div>
+    </nav>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    // amounts in cents; + is money in, − is money out
+    const tx = [
+      ['t1', 'Sep 1', 'WeWork', 'Rent', -120000],
+      ['t2', 'Sep 1', 'Bluebird Yoga', 'Paid INV-0150', 54000],
+      ['t3', 'Sep 5', 'Google Workspace', 'Software', -7200],
+      ['t4', 'Sep 8', 'Adobe Creative Cloud', 'Software', -9000],
+      ['t5', 'Sep 10', 'Atlas Freight Co.', 'Paid INV-0148', 630000],
+      ['t6', 'Sep 12', 'Figma', 'Software', -4500],
+      ['t7', 'Sep 15', 'Comcast Business', 'Internet and phone', -12900],
+      ['t8', 'Sep 15', 'Payroll', 'Jordan, Priya and Sam', -723100],
+      ['t9', 'Sep 18', 'Ridge Outdoor Supply', 'Paid INV-0154', 248000],
+      ['t10', 'Sep 22', 'Check #1042', 'Local Print Shop · Printing', -7300],
+      ['t11', 'Sep 25', 'Lumen Dental Group', 'Paid INV-0149', 320000],
+      ['t12', 'Sep 28', 'Studio insurance', 'Insurance', -64600]
+    ].map(([id, date, name, sub, c]) => ({ id, date, name, sub, c, on: id !== 't10', added: false }));
+    this.state = {
+      acct: 'chase', stmt: 'sep', endInput: '41,286.40', tx, filter: 'all',
+      feeOpen: false, feeAmt: '15.00', feeDate: 'Sep 30', feeErr: '', feeAdded: false,
+      finished: false,
+      past: [
+        { month: 'August 2026', acct: 'Chase Business Checking ••4417', when: 'Sep 6', who: 'Maya Chen', bal: '$38,267.40' },
+        { month: 'September 2026', acct: 'Amex Business ••1009', when: 'Oct 2', who: 'Jordan Lee', bal: '$2,318.55 owed' },
+        { month: 'July 2026', acct: 'Chase Business Checking ••4417', when: 'Aug 4', who: 'Maya Chen', bal: '$35,904.12' },
+        { month: 'June 2026', acct: 'Chase Business Checking ••4417', when: 'Jul 6', who: 'Maya Chen', bal: '$33,150.66' }
+      ],
+      toast: null
+    };
+  }
+  renderVals() {
+    const st = this.state;
+    const OPEN = 3826740;
+    const fmt = (c) => '$' + (Math.abs(c) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const signed = (c) => (c < 0 ? '−' : '+') + fmt(c);
+    const endC = Math.round(parseFloat(String(st.endInput).replace(/[$,\s]/g, '')) * 100);
+    const endOk = isFinite(endC);
+    const cleared = OPEN + st.tx.filter((t) => t.on).reduce((a, t) => a + t.c, 0);
+    const diffC = endOk ? cleared - endC : null;
+    const zero = diffC === 0;
+
+    const active = st.acct === 'chase' && st.stmt === 'sep' && !st.finished;
+    const doneNote = st.acct === 'amex'
+      ? 'Amex Business ••1009 is checked through September (Jordan Lee, Oct 2). The October statement closes Oct 27.'
+      : (st.stmt === 'aug' ? 'August 2026 already matches. Checked by Maya Chen on Sep 6, ending at $38,267.40.' : (st.finished ? 'September 2026 matches. Checked by Maya Chen today.' : false));
+    const working = active;
+
+    const fl = st.filter;
+    const filters = [['all', 'All'], ['in', 'Money in'], ['out', 'Money out'], ['open', 'Not ticked']].map(([k, label]) => ({
+      label, on: fl === k, bg: fl === k ? '#18161F' : 'transparent', fg: fl === k ? '#FFFFFF' : '#18161F',
+      pick: () => { if (fl !== k) this.setState({ filter: k }); }
+    }));
+    const shown = st.tx.filter((t) => fl === 'all' || (fl === 'in' && t.c > 0) || (fl === 'out' && t.c < 0) || (fl === 'open' && !t.on));
+    const toggle = (id) => () => this.setState({ tx: this.state.tx.map((t) => (t.id === id ? Object.assign({}, t, { on: !t.on }) : t)) });
+    const rows = shown.map((t) => ({
+      date: t.date, name: t.name, sub: t.sub, amount: signed(t.c), on: t.on,
+      dot: t.c > 0 ? '#7A5AF8' : '#E0752D',
+      aria: (t.on ? 'Untick ' : 'Tick ') + t.name + ' ' + signed(t.c),
+      bg: t.on ? 'transparent' : '#FFF8DB',
+      boxBorder: t.on ? '#18161F' : '#8A8594', boxBg: t.on ? '#18161F' : '#FFFFFF', tickFg: t.on ? '#B9A3FF' : 'transparent',
+      tag: t.added ? 'Just added' : (t.on ? false : 'Not ticked'),
+      tagBg: t.added ? '#E1EEF8' : '#FFF0B8', tagFg: t.added ? '#1F5E91' : '#6B5000',
+      toggle: toggle(t.id)
+    }));
+    const nTicked = st.tx.filter((t) => t.on).length;
+
+    const d = {
+      stmt: endOk ? fmt(endC) : '—', cleared: fmt(cleared),
+      diff: endOk ? fmt(diffC) : '—',
+      text: !endOk ? 'Type the ending balance from your statement.' : (zero ? 'They match. You can finish September.' : 'BillingEase shows ' + fmt(diffC) + (diffC > 0 ? ' more' : ' less') + ' than your statement.'),
+      blocked: !zero,
+      cardBg: zero ? '#18161F' : '#FFFFFF', cardFg: zero ? '#FFFFFF' : '#18161F', cardBorder: zero ? '#18161F' : '#E2DFE8',
+      rule: zero ? 'rgba(238,232,255,0.2)' : '#EFEDF3', labelFg: zero ? '#EEE8FF' : '#47444F', numFg: zero ? '#B9A3FF' : '#18161F',
+      btnBg: zero ? '#B9A3FF' : '#EFEDF3', btnFg: zero ? '#18161F' : '#5F5B68', cursor: zero ? 'pointer' : 'not-allowed'
+    };
+    const checkOpen = st.tx.some((t) => t.id === 't10' && !t.on);
+    const feeN = parseFloat(String(st.feeAmt).replace(/[$,\s]/g, ''));
+    const h = {
+      check: checkOpen, fee: !st.feeAdded, feeIdle: !st.feeOpen, feeOpen: st.feeOpen,
+      tickCheck: () => { this.setState({ tx: this.state.tx.map((t) => (t.id === 't10' ? Object.assign({}, t, { on: true }) : t)) }); this.notify('Ticked check #1042 · $73.00'); },
+      openFee: () => this.setState({ feeOpen: true, feeErr: '' }),
+      closeFee: () => this.setState({ feeOpen: false, feeErr: '' }),
+      feeAmt: st.feeAmt, feeDate: st.feeDate, feeErr: st.feeErr,
+      feeMoney: feeN > 0 ? fmt(Math.round(feeN * 100)) : 'it',
+      setFeeAmt: (e) => this.setState({ feeAmt: e.target.value, feeErr: '' }),
+      setFeeDate: (e) => this.setState({ feeDate: e.target.value }),
+      addFee: () => {
+        if (!(feeN > 0)) { this.setState({ feeErr: 'Add the fee amount, like 15.00' }); return; }
+        const c = -Math.round(feeN * 100);
+        const row = { id: 'fee', date: st.feeDate, name: 'Chase service fee', sub: 'Bank fees', c, on: true, added: true };
+        const tx = st.tx.concat([row]).sort((a, b) => parseInt(a.date.slice(4), 10) - parseInt(b.date.slice(4), 10));
+        this.setState({ tx, feeAdded: true, feeOpen: false });
+        this.notify('Added ' + fmt(c) + ' bank fee to Going out for September');
+      },
+      other: endOk && !zero && !checkOpen && st.feeAdded,
+      otherText: 'Still off? Compare each line with your statement and untick anything that isn’t on it. A typo in the ending balance is the most common cause.'
+    };
+    const hasHints = endOk && !zero;
+
+    const past = st.past.map((p) => Object.assign({}, p, {
+      dl: 'Download report for ' + p.month + ', ' + p.acct,
+      download: () => this.notify('Downloaded ' + p.month.replace(' ', '-') + '-check.pdf')
+    }));
+    const added = st.tx.filter((t) => t.added).length;
+
+    return Object.assign(this.hdr(), {
+      acct: st.acct, stmt: st.stmt, endInput: st.endInput, active, doneNote, working, finished: st.finished && st.acct === 'chase' && st.stmt === 'sep',
+      setAcct: (e) => this.setState({ acct: e.target.value }),
+      setStmt: (e) => this.setState({ stmt: e.target.value }),
+      setEnd: (e) => this.setState({ endInput: e.target.value }),
+      filters, rows, emptyFilter: rows.length === 0, tickedCount: nTicked + ' of ' + st.tx.length + ' ticked',
+      d, h, hasHints,
+      finish: () => {
+        if (!zero) return;
+        this.setState({ finished: true, past: [{ month: 'September 2026', acct: 'Chase Business Checking ••4417', when: 'Oct 4', who: 'Maya Chen', bal: '$41,286.40' }].concat(st.past) });
+        this.notify('September checked. Your books match Chase.');
+      },
+      finText: nTicked + ' transactions ticked' + (added ? ', ' + added + ' added' : '') + '.',
+      download: () => this.notify('Downloaded September-2026-check.pdf'),
+      reopen: () => { this.setState({ finished: false, past: st.past.filter((p, i) => !(i === 0 && p.when === 'Oct 4')) }); this.notify('September reopened'); },
+      past, more: this.moreLinks('rec')
+    });
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  moreLinks(cur) {
+    return [
+      { key: 'keep', label: 'Yours to keep', formal: 'Profit after tax, month by month', href: 'ThreeKeep.dc.html' },
+      { key: 'tax', label: 'Tax and year-end', formal: 'Sales tax, accounting method, year-end close', href: 'BooksTax.dc.html' },
+      { key: 'rec', label: 'Check against your bank statement', formal: 'Bank reconciliation', href: 'BooksReconcile.dc.html' },
+      { key: 'cat', label: 'Categories', formal: 'Chart of accounts and journal entries', href: 'BooksCategories.dc.html' },
+      { key: 'fx', label: 'Currencies', formal: 'Exchange rates, gains and losses', href: 'BooksCurrencies.dc.html' }
+    ].filter((l) => l.key !== cur);
+  }
+  hdr() {
+    const st = this.state;
+    return {
+      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
+      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
+      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
+      verbs: [
+        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+        { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+        { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+      ],
+      acctLinks: [
+        { label: 'Your business', hint: 'Profile, invoice look, country and tax', href: 'BizProfile.dc.html' },
+        { label: 'Team and permissions', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
+        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
+        { label: 'Switch to Maya Chen Photography', hint: 'Your other business', href: 'BizTeam.dc.html' }
+      ],
+      toast: this.state.toast
+    };
+  }
+}
+</script>
 </body>
 </html>

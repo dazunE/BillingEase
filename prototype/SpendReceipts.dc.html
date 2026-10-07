@@ -2,12 +2,586 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · SpendReceipts</title>
+<title>BillingEase · Receipts</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+@media (max-width: 640px){.be-hide-sm{display:none!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
+                <a href="{{v.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Your business: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 270px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Northwind Studio</span><span style="font-size: 13px; color: #5F5B68;">Maya Chen · Owner</span></span>
+              <sc-for list="{{acct}}" as="ac" hint-placeholder-count="4">
+                <a href="{{ac.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ac.label}}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Back + compact equation strip -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
+        <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+          Home
+        </a>
+        <span aria-hidden="true">/</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">Going out</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page" style="color: #18161F;">Receipts</span>
+      </nav>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FDE6D6; border: 2px solid #E0752D; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- Title -->
+    <section aria-labelledby="rc-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
+      <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <span style="display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Going out · Receipts</span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Receipts</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">Snap, upload or forward a receipt. We read it, find the card charge it belongs to and keep the two together in your books, so the proof is there at tax time.</p>
+      </div>
+      <ul style="flex: 1 1 260px; min-width: 0; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+        <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1; flex: none;"></span><strong style="color: #18161F;">{{sum.waiting}}</strong> waiting to match</li>
+        <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FFF0B8; border: 1px solid #6B5000; box-sizing: border-box; flex: none;"></span><strong style="color: #18161F;">{{sum.needs}}</strong> {{sum.needsLabel}}</li>
+        <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D; flex: none;"></span><strong style="color: #18161F;">{{sum.matched}}</strong> matched in October</li>
+      </ul>
+    </section>
+
+    <!-- Add a receipt -->
+    <section id="add" aria-labelledby="add-h" style="display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+        <h2 id="add-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Add a receipt</h2>
+        <span style="font-size: 13px; color: #5F5B68;">Paper, PDF or an email. Any of them works.</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px;">
+        <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="width: 44px; height: 44px; border-radius: 14px; background: #FDE6D6; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"></path></svg></span>
+          <span style="display: flex; flex-direction: column; gap: 4px;"><span style="font-weight: 700; font-size: 16px;">Snap it with your phone</span><span style="font-size: 14px; color: #47444F; line-height: 1.45;">Point the camera at the paper. Best right after you pay, before it fades.</span></span>
+          <sc-if value="{{phoneIdle}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: auto;">
+              <button type="button" onClick="{{sendPhone}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Text me the camera link</button>
+              <a href="MobileReceipt.dc.html" style="font-size: 14px; font-weight: 600;">See the phone view</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{phoneSent}}" hint-placeholder-val="{{false}}">
+            <div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+              <span>Link sent to your phone ending 4410. Photos land here in seconds.</span>
+            </div>
+          </sc-if>
+        </article>
+        <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="width: 44px; height: 44px; border-radius: 14px; background: #FDE6D6; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg></span>
+          <span style="display: flex; flex-direction: column; gap: 4px;"><span style="font-weight: 700; font-size: 16px;">Upload a file</span><span style="font-size: 14px; color: #47444F; line-height: 1.45;">PDF, JPG or PNG. Drop several at once and we sort them out.</span></span>
+          <button type="button" onClick="{{upload}}" style="margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            Choose a file
+          </button>
+        </article>
+        <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="width: 44px; height: 44px; border-radius: 14px; background: #FDE6D6; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 7 9-7"></path></svg></span>
+          <span style="display: flex; flex-direction: column; gap: 4px;"><span style="font-weight: 700; font-size: 16px;">Forward the email</span><span style="font-size: 14px; color: #47444F; line-height: 1.45;">Send e-receipts and order confirmations to your own address:</span></span>
+          <div style="margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+            <code style="flex: 1 1 100%; min-width: 0; box-sizing: border-box; overflow-wrap: anywhere; padding: 10px 12px; border-radius: 10px; background: #EFEDF3; font: 500 12.5px ui-monospace, Menlo, monospace; color: #18161F;">receipts+northwind@billingease.app</code>
+            <button type="button" onClick="{{copyAddr}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{copyLabel}}</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Reading -->
+      <sc-if value="{{reading}}" hint-placeholder-val="{{false}}">
+        <div role="status" aria-live="polite" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px;">
+          <span style="width: 96px; height: 124px; flex: none; border-radius: 10px; border: 1px solid #E2DFE8; background: #FFFFFF; box-shadow: 0 1px 2px rgba(24,22,31,0.06); padding: 12px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 7px; position: relative; overflow: hidden;">
+            <span style="height: 7px; width: 60%; border-radius: 4px; background: #CBC7D3;"></span>
+            <span style="height: 5px; width: 85%; border-radius: 4px; background: #EFEDF3;"></span>
+            <span style="height: 5px; width: 70%; border-radius: 4px; background: #EFEDF3;"></span>
+            <span style="height: 5px; width: 80%; border-radius: 4px; background: #EFEDF3;"></span>
+            <span style="height: 7px; width: 45%; border-radius: 4px; background: #CBC7D3; margin-top: auto; align-self: flex-end;"></span>
+            <span style="position: absolute; left: 0; right: 0; top: 46%; height: 2px; background: #E0752D;"></span>
+          </span>
+          <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-weight: 700; font-size: 18px;">Reading uber-receipt-oct-2.pdf…</span>
+            <span style="font-size: 14px; color: #47444F;">Looking for the store, the date, the total and the tax. This takes a few seconds.</span>
+            <span style="display: flex; flex-direction: column; gap: 8px; max-width: 360px;">
+              <span style="height: 10px; width: 80%; border-radius: 9999px; background: #EFEDF3;"></span>
+              <span style="height: 10px; width: 55%; border-radius: 9999px; background: #EFEDF3;"></span>
+              <span style="height: 10px; width: 68%; border-radius: 9999px; background: #EFEDF3;"></span>
+            </span>
+          </div>
+          <button type="button" onClick="{{cancelRead}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+        </div>
+      </sc-if>
+
+      <!-- Review what we read -->
+      <sc-if value="{{reviewing}}" hint-placeholder-val="{{false}}">
+        <div style="background: #FFFFFF; border: 2px solid #E0752D; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+            <h3 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Here’s what we read. Look right?</h3>
+            <span style="font-size: 13px; color: #5F5B68;">uber-receipt-oct-2.pdf · fix anything we got wrong</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px;">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Merchant
+              <input class="be-field" type="text" value="{{d.merchant}}" onChange="{{setMerchant}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F; width: 100%;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Date
+              <input class="be-field" type="text" value="{{d.date}}" onChange="{{setDate}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F; width: 100%;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Total
+              <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{d.total}}" onChange="{{setTotal}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Tax on it
+              <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{d.tax}}" onChange="{{setTax}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
+              <select class="be-field" value="{{d.cat}}" onChange="{{setCat}}" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F; width: 100%;">
+                <option value="Travel">Travel</option>
+                <option value="Meals">Meals</option>
+                <option value="Office supplies">Office supplies</option>
+                <option value="Software">Software</option>
+                <option value="Fuel">Fuel</option>
+                <option value="Printing">Printing</option>
+                <option value="Equipment">Equipment</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; border-radius: 14px; background: {{d.matchBg}}; font-size: 14px; color: #47444F;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>
+            <span style="flex: 1 1 240px;">{{d.matchText}}</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+            <button type="button" onClick="{{confirmRead}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{d.confirmLabel}}</button>
+            <button type="button" onClick="{{cancelRead}}" style="min-height: 46px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Discard</button>
+          </div>
+          <sc-if value="{{d.hasError}}" hint-placeholder-val="{{false}}">
+            <div role="alert" style="padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{d.error}}</div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px;">
+
+        <!-- Waiting to match -->
+        <section aria-labelledby="wait-h" style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+            <h2 id="wait-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Waiting to match <span style="color: #5F5B68; font-weight: 600;">{{waitCount}}</span></h2>
+            <sc-if value="{{canMatchAll}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{matchAll}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{matchAllLabel}}</button>
+            </sc-if>
+          </div>
+          <p style="margin: 0; font-size: 14px; color: #47444F; line-height: 1.5;">Matching doesn’t change Going out: the card charge already counts. It attaches the proof and fills in the category.</p>
+
+          <sc-for list="{{waiting}}" as="w" hint-placeholder-count="3">
+            <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px;">
+                <span aria-hidden="true" style="width: 44px; height: 56px; flex: none; border-radius: 6px; border: 1px solid #E2DFE8; background: #FFFFFF; padding: 7px 6px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px;">
+                  <span style="height: 4px; width: 70%; border-radius: 2px; background: #CBC7D3;"></span>
+                  <span style="height: 3px; width: 90%; border-radius: 2px; background: #EFEDF3;"></span>
+                  <span style="height: 3px; width: 75%; border-radius: 2px; background: #EFEDF3;"></span>
+                  <span style="height: 4px; width: 50%; border-radius: 2px; background: #F4C3A1; margin-top: auto; align-self: flex-end;"></span>
+                </span>
+                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                  <span style="font-weight: 700; font-size: 16px;">{{w.merchant}}</span>
+                  <span style="font-size: 14px; color: #47444F;">{{w.date}} · {{w.cat}} · tax {{w.tax}}</span>
+                  <span style="font-size: 13px; color: #5F5B68;">{{w.source}}</span>
+                </span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;">{{w.total}}</span>
+              </div>
+              <sc-if value="{{w.hasCharge}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 12px 14px; border-radius: 14px; background: #F7F6F9;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M3 6h18v12H3zM3 10h18M7 15h3"></path></svg>
+                  <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-size: 13px; color: #5F5B68;">Probably this card charge · {{w.reason}}</span>
+                    <span style="font-size: 14px;"><span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px;">{{w.chargeRaw}}</span> · {{w.chargeDate}} · {{w.card}}</span>
+                  </span>
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button type="button" onClick="{{w.match}}" aria-label="{{w.matchLabel}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Match</button>
+                    <button type="button" onClick="{{w.notThis}}" aria-expanded="{{w.open}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Not this one</button>
+                  </span>
+                </div>
+              </sc-if>
+              <sc-if value="{{w.noCharge}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 14px; border-radius: 14px; background: #F7F6F9; font-size: 14px; color: #47444F;">
+                  <span style="flex: 1 1 220px;">No card charge for this amount yet. We’ll match it as soon as one shows up.</span>
+                  <button type="button" onClick="{{w.cash}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">I paid cash</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{w.open}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; border-top: 1px solid #EFEDF3; padding-top: 14px; font-size: 14px; color: #47444F;">
+                  <span style="flex: 1 1 260px;">Fine, we’ll keep looking. If you paid cash or with a personal card, say so and we’ll add it as its own expense ({{w.total}} to Going out).</span>
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button type="button" onClick="{{w.cash}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">I paid cash</button>
+                    <button type="button" onClick="{{w.keepLooking}}" style="min-height: 40px; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep looking</button>
+                  </span>
+                </div>
+              </sc-if>
+            </article>
+          </sc-for>
+
+          <!-- The blurry one -->
+          <sc-if value="{{blurAsk}}" hint-placeholder-val="{{true}}">
+            <article aria-labelledby="blur-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px;">
+                <span aria-hidden="true" style="width: 44px; height: 56px; flex: none; border-radius: 6px; border: 1px solid #E2DFE8; background: #FFFFFF; padding: 7px 6px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; filter: blur(1.2px);">
+                  <span style="height: 4px; width: 70%; border-radius: 2px; background: #CBC7D3;"></span>
+                  <span style="height: 3px; width: 90%; border-radius: 2px; background: #CBC7D3;"></span>
+                  <span style="height: 3px; width: 75%; border-radius: 2px; background: #CBC7D3;"></span>
+                  <span style="height: 4px; width: 50%; border-radius: 2px; background: #47444F; margin-top: auto; align-self: flex-end;"></span>
+                </span>
+                <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;"><span id="blur-h" style="font-weight: 700; font-size: 16px;">The Home Depot · Oct 3</span><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #6B5000;"></span>Needs you</span></span>
+                  <span style="font-size: 14px; color: #47444F;">The photo is blurry, so we couldn’t read the total. Type it in and we’ll do the rest.</span>
+                  <span style="font-size: 13px; color: #5F5B68;">IMG_4471.jpg · snapped on your phone Oct 4</span>
+                </span>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
+                <label style="flex: 0 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Total on the receipt
+                  <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{blurTotal}}" onChange="{{setBlur}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                </label>
+                <button type="button" onClick="{{saveBlur}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save total</button>
+                <button type="button" onClick="{{retake}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Retake photo</button>
+              </div>
+              <sc-if value="{{blurErr}}" hint-placeholder-val="{{false}}">
+                <div role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">Type the total from the bottom of the receipt, like 56.12.</div>
+              </sc-if>
+            </article>
+          </sc-if>
+
+          <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+              <span>Every receipt is matched. New ones will show up here.</span>
+            </div>
+          </sc-if>
+        </section>
+
+        <!-- Matched -->
+        <section aria-labelledby="mt-h" style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+            <h2 id="mt-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Matched</h2>
+            <div role="group" aria-label="Month" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+              <sc-for list="{{months}}" as="mo" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{mo.on}}" onClick="{{mo.pick}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{mo.bg}}; color: {{mo.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{mo.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 4px 20px;">
+            <ul style="margin: 0; padding: 0; list-style: none;">
+              <sc-for list="{{matched}}" as="m" hint-placeholder-count="7">
+                <li style="border-top: {{m.border}}; padding: 12px 0; display: flex; flex-direction: column; gap: 12px;">
+                  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;">
+                    <span style="width: 36px; height: 36px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 12px;">{{m.ini}}</span>
+                    <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                      <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 600; font-size: 15px;">{{m.merchant}}</span><sc-if value="{{m.isNew}}" hint-placeholder-val="{{false}}"><span style="padding: 1px 8px; border-radius: 9999px; background: #FDE6D6; font-size: 12px; font-weight: 700;">Just now</span></sc-if></span>
+                      <span style="font-size: 13px; color: #5F5B68;">{{m.date}} · {{m.cat}} · {{m.how}}</span>
+                    </span>
+                    <span style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
+                      <span style="font-size: 12px; font-weight: 600; color: #47444F; padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; white-space: nowrap;">{{m.source}}</span>
+                      <span style="font-variant-numeric: tabular-nums; font-weight: 700; font-size: 15px; min-width: 70px; text-align: right;">{{m.total}}</span>
+                      <button type="button" aria-expanded="{{m.open}}" aria-label="{{m.viewLabel}}" onClick="{{m.toggle}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{m.viewText}}</button>
+                    </span>
+                  </div>
+                  <sc-if value="{{m.open}}" hint-placeholder-val="{{false}}">
+                    <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; padding: 14px; border-radius: 14px; background: #F7F6F9;">
+                      <span aria-hidden="true" style="width: 120px; flex: none; border-radius: 8px; border: 1px solid #E2DFE8; background: #FFFFFF; padding: 12px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; font-size: 10px; color: #47444F;">
+                        <strong style="font-size: 11px; color: #18161F;">{{m.merchant}}</strong>
+                        <span>{{m.date}}, 2026</span>
+                        <span style="height: 3px; background: #EFEDF3; border-radius: 2px;"></span>
+                        <span style="height: 3px; width: 80%; background: #EFEDF3; border-radius: 2px;"></span>
+                        <span style="display: flex; justify-content: space-between;"><span>Tax</span><span>{{m.tax}}</span></span>
+                        <span style="display: flex; justify-content: space-between; font-weight: 700; color: #18161F;"><span>Total</span><span>{{m.total}}</span></span>
+                      </span>
+                      <dl style="flex: 1 1 220px; min-width: 0; margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; align-content: start;">
+                        <dt style="color: #5F5B68;">Card charge</dt><dd style="margin: 0; overflow-wrap: anywhere;">{{m.charge}}</dd>
+                        <dt style="color: #5F5B68;">Category</dt><dd style="margin: 0;">{{m.cat}}</dd>
+                        <dt style="color: #5F5B68;">Tax on it</dt><dd style="margin: 0;">{{m.tax}}</dd>
+                        <dt style="color: #5F5B68;">Kept until</dt><dd style="margin: 0;">At least Dec 31, 2033</dd>
+                      </dl>
+                      <span style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+                        <a href="SpendTransaction.dc.html" style="font-size: 14px; font-weight: 600;">Open the charge</a>
+                        <button type="button" onClick="{{m.download}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Download</button>
+                      </span>
+                    </div>
+                  </sc-if>
+                </li>
+              </sc-for>
+            </ul>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 12px 0 14px; border-top: 1px solid #E2DFE8; font-size: 14px;">
+              <span style="color: #47444F;"><strong style="color: #18161F;">{{mFoot.count}}</strong> · {{mFoot.total}}</span>
+              <button type="button" onClick="{{downloadMonth}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{mFoot.dl}}</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Aside -->
+      <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+        <section aria-labelledby="tax-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="width: 40px; height: 40px; border-radius: 12px; background: rgba(238,232,255,0.12); display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6zM8.5 12l2.5 2.5 4.5-5"></path></svg></span>
+          <h2 id="tax-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: #B9A3FF;">Kept for tax</h2>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #EEE8FF;">Each receipt stays attached to its charge in your books. If you’re ever asked to show what an expense was for, it’s one click away.</p>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #EEE8FF;">We keep them for at least seven years after the tax year, even if you close your account, and you can download them all whenever you like.</p>
+          <button type="button" onClick="{{downloadYear}}" style="align-self: flex-start; min-height: 40px; padding: 0 16px; border: 1px solid rgba(238,232,255,0.4); border-radius: 9999px; background: transparent; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Download all 2026 receipts</button>
+        </section>
+        <section aria-labelledby="how-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 id="how-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">How receipts count</h2>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.5; color: #47444F;">
+            <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #E0752D; flex: none;"></span><span><strong style="color: #18161F;">Card receipts</strong> don’t add anything: the charge is already in Going out.</span></li>
+            <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #E0752D; flex: none;"></span><span><strong style="color: #18161F;">Cash receipts</strong> add their total to Going out, because no bank charge will ever show up.</span></li>
+            <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #B9A3FF; flex: none;"></span><span><strong style="color: #18161F;">Tax on receipts</strong> is noted so your sales tax and deductions are right in <a href="BooksTax.dc.html" style="font-weight: 600;">Taxes</a>.</span></li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  money2(n) { return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  num(s) { const v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; }
+  base(outT) {
+    const st = this.state;
+    const inT = 24850, profit = inT - outT, keep = Math.round(profit - Math.round(profit * 0.25));
+    return {
+      n: { in: this.money(inT), out: this.money(outT), keep: this.money(keep) },
+      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
+      verbs: [
+        { label: 'Bill someone', hint: 'Invoice a customer', href: 'SellInvoice.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+        { label: 'Record an expense', hint: 'Cash or card you already spent', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+        { label: 'Add a receipt', hint: 'Snap, upload or forward it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+        { label: 'Enter a bill', hint: 'Something to pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+      ],
+      acct: [
+        { label: 'Business profile & invoice look', href: 'BizProfile.dc.html' },
+        { label: 'Team & permissions', href: 'BizTeam.dc.html' },
+        { label: 'Switch to Maya Chen Photography', href: 'BizTeam.dc.html' },
+        { label: 'Security & your data', href: 'BizSecurity.dc.html' },
+        { label: 'Everything BillingEase does', href: 'Everything.dc.html' }
+      ],
+      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
+      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
+      closeMenus: () => this.setState({ newOpen: false, acctOpen: false }),
+      toast: st.toast
+    };
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      newOpen: false, acctOpen: false, toast: null,
+      phoneSent: false, copied: false,
+      read: 'idle', d: null, readErr: '',
+      waitIds: ['staples', 'delta', 'bluebottle'], extraWait: [], openId: null,
+      blur: 'ask', blurTotal: '', blurErr: false,
+      added: [], cashOut: 0, month: 'Oct', viewId: null
+    };
+  }
+  componentWillUnmount() { clearTimeout(this._r); }
+  renderVals() {
+    const st = this.state;
+    const money2 = (n) => this.money2(n);
+    const ini = (s) => s.replace(/&/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+
+    const WAIT = {
+      staples: { id: 'staples', merchant: 'Staples', date: 'Oct 3', total: 84, tax: 6.83, cat: 'Office supplies', source: 'Snapped on Maya’s phone', chargeRaw: 'STAPLES 00123 BROOKLYN NY', chargeDate: 'Oct 3', card: 'Amex ••1009', reason: 'same store, same amount, same day' },
+      delta: { id: 'delta', merchant: 'Delta Air Lines', date: 'Oct 2', total: 412, tax: 38.12, cat: 'Travel', source: 'Forwarded from maya@northwind.studio', chargeRaw: 'DELTA AIR 0062371940123', chargeDate: 'Oct 2', card: 'Amex ••1009', reason: 'same amount, same day' },
+      bluebottle: { id: 'bluebottle', merchant: 'Blue Bottle Coffee', date: 'Oct 4', total: 18.5, tax: 1.51, cat: 'Meals', source: 'Snapped on Jordan’s phone', chargeRaw: 'SQ *BLUE BOTTLE', chargeDate: 'Oct 3', card: 'Amex ••1009', reason: 'same amount, a day apart' }
+    };
+    const waitList = st.waitIds.map((id) => WAIT[id]).concat(st.extraWait);
+
+    const toMatched = (w, how, isCash) => ({ id: w.id, merchant: w.merchant, date: w.date, cat: w.cat, tax: w.tax, total: w.total, month: 'Oct', how: how, source: isCash ? 'Cash' : 'Just matched', charge: isCash ? 'Paid in cash · added as an expense' : (w.chargeRaw + ' · ' + w.chargeDate + ' · ' + w.card), isNew: true });
+    const removeWait = (id) => ({ waitIds: st.waitIds.filter((x) => x !== id), extraWait: st.extraWait.filter((x) => x.id !== id) });
+    const doMatch = (w) => {
+      this.setState(Object.assign(removeWait(w.id), { added: [toMatched(w, w.card, false)].concat(st.added), openId: null, month: 'Oct' }));
+      this.notify(w.merchant + ' receipt matched to ' + w.chargeRaw);
+    };
+    const doCash = (w) => {
+      this.setState(Object.assign(removeWait(w.id), { added: [toMatched(w, 'Cash', true)].concat(st.added), cashOut: st.cashOut + w.total, openId: null, month: 'Oct' }));
+      this.notify(money2(w.total) + ' added to Going out as a cash expense');
+    };
+    const waiting = waitList.map((w) => ({
+      merchant: w.merchant, date: w.date, cat: w.cat, tax: money2(w.tax), total: money2(w.total), source: w.source,
+      hasCharge: !!w.chargeRaw, noCharge: !w.chargeRaw, chargeRaw: w.chargeRaw || '', chargeDate: w.chargeDate || '', card: w.card || '', reason: w.reason || '',
+      matchLabel: 'Match ' + w.merchant + ' receipt to ' + (w.chargeRaw || ''),
+      open: st.openId === w.id && !!w.chargeRaw,
+      match: () => doMatch(w),
+      notThis: () => this.setState({ openId: st.openId === w.id ? null : w.id }),
+      keepLooking: () => { this.setState({ openId: null }); this.notify('We’ll keep looking for the ' + w.merchant + ' charge'); },
+      cash: () => doCash(w)
+    }));
+    const matchable = waitList.filter((w) => w.chargeRaw);
+    const matchAll = () => {
+      this.setState({ waitIds: [], extraWait: st.extraWait.filter((x) => !x.chargeRaw), added: matchable.map((w) => toMatched(w, w.card, false)).concat(st.added), openId: null, month: 'Oct' });
+      this.notify(matchable.length + ' receipts matched to their card charges');
+    };
+
+    // Matched history
+    const BASE = [
+      { id: 'o1', merchant: 'Elena Rossi', date: 'Oct 3', cat: 'Contractors', how: 'Bank transfer', source: 'Emailed invoice', total: 936, tax: 0, month: 'Oct', charge: 'ZELLE TO ELENA ROSSI · Oct 3 · Chase ••4417' },
+      { id: 'o2', merchant: 'Comcast Business', date: 'Oct 3', cat: 'Internet & phone', how: 'Chase ••4417', source: 'Emailed', total: 129, tax: 9.41, month: 'Oct', charge: 'COMCAST BUSINESS · Oct 3 · Chase ••4417' },
+      { id: 'o3', merchant: 'Shell', date: 'Oct 3', cat: 'Fuel', how: 'Amex ••1009', source: 'Snapped', total: 48, tax: 0, month: 'Oct', charge: 'SHELL OIL 57442 · Oct 3 · Amex ••1009' },
+      { id: 'o4', merchant: 'Local Print Shop', date: 'Oct 2', cat: 'Printing', how: 'Amex ••1009', source: 'Uploaded', total: 236, tax: 19.24, month: 'Oct', charge: 'LOCAL PRINT SHOP · Oct 2 · Amex ••1009' },
+      { id: 'o5', merchant: 'Figma', date: 'Oct 2', cat: 'Software', how: 'Amex ••1009', source: 'Emailed', total: 45, tax: 0, month: 'Oct', charge: 'FIGMA MONTHLY · Oct 2 · Amex ••1009' },
+      { id: 'o6', merchant: 'Adobe Creative Cloud', date: 'Oct 1', cat: 'Software', how: 'Amex ••1009', source: 'Emailed', total: 90, tax: 0, month: 'Oct', charge: 'ADOBE *CREATIVE CLD · Oct 1 · Amex ••1009' },
+      { id: 'o7', merchant: 'WeWork', date: 'Oct 1', cat: 'Rent', how: 'Chase ••4417', source: 'Emailed invoice', total: 1200, tax: 0, month: 'Oct', charge: 'WEWORK 1460 BROADWAY · Oct 1 · Chase ••4417' },
+      { id: 's1', merchant: 'Blue Bottle Coffee', date: 'Sep 18', cat: 'Meals', how: 'Amex ••1009', source: 'Snapped', total: 22.4, tax: 1.83, month: 'Sep', charge: 'SQ *BLUE BOTTLE · Sep 18 · Amex ••1009' },
+      { id: 's2', merchant: 'Staples', date: 'Sep 14', cat: 'Office supplies', how: 'Amex ••1009', source: 'Snapped', total: 46.3, tax: 3.77, month: 'Sep', charge: 'STAPLES 00123 · Sep 14 · Amex ••1009' },
+      { id: 's3', merchant: 'Comcast Business', date: 'Sep 3', cat: 'Internet & phone', how: 'Chase ••4417', source: 'Emailed', total: 129, tax: 9.41, month: 'Sep', charge: 'COMCAST BUSINESS · Sep 3 · Chase ••4417' },
+      { id: 's4', merchant: 'Adobe Creative Cloud', date: 'Sep 1', cat: 'Software', how: 'Amex ••1009', source: 'Emailed', total: 90, tax: 0, month: 'Sep', charge: 'ADOBE *CREATIVE CLD · Sep 1 · Amex ••1009' },
+      { id: 's5', merchant: 'WeWork', date: 'Sep 1', cat: 'Rent', how: 'Chase ••4417', source: 'Emailed invoice', total: 1200, tax: 0, month: 'Sep', charge: 'WEWORK 1460 BROADWAY · Sep 1 · Chase ••4417' },
+      { id: 'a1', merchant: 'B&H Photo', date: 'Aug 21', cat: 'Equipment', how: 'Amex ••1009', source: 'Uploaded', total: 389, tax: 34.52, month: 'Aug', charge: 'B&H PHOTO 420 9TH AVE · Aug 21 · Amex ••1009' },
+      { id: 'a2', merchant: 'Lyft', date: 'Aug 9', cat: 'Travel', how: 'Amex ••1009', source: 'Emailed', total: 31.6, tax: 0, month: 'Aug', charge: 'LYFT *RIDE · Aug 9 · Amex ••1009' },
+      { id: 'a3', merchant: 'Adobe Creative Cloud', date: 'Aug 1', cat: 'Software', how: 'Amex ••1009', source: 'Emailed', total: 90, tax: 0, month: 'Aug', charge: 'ADOBE *CREATIVE CLD · Aug 1 · Amex ••1009' },
+      { id: 'a4', merchant: 'WeWork', date: 'Aug 1', cat: 'Rent', how: 'Chase ••4417', source: 'Emailed invoice', total: 1200, tax: 0, month: 'Aug', charge: 'WEWORK 1460 BROADWAY · Aug 1 · Chase ••4417' }
+    ];
+    const all = st.added.concat(BASE.map((x) => Object.assign({ isNew: false }, x)));
+    const MONTHS = [['Oct', 'October'], ['Sep', 'September'], ['Aug', 'August'], ['All', 'All 2026']];
+    const shown = all.filter((x) => st.month === 'All' || x.month === st.month);
+    const matched = shown.map((x, i) => ({
+      merchant: x.merchant, date: x.date, cat: x.cat, how: x.how, source: x.source, total: money2(x.total), tax: x.tax ? money2(x.tax) : 'None', charge: x.charge,
+      ini: ini(x.merchant), isNew: !!x.isNew, border: i === 0 ? '0' : '1px solid #EFEDF3',
+      open: st.viewId === x.id, viewText: st.viewId === x.id ? 'Hide' : 'View', viewLabel: (st.viewId === x.id ? 'Hide ' : 'View ') + x.merchant + ' receipt, ' + x.date,
+      toggle: () => this.setState({ viewId: st.viewId === x.id ? null : x.id }),
+      download: () => this.notify('Downloaded ' + x.merchant.toLowerCase().replace(/[^a-z]+/g, '-') + '-' + x.date.toLowerCase().replace(' ', '-') + '.pdf')
+    }));
+    const monthName = (MONTHS.filter((m) => m[0] === st.month)[0] || MONTHS[0])[1];
+    const mTotal = shown.reduce((a, x) => a + x.total, 0);
+    const mFoot = { count: shown.length + (shown.length === 1 ? ' receipt' : ' receipts'), total: money2(mTotal) + ' in ' + monthName, dl: st.month === 'All' ? 'Download all (.zip)' : 'Download ' + monthName + ' (.zip)' };
+    const months = MONTHS.map((m) => ({ label: m[1], on: st.month === m[0], bg: st.month === m[0] ? '#18161F' : 'transparent', fg: st.month === m[0] ? '#FFFFFF' : '#18161F', pick: () => this.setState({ month: m[0], viewId: null }) }));
+
+    // Reading flow
+    const startRead = () => {
+      clearTimeout(this._r);
+      this.setState({ read: 'reading', d: null, readErr: '' });
+      this._r = setTimeout(() => this.setState({ read: 'review', d: { merchant: 'Uber', date: 'Oct 2', total: '27.80', tax: '2.21', cat: 'Travel' } }), 1600);
+    };
+    const d = st.d || { merchant: '', date: '', total: '', tax: '', cat: 'Travel' };
+    const dTotal = this.num(d.total);
+    const isUber = /uber/i.test(d.merchant) && Math.abs(dTotal - 27.8) < 0.005;
+    const setD = (k) => (ev) => { const p = {}; p[k] = ev.target.value; this.setState({ d: Object.assign({}, d, p), readErr: '' }); };
+    const confirmRead = () => {
+      if (!d.merchant.trim() || !(dTotal > 0)) { this.setState({ readErr: 'Add the merchant and a total above $0 so we can file it.' }); return; }
+      const w = { id: 'up' + Date.now(), merchant: d.merchant.trim(), date: d.date || 'Oct 4', total: dTotal, tax: this.num(d.tax), cat: d.cat, source: 'Uploaded just now' };
+      if (isUber) {
+        Object.assign(w, { chargeRaw: 'UBER *TRIP', chargeDate: 'Oct 2', card: 'Amex ••1009' });
+        this.setState({ read: 'idle', d: null, added: [toMatched(w, 'Amex ••1009', false)].concat(st.added), month: 'Oct' });
+        this.notify('Saved and matched to UBER *TRIP · also sorted it as ' + d.cat);
+      } else {
+        this.setState({ read: 'idle', d: null, extraWait: st.extraWait.concat([w]) });
+        this.notify('Saved. We’ll match it when the charge shows up');
+      }
+    };
+    const dv = {
+      merchant: d.merchant, date: d.date, total: d.total, tax: d.tax, cat: d.cat,
+      matchBg: isUber ? '#FDE6D6' : '#F7F6F9',
+      matchText: isUber ? 'Matches the card charge UBER *TRIP · $27.80 · Oct 2 · Amex ••1009. Saving also sorts that charge as ' + d.cat + '.' : 'No card charge for this amount yet. We’ll keep the receipt and match it when one arrives.',
+      confirmLabel: isUber ? 'Save and match' : 'Save receipt',
+      hasError: !!st.readErr, error: st.readErr
+    };
+
+    // Blurry
+    const saveBlur = () => {
+      const v = this.num(st.blurTotal);
+      if (!(v > 0)) { this.setState({ blurErr: true }); return; }
+      const w = { id: 'hd', merchant: 'The Home Depot', date: 'Oct 3', total: v, tax: Math.round(v * 0.08875 / 1.08875 * 100) / 100, cat: 'Office supplies', source: 'Total typed by Maya' };
+      this.setState({ blur: 'done', blurErr: false, extraWait: st.extraWait.concat([w]) });
+      this.notify('Total saved: ' + money2(v) + '. We’ll match it when the charge comes in');
+    };
+
+    const waitCount = waitList.length + (st.blur === 'ask' ? 1 : 0);
+    const outT = 13640 + st.cashOut;
+    const octCount = all.filter((x) => x.month === 'Oct').length;
+    return Object.assign(this.base(outT), {
+      sum: { waiting: waitList.length, needs: st.blur === 'ask' ? '1' : '', needsLabel: st.blur === 'ask' ? 'needs a total from you' : 'Nothing needs you', matched: octCount },
+      phoneIdle: !st.phoneSent, phoneSent: st.phoneSent,
+      sendPhone: () => { this.setState({ phoneSent: true }); this.notify('Camera link texted to your phone'); },
+      copyLabel: st.copied ? 'Copied' : 'Copy',
+      copyAddr: () => { this.setState({ copied: true }); this.notify('Copied receipts+northwind@billingease.app'); },
+      upload: startRead,
+      reading: st.read === 'reading', reviewing: st.read === 'review', d: dv,
+      cancelRead: () => { clearTimeout(this._r); this.setState({ read: 'idle', d: null, readErr: '' }); },
+      setMerchant: setD('merchant'), setDate: setD('date'), setTotal: setD('total'), setTax: setD('tax'), setCat: setD('cat'),
+      confirmRead,
+      waiting, waitCount, canMatchAll: matchable.length > 0, matchAllLabel: matchable.length > 1 ? 'Match all ' + matchable.length : 'Match it', matchAll,
+      blurAsk: st.blur === 'ask', blurTotal: st.blurTotal, blurErr: st.blurErr,
+      setBlur: (ev) => this.setState({ blurTotal: ev.target.value, blurErr: false }),
+      saveBlur,
+      retake: () => this.notify('Retake link sent to your phone ending 4410'),
+      allClear: waitCount === 0,
+      months, matched, mFoot,
+      downloadMonth: () => this.notify('Downloaded ' + (st.month === 'All' ? '2026' : monthName.toLowerCase() + '-2026') + '-receipts.zip · ' + shown.length + ' receipts'),
+      downloadYear: () => this.notify('Downloaded northwind-receipts-2026.zip · every receipt with its charge')
+    });
+  }
+}
+</script>
 </body>
 </html>

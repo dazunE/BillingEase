@@ -2,12 +2,371 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · Everything</title>
+<title>BillingEase · Everything BillingEase does</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-item-link{text-decoration:none}
+@media (min-width: 900px){.be-bizmenu{left:auto!important;right:0}}
+.be-search::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.be-item-link:hover{text-decoration:underline;text-underline-offset:3px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
+                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 260px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Maya Chen</span><span style="font-size: 12px; color: #5F5B68;">Northwind Studio · Owner</span></span>
+              <sc-for list="{{acctLinks}}" as="al" hint-placeholder-count="4">
+                <a href="{{al.href}}" role="menuitem" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{al.label}}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Back + compact equation strip (nothing highlighted: this page covers all of it) -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-weight: 600; font-size: 14px; text-decoration: none; color: #47444F;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        Home
+      </a>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$24,850</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$13,640</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- Title + search + filter -->
+    <section aria-labelledby="ev-h" style="display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px;">
+        <div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+          <h1 id="ev-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">Everything BillingEase does</h1>
+          <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 680px;">You won&#39;t need most of this on day one. Every feature lives behind one of your three numbers, or under Your business, and only shows up when it fits how you work.</p>
+        </div>
+        <div style="flex: 0 1 auto; display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+          <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">Showing it for</span>
+          <div style="position: relative;">
+            <button type="button" aria-haspopup="menu" aria-expanded="{{bizOpen}}" onClick="{{toggleBiz}}" style="display: inline-flex; align-items: center; gap: 10px; max-width: 100%; min-height: 44px; padding: 0 14px 0 6px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+              <span style="width: 32px; height: 32px; border-radius: 9999px; background: {{biz.tint}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none;">{{biz.ini}}</span>
+              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz.name}}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{bizOpen}}" hint-placeholder-val="{{false}}">
+              <div role="menu" class="be-bizmenu" style="position: absolute; left: 0; top: calc(100% + 8px); z-index: 30; width: 300px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+                <sc-for list="{{bizOpts}}" as="bo" hint-placeholder-count="2">
+                  <button type="button" role="menuitemradio" aria-checked="{{bo.on}}" onClick="{{bo.pick}}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 12px; border: 0; border-radius: 12px; background: {{bo.bg}}; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+                    <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{bo.tint}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none;">{{bo.ini}}</span>
+                    <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 15px;">{{bo.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{bo.hint}}</span></span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(16px, 2.4vw, 22px); display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;">
+          <label style="flex: 1 1 320px; min-width: 0; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 0 18px; border-radius: 9999px; border: 1px solid #CBC7D3; background: #FFFFFF;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none;"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search features</span>
+            <input class="be-field be-search" type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="Search in plain words: “stock”, “VAT”, “refund”, “reconcile”" style="flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; border-radius: 8px; background: transparent; font: 400 16px DM Sans, sans-serif; color: #18161F;">
+            <sc-if value="{{hasQuery}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{clearQuery}}" aria-label="Clear search" style="width: 36px; height: 36px; flex: none; border: 0; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+              </button>
+            </sc-if>
+          </label>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-size: 14px; font-weight: 600; color: #47444F; margin-right: 2px;">Show features for:</span>
+          <div role="group" aria-label="Show features for" style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+              <button type="button" aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid {{f.border}}; border-radius: 9999px; background: {{f.bg}}; color: {{f.color}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg>
+                {{f.label}}
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-top: 14px; border-top: 1px solid #EFEDF3; font-size: 14px; color: #47444F;">
+          <span aria-live="polite">{{statusLine}}</span>
+          <span style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span>{{profileLine}}</span><a href="BizProfile.dc.html" style="font-weight: 600;">Change what&#39;s shown</a></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- No results -->
+    <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+      <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Nothing called “{{query}}” yet</span>
+        <span style="font-size: 15px; color: #47444F; max-width: 460px; line-height: 1.5;">Try a plain word like “tax”, “stock” or “team”. If it&#39;s something you need, tell us and we&#39;ll look into it.</span>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 6px;">
+          <button type="button" onClick="{{clearQuery}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Clear search</button>
+          <button type="button" onClick="{{suggest}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Ask for this feature</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- The four sections -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 24px 18px; align-items: start;">
+      <sc-for list="{{cols}}" as="col" hint-placeholder-count="4">
+        <sc-if value="{{col.any}}" hint-placeholder-val="{{true}}">
+          <section aria-labelledby="{{col.hid}}" style="min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 0 4px 6px; border-bottom: 3px solid {{col.rule}};">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <h2 id="{{col.hid}}" style="margin: 0; display: flex; align-items: center; gap: 9px; font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">
+                  <span style="width: 11px; height: 11px; box-sizing: border-box; border-radius: {{col.dotRadius}}; background: {{col.dot}}; border: {{col.dotBorder}}; flex: none;"></span>{{col.name}} <span style="font-family: DM Sans, sans-serif; font-size: 14px; color: #5F5B68; font-weight: 600;">{{col.count}}</span>
+                </h2>
+                <a href="{{col.href}}" aria-label="{{col.open}}" style="width: 32px; height: 32px; flex: none; border-radius: 9999px; background: rgba(24,22,31,0.07); display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+              </div>
+              <span style="font-size: 13px; line-height: 1.4; color: #47444F;">{{col.sub}}</span>
+            </div>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{col.items}}" as="it" hint-placeholder-count="6">
+                <li style="display: flex; flex-direction: column; gap: 6px; padding: 14px 14px 13px; border-radius: 18px; background: {{it.bg}}; border: {{it.border}};">
+                  <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px;">
+                    <a href="{{it.href}}" class="be-item-link" style="font-weight: 700; font-size: 15px; line-height: 1.3; color: {{it.nameColor}};">{{it.name}}<span aria-hidden="true" style="margin-left: 4px;">→</span></a>
+                    <sc-if value="{{it.formal}}" hint-placeholder-val="{{false}}">
+                      <span style="padding: 1px 8px; border-radius: 9999px; background: {{it.labelBg}}; color: #47444F; font-size: 11.5px; font-weight: 600; line-height: 18px;">{{it.formal}}</span>
+                    </sc-if>
+                  </span>
+                  <span style="font-size: 13.5px; line-height: 1.45; color: #47444F;">{{it.text}}</span>
+                  <sc-if value="{{it.matchTag}}" hint-placeholder-val="{{false}}">
+                    <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-size: 11.5px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #B9A3FF;"></span>{{it.matchTag}}</span>
+                  </sc-if>
+                  <sc-if value="{{it.off}}" hint-placeholder-val="{{false}}">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; font-size: 12.5px; color: #47444F;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM6 6l12 12"></path></svg>
+                      <span>Turned off for your business ·</span>
+                      <a href="BizProfile.dc.html" style="font-weight: 700;" aria-label="{{it.turnOnAria}}">turn on</a>
+                    </span>
+                  </sc-if>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+        </sc-if>
+      </sc-for>
+    </div>
+
+    <!-- Quiet footer -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 16px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Starting over, or setting up another business?</span>
+      <a href="SetupProfile.dc.html" style="font-weight: 600;">Answer the setup questions again</a>
+      <a href="Reports.dc.html" style="font-weight: 600;">All reports</a>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2184}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { query: '', filter: 'all', biz: 'nw', newOpen: false, acctOpen: false, bizOpen: false, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const st = this.state;
+
+    // need: which part of the business profile turns a feature on. tags: which filter highlights it.
+    const F = [
+      // Coming in
+      { g: 'in', name: 'Bill someone', formal: 'Invoice', text: 'Send an invoice in one sentence. We remind them and match the payment when it lands.', href: 'ThreeIn.dc.html', tags: ['services', 'products'], kw: 'invoice bill charge' },
+      { g: 'in', name: 'Detailed invoices', formal: 'Invoice editor', text: 'Several lines, discounts, a deposit, tax and payment terms, for when one sentence isn’t enough.', href: 'SellInvoice.dc.html', tags: ['services', 'products'], kw: 'line items discount deposit terms' },
+      { g: 'in', name: 'Quotes', formal: 'Estimates', text: 'Send a price first. When they accept, it becomes an invoice in one tap.', href: 'SellQuotes.dc.html', need: 'services', tags: ['services'], kw: 'estimate proposal' },
+      { g: 'in', name: 'Repeat invoices and retainers', formal: 'Recurring invoices', text: 'Bill the same customer every month by email, or charge the card they keep on file.', href: 'SellRecurring.dc.html', need: 'services', tags: ['services'], kw: 'recurring subscription monthly retainer' },
+      { g: 'in', name: 'Money back to a customer', formal: 'Credit note · refund', text: 'Take money off an invoice or give it back. It comes off Coming in.', href: 'SellRecurring.dc.html', tags: ['services', 'products'], kw: 'credit note refund return' },
+      { g: 'in', name: 'What you sell', formal: 'Products & services', text: 'Save your prices once, then pick them when you write a quote or invoice.', href: 'SellCatalog.dc.html', tags: ['services', 'products'], kw: 'catalog price list items' },
+      { g: 'in', name: 'Products and stock', formal: 'Inventory', text: 'See what’s on the shelf and get a heads-up before something runs out.', href: 'SellCatalog.dc.html', need: 'products', tags: ['products'], kw: 'inventory stock reorder' },
+      { g: 'in', name: 'Time you can bill', formal: 'Billable hours', text: 'Log hours as you or your team work, then add them to the next invoice.', href: 'SellCatalog.dc.html', need: 'services', tags: ['services', 'teams'], kw: 'timesheet hours timer' },
+      { g: 'in', name: 'Bill in other currencies', formal: 'Multi-currency invoices', text: 'Invoice in euros or pounds. We show what each one is worth in dollars.', href: 'SellInvoice.dc.html', need: 'overseas', tags: ['overseas'], kw: 'currency euro pound eur gbp foreign vat reverse charge' },
+      { g: 'in', name: 'Getting paid online', formal: 'Card, bank and Apple Pay', text: 'Customers pay straight from the invoice, and the money lands in your bank.', href: 'Payments.dc.html', tags: ['services', 'products'], kw: 'payments card ach stripe payout' },
+      { g: 'in', name: 'Your customers', formal: 'Customer list', text: 'Who you work for, what they owe, and everything you’ve sent them.', href: 'Customers.dc.html', tags: ['services', 'products'], kw: 'clients contacts' },
+      // Going out
+      { g: 'out', name: 'Record an expense', formal: '', text: 'Cash, card or a bill to pay later, written in one line.', href: 'ThreeOut.dc.html', tags: [], kw: 'expense spend cost' },
+      { g: 'out', name: 'Receipts', formal: 'Receipt scanning', text: 'Snap or forward a receipt. We read it and match it to the charge.', href: 'SpendReceipts.dc.html', tags: [], kw: 'receipt scan photo ocr upload' },
+      { g: 'out', name: 'Every month', formal: 'Recurring expenses', text: 'Rent and subscriptions you pay each month, and the ones you may not be using.', href: 'SpendEveryMonth.dc.html', tags: [], kw: 'recurring subscription rent' },
+      { g: 'out', name: 'Card and bank charges', formal: 'Transactions', text: 'Change a category, split a charge, or mark it personal or a transfer.', href: 'SpendTransaction.dc.html', tags: [], kw: 'transaction categorize split personal transfer bank feed' },
+      { g: 'out', name: 'Bills to pay', formal: 'Bills · accounts payable', text: 'Enter a bill once, then pay it all, in parts or on a schedule.', href: 'SpendBill.dc.html', tags: ['products'], kw: 'bill payable vendor partial payment schedule' },
+      { g: 'out', name: 'Buying stock', formal: 'Inventory purchases', text: 'Stock you buy isn’t Going out until you sell it.', href: 'SpendBill.dc.html', need: 'products', tags: ['products'], kw: 'inventory purchase order stock supplier' },
+      { g: 'out', name: 'Cost of goods', formal: 'COGS', text: 'What the things you sold cost you, counted on the day they sell.', href: 'SellCatalog.dc.html', need: 'products', tags: ['products'], kw: 'cogs cost of goods sold margin' },
+      { g: 'out', name: 'Payroll', formal: '', text: 'Pay your team by direct deposit. Payroll taxes are filed for you.', href: 'Payroll.dc.html', need: 'team', tags: ['teams'], kw: 'payroll salary wages employees w-2 1099' },
+      { g: 'out', name: 'Who you pay', formal: 'Vendors', text: 'Suppliers and contractors, and what you owe each of them.', href: 'Vendors.dc.html', tags: [], kw: 'vendor supplier contractor' },
+      // Yours to keep
+      { g: 'keep', name: 'Tax set-aside', formal: 'Estimated tax', text: 'A share of each month’s profit put aside, so tax day isn’t a surprise.', href: 'ThreeKeep.dc.html', tags: [], kw: 'income tax estimated quarterly irs' },
+      { g: 'keep', name: 'Sales tax you collected', formal: 'Sales tax · VAT · GST', text: 'What you added to invoices and owe the state, with filing dates. Called VAT or GST outside the US.', href: 'BooksTax.dc.html', need: 'products', tags: ['products', 'overseas'], kw: 'sales tax vat gst filing return' },
+      { g: 'keep', name: 'Check against your bank statement', formal: 'Reconciliation', text: 'Line up your books with the bank, and spot what’s missing.', href: 'BooksReconcile.dc.html', tags: [], kw: 'reconcile reconciliation bank statement' },
+      { g: 'keep', name: 'Categories', formal: 'Chart of accounts', text: 'The buckets your money is sorted into. Rename or add your own.', href: 'BooksCategories.dc.html', tags: [], kw: 'chart of accounts ledger accounts' },
+      { g: 'keep', name: 'Move money between categories by hand', formal: 'Journal entries', text: 'For fixes your accountant asks for. Most people never need it.', href: 'BooksCategories.dc.html', need: 'accountant', tags: ['teams'], kw: 'journal entry adjustment debit credit' },
+      { g: 'keep', name: 'Currencies and exchange rates', formal: 'FX gains and losses', text: 'What you gained or lost when a euro or pound payment arrived.', href: 'BooksCurrencies.dc.html', need: 'overseas', tags: ['overseas'], kw: 'currency exchange rate fx gain loss' },
+      { g: 'keep', name: 'Cash or accrual view', formal: 'Accounting method', text: 'Count money when it moves, or when you invoice and get billed.', href: 'BooksTax.dc.html', need: 'advanced', tags: [], kw: 'cash accrual basis method' },
+      { g: 'keep', name: 'Close the year', formal: 'Year-end close', text: 'Lock last year once your taxes are filed, so nothing changes by accident.', href: 'BooksTax.dc.html', need: 'accountant', tags: ['teams'], kw: 'year end close lock period' },
+      { g: 'keep', name: 'How much did I make?', formal: 'Profit & loss', text: 'Coming in minus Going out, month by month, ready to share.', href: 'ProfitLoss.dc.html', tags: [], kw: 'profit loss income statement p&l' },
+      { g: 'keep', name: 'All reports', formal: 'Balance sheet, cash flow and more', text: 'Every standard report your accountant or bank might ask for.', href: 'Reports.dc.html', tags: [], kw: 'reports balance sheet cash flow aged receivables trial balance general ledger' },
+      // Your business
+      { g: 'biz', name: 'Business profile and invoice look', formal: 'Branding', text: 'Your name, logo, colors and the details printed on every invoice.', href: 'BizProfile.dc.html', tags: [], kw: 'profile logo branding address' },
+      { g: 'biz', name: 'Country, currency and tax', formal: '', text: 'Where you’re based. It sets your currency, date format and what tax is called.', href: 'BizProfile.dc.html', tags: ['overseas'], kw: 'country currency tax vat gst settings locale' },
+      { g: 'biz', name: 'What BillingEase shows you', formal: 'Feature settings', text: 'Say what you sell and who works with you; we show or tuck away features to match.', href: 'BizProfile.dc.html', tags: ['services', 'products', 'overseas', 'teams'], kw: 'settings features turn on off' },
+      { g: 'biz', name: 'Team and permissions', formal: 'Users & roles', text: 'Invite people and choose what each one can see and do.', href: 'BizTeam.dc.html', need: 'team', tags: ['teams'], kw: 'team users roles permissions invite staff admin' },
+      { g: 'biz', name: 'Your accountant', formal: 'Accountant access', text: 'Read-only books and reports for your accountant. They can’t move money.', href: 'BizTeam.dc.html', need: 'accountant', tags: ['teams'], kw: 'accountant cpa bookkeeper advisor' },
+      { g: 'biz', name: 'Switch business', formal: 'Multiple businesses', text: 'Run more than one business from one sign-in, each with its own books.', href: 'BizTeam.dc.html', tags: [], kw: 'switch business multiple companies' },
+      { g: 'biz', name: 'Password and sign-in', formal: 'Security · two-step', text: 'Change your password, turn on two-step sign-in, see where you’re signed in.', href: 'BizSecurity.dc.html', tags: [], kw: 'security password 2fa two-factor sessions' },
+      { g: 'biz', name: 'Bring data in or take it out', formal: 'Import · export', text: 'Move over from another app, or download everything as spreadsheets.', href: 'BizSecurity.dc.html', tags: [], kw: 'import export csv download migrate' },
+      { g: 'biz', name: 'Close your account', formal: 'Delete account', text: 'Download your books first, then delete the business for good.', href: 'BizSecurity.dc.html', tags: [], kw: 'delete account close cancel' }
+    ];
+
+    const BIZ = {
+      nw: { name: 'Northwind Studio', ini: 'NS', tint: '#EEE8FF', hint: 'Services and products · team · abroad', on: { services: 1, products: 1, overseas: 1, team: 1, accountant: 1 },
+        profile: 'Northwind Studio sells services and products, bills customers abroad and has a team with an accountant.' },
+      ph: { name: 'Maya Chen Photography', ini: 'MP', tint: '#FDE6D6', hint: 'Services only · just you', on: { services: 1 },
+        profile: 'Maya Chen Photography sells services only, in the US, and it’s just you.' }
+    };
+    const B = BIZ[st.biz];
+
+    const FILTERS = [
+      { id: 'all', label: 'Everything', icon: 'M4 6h16M4 12h16M4 18h16' },
+      { id: 'services', label: 'Services', icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2' },
+      { id: 'products', label: 'Products', icon: 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8' },
+      { id: 'overseas', label: 'Overseas', icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z' },
+      { id: 'teams', label: 'Teams', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' }
+    ];
+    const fl = st.filter;
+    const filters = FILTERS.map((f) => {
+      const on = fl === f.id;
+      return { label: f.label, icon: f.icon, on, border: on ? '#18161F' : '#CBC7D3', bg: on ? '#18161F' : '#FFFFFF', color: on ? '#FFFFFF' : '#18161F',
+        pick: () => this.setState({ filter: f.id }) };
+    });
+    const filterLabel = { services: 'For services', products: 'For products', overseas: 'For overseas', teams: 'For teams' }[fl];
+
+    const q = st.query.trim().toLowerCase();
+    const words = q.split(/\s+/).filter(Boolean);
+    const matchQ = (f) => !words.length || words.every((w) => (f.name + ' ' + f.formal + ' ' + f.text + ' ' + f.kw).toLowerCase().indexOf(w) >= 0);
+
+    let shownCount = 0, hlCount = 0, offCount = 0;
+    const COLS = [
+      { g: 'in', name: 'Coming in', sub: 'Money customers pay you.', open: 'Open Coming in', href: 'ThreeIn.dc.html', dot: '#7A5AF8', dotBorder: '0', dotRadius: '9999px', rule: '#7A5AF8' },
+      { g: 'out', name: 'Going out', sub: 'What you spend to run the business.', open: 'Open Going out', href: 'ThreeOut.dc.html', dot: '#E0752D', dotBorder: '0', dotRadius: '9999px', rule: '#E0752D' },
+      { g: 'keep', name: 'Yours to keep', sub: 'What’s left, the tax on it, and the books behind it.', open: 'Open Yours to keep', href: 'ThreeKeep.dc.html', dot: '#18161F', dotBorder: '2px solid #B9A3FF', dotRadius: '9999px', rule: '#18161F' },
+      { g: 'biz', name: 'Your business', sub: 'Settings, people and your account. Also in the menu under your initials.', open: 'Business profile', href: 'BizProfile.dc.html', dot: '#FFFFFF', dotBorder: '2px solid #18161F', dotRadius: '3px', rule: '#CBC7D3' }
+    ];
+    const cols = COLS.map((C) => {
+      const items = F.filter((f) => f.g === C.g && matchQ(f)).map((f) => {
+        const off = !!f.need && !B.on[f.need];
+        const hl = fl !== 'all' && f.tags.indexOf(fl) >= 0;
+        shownCount++; if (hl) hlCount++; if (off) offCount++;
+        return {
+          name: f.name, formal: f.formal || false, text: f.text, href: f.href,
+          off, turnOnAria: 'Turn on ' + f.name + ' in Business profile',
+          matchTag: hl ? filterLabel : false,
+          bg: off ? '#F7F6F9' : hl ? '#EEE8FF' : '#FFFFFF',
+          border: off ? '1px dashed #CBC7D3' : hl ? '2px solid #18161F' : '1px solid #E2DFE8',
+          nameColor: off ? '#47444F' : '#18161F',
+          labelBg: hl ? '#FFFFFF' : '#EFEDF3'
+        };
+      });
+      return Object.assign({}, C, { hid: 'col-' + C.g, items, count: items.length, any: items.length > 0 });
+    });
+
+    let statusLine;
+    if (!shownCount) statusLine = 'No features match “' + st.query.trim() + '”';
+    else {
+      statusLine = (words.length ? shownCount + ' of ' + F.length + ' features match “' + st.query.trim() + '”' : F.length + ' features in four places');
+      if (fl !== 'all') statusLine += ' · ' + hlCount + ' ' + filterLabel.toLowerCase() + ' highlighted';
+      if (offCount) statusLine += ' · ' + offCount + ' turned off';
+    }
+
+    const verbs = [
+      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+      { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+      { label: 'Send a quote', hint: 'A price first, an invoice later', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M5 4h14v16H5zM9 9h6M9 13h6M9 17h3' }
+    ];
+    const acctLinks = [
+      { label: 'Business profile', href: 'BizProfile.dc.html' },
+      { label: 'Team and permissions', href: 'BizTeam.dc.html' },
+      { label: 'Password and sign-in', href: 'BizSecurity.dc.html' },
+      { label: 'Switch business', href: 'BizTeam.dc.html' }
+    ];
+    const bizOpts = Object.keys(BIZ).map((k) => ({
+      name: BIZ[k].name, ini: BIZ[k].ini, tint: BIZ[k].tint, hint: BIZ[k].hint, on: st.biz === k, bg: st.biz === k ? '#EEE8FF' : 'transparent',
+      pick: () => this.setState({ biz: k, bizOpen: false })
+    }));
+
+    return {
+      newOpen: st.newOpen, acctOpen: st.acctOpen, bizOpen: st.bizOpen, verbs, acctLinks, bizOpts,
+      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false, bizOpen: false }),
+      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false, bizOpen: false }),
+      toggleBiz: () => this.setState({ bizOpen: !st.bizOpen, newOpen: false, acctOpen: false }),
+      biz: { name: B.name, ini: B.ini, tint: B.tint },
+      query: st.query, hasQuery: st.query.length > 0,
+      setQuery: (e) => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      suggest: () => this.notify('Thanks. We’ve noted “' + st.query.trim() + '” as a feature request.'),
+      filters, cols, statusLine, profileLine: B.profile,
+      noResults: shownCount === 0,
+      toast: st.toast
+    };
+  }
+}
+</script>
 </body>
 </html>
