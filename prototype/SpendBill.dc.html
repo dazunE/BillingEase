@@ -145,7 +145,7 @@ a{color:#18161F}a:hover{color:#000000}
               </label>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Bill date
                 <select class="be-field" value="{{f.date}}" onChange="{{setDate}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <option value="0">Oct 4, 2026 (today)</option><option value="-1">Oct 3, 2026</option><option value="-2">Oct 2, 2026</option><option value="-3">Oct 1, 2026</option>
+                  <option value="0">Today, Oct 4</option><option value="-1">Oct 3, 2026</option><option value="-2">Oct 2, 2026</option><option value="-3">Oct 1, 2026</option>
                 </select>
               </label>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Due
@@ -438,7 +438,7 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
 class Component extends DCLogic {
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }

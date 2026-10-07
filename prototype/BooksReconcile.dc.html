@@ -14,7 +14,8 @@
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
-@media (max-width: 560px){.be-hide-sm{display:none}}
+.be-show-sm{display:none}
+@media (max-width: 560px){.be-hide-sm{display:none}.be-show-sm{display:inline}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
@@ -151,10 +152,10 @@ a{color:#18161F}a:hover{color:#000000}
                 <button type="button" role="checkbox" aria-checked="{{r.on}}" aria-label="{{r.aria}}" onClick="{{r.toggle}}" style="width: 44px; height: 44px; margin: -6px -4px -6px -6px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; flex: none; cursor: pointer;">
                   <span style="width: 24px; height: 24px; border-radius: 8px; box-sizing: border-box; border: 2px solid {{r.boxBorder}}; background: {{r.boxBg}}; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{r.tickFg}}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
                 </button>
-                <span style="flex: none; width: 48px; font-size: 13px; color: #5F5B68; font-variant-numeric: tabular-nums;">{{r.date}}</span>
+                <span class="be-hide-sm" style="flex: none; width: 48px; font-size: 13px; color: #5F5B68; font-variant-numeric: tabular-nums;">{{r.date}}</span>
                 <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
                   <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 600; font-size: 15px;">{{r.name}}</span><sc-if value="{{r.tag}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border-radius: 9999px; background: {{r.tagBg}}; color: {{r.tagFg}}; font-size: 11px; font-weight: 600;"><span style="width: 5px; height: 5px; border-radius: 9999px; background: {{r.tagFg}};"></span>{{r.tag}}</span></sc-if></span>
-                  <span style="font-size: 12px; color: #5F5B68; display: inline-flex; align-items: center; gap: 6px;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.dot}}; flex: none;"></span>{{r.sub}}</span>
+                  <span style="font-size: 12px; color: #5F5B68; display: inline-flex; align-items: center; gap: 6px;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.dot}}; flex: none;"></span><span><span class="be-show-sm">{{r.date}} · </span>{{r.sub}}</span></span>
                 </span>
                 <span style="flex: none; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">{{r.amount}}</span>
               </li>
@@ -302,7 +303,7 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);

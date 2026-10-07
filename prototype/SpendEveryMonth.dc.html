@@ -180,7 +180,12 @@ a{color:#18161F}a:hover{color:#000000}
               <span style="flex: 1 1 0; min-width: 0; height: 34px; border-radius: 6px; background: {{dy.bg}}; box-shadow: {{dy.ring}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: {{dy.fg}};"><span class="be-hide-sm">{{dy.n}}</span></span>
             </sc-for>
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5F5B68;"><span>Oct 1</span><span>Today, Sun Oct 4</span><span>Oct 31</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5F5B68;"><span>Oct 1</span><span>Oct 31</span></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: #47444F;">
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D;"></span>Paid</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1;"></span>Still to pay</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 0 0 2px #18161F;"></span>Today, Sun Oct 4</span>
+          </div>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px;">
           <sc-for list="{{upcoming}}" as="u" hint-placeholder-count="4">
@@ -313,7 +318,7 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1820}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1840}}'>
 class Component extends DCLogic {
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }

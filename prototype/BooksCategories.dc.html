@@ -14,7 +14,8 @@
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
-@media (max-width: 560px){.be-hide-sm{display:none}}
+.be-show-sm{display:none}
+@media (max-width: 560px){.be-hide-sm{display:none}.be-show-sm{display:inline}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
@@ -341,11 +342,11 @@ a{color:#18161F}a:hover{color:#000000}
         <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
           <sc-for list="{{entries}}" as="en" hint-placeholder-count="4">
             <li style="border-top: 1px solid #EFEDF3; display: flex; flex-direction: column;">
-              <button type="button" aria-expanded="{{en.open}}" onClick="{{en.toggle}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; min-height: 60px; padding: 8px 4px; border: 0; background: transparent; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
-                <span style="flex: none; width: 92px; font-size: 13px; color: #5F5B68; font-variant-numeric: tabular-nums;">{{en.date}}</span>
-                <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column;">
+              <button type="button" aria-expanded="{{en.open}}" onClick="{{en.toggle}}" style="display: flex; align-items: center; gap: 6px 14px; min-height: 60px; padding: 8px 4px; border: 0; background: transparent; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+                <span class="be-hide-sm" style="flex: none; width: 92px; font-size: 13px; color: #5F5B68; font-variant-numeric: tabular-nums;">{{en.date}}</span>
+                <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column;">
                   <span style="font-weight: 600; font-size: 15px;">{{en.note}}</span>
-                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12px; color: #5F5B68;">{{en.who}}<sc-if value="{{en.isCpa}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 5px; padding: 1px 8px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-weight: 600; font-size: 11px;"><span style="width: 5px; height: 5px; border-radius: 9999px; background: #1F5E91;"></span>Accountant</span></sc-if></span>
+                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12px; color: #5F5B68;"><span class="be-show-sm">{{en.date}} · </span>{{en.who}}<sc-if value="{{en.isCpa}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 5px; padding: 1px 8px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-weight: 600; font-size: 11px;"><span style="width: 5px; height: 5px; border-radius: 9999px; background: #1F5E91;"></span>Accountant</span></sc-if></span>
                 </span>
                 <span style="flex: none; font-weight: 700; font-variant-numeric: tabular-nums;">{{en.amount}}</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: rotate({{en.rot}}deg);"><path d="m6 9 6 6 6-6"></path></svg>
@@ -354,9 +355,9 @@ a{color:#18161F}a:hover{color:#000000}
                 <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 4px 14px;">
                   <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
                     <sc-for list="{{en.lines}}" as="el" hint-placeholder-count="2">
-                      <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 10px 12px; border-radius: 12px; background: #F7F6F9; font-size: 14px;">
-                        <span style="flex: none; width: 54px; font-weight: 700; font-size: 12px; color: #47444F;">{{el.side}}</span>
-                        <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600;">{{el.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{el.formal}}</span></span>
+                      <li style="display: flex; align-items: center; gap: 4px 12px; padding: 10px 12px; border-radius: 12px; background: #F7F6F9; font-size: 14px;">
+                        <span style="flex: none; width: 46px; font-weight: 700; font-size: 12px; color: #47444F;">{{el.side}}</span>
+                        <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600;">{{el.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{el.formal}}</span></span>
                         <span style="font-weight: 700; font-variant-numeric: tabular-nums;">{{el.amount}}</span>
                       </li>
                     </sc-for>
@@ -393,7 +394,7 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3200}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3260}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);

@@ -2,12 +2,518 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · BooksCurrencies</title>
+<title>BillingEase · Currencies</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-show-sm{display:none}
+@media (max-width: 560px){.be-hide-sm{display:none}.be-show-sm{display:inline}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <!-- Top bar: same as ThreeHome -->
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
+    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+      </a>
+      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
+        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+      </label>
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New
+          </button>
+          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-sizing: border-box; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
+                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
+                  </span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position: relative;">
+          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-sizing: border-box; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Maya Chen</span><span style="font-size: 12px; color: #5F5B68;">Owner · Northwind Studio</span></span>
+              <sc-for list="{{acctLinks}}" as="al" hint-placeholder-count="4">
+                <a href="{{al.href}}" role="menuitem" style="display: flex; flex-direction: column; justify-content: center; min-height: 44px; padding: 4px 12px; border-radius: 12px; text-decoration: none; color: #18161F;"><span style="font-weight: 600; font-size: 14px;">{{al.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{al.hint}}</span></a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+
+    <!-- Back + compact equation strip (Yours to keep highlighted) -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
+      <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-weight: 600; font-size: 14px; text-decoration: none; color: #47444F;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        Home
+      </a>
+      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$24,850</strong></a>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$13,640</strong></a></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+        <a href="ThreeKeep.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 2px solid #B9A3FF; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407</strong></a></span>
+      </nav>
+    </div>
+
+    <!-- Page intro -->
+    <section aria-labelledby="pg-h" style="display: flex; flex-direction: column; gap: 10px;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF; box-shadow: 0 0 0 2px #18161F;"></span>Yours to keep · Your books</span>
+      <h1 id="pg-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Currencies</h1>
+      <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;">
+        <span style="padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Multi-currency · exchange gains and losses</span>
+        <span style="font-size: 12px; color: #5F5B68;">Shown because you bill customers abroad · <a href="BizProfile.dc.html" style="color: #47444F; font-weight: 600;">change</a></span>
+      </span>
+      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 700px;">Some customers pay you in euros and pounds. Your books stay in US dollars. This is how we turn one into the other, and what the difference earns or costs you.</p>
+    </section>
+
+    <!-- Currencies + rates -->
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+      <section aria-labelledby="home-h" style="flex: 1 1 300px; min-width: 0; background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="home-h" style="margin: 0; display: flex; align-items: center; gap: 8px; font: 700 15px DM Sans, sans-serif; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Your home currency</h2>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5vw, 52px); line-height: 1; letter-spacing: -0.03em; color: #B9A3FF;">USD</span>
+        <span style="font-size: 15px; color: #FFFFFF; font-weight: 600;">US dollar</span>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #EEE8FF;">Your books, your taxes and your three numbers are always in dollars. A euro invoice counts at what it&#39;s worth in dollars.</p>
+        <a href="BizProfile.dc.html" style="margin-top: auto; align-self: flex-start; font-size: 14px; font-weight: 600; color: #FFFFFF;">Country and currency settings</a>
+      </section>
+
+      <section aria-labelledby="rates-h" style="flex: 2 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <h2 id="rates-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Other currencies you use</h2>
+            <span style="font-size: 13px; color: #5F5B68;">Today&#39;s rates · Sunday, Oct 4, 2026</span>
+          </div>
+          <sc-if value="{{addClosed}}" hint-placeholder-val="{{true}}">
+            <button type="button" aria-expanded="false" onClick="{{openAdd}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+              Add a currency
+            </button>
+          </sc-if>
+        </div>
+        <sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8;">
+            <label style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Currency
+              <select class="be-field" value="{{pick}}" onChange="{{setPick}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                <sc-for list="{{addable}}" as="ad" hint-placeholder-count="4">
+                  <option value="{{ad.code}}">{{ad.label}}</option>
+                </sc-for>
+              </select>
+            </label>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" onClick="{{addCur}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Add</button>
+              <button type="button" onClick="{{closeAdd}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+            </div>
+            <span style="flex-basis: 100%; font-size: 12px; color: #5F5B68;">Then you can send quotes and invoices in it. Nothing else changes.</span>
+          </div>
+        </sc-if>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+          <sc-for list="{{curs}}" as="c" hint-placeholder-count="2">
+            <li style="display: flex; flex-direction: column; border-top: 1px solid #EFEDF3;">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0;">
+                <span style="width: 44px; height: 44px; border-radius: 14px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px;">{{c.sym}}</span>
+                <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column;">
+                  <span style="font-weight: 700; font-size: 15px;">{{c.name}} <span style="color: #5F5B68; font-weight: 600;">{{c.code}}</span></span>
+                  <span style="font-size: 12px; color: #5F5B68;">{{c.used}}</span>
+                </span>
+                <span style="display: flex; flex-direction: column; align-items: flex-end;">
+                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap;">{{c.rateText}}</span>
+                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border-radius: 9999px; background: {{c.srcBg}}; color: {{c.srcFg}}; font-size: 11px; font-weight: 600;"><span style="width: 5px; height: 5px; border-radius: 9999px; background: {{c.srcFg}};"></span>{{c.src}}</span>
+                </span>
+                <button type="button" aria-expanded="{{c.editing}}" aria-label="{{c.editLabel}}" onClick="{{c.toggleEdit}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">More options</button>
+              </div>
+              <sc-if value="{{c.editing}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; padding: 0 0 14px 60px;">
+                  <label style="flex: 0 1 220px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Use my own rate · $ per 1 {{c.code}}
+                    <input class="be-field" type="text" inputmode="decimal" value="{{c.draft}}" onChange="{{c.setDraft}}" style="min-height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
+                  </label>
+                  <button type="button" onClick="{{c.saveOwn}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Use this rate</button>
+                  <sc-if value="{{c.isOwn}}" hint-placeholder-val="{{false}}">
+                    <button type="button" onClick="{{c.useDaily}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Back to the daily rate</button>
+                  </sc-if>
+                  <span style="flex-basis: 100%; font-size: 12px; color: #5F5B68;">Useful if your bank gave you a fixed rate. It applies to new invoices only.</span>
+                </div>
+              </sc-if>
+            </li>
+          </sc-for>
+        </ul>
+        <span style="font-size: 13px; color: #47444F; line-height: 1.5; border-top: 1px solid #EFEDF3; padding-top: 12px;"><strong style="color: #18161F;">Where rates come from:</strong> the mid-market rate, which is the midpoint between what banks buy and sell at, updated every day at 6:00 AM ET. Markets are closed on weekends, so today shows Friday&#39;s closing rate.</span>
+      </section>
+    </div>
+
+    <!-- Unpaid foreign invoices -->
+    <section aria-labelledby="open-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 20px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <h2 id="open-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Unpaid invoices in other currencies</h2>
+          <span style="align-self: flex-start; padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Unrealized gains and losses</span>
+        </div>
+        <span style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end;">
+          <span style="font-size: 13px; color: #47444F;">On paper today</span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">−$108.00</span>
+        </span>
+      </div>
+      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 820px;">We count an invoice at the rate on the day you send it. Rates move while you wait to be paid, so the same euros can be worth more or less by the time they land. Until they land, it&#39;s only on paper, so it&#39;s not in your three numbers.</p>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+        <sc-for list="{{openInv}}" as="o" hint-placeholder-count="2">
+          <li style="border: 1px solid #E2DFE8; border-radius: 20px; display: flex; flex-direction: column;">
+            <button type="button" aria-expanded="{{o.open}}" onClick="{{o.toggle}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 14px 16px; border: 0; border-radius: 20px; background: transparent; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+              <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 700; font-size: 16px;">{{o.who}}</span>
+                <span style="font-size: 13px; color: #5F5B68;">{{o.inv}} · <strong style="color: #18161F;">{{o.amt}}</strong> · due {{o.due}}</span>
+              </span>
+              <span style="flex: 2 1 340px; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+                <span style="flex: 1 1 110px; display: flex; flex-direction: column;"><span style="font-size: 12px; color: #5F5B68;">Sent {{o.sent}} at {{o.r0}}</span><span style="font-weight: 700; font-variant-numeric: tabular-nums;">{{o.v0}}</span></span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                <span style="flex: 1 1 110px; display: flex; flex-direction: column;"><span style="font-size: 12px; color: #5F5B68;">Today at {{o.r1}}</span><span style="font-weight: 700; font-variant-numeric: tabular-nums;">{{o.v1}}</span></span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background: {{o.badgeBg}}; color: {{o.badgeFg}}; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{o.badgeFg}};"></span>{{o.diff}}</span>
+              </span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="be-hide-sm" style="flex: none; transform: rotate({{o.rot}}deg);"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{o.open}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 16px 16px;">
+                <span style="font-size: 14px; color: #47444F; line-height: 1.5;">{{o.detail}}</span>
+                <a href="SellInvoice.dc.html" style="align-self: flex-start; font-size: 14px; font-weight: 600;">Open {{o.inv}}</a>
+              </div>
+            </sc-if>
+          </li>
+        </sc-for>
+      </ul>
+      <sc-if value="{{revalClosed}}" hint-placeholder-val="{{true}}">
+        <button type="button" aria-expanded="false" onClick="{{openReval}}" style="align-self: flex-start; min-height: 32px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">More options</button>
+      </sc-if>
+      <sc-if value="{{revalOpen}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
+          <span style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 700; font-size: 14px;">Update unpaid invoices to month-end rates in reports</span>
+            <span style="font-size: 12px; color: #5F5B68;">Accountants call this revaluation. Your balance sheet shows today&#39;s value; your three numbers don&#39;t change.</span>
+          </span>
+          <button type="button" role="switch" aria-checked="{{reval}}" aria-label="Revalue unpaid invoices at month end" onClick="{{toggleReval}}" style="width: 52px; height: 32px; border: 0; border-radius: 9999px; background: {{sw.track}}; display: flex; align-items: center; padding: 3px; box-sizing: border-box; justify-content: {{sw.justify}}; cursor: pointer; flex: none;"><span style="width: 26px; height: 26px; border-radius: 9999px; background: {{sw.knob}};"></span></button>
+        </div>
+      </sc-if>
+    </section>
+
+    <!-- Realized -->
+    <section aria-labelledby="real-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 20px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <h2 id="real-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">What rate changes earned you in 2026</h2>
+          <span style="align-self: flex-start; padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Realized exchange gains and losses</span>
+        </div>
+        <span style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end;">
+          <span style="font-size: 13px; color: #47444F;">This year, net</span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">+$52.00</span>
+        </span>
+      </div>
+      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 820px;">Once the money lands, the difference is real. It goes in the category <a href="BooksCategories.dc.html" style="font-weight: 600;">Exchange gains and losses</a>, under Money in, so it adds to or comes off Coming in for the month it landed. Other Thistle &amp; Co. payments landed at the rate they were billed.</p>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; min-width: 300px; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums;">
+          <thead>
+            <tr style="text-align: left; color: #5F5B68; font-size: 12px;">
+              <th scope="col" style="padding: 8px 8px 8px 0; font-weight: 600;">Paid invoice</th>
+              <th scope="col" class="be-hide-sm" style="padding: 8px; font-weight: 600;">Billed as</th>
+              <th scope="col" style="padding: 8px; font-weight: 600;">Landed as</th>
+              <th scope="col" style="padding: 8px 0 8px 8px; font-weight: 600; text-align: right;">Gain or loss</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{realized}}" as="r" hint-placeholder-count="3">
+              <tr style="border-top: 1px solid #EFEDF3;">
+                <td style="padding: 12px 8px 12px 0;"><span style="display: flex; flex-direction: column;"><span style="font-weight: 600;">{{r.who}}</span><span style="font-size: 12px; color: #5F5B68;">{{r.inv}} · {{r.amt}}</span></span></td>
+                <td class="be-hide-sm" style="padding: 12px 8px;"><span style="display: flex; flex-direction: column;"><span style="font-weight: 600;">{{r.v0}}</span><span style="font-size: 12px; color: #5F5B68;">{{r.d0}} at {{r.r0}}</span></span></td>
+                <td style="padding: 12px 8px;"><span style="display: flex; flex-direction: column;"><span style="font-weight: 600;">{{r.v1}}</span><span style="font-size: 12px; color: #5F5B68;">{{r.d1}} at {{r.r1}}</span></span></td>
+                <td style="padding: 12px 0 12px 8px; text-align: right;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{r.badgeBg}}; color: {{r.badgeFg}}; font-size: 13px; font-weight: 700;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.badgeFg}};"></span>{{r.diff}}</span></td>
+              </tr>
+            </sc-for>
+            <tr style="border-top: 2px solid #E2DFE8;">
+              <td style="padding: 12px 0; font-weight: 700;">Net for 2026</td><td class="be-hide-sm"></td><td></td>
+              <td style="padding: 12px 0; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 16px;">+$52.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Short payment -->
+    <section aria-labelledby="short-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h2 id="short-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">When a foreign payment lands short</h2>
+        <span style="font-size: 14px; color: #47444F; line-height: 1.5; max-width: 760px;">It happens with almost every international payment. Part of the gap is usually a bank fee, and the rest is the rate moving. Here&#39;s how we&#39;d handle it if Kaffeehaus Berlin paid INV-0158 today.</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <div style="flex: 1 1 180px; padding: 14px 16px; border-radius: 18px; background: #F7F6F9; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 13px; color: #47444F;">You billed €4,800.00, counted as</span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$5,376.00</span>
+        </div>
+        <div style="flex: 1 1 180px; padding: 14px 16px; border-radius: 18px; background: #F7F6F9; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 13px; color: #47444F;">Landed in Chase ••4417</span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$5,217.00</span>
+        </div>
+        <div style="flex: 1 1 180px; padding: 14px 16px; border-radius: 18px; background: #FFF0B8; color: #6B5000; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 13px;">Short by</span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$159.00</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; max-width: 280px;">Fee your bank kept
+            <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{sp.fee}}" onChange="{{sp.setFee}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+          </label>
+          <span style="font-size: 13px; color: #5F5B68; line-height: 1.45; margin-top: -6px;">We found &#8220;INCOMING WIRE FEE 15.00&#8221; on your bank feed the same day.</span>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span id="rest-l" style="font-size: 13px; font-weight: 600;">The other {{sp.restText}} is because</span>
+            <div role="group" aria-labelledby="rest-l" style="display: flex; flex-direction: column; gap: 6px;">
+              <sc-for list="{{sp.reasons}}" as="rs" hint-placeholder-count="2">
+                <button type="button" aria-pressed="{{rs.on}}" onClick="{{rs.pick}}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border: {{rs.border}}; border-radius: 16px; background: {{rs.bg}}; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+                  <span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 9999px; border: 2px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center; flex: none;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: {{rs.dot}};"></span></span>
+                  <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 14px;">{{rs.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{rs.sub}}</span></span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <sc-if value="{{sp.err}}" hint-placeholder-val="{{false}}">
+            <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{sp.err}}</span>
+          </sc-if>
+        </div>
+
+        <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-size: 13px; font-weight: 600; color: #47444F;">What we&#39;d record</span>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
+            <sc-for list="{{sp.lines}}" as="sl" hint-placeholder-count="4">
+              <li style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;">
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: {{sl.dot}}; flex: none;"></span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">{{sl.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{sl.sub}}</span></span>
+                <span style="flex: none; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">{{sl.amount}}</span>
+              </li>
+            </sc-for>
+          </ul>
+          <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{sp.effect}}</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+        <button type="button" onClick="{{sp.save}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{sp.saveLabel}}</button>
+        <span style="font-size: 13px; color: #5F5B68;">{{sp.ruleText}}</span>
+      </div>
+    </section>
+
+    <!-- More in your books -->
+    <nav aria-label="More in your books" style="display: flex; flex-direction: column; gap: 10px;">
+      <span style="font-size: 13px; font-weight: 600; color: #47444F;">More in your books</span>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px;">
+        <sc-for list="{{more}}" as="mo" hint-placeholder-count="4">
+          <a href="{{mo.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; color: #18161F;">
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{mo.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{mo.formal}}</span></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        </sc-for>
+      </div>
+    </nav>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2460}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      curs: [
+        { code: 'EUR', name: 'Euro', sym: '€', daily: 1.09, own: null, used: 'Kaffeehaus Berlin GmbH · 1 unpaid invoice, 1 draft quote' },
+        { code: 'GBP', name: 'Pound sterling', sym: '£', daily: 1.27, own: null, used: 'Thistle & Co. Ltd · monthly retainer, 1 unpaid invoice' }
+      ],
+      editFor: null, draft: '',
+      addOpen: false, pick: 'CAD',
+      openInv: null, revalOpen: false, reval: false,
+      fee: '15.00', reason: 'rate', err: '', ruleSaved: false,
+      toast: null
+    };
+  }
+  renderVals() {
+    const st = this.state;
+    const cents = (n) => '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const sgn = (n) => (n > 0 ? '+' : n < 0 ? '−' : '') + cents(n);
+    const num = (v) => { const n = parseFloat(String(v || '').replace(/[$,\s]/g, '')); return isFinite(n) ? n : NaN; };
+    const pos = { badgeBg: '#E2F6D5', badgeFg: '#2F5711' }, neg = { badgeBg: '#FBE3DF', badgeFg: '#A8200D' };
+
+    // currencies
+    const pool = [
+      { code: 'CAD', name: 'Canadian dollar', sym: 'C$', daily: 0.73 },
+      { code: 'AUD', name: 'Australian dollar', sym: 'A$', daily: 0.66 },
+      { code: 'CHF', name: 'Swiss franc', sym: 'Fr', daily: 1.18 },
+      { code: 'JPY', name: 'Japanese yen', sym: '¥', daily: 0.0068 },
+      { code: 'MXN', name: 'Mexican peso', sym: 'M$', daily: 0.055 }
+    ];
+    const have = st.curs.map((c) => c.code);
+    const addable = pool.filter((p) => have.indexOf(p.code) < 0).map((p) => ({ code: p.code, label: p.name + ' (' + p.code + ')' }));
+    const pick = addable.some((a) => a.code === st.pick) ? st.pick : (addable[0] ? addable[0].code : '');
+    const setCur = (code, patch) => this.state.curs.map((c) => (c.code === code ? Object.assign({}, c, patch) : c));
+    const curs = st.curs.map((c) => {
+      const rate = c.own != null ? c.own : c.daily;
+      const editing = st.editFor === c.code;
+      return {
+        code: c.code, name: c.name, sym: c.sym, used: c.used,
+        rateText: '1 ' + c.code + ' = $' + (rate < 0.1 ? rate.toFixed(4) : rate.toFixed(2)),
+        src: c.own != null ? 'Your rate' : 'Daily rate', srcBg: c.own != null ? '#E1EEF8' : '#EFEDF3', srcFg: c.own != null ? '#1F5E91' : '#47444F',
+        editing, editLabel: 'More options for ' + c.name, isOwn: c.own != null, draft: st.draft,
+        toggleEdit: () => this.setState({ editFor: editing ? null : c.code, draft: String(rate) }),
+        setDraft: (e) => this.setState({ draft: e.target.value }),
+        saveOwn: () => {
+          const n = num(this.state.draft);
+          if (!(n > 0)) { this.notify('Type a rate, like 1.08'); return; }
+          this.setState({ curs: setCur(c.code, { own: n }), editFor: null });
+          this.notify('New ' + c.code + ' invoices will use $' + n + ' per 1 ' + c.code);
+        },
+        useDaily: () => { this.setState({ curs: setCur(c.code, { own: null }), editFor: null }); this.notify(c.code + ' is back on the daily rate'); }
+      };
+    });
+
+    // unpaid foreign invoices
+    const OI = [
+      { id: 'k', who: 'Kaffeehaus Berlin GmbH', inv: 'INV-0158', amt: '€4,800.00', due: 'Nov 7', sent: 'Sep 8', r0: '1.12', r1: '1.09', v0: 5376, v1: 5232, detail: 'Café menu and signage design, net 60 terms. VAT reverse charged to the customer (VAT ID DE 812 345 678). If they paid at today’s rate, about $5,232.00 would land before any bank fee.' },
+      { id: 't', who: 'Thistle & Co. Ltd', inv: 'INV-0159', amt: '£1,200.00', due: 'Nov 14', sent: 'Sep 15', r0: '1.24', r1: '1.27', v0: 1488, v1: 1524, detail: 'September social retainer. The pound has gone up since you sent it, so today it’s worth $36.00 more than you billed.' }
+    ];
+    const openInv = OI.map((o) => {
+      const d = o.v1 - o.v0, open = st.openInv === o.id;
+      return Object.assign({}, o, d < 0 ? neg : pos, {
+        r0: '$' + o.r0, r1: '$' + o.r1, v0: cents(o.v0), v1: cents(o.v1), diff: sgn(d), open, rot: open ? 180 : 0,
+        toggle: () => this.setState({ openInv: open ? null : o.id })
+      });
+    });
+
+    // realized
+    const RZ = [
+      { who: 'Kaffeehaus Berlin GmbH', inv: 'INV-0139', amt: '€3,200.00', v0: 3456, d0: 'Mar 2', r0: '$1.08', v1: 3520, d1: 'Apr 1', r1: '$1.10' },
+      { who: 'Thistle & Co. Ltd', inv: 'INV-0146', amt: '£1,200.00', v0: 1524, d0: 'Jun 15', r0: '$1.27', v1: 1548, d1: 'Jul 14', r1: '$1.29' },
+      { who: 'Thistle & Co. Ltd', inv: 'INV-0152', amt: '£1,200.00', v0: 1536, d0: 'Aug 15', r0: '$1.28', v1: 1500, d1: 'Sep 12', r1: '$1.25' }
+    ];
+    const realized = RZ.map((r) => Object.assign({}, r, (r.v1 - r.v0) < 0 ? neg : pos, { v0: cents(r.v0), v1: cents(r.v1), diff: sgn(r.v1 - r.v0) }));
+
+    // short payment
+    const BOOKED = 5376, LANDED = 5217, SHORT = BOOKED - LANDED;
+    const feeN = num(st.fee);
+    const feeOk = feeN >= 0 && feeN <= SHORT;
+    const fee = feeOk ? feeN : 0;
+    const rest = Math.round((SHORT - fee) * 100) / 100;
+    const isRate = st.reason === 'rate';
+    const reasons = [
+      { k: 'rate', label: 'The exchange rate moved', sub: 'The euro is worth less today than on Sep 8. Nobody owes anything.' },
+      { k: 'less', label: 'They paid less than the invoice', sub: 'Keep the rest open on INV-0158 and add it to the next reminder.' }
+    ].map((r) => ({
+      label: r.label, sub: r.sub, on: st.reason === r.k,
+      bg: st.reason === r.k ? '#EEE8FF' : '#FFFFFF', border: st.reason === r.k ? '2px solid #7A5AF8' : '1px solid #E2DFE8', dot: st.reason === r.k ? '#18161F' : 'transparent',
+      pick: () => { if (st.reason !== r.k) this.setState({ reason: r.k, ruleSaved: false }); }
+    }));
+    const lines = [
+      { label: 'Into Chase ••4417', sub: 'What actually landed · debit Cash', amount: cents(LANDED), dot: '#47444F' }
+    ];
+    if (fee > 0) lines.push({ label: 'Bank fees', sub: 'Counts in Going out · debit Bank service charges', amount: cents(fee), dot: '#E0752D' });
+    if (rest > 0) lines.push(isRate
+      ? { label: 'Exchange gains and losses', sub: 'Comes off Coming in · debit Realized FX loss', amount: '−' + cents(rest), dot: '#7A5AF8' }
+      : { label: 'Still owed on INV-0158', sub: 'About €' + (rest / 1.09).toFixed(2) + ' · stays in Accounts receivable', amount: cents(rest), dot: '#C9BCFB' });
+    lines.push({ label: 'INV-0158 marked ' + (isRate || rest === 0 ? 'paid' : 'part paid'), sub: 'Clears ' + cents(isRate ? BOOKED : BOOKED - rest) + ' · credit Accounts receivable', amount: cents(isRate ? BOOKED : BOOKED - rest), dot: '#B9A3FF' });
+    const effect = isRate
+      ? 'Your three numbers: Going out goes up ' + cents(fee) + ' and Coming in goes down ' + cents(rest) + '. That ' + cents(fee + rest) + ' is exactly the gap.'
+      : 'Your three numbers: Going out goes up ' + cents(fee) + '. Coming in stays at ' + cents(BOOKED) + ', because Kaffeehaus still owes ' + cents(rest) + '.';
+    const sp = {
+      fee: st.fee, err: feeOk ? '' : 'The fee can be anything from $0.00 to $159.00.',
+      setFee: (e) => this.setState({ fee: e.target.value, ruleSaved: false }),
+      restText: cents(rest), reasons, lines, effect,
+      saveLabel: st.ruleSaved ? 'Saved as your rule' : 'Handle short payments like this',
+      ruleText: st.ruleSaved ? 'Next time, we’ll do this for you and show it in Handled for you.' : 'Or we’ll ask you each time one lands short.',
+      save: () => {
+        if (!feeOk) { this.notify('Fix the fee amount first'); return; }
+        this.setState({ ruleSaved: true });
+        this.notify(isRate ? 'Saved: fees to Bank fees, the rest to exchange gains and losses' : 'Saved: fees to Bank fees, the rest stays open on the invoice');
+      }
+    };
+
+    return Object.assign(this.hdr(), {
+      curs, addable, pick, addOpen: st.addOpen, addClosed: !st.addOpen,
+      openAdd: () => this.setState({ addOpen: true }),
+      closeAdd: () => this.setState({ addOpen: false }),
+      setPick: (e) => this.setState({ pick: e.target.value }),
+      addCur: () => {
+        const p = pool.find((x) => x.code === pick); if (!p) return;
+        this.setState({ curs: st.curs.concat([{ code: p.code, name: p.name, sym: p.sym, daily: p.daily, own: null, used: 'Not used yet' }]), addOpen: false });
+        this.notify(p.name + ' added. You can bill in ' + p.code + ' now.');
+      },
+      openInv, realized,
+      revalOpen: st.revalOpen, revalClosed: !st.revalOpen, openReval: () => this.setState({ revalOpen: true }),
+      reval: st.reval,
+      sw: { track: st.reval ? '#18161F' : '#CBC7D3', knob: st.reval ? '#B9A3FF' : '#FFFFFF', justify: st.reval ? 'flex-end' : 'flex-start' },
+      toggleReval: () => { this.setState({ reval: !st.reval }); this.notify(st.reval ? 'Reports keep the rate on the invoice date' : 'Reports will use month-end rates for unpaid invoices'); },
+      sp, more: this.moreLinks('fx')
+    });
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  moreLinks(cur) {
+    return [
+      { key: 'keep', label: 'Yours to keep', formal: 'Profit after tax, month by month', href: 'ThreeKeep.dc.html' },
+      { key: 'tax', label: 'Tax and year-end', formal: 'Sales tax, accounting method, year-end close', href: 'BooksTax.dc.html' },
+      { key: 'rec', label: 'Check against your bank statement', formal: 'Bank reconciliation', href: 'BooksReconcile.dc.html' },
+      { key: 'cat', label: 'Categories', formal: 'Chart of accounts and journal entries', href: 'BooksCategories.dc.html' },
+      { key: 'fx', label: 'Currencies', formal: 'Exchange rates, gains and losses', href: 'BooksCurrencies.dc.html' }
+    ].filter((l) => l.key !== cur);
+  }
+  hdr() {
+    const st = this.state;
+    return {
+      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
+      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
+      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
+      verbs: [
+        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+        { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+        { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+      ],
+      acctLinks: [
+        { label: 'Your business', hint: 'Profile, invoice look, country and tax', href: 'BizProfile.dc.html' },
+        { label: 'Team and permissions', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
+        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
+        { label: 'Switch to Maya Chen Photography', hint: 'Your other business', href: 'BizTeam.dc.html' }
+      ],
+      toast: this.state.toast
+    };
+  }
+}
+</script>
 </body>
 </html>
