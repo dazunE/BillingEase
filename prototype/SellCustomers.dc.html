@@ -15,6 +15,7 @@ body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
 @media (max-width: 640px){.be-hide-sm{display:none!important}}
+.be-show-sm{display:none}@media (max-width: 640px){.be-show-sm{display:inline!important}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
@@ -174,7 +175,7 @@ a{color:#18161F}a:hover{color:#000000}
         <h2 id="cl-h" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Customer list</h2>
         <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; gap: 2px;">
           <div aria-hidden="true" class="be-hide-sm" style="display: flex; gap: 12px; padding: 8px 14px 4px 62px; font-size: 12px; font-weight: 600; color: #5F5B68;">
-            <span style="flex: 1;">Customer</span><span style="width: 92px; text-align: right;">Owes you</span><span style="width: 92px; text-align: right;">Paid this year</span>
+            <span style="flex: 1;">Customer</span><span style="width: 92px; text-align: right; white-space: nowrap;">Owes you</span><span style="width: 100px; text-align: right; white-space: nowrap;">Paid this year</span>
           </div>
           <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
             <button type="button" aria-pressed="{{r.sel}}" onClick="{{r.pick}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; width: 100%; text-align: left; padding: 12px 14px; border-radius: 14px; border: 0; background: {{r.bg}}; color: #18161F; font: 400 14px DM Sans, sans-serif; cursor: pointer;">
@@ -187,8 +188,8 @@ a{color:#18161F}a:hover{color:#000000}
                 </span>
               </span>
               <span style="display: flex; gap: 12px; margin-left: auto;">
-                <span style="width: 92px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: {{r.owesFg}};">{{r.owes}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.owesSub}}</span></span>
-                <span style="width: 92px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span style="font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; color: #47444F;">{{r.paid}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.paidSub}}</span></span>
+                <span style="width: 92px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span class="be-show-sm" style="font-size: 11px; font-weight: 600; color: #5F5B68;">Owes you</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: {{r.owesFg}};">{{r.owes}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.owesSub}}</span></span>
+                <span style="width: 100px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span class="be-show-sm" style="font-size: 11px; font-weight: 600; color: #5F5B68;">Paid this year</span><span style="font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; color: #47444F;">{{r.paid}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.paidSub}}</span></span>
               </span>
             </button>
           </sc-for>
@@ -331,7 +332,7 @@ a{color:#18161F}a:hover{color:#000000}
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1736}}'>
 class Component extends DCLogic {
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
@@ -344,17 +345,19 @@ class Component extends DCLogic {
       n: { in: this.money(Math.round(inT)), out: this.money(outT), keep: this.money(keep) },
       newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
       verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer', href: 'SellInvoice.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Record an expense', hint: 'Cash or card you already spent', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Add a receipt', hint: 'Snap, upload or forward it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something to pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
+        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
       ],
       acct: [
-        { label: 'Business profile & invoice look', href: 'BizProfile.dc.html' },
-        { label: 'Team & permissions', href: 'BizTeam.dc.html' },
-        { label: 'Switch to Maya Chen Photography', href: 'BizTeam.dc.html' },
-        { label: 'Security & your data', href: 'BizSecurity.dc.html' },
-        { label: 'Everything BillingEase does', href: 'Everything.dc.html' }
+        { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
+        { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
+        { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
+        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
+        { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
+        { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
       ],
       toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
       toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
@@ -433,7 +436,7 @@ class Component extends DCLogic {
       const on = !!c && x.id === c.id, la = lateAmt(x), o = owes(x);
       return {
         name: x.name, ini: ini(x.name), iniBg: on ? '#FFFFFF' : '#EEE8FF', sel: on, bg: on ? '#EEE8FF' : '#FFFFFF',
-        meta: x.contact + (x.country !== 'United States' ? ' · ' + x.country + ' · ' + x.cur : ''),
+        meta: [x.contact].concat(x.country !== 'United States' ? [x.country, x.cur] : []).filter(Boolean).join(' · ') || 'No contact yet',
         late: la > 0, lateText: fmt(la, x.cur) + ' late',
         owes: o > 0 ? fmt(o, x.cur) : 'Nothing', owesFg: o > 0 ? '#18161F' : '#5F5B68', owesSub: o > 0 && x.cur !== 'USD' ? '≈ ' + usd(owesUsd(x)) : '',
         paid: usd(x.paid), paidSub: x.paidCur ? fmt(x.paidCur, x.cur) : '',

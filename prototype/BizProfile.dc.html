@@ -477,8 +477,8 @@ class Component extends DCLogic {
     const acct = [
       { k: 'profile', label: 'Business profile', href: 'BizProfile.dc.html', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
       { k: 'team', label: 'Team and access', href: 'BizTeam.dc.html', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' },
-      { k: 'security', label: 'Security and data', href: 'BizSecurity.dc.html', icon: 'M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6zM9 12l2 2 4-4' },
-      { k: 'switch', label: 'Switch business', href: 'BizTeam.dc.html', icon: 'M7 7h13l-4-4M17 17H4l4 4' },
+      { k: 'security', label: 'Security and your data', href: 'BizSecurity.dc.html', icon: 'M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6zM9 12l2 2 4-4' },
+      { k: 'switch', label: 'Switch business', href: 'BizTeam.dc.html#businesses', icon: 'M7 7h13l-4-4M17 17H4l4 4' },
       { k: 'all', label: 'Everything BillingEase does', href: 'Everything.dc.html', icon: 'M4 6h16M4 12h16M4 18h10' },
       { k: 'out', label: 'Sign out', href: 'AuthSignIn.dc.html', icon: 'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10' }
     ].map((m) => Object.assign({}, m, { cur: m.k === page ? 'page' : false, bg: m.k === page ? '#EEE8FF' : 'transparent' }));
@@ -487,10 +487,11 @@ class Component extends DCLogic {
       toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
       toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
       verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
+        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
         { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
       ]
     };
   }

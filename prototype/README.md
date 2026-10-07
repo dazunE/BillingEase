@@ -16,32 +16,20 @@ npx serve prototype -l 8000
 
 Then open http://localhost:8000/. The index lists every screen; "Start on the landing page" walks the full flow: landing → sign up → business setup → dashboard.
 
-## The concept
+## The flow
 
-BillingEase is built around one equation: **Coming in − Going out = Yours to keep.** The app home shows those three numbers, a short "Needs you" list (only what BillingEase can't do on its own) and a "Handled for you" log. Every feature sits one tap behind one of the numbers:
+BillingEase is built around one equation: **Coming in − Going out = Yours to keep.** The prototype is one connected flow, in the order a new customer meets it:
 
-| Screen | File |
+| Step | Screens |
 |---|---|
-| Landing page | `ThreeLanding.dc.html` |
-| App home | `ThreeHome.dc.html` |
-| Coming in (invoices, getting paid, "Bill someone") | `ThreeIn.dc.html` |
-| Going out (sorting charges, bills, payroll, expenses) | `ThreeOut.dc.html` |
-| Yours to keep (tax set-aside, safe to spend, reports) | `ThreeKeep.dc.html` |
-| Mobile home | `ThreeMobile.dc.html` |
+| 1 · Get started | `ThreeLanding` (landing page) → `AuthSignUp` → `SetupProfile` (what you sell, where, who works in it) · `AuthSignIn`, `AuthRecover` |
+| 2 · Home | `ThreeHome` (the three numbers, "Needs you", "Handled for you"), `ThreeMobile` (phone), `Everything` (every feature in plain words) |
+| 3 · Coming in | `ThreeIn` → `SellInvoices`, `SellInvoice`, `SellQuotes`, `SellRecurring`, `SellCustomers`, `SellCatalog`, `SellPayments` |
+| 4 · Going out | `ThreeOut` → `SpendReceipts`, `SpendEveryMonth`, `SpendTransaction`, `SpendBill`, `SpendVendors`, `SpendPayroll` |
+| 5 · Yours to keep | `ThreeKeep` → `BooksReports`, `BooksTax`, `BooksReconcile`, `BooksCategories`, `BooksCurrencies` |
+| 6 · Your business | `BizProfile`, `BizTeam`, `BizSecurity` (from the account menu under your initials) |
 
-### For every business (new, for review)
-
-Eighteen screens add what service businesses, product sellers, businesses outside the US and teams need, without a feature menu. Features show up based on what the business sells, where it is and who works in it (set in `SetupProfile.dc.html`, changed later in `BizProfile.dc.html`), and each one sits behind one of the three numbers or under "Your business" (the account menu). `Everything.dc.html` lists them all in plain words.
-
-| Area | Screens |
-|---|---|
-| Start | `SetupProfile`, `Everything` |
-| Coming in | `SellQuotes`, `SellInvoice`, `SellRecurring`, `SellCatalog` |
-| Going out | `SpendReceipts`, `SpendEveryMonth`, `SpendTransaction`, `SpendBill` |
-| Yours to keep | `BooksTax`, `BooksReconcile`, `BooksCategories`, `BooksCurrencies` |
-| Your business | `BizProfile`, `BizTeam`, `BizSecurity`, `AuthRecover` |
-
-The earlier feature-by-feature screens (labelled v1 on the start page) are still here and are linked from the new screens as "the full books".
+Every app screen has the same header (search, the New menu, the account menu), a breadcrumb (Home / number / screen) and the three numbers as a small strip, so you always know where you are. Features appear based on what the business sells, where it is and who works in it.
 
 ## What's inside
 
@@ -49,13 +37,11 @@ The earlier feature-by-feature screens (labelled v1 on the start page) are still
 |---|---|
 | `index.html` | Screen directory |
 | `*.dc.html` | One file per screen, in the same `.dc.html` format as the BillingEase design canvas, so they can be copied back and forth |
-| `Sidebar.dc.html` | Shared app navigation, imported by every app screen |
 | `support.js` | A small runtime that renders the `.dc.html` format in a plain browser (holes, `sc-for`, `sc-if`, `dc-import`, state and events) |
 
-Data is in-memory, so it resets when you reload or move to another screen. Areas that aren't designed yet (settings, integrations, most individual reports) show a short "isn't part of this prototype yet" message instead of doing nothing.
+Data is in-memory, so it resets when you reload or move to another screen. 
 
 ## Design language
 
-Option E, "Graphite & Violet": near-black graphite `#18161F` for text and dark sections, soft electric violet `#B9A3FF` for primary actions with graphite text, a violet tint `#EEE8FF` for selected states, and pill-shaped controls. Headlines use Sora and UI text uses DM Sans, both loaded from Google Fonts. Status colors (Paid, Overdue, Unpaid and so on) keep their usual green, red, yellow and blue.
+"Graphite & Violet": near-black graphite `#18161F` for text and dark sections, soft electric violet `#B9A3FF` for primary actions with graphite text, a violet tint `#EEE8FF` for selected states, and pill-shaped controls. Headlines use Sora and UI text uses DM Sans, both loaded from Google Fonts. Status colors (Paid, Overdue, Unpaid and so on) keep their usual green, red, yellow and blue.
 
-The five color and typography options that were compared are kept under "Theme options" on the start page (`Theme*.dc.html`).

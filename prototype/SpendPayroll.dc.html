@@ -372,17 +372,19 @@ class Component extends DCLogic {
       n: { in: this.money(inT), out: this.money(outT), keep: this.money(keep) },
       newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
       verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer', href: 'SellInvoice.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Record an expense', hint: 'Cash or card you already spent', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Add a receipt', hint: 'Snap, upload or forward it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something to pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
+        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
       ],
       acct: [
-        { label: 'Business profile & invoice look', href: 'BizProfile.dc.html' },
-        { label: 'Team & permissions', href: 'BizTeam.dc.html' },
-        { label: 'Switch to Maya Chen Photography', href: 'BizTeam.dc.html' },
-        { label: 'Security & your data', href: 'BizSecurity.dc.html' },
-        { label: 'Everything BillingEase does', href: 'Everything.dc.html' }
+        { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
+        { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
+        { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
+        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
+        { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
+        { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
       ],
       toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
       toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
