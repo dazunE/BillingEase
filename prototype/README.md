@@ -29,6 +29,18 @@ BillingEase is built around one equation: **Coming in − Going out = Yours to k
 | Yours to keep (tax set-aside, safe to spend, reports) | `ThreeKeep.dc.html` |
 | Mobile home | `ThreeMobile.dc.html` |
 
+### For every business (new, for review)
+
+Eighteen screens add what service businesses, product sellers, businesses outside the US and teams need, without a feature menu. Features show up based on what the business sells, where it is and who works in it (set in `SetupProfile.dc.html`, changed later in `BizProfile.dc.html`), and each one sits behind one of the three numbers or under "Your business" (the account menu). `Everything.dc.html` lists them all in plain words.
+
+| Area | Screens |
+|---|---|
+| Start | `SetupProfile`, `Everything` |
+| Coming in | `SellQuotes`, `SellInvoice`, `SellRecurring`, `SellCatalog` |
+| Going out | `SpendReceipts`, `SpendEveryMonth`, `SpendTransaction`, `SpendBill` |
+| Yours to keep | `BooksTax`, `BooksReconcile`, `BooksCategories`, `BooksCurrencies` |
+| Your business | `BizProfile`, `BizTeam`, `BizSecurity`, `AuthRecover` |
+
 The earlier feature-by-feature screens (labelled v1 on the start page) are still here and are linked from the new screens as "the full books".
 
 ## What's inside
