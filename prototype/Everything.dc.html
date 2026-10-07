@@ -205,7 +205,7 @@ a{color:#18161F}a:hover{color:#000000}
     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 16px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
       <span>Starting over, or setting up another business?</span>
       <a href="SetupProfile.dc.html" style="font-weight: 600;">Answer the setup questions again</a>
-      <a href="Reports.dc.html" style="font-weight: 600;">All reports</a>
+      <a href="BooksReports.dc.html" style="font-weight: 600;">All reports</a>
     </div>
   </main>
 
@@ -239,8 +239,8 @@ class Component extends DCLogic {
       { g: 'in', name: 'Products and stock', formal: 'Inventory', text: 'See what’s on the shelf and get a heads-up before something runs out.', href: 'SellCatalog.dc.html', need: 'products', tags: ['products'], kw: 'inventory stock reorder' },
       { g: 'in', name: 'Time you can bill', formal: 'Billable hours', text: 'Log hours as you or your team work, then add them to the next invoice.', href: 'SellCatalog.dc.html', need: 'services', tags: ['services', 'teams'], kw: 'timesheet hours timer' },
       { g: 'in', name: 'Bill in other currencies', formal: 'Multi-currency invoices', text: 'Invoice in euros or pounds. We show what each one is worth in dollars.', href: 'SellInvoice.dc.html', need: 'overseas', tags: ['overseas'], kw: 'currency euro pound eur gbp foreign vat reverse charge' },
-      { g: 'in', name: 'Getting paid online', formal: 'Card, bank and Apple Pay', text: 'Customers pay straight from the invoice, and the money lands in your bank.', href: 'Payments.dc.html', tags: ['services', 'products'], kw: 'payments card ach stripe payout' },
-      { g: 'in', name: 'Your customers', formal: 'Customer list', text: 'Who you work for, what they owe, and everything you’ve sent them.', href: 'Customers.dc.html', tags: ['services', 'products'], kw: 'clients contacts' },
+      { g: 'in', name: 'Getting paid online', formal: 'Card, bank and Apple Pay', text: 'Customers pay straight from the invoice, and the money lands in your bank.', href: 'SellPayments.dc.html', tags: ['services', 'products'], kw: 'payments card ach stripe payout' },
+      { g: 'in', name: 'Your customers', formal: 'Customer list', text: 'Who you work for, what they owe, and everything you’ve sent them.', href: 'SellCustomers.dc.html', tags: ['services', 'products'], kw: 'clients contacts' },
       // Going out
       { g: 'out', name: 'Record an expense', formal: '', text: 'Cash, card or a bill to pay later, written in one line.', href: 'ThreeOut.dc.html', tags: [], kw: 'expense spend cost' },
       { g: 'out', name: 'Receipts', formal: 'Receipt scanning', text: 'Snap or forward a receipt. We read it and match it to the charge.', href: 'SpendReceipts.dc.html', tags: [], kw: 'receipt scan photo ocr upload' },
@@ -249,8 +249,8 @@ class Component extends DCLogic {
       { g: 'out', name: 'Bills to pay', formal: 'Bills · accounts payable', text: 'Enter a bill once, then pay it all, in parts or on a schedule.', href: 'SpendBill.dc.html', tags: ['products'], kw: 'bill payable vendor partial payment schedule' },
       { g: 'out', name: 'Buying stock', formal: 'Inventory purchases', text: 'Stock you buy isn’t Going out until you sell it.', href: 'SpendBill.dc.html', need: 'products', tags: ['products'], kw: 'inventory purchase order stock supplier' },
       { g: 'out', name: 'Cost of goods', formal: 'COGS', text: 'What the things you sold cost you, counted on the day they sell.', href: 'SellCatalog.dc.html', need: 'products', tags: ['products'], kw: 'cogs cost of goods sold margin' },
-      { g: 'out', name: 'Payroll', formal: '', text: 'Pay your team by direct deposit. Payroll taxes are filed for you.', href: 'Payroll.dc.html', need: 'team', tags: ['teams'], kw: 'payroll salary wages employees w-2 1099' },
-      { g: 'out', name: 'Who you pay', formal: 'Vendors', text: 'Suppliers and contractors, and what you owe each of them.', href: 'Vendors.dc.html', tags: [], kw: 'vendor supplier contractor' },
+      { g: 'out', name: 'Payroll', formal: '', text: 'Pay your team by direct deposit. Payroll taxes are filed for you.', href: 'SpendPayroll.dc.html', need: 'team', tags: ['teams'], kw: 'payroll salary wages employees w-2 1099' },
+      { g: 'out', name: 'Who you pay', formal: 'Vendors', text: 'Suppliers and contractors, and what you owe each of them.', href: 'SpendVendors.dc.html', tags: [], kw: 'vendor supplier contractor' },
       // Yours to keep
       { g: 'keep', name: 'Tax set-aside', formal: 'Estimated tax', text: 'A share of each month’s profit put aside, so tax day isn’t a surprise.', href: 'ThreeKeep.dc.html', tags: [], kw: 'income tax estimated quarterly irs' },
       { g: 'keep', name: 'Sales tax you collected', formal: 'Sales tax · VAT · GST', text: 'What you added to invoices and owe the state, with filing dates. Called VAT or GST outside the US.', href: 'BooksTax.dc.html', need: 'products', tags: ['products', 'overseas'], kw: 'sales tax vat gst filing return' },
@@ -260,8 +260,8 @@ class Component extends DCLogic {
       { g: 'keep', name: 'Currencies and exchange rates', formal: 'FX gains and losses', text: 'What you gained or lost when a euro or pound payment arrived.', href: 'BooksCurrencies.dc.html', need: 'overseas', tags: ['overseas'], kw: 'currency exchange rate fx gain loss' },
       { g: 'keep', name: 'Cash or accrual view', formal: 'Accounting method', text: 'Count money when it moves, or when you invoice and get billed.', href: 'BooksTax.dc.html', need: 'advanced', tags: [], kw: 'cash accrual basis method' },
       { g: 'keep', name: 'Close the year', formal: 'Year-end close', text: 'Lock last year once your taxes are filed, so nothing changes by accident.', href: 'BooksTax.dc.html', need: 'accountant', tags: ['teams'], kw: 'year end close lock period' },
-      { g: 'keep', name: 'How much did I make?', formal: 'Profit & loss', text: 'Coming in minus Going out, month by month, ready to share.', href: 'ProfitLoss.dc.html', tags: [], kw: 'profit loss income statement p&l' },
-      { g: 'keep', name: 'All reports', formal: 'Balance sheet, cash flow and more', text: 'Every standard report your accountant or bank might ask for.', href: 'Reports.dc.html', tags: [], kw: 'reports balance sheet cash flow aged receivables trial balance general ledger' },
+      { g: 'keep', name: 'How much did I make?', formal: 'Profit & loss', text: 'Coming in minus Going out, month by month, ready to share.', href: 'BooksReports.dc.html', tags: [], kw: 'profit loss income statement p&l' },
+      { g: 'keep', name: 'All reports', formal: 'Balance sheet, cash flow and more', text: 'Every standard report your accountant or bank might ask for.', href: 'BooksReports.dc.html', tags: [], kw: 'reports balance sheet cash flow aged receivables trial balance general ledger' },
       // Your business
       { g: 'biz', name: 'Business profile and invoice look', formal: 'Branding', text: 'Your name, logo, colors and the details printed on every invoice.', href: 'BizProfile.dc.html', tags: [], kw: 'profile logo branding address' },
       { g: 'biz', name: 'Country, currency and tax', formal: '', text: 'Where you’re based. It sets your currency, date format and what tax is called.', href: 'BizProfile.dc.html', tags: ['overseas'], kw: 'country currency tax vat gst settings locale' },
