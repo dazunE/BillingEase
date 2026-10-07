@@ -263,13 +263,13 @@ a{color:#18161F}a:hover{color:#000000}
                 </span>
                 <dl style="margin: 0; display: flex; flex-wrap: wrap; gap: 8px 22px;">
                   <sc-for list="{{p.stats}}" as="sx" hint-placeholder-count="5">
-                    <div style="display: flex; flex-direction: column; gap: 2px; min-width: 64px;">
+                    <div style="display: flex; flex-direction: column; gap: 2px; width: 72px;">
                       <dt style="font-size: 12px; color: #5F5B68;">{{sx.label}}</dt>
                       <dd style="margin: 0; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: {{sx.fg}};">{{sx.value}}</dd>
                     </div>
                   </sc-for>
                 </dl>
-                <span style="display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto;">
+                <span style="display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; min-width: min(100%, 236px); justify-content: flex-end;">
                   <sc-if value="{{p.needsRestock}}" hint-placeholder-val="{{false}}">
                     <a href="SpendBill.dc.html" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Restock</a>
                   </sc-if>
@@ -316,7 +316,7 @@ a{color:#18161F}a:hover{color:#000000}
               <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 12px 0; border-top: {{lg.border}}; font-size: 14px;">
                 <span style="flex: 1 1 220px; min-width: 0;"><strong>{{lg.name}}</strong> <span style="color: #47444F;">· {{lg.reason}}</span></span>
                 <span style="color: #5F5B68; font-size: 13px;">{{lg.who}} · {{lg.date}}</span>
-                <span style="min-width: 60px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{lg.change}}</span>
+                <span style="margin-left: auto; min-width: 60px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{lg.change}}</span>
               </li>
             </sc-for>
           </ul>
@@ -400,7 +400,7 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1132}}'>
 class Component extends DCLogic {
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   common(inDelta) {
@@ -509,7 +509,7 @@ class Component extends DCLogic {
     const newCount = ap ? (adj.mode === 'set' ? v : ap.stock + v) : 0;
     const delta = ap && isFinite(v) ? newCount - ap.stock : 0;
     const adjVals = {
-      value: adj.value, valueLabel: adj.mode === 'set' ? 'New count' : 'Add or remove', ph: adj.mode === 'set' ? (ap ? String(ap.stock) : '0') : 'e.g. -3 or 10',
+      value: adj.value, valueLabel: adj.mode === 'set' ? 'New count' : 'How many (− to remove)', ph: adj.mode === 'set' ? (ap ? String(ap.stock) : '0') : 'e.g. -3 or 10',
       border: st.adjErr ? '#A8200D' : '#CBC7D3', hasError: !!st.adjErr, error: st.adjErr,
       modes: [{ k: 'change', label: 'Add or remove' }, { k: 'set', label: 'Set new count' }].map((m) => ({ label: m.label, on: adj.mode === m.k, bg: adj.mode === m.k ? '#18161F' : 'transparent', fg: adj.mode === m.k ? '#FFFFFF' : '#18161F', pick: () => setAdj({ mode: m.k }) })),
       reasons: ['Counted stock', 'Damaged or lost', 'Used as samples', 'Returned by customer', 'Found extra'].map((r) => ({ label: r, on: adj.reason === r, bg: adj.reason === r ? '#EEE8FF' : '#FFFFFF', border: adj.reason === r ? '#7A5AF8' : '#CBC7D3', pick: () => setAdj({ reason: r }) })),
@@ -579,7 +579,7 @@ class Component extends DCLogic {
       tabs, isServices: st.tab === 'services', isProducts: st.tab === 'products', isTime: st.tab === 'time',
       addLabel: kind === 'time' ? 'Log time' : kind === 'product' ? 'Add a product' : 'Add a service',
       addHint: kind === 'time' ? 'Log hours as you work. Turn them into an invoice line when you’re ready.' : 'Catalog items are suggestions. You can always change a price on a single invoice.',
-      openAdd: () => this.setState({ add: { name: '', price: '', cost: '', stock: '', reorder: '', rt: 'flat', person: 'Maya Chen', cust: 'Greenline Architects', svc: 'Design hours', hours: '' }, addErr: '' }),
+      openAdd: () => a ? this.notify('The form is open below the tabs') : this.setState({ add: { name: '', price: '', cost: '', stock: '', reorder: '', rt: 'flat', person: 'Maya Chen', cust: 'Greenline Architects', svc: 'Design hours', hours: '' }, addErr: '' }),
       closeAdd: () => this.setState({ add: null, addErr: '' }),
       add: addVals, saveAdd,
       setAddName: (e) => setAdd({ name: e.target.value }), setAddPrice: (e) => setAdd({ price: e.target.value }), setAddCost: (e) => setAdd({ cost: e.target.value }),
