@@ -317,7 +317,7 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = {
-      flow: 'forgot', step: 1,
+      flow: (() => { try { const h = (window.location.hash || '').slice(1); return ['forgot', 'verify', 'invite'].includes(h) ? h : 'forgot'; } catch (e) { return 'forgot'; } })(), step: 1,
       fp: { email: 'maya@northwind.studio', tried: false },
       np: { pass: '', again: '', show: false, others: true, tried: false },
       v: { email: 'maya@northwind.studio', done: false, editing: false, draft: '', tried: false },

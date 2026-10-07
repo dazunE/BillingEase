@@ -2,12 +2,241 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · AuthSignIn</title>
+<title>BillingEase · Sign in</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.bz-in:focus,.bz-pw:focus-within{outline:2px solid #7A5AF8;outline-offset:1px}
+.bz-sub{margin:0;font-size:15px;line-height:1.5;color:#47444F}
+.bz-mut{font-size:13px;color:#5F5B68;line-height:1.45}
+.bz-lbl{font-size:13px;font-weight:600;color:#18161F}
+.bz-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bz-in{min-height:44px;width:100%;box-sizing:border-box;padding:0 14px;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;font:400 15px 'DM Sans',sans-serif;color:#18161F}
+.bz-pw{display:flex;align-items:center;min-height:44px;box-sizing:border-box;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;padding:0 4px 0 14px}
+.bz-pw input{flex:1;min-width:0;min-height:40px;border:0;outline:0;background:transparent;font:400 15px 'DM Sans',sans-serif;color:#18161F}
+.bz-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 15px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box;text-align:center}
+.bz-btn2{background:rgba(24,22,31,0.07)}
+.bz-btnline{background:#FFFFFF;border:1px solid #18161F}
+.bz-link{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0;border:0;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.bz-err{font-size:13px;font-weight:600;color:#A8200D;display:flex;align-items:center;gap:6px}
+.bz-note{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:#EEE8FF;font-size:14px;line-height:1.5;color:#18161F}
+.bz-note svg{flex:none;margin-top:2px}
+.bz-h1{margin:0;font-family:Sora,'DM Sans',sans-serif;font-weight:700;font-size:clamp(30px,6vw,40px);line-height:1.08;letter-spacing:-0.03em}
+.bz-or{display:flex;align-items:center;gap:12px;font-size:13px;color:#5F5B68}
+.bz-or::before,.bz-or::after{content:"";flex:1;height:1px;background:#E2DFE8}
+.bz-eqrow{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:14px;background:rgba(238,232,255,0.08)}
+.bz-eqtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px}
+.bz-eqline{font-size:13px;line-height:1.45;color:#EEE8FF}
+</style>
+</helmet>
+
+<div style="min-height: 100vh; box-sizing: border-box; background: #F7F6F9; font-family: DM Sans, system-ui, sans-serif; color: #18161F; display: flex; flex-direction: column;">
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 24px; padding: 24px clamp(16px, 4vw, 32px) 40px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+      <a href="ThreeLanding.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; color: #18161F;">BillingEase</span>
+      </a>
+      <span style="font-size: 14px; color: #47444F;">New here? <a href="AuthSignUp.dc.html" style="font-weight: 600;">Create an account</a></span>
+    </header>
+
+    <!-- Prototype switch -->
+    <div role="group" aria-label="Prototype settings" style="align-self: center; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 12px; padding: 8px 10px 8px 16px; border: 1px dashed #CBC7D3; border-radius: 24px; box-sizing: border-box;">
+      <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">Prototype</span>
+      <button type="button" role="switch" aria-checked="{{tw.on}}" onClick="{{toggleTwo}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 6px; border: 0; background: transparent; cursor: pointer; font: 600 13px DM Sans, sans-serif; color: #18161F;">
+        <span aria-hidden="true" style="width: 36px; height: 22px; border-radius: 9999px; background: {{tw.track}}; display: flex; align-items: center; padding: 2px; box-sizing: border-box; justify-content: {{tw.justify}};"><span style="width: 18px; height: 18px; border-radius: 9999px; background: #FFFFFF;"></span></span>
+        Use two-step sign-in
+      </button>
+    </div>
+
+    <main style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 16px;">
+      <div style="flex: 1 1 360px; max-width: 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+      <div style="flex: 1; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 5vw, 40px); display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- Email + password -->
+        <sc-if value="{{isForm}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <h1 class="bz-h1">Welcome back.</h1>
+              <p class="bz-sub">Sign in to see where your three numbers stand today.</p>
+            </div>
+
+            <div class="bz-field">
+              <label class="bz-lbl" for="si-email">Email</label>
+              <input id="si-email" class="bz-in" type="email" autocomplete="email" value="{{f.email}}" onChange="{{setEmail}}" aria-invalid="{{f.emailInv}}" style="border-color: {{f.emailB}};">
+              <sc-if value="{{f.emailErr}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{f.emailErr}}</span></sc-if>
+            </div>
+
+            <div class="bz-field">
+              <span style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+                <label class="bz-lbl" for="si-pass">Password</label>
+                <a href="AuthRecover.dc.html" style="font-size: 13px; font-weight: 600;">Forgot password?</a>
+              </span>
+              <span class="bz-pw" style="border-color: {{f.passB}};">
+                <input id="si-pass" type="{{f.type}}" autocomplete="current-password" value="{{f.pass}}" onChange="{{setPass}}" aria-invalid="{{f.passInv}}">
+                <button type="button" class="bz-link" style="font-size: 13px; padding: 0 10px;" aria-pressed="{{f.shown}}" aria-label="{{f.showAria}}" onClick="{{toggleShow}}">{{f.showLabel}}</button>
+              </span>
+              <sc-if value="{{f.passErr}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{f.passErr}}</span></sc-if>
+            </div>
+
+            <sc-if value="{{f.wrong}}" hint-placeholder-val="{{false}}">
+              <div role="alert" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; line-height: 1.45;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A8200D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.5v.01"></path></svg>
+                <span><strong>That password doesn&#39;t match.</strong> Check caps lock and try again, or <a href="AuthRecover.dc.html" style="color: #A8200D; font-weight: 600;">reset it</a>.</span>
+              </div>
+            </sc-if>
+
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F; cursor: pointer;"><input type="checkbox" checked="{{f.keep}}" onChange="{{setKeep}}" style="width: 18px; height: 18px; margin: 0; accent-color: #18161F;">Keep me signed in on this device</label>
+
+            <button type="button" class="bz-btn" onClick="{{signIn}}">Sign in</button>
+            <div class="bz-or">or</div>
+            <button type="button" class="bz-btn bz-btnline" onClick="{{google}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" fill="#4285F4"></path><path d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853"></path><path d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z" fill="#FBBC04"></path><path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.8 9.4 6 12 6z" fill="#EA4335"></path></svg>
+              Continue with Google
+            </button>
+            <a href="AuthSignUp.dc.html" style="align-self: center; font-size: 14px; font-weight: 600;">Create an account</a>
+          </div>
+        </sc-if>
+
+        <!-- Two-step code -->
+        <sc-if value="{{isCode}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <span style="width: 56px; height: 56px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"></rect><path d="M10.5 18.5h3"></path></svg></span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <h1 class="bz-h1">{{c.title}}</h1>
+              <p class="bz-sub">{{c.sub}}</p>
+            </div>
+            <div class="bz-field">
+              <label class="bz-lbl" for="si-code">{{c.label}}</label>
+              <input id="si-code" class="bz-in" type="text" inputmode="{{c.mode}}" autocomplete="one-time-code" maxlength="{{c.max}}" value="{{c.code}}" onChange="{{setCode}}" aria-invalid="{{c.inv}}" style="border-color: {{c.border}}; min-height: 56px; font: 700 26px Sora, DM Sans, sans-serif; letter-spacing: 0.3em; text-align: center; font-variant-numeric: tabular-nums;">
+              <sc-if value="{{c.err}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{c.err}}</span></sc-if>
+              <span class="bz-mut">Prototype: any {{c.any}} works.</span>
+            </div>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F; cursor: pointer;"><input type="checkbox" checked="{{c.trust}}" onChange="{{setTrust}}" style="width: 18px; height: 18px; margin: 0; accent-color: #18161F;">Don&#39;t ask again on this device for 30 days</label>
+            <button type="button" class="bz-btn" onClick="{{verify}}">Verify and sign in</button>
+            <span style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 20px;">
+              <button type="button" class="bz-link" onClick="{{switchBackup}}">{{c.altLabel}}</button>
+              <button type="button" class="bz-link" onClick="{{textMe}}">Text me a code</button>
+            </span>
+            <button type="button" class="bz-link" style="align-self: center; font-weight: 500; color: #47444F;" onClick="{{backToForm}}">Back to sign in</button>
+          </div>
+        </sc-if>
+
+        <!-- Signed in -->
+        <sc-if value="{{isDone}}" hint-placeholder-val="{{false}}">
+          <div role="status" style="display: flex; flex-direction: column; gap: 20px;">
+            <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <h1 class="bz-h1">Signed in.</h1>
+              <p class="bz-sub">Welcome back, Maya. {{doneNote}}</p>
+            </div>
+            <a href="ThreeHome.dc.html" class="bz-btn">Go to Home</a>
+            <button type="button" class="bz-link" style="align-self: center;" onClick="{{signOut}}">Not you? Sign out</button>
+          </div>
+        </sc-if>
+      </div>
+        <a href="AuthRecover.dc.html#invite" style="align-self: center; font-size: 14px; font-weight: 600;">Accepting a team invite?</a>
+      </div>
+
+      <aside aria-label="Signing in safely" style="flex: 1 1 300px; max-width: 400px; min-width: 0; box-sizing: border-box; background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(22px, 4vw, 32px); display: flex; flex-direction: column; gap: 18px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Picking up where you left off</span>
+        <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; color: #FFFFFF;">Your three numbers kept up while you were away.</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #EEE8FF;">Payments, bank charges and receipts that came in since your last visit are already sorted. Anything we couldn&#39;t do alone waits under Needs you.</p>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{safe}}" as="l" hint-placeholder-count="3">
+            <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; color: #FFFFFF;">
+              <span style="width: 22px; height: 22px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+              {{l}}
+            </li>
+          </sc-for>
+        </ul>
+        <span style="margin-top: auto; font-size: 13px; color: #EEE8FF;">We never ask for your password by email or phone.</span>
+      </aside>
+    </main>
+
+    <footer style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; font-size: 13px;">
+      <a href="ThreeLanding.dc.html" style="color: #47444F;">What is BillingEase?</a>
+      <a href="Everything.dc.html" style="color: #47444F;">Everything it does</a>
+    </footer>
+  </div>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { stage: 'form', two: false, email: 'maya@northwind.studio', pass: 'northwind-2026', show: false, keep: true, tried: false, attempts: 0, code: '', backup: false, trust: true, codeTried: false, via: 'password', toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const s = this.state;
+    const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
+    const red = '#A8200D', base = '#CBC7D3';
+    const emailErr = s.tried ? (!s.email.trim() ? 'Enter your email.' : (!valid(s.email) ? 'Enter a valid email address.' : null)) : null;
+    const passErr = s.tried && !s.pass ? 'Enter your password.' : null;
+    const wrong = s.attempts === 1 && !emailErr && !passErr;
+    const f = {
+      email: s.email, pass: s.pass, keep: s.keep,
+      type: s.show ? 'text' : 'password', showLabel: s.show ? 'Hide' : 'Show', shown: s.show ? 'true' : 'false', showAria: s.show ? 'Hide password' : 'Show password',
+      emailErr, passErr, wrong,
+      emailInv: emailErr ? 'true' : 'false', passInv: (passErr || wrong) ? 'true' : 'false',
+      emailB: emailErr ? red : base, passB: (passErr || wrong) ? red : base
+    };
+    const digits = s.code.replace(/\s/g, '');
+    const codeOk = s.backup ? /^[A-Za-z0-9]{8}$/.test(digits) : /^\d{6}$/.test(digits);
+    const codeErr = s.codeTried && !codeOk ? (s.backup ? 'Backup codes are 8 letters and numbers.' : (!digits ? 'Enter the 6-digit code.' : 'Enter all 6 digits (numbers only).')) : null;
+    const c = {
+      code: s.code, trust: s.trust, err: codeErr, inv: codeErr ? 'true' : 'false', border: codeErr ? red : base,
+      title: s.backup ? 'Use a backup code.' : 'Enter your code.',
+      sub: s.backup ? 'One of the 10 codes you saved when you turned on two-step sign-in. Each works once.' : 'Open your authenticator app and type the code for BillingEase (maya@northwind.studio). It changes every 30 seconds.',
+      label: s.backup ? 'Backup code' : '6-digit code', mode: s.backup ? 'text' : 'numeric', max: s.backup ? '8' : '6',
+      any: s.backup ? '8 letters or numbers' : '6 digits',
+      altLabel: s.backup ? 'Use my authenticator app' : 'Use a backup code'
+    };
+    const finish = (via) => this.setState({ stage: 'done', via, tried: false, codeTried: false });
+    const set = (o) => this.setState(o);
+    const doneNote = s.via === 'google' ? 'You signed in with Google as maya@northwind.studio.' : (s.via === 'code' ? 'Code accepted' + (s.trust ? ', and we won’t ask on this device for 30 days.' : '.') : (s.keep ? 'You’ll stay signed in on this device.' : 'We’ll sign you out when you close the browser.'));
+    return {
+      toast: s.toast, f, c, doneNote,
+      tw: { on: s.two ? 'true' : 'false', track: s.two ? '#7A5AF8' : '#CBC7D3', justify: s.two ? 'flex-end' : 'flex-start' },
+      isForm: s.stage === 'form', isCode: s.stage === 'code', isDone: s.stage === 'done',
+      safe: ['Your data is encrypted, and bank connections are read-only.', 'Two-step sign-in adds a code from your phone. Turn it on in Security.', 'Team members sign in with their own accounts, never yours.'],
+      toggleTwo: () => { set({ two: !s.two }); this.notify(s.two ? 'Two-step sign-in off for this demo' : 'Two-step sign-in on: a code step follows the password'); },
+      setEmail: (e) => set({ email: e.target.value }),
+      setPass: (e) => set({ pass: e.target.value }),
+      setKeep: (e) => set({ keep: e.target.checked }),
+      toggleShow: () => set({ show: !s.show }),
+      signIn: () => {
+        if (!valid(s.email) || !s.pass) { set({ tried: true }); return; }
+        if (s.attempts === 0) { set({ tried: true, attempts: 1 }); return; }
+        if (s.two) { set({ stage: 'code', tried: false, attempts: 2, code: '', codeTried: false }); return; }
+        set({ attempts: 2 }); finish('password');
+      },
+      google: () => { this.notify('Signed in with Google'); if (s.two) { set({ stage: 'code', code: '', codeTried: false }); return; } finish('google'); },
+      setCode: (e) => set({ code: e.target.value }),
+      setTrust: (e) => set({ trust: e.target.checked }),
+      verify: () => { if (!codeOk) { set({ codeTried: true }); return; } finish('code'); },
+      switchBackup: () => set({ backup: !s.backup, code: '', codeTried: false }),
+      textMe: () => this.notify('Code sent by text to (•••) •••-0192'),
+      backToForm: () => set({ stage: 'form', attempts: 0, tried: false }),
+      signOut: () => { set({ stage: 'form', attempts: 0, tried: false, pass: '' }); this.notify('Signed out'); }
+    };
+  }
+}
+</script>
 </body>
 </html>

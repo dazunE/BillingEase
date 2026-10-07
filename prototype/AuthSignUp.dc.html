@@ -2,12 +2,258 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · AuthSignUp</title>
+<title>BillingEase · Create your account</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
-<div style="padding: 40px; font-family: DM Sans, system-ui, sans-serif;">Being designed. <a href="ThreeHome.dc.html">Home</a></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.bz-in:focus,.bz-pw:focus-within{outline:2px solid #7A5AF8;outline-offset:1px}
+.bz-sub{margin:0;font-size:15px;line-height:1.5;color:#47444F}
+.bz-mut{font-size:13px;color:#5F5B68;line-height:1.45}
+.bz-lbl{font-size:13px;font-weight:600;color:#18161F}
+.bz-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bz-in{min-height:44px;width:100%;box-sizing:border-box;padding:0 14px;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;font:400 15px 'DM Sans',sans-serif;color:#18161F}
+.bz-pw{display:flex;align-items:center;min-height:44px;box-sizing:border-box;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;padding:0 4px 0 14px}
+.bz-pw input{flex:1;min-width:0;min-height:40px;border:0;outline:0;background:transparent;font:400 15px 'DM Sans',sans-serif;color:#18161F}
+.bz-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 15px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box;text-align:center}
+.bz-btn2{background:rgba(24,22,31,0.07)}
+.bz-btnline{background:#FFFFFF;border:1px solid #18161F}
+.bz-link{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0;border:0;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.bz-err{font-size:13px;font-weight:600;color:#A8200D;display:flex;align-items:center;gap:6px}
+.bz-note{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:#EEE8FF;font-size:14px;line-height:1.5;color:#18161F}
+.bz-note svg{flex:none;margin-top:2px}
+.bz-h1{margin:0;font-family:Sora,'DM Sans',sans-serif;font-weight:700;font-size:clamp(30px,6vw,40px);line-height:1.08;letter-spacing:-0.03em}
+.bz-or{display:flex;align-items:center;gap:12px;font-size:13px;color:#5F5B68}
+.bz-or::before,.bz-or::after{content:"";flex:1;height:1px;background:#E2DFE8}
+.bz-eqrow{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:14px;background:rgba(238,232,255,0.08)}
+.bz-eqtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px}
+.bz-eqline{font-size:13px;line-height:1.45;color:#EEE8FF}
+</style>
+</helmet>
+
+<div style="min-height: 100vh; box-sizing: border-box; background: #F7F6F9; font-family: DM Sans, system-ui, sans-serif; color: #18161F; display: flex; flex-direction: column;">
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 24px; padding: 24px clamp(16px, 4vw, 32px) 40px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+      <a href="ThreeLanding.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; color: #18161F;">BillingEase</span>
+      </a>
+      <span style="font-size: 14px; color: #47444F;">Have an account? <a href="AuthSignIn.dc.html" style="font-weight: 600;">Sign in</a></span>
+    </header>
+
+    <main style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 16px;">
+      <div style="flex: 1 1 360px; max-width: 480px; min-width: 0; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 5vw, 40px); display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- Form -->
+        <sc-if value="{{isForm}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <h1 class="bz-h1">Create your account.</h1>
+              <p class="bz-sub">Free to start. Setup takes about three minutes, and you can bill someone today.</p>
+            </div>
+
+            <button type="button" class="bz-btn bz-btnline" onClick="{{google}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" fill="#4285F4"></path><path d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853"></path><path d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z" fill="#FBBC04"></path><path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.8 9.4 6 12 6z" fill="#EA4335"></path></svg>
+              Continue with Google
+            </button>
+            <div class="bz-or">or with your email</div>
+
+            <div class="bz-field">
+              <label class="bz-lbl" for="su-name">Your name</label>
+              <input id="su-name" class="bz-in" type="text" autocomplete="name" value="{{f.name}}" onChange="{{setName}}" aria-invalid="{{f.nameInv}}" aria-describedby="su-name-err" style="border-color: {{f.nameB}};">
+              <sc-if value="{{f.nameErr}}" hint-placeholder-val="{{false}}"><span id="su-name-err" class="bz-err">{{f.nameErr}}</span></sc-if>
+            </div>
+
+            <div class="bz-field">
+              <label class="bz-lbl" for="su-email">Work email</label>
+              <input id="su-email" class="bz-in" type="email" autocomplete="email" value="{{f.email}}" onChange="{{setEmail}}" aria-invalid="{{f.emailInv}}" aria-describedby="su-email-err" style="border-color: {{f.emailB}};">
+              <sc-if value="{{f.emailErr}}" hint-placeholder-val="{{false}}"><span id="su-email-err" class="bz-err">{{f.emailErr}}</span></sc-if>
+              <sc-if value="{{f.emailHint}}" hint-placeholder-val="{{true}}"><span class="bz-mut">Customers see this address on your invoices. You can change it later.</span></sc-if>
+            </div>
+
+            <div class="bz-field">
+              <label class="bz-lbl" for="su-pass">Password</label>
+              <span class="bz-pw" style="border-color: {{f.passB}};">
+                <input id="su-pass" type="{{f.type}}" autocomplete="new-password" value="{{f.pass}}" onChange="{{setPass}}" aria-invalid="{{f.passInv}}" aria-describedby="su-pass-meter">
+                <button type="button" class="bz-link" style="font-size: 13px; padding: 0 10px;" aria-pressed="{{f.shown}}" aria-label="{{f.showAria}}" onClick="{{toggleShow}}">{{f.showLabel}}</button>
+              </span>
+              <span style="display: flex; gap: 4px;" aria-hidden="true">
+                <sc-for list="{{f.bars}}" as="b" hint-placeholder-count="4"><span style="flex: 1; height: 6px; border-radius: 9999px; background: {{b.c}};"></span></sc-for>
+              </span>
+              <span id="su-pass-meter" class="bz-mut" aria-live="polite">Strength: <strong style="color: #18161F;">{{f.strength}}</strong> · {{f.tip}}</span>
+              <sc-if value="{{f.passErr}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{f.passErr}}</span></sc-if>
+            </div>
+
+            <div class="bz-field">
+              <span style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; color: #47444F;"><input id="su-terms" type="checkbox" checked="{{f.terms}}" onChange="{{setTerms}}" aria-invalid="{{f.termsInv}}" style="width: 18px; height: 18px; margin: 1px 0 0; flex: none; accent-color: #18161F; cursor: pointer;"><span><label for="su-terms" style="cursor: pointer;">I agree to the</label> <button type="button" class="bz-link" style="min-height: 0; font-size: 14px;" onClick="{{showTerms}}">Terms</button> and <button type="button" class="bz-link" style="min-height: 0; font-size: 14px;" onClick="{{showPrivacy}}">Privacy notice</button>.</span></span>
+              <sc-if value="{{f.termsErr}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{f.termsErr}}</span></sc-if>
+              <sc-if value="{{legal}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 14px; background: #F7F6F9; font-size: 13px; line-height: 1.5; color: #47444F;">
+                  <strong style="color: #18161F;">{{legal.title}}</strong>
+                  <span>{{legal.body}}</span>
+                  <button type="button" class="bz-link" style="align-self: flex-start; font-size: 13px; min-height: 28px;" onClick="{{closeLegal}}">Close</button>
+                </div>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{f.summary}}" hint-placeholder-val="{{false}}">
+              <div role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{f.summary}}</div>
+            </sc-if>
+
+            <button type="button" class="bz-btn" onClick="{{create}}">Create account</button>
+            <a href="AuthSignIn.dc.html" style="align-self: center; font-size: 14px; font-weight: 600;">I already have an account</a>
+          </div>
+        </sc-if>
+
+        <!-- Created by email -->
+        <sc-if value="{{isDone}}" hint-placeholder-val="{{false}}">
+          <div role="status" style="display: flex; flex-direction: column; gap: 20px;">
+            <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <h1 class="bz-h1">You&#39;re in, {{first}}.</h1>
+              <p class="bz-sub">Your account is ready. Next, a few questions so BillingEase only shows what fits your business.</p>
+            </div>
+            <div class="bz-note">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3z"></path><path d="m3 7 9 6 9-6"></path></svg>
+              <span style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                <span><strong>Check your email when you get a minute.</strong> We sent a link to <strong style="overflow-wrap: anywhere;">{{email}}</strong>. Keep going meanwhile; only sending invoices waits for it.</span>
+                <span style="display: flex; flex-wrap: wrap; gap: 4px 16px;">
+                  <button type="button" class="bz-link" style="font-size: 13px; min-height: 28px;" onClick="{{resend}}">Send it again</button>
+                  <button type="button" class="bz-link" style="font-size: 13px; min-height: 28px;" onClick="{{fixEmail}}">Wrong address? Change it</button>
+                </span>
+              </span>
+            </div>
+            <a href="SetupProfile.dc.html" class="bz-btn">Continue to setup</a>
+          </div>
+        </sc-if>
+
+        <!-- Created with Google -->
+        <sc-if value="{{isGoogle}}" hint-placeholder-val="{{false}}">
+          <div role="status" style="display: flex; flex-direction: column; gap: 20px;">
+            <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <h1 class="bz-h1">Signed in with Google.</h1>
+              <p class="bz-sub">Welcome, Maya. Your account uses <strong style="color: #18161F;">maya@northwind.studio</strong>, already verified by Google, so there&#39;s no email to check.</p>
+            </div>
+            <a href="SetupProfile.dc.html" class="bz-btn">Continue to setup</a>
+            <button type="button" class="bz-link" style="align-self: center;" onClick="{{backToForm}}">Use a different account</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Reminder of the concept -->
+      <aside aria-label="How BillingEase works" style="flex: 1 1 300px; max-width: 400px; min-width: 0; box-sizing: border-box; background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(22px, 4vw, 32px); display: flex; flex-direction: column; gap: 18px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>How it works</span>
+        <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; color: #FFFFFF;">Your business, in three numbers.</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #EEE8FF;">Invoices, receipts, payroll and tax each sit behind one of them. We do the bookkeeping and ask you only for what we can&#39;t do alone.</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="bz-eqrow">
+            <span class="bz-eqtop"><span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #C9BCFB;"></span>Coming in</span><strong style="font-variant-numeric: tabular-nums;">$24,850</strong></span>
+            <span class="bz-eqline">What customers paid you this month, or still owe.</span>
+          </div>
+          <div class="bz-eqrow">
+            <span class="bz-eqtop"><span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #F4C3A1;"></span>− Going out</span><strong style="font-variant-numeric: tabular-nums;">$13,640</strong></span>
+            <span class="bz-eqline">Bills, subscriptions and payroll, paid or still to pay.</span>
+          </div>
+          <div class="bz-eqrow" style="background: rgba(185,163,255,0.16);">
+            <span class="bz-eqtop"><span style="font-weight: 600;">= Yours to keep</span><strong style="font: 700 24px Sora, sans-serif; letter-spacing: -0.02em; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407</strong></span>
+            <span class="bz-eqline">What&#39;s left after tax is set aside. Actually yours.</span>
+          </div>
+        </div>
+        <span style="margin-top: auto; font-size: 13px; color: #EEE8FF;">Example: a small design studio in October.</span>
+      </aside>
+    </main>
+
+    <footer style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; font-size: 13px;">
+      <a href="ThreeLanding.dc.html" style="color: #47444F;">What is BillingEase?</a>
+      <a href="Everything.dc.html" style="color: #47444F;">Everything it does</a>
+    </footer>
+  </div>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { stage: 'form', name: '', email: '', pass: '', show: false, terms: false, tried: false, legal: null, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  strength(p) {
+    let n = 0;
+    if (p.length >= 8) n++;
+    if (p.length >= 12) n++;
+    if (/[a-z]/.test(p) && /[A-Z]/.test(p)) n++;
+    if (/\d/.test(p) && /[^A-Za-z0-9]/.test(p)) n++;
+    if (p.length < 8) n = 0;
+    return n;
+  }
+  renderVals() {
+    const s = this.state;
+    const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
+    const sc = this.strength(s.pass);
+    const LBL = ['Too short', 'Weak', 'Okay', 'Strong', 'Very strong'];
+    const COL = ['#A8200D', '#E0752D', '#C9A100', '#7A5AF8', '#2F5711'];
+    const bars = [1, 2, 3, 4].map((i) => ({ c: !s.pass ? '#E2DFE8' : (sc === 0 ? (i === 1 ? COL[0] : '#E2DFE8') : (sc >= i ? COL[sc] : '#E2DFE8')) }));
+    const tip = !s.pass ? 'at least 8 characters' : (s.pass.length < 8 ? (8 - s.pass.length) + ' more character' + (8 - s.pass.length === 1 ? '' : 's') : (sc < 3 ? 'add length, a capital, a number or a symbol' : 'good to go'));
+
+    const nameErr = s.tried && !s.name.trim() ? 'Enter your name.' : null;
+    const emailErr = s.tried ? (!s.email.trim() ? 'Enter your work email.' : (!valid(s.email) ? 'That doesn’t look like an email address. Check for typos.' : null)) : null;
+    const passErr = s.tried ? (!s.pass ? 'Choose a password.' : (s.pass.length < 8 ? 'Use at least 8 characters.' : (sc < 2 ? 'A bit stronger, please: make it longer or add numbers and symbols.' : null))) : null;
+    const termsErr = s.tried && !s.terms ? 'Please agree to the Terms to create an account.' : null;
+    const nErr = [nameErr, emailErr, passErr, termsErr].filter(Boolean).length;
+    const red = '#A8200D', base = '#CBC7D3';
+
+    const f = {
+      name: s.name, email: s.email, pass: s.pass, terms: s.terms,
+      type: s.show ? 'text' : 'password', showLabel: s.show ? 'Hide' : 'Show', shown: s.show ? 'true' : 'false', showAria: s.show ? 'Hide password' : 'Show password',
+      bars, strength: s.pass ? LBL[sc] : '—', tip,
+      nameErr, emailErr, passErr, termsErr,
+      nameInv: nameErr ? 'true' : 'false', emailInv: emailErr ? 'true' : 'false', passInv: passErr ? 'true' : 'false', termsInv: termsErr ? 'true' : 'false',
+      nameB: nameErr ? red : base, emailB: emailErr ? red : base, passB: passErr ? red : base,
+      emailHint: !emailErr,
+      summary: nErr > 1 ? 'Fix ' + nErr + ' things above to create your account.' : null
+    };
+    const LEGAL = {
+      terms: { title: 'Terms, in short', body: 'You own your data and can export or delete it any time. Free to start; paid features say their price before you turn them on.' },
+      privacy: { title: 'Privacy, in short', body: 'We use your details to run your account and never sell them. Bank connections are read-only.' }
+    };
+    const set = (o) => this.setState(o);
+    return {
+      toast: s.toast, f, legal: s.legal ? LEGAL[s.legal] : null,
+      isForm: s.stage === 'form', isDone: s.stage === 'done', isGoogle: s.stage === 'google',
+      first: (s.name.trim() || 'there').split(' ')[0], email: s.email.trim(),
+      setName: (e) => set({ name: e.target.value }),
+      setEmail: (e) => set({ email: e.target.value }),
+      setPass: (e) => set({ pass: e.target.value }),
+      setTerms: (e) => set({ terms: e.target.checked }),
+      toggleShow: () => set({ show: !s.show }),
+      showTerms: () => { set({ legal: s.legal === 'terms' ? null : 'terms' }); },
+      showPrivacy: () => { set({ legal: s.legal === 'privacy' ? null : 'privacy' }); },
+      closeLegal: () => set({ legal: null }),
+      create: () => {
+        if (!s.name.trim() || !valid(s.email) || s.pass.length < 8 || sc < 2 || !s.terms) { set({ tried: true }); return; }
+        set({ stage: 'done', tried: false });
+      },
+      google: () => { set({ stage: 'google' }); this.notify('Signed in with Google'); },
+      backToForm: () => set({ stage: 'form' }),
+      resend: () => this.notify('Sent the link again to ' + s.email.trim()),
+      fixEmail: () => set({ stage: 'form', tried: false })
+    };
+  }
+}
+</script>
 </body>
 </html>
