@@ -23,7 +23,7 @@ a{color:#18161F}a:hover{color:#000000}
       <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
       <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
     </a>
-    <button type="button" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{account}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+    <a href="BizProfile.dc.html" aria-label="Your business: Maya Chen, Northwind Studio" style="width: 44px; height: 44px; border-radius: 9999px; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; display: flex; align-items: center; justify-content: center; text-decoration: none; flex: none;">MC</a>
   </header>
 
   <!-- Scrolling content -->
@@ -207,6 +207,7 @@ class Component extends DCLogic {
     const openCount = tasks.filter((t) => t.open).length;
     const verbs = [
       { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+      { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
       { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
       { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'MobileReceipt.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
       { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
@@ -240,7 +241,6 @@ class Component extends DCLogic {
       closeSheet: () => this.setState({ sheet: false }),
       plusLabel: st.sheet ? 'Close actions' : 'New: bill, expense, receipt or payment',
       plusIcon: st.sheet ? 'M6 6l12 12M18 6 6 18' : 'M12 5v14M5 12h14',
-      account: () => this.notify('Account settings aren’t part of this prototype yet'),
       toast: st.toast
     };
   }

@@ -52,7 +52,17 @@ a{color:#18161F}a:hover{color:#000000}
             </div>
           </sc-if>
         </div>
-        <button type="button" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{account}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+        <div style="position: relative;">
+          <button type="button" aria-label="Account: Maya Chen, Northwind Studio" aria-haspopup="menu" aria-expanded="{{acctOpen}}" onClick="{{account}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
+            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 270px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF2; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Maya Chen</span><span style="font-size: 12.5px; color: #5F5B68;">Owner · Northwind Studio</span></span>
+              <sc-for list="{{acctLinks}}" as="a" hint-placeholder-count="5">
+                <a href="{{a.href}}" role="menuitem" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14.5px;">{{a.label}}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
       </div>
     </div>
   </header>
@@ -195,9 +205,10 @@ a{color:#18161F}a:hover{color:#000000}
     <!-- Quiet way into the full books -->
     <nav aria-label="Full books" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
       <span>Need the full books?</span>
-      <a href="ThreeKeep.dc.html" style="font-weight: 600;">Reports</a>
-      <a href="ChartOfAccounts.dc.html" style="font-weight: 600;">Chart of accounts</a>
-      <a href="Reconciliation.dc.html" style="font-weight: 600;">Reconciliation</a>
+      <a href="Everything.dc.html" style="font-weight: 600;">Everything BillingEase does</a>
+      <a href="BooksTax.dc.html" style="font-weight: 600;">Sales tax</a>
+      <a href="BooksReconcile.dc.html" style="font-weight: 600;">Check against your bank</a>
+      <a href="BooksCategories.dc.html" style="font-weight: 600;">Categories</a>
       <a href="Customers.dc.html" style="font-weight: 600;">Customers</a>
       <a href="Vendors.dc.html" style="font-weight: 600;">Vendors</a>
     </nav>
@@ -215,7 +226,7 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { period: 'month', done: {}, newOpen: false, showAllHandled: false, toast: null };
+    this.state = { acctOpen: false, period: 'month', done: {}, newOpen: false, showAllHandled: false, toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
@@ -265,8 +276,9 @@ class Component extends DCLogic {
     ];
     const verbs = [
       { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+      { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
       { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'MobileReceipt.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
+      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
       { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
     ];
     return {
@@ -275,8 +287,16 @@ class Component extends DCLogic {
       handledToggle: st.showAllHandled ? 'Show less' : 'Show all ' + handled.length,
       toggleHandled: () => this.setState({ showAllHandled: !st.showAllHandled }),
       newOpen: st.newOpen, verbs,
-      toggleNew: () => this.setState({ newOpen: !st.newOpen }),
-      account: () => this.notify('Account settings aren’t part of this prototype yet'),
+      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
+      acctOpen: st.acctOpen, acctLinks: [
+        { label: 'Business profile', href: 'BizProfile.dc.html' },
+        { label: 'Team and access', href: 'BizTeam.dc.html' },
+        { label: 'Switch business', href: 'BizTeam.dc.html#businesses' },
+        { label: 'Security and your data', href: 'BizSecurity.dc.html' },
+        { label: 'Everything BillingEase does', href: 'Everything.dc.html' },
+        { label: 'Sign out', href: 'SignIn.dc.html' }
+      ],
+      account: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
       toast: st.toast
     };
   }
