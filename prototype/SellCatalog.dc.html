@@ -285,6 +285,7 @@ a{color:#18161F}a:hover{color:#000000}
           </sc-for>
         </div>
 
+        <sc-if value="{{hasLog}}" hint-placeholder-val="{{true}}">
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Stock changes</h2>
           <ul style="margin: 0; padding: 4px 20px; list-style: none; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px;">
@@ -297,6 +298,7 @@ a{color:#18161F}a:hover{color:#000000}
             </sc-for>
           </ul>
         </div>
+        </sc-if>
         </sc-if>
       </section>
     </sc-if>
@@ -580,7 +582,7 @@ class Component extends DCLogic {
         this.notify(pr.name + ' now ' + money(price) + ' · used on new quotes and invoices');
       },
       cancelPe: () => this.setState({ peId: null, peErr: '' }),
-      stockLog: BE.all('stockLog').map((l, i) => Object.assign({}, l, { border: i === 0 ? '0' : '1px solid #EFEDF3' })),
+      hasLog: BE.all('stockLog').length > 0, stockLog: BE.all('stockLog').map((l, i) => Object.assign({}, l, { border: i === 0 ? '0' : '1px solid #EFEDF3' })),
       tgroups, noUnbilled: tgroups.length === 0, billed, hasBilled: billed.length > 0,
       noTimeText: time.length ? 'All logged time is billed. New hours your team logs will show here.' : 'Hours you log against a customer will show here, ready to put on an invoice.'
     };
