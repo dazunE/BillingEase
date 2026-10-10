@@ -108,7 +108,7 @@ a{color:#18161F}a:hover{color:#000000}
           <div style="flex: 1 1 200px; min-width: 0; background: #EEE8FF; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;">
             <span style="font-size: 13px; font-weight: 600; color: #47444F;">Set aside {{k.periodShort}}</span>
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{k.tax}}</span>
-            <span style="font-size: 13px; color: #47444F;">{{k.ratePct}} of {{k.profit}} profit</span>
+            <span style="font-size: 13px; color: #47444F;">{{k.taxSub}}</span>
           </div>
           <sc-if value="{{hasNext}}" hint-placeholder-val="{{true}}">
             <div style="flex: 1 1 200px; min-width: 0; background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;">
@@ -281,7 +281,7 @@ class Component extends DCLogic {
     const tq = BE.totals('quarter');
     const coverPct = next ? Math.min(100, Math.round(tq.tax / next * 100)) : 0;
     const k = {
-      keep: W(t.keep), tax: W(t.tax), profit: W(t.profit), ratePct: ratePctN + '%', periodName: PN[0], periodShort: PN[1], mathNote: PN[2],
+      keep: W(t.keep), tax: hasData ? W(t.tax) : 'Nothing yet', taxSub: hasData ? ratePctN + '% of ' + W(t.profit) + ' profit' : ratePctN + '% of profit, once there is some', profit: W(t.profit), ratePct: ratePctN + '%', periodName: PN[0], periodShort: PN[1], mathNote: PN[2],
       periodNote: hasData ? 'Coming in ' + t.fmt.in + ' − Going out ' + t.fmt.out + ' = profit ' + t.fmt.profit : 'Nothing counted yet',
       keepPct, taxPct: t.profit > 0 ? 100 - keepPct : 0,
       lead: !hasData ? 'Nothing here yet. When you bill someone or record what you spend, your profit, the share set aside for tax and what’s yours will show up here.'
@@ -337,7 +337,7 @@ class Component extends DCLogic {
       safe, reports,
       acctIntro: hasData ? 'Your books are up to date through today. Each answer below opens the full report.' : 'Reports fill in as you bill and spend. They open here whenever you or your accountant need them.',
       accountant: team ? team.name + ' has read-only access to your books' : false,
-      inviteLabel: team ? 'Manage access' : 'Invite your accountant', inviteBg: team ? 'rgba(24,22,31,0.07)' : '#B9A3FF',
+      inviteLabel: team ? 'Manage access' : 'Invite your accountant', inviteBg: team || !hasData ? 'rgba(24,22,31,0.07)' : '#B9A3FF',
       periods: [['month', 'This month'], ['quarter', 'This quarter'], ['year', 'This year']].map(([kk, l]) => ({ label: l, on: st.period === kk, bg: st.period === kk ? '#18161F' : 'transparent', fg: st.period === kk ? '#FFFFFF' : '#18161F', pick: () => { if (st.period !== kk) this.setState({ period: kk }); } })),
       toast: st.toast
     };

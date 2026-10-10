@@ -188,9 +188,10 @@
     { merchant: 'Brooklyn Bagel', date: 'Oct 4', total: 23.6, tax: 1.92, cat: 'Meals' }
   ];
   /** Add a picked file as a receipt. It "reads" for a moment, then shows what it found. */
-  BE.addReceipt = function (file, source) {
+  BE.addReceipt = function (file, source, known) {
     var n = BE.all('receipts').filter(function (x) { return x.uploaded; }).length;
-    var g = READS[n % READS.length];
+    // known: { merchant, total, date, tax, cat } when the receipt is for a charge we already have.
+    var g = Object.assign({}, READS[n % READS.length], known || {});
     var r = { id: BE.id('rc'), merchant: g.merchant, date: g.date, total: g.total, tax: g.tax, cat: g.cat, file: file || 'receipt.jpg', source: source || 'Uploaded just now', added: BE.today, month: 'Oct', status: 'waiting', uploaded: true, readyAt: Date.now() + 1600, isNew: true };
     BE.change(function (s) { s.receipts = [r].concat(s.receipts || []); BE._log(s, 'Read a new receipt: ' + r.merchant + ' · ' + BE.money(r.total)); });
     return r;

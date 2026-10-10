@@ -599,7 +599,7 @@ class Component extends DCLogic {
     if (cur) {
       const s = statusOf(cur);
       const tot = s.t, paid = s.paid, l = s.left;
-      const vend = vendors.filter((v) => v.name === cur.who)[0];
+      const vend = BE.vendorFor ? BE.vendorFor(cur.who) : vendors.filter((v) => v.name === cur.who)[0];
       const blines = (cur.lines && cur.lines.length ? cur.lines : [{ kind: 'cost', desc: cur.what, cat: cur.cat, amt: cur.amount }]);
       const pays = BE.all('expenses').filter((x) => x.bill === cur.id).map((x) => ({ date: x.date, from: x.how, amt: money2(x.amount), href: 'SpendTransaction.dc.html#' + x.id }));
       (cur.history || []).forEach((hh) => { if (/for stock/.test(hh.label)) pays.push({ date: hh.date, from: hh.label.replace(/^Paid \S+ for stock from /, '') + ' · stock', amt: (hh.label.match(/\$[\d,.]+/) || [''])[0], href: 'SpendBill.dc.html#' + cur.id }); });

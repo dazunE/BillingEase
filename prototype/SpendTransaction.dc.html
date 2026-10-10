@@ -353,7 +353,7 @@ class Component extends DCLogic {
     const outNow = () => BE.totals('month').fmt.out;
     const kindNow = cur.kind || 'business';
     const business = kindNow === 'business';
-    const vendor = BE.all('vendors').filter((v) => v.name === cur.who)[0];
+    const vendor = BE.vendorFor ? BE.vendorFor(cur.who) : BE.all('vendors').filter((v) => v.name === cur.who)[0];
 
     // Category
     const CATS = ['Travel', 'Meals', 'Client meetings', 'Office supplies', 'Software', 'Advertising', 'Printing', 'Contractors', 'Rent', 'Internet & phone', 'Fuel', 'Other'];
@@ -421,19 +421,18 @@ class Component extends DCLogic {
     const prof = BE.get('profile') || {};
     const slug = String(prof.business || 'you').toLowerCase().replace(/[^a-z0-9]+/g, '');
     const receipts = BE.all('receipts');
-    const linked = cur.receiptId ? receipts.filter((r) => r.id === cur.receiptId)[0] : null;
-    const rAmt = (r) => Number(r.amount != null ? r.amount : r.total) || 0;
-    const rWho = (r) => r.who || r.vendor || r.merchant || r.name || 'Receipt';
-    const usedIds = BE.all('expenses').map((e) => e.receiptId).filter(Boolean);
-    const match = !cur.receipt ? receipts.filter((r) => Math.abs(rAmt(r) - TOTAL) < 0.005 && usedIds.indexOf(r.id) < 0 && !r.expense && !r.matched)[0] : null;
+    const linked = BE.receiptFor ? BE.receiptFor(id) : (cur.receiptId ? BE.find('receipts', cur.receiptId) : null);
+    const rAmt = (r) => Number(r.total != null ? r.total : r.amount) || 0;
+    const rWho = (r) => r.merchant || r.who || r.vendor || 'Receipt';
+    const match = !cur.receipt && !linked ? receipts.filter((r) => Math.abs(rAmt(r) - TOTAL) < 0.005 && !r.expenseId && r.status !== 'matched')[0] : null;
     const rc = {
-      attached: !!cur.receipt, found: !cur.receipt && !!match, none: !cur.receipt && !match,
+      attached: !!(cur.receipt || linked), found: !cur.receipt && !linked && !!match, none: !cur.receipt && !linked && !match,
       foundTitle: match ? 'We found it: ' + rWho(match) + ' receipt, ' + money2(rAmt(match)) : '',
-      foundNote: match ? (match.date ? 'From ' + match.date + ' · ' : '') + 'same amount' : '',
+      foundNote: match ? (match.source ? match.source + ' · ' : '') + (match.date ? match.date + ' · ' : '') + 'same amount' : '',
       inbox: 'receipts+' + slug + '@billingease.app',
-      file: cur.receiptFile || (linked ? (linked.file || rWho(linked) + ' receipt') : String(cur.who).toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-receipt.pdf'),
-      href: cur.receiptId ? 'SpendReceipt.dc.html#' + cur.receiptId : 'SpendReceipts.dc.html',
-      badge: cur.receipt ? 'Receipt attached' : 'No receipt yet', badgeBg: cur.receipt ? '#E2F6D5' : '#FFF0B8', badgeFg: cur.receipt ? '#2F5711' : '#6B5000',
+      file: linked ? (linked.file || rWho(linked) + ' receipt') : (cur.receiptFile || String(cur.who).toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-receipt.pdf'),
+      href: linked ? 'SpendReceipt.dc.html#' + linked.id : 'SpendReceipts.dc.html',
+      badge: cur.receipt || linked ? 'Receipt attached' : 'No receipt yet', badgeBg: cur.receipt || linked ? '#E2F6D5' : '#FFF0B8', badgeFg: cur.receipt || linked ? '#2F5711' : '#6B5000',
       w: st.big ? '320px' : '170px', fs: st.big ? '13px' : '10px', bigLabel: st.big ? 'Smaller' : 'See full size'
     };
 
@@ -502,9 +501,18 @@ class Component extends DCLogic {
       ruleText: ruleOn ? 'On. Every ' + cur.who + ' charge goes to ' + ruleCat + ' on its own.' : 'Off. We’ll still guess ' + cur.cat + ' next time, and you can change it.',
       toggleRule: () => { const on = !ruleOn; ev(on ? 'Made a rule: ' + cur.who + ' always goes to ' + ruleCat : 'Turned off the ' + cur.who + ' rule', { rule: on }); this.notify(on ? 'Rule on: ' + cur.who + ' → ' + ruleCat : 'Rule turned off'); },
       rc,
-      attachFound: () => { ev('Attached the ' + rWho(match) + ' receipt', { receipt: true, receiptId: match.id }); this.notify('Receipt attached and kept for tax'); },
-      upload: () => { const f = String(cur.who).toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-receipt.pdf'; ev('Uploaded a receipt', { receipt: true, receiptFile: f, receiptId: null }); this.notify('Uploaded ' + f + ' and attached it'); },
-      detach: () => { ev('Removed the receipt', { receipt: false, receiptId: null, receiptFile: null }); this.setState({ big: false }); this.notify('Receipt removed. It’s back in Receipts'); },
+      attachFound: () => { BE.matchReceipt(match.id, 'expense', id); ev('Attached the ' + rWho(match) + ' receipt'); this.notify('Receipt attached and kept for tax'); },
+      upload: () => {
+        const f = String(cur.who).toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-receipt.pdf';
+        if (BE.addReceipt && BE.matchReceipt) { const r = BE.addReceipt(f, 'Uploaded from this transaction', { merchant: cur.who, total: cur.amount, date: cur.date, cat: cur.cat, tax: 0 }); BE.matchReceipt(r.id, 'expense', id); ev('Uploaded a receipt'); }
+        else ev('Uploaded a receipt', { receipt: true, receiptFile: f });
+        this.notify('Uploaded ' + f + ' and attached it');
+      },
+      detach: () => {
+        if (linked && BE.unmatchReceipt) BE.unmatchReceipt(linked.id);
+        ev('Removed the receipt', { receipt: false, receiptId: null, receiptFile: null });
+        this.setState({ big: false }); this.notify('Receipt removed. It’s back in Receipts');
+      },
       toggleBig: () => this.setState({ big: !st.big }),
       noteEditing: editingNote, noteSaved: !editingNote, noteDraft: st.noteDraft, note: cur.note || '', canCancelNote: !!cur.note,
       setNote: (e) => this.setState({ noteDraft: e.target.value }),

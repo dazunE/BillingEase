@@ -123,7 +123,7 @@ a{color:#18161F}a:hover{color:#000000}
     <section aria-labelledby="up-h" style="display: flex; flex-direction: column; gap: 12px;">
       <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
         <h2 id="up-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Coming up</h2>
-        <span style="font-size: 13px; color: #5F5B68;">{{n.sch}} still to pay before Oct 31</span>
+        <span style="font-size: 13px; color: #5F5B68;">{{n.upNote}}</span>
       </div>
 
       <!-- Payroll -->
@@ -271,7 +271,7 @@ a{color:#18161F}a:hover{color:#000000}
             <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid to
               <input class="be-field" type="text" placeholder="e.g. Joe’s Diner, Staples" value="{{e.who}}" onChange="{{setWho}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
             </label>
-            <label style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What for <span style="font-weight: 400; color: #5F5B68;">(optional)</span>
+            <label style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;"><span>What for <span style="font-weight: 400; color: #5F5B68;">(optional)</span></span>
               <input class="be-field" type="text" placeholder="e.g. Client lunch, printer ink" value="{{e.what}}" onChange="{{setWhat}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
             </label>
             <label style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid with
@@ -388,6 +388,7 @@ class Component extends DCLogic {
     // The big number
     const paidPct = t.out > 0 ? t.outPaidPct : 0;
     const n = {
+      upNote: t.outSch > 0 ? t.fmt.outSch + ' still to pay before Oct 31' : 'Nothing waiting to be paid',
       out: t.fmt.out, paid: t.fmt.outPaid, sch: t.fmt.outSch, paidPct, schPct: t.out > 0 ? 100 - paidPct : 0,
       lead: t.out > 0
         ? 'Everything leaving the business this month: what you’ve paid, plus payroll, bills and subscriptions still to come. We sort most of it on our own.'

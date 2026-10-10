@@ -222,7 +222,7 @@ a{color:#18161F}a:hover{color:#000000}
                     </div>
                   </sc-for>
                 </dl>
-                <span style="display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; min-width: min(100%, 236px); justify-content: flex-end;">
+                <span style="display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; width: min(100%, 300px); justify-content: flex-end;">
                   <sc-if value="{{p.needsRestock}}" hint-placeholder-val="{{false}}">
                     <a href="SpendBill.dc.html#new" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Restock</a>
                   </sc-if>
@@ -546,7 +546,7 @@ class Component extends DCLogic {
       setAddStock: (e) => setAdd({ stock: e.target.value }), setAddReorder: (e) => setAdd({ reorder: e.target.value }),
       setAddPerson: (e) => setAdd({ person: e.target.value }), setAddCust: (e) => setAdd({ cust: e.target.value }), setAddSvc: (e) => setAdd({ svc: e.target.value }), setAddHours: (e) => setAdd({ hours: e.target.value }),
       services, se: seVals, hasServices: svcs.length > 0, noServices: svcs.length === 0,
-      svcNote: profile.country && profile.country !== 'United States' ? 'Prices are in ' + (profile.currency || 'USD') + '. Tax is added on invoices based on where your customer is.' : 'Services aren’t taxed in New York, so we never add sales tax to these lines.',
+      svcNote: profile.taxLabel ? 'Services aren’t taxed in New York, so we never add sales tax to these lines.' : 'Prices are in ' + (profile.currency || 'USD') + '. Set your sales tax in your business profile and we’ll add it on invoices where it applies.',
       setSePrice: (e) => this.setState({ se: Object.assign({}, this.state.se, { price: e.target.value }) }),
       saveSe: () => {
         const p = num(se.price);

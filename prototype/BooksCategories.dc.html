@@ -424,7 +424,7 @@ class Component extends DCLogic {
       return {
         name: c.name, formal: c.formal, auto: false,
         total: (total || uses) ? fmt(total) : '',
-        uses: uses ? uses + (uses === 1 ? ' use' : ' uses') : (total ? 'Today' : 'Not used yet'),
+        uses: (c.group === 'in' || c.group === 'out') ? (uses ? uses + (uses === 1 ? ' use' : ' uses') + ' this month' : (total ? 'Still to pay this month' : 'Not used yet')) : (total ? 'Balance today' : 'Nothing yet'),
         menuOpen: st.menuFor === c.id, menuBg: st.menuFor === c.id ? '#EFEDF3' : 'transparent', menuLabel: 'More for ' + c.name,
         toggleMenu: () => this.setState({ menuFor: st.menuFor === c.id ? null : c.id, blockedFor: null }),
         actions,

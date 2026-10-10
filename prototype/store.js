@@ -243,7 +243,7 @@
     // ---- going out ----
     /** Record money already spent (cash or card). Adds to Going out now. */
     addExpense: function (o) {
-      var x = { id: BE.id('exp'), who: o.who, cat: o.cat || 'Other', how: o.how || 'Amex ••1009', date: o.date || BE.today, amount: Math.round((Number(o.amount) || 0) * 100) / 100, inMonth: o.inMonth !== false, receipt: !!o.receipt, note: o.note || '', split: o.split || null, kind: o.kind || 'business', isNew: true };
+      var x = { id: BE.id('exp'), who: o.who, cat: o.cat || 'Other', how: o.how || 'Amex ••1009', date: o.date || BE.today, amount: Math.round((Number(o.amount) || 0) * 100) / 100, inMonth: o.inMonth !== false, receipt: !!o.receipt, note: o.note || '', split: o.split || null, kind: o.kind || 'business', raw: o.raw || '', events: o.events || [], isNew: true };
       BE.change(function (s) {
         s.expenses = [x].concat(s.expenses || []);
         BE._log(s, 'Recorded ' + money(x.amount) + ' to ' + x.who + ' under ' + x.cat);

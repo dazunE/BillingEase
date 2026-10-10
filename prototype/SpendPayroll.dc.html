@@ -499,7 +499,7 @@ class Component extends DCLogic {
       const rows = paidX.map((x) => ({ label: 'Paid ' + x.date + (x.note ? ' · ' + x.note.split(',')[0] : ''), amt: money(x.amount), href: 'SpendTransaction.dc.html#' + x.id }))
         .concat(openB.map((b) => ({ label: 'Due ' + b.due + ' · bill ' + (b.num || ''), amt: money(BE.billLeft(b)), href: 'SpendBill.dc.html#' + b.id })))
         .map((r, i) => Object.assign(r, { border: i === 0 ? '0' : '1px solid #E2DFE8' }));
-      const v = vendors.filter((x) => x.name === name)[0];
+      const v = BE.vendorFor ? BE.vendorFor(name) : vendors.filter((x) => x.name === name)[0];
       const left = openB.reduce((a, b) => a + BE.billLeft(b), 0);
       return {
         name, ini: ini(name), rows, open: openB.length > 0, left: money(left),
