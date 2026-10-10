@@ -37,6 +37,7 @@ html{scroll-behavior:smooth}
 @media (max-width: 760px){.wf-hide-sm{display:none!important}}
 @media (max-width: 900px){.wf-op{flex-basis:100%!important;height:20px;font-size:26px!important}}
 @media (prefers-reduced-motion: reduce){.wf-anim,.wf-anim *,.wf-in{animation:none!important}.wf-lift:hover{transform:none}}
+@media (max-width: 640px){.tm-off{display:none!important}.tm-tbl{min-width:0!important}.tm-tbl caption{display:none}}
 
 </style>
 </helmet>
@@ -206,13 +207,13 @@ html{scroll-behavior:smooth}
         </div>
         <div style="flex: 999 1 600px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; border-radius: 28px; padding: clamp(12px, 2vw, 20px);">
           <div class="wf-tblwrap">
-            <table style="width: 100%; min-width: 620px; border-collapse: collapse; font-size: 14px;">
+            <table class="tm-tbl" style="width: 100%; min-width: 620px; border-collapse: collapse; font-size: 14px;">
               <caption style="text-align: left; padding: 8px 10px 14px; font-size: 13px; color: #5F5B68;">What each role can do · <span style="display: inline-flex; gap: 12px; flex-wrap: wrap;">Yes · Look only · Needs approval · Their own · No</span></caption>
               <thead>
                 <tr>
                   <th scope="col" style="text-align: left; padding: 10px; font-size: 12px; color: #5F5B68; border-bottom: 1px solid #E2DFE8;">Permission</th>
                   <sc-for list="{{roles.heads}}" as="h" hint-placeholder-count="4">
-                    <th scope="col" style="padding: 6px; border-bottom: 1px solid #E2DFE8; background: {{h.bg}}; border-radius: 14px 14px 0 0;">
+                    <th scope="col" class="{{h.cls}}" style="padding: 6px; border-bottom: 1px solid #E2DFE8; background: {{h.bg}}; border-radius: 14px 14px 0 0;">
                       <button type="button" aria-pressed="{{h.pressed}}" onClick="{{h.pick}}" style="width: 100%; min-height: 36px; border: 0; border-radius: 10px; background: transparent; font: 700 14px DM Sans, sans-serif; color: #18161F; cursor: pointer;">{{h.label}}</button>
                     </th>
                   </sc-for>
@@ -223,7 +224,7 @@ html{scroll-behavior:smooth}
                   <tr>
                     <th scope="row" style="text-align: left; padding: 11px 10px; font-weight: 600; border-bottom: 1px solid #EFEDF3;">{{r.label}}</th>
                     <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="4">
-                      <td style="padding: 11px 8px; border-bottom: 1px solid #EFEDF3; background: {{c.bg}}; text-align: center;">
+                      <td class="{{c.cls}}" style="padding: 11px 8px; border-bottom: 1px solid #EFEDF3; background: {{c.bg}}; text-align: center;">
                         <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: {{c.ink}}; white-space: nowrap;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{c.ink}}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg>{{c.text}}</span>
                       </td>
                     </sc-for>
@@ -497,7 +498,7 @@ html{scroll-behavior:smooth}
               </span>
               <span style="display: flex; flex-direction: column; gap: 6px;">
                 <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{w.label}}</span>
-                <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{w.hint}}. {{w.more}}</span>
+                <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{w.more}}</span>
               </span>
             </a>
           </sc-for>
@@ -534,7 +535,7 @@ html{scroll-behavior:smooth}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":10388}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -683,8 +684,8 @@ class Component extends DCLogic {
     const canCount = PERM.filter((p) => p[ri + 1] !== 'n').length;
     const roles = {
       chips: R.map((r) => { const pl = this.pill(r.id === st.role); return { label: r.label, pressed: pl.pressed, bg: pl.bg, fg: pl.fg, pick: pick(r.id) }; }),
-      heads: R.map((r, i) => ({ label: r.label, pressed: i === ri ? 'true' : 'false', bg: i === ri ? '#EEE8FF' : 'transparent', pick: pick(r.id) })),
-      rows: PERM.map((p) => ({ label: p[0], cells: [1, 2, 3, 4].map((c) => Object.assign({ bg: c - 1 === ri ? '#EEE8FF' : 'transparent' }, V[p[c]])) })),
+      heads: R.map((r, i) => ({ cls: i === ri ? 'tm-on' : 'tm-off', label: r.label, pressed: i === ri ? 'true' : 'false', bg: i === ri ? '#EEE8FF' : 'transparent', pick: pick(r.id) })),
+      rows: PERM.map((p) => ({ label: p[0], cells: [1, 2, 3, 4].map((c) => Object.assign({ cls: c - 1 === ri ? 'tm-on' : 'tm-off', bg: c - 1 === ri ? '#EEE8FF' : 'transparent' }, V[p[c]])) })),
       cur: { name: R[ri].label, line: R[ri].line, people: R[ri].people, count: 'Can do ' + canCount + ' of ' + PERM.length + ' things' }
     };
     // Approvals queue.

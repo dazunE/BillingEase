@@ -200,7 +200,7 @@ html{scroll-behavior:smooth}
           <div class="wf-in" role="img" aria-label="{{vat.inv.aria}}" style="width: 100%; max-width: 460px; background: #FFFFFF; border-radius: 16px; box-shadow: 0 12px 32px rgba(24,22,31,0.10); padding: clamp(18px, 3vw, 28px); box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; font-size: 13px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
               <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;"><strong style="font-size: 14px;">{{vat.c.seller}}</strong><span style="color: #5F5B68;">{{vat.c.idLabel}} {{vat.c.sellerId}}</span></span>
-              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; text-align: right;"><span style="font: 800 15px Sora, sans-serif; letter-spacing: 0.04em; text-transform: uppercase;">{{vat.c.heading}}</span><span style="color: #5F5B68;">{{vat.c.no}} · {{vat.c.date}}</span></span>
+              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; text-align: right;"><span style="font: 800 15px Sora, sans-serif; letter-spacing: 0.04em; text-transform: uppercase;">{{vat.c.heading}}</span><span style="color: #5F5B68; white-space: nowrap;">{{vat.c.no}}</span><span style="color: #5F5B68; white-space: nowrap;">{{vat.c.date}}</span></span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 3px; padding: 12px; border-radius: 12px; background: #F7F6F9;">
               <span style="font-size: 11px; font-weight: 700; color: #5F5B68; letter-spacing: 0.04em;">BILL TO</span>
@@ -465,7 +465,7 @@ html{scroll-behavior:smooth}
               </span>
               <span style="display: flex; flex-direction: column; gap: 6px;">
                 <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{w.label}}</span>
-                <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{w.hint}}. {{w.more}}</span>
+                <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{w.more}}</span>
               </span>
             </a>
           </sc-for>
@@ -502,7 +502,7 @@ html{scroll-behavior:smooth}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":10189}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -624,7 +624,7 @@ class Component extends DCLogic {
   extra(st, P, h) {
     // Value of one unit in US dollars, Oct 4, 2026.
     const R = { USD: 1, EUR: 1.09, GBP: 1.27, CAD: 0.73, AUD: 0.66, INR: 0.012, JPY: 0.0068 };
-    const LOC = { EUR: 'de-DE', GBP: 'en-GB', CAD: 'en-CA', AUD: 'en-AU', INR: 'en-IN', USD: 'en-US', JPY: 'ja-JP' };
+    const LOC = { EUR: 'de-DE', GBP: 'en-GB', CAD: 'en-US', AUD: 'en-US', INR: 'en-IN', USD: 'en-US', JPY: 'ja-JP' };
     const fmt = (v, c, loc) => { try { return new Intl.NumberFormat(loc || LOC[c] || 'en-US', { style: 'currency', currency: c, maximumFractionDigits: c === 'JPY' ? 0 : 2, minimumFractionDigits: c === 'JPY' ? 0 : 2 }).format(v); } catch (e) { return c + ' ' + v.toFixed(2); } };
     const C = [
       { code: 'DE', label: 'Germany (EU)', name: 'Germany', cur: 'EUR', loc: 'de-DE', tax: 'VAT', local: 'Umsatzsteuer (USt.), charged across the EU',
@@ -710,7 +710,7 @@ class Component extends DCLogic {
     const MV = { down: { label: 'fallen 2%', k: 0.98 }, same: { label: 'stayed put', k: 1 }, up: { label: 'risen 2%', k: 1.02 } };
     const mv = MV[st.move] || MV.up;
     const landed = sent * mv.k, diff = landed - sent;
-    const fh = (v) => fmt(v, home, c.loc);
+    const fh = (v) => fmt(v, home, home === 'CAD' || home === 'AUD' ? 'en-US' : c.loc);
     const fx = {
       updated: st.ticks ? 'Live · updated just now' : 'Live · updated 2 min ago',
       board: codes.slice(0, 6).map((x) => { const d = (j[x] || 1) / (j[home] || 1); const up = d >= 1; return { code: x, val: rnum(rate(x)) + ' ' + home, ink: up ? '#2F5711' : '#A8200D', dir: up ? 'up' : 'down', icon: up ? 'M12 19V5M6 11l6-6 6 6' : 'M12 5v14M6 13l6 6 6-6' }; }),
