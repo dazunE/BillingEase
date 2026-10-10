@@ -18,13 +18,13 @@
         id: 'pro', name: 'Pro', month: 16, year: 13, tag: 'Most popular', popular: true,
         line: 'Your bank connected, everything sorted for you, and the books your accountant wants.',
         cta: 'Try Pro free for 30 days', href: 'AuthSignUp.dc.html',
-        features: ['Everything in Free', 'Connect your bank and cards; charges sort themselves', 'Unlimited receipts, read and matched', 'Repeating invoices, retainers and automatic reminders', 'Bills, vendors and every-month costs', 'Multiple currencies and VAT', 'Products and stock', 'You plus your accountant']
+        features: ['Everything in Free', 'Connect your bank and cards; charges sort themselves', 'Unlimited receipts, read and matched', 'Repeating invoices, retainers and automatic reminders', 'Bills, vendors and every-month costs', 'Time you can bill: log hours, invoice them', 'Multiple currencies and VAT', 'Products and stock', 'You plus your accountant']
       },
       {
         id: 'team', name: 'Team', month: 39, year: 32, tag: 'For businesses with people',
         line: 'Room for your whole team, with roles, and payroll when you need it.',
         cta: 'Try Team free for 30 days', href: 'AuthSignUp.dc.html',
-        features: ['Everything in Pro', 'Up to 10 people with roles (Admin, Staff, Accountant)', 'Approvals for bills and payroll', 'Time you can bill, by person', 'Several businesses under one sign-in', 'Priority help from a person']
+        features: ['Everything in Pro', 'Up to 10 people with roles (Admin, Staff, Accountant)', 'Approvals for bills and payroll', 'Time you can bill, by person, with approvals', 'Several businesses under one sign-in', 'Priority help from a person']
       }
     ],
     addons: [

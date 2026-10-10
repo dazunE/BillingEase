@@ -156,7 +156,7 @@ html{scroll-behavior:smooth}
         </div>
         <div class="sx-card" style="flex: 999 1 520px; display: flex; flex-direction: column; gap: 12px; background: #F7F6F9; border-color: #F7F6F9;">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <span style="font-weight: 700;">New charges · Amex ••1009</span>
+            <span style="font-weight: 700;">New charges · Summit ••1009</span>
             <sc-if value="{{sort.any}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{sort.useGuesses}}" class="sx-btnd sx-sm" style="background: #E0752D; color: #18161F!important;">Use our guesses</button></sc-if>
           </div>
           <sc-for list="{{sort.rows}}" as="x" hint-placeholder-count="4">
@@ -215,7 +215,7 @@ html{scroll-behavior:smooth}
           </ul>
           <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 4px;">
             <span class="sx-small" style="font-weight: 700;">Also lined up this month</span>
-            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;"><span>Comcast Business · pays itself Oct 15</span><span class="sx-num" style="font-weight: 700;">$190</span></span>
+            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;"><span>Metro Fiber · pays itself Oct 15</span><span class="sx-num" style="font-weight: 700;">$190</span></span>
             <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;"><span>Lumber &amp; Frame Co. · approved, Oct 22</span><span class="sx-num" style="font-weight: 700;">$1,617</span></span>
           </div>
           <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto;">
@@ -239,7 +239,7 @@ html{scroll-behavior:smooth}
           </ul>
           <sc-if value="{{em.flagOpen}}" hint-placeholder-val="{{true}}">
             <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: #FFF0B8;">
-              <span style="font-weight: 700; color: #6B5000;">Dropbox looks unused</span>
+              <span style="font-weight: 700; color: #6B5000;">Cloudbox looks unused</span>
               <span style="font-size: 14px; color: #47444F;">No files changed in 60 days. Canceling saves $288 a year.</span>
               <div class="sx-row" style="gap: 8px;"><button type="button" onClick="{{em.cancel}}" class="sx-btnd sx-sm">Remind me to cancel</button><button type="button" onClick="{{em.keep}}" class="sx-chip">We still use it</button></div>
             </div>
@@ -370,16 +370,16 @@ html{scroll-behavior:smooth}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6200}}'>
 const RECEIPTS = [
-  { vendor: 'Staples', printed: '$84.00', total: '$84.00', date: 'Oct 3', cat: 'Office supplies', match: 'Amex ••1009 charge on Oct 3' },
-  { vendor: 'Delta Air Lines', printed: '$412.00', total: '$412.00', date: 'Oct 2', cat: 'Travel', match: 'Amex ••1009 charge on Oct 2' },
-  { vendor: 'Blue Bottle Coffee', printed: '$18.50', total: '$18.50', date: 'Oct 4', cat: 'Meals', match: 'Chase ••4417 debit on Oct 4' },
-  { vendor: 'Local Print Shop', printed: '$4?.?0', total: null, date: 'Oct 1', cat: 'Printing', match: 'Chase ••4417 charge on Oct 1', blurry: true, real: 46.2 }
+  { vendor: 'Paperworks Supply', printed: '$84.00', total: '$84.00', date: 'Oct 3', cat: 'Office supplies', match: 'Summit ••1009 charge on Oct 3' },
+  { vendor: 'Northline Air', printed: '$412.00', total: '$412.00', date: 'Oct 2', cat: 'Travel', match: 'Summit ••1009 charge on Oct 2' },
+  { vendor: 'Corner Bean Coffee', printed: '$18.50', total: '$18.50', date: 'Oct 4', cat: 'Meals', match: 'Harborline ••4417 debit on Oct 4' },
+  { vendor: 'Local Print Shop', printed: '$4?.?0', total: null, date: 'Oct 1', cat: 'Printing', match: 'Harborline ••4417 charge on Oct 1', blurry: true, real: 46.2 }
 ];
 const CHARGES = [
-  { id: 'bb', n: 'Blue Bottle Coffee', d: 'Oct 4', a: '$18.50', guess: 'Meals' },
-  { id: 'am', n: 'Amazon Marketplace', d: 'Oct 3', a: '$64.20', guess: 'Office supplies' },
-  { id: 'ub', n: 'Uber trip', d: 'Oct 2', a: '$23.75', guess: 'Travel' },
-  { id: 'cv', n: 'Canva Pro', d: 'Oct 1', a: '$12.99', guess: 'Software' }
+  { id: 'bb', n: 'Corner Bean Coffee', d: 'Oct 4', a: '$18.50', guess: 'Meals' },
+  { id: 'am', n: 'Parcelhub Marketplace', d: 'Oct 3', a: '$64.20', guess: 'Office supplies' },
+  { id: 'ub', n: 'CityRide trip', d: 'Oct 2', a: '$23.75', guess: 'Travel' },
+  { id: 'cv', n: 'Pixelpad Pro', d: 'Oct 1', a: '$12.99', guess: 'Software' }
 ];
 const CATS = ['Meals', 'Office supplies', 'Travel', 'Software', 'Personal'];
 class Component extends DCLogic {
@@ -436,7 +436,7 @@ class Component extends DCLogic {
       saveTyped: () => {
         if (!(typedNum > 0)) { this.setState({ typedTried: true }); return; }
         this.setState({ typedVal: typedNum, stage: 3, typedTried: false });
-        this.notify(Math.abs(typedNum - R.real) < 0.005 ? 'Local Print Shop · ' + m2(typedNum) + ' matched to its Chase charge' : 'Saved · we’ll match ' + m2(typedNum) + ' when the charge arrives');
+        this.notify(Math.abs(typedNum - R.real) < 0.005 ? 'Local Print Shop · ' + m2(typedNum) + ' matched to its Harborline charge' : 'Saved · we’ll match ' + m2(typedNum) + ' when the charge arrives');
       },
       foot: st.stage >= 3 ? 'Added to Going out. Nothing for you to do.' : (blurryWaiting ? 'One question, then it’s filed.' : 'Usually takes about two seconds.'),
       nextLabel: st.ri === RECEIPTS.length - 1 ? 'Start again' : 'Snap the next one',
@@ -462,8 +462,8 @@ class Component extends DCLogic {
     const bill = {
       parts, first: st.first, firstShown: m0(st.first), when: st.when,
       modes: [['full', 'Pay in full'], ['parts', 'Pay in parts']].map((m) => ({ label: m[1], on: st.billMode === m[0], pick: () => this.setState({ billMode: m[0], billDone: false }) })),
-      plan: parts ? [{ t: 'Today, Oct 4 · from Chase ••4417', a: m0(st.first), dot: '#E0752D' }, { t: st.when + ' · the rest', a: m0(640 - st.first), dot: '#F4C3A1' }]
-                  : [{ t: 'Oct 18, on the due date · from Chase ••4417', a: '$640', dot: '#E0752D' }],
+      plan: parts ? [{ t: 'Today, Oct 4 · from Harborline ••4417', a: m0(st.first), dot: '#E0752D' }, { t: st.when + ' · the rest', a: m0(640 - st.first), dot: '#F4C3A1' }]
+                  : [{ t: 'Oct 18, on the due date · from Harborline ••4417', a: '$640', dot: '#E0752D' }],
       setFirst: (e) => this.setState({ first: Number(e.target.value), billDone: false }),
       setWhen: (e) => this.setState({ when: e.target.value, billDone: false }),
       note: st.billDone ? 'Scheduled. Going out already counts all $640.' : 'Counts in Going out as “still to pay” until it’s paid.',
@@ -472,13 +472,13 @@ class Component extends DCLogic {
     };
 
     // Every month
-    const EM = [['1st', 'WeWork rent', 1200], ['5th', 'Google Workspace', 72], ['8th', 'Adobe Creative Cloud', 90], ['9th', 'Notion', 40], ['12th', 'Figma', 45], ['15th', 'Comcast Business', 129], ['20th', 'Dropbox', 24], ['28th', 'Business insurance', 646]];
+    const EM = [['1st', 'Hudson Desks rent', 1200], ['5th', 'Mailspace', 72], ['8th', 'Studio Suite', 90], ['9th', 'Notepage', 40], ['12th', 'Framewise', 45], ['15th', 'Metro Fiber', 129], ['20th', 'Cloudbox', 24], ['28th', 'Business insurance', 646]];
     const dropped = st.dropbox === 'cancel';
     const em = {
-      rows: EM.map((x) => ({ day: x[0], n: x[1], a: m0(x[2]), cls: dropped && x[1] === 'Dropbox' ? 'sx-strike' : '' })),
+      rows: EM.map((x) => ({ day: x[0], n: x[1], a: m0(x[2]), cls: dropped && x[1] === 'Cloudbox' ? 'sx-strike' : '' })),
       total: m0(dropped ? 2222 : 2246),
       flagOpen: st.dropbox === 'open', flagDone: st.dropbox !== 'open',
-      doneText: dropped ? 'We’ll remind you before Dropbox renews on the 20th. $288 a year back.' : 'Got it. We won’t flag Dropbox again.',
+      doneText: dropped ? 'We’ll remind you before Cloudbox renews on the 20th. $288 a year back.' : 'Got it. We won’t flag Cloudbox again.',
       cancel: () => { this.setState({ dropbox: 'cancel' }); this.notify('Reminder set · Every month drops to $2,222'); },
       keep: () => this.setState({ dropbox: 'keep' }),
       undo: () => this.setState({ dropbox: 'open' })
