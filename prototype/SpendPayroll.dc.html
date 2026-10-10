@@ -512,8 +512,8 @@ class Component extends DCLogic {
       n: t.fmt, toast: st.toast, top, run, hasRun: !!cur, lines, checks, people, peopleCount: emps.length, noPeople: !emps.length,
       startReview: () => this.setState({ reviewing: true }),
       cancelReview: () => this.setState({ reviewing: false }),
-      approve: () => { BE.update('payroll', cur.id, { status: 'approved', approvedOn: BE.today }); BE.log('Approved ' + (cur.label || 'payroll') + ' · ' + money(cur.net)); this.setState({ reviewing: false }); this.notify('Approved · ' + money(cur.net) + ' goes out ' + cur.date); },
-      undo: () => { BE.update('payroll', cur.id, { status: 'needs' }); this.notify('Approval undone · the ' + cur.date + ' run is waiting for you'); },
+      approve: () => { BE.approvePayroll(cur.id); this.setState({ reviewing: false }); this.notify('Approved · ' + money(cur.net) + ' goes out ' + cur.date); },
+      undo: () => { BE.unapprovePayroll(cur.id); this.notify('Approval undone · the ' + cur.date + ' run is waiting for you'); },
       payNow: () => { BE.payPayroll(cur.id); this.notify('Paid ' + money(cur.net) + ' · moved from still to pay to paid in Going out'); },
       startNext: () => {
         const peopleNext = emps.map((e) => this.payFor(Object.assign({}, e, { hours: e.hours || 0 })));

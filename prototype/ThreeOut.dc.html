@@ -454,8 +454,8 @@ class Component extends DCLogic {
         expHref: run.expense ? 'SpendTransaction.dc.html#' + run.expense : 'SpendPayroll.dc.html',
         review: () => this.setState({ prOpen: true }),
         cancel: () => this.setState({ prOpen: false }),
-        confirm: () => { BE.update('payroll', run.id, { status: 'approved', approvedOn: BE.today }); BE.log('Approved ' + (run.label || 'payroll') + ' · ' + money(run.net)); this.setState({ prOpen: false }); this.notify('Payroll approved · ' + money(run.net) + ' goes out ' + run.date); },
-        undo: () => { BE.update('payroll', run.id, { status: 'needs' }); this.notify('Approval undone · payroll waits for you again'); }
+        confirm: () => { BE.approvePayroll(run.id); this.setState({ prOpen: false }); this.notify('Payroll approved · ' + money(run.net) + ' goes out ' + run.date); },
+        undo: () => { BE.unapprovePayroll(run.id); this.notify('Approval undone · payroll waits for you again'); }
       };
       this._people = ppl.map((p) => { const e = emps.filter((x) => x.name === p.name)[0]; return { name: p.name, ini: ini(p.name), role: (e ? e.job + ' · ' : '') + (p.basis || ''), amount: money(p.net) }; });
     } else {

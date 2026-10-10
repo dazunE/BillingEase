@@ -14,81 +14,16 @@
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
-@media (max-width: 640px){.be-hide-sm{display:none!important}}
+.be-bill:hover{background:#F7F6F9}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
-                <a href="{{v.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Your business: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 270px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Northwind Studio</span><span style="font-size: 13px; color: #5F5B68;">Maya Chen · Owner</span></span>
-              <sc-for list="{{acct}}" as="ac" hint-placeholder-count="4">
-                <a href="{{ac.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ac.label}}</a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
 
-    <!-- Back + compact equation strip -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
-      <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
-        <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-          Home
-        </a>
-        <span aria-hidden="true">/</span>
-        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">Going out</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page" style="color: #18161F;">Bills</span>
-      </nav>
-      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
-        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FDE6D6; border: 2px solid #E0752D; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
-        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
-      </nav>
-    </div>
+    <dc-import name="AppCrumbs" area="out" mid="Bills" mid-href="SpendBill.dc.html" here="{{crumb}}"></dc-import>
 
     <!-- Title -->
     <section aria-labelledby="bl-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
@@ -98,11 +33,11 @@ a{color:#18161F}a:hover{color:#000000}
         <span style="font-size: 14px; color: #47444F;">{{top.line}}</span>
       </div>
       <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">A bill is something you owe and pay later. Enter it once, attach the PDF, and pay it all at once or in parts. Or forward bills to <strong style="color: #18161F; overflow-wrap: anywhere;">bills+northwind@billingease.app</strong>.</p>
-        <button type="button" onClick="{{goNew}}" aria-pressed="{{isNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">A bill is something you owe and pay later. Enter it once, attach the PDF, and pay it all at once or in parts. Or forward bills to <strong style="color: #18161F; overflow-wrap: anywhere;">{{top.inbox}}</strong>.</p>
+        <a href="SpendBill.dc.html#new" aria-current="{{isNewCur}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Enter a bill
-        </button>
+        </a>
       </div>
     </section>
 
@@ -112,20 +47,27 @@ a{color:#18161F}a:hover{color:#000000}
         <h2 id="list-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Your bills</h2>
         <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; gap: 2px;">
           <sc-for list="{{list}}" as="b" hint-placeholder-count="5">
-            <button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="text-align: left; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; border: 0; background: {{b.bg}}; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
+            <a class="be-bill" href="{{b.href}}" aria-current="{{b.cur}}" style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; background: {{b.bg}}; color: #18161F; text-decoration: none;">
               <span style="width: 36px; height: 36px; border-radius: 9999px; background: {{b.iniBg}}; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 12px;">{{b.ini}}</span>
               <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
                 <span style="font-weight: 700; font-size: 14px;">{{b.vendor}}</span>
                 <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: {{b.fg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{b.fg}};"></span>{{b.status}}</span>
               </span>
               <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums;">{{b.left}}</span>
-            </button>
+            </a>
           </sc-for>
+          <sc-if value="{{noBills}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; padding: 12px; font-size: 14px; line-height: 1.5; color: #47444F;">Bills you enter show up here, soonest due first.</p>
+          </sc-if>
         </div>
-        <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.5;">Bills for monthly costs live in <a href="SpendEveryMonth.dc.html" style="font-weight: 600;">Every month</a>. Payroll is on <a href="ThreeOut.dc.html" style="font-weight: 600;">Going out</a>.</p>
+        <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.5;">Costs that repeat live in <a href="SpendEveryMonth.dc.html" style="font-weight: 600;">Every month</a>. Payroll has its own page: <a href="SpendPayroll.dc.html" style="font-weight: 600;">Payroll</a>.</p>
       </nav>
 
       <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+
+        <sc-if value="{{notFound}}" hint-placeholder-val="{{false}}">
+          <p role="status" style="margin: 0; padding: 12px 16px; border-radius: 14px; background: #FFF0B8; color: #6B5000; font-size: 14px; font-weight: 600;">We couldn’t find that bill. Here’s the next one to pay instead.</p>
+        </sc-if>
 
         <!-- ============ NEW BILL ============ -->
         <sc-if value="{{isNew}}" hint-placeholder-val="{{true}}">
@@ -137,9 +79,15 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px;">
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">From
                 <select class="be-field" value="{{f.vendor}}" onChange="{{setVendor}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <option value="Local Print Shop">Local Print Shop</option><option value="Staples">Staples</option><option value="Comcast Business">Comcast Business</option><option value="Adobe Creative Cloud">Adobe Creative Cloud</option><option value="Elena Rossi">Elena Rossi</option><option value="WeWork">WeWork</option>
+                  <sc-for list="{{vendorNames}}" as="vn" hint-placeholder-count="5"><option value="{{vn}}">{{vn}}</option></sc-for>
+                  <option value="__new">Someone new…</option>
                 </select>
               </label>
+              <sc-if value="{{f.isNewVendor}}" hint-placeholder-val="{{false}}">
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Their name
+                  <input class="be-field" type="text" value="{{f.newVendor}}" onChange="{{setNewVendor}}" placeholder="e.g. Ace Printing" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+              </sc-if>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Bill number
                 <input class="be-field" type="text" value="{{f.num}}" onChange="{{setNum}}" placeholder="From the bill" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
               </label>
@@ -150,7 +98,7 @@ a{color:#18161F}a:hover{color:#000000}
               </label>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Due
                 <select class="be-field" value="{{f.terms}}" onChange="{{setTerms}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <option value="0">On receipt</option><option value="15">In 15 days</option><option value="30">In 30 days</option><option value="45">In 45 days</option>
+                  <option value="0">On receipt</option><option value="15">In 15 days</option><option value="21">In 21 days</option><option value="30">In 30 days</option>
                 </select>
               </label>
             </div>
@@ -160,19 +108,23 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="display: flex; flex-direction: column; gap: 10px;">
               <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
                 <span style="font-size: 15px; font-weight: 700;">What it’s for</span>
-                <span style="font-size: 12px; color: #5F5B68;">Stock lines shown because you sell products · <a href="BizProfile.dc.html" style="font-weight: 600; color: #47444F;">change</a></span>
+                <sc-if value="{{stockOn}}" hint-placeholder-val="{{true}}">
+                  <span style="font-size: 12px; color: #5F5B68;">Stock lines shown because you sell products · <a href="BizProfile.dc.html" style="font-weight: 600; color: #47444F;">change</a></span>
+                </sc-if>
               </div>
               <sc-for list="{{lines}}" as="ln" hint-placeholder-count="2">
                 <div style="border: 1px solid {{ln.border}}; background: {{ln.bg}}; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
                   <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;">
                     <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{ln.tagBg}}; color: {{ln.tagFg}}; font-size: 12px; font-weight: 700;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{ln.tagFg}};"></span>{{ln.tag}}</span>
-                    <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+                    <sc-if value="{{ln.canRemove}}" hint-placeholder-val="{{true}}">
+                      <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+                    </sc-if>
                   </div>
                   <sc-if value="{{ln.isStock}}" hint-placeholder-val="{{true}}">
                     <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
                       <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Product
                         <select class="be-field" value="{{ln.product}}" onChange="{{ln.setProduct}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                          <option value="card">Letterpress card set</option><option value="kit">Printed brand kit</option><option value="pin">Enamel logo pin</option><option value="tote">Tote bag</option>
+                          <sc-for list="{{products}}" as="pr" hint-placeholder-count="4"><option value="{{pr.id}}">{{pr.name}}</option></sc-for>
                         </select>
                       </label>
                       <label style="flex: 1 1 90px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">How many
@@ -195,7 +147,7 @@ a{color:#18161F}a:hover{color:#000000}
                       </label>
                       <label style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
                         <select class="be-field" value="{{ln.cat}}" onChange="{{ln.setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                          <option value="Shipping &amp; delivery">Shipping &amp; delivery</option><option value="Printing">Printing</option><option value="Office supplies">Office supplies</option><option value="Software">Software</option><option value="Contractors">Contractors</option><option value="Other">Other</option>
+                          <option value="Printing">Printing</option><option value="Office supplies">Office supplies</option><option value="Software">Software</option><option value="Contractors">Contractors</option><option value="Internet &amp; phone">Internet &amp; phone</option><option value="Shipping &amp; delivery">Shipping &amp; delivery</option><option value="Rent">Rent</option><option value="Other">Other</option>
                         </select>
                       </label>
                       <label style="flex: 1 1 110px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
@@ -205,9 +157,14 @@ a{color:#18161F}a:hover{color:#000000}
                   </sc-if>
                 </div>
               </sc-for>
-              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
                 <button type="button" onClick="{{addCost}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a cost</button>
-                <button type="button" onClick="{{addStock}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add stock you’re buying</button>
+                <sc-if value="{{canStock}}" hint-placeholder-val="{{true}}">
+                  <button type="button" onClick="{{addStock}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add stock you’re buying</button>
+                </sc-if>
+                <sc-if value="{{stockNeedsProducts}}" hint-placeholder-val="{{false}}">
+                  <span style="font-size: 13px; color: #5F5B68;">Buying stock? Add the product in <a href="SellCatalog.dc.html" style="font-weight: 600;">your catalog</a> first.</span>
+                </sc-if>
               </div>
             </div>
 
@@ -270,7 +227,9 @@ a{color:#18161F}a:hover{color:#000000}
 
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
               <button type="button" onClick="{{saveBill}}" style="min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 16px DM Sans, sans-serif; cursor: pointer;">{{f.saveLabel}}</button>
-              <button type="button" onClick="{{resetForm}}" style="min-height: 48px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Start over</button>
+              <sc-if value="{{dirty}}" hint-placeholder-val="{{false}}">
+                <button type="button" onClick="{{resetForm}}" style="min-height: 48px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Start over</button>
+              </sc-if>
             </div>
             <sc-if value="{{hasErrors}}" hint-placeholder-val="{{false}}">
               <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
@@ -286,8 +245,11 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 20px;">
               <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
                 <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{b.bg}}; color: {{b.fg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{b.fg}};"></span>{{b.status}}</span>
-                <h2 id="det-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.02em;">{{b.vendor}}</h2>
-                <span style="font-size: 14px; color: #47444F;">Bill {{b.num}} · dated {{b.date}} · due {{b.due}}</span>
+                <h2 id="det-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.02em;">
+                  <sc-if value="{{b.vendorHref}}" hint-placeholder-val="{{false}}"><a href="{{b.vendorHref}}" style="text-decoration: none;">{{b.vendor}}</a></sc-if>
+                  <sc-if value="{{b.noVendor}}" hint-placeholder-val="{{true}}">{{b.vendor}}</sc-if>
+                </h2>
+                <span style="font-size: 14px; color: #47444F;">{{b.meta}}</span>
               </div>
               <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin-left: auto;">
                 <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{b.total}}</span>
@@ -307,33 +269,36 @@ a{color:#18161F}a:hover{color:#000000}
 
             <!-- Pay actions -->
             <sc-if value="{{b.open}}" hint-placeholder-val="{{true}}">
-              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <sc-if value="{{b.partly}}" hint-placeholder-val="{{false}}">
-                  <button type="button" onClick="{{payRest}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Pay remaining {{b.left}}</button>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                <button type="button" onClick="{{payAll}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{b.payAllLabel}}</button>
+                <button type="button" onClick="{{togglePay}}" aria-expanded="{{payOpen}}" style="min-height: 46px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Pay part of it</button>
+                <sc-if value="{{b.notScheduled}}" hint-placeholder-val="{{true}}">
+                  <button type="button" onClick="{{toggleSched}}" aria-expanded="{{schedOpen}}" style="min-height: 46px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Schedule it</button>
                 </sc-if>
-                <button type="button" onClick="{{togglePay}}" aria-expanded="{{payOpen}}" style="min-height: 46px; padding: 0 20px; border: 0; border-radius: 9999px; background: {{b.recBg}}; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{b.recLabel}}</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{b.scheduled}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 16px; border-radius: 16px; background: #E1EEF8; color: #1F5E91; font-size: 14px; font-weight: 600;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5E91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>
+                <span style="flex: 1 1 220px; min-width: 0;">{{b.schedText}}</span>
+                <button type="button" onClick="{{cancelSched}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #1F5E91; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Don’t pay automatically</button>
               </div>
             </sc-if>
             <sc-if value="{{payOpen}}" hint-placeholder-val="{{false}}">
               <div style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 16px; background: #F7F6F9;">
-                <span style="font-weight: 700; font-size: 15px;">Record a payment</span>
+                <span style="font-weight: 700; font-size: 15px;">Pay part of it today</span>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                   <sc-for list="{{quick}}" as="q" hint-placeholder-count="2">
                     <button type="button" aria-pressed="{{q.on}}" onClick="{{q.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{q.border}}; background: {{q.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{q.label}}</button>
                   </sc-for>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
-                  <label style="flex: 1 1 130px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount paid
+                  <label style="flex: 1 1 130px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
                     <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{p.amt}}" onChange="{{setPayAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-                  </label>
-                  <label style="flex: 1 1 130px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid on
-                    <select class="be-field" value="{{p.date}}" onChange="{{setPayDate}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                      <option value="Oct 4">Oct 4 (today)</option><option value="Oct 3">Oct 3</option><option value="Oct 2">Oct 2</option>
-                    </select>
                   </label>
                   <label style="flex: 1 1 170px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">From
                     <select class="be-field" value="{{p.from}}" onChange="{{setPayFrom}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                      <option value="Chase ••4417">Chase Checking ••4417</option><option value="Amex ••1009">Amex Business ••1009</option><option value="Check">Paper check</option>
+                      <option value="Chase ••4417">Chase Checking ••4417</option><option value="Amex ••1009">Amex Business ••1009</option><option value="Paper check">Paper check</option>
                     </select>
                   </label>
                 </div>
@@ -345,6 +310,28 @@ a{color:#18161F}a:hover{color:#000000}
                 <sc-if value="{{p.hasErr}}" hint-placeholder-val="{{false}}">
                   <div role="alert" style="padding: 10px 14px; border-radius: 12px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{p.err}}</div>
                 </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{schedOpen}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 16px; background: #F7F6F9;">
+                <span style="font-weight: 700; font-size: 15px;">Pay it automatically on a date</span>
+                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
+                  <label style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">On
+                    <select class="be-field" value="{{s.date}}" onChange="{{setSchedDate}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                      <sc-for list="{{s.dates}}" as="sd" hint-placeholder-count="3"><option value="{{sd.value}}">{{sd.label}}</option></sc-for>
+                    </select>
+                  </label>
+                  <label style="flex: 1 1 170px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">From
+                    <select class="be-field" value="{{s.from}}" onChange="{{setSchedFrom}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                      <option value="Chase ••4417">Chase Checking ••4417</option><option value="Amex ••1009">Amex Business ••1009</option>
+                    </select>
+                  </label>
+                </div>
+                <span style="font-size: 13px; color: #47444F;">It stays in Going out as still to pay until that day, then moves to paid. We’ll email you the day before.</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                  <button type="button" onClick="{{saveSched}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{s.saveLabel}}</button>
+                  <button type="button" onClick="{{toggleSched}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+                </div>
               </div>
             </sc-if>
 
@@ -363,34 +350,31 @@ a{color:#18161F}a:hover{color:#000000}
             </div>
 
             <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
-              <!-- Schedule -->
+              <!-- Payments -->
               <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
-                <span style="font-size: 15px; font-weight: 700;">Payment schedule</span>
+                <span style="font-size: 15px; font-weight: 700;">Payments</span>
+                <sc-if value="{{b.noPays}}" hint-placeholder-val="{{true}}">
+                  <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: #F7F6F9; font-size: 14px; color: #47444F;">No payments yet. Each one you make shows up here and in Going out as paid.</p>
+                </sc-if>
                 <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
-                  <sc-for list="{{b.sched}}" as="s" hint-placeholder-count="1">
-                    <li style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; padding: 10px 14px; border-radius: 12px; background: #F7F6F9; font-size: 14px;">
-                      <span>{{s.label}}</span>
-                      <span style="display: inline-flex; align-items: center; gap: 10px;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{s.bg}}; color: {{s.fg}}; font-size: 12px; font-weight: 600;">{{s.state}}</span><strong style="font-variant-numeric: tabular-nums;">{{s.amt}}</strong></span>
-                    </li>
+                  <sc-for list="{{b.pays}}" as="py" hint-placeholder-count="0">
+                    <li><a href="{{py.href}}" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: #E2F6D5; color: #2F5711; font-size: 14px; text-decoration: none;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+                      <span style="flex: 1; min-width: 0; font-weight: 600;">{{py.date}} · {{py.from}}</span>
+                      <strong style="font-variant-numeric: tabular-nums;">{{py.amt}}</strong>
+                    </a></li>
                   </sc-for>
                 </ul>
                 <span style="font-size: 13px; color: #5F5B68;">{{b.autoText}}</span>
               </div>
               <!-- History -->
               <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
-                <span style="font-size: 15px; font-weight: 700;">Payment history</span>
-                <sc-if value="{{b.noPays}}" hint-placeholder-val="{{true}}">
-                  <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: #F7F6F9; font-size: 14px; color: #47444F;">No payments yet. Each one you make or record shows up here with its date and account.</p>
-                </sc-if>
-                <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
-                  <sc-for list="{{b.pays}}" as="py" hint-placeholder-count="0">
-                    <li style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: #E2F6D5; color: #2F5711; font-size: 14px;">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
-                      <span style="flex: 1; min-width: 0; font-weight: 600;">{{py.date}} · {{py.from}}</span>
-                      <strong style="font-variant-numeric: tabular-nums;">{{py.amt}}</strong>
-                    </li>
+                <span style="font-size: 15px; font-weight: 700;">Bill history</span>
+                <ol style="margin: 0; padding: 0 14px; list-style: none; border-radius: 12px; background: #F7F6F9;">
+                  <sc-for list="{{b.history}}" as="hs" hint-placeholder-count="2">
+                    <li style="display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: {{hs.border}}; font-size: 14px;"><span>{{hs.label}}</span><span style="color: #5F5B68; white-space: nowrap;">{{hs.date}}</span></li>
                   </sc-for>
-                </ul>
+                </ol>
               </div>
             </div>
 
@@ -398,13 +382,13 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="display: flex; flex-direction: column; gap: 12px;">
               <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; border-radius: 16px; border: 1px solid #E2DFE8;">
                 <span style="width: 40px; height: 40px; border-radius: 12px; background: #FBE3DF; color: #A8200D; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none;">PDF</span>
-                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 14px;">{{b.pdf}}</span><span style="font-size: 13px; color: #5F5B68;">The bill as {{b.vendor}} sent it · kept with your books</span></span>
+                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 14px;">{{b.pdf}}</span><span style="font-size: 13px; color: #5F5B68;">{{b.pdfNote}}</span></span>
                 <button type="button" onClick="{{togglePdf}}" aria-expanded="{{pdfOpen}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{pdfLabel}}</button>
               </div>
               <sc-if value="{{pdfOpen}}" hint-placeholder-val="{{false}}">
                 <div aria-label="Bill preview" style="align-self: flex-start; width: 100%; max-width: 420px; box-sizing: border-box; padding: 22px; border-radius: 8px; border: 1px solid #E2DFE8; background: #FFFFFF; box-shadow: 0 1px 2px rgba(24,22,31,0.06); display: flex; flex-direction: column; gap: 10px; font-size: 12px; color: #47444F;">
                   <span style="display: flex; justify-content: space-between; gap: 12px;"><strong style="font-size: 15px; color: #18161F;">{{b.vendor}}</strong><span>BILL {{b.num}}</span></span>
-                  <span>To: Northwind Studio, Brooklyn, NY</span>
+                  <span>To: {{b.to}}</span>
                   <span>Dated {{b.date}} · Payment due {{b.due}}</span>
                   <span style="height: 1px; background: #EFEDF3;"></span>
                   <sc-for list="{{b.lines}}" as="l" hint-placeholder-count="1"><span style="display: flex; justify-content: space-between; gap: 12px;"><span>{{l.desc}}</span><span>{{l.amt}}</span></span></sc-for>
@@ -422,7 +406,7 @@ a{color:#18161F}a:hover{color:#000000}
                 <span style="width: {{g.paidPct}}%; background: #E0752D;"></span>
                 <span style="width: {{g.schPct}}%; background: #F4C3A1;"></span>
               </span>
-              <span style="display: flex; flex-wrap: wrap; gap: 4px 20px; color: #47444F;"><span>Going out <strong style="color: #18161F;">{{n.out}}</strong></span><span><strong style="color: #18161F;">{{g.paid}}</strong> paid</span><span><strong style="color: #18161F;">{{g.sch}}</strong> still to pay</span></span>
+              <span style="display: flex; flex-wrap: wrap; gap: 4px 20px; color: #47444F;"><span>Going out <strong style="color: #18161F;">{{n.out}}</strong></span><span><strong style="color: #18161F;">{{n.outPaid}}</strong> paid</span><span><strong style="color: #18161F;">{{n.outSch}}</strong> still to pay</span></span>
             </div>
           </section>
         </sc-if>
@@ -440,140 +424,110 @@ a{color:#18161F}a:hover{color:#000000}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
 class Component extends DCLogic {
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
-  money2(n) { return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  num(s) { const v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; }
-  base(outT) {
-    const st = this.state;
-    const inT = 24850, profit = inT - outT, keep = Math.round(profit - Math.round(profit * 0.25));
-    return {
-      n: { in: this.money(inT), out: this.money(outT), keep: this.money(keep) },
-      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
-      verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-      ],
-      acct: [
-        { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
-        { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
-        { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
-        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
-        { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
-        { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
-      ],
-      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
-      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
-      closeMenus: () => this.setState({ newOpen: false, acctOpen: false }),
-      toast: st.toast
-    };
-  }
   constructor(props) {
     super(props);
-    const seed = (id, vendor, num, date, due, dueIn, desc, cat, amt, pdf) => ({ id, vendor, num, date, due, dueIn, lines: [{ kind: 'cost', desc, cat, amt }], pdf, sched: [{ date: due, amt: amt, dueIn: dueIn }], auto: false });
-    this.state = {
-      newOpen: false, acctOpen: false, toast: null,
-      view: 'new',
-      bills: [
-        seed('lps', 'Local Print Shop', 'LPS-2291', 'Sep 28', 'Oct 12', 8, '500 tri-fold brochures for Lumen Dental Group', 'Printing', 640, 'LPS-2291.pdf'),
-        seed('cc', 'Comcast Business', 'CB-88213', 'Oct 1', 'Oct 15', 11, 'Fiber upgrade, one-time install', 'Internet & phone', 190, 'comcast-oct-install.pdf'),
-        seed('st', 'Staples', '7731-0922', 'Sep 22', 'Oct 22', 18, 'Paper, ink and mailers', 'Office supplies', 212, 'staples-7731-0922.pdf'),
-        seed('ad', 'Adobe Creative Cloud', 'ADB-559201', 'Sep 28', 'Oct 28', 24, 'Adobe Stock, annual add-on', 'Software', 360, 'adobe-invoice-559201.pdf'),
-        seed('er', 'Elena Rossi', 'ER-014', 'Sep 30', 'Oct 30', 26, 'Contract illustration, September', 'Contractors', 1045, null)
-      ],
-      pays: {}, stockAdd: {},
-      f: this.freshForm(true), moreOpen: false, errors: [],
-      payOpen: false, p: { amt: '', date: 'Oct 4', from: 'Chase ••4417' }, pErr: '', pdfOpen: false
-    };
+    this.state = { toast: null, seenHash: null, savedId: null, f: this.freshForm(''), moreOpen: false, errors: [],
+      payOpen: false, p: { amt: '', from: 'Chase ••4417' }, pErr: '', schedOpen: false, s: { date: '', from: 'Chase ••4417' }, pdfOpen: false };
   }
-  freshForm(sample) {
-    return sample
-      ? { vendor: 'Local Print Shop', num: 'LPS-2307', date: '0', terms: '30', lines: [{ kind: 'stock', product: 'card', qty: '100', cost: '7.50' }, { kind: 'cost', desc: 'Delivery to the studio', cat: 'Shipping & delivery', amt: '25' }], pdf: false, plan: 'full', auto: false }
-      : { vendor: 'Local Print Shop', num: '', date: '0', terms: '30', lines: [{ kind: 'cost', desc: '', cat: 'Printing', amt: '' }], pdf: false, plan: 'full', auto: false };
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  freshForm(vendor) {
+    return { vendor: vendor || '', newVendor: '', num: '', date: '0', terms: '30', lines: [{ kind: 'cost', desc: '', cat: 'Printing', amt: '' }], pdf: false, plan: 'full', auto: false };
   }
   renderVals() {
     const st = this.state;
-    const money2 = (n) => this.money2(n);
-    const money = (n) => this.money(n);
-    const num = (s) => this.num(s);
-    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const day = (off) => { const d = new Date(2026, 9, 4 + off); return MON[d.getMonth()] + ' ' + d.getDate(); };
-    const ini = (s) => s.replace(/&/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
-    const PRODUCTS = {
-      card: { name: 'Letterpress card set', plural: 'Letterpress card sets', stock: 9, reorder: 15, cost: 7.5 },
-      kit: { name: 'Printed brand kit', plural: 'Printed brand kits', stock: 48, reorder: 10, cost: 22 },
-      pin: { name: 'Enamel logo pin', plural: 'Enamel logo pins', stock: 310, reorder: 50, cost: 2.1 },
-      tote: { name: 'Tote bag', plural: 'Tote bags', stock: 0, reorder: 10, cost: 9 }
-    };
-    const stockNow = (k) => PRODUCTS[k].stock + (st.stockAdd[k] || 0);
-    const lineAmt = (l) => (l.kind === 'stock' ? Math.round(num(l.qty) * num(l.cost) * 100) / 100 : num(l.amt));
-    const billTotal = (b) => b.lines.reduce((a, l) => a + lineAmt(l), 0);
-    const costTotal = (b) => b.lines.filter((l) => l.kind === 'cost').reduce((a, l) => a + lineAmt(l), 0);
-    const paidOf = (b) => (st.pays[b.id] || []).reduce((a, p) => a + p.amt, 0);
+    const money2 = (n) => BE.money(n, 'USD', { cents: true });
+    const money = (n) => BE.money(n);
+    const num = (s) => BE.num(s);
+    const day = (off) => BE.inDays(off);
+    const ini = (s) => BE.initials(s);
+    const t = BE.totals('month');
+    const prof = BE.get('profile') || {};
+    const bills = BE.all('bills');
+    const vendors = BE.all('vendors');
 
-    // Going out
-    let paidExp = 0, extraOut = 0;
-    st.bills.forEach((b) => { const t = billTotal(b); const share = t ? costTotal(b) / t : 0; paidExp += paidOf(b) * share; if (b.isNew) extraOut += costTotal(b); });
-    const outT = Math.round((13640 + extraOut) * 100) / 100;
-    const gPaid = 3180 + paidExp, gSch = outT - gPaid;
-    const gPct = Math.round(gPaid / outT * 100);
-    const g = { paid: money(Math.round(gPaid * 100) / 100), sch: money(Math.round(gSch * 100) / 100), paidPct: gPct, schPct: 100 - gPct };
+    // Where are we? #<bill id> · #new · #new=<vendor id>
+    const h = BE.hash();
+    if (h !== st.seenHash) {
+      let vendor = '';
+      const m = h.match(/^new=(.+)$/);
+      if (m) { const v = BE.find('vendors', m[1]); vendor = v ? v.name : ''; }
+      this.state = Object.assign({}, st, { seenHash: h, savedId: null, payOpen: false, schedOpen: false, pdfOpen: false, pErr: '',
+        f: /^new/.test(h) ? this.freshForm(vendor) : st.f, errors: /^new/.test(h) ? [] : st.errors });
+      return this.renderVals();
+    }
+    const left = (b) => BE.billLeft(b);
+    const sorted = bills.slice().sort((a, b) => (left(a) > 0 ? 0 : 1) - (left(b) > 0 ? 0 : 1) || (a.dueIn || 0) - (b.dueIn || 0));
+    let view, notFound = false;
+    if (st.savedId && BE.find('bills', st.savedId)) view = st.savedId;
+    else if (/^new/.test(h)) view = 'new';
+    else if (h && BE.find('bills', h)) view = h;
+    else { notFound = !!h && sorted.length > 0; view = sorted.length ? sorted[0].id : 'new'; }
 
     const statusOf = (b) => {
-      const t = billTotal(b), paid = paidOf(b), left = Math.round((t - paid) * 100) / 100;
-      if (left <= 0) return { text: 'Paid', bg: '#E2F6D5', fg: '#2F5711', left, paid, t };
-      if (paid > 0) return { text: 'Partly paid · due ' + b.due, bg: '#E1EEF8', fg: '#1F5E91', left, paid, t };
-      if (b.dueIn <= 8) return { text: 'Due ' + b.due + ' · in ' + b.dueIn + ' days', bg: '#FFF0B8', fg: '#6B5000', left, paid, t };
-      return { text: 'Due ' + b.due, bg: '#EFEDF3', fg: '#47444F', left, paid, t };
+      const tot = BE.billTotal(b), l = left(b), paid = Math.round((tot - l) * 100) / 100;
+      if (l <= 0) return { text: 'Paid', bg: '#E2F6D5', fg: '#2F5711', left: l, paid, t: tot };
+      if (paid > 0) return { text: 'Part paid · due ' + b.due, bg: '#E1EEF8', fg: '#1F5E91', left: l, paid, t: tot };
+      if (b.dueIn != null && b.dueIn <= 8) return { text: 'Due ' + b.due + ' · in ' + b.dueIn + ' days', bg: '#FFF0B8', fg: '#6B5000', left: l, paid, t: tot };
+      return { text: 'Due ' + b.due, bg: '#EFEDF3', fg: '#47444F', left: l, paid, t: tot };
     };
 
     // List
-    const sorted = st.bills.slice().sort((a, b) => { const la = statusOf(a).left > 0 ? 0 : 1, lb = statusOf(b).left > 0 ? 0 : 1; return la - lb || a.dueIn - b.dueIn; });
     const list = sorted.map((b) => {
-      const s = statusOf(b), on = st.view === b.id;
-      return {
-        vendor: b.vendor, ini: ini(b.vendor), status: s.text, fg: s.fg, left: s.left > 0 ? money(s.left) : money(s.t), on,
-        bg: on ? '#FDE6D6' : 'transparent', iniBg: on ? '#FFFFFF' : '#FDE6D6',
-        pick: () => this.setState({ view: b.id, payOpen: false, pErr: '', pdfOpen: false })
-      };
+      const s = statusOf(b), on = view === b.id;
+      return { vendor: b.who, ini: ini(b.who), status: s.text, fg: s.fg, left: s.left > 0 ? money(s.left) : money(s.t), cur: on ? 'page' : false,
+        bg: on ? '#FDE6D6' : 'transparent', iniBg: on ? '#FFFFFF' : '#FDE6D6', href: 'SpendBill.dc.html#' + b.id };
     });
-    const unpaid = sorted.filter((b) => statusOf(b).left > 0);
-    const owed = unpaid.reduce((a, b) => a + statusOf(b).left, 0);
-    const top = { owed: money(Math.round(owed * 100) / 100), line: unpaid.length ? unpaid.length + ' bills · next due ' + unpaid[0].due + ': ' + unpaid[0].vendor + ' ' + money(statusOf(unpaid[0]).left) : 'Every bill is paid.' };
+    const unpaid = sorted.filter((b) => left(b) > 0);
+    const owed = unpaid.reduce((a, b) => a + left(b), 0);
+    const slug = String(prof.business || 'you').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const top = {
+      owed: money(owed), inbox: 'bills+' + slug + '@billingease.app',
+      line: unpaid.length ? unpaid.length + (unpaid.length === 1 ? ' bill' : ' bills') + ' · next due ' + unpaid[0].due + ': ' + unpaid[0].who + ' ' + money(left(unpaid[0])) : (bills.length ? 'Every bill is paid.' : 'No bills yet. Enter one when it arrives and we’ll remind you before it’s due.')
+    };
+
+    // Products you can buy as stock
+    const showsProducts = BE.shows ? BE.shows('products') : true;
+    const prods = BE.all('products').filter((p) => p.stock != null && p.kind !== 'service');
+    const prodOf = (id) => prods.filter((p) => p.id === id)[0] || null;
 
     // ---------- New bill form ----------
+    const names = [];
+    vendors.forEach((v) => { if (v.name && names.indexOf(v.name) < 0) names.push(v.name); });
+    bills.forEach((b) => { if (b.who && names.indexOf(b.who) < 0) names.push(b.who); });
+    BE.all('expenses').forEach((x) => { if (x.who && x.who !== 'Payroll' && x.kind !== 'personal' && names.indexOf(x.who) < 0) names.push(x.who); });
     const f = st.f;
+    const vendorSel = f.vendor && (names.indexOf(f.vendor) >= 0) ? f.vendor : (f.vendor && f.vendor !== '__new' ? (names.push(f.vendor), f.vendor) : (names.length && f.vendor !== '__new' ? names[0] : '__new'));
     const off = parseInt(f.date, 10) || 0, terms = parseInt(f.terms, 10) || 0;
     const dueOff = off + terms;
-    const setF = (patch) => this.setState({ f: Object.assign({}, f, patch), errors: [] });
-    const setLine = (i, patch) => setF({ lines: f.lines.map((l, j) => (j === i ? Object.assign({}, l, patch) : l)) });
+    const setF = (patch) => this.setState({ f: Object.assign({}, this.state.f, patch), errors: [] });
+    const setLine = (i, patch) => setF({ lines: this.state.f.lines.map((l, j) => (j === i ? Object.assign({}, l, patch) : l)) });
+    const lineAmt = (l) => (l.kind === 'stock' ? Math.round(num(l.qty) * num(l.cost) * 100) / 100 : num(l.amt));
     const lines = f.lines.map((l, i) => {
       const isStock = l.kind === 'stock';
-      const P = isStock ? PRODUCTS[l.product] : null;
-      const now = isStock ? stockNow(l.product) : 0, q = Math.round(num(l.qty));
+      const P = isStock ? prodOf(l.product) : null;
+      const now = P ? Number(P.stock) || 0 : 0, q = Math.round(num(l.qty));
       return {
         isStock, isCost: !isStock, tag: isStock ? 'Buying stock' : 'Cost', tagBg: isStock ? '#18161F' : '#FDE6D6', tagFg: isStock ? '#FFFFFF' : '#18161F',
         border: isStock ? '#CBC7D3' : '#E2DFE8', bg: isStock ? '#F7F6F9' : '#FFFFFF',
-        removeLabel: 'Remove line ' + (i + 1),
-        remove: () => setF({ lines: f.lines.filter((x, j) => j !== i) }),
-        product: l.product || 'card', qty: l.qty || '', cost: l.cost || '', total: money2(lineAmt(l)),
-        stockText: isStock ? P.name + ': ' + now + ' in stock now → ' + (now + q) + ' once these arrive' : '',
-        low: isStock && now < P.reorder, lowText: isStock ? (now === 0 ? 'Out of stock now' : 'Low · reorder at ' + P.reorder) : '',
-        setProduct: (ev) => setLine(i, { product: ev.target.value, cost: PRODUCTS[ev.target.value].cost.toFixed(2) }),
-        setQty: (ev) => setLine(i, { qty: ev.target.value }),
-        setCost: (ev) => setLine(i, { cost: ev.target.value }),
+        removeLabel: 'Remove line ' + (i + 1), canRemove: f.lines.length > 1,
+        remove: () => setF({ lines: this.state.f.lines.filter((x, j) => j !== i) }),
+        product: l.product || '', qty: l.qty || '', cost: l.cost || '', total: money2(lineAmt(l)),
+        stockText: P ? P.name + ': ' + now + ' in stock now → ' + (now + q) + ' once these arrive' : '',
+        low: !!P && now < (Number(P.reorder) || 0), lowText: P ? (now === 0 ? 'Out of stock now' : 'Low · reorder at ' + P.reorder) : '',
+        setProduct: (e) => { const np = prodOf(e.target.value); setLine(i, { product: e.target.value, cost: np && np.cost != null ? Number(np.cost).toFixed(2) : '' }); },
+        setQty: (e) => setLine(i, { qty: e.target.value }),
+        setCost: (e) => setLine(i, { cost: e.target.value }),
         desc: l.desc || '', cat: l.cat || 'Other', amt: l.amt || '',
-        setDesc: (ev) => setLine(i, { desc: ev.target.value }),
-        setCat: (ev) => setLine(i, { cat: ev.target.value }),
-        setAmt: (ev) => setLine(i, { amt: ev.target.value })
+        setDesc: (e) => setLine(i, { desc: e.target.value }),
+        setCat: (e) => setLine(i, { cat: e.target.value }),
+        setAmt: (e) => setLine(i, { amt: e.target.value })
       };
     });
-    const fb = { lines: f.lines };
-    const fTotal = billTotal(fb), fCost = costTotal(fb), fStock = fTotal - fCost;
+    const fCost = f.lines.filter((l) => l.kind !== 'stock').reduce((a, l) => a + lineAmt(l), 0);
+    const fStock = f.lines.filter((l) => l.kind === 'stock').reduce((a, l) => a + lineAmt(l), 0);
+    const fTotal = Math.round((fCost + fStock) * 100) / 100;
     const firstStock = f.lines.filter((l) => l.kind === 'stock')[0];
+    const firstStockP = firstStock ? prodOf(firstStock.product) : null;
     const planN = f.plan === 'three' ? 3 : (f.plan === 'two' ? 2 : 1);
     const mkSched = (total, n, dueO, startO) => {
       const out = []; let used = 0;
@@ -585,12 +539,13 @@ class Component extends DCLogic {
       return out;
     };
     const fSched = mkSched(fTotal, planN, dueOff, off);
+    const isNewVendor = vendorSel === '__new';
     const fv = {
-      vendor: f.vendor, num: f.num, date: f.date, terms: f.terms,
+      vendor: vendorSel, isNewVendor, newVendor: f.newVendor, num: f.num, date: f.date, terms: f.terms,
       dueText: (terms === 0 ? 'on receipt, ' : '') + day(dueOff) + ', 2026',
       stockTotal: money2(fStock), costTotal: money2(fCost), total: money2(fTotal),
-      costEffect: fCost > 0 ? money2(fCost) + ' of costs goes into Going out now as still to pay, and moves to paid when you pay the bill.' : 'No costs on this bill, so Going out doesn’t change today.',
-      stockEffect: fStock > 0 ? money2(fStock) + ' of stock isn’t Going out yet. It sits on your shelf, and each one you sell moves its cost (' + money2(num(firstStock.cost)) + ' for a ' + PRODUCTS[firstStock.product].name.toLowerCase() + ') into Going out as cost of goods.' : 'No stock on this bill. Add a stock line when you buy products to sell.',
+      costEffect: fCost > 0 ? money2(fCost) + ' of costs goes into Going out now as still to pay, and moves to paid when you pay the bill.' : 'No costs on this bill yet, so Going out doesn’t change.',
+      stockEffect: fStock > 0 ? 'Stock you buy isn’t Going out until you sell it. The ' + money2(fStock) + ' sits on your shelf, and each one you sell moves its cost' + (firstStockP ? ' (' + money2(num(firstStock.cost)) + ' for a ' + String(firstStockP.name).toLowerCase() + ')' : '') + ' into Going out as cost of goods.' : 'Stock you buy isn’t Going out until you sell it. Add a stock line when you buy products to sell.',
       noPdf: !f.pdf, hasPdf: f.pdf, pdfName: (f.num || 'bill') + '.pdf', pdfNote: '1 page · we read a total of ' + money2(fTotal) + ', which matches',
       sched: fSched.map((s, i) => ({ label: (planN > 1 ? 'Payment ' + (i + 1) + ' · ' : 'All at once · ') + s.date, amt: money2(s.amt) })),
       auto: f.auto, autoBg: f.auto ? '#E0752D' : '#CBC7D3', autoLeft: f.auto ? '25px' : '3px',
@@ -599,111 +554,164 @@ class Component extends DCLogic {
     const plans = [['full', 'Pay in full'], ['two', '2 payments'], ['three', '3 payments']].map((p) => ({ label: p[1], on: f.plan === p[0], bg: f.plan === p[0] ? '#FDE6D6' : '#FFFFFF', border: f.plan === p[0] ? '#E0752D' : '#CBC7D3', pick: () => setF({ plan: p[0] }) }));
     const saveBill = () => {
       const errs = [];
+      const who = isNewVendor ? String(f.newVendor || '').trim() : vendorSel;
+      if (!who) errs.push('Say who sent the bill.');
       if (!f.num.trim()) errs.push('Add the bill number from the bill, so you can find it later.');
       if (!f.lines.length) errs.push('Add at least one line.');
       f.lines.forEach((l, i) => {
         if (l.kind === 'stock' && !(num(l.qty) > 0 && num(l.cost) > 0)) errs.push('Line ' + (i + 1) + ': how many, and the cost of each.');
-        if (l.kind === 'cost' && !(num(l.amt) > 0)) errs.push('Line ' + (i + 1) + ': add an amount.');
-        if (l.kind === 'cost' && !String(l.desc || '').trim()) errs.push('Line ' + (i + 1) + ': say what it was for.');
+        if (l.kind === 'stock' && !prodOf(l.product)) errs.push('Line ' + (i + 1) + ': pick a product.');
+        if (l.kind !== 'stock' && !(num(l.amt) > 0)) errs.push('Line ' + (i + 1) + ': add an amount.');
+        if (l.kind !== 'stock' && !String(l.desc || '').trim()) errs.push('Line ' + (i + 1) + ': say what it was for.');
       });
       if (errs.length) { this.setState({ errors: errs }); return; }
-      const id = 'n' + Date.now();
-      const bill = { id, vendor: f.vendor, num: f.num.trim(), date: day(off), due: day(dueOff), dueIn: dueOff, lines: f.lines.map((l) => Object.assign({}, l)), pdf: f.pdf ? f.num.trim() + '.pdf' : null, sched: fSched, auto: f.auto, isNew: true };
-      const add = Object.assign({}, st.stockAdd);
-      f.lines.forEach((l) => { if (l.kind === 'stock') add[l.product] = (add[l.product] || 0) + Math.round(num(l.qty)); });
-      this.setState({ bills: st.bills.concat([bill]), stockAdd: add, view: id, f: this.freshForm(false), moreOpen: false, errors: [], payOpen: false, pdfOpen: false });
-      this.notify(firstStock ? 'Bill saved · ' + Math.round(num(firstStock.qty)) + ' ' + PRODUCTS[firstStock.product].plural.toLowerCase() + ' added to stock' : 'Bill saved · ' + money2(fTotal) + ' added to bills to pay');
+      const outLines = f.lines.map((l) => (l.kind === 'stock'
+        ? { kind: 'stock', product: l.product, name: prodOf(l.product).name, qty: Math.round(num(l.qty)), cost: num(l.cost) }
+        : { kind: 'cost', desc: String(l.desc).trim(), cat: l.cat || 'Other', amt: num(l.amt) }));
+      const costs = outLines.filter((l) => l.kind === 'cost');
+      const stocks = outLines.filter((l) => l.kind === 'stock');
+      const hist = [{ label: 'Entered by ' + (prof.owner || 'you'), date: BE.today }]
+        .concat(stocks.map((l) => ({ label: 'Added ' + l.qty + ' × ' + l.name + ' to stock', date: BE.today })))
+        .concat(f.auto ? [{ label: 'Set to pay itself from Chase ••4417', date: BE.today }] : []);
+      const bill = BE.addBill({
+        num: f.num.trim(), who, what: costs.length ? costs.map((l) => l.desc).join(', ') : 'Stock: ' + stocks.map((l) => l.qty + ' × ' + l.name).join(', '),
+        amount: Math.round(fCost * 100) / 100, stockAmt: Math.round(fStock * 100) / 100, paid: 0, stockPaid: 0,
+        date: day(off), due: day(dueOff), dueIn: dueOff, cat: costs.length ? costs[0].cat : 'Stock', lines: outLines,
+        pdf: f.pdf ? f.num.trim() + '.pdf' : '', sched: fSched, auto: f.auto, inMonth: true, history: hist
+      });
+      if (stocks.length) {
+        BE.change((s) => {
+          s.products = (s.products || []).map((p) => {
+            const add = stocks.filter((l) => l.product === p.id).reduce((a, l) => a + l.qty, 0);
+            return add ? Object.assign({}, p, { stock: (Number(p.stock) || 0) + add }) : p;
+          });
+        });
+      }
+      this.setState({ savedId: bill.id, f: this.freshForm(''), moreOpen: false, errors: [] });
+      this.notify(stocks.length
+        ? 'Bill saved · ' + stocks[0].qty + ' × ' + stocks[0].name + ' added to stock' + (fCost > 0 ? ' · ' + money2(fCost) + ' to Going out' : '')
+        : 'Bill saved · ' + money2(fCost) + ' added to Going out as still to pay');
     };
 
     // ---------- Detail ----------
-    const cur = st.bills.filter((b) => b.id === st.view)[0];
-    let b = null, quick = [], p = {};
+    const cur = view !== 'new' ? BE.find('bills', view) : null;
+    let b = {}, quick = [], p = {}, sv = {};
     if (cur) {
       const s = statusOf(cur);
-      const pays = st.pays[cur.id] || [];
-      const t = s.t, paid = s.paid, left = s.left;
-      const cT = costTotal(cur), sT = t - cT;
-      let cover = paid;
-      const sched = cur.sched.map((x) => {
-        const c = Math.min(x.amt, cover); cover = Math.round((cover - c) * 100) / 100;
-        const full = c >= x.amt - 0.005;
-        const state = full ? 'Paid' : (c > 0 ? money2(x.amt - c) + ' left' : (x.dueIn <= 8 ? 'Due soon' : 'Planned'));
-        const col = full ? ['#E2F6D5', '#2F5711'] : (c > 0 ? ['#E1EEF8', '#1F5E91'] : (x.dueIn <= 8 ? ['#FFF0B8', '#6B5000'] : ['#EFEDF3', '#47444F']));
-        return { label: x.date, amt: money2(x.amt), state, bg: col[0], fg: col[1] };
-      });
+      const tot = s.t, paid = s.paid, l = s.left;
+      const vend = vendors.filter((v) => v.name === cur.who)[0];
+      const blines = (cur.lines && cur.lines.length ? cur.lines : [{ kind: 'cost', desc: cur.what, cat: cur.cat, amt: cur.amount }]);
+      const pays = BE.all('expenses').filter((x) => x.bill === cur.id).map((x) => ({ date: x.date, from: x.how, amt: money2(x.amount), href: 'SpendTransaction.dc.html#' + x.id }));
+      (cur.history || []).forEach((hh) => { if (/for stock/.test(hh.label)) pays.push({ date: hh.date, from: hh.label.replace(/^Paid \S+ for stock from /, '') + ' · stock', amt: (hh.label.match(/\$[\d,.]+/) || [''])[0], href: 'SpendBill.dc.html#' + cur.id }); });
+      const sch = cur.auto && cur.sched && cur.sched.length ? cur.sched.filter((x) => x.dueIn >= 0)[0] || cur.sched[0] : null;
       let effect;
-      if (sT > 0) effect = money2(cT) + ' of costs counts in Going out. The ' + money2(sT) + ' of stock doesn’t: it’s on your shelf, and moves into Going out as cost of goods only when you sell it. Paying the bill doesn’t change that.';
-      else if (paid <= 0) effect = 'All ' + money2(t) + ' is in Going out as still to pay. Paying it moves it to paid; the Going out total stays the same.';
-      else if (left > 0) effect = money2(paid) + ' moved from still to pay to paid. ' + money2(left) + ' is still to pay. The Going out total stays the same.';
-      else effect = 'All ' + money2(t) + ' is now in paid. Nothing from this bill is left in still to pay.';
+      const sA = Number(cur.stockAmt) || 0, cA = Number(cur.amount) || 0;
+      if (sA > 0) effect = money2(cA) + ' of costs counts in Going out. The ' + money2(sA) + ' of stock doesn’t: stock you buy isn’t Going out until you sell it. Then each one moves into Going out as cost of goods.';
+      else if (paid <= 0) effect = 'All ' + money2(tot) + ' is in Going out as still to pay. Paying it moves it to paid; the Going out total stays the same.';
+      else if (l > 0) effect = money2(paid) + ' moved from still to pay to paid. ' + money2(l) + ' is still to pay. The Going out total stays the same.';
+      else effect = 'All ' + money2(tot) + ' is now in paid. Nothing from this bill is left in still to pay.';
+      const paidPct = tot ? Math.round(paid / tot * 100) : 0;
       b = {
-        vendor: cur.vendor, num: cur.num, date: cur.date, due: cur.due, status: s.text, bg: s.bg, fg: s.fg,
-        total: money2(t), paid: money2(paid), left: money2(left), leftText: left > 0 ? money2(left) + ' left to pay' : 'Paid in full',
-        paidPct: Math.round(paid / t * 100), leftPct: 100 - Math.round(paid / t * 100),
-        open: left > 0, partly: paid > 0 && left > 0,
-        recLabel: paid > 0 ? 'Record another payment' : 'Record a payment', recBg: paid > 0 ? 'rgba(24,22,31,0.07)' : '#B9A3FF',
-        lines: cur.lines.map((l, i) => (l.kind === 'stock'
-          ? { desc: Math.round(num(l.qty)) + ' × ' + PRODUCTS[l.product].name, meta: money2(num(l.cost)) + ' each · added to stock (now ' + stockNow(l.product) + ')', tag: 'Stock', tagBg: '#18161F', tagFg: '#FFFFFF', amt: money2(lineAmt(l)), border: i === 0 ? '0' : '1px solid #EFEDF3' }
-          : { desc: l.desc, meta: l.cat, tag: 'Cost', tagBg: '#FDE6D6', tagFg: '#18161F', amt: money2(lineAmt(l)), border: i === 0 ? '0' : '1px solid #EFEDF3' })),
-        sched, autoText: cur.auto ? 'Pays automatically from Chase ••4417 on each date.' : 'You pay it yourself. We’ll remind you two days before each date.',
-        pays: pays.slice().reverse().map((x) => ({ date: x.date, from: x.from, amt: money2(x.amt) })), noPays: pays.length === 0,
-        pdf: cur.pdf || 'No PDF attached yet', effect
+        vendor: cur.who, num: cur.num || '—', date: cur.date || cur.entered || '', due: cur.due, status: s.text, bg: s.bg, fg: s.fg,
+        vendorHref: vend ? 'SpendVendor.dc.html#' + vend.id : '', noVendor: !vend,
+        meta: 'Bill ' + (cur.num || '') + (cur.date ? ' · dated ' + cur.date : '') + ' · due ' + cur.due,
+        to: (prof.business || 'Your business') + (prof.city ? ', ' + prof.city : ''),
+        total: money2(tot), paid: money2(paid), left: money2(l), leftText: l > 0 ? money2(l) + ' left to pay' : 'Paid in full',
+        paidPct, leftPct: 100 - paidPct, open: l > 0, payAllLabel: (paid > 0 ? 'Pay the rest · ' : 'Pay ') + money2(l) + ' now',
+        scheduled: l > 0 && !!sch, notScheduled: !sch,
+        schedText: sch ? 'Pays itself ' + money2(Math.min(sch.amt, l)) + ' on ' + sch.date + ' from ' + (cur.autoFrom || 'Chase ••4417') + '.' : '',
+        lines: blines.map((x, i) => (x.kind === 'stock'
+          ? { desc: x.qty + ' × ' + (x.name || 'Product'), meta: money2(x.cost) + ' each · added to stock' + (prodOf(x.product) ? ' (now ' + prodOf(x.product).stock + ')' : ''), tag: 'Stock', tagBg: '#18161F', tagFg: '#FFFFFF', amt: money2(x.qty * x.cost), border: i === 0 ? '0' : '1px solid #EFEDF3' }
+          : { desc: x.desc, meta: x.cat, tag: 'Cost', tagBg: '#FDE6D6', tagFg: '#18161F', amt: money2(x.amt), border: i === 0 ? '0' : '1px solid #EFEDF3' })),
+        autoText: sch ? 'Pays automatically on ' + sch.date + '.' : 'You pay it yourself. We’ll remind you two days before it’s due.',
+        pays, noPays: pays.length === 0,
+        history: (cur.history || []).slice().reverse().map((x, i) => ({ label: x.label, date: x.date, border: i === 0 ? '0' : '1px solid #E2DFE8' })),
+        pdf: cur.pdf || 'No PDF attached yet', pdfNote: cur.pdf ? 'The bill as ' + cur.who + ' sent it · kept with your books' : 'Attach it so it’s kept with your books for tax',
+        effect
       };
-      const half = Math.round(left / 2 * 100) / 100;
-      quick = left > 0 ? [['Half · ' + money2(half), half], ['All of it · ' + money2(left), left]].map((q) => ({ label: q[0], on: Math.abs(num(st.p.amt) - q[1]) < 0.005, bg: Math.abs(num(st.p.amt) - q[1]) < 0.005 ? '#FDE6D6' : '#FFFFFF', border: Math.abs(num(st.p.amt) - q[1]) < 0.005 ? '#E0752D' : '#CBC7D3', pick: () => this.setState({ p: Object.assign({}, st.p, { amt: q[1].toFixed(2) }), pErr: '' }) })) : [];
+      const half = Math.round(l / 2 * 100) / 100;
       const pa = num(st.p.amt);
+      quick = l > 0 ? [['Half · ' + money2(half), half], ['All of it · ' + money2(l), l]].map((q) => {
+        const on = Math.abs(pa - q[1]) < 0.005;
+        return { label: q[0], on, bg: on ? '#FDE6D6' : '#FFFFFF', border: on ? '#E0752D' : '#CBC7D3', pick: () => this.setState({ p: Object.assign({}, this.state.p, { amt: q[1].toFixed(2) }), pErr: '' }) };
+      }) : [];
+      const costLeft = Math.max(0, cA - (cur.paid || 0));
       p = {
-        amt: st.p.amt, date: st.p.date, from: st.p.from, hasErr: !!st.pErr, err: st.pErr,
-        saveLabel: pa > 0 ? 'Record ' + money2(pa) : 'Record payment',
-        effect: sT > 0 ? 'Paying a stock bill doesn’t change Going out: the cards count when they sell.' : (pa > 0 ? 'Moves ' + money2(pa) + ' from still to pay to paid in Going out' + (pa < left ? ', and leaves ' + money2(left - pa) + ' on this bill.' : '. This bill is then done.') : 'Type an amount, or pick one above.')
+        amt: st.p.amt, from: st.p.from, hasErr: !!st.pErr, err: st.pErr,
+        saveLabel: pa > 0 ? 'Pay ' + money2(pa) : 'Pay',
+        effect: pa > 0 ? (costLeft > 0 ? 'Moves ' + money2(Math.min(pa, costLeft)) + ' from still to pay to paid in Going out' : 'This pays for stock, so Going out doesn’t change') + (pa < l ? ', and leaves ' + money2(l - pa) + ' on this bill.' : '. This bill is then done.') : 'Type an amount, or pick one above.'
       };
-      this._cur = { cur, left };
-    }
+      const dates = [];
+      [cur.dueIn, Math.max(1, (cur.dueIn || 0) - 2), 1].forEach((d) => { if (d != null && d >= 1 && !dates.some((x) => x.value === String(d))) dates.push({ value: String(d), label: day(d) + (d === cur.dueIn ? ' (due date)' : '') }); });
+      const sDate = st.s.date && dates.some((x) => x.value === st.s.date) ? st.s.date : (dates[0] ? dates[0].value : '1');
+      sv = { date: sDate, from: st.s.from, dates, saveLabel: 'Pay ' + money2(l) + ' on ' + day(Number(sDate)) };
+      this._cur = { cur, left: l, sDate };
+    } else this._cur = null;
+
     const savePay = () => {
       const c = this._cur; if (!c) return;
-      const pa = Math.round(num(st.p.amt) * 100) / 100;
+      const pa = Math.round(num(this.state.p.amt) * 100) / 100;
       if (!(pa > 0)) { this.setState({ pErr: 'Add the amount you paid.' }); return; }
       if (pa > c.left + 0.005) { this.setState({ pErr: 'That’s more than the ' + money2(c.left) + ' left on this bill.' }); return; }
-      const pays = Object.assign({}, st.pays); pays[c.cur.id] = (pays[c.cur.id] || []).concat([{ amt: pa, date: st.p.date, from: st.p.from }]);
-      this.setState({ pays, payOpen: false, pErr: '' });
+      BE.payBillAll(c.cur.id, pa, this.state.p.from);
+      this.setState({ payOpen: false, pErr: '' });
       const rest = Math.round((c.left - pa) * 100) / 100;
-      this.notify('Recorded ' + money2(pa) + ' to ' + c.cur.vendor + (rest > 0 ? ' · ' + money2(rest) + ' left' : ' · paid in full'));
+      this.notify('Paid ' + money2(pa) + ' to ' + c.cur.who + (rest > 0 ? ' · ' + money2(rest) + ' left' : ' · paid in full') + ' · moved to paid');
     };
-    const payRest = () => {
+    const payAll = () => {
       const c = this._cur; if (!c || c.left <= 0) return;
-      const pays = Object.assign({}, st.pays); pays[c.cur.id] = (pays[c.cur.id] || []).concat([{ amt: c.left, date: 'Oct 4', from: 'Chase ••4417' }]);
-      this.setState({ pays, payOpen: false });
-      this.notify('Paid the remaining ' + money2(c.left) + ' to ' + c.cur.vendor + ' from Chase ••4417');
+      BE.payBillAll(c.cur.id, null, 'Chase ••4417');
+      this.setState({ payOpen: false, schedOpen: false });
+      this.notify('Paid ' + c.cur.who + ' ' + money2(c.left) + ' from Chase ••4417 · moved to paid in Going out');
+    };
+    const saveSched = () => {
+      const c = this._cur; if (!c) return;
+      const d = Number(c.sDate), from = this.state.s.from;
+      BE.update('bills', c.cur.id, (x) => ({ auto: true, autoFrom: from, sched: [{ date: day(d), amt: c.left, dueIn: d }], history: (x.history || []).concat([{ label: 'Scheduled ' + money2(c.left) + ' for ' + day(d) + ' from ' + from, date: BE.today }]) }));
+      this.setState({ schedOpen: false });
+      this.notify('Scheduled ' + money2(c.left) + ' for ' + day(d) + ' · still to pay until then');
+    };
+    const cancelSched = () => {
+      const c = this._cur; if (!c) return;
+      BE.update('bills', c.cur.id, (x) => ({ auto: false, history: (x.history || []).concat([{ label: 'Stopped paying it automatically', date: BE.today }]) }));
+      this.notify('Won’t pay automatically · we’ll remind you before ' + c.cur.due);
     };
 
-    return Object.assign(this.base(outT), {
-      top, list, isNew: st.view === 'new', isDetail: !!cur,
-      goNew: () => this.setState({ view: 'new', payOpen: false }),
-      f: fv, lines, plans, saveBill,
-      setVendor: (ev) => setF({ vendor: ev.target.value }), setNum: (ev) => setF({ num: ev.target.value }),
-      setDate: (ev) => setF({ date: ev.target.value }), setTerms: (ev) => setF({ terms: ev.target.value }),
-      addCost: () => setF({ lines: f.lines.concat([{ kind: 'cost', desc: '', cat: 'Other', amt: '' }]) }),
-      addStock: () => setF({ lines: f.lines.concat([{ kind: 'stock', product: 'tote', qty: '', cost: '9.00' }]) }),
+    const stockOn = showsProducts && prods.length > 0;
+    return {
+      n: t.fmt, toast: st.toast, top, list, noBills: bills.length === 0, notFound,
+      crumb: view === 'new' ? 'New bill' : (cur ? cur.who : ''), isNewCur: view === 'new' ? 'page' : false,
+      isNew: view === 'new', isDetail: !!cur,
+      vendorNames: names, products: prods.map((x) => ({ id: x.id, name: x.name })),
+      f: fv, lines, plans, saveBill, stockOn, canStock: stockOn, stockNeedsProducts: showsProducts && !prods.length,
+      setVendor: (e) => setF({ vendor: e.target.value }), setNewVendor: (e) => setF({ newVendor: e.target.value }), setNum: (e) => setF({ num: e.target.value }),
+      setDate: (e) => setF({ date: e.target.value }), setTerms: (e) => setF({ terms: e.target.value }),
+      addCost: () => setF({ lines: this.state.f.lines.concat([{ kind: 'cost', desc: '', cat: 'Other', amt: '' }]) }),
+      addStock: () => { const p0 = prods[0]; setF({ lines: this.state.f.lines.concat([{ kind: 'stock', product: p0 ? p0.id : '', qty: '', cost: p0 && p0.cost != null ? Number(p0.cost).toFixed(2) : '' }]) }); },
       attachPdf: () => { setF({ pdf: true }); this.notify('Attached ' + (f.num || 'bill') + '.pdf'); },
       removePdf: () => setF({ pdf: false }),
       toggleAuto: () => setF({ auto: !f.auto }),
       moreOpen: st.moreOpen, moreIcon: st.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
       toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
-      resetForm: () => this.setState({ f: this.freshForm(false), errors: [], moreOpen: false }),
+      resetForm: () => this.setState({ f: this.freshForm(''), errors: [], moreOpen: false }),
+      dirty: JSON.stringify(f) !== JSON.stringify(this.freshForm(f.vendor)) || st.errors.length > 0,
       errors: st.errors, hasErrors: st.errors.length > 0,
-      b: b || {}, g, quick, p, payOpen: st.payOpen && !!cur,
-      togglePay: () => this.setState({ payOpen: !st.payOpen, pErr: '', p: { amt: this._cur ? this._cur.left.toFixed(2) : '', date: 'Oct 4', from: 'Chase ••4417' } }),
-      setPayAmt: (ev) => this.setState({ p: Object.assign({}, st.p, { amt: ev.target.value }), pErr: '' }),
-      setPayDate: (ev) => this.setState({ p: Object.assign({}, st.p, { date: ev.target.value }) }),
-      setPayFrom: (ev) => this.setState({ p: Object.assign({}, st.p, { from: ev.target.value }) }),
-      savePay, payRest,
+      b, g: { paidPct: t.out ? t.outPaidPct : 0, schPct: t.out ? 100 - t.outPaidPct : 0 }, quick, p, s: sv,
+      payOpen: st.payOpen && !!cur && b.open, schedOpen: st.schedOpen && !!cur && b.open,
+      togglePay: () => this.setState({ payOpen: !st.payOpen, schedOpen: false, pErr: '', p: { amt: this._cur ? this._cur.left.toFixed(2) : '', from: 'Chase ••4417' } }),
+      toggleSched: () => this.setState({ schedOpen: !st.schedOpen, payOpen: false }),
+      setPayAmt: (e) => this.setState({ p: Object.assign({}, this.state.p, { amt: e.target.value }), pErr: '' }),
+      setPayFrom: (e) => this.setState({ p: Object.assign({}, this.state.p, { from: e.target.value }) }),
+      setSchedDate: (e) => this.setState({ s: Object.assign({}, this.state.s, { date: e.target.value }) }),
+      setSchedFrom: (e) => this.setState({ s: Object.assign({}, this.state.s, { from: e.target.value }) }),
+      savePay, payAll, saveSched, cancelSched,
       pdfOpen: st.pdfOpen && !!(cur && cur.pdf), pdfLabel: cur && cur.pdf ? (st.pdfOpen ? 'Hide' : 'View') : 'Attach PDF',
       togglePdf: () => {
         if (!cur) return;
-        if (!cur.pdf) { const name = cur.num + '.pdf'; this.setState({ bills: st.bills.map((x) => (x.id === cur.id ? Object.assign({}, x, { pdf: name }) : x)) }); this.notify('Attached ' + name); return; }
+        if (!cur.pdf) { const name = (cur.num || 'bill') + '.pdf'; BE.update('bills', cur.id, (x) => ({ pdf: name, history: (x.history || []).concat([{ label: 'Attached ' + name, date: BE.today }]) })); this.notify('Attached ' + name); return; }
         this.setState({ pdfOpen: !st.pdfOpen });
       }
-    });
+    };
   }
 }
 </script>

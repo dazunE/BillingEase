@@ -241,7 +241,7 @@ class Component extends DCLogic {
     const matched = r.status === 'matched';
     const x = r.expenseId ? BE.find('expenses', r.expenseId) : null;
 
-    const base = { id: r.id, merchant: r.merchant || '', date: r.date || '', total: r.total ? String(r.total) : '', tax: r.tax ? String(r.tax) : '', cat: r.cat || 'Other' };
+    const base = { id: r.id, merchant: r.merchant || '', date: r.date || '', total: r.total ? Number(r.total).toFixed(2) : '', tax: r.tax ? Number(r.tax).toFixed(2) : '', cat: r.cat || 'Other' };
     const d = st.d && st.d.id === r.id ? st.d : base;
     const dirty = ['merchant', 'date', 'total', 'tax', 'cat'].some((k) => String(d[k]) !== String(base[k]));
     const setD = (k) => (e) => this.setState({ d: Object.assign({}, d, { [k]: e.target.value }), err: '' });

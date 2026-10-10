@@ -617,7 +617,7 @@ class Component extends DCLogic {
       crumbHere: mode === 'new' ? (isCopy ? 'New copy' : 'New invoice') : (editInv.draft ? 'Draft for ' + editInv.who : 'Edit ' + editInv.num),
       title: mode === 'new' ? 'New invoice' : mode === 'draft' ? 'Finish the draft' : mode === 'sent' ? 'Edit ' + editInv.num : editInv.num,
       intro: mode === 'sent' ? 'Change anything and send it again; ' + editInv.who + ' gets the updated version and the same link.' : 'The full editor, for when one sentence isn’t enough: several lines, products, discounts, other currencies.',
-      inv: { num: mode === 'draft' && /^D-/.test(invNum) ? 'Draft' : invNum, state: mode === 'new' ? 'Not saved yet' : mode === 'draft' ? 'Draft' : st0 === 'late' ? 'Sent · late' : st0 === 'part' ? 'Sent · part paid' : mode === 'locked' ? (editInv.void ? 'Void' : 'Paid') : 'Sent' },
+      inv: { num: mode === 'draft' && /^D-/.test(invNum) ? 'Numbered when you send it' : invNum, state: mode === 'new' ? 'Not saved yet' : mode === 'draft' ? 'Draft' : st0 === 'late' ? 'Sent · late' : st0 === 'part' ? 'Sent · part paid' : mode === 'locked' ? (editInv.void ? 'Void' : 'Paid') : 'Sent' },
       locked, editing: mode !== 'locked', today: BE.today,
       f: Object.assign({}, f, { who: ncOn && !cu ? '__new' : f.who }), biz: { name: profile.business || 'Your business', line: [profile.city, profile.email].filter(Boolean).join(' · ') },
       meEmail: profile.email ? 'To ' + profile.email : 'To the email on your account',

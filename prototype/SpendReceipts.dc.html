@@ -412,7 +412,7 @@ class Component extends DCLogic {
       addr, copyLabel: st.copied ? 'Copied' : 'Copy',
       copyAddr: () => { try { navigator.clipboard && navigator.clipboard.writeText(addr).catch(() => {}); } catch (e) { /* ignore */ } this.setState({ copied: true }); this.notify('Copied ' + addr); },
       pickFile, samplePhoto: () => add('IMG_' + (4480 + all.length) + '.jpg', 'Sample photo'),
-      waiting, waitCount: waitList.length, hasWaiting: waitList.length > 0,
+      waiting, waitCount: all.length ? waitList.length : '', hasWaiting: waitList.length > 0,
       canMatchAll: firstCands.length > 1, matchAllLabel: 'Match all ' + firstCands.length, matchAll,
       allClear: all.length > 0 && waitList.length === 0, noneYet: all.length === 0,
       anyMatched: matchedAll.length > 0, months, matched, monthName, noneThisMonth: shown.length === 0,
