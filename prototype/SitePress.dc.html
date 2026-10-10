@@ -1,8 +1,413 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SitePress</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Press</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<div style="min-height:100vh;background:#F7F6F9"><dc-import name="SiteNav"></dc-import><main style="padding:40px 16px">Being designed.</main><dc-import name="SiteFooter"></dc-import></div>
+<!--CO-CSS-->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+html{scroll-behavior:smooth}
+.co{min-height:100vh;background:#F7F6F9;color:#18161F;font-family:'DM Sans',system-ui,sans-serif;overflow-x:clip}
+.co a{color:#18161F}
+.co :focus-visible{outline:3px solid #7A5AF8;outline-offset:3px;border-radius:12px}
+.co-wrap{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:clamp(64px,9vw,120px) clamp(16px,4vw,40px)}
+.co-band{background:#FFFFFF;border-top:1px solid #E2DFE8;border-bottom:1px solid #E2DFE8}
+.co-h1{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(40px,6.2vw,84px);line-height:1.02;letter-spacing:-0.035em;text-wrap:balance}
+.co-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,56px);line-height:1.05;letter-spacing:-0.035em;text-wrap:balance}
+.co-h3{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;line-height:1.2;letter-spacing:-0.02em}
+.co-lead{margin:0;font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:#47444F;text-wrap:pretty}
+.co-p{margin:0;font-size:16px;line-height:1.6;color:#47444F}
+.co-sm{font-size:14px;line-height:1.5;color:#5F5B68}
+.co-kick{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#47444F}
+.co-kick i{width:10px;height:10px;border-radius:9999px;background:#7A5AF8;display:inline-block}
+.co-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(22px,2.4vw,30px);box-sizing:border-box;min-width:0}
+.co-soft{background:#F7F6F9;border-radius:20px;box-sizing:border-box;min-width:0}
+.co-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.co-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:9999px;border:0;cursor:pointer;text-decoration:none;font:600 16px 'DM Sans',sans-serif;white-space:nowrap;box-sizing:border-box;transition:transform .15s ease,background .15s ease}
+.co-btn:hover{transform:translateY(-1px)}
+.co .co-ink{background:#18161F;color:#FFFFFF}
+.co .co-vio{background:#B9A3FF;color:#18161F}
+.co .co-ghost{background:rgba(24,22,31,0.07);color:#18161F}
+.co .co-ghost-d{background:rgba(238,232,255,0.12);color:#FFFFFF}
+.co-sbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border-radius:9999px;border:0;cursor:pointer;font:600 14px 'DM Sans',sans-serif;background:rgba(24,22,31,0.07);color:#18161F;text-decoration:none;white-space:nowrap}
+.co-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:9999px;background:#EEE8FF;font-size:13px;font-weight:600;color:#18161F;white-space:nowrap}
+.co-label{font-size:14px;font-weight:600;color:#18161F}
+.co-in{width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:1px solid #CBC7D3;border-radius:12px;background:#FFFFFF;font:400 16px 'DM Sans',sans-serif;color:#18161F}
+.co-in:focus{outline:3px solid #C9BCFB;outline-offset:0;border-color:#7A5AF8}
+textarea.co-in{min-height:120px;resize:vertical;line-height:1.5}
+.co-err{font-size:13px;font-weight:600;color:#A8200D}
+.co-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.co-ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.co-ul li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.5;color:#18161F}
+.co-ul li svg{flex:none;margin-top:3px}
+@keyframes co-sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes co-swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes co-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes co-steam{0%{transform:translateY(6px);opacity:0}30%{opacity:.8}100%{transform:translateY(-16px);opacity:0}}
+@keyframes co-draw{0%,10%{stroke-dashoffset:300}55%,100%{stroke-dashoffset:0}}
+@keyframes co-fade{0%,40%{opacity:0;transform:translateY(6px)}55%,100%{opacity:1;transform:none}}
+@keyframes co-blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes co-pulse{0%{box-shadow:0 0 0 0 rgba(122,90,248,.45)}70%,100%{box-shadow:0 0 0 10px rgba(122,90,248,0)}}
+@keyframes co-rowin{0%,6%{opacity:0;transform:translateX(-10px)}14%,100%{opacity:1;transform:none}}
+@keyframes co-hl{0%,20%,100%{background:#FFFFFF}30%,60%{background:#EEE8FF}}
+@keyframes co-scan{0%,100%{top:8%}50%{top:88%}}
+@keyframes co-slide{0%{transform:translateX(-10px);opacity:0}15%,85%{opacity:1;transform:none}100%{opacity:0}}
+.co-pivot{transform-box:fill-box;transform-origin:50% 0}
+.co-c{transform-box:fill-box;transform-origin:center}
+.co-b{transform-box:fill-box;transform-origin:50% 100%}
+@media (max-width: 640px){.co-person{display:grid!important;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:14px 16px!important}.co-person>:last-child{grid-column:1/-1}.co-person>:first-child{width:56px!important;height:56px!important;font-size:19px!important;box-shadow:3px 3px 0 #18161F!important}}
+.co-role{transition:border-color .15s ease,transform .15s ease}.co-role:hover{border-color:#B9A3FF!important;transform:translateY(-1px)}
+@media (max-width: 640px){.co-two{grid-template-columns:1fr 1fr!important;gap:10px!important}.co-two>li{padding:16px!important}.co-two .co-big{font-size:22px!important}}
+@media (max-width: 860px){.co-aside{order:-1;position:static!important}}
+@media (prefers-reduced-motion: reduce){.co-anim,.co-anim *{animation:none!important;transition:none!important}html{scroll-behavior:auto}.co-btn:hover{transform:none}}
+</style>
+</helmet>
+<!--/CO-CSS-->
+<div class="co">
+  <dc-import name="SiteNav" current="press"></dc-import>
+
+  <main>
+    <!-- 1 · Hero -->
+    <section aria-labelledby="pr-h" class="co-wrap" style="padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(56px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: center; gap: 40px 56px;">
+      <div style="flex: 1 1 500px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 22px;">
+        <span class="co-kick"><i></i>Press</span>
+        <h1 id="pr-h" class="co-h1">News, facts and the brand kit.</h1>
+        <p class="co-lead" style="max-width: 580px;">Writing about BillingEase? Everything you need is on this page, ready to copy. For anything else, write to <strong style="color: #18161F;">{{c.press}}</strong> and a person replies within one business day.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a href="#kit" class="co-btn co-ink">Open the press kit</a>
+          <a href="#news" class="co-btn co-ghost">Latest news</a>
+        </div>
+      </div>
+      <div class="co-anim" aria-hidden="true" style="flex: 1 1 360px; min-width: 0; max-width: 500px; margin: 0 auto;">
+        <svg viewBox="0 0 460 380" width="100%" style="display: block; overflow: visible;">
+          <circle cx="230" cy="196" r="168" fill="#EEE8FF"></circle>
+          <g transform="rotate(-4 230 200)">
+            <path d="M70 70 H370 V330 H70 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+            <text x="220" y="104" text-anchor="middle" font-family="Sora, sans-serif" font-size="20" font-weight="800" fill="#18161F" letter-spacing="1">THE SMALL BUSINESS DAILY</text>
+            <path d="M90 116 H350 M90 120 H350" stroke="#18161F" stroke-width="1.5"></path>
+            <text x="90" y="156" font-family="Sora, sans-serif" font-size="26" font-weight="800" fill="#18161F">Three numbers,</text>
+            <text x="90" y="186" font-family="Sora, sans-serif" font-size="26" font-weight="800" fill="#7A5AF8">zero jargon</text>
+            <rect x="90" y="204" width="120" height="96" rx="6" fill="#18161F"></rect>
+            <path d="M104 282 V252 M124 282 V236 M144 282 V246 M164 282 V224 M184 282 V232" stroke="#B9A3FF" stroke-width="10"></path>
+            <path d="M228 210 H350 M228 224 H350 M228 238 H330 M228 252 H350 M228 266 H310 M228 280 H350 M228 294 H290" stroke="#CBC7D3" stroke-width="5" stroke-linecap="round"></path>
+          </g>
+          <!-- stamp -->
+          <g class="co-c" style="animation: co-bob 4.5s ease-in-out infinite;">
+            <circle cx="372" cy="300" r="46" fill="#E0752D" stroke="#18161F" stroke-width="2.5"></circle>
+            <circle cx="372" cy="300" r="36" fill="none" stroke="#18161F" stroke-width="1.5" stroke-dasharray="4 4"></circle>
+            <text x="372" y="296" text-anchor="middle" font-family="Caveat, cursive" font-size="22" font-weight="700" fill="#18161F">press</text>
+            <text x="372" y="316" text-anchor="middle" font-family="Caveat, cursive" font-size="22" font-weight="700" fill="#18161F">kit</text>
+          </g>
+          <!-- pencil -->
+          <g style="animation: co-bob 5s ease-in-out infinite; animation-delay: -2s;">
+            <path d="M40 300 L110 230 L122 242 L52 312 L36 318 Z" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 2 · News -->
+    <section id="news" aria-labelledby="news-h" class="co-band" style="scroll-margin-top: 16px;">
+      <div class="co-wrap" style="display: flex; flex-direction: column; gap: 32px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 40px;">
+          <div style="display: flex; flex-direction: column; gap: 12px; max-width: 640px;">
+            <h2 id="news-h" class="co-h2">Latest news</h2>
+            <p class="co-lead">Announcements from the last two and a half years, newest first.</p>
+          </div>
+          <a href="SiteChangelog.dc.html" class="co-sbtn">Product updates<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border-top: 1px solid #E2DFE8;">
+          <sc-for list="{{news}}" as="n" hint-placeholder-count="6">
+            <li style="border-bottom: 1px solid #E2DFE8; padding: 26px 0; display: flex; flex-wrap: wrap; gap: 12px 40px;">
+              <span style="flex: 0 0 150px; display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-size: 14px; font-weight: 700; color: #5F5B68; font-variant-numeric: tabular-nums;">{{n.date}}</span>
+                <span class="co-chip" style="align-self: flex-start; background: {{n.tagBg}};">{{n.tag}}</span>
+              </span>
+              <article style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+                <h3 class="co-h3" style="font-size: clamp(19px, 1.8vw, 23px);">{{n.title}}</h3>
+                <p class="co-p">{{n.sum}}</p>
+                <sc-if value="{{n.open}}" hint-placeholder-val="{{false}}">
+                  <div id="{{n.id}}" style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px; padding: 22px 24px; border-radius: 20px; background: #F7F6F9;">
+                    <sc-for list="{{n.body}}" as="p" hint-placeholder-count="2">
+                      <p class="co-p">{{p}}</p>
+                    </sc-for>
+                    <blockquote style="margin: 0; padding-left: 16px; border-left: 3px solid #B9A3FF; font-family: Sora, sans-serif; font-weight: 600; font-size: 17px; line-height: 1.45; letter-spacing: -0.01em;">{{n.quote}}<span style="display: block; margin-top: 6px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px; color: #5F5B68;">{{n.who}}</span></blockquote>
+                  </div>
+                </sc-if>
+                <span style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;">
+                  <button type="button" class="co-sbtn" aria-expanded="{{n.open}}" aria-controls="{{n.id}}" onClick="{{n.toggle}}">{{n.cta}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.chev}}"></path></svg></button>
+                  <sc-if value="{{n.open}}" hint-placeholder-val="{{false}}">
+                    <button type="button" class="co-sbtn" onClick="{{n.copy}}" style="background: transparent; border: 1px solid #E2DFE8;">Copy the text</button>
+                  </sc-if>
+                </span>
+              </article>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3 · Press kit -->
+    <section id="kit" aria-labelledby="kit-h" class="co-wrap" style="display: flex; flex-direction: column; gap: 48px; scroll-margin-top: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px;">
+        <h2 id="kit-h" class="co-h2">Press kit</h2>
+        <p class="co-lead">The logo, colors, product pictures and a paragraph about us. Copy what you need; please don’t redraw or recolor the logo.</p>
+      </div>
+
+      <!-- Logo -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="co-h3">Logo</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px;">
+          <sc-for list="{{logos}}" as="l" hint-placeholder-count="3">
+            <figure style="margin: 0; display: flex; flex-direction: column; border: 1px solid #E2DFE8; border-radius: 24px; overflow: hidden; background: #FFFFFF;">
+              <div style="height: 180px; display: flex; align-items: center; justify-content: center; gap: 14px; background: {{l.bg}};" role="img" aria-label="{{l.alt}}">
+                <span style="width: 56px; height: 56px; border-radius: 17px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+                <sc-if value="{{l.word}}" hint-placeholder-val="{{true}}"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: {{l.fg}};">BillingEase</span></sc-if>
+              </div>
+              <figcaption style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 14px 20px; border-top: 1px solid #E2DFE8;">
+                <span style="display: flex; flex-direction: column;"><strong style="font-size: 15px;">{{l.name}}</strong><span class="co-sm" style="font-size: 13px;">{{l.use}}</span></span>
+                <button type="button" class="co-sbtn" onClick="{{l.copy}}">{{l.label}}</button>
+              </figcaption>
+            </figure>
+          </sc-for>
+        </div>
+        <p class="co-sm" style="margin: 0; font-size: 15px;">Leave clear space around the logo at least as wide as the violet mark. On photos, use the mark on its own. Minimum size: 24 pixels tall.</p>
+      </div>
+
+      <!-- Colors -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="co-h3">Colors</h3>
+        <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 12px;">
+          <sc-for list="{{colors}}" as="s" hint-placeholder-count="6">
+            <li style="display: flex; flex-direction: column; border: 1px solid #E2DFE8; border-radius: 20px; overflow: hidden; background: #FFFFFF;">
+              <span style="height: 96px; background: {{s.hex}}; border-bottom: 1px solid #E2DFE8;"></span>
+              <span style="padding: 14px 14px 14px 16px; display: flex; flex-direction: column; gap: 10px;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">{{s.name}}</strong><span class="co-sm" style="font-size: 13px;">{{s.use}}</span></span>
+                <button type="button" class="co-sbtn" onClick="{{s.copy}}" aria-label="{{s.aria}}" style="justify-content: space-between; min-height: 36px; padding: 0 12px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: {{s.btnBg}};">{{s.hex}}<span style="font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;">{{s.label}}</span></button>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+
+      <!-- Product pictures -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="co-h3">Product pictures</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px;">
+          <!-- Home -->
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div aria-hidden="true" style="height: 280px; box-sizing: border-box; border-radius: 24px; background: #EEE8FF; padding: 24px 0 0 24px; overflow: hidden;">
+              <div style="height: 100%; background: #F7F6F9; border: 2px solid #18161F; border-bottom: 0; border-right: 0; border-radius: 16px 0 0 0; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;">
+                <span style="display: flex; gap: 5px;"><i style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></i><i style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #F4C3A1;"></i><i style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #CBC7D3;"></i></span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px;">Good morning, Maya</span>
+                <span style="display: flex; gap: 6px;">
+                  <span style="flex: 1; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 9px; font-weight: 700;">Coming in</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px;">$24,850</span><span style="height: 4px; border-radius: 9999px; background: linear-gradient(90deg, #7A5AF8 50%, #C9BCFB 50%);"></span></span>
+                  <span style="flex: 1; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 9px; font-weight: 700;">Going out</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px;">$13,640</span><span style="height: 4px; border-radius: 9999px; background: linear-gradient(90deg, #E0752D 23%, #F4C3A1 23%);"></span></span>
+                  <span style="flex: 1; background: #18161F; border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 9px; font-weight: 700; color: #EEE8FF;">Yours to keep</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; color: #B9A3FF;">$8,407</span><span style="height: 4px; border-radius: 9999px; background: #B9A3FF; width: 75%;"></span></span>
+                </span>
+                <span style="font-size: 10px; font-weight: 700; color: #5F5B68;">NEEDS YOU · 3</span>
+                <span style="background: #FFFFFF; border-radius: 8px; padding: 7px 9px; font-size: 10px; display: flex; justify-content: space-between;"><span>Sort 4 card charges</span><strong>Review</strong></span>
+                <span style="background: #FFFFFF; border-radius: 8px; padding: 7px 9px; font-size: 10px; display: flex; justify-content: space-between;"><span>Harbor &amp; Pine Café is 32 days late</span><strong>Nudge</strong></span>
+              </div>
+            </div>
+            <figcaption style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">Home: the three numbers</strong><span class="co-sm">What owners see each morning, with the few things that need them.</span></figcaption>
+          </figure>
+          <!-- Invoice -->
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div aria-hidden="true" style="height: 280px; box-sizing: border-box; border-radius: 24px; background: #FDE6D6; display: flex; align-items: flex-end; justify-content: center; padding: 24px 24px 0; overflow: hidden;">
+              <div style="width: 100%; max-width: 250px; height: 100%; background: #FFFFFF; border: 2px solid #18161F; border-bottom: 0; border-radius: 14px 14px 0 0; padding: 16px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; position: relative;">
+                <span style="display: flex; justify-content: space-between; align-items: center;"><span style="width: 22px; height: 22px; border-radius: 7px; background: #B9A3FF;"></span><span style="font-size: 10px; font-weight: 700; color: #5F5B68;">INV-0166</span></span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px;">Invoice for Atlas Freight Co.</span>
+                <span style="display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px solid #E2DFE8; padding-bottom: 6px;"><span>Brand strategy workshop</span><span>$1,800</span></span>
+                <span style="display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px solid #E2DFE8; padding-bottom: 6px;"><span>Design hours · 12 × $120</span><span>$1,440</span></span>
+                <span style="display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px solid #E2DFE8; padding-bottom: 6px;"><span>Website page design</span><span>$950</span></span>
+                <span style="display: flex; justify-content: space-between; font-family: Sora, sans-serif; font-weight: 700; font-size: 14px;"><span>Total</span><span>$4,190</span></span>
+                <span style="margin-top: 4px; align-self: flex-start; padding: 6px 12px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-size: 10px; font-weight: 700;">Pay by card or bank</span>
+                <span style="position: absolute; right: 12px; bottom: 34px; transform: rotate(-12deg); padding: 4px 10px; border: 2px solid #2F5711; border-radius: 8px; color: #2F5711; font-family: Sora, sans-serif; font-weight: 800; font-size: 13px;">PAID</span>
+              </div>
+            </div>
+            <figcaption style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">An invoice, paid online</strong><span class="co-sm">Customers pay by card, bank or Apple Pay, right from the invoice.</span></figcaption>
+          </figure>
+          <!-- Phone -->
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div aria-hidden="true" style="height: 280px; box-sizing: border-box; border-radius: 24px; background: #18161F; display: flex; align-items: flex-end; justify-content: center; padding-top: 24px; overflow: hidden;">
+              <div style="width: 150px; height: 100%; background: #F7F6F9; border: 3px solid #EEE8FF; border-bottom: 0; border-radius: 26px 26px 0 0; padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; align-items: center;">
+                <span style="width: 40px; height: 5px; border-radius: 9999px; background: #CBC7D3;"></span>
+                <span style="font-size: 10px; font-weight: 700;">Snap a receipt</span>
+                <span style="width: 92px; background: #FFFFFF; border: 1.5px solid #18161F; padding: 8px; display: flex; flex-direction: column; gap: 4px; box-sizing: border-box; position: relative; overflow: hidden;">
+                  <span style="font-family: Sora, sans-serif; font-weight: 800; font-size: 9px; text-align: center;">STAPLES</span>
+                  <span style="height: 3px; background: #CBC7D3;"></span><span style="height: 3px; width: 70%; background: #CBC7D3;"></span><span style="height: 3px; background: #CBC7D3;"></span>
+                  <span style="font-size: 9px; font-weight: 700; text-align: right;">$84.00</span>
+                  <span class="co-anim" style="position: absolute; left: 0; right: 0; height: 2px; background: #7A5AF8; top: 10%; animation: co-scan 3s ease-in-out infinite;"></span>
+                </span>
+                <span style="width: 100%; background: #FFFFFF; border-radius: 10px; padding: 7px 8px; font-size: 9px; display: flex; flex-direction: column; gap: 2px; box-sizing: border-box;"><strong>Staples · $84.00</strong><span style="color: #2F5711; font-weight: 700;">Matched to Amex ••1009</span></span>
+              </div>
+            </div>
+            <figcaption style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">On a phone: receipts read for you</strong><span class="co-sm">Snap it, and BillingEase reads the total and finds the charge.</span></figcaption>
+          </figure>
+        </div>
+        <p class="co-sm" style="margin: 0; font-size: 15px;">Need full-size pictures for print or a specific screen? Ask {{c.press}} and we’ll send them the same day. All sample data is from our fictional demo business, Northwind Studio.</p>
+      </div>
+
+      <!-- Boilerplate -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+          <h3 class="co-h3">About BillingEase, in one paragraph</h3>
+          <button type="button" class="co-sbtn" onClick="{{copyBoiler}}">{{boilerLabel}}</button>
+        </div>
+        <div class="co-card" style="font-size: 17px; line-height: 1.65; color: #18161F;">{{boiler}}</div>
+      </div>
+    </section>
+
+    <!-- 4 · Facts + contact -->
+    <section aria-labelledby="facts-h" class="co-band">
+      <div class="co-wrap" style="display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: flex-start;">
+        <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+          <h2 id="facts-h" class="co-h2">Company facts</h2>
+          <dl style="margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 0 24px; border-top: 1px solid #E2DFE8;">
+            <sc-for list="{{facts}}" as="f" hint-placeholder-count="8">
+              <div style="padding: 18px 0; border-bottom: 1px solid #E2DFE8; display: flex; flex-direction: column; gap: 4px;">
+                <dt class="co-sm" style="font-weight: 700;">{{f.k}}</dt>
+                <dd style="margin: 0; font-size: 17px; font-weight: 600; line-height: 1.4;">{{f.v}}</dd>
+              </div>
+            </sc-for>
+          </dl>
+        </div>
+        <aside aria-labelledby="contact-h" style="flex: 1 1 320px; min-width: 0; background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(24px, 3vw, 34px); display: flex; flex-direction: column; gap: 18px;">
+          <span aria-hidden="true" style="width: 64px; height: 64px; border-radius: 9999px; background: #B9A3FF; border: 2.5px solid #EEE8FF; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #18161F;">NB</span>
+          <h2 id="contact-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em;">Press contact</h2>
+          <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #EEE8FF;">Nadia Brooks handles communications. She can set up interviews with Ines or Theo, and put you in touch with customers who’ve agreed to talk to press.</p>
+          <span style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 13px; font-weight: 700; color: #B9A3FF;">Email</span>
+            <span style="font-family: Sora, sans-serif; font-weight: 600; font-size: 19px; overflow-wrap: anywhere;">{{c.press}}</span>
+          </span>
+          <span style="font-size: 14px; color: #EEE8FF;">Replies within one business day, Monday to Friday, New York time.</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <button type="button" class="co-btn co-vio" onClick="{{copyEmail}}" style="min-height: 44px; font-size: 15px;">{{emailLabel}}</button>
+            <a href="SiteContact.dc.html" class="co-btn co-ghost-d" style="min-height: 44px; font-size: 15px;">Other questions</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 5 · CTA -->
+    <section aria-labelledby="close-h" class="co-wrap" style="padding-bottom: clamp(64px, 8vw, 104px);">
+      <div style="background: #EEE8FF; border-radius: 32px; padding: clamp(36px, 6vw, 72px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px;">
+        <div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+          <h2 id="close-h" class="co-h2" style="font-size: clamp(30px, 4vw, 52px);">Try it before you write about it.</h2>
+          <p class="co-lead">The demo business is open to everyone, no account needed. Or start your own, free.</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a href="ThreeHome.dc.html" class="co-btn co-ink">See it in the demo</a>
+          <a href="AuthSignUp.dc.html" class="co-btn" style="background: #FFFFFF; color: #18161F;">Start free</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter"></dc-import>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px 'DM Sans', sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav, legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: 0, copied: null, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null, copied: null }), 2600); }
+  copy(key, text, msg) {
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {}); } catch (e) { /* clipboard blocked */ }
+    this.setState({ copied: key });
+    this.notify(msg);
+  }
+  renderVals() {
+    const st = this.state;
+    const c = SITE.company;
+    const pro = SITE.plans.find((p) => p.id === 'pro');
+    const team = SITE.plans.find((p) => p.id === 'team');
+    const news = [
+      { date: 'Sep 22, 2026', tag: 'Product', title: 'BillingEase launches the Team plan, with roles, approvals and payroll',
+        sum: 'Businesses with people can now invite up to 10 teammates with their own roles, approve bills before they’re paid, and run payroll in the same place they bill.',
+        body: ['The Team plan costs $' + team.month + ' a month, or $' + team.year + ' a month paid yearly. It adds roles (Admin, Staff and Accountant), approvals for bills and payroll, time you can bill by person, and several businesses under one sign-in.', 'Payroll is available as an add-on in all 50 US states, with direct deposit and payroll taxes filed automatically.'],
+        quote: '“A business with four people shouldn’t need four apps. Now the person who sends the invoices and the person who runs payroll see the same three numbers.”', who: 'Ines Alvarez, co-founder and CEO' },
+      { date: 'Jun 9, 2026', tag: 'Funding', title: 'BillingEase raises $24 million to bring calm bookkeeping to more countries',
+        sum: 'The Series A, led by Northbank Capital with Fulton Street Ventures and Gowanus Fund, brings total funding to $31 million.',
+        body: ['The money goes toward VAT and GST support in more countries, the Team plan, and doubling the support team so every message keeps getting a reply from a person within two hours.', 'As part of the round, every investor agreed in writing that the free plan stays free.'],
+        quote: '“Most small businesses don’t need more features. They need fewer decisions. That’s what BillingEase sells, and it’s rare.”', who: 'Grace Ndiaye, partner at Northbank Capital' },
+      { date: 'Mar 3, 2026', tag: 'Product', title: 'Invoices in 14 currencies, with VAT and GST handled for you',
+        sum: 'Businesses in the UK, EU, Canada and Australia can now bill in their own currency, charge the right VAT or GST, and see gains and losses from exchange rates in plain words.',
+        body: ['Exchange rates update daily. EU reverse-charge invoices show the required wording automatically, and VAT returns are prepared from the books.', 'US businesses with overseas customers can bill in euros or pounds and still see their three numbers in dollars.'],
+        quote: '“Our Berlin clients pay in euros, our books stay in dollars, and I don’t think about it anymore.”', who: 'Maya Chen, Northwind Studio, Brooklyn' },
+      { date: 'Nov 12, 2025', tag: 'Partners', title: 'The partner program opens: accountants get one sign-in for every client',
+        sum: 'Accountants and bookkeepers can now see all their clients in one list, with read-only books, journal entries and reports ready to download.',
+        body: ['Clients invite their accountant in two clicks, or the accountant sends the invite. Partners use BillingEase free for their own firm.', 'More than 600 firms joined in the first ten months.'],
+        quote: '“I open one list in the morning and see which of my clients are ready for review. That alone saves me a day a month.”', who: 'Dana Whitfield, CPA, Whitfield & Co.' },
+      { date: 'Jul 15, 2025', tag: 'Company', title: 'BillingEase passes 10,000 businesses and launches Pro',
+        sum: 'Pro adds bank connections, receipts that read themselves, repeating invoices and the full books for your accountant, for $' + pro.month + ' a month.',
+        body: ['Pro is $' + pro.month + ' a month, or $' + pro.year + ' a month when paid yearly, with a 30-day free trial. The Free plan keeps everything one person needs to bill and track spending.', 'Ten thousand businesses in 17 months: mostly studios, shops, cafés and contractors who heard about it from each other.'],
+        quote: '“We never ran an ad. People showed their three numbers to a friend.”', who: 'Theo Park, co-founder and CTO' },
+      { date: 'Feb 20, 2024', tag: 'Company', title: 'BillingEase opens to every small business in the US, with a free plan',
+        sum: 'After a year with 40 test businesses in Brooklyn, BillingEase opens to everyone: invoices, expenses and your three numbers, free for good.',
+        body: ['BillingEase shows a business as three numbers: what’s coming in, what’s going out, and what’s yours to keep after tax. Everything else (invoices, receipts, bills, reports) lives behind one of them.', 'The company was founded in 2023 by Ines Alvarez and Theo Park and is based in Brooklyn, New York.'],
+        quote: '“I wanted the app I needed when I ran my studio. Turns out a lot of people did.”', who: 'Ines Alvarez, co-founder and CEO' }
+    ];
+    const tagBg = { Product: '#EEE8FF', Funding: '#FDE6D6', Partners: '#E2F6D5', Company: '#EFEDF3' };
+    const boiler = 'BillingEase is bookkeeping for small businesses that would rather be doing the work. It shows a business as three numbers (what’s coming in, what’s going out, and what’s yours to keep after tax) and handles invoices, payments, receipts, bills, payroll and reports behind them, in plain words. Founded in 2023 and based in Brooklyn, New York, BillingEase is used by more than 38,000 businesses in 19 countries. Learn more at billingease.app.';
+    const logoSvg = (fg) => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 32"><rect width="32" height="32" rx="10" fill="#B9A3FF"/><path d="M7 25 15 7h10l-8 18z" fill="#18161F"/><text x="42" y="23" font-family="Sora" font-weight="700" font-size="20" fill="' + fg + '">BillingEase</text></svg>';
+    const logos = [
+      { key: 'light', name: 'On light', use: 'For white and light backgrounds', bg: '#F7F6F9', fg: '#18161F', word: true, alt: 'BillingEase logo on a light background', svg: logoSvg('#18161F') },
+      { key: 'dark', name: 'On dark', use: 'For dark backgrounds and photos', bg: '#18161F', fg: '#FFFFFF', word: true, alt: 'BillingEase logo on a dark background', svg: logoSvg('#FFFFFF') },
+      { key: 'mark', name: 'Mark only', use: 'For app icons and small spaces', bg: '#EEE8FF', fg: '#18161F', word: false, alt: 'BillingEase mark: a violet rounded square with a slanted ink shape', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#B9A3FF"/><path d="M7 25 15 7h10l-8 18z" fill="#18161F"/></svg>' }
+    ].map((l) => ({ ...l, label: st.copied === 'logo-' + l.key ? 'Copied' : 'Copy SVG', copy: () => this.copy('logo-' + l.key, l.svg, 'Logo SVG copied (' + l.name.toLowerCase() + ')') }));
+    const colors = [
+      { name: 'Violet', hex: '#B9A3FF', use: 'Logo, buttons, Yours to keep' },
+      { name: 'Deep violet', hex: '#7A5AF8', use: 'Coming in' },
+      { name: 'Orange', hex: '#E0752D', use: 'Going out' },
+      { name: 'Ink', hex: '#18161F', use: 'Text and dark panels' },
+      { name: 'Lavender', hex: '#EEE8FF', use: 'Soft backgrounds' },
+      { name: 'Ground', hex: '#F7F6F9', use: 'Page background' }
+    ].map((s) => ({ ...s, label: st.copied === s.hex ? 'Copied' : 'Copy', btnBg: st.copied === s.hex ? '#E2F6D5' : 'rgba(24,22,31,0.07)', aria: 'Copy ' + s.name + ' ' + s.hex, copy: () => this.copy(s.hex, s.hex, s.name + ' ' + s.hex + ' copied') }));
+    return {
+      c,
+      news: news.map((n, i) => {
+        const open = st.open === i;
+        return { ...n, id: 'news-' + i, open, tagBg: tagBg[n.tag], cta: open ? 'Show less' : 'Read the announcement', chev: open ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
+          toggle: () => this.setState({ open: open ? -1 : i }),
+          copy: () => this.copy('news-' + i, n.title + '\n' + n.date + '\n\n' + n.sum + '\n\n' + n.body.join('\n\n') + '\n\n' + n.quote + ' (' + n.who + ')', 'Announcement text copied') };
+      }),
+      logos, colors, boiler,
+      boilerLabel: st.copied === 'boiler' ? 'Copied' : 'Copy paragraph',
+      copyBoiler: () => this.copy('boiler', boiler, 'About paragraph copied'),
+      emailLabel: st.copied === 'email' ? 'Copied' : 'Copy email address',
+      copyEmail: () => this.copy('email', c.press, c.press + ' copied'),
+      facts: [
+        { k: 'Founded', v: 'March 2023, Brooklyn, New York' },
+        { k: 'Founders', v: 'Ines Alvarez (CEO), Theo Park (CTO)' },
+        { k: 'People', v: '42, in Brooklyn and 9 other cities' },
+        { k: 'Businesses using it', v: '38,000+ in 19 countries' },
+        { k: 'Funding', v: '$31M: $7M seed (2024), $24M Series A (2026)' },
+        { k: 'Investors', v: 'Northbank Capital, Fulton Street Ventures, Gowanus Fund' },
+        { k: 'Plans', v: 'Free, Pro $' + pro.month + '/mo, Team $' + team.month + '/mo' },
+        { k: 'Headquarters', v: c.address }
+      ],
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

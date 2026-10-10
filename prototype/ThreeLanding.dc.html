@@ -15,6 +15,15 @@ body{margin:0}
 html{scroll-behavior:smooth}
 a{color:#18161F}a:hover{color:#000000}
 .tl-eq-card:hover{transform:translateY(-2px)}
+.tl-more:hover{text-decoration-color:#7A5AF8!important}
+.tl-who{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease}
+.tl-who:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(24,22,31,0.08);border-color:#CBC7D3!important}
+.tl-who:hover .tl-who-go{gap:10px!important}
+.tl-plan{transition:transform .2s ease, box-shadow .2s ease}
+.tl-plan:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(24,22,31,0.08)}
+@keyframes tl-flip{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:none}}
+.tl-price{animation:tl-flip .3s ease-out}
+@media (prefers-reduced-motion: reduce){.tl-who,.tl-plan,.tl-price{transition:none!important;animation:none!important}}
 .tl-eq-card{transition:transform .15s ease, box-shadow .15s ease}
 @media (max-width: 900px){.tl-op{flex-basis:100%!important;height:22px;font-size:28px!important}}
 @media (max-width: 640px){.tl-anchors{display:none!important}}
@@ -58,23 +67,8 @@ a{color:#18161F}a:hover{color:#000000}
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <!-- 1 · Minimal nav -->
-  <header style="background: #F7F6F9;">
-    <nav aria-label="Main" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 16px clamp(16px, 4vw, 40px); display: flex; align-items: center; gap: 12px clamp(8px, 2vw, 28px);">
-      <a href="ThreeLanding.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; flex: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <div class="tl-anchors" style="display: flex; align-items: center; gap: 24px; font-size: 15px; font-weight: 600;">
-        <a href="#how" style="text-decoration: none; color: #47444F;">How it works</a>
-        <a href="#pricing" style="text-decoration: none; color: #47444F;">Pricing</a>
-      </div>
-      <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
-        <a href="AuthSignIn.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 clamp(8px, 1vw, 14px); border-radius: 9999px; text-decoration: none; font-weight: 600; font-size: 15px; white-space: nowrap;">Sign in</a>
-        <a href="AuthSignUp.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 clamp(14px, 1.6vw, 20px); border-radius: 9999px; background: #18161F; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 15px; white-space: nowrap;">Try it free</a>
-      </div>
-    </nav>
-  </header>
+  <!-- 1 · Site navigation -->
+  <dc-import name="SiteNav" current="home" hint-size="100%,68px"></dc-import>
 
   <main>
     <!-- 2 · Hero: the concept itself -->
@@ -140,7 +134,7 @@ a{color:#18161F}a:hover{color:#000000}
 
         <!-- The live equation -->
         <div aria-label="Sample three numbers" role="group" style="display: flex; flex-direction: column; gap: 10px;">
-          <span style="font-size: 13px; color: #5F5B68; text-align: center;">{{biz.caption}}</span>
+          <span style="font-size: 13px; color: #5F5B68; text-align: center;">{{biz.caption}} · <a href="{{biz.href}}" class="tl-more" style="color: #18161F; font-weight: 600; text-underline-offset: 3px;">{{biz.more}}</a></span>
           <div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px;">
             <button type="button" class="tl-eq-card" aria-expanded="{{eq.inOpen}}" aria-controls="behind" onClick="{{eq.pickIn}}" style="flex: 1 1 260px; min-width: 0; text-align: left; cursor: pointer; font: inherit; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 26px; display: flex; flex-direction: column; gap: 14px; box-shadow: {{eq.inRing}};">
               <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in</span>
@@ -250,6 +244,7 @@ a{color:#18161F}a:hover{color:#000000}
                   </div>
                 </sc-for>
               </div>
+              <a href="{{panel.href}}" class="tl-more" style="display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 32px; font-weight: 700; font-size: 14px; color: #18161F; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px;">More about {{panel.name}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
             </div>
           </sc-if>
           <sc-if value="{{noPanel}}" hint-placeholder-val="{{true}}">
@@ -271,6 +266,7 @@ a{color:#18161F}a:hover{color:#000000}
         <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 12px; max-width: 680px;">
           <h2 id="ask-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">We only ask when we need you.</h2>
           <p style="margin: 0; font-size: 18px; line-height: 1.5; color: #47444F;">Most days BillingEase sorts things out on its own. When it can’t, you get a short list. Try it: this is Maya’s Sunday morning at Northwind Studio.</p>
+          <a href="SiteFeatures.dc.html" class="tl-more" style="display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 32px; font-weight: 700; font-size: 14px; color: #18161F; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px;">See everything it handles on its own<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
         </div>
         <div class="tl-anim" aria-hidden="true" style="flex: 0 1 380px; position: relative; min-width: 260px;">
           <svg viewBox="0 0 360 250" width="100%" style="display: block; overflow: visible;">
@@ -384,6 +380,7 @@ a{color:#18161F}a:hover{color:#000000}
           <span style="display: flex; flex-direction: column; gap: 6px;">
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Connect your bank</span>
             <span style="font-size: 15px; line-height: 1.5; color: #47444F;">Transactions flow in and sort themselves every morning.</span>
+            <a href="SiteGoingOut.dc.html" class="tl-more" style="display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 32px; font-weight: 700; font-size: 14px; color: #18161F; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; margin-top: 6px;">How Going out sorts itself<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
           </span>
           <span aria-hidden="true" class="tl-anim" style="margin-top: auto; display: block; background: #F7F6F9; border-radius: 16px; padding: 12px 8px 4px;">
             <svg viewBox="0 0 300 150" width="100%" style="display: block; overflow: visible;">
@@ -424,6 +421,7 @@ a{color:#18161F}a:hover{color:#000000}
           <span style="display: flex; flex-direction: column; gap: 6px;">
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Bill and get paid</span>
             <span style="font-size: 15px; line-height: 1.5; color: #47444F;">Write a sentence; customers pay online and get reminded for you.</span>
+            <a href="SiteComingIn.dc.html" class="tl-more" style="display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 32px; font-weight: 700; font-size: 14px; color: #18161F; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; margin-top: 6px;">More on getting paid<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
           </span>
           <span aria-hidden="true" class="tl-anim" style="margin-top: auto; display: block; background: #F7F6F9; border-radius: 16px; padding: 12px 8px 4px;">
             <svg viewBox="0 0 300 150" width="100%" style="display: block; overflow: visible;">
@@ -460,6 +458,7 @@ a{color:#18161F}a:hover{color:#000000}
           <span style="display: flex; flex-direction: column; gap: 6px;">
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Keep what’s yours</span>
             <span style="font-size: 15px; line-height: 1.5; color: #47444F;">Tax is set aside as you earn, so the rest is truly yours.</span>
+            <a href="SiteKeep.dc.html" class="tl-more" style="display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 32px; font-weight: 700; font-size: 14px; color: #18161F; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; margin-top: 6px;">How the tax set-aside works<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
           </span>
           <span aria-hidden="true" style="margin-top: auto; background: #F7F6F9; border-radius: 16px; padding: 14px 8px 10px; display: flex; justify-content: center;">
             <dc-import name="CashJar" size="{{260}}" amount="$8,407" uid="how" hint-size="260px,217px"></dc-import>
@@ -468,44 +467,88 @@ a{color:#18161F}a:hover{color:#000000}
       </ol>
     </section>
 
+    <!-- 4b · Who it's for -->
+    <section id="who" aria-labelledby="who-h" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 0 clamp(16px, 4vw, 40px) clamp(64px, 9vw, 120px); display: flex; flex-direction: column; gap: 32px; scroll-margin-top: 80px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 40px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 680px;">
+          <h2 id="who-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">Made for the way you work</h2>
+          <p style="margin: 0; font-size: 18px; line-height: 1.5; color: #47444F;">Tell BillingEase what you sell and who works with you. It shows what you need and keeps the rest out of the way.</p>
+        </div>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px;">
+        <sc-for list="{{who}}" as="w" hint-placeholder-count="4">
+          <li style="display: flex;">
+            <a href="{{w.href}}" class="tl-who" style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 24px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; text-decoration: none; color: #18161F;">
+              <span class="tl-anim" aria-hidden="true" style="display: block; height: 96px; border-radius: 16px; background: {{w.tint}}; position: relative; overflow: hidden;">
+                <svg viewBox="0 0 240 96" width="100%" height="96" preserveAspectRatio="xMidYMid meet" style="display: block;"><path d="{{w.art}}" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path><g class="tl-c" style="animation: tl-q 3.4s ease-in-out infinite; animation-delay: {{w.delay}};"><rect x="{{w.chipX}}" y="12" width="112" height="28" rx="14" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></rect><text x="{{w.chipTx}}" y="30.5" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11.5" font-weight="700" fill="#18161F">{{w.chip}}</text></g></svg>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{w.label}}</span>
+                <span style="font-size: 14px; color: #5F5B68;">{{w.hint}}</span>
+              </span>
+              <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{w.body}}</span>
+              <span class="tl-who-go" style="margin-top: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; transition: gap .2s ease;">{{w.cta}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+            </a>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
     <!-- 5 · Pricing -->
-    <section id="pricing" aria-labelledby="price-h" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8; scroll-margin-top: 16px;">
+    <section id="pricing" aria-labelledby="price-h" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8; scroll-margin-top: 80px;">
       <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px;">
-        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px;">
-          <h2 id="price-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">Pricing</h2>
-          <p style="margin: 0; font-size: 18px; line-height: 1.5; color: #47444F;">Two plans. No trial clock.</p>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; max-width: 900px;">
-          <div style="position: relative; border: 1px solid #E2DFE8; border-radius: 24px; padding: 32px; display: flex; flex-direction: column; gap: 22px;">
-            <svg class="tl-anim" aria-hidden="true" viewBox="0 0 80 110" width="72" style="position: absolute; right: 22px; top: -14px; overflow: visible;"><g class="tl-pivot" style="animation: tl-swing 3.2s ease-in-out infinite;"><path d="M40 0 V26" stroke="#18161F" stroke-width="2"></path><path d="M24 30 L40 22 L56 30 V96 H24 Z" fill="#FFF6E0" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path><circle cx="40" cy="34" r="4" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></circle><text x="40" y="68" text-anchor="middle" font-family="Caveat, cursive" font-size="22" font-weight="700" fill="#18161F">free</text></g></svg>
-            <span style="display: flex; flex-direction: column; gap: 6px;">
-              <span style="font-weight: 700; font-size: 16px;">Free</span>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.04em;">$0</span>
-              <span style="font-size: 14px; color: #5F5B68;">For as long as you like</span>
-            </span>
-            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px;">
-              <sc-for list="{{freeList}}" as="f" hint-placeholder-count="4">
-                <li style="display: flex; gap: 10px; align-items: flex-start;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px;"><path d="m5 12 5 5 9-10"></path></svg><span>{{f}}</span></li>
-              </sc-for>
-            </ul>
-            <a href="AuthSignUp.dc.html" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; text-decoration: none; font-weight: 600; font-size: 15px;">Start free</a>
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 40px;">
+          <div style="display: flex; flex-direction: column; gap: 12px; max-width: 640px;">
+            <h2 id="price-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">Pricing</h2>
+            <p style="margin: 0; font-size: 18px; line-height: 1.5; color: #47444F;">Start free and stay free as long as it fits. Move up when the business grows; your books come with you.</p>
           </div>
-          <div style="position: relative; border: 2px solid #18161F; border-radius: 24px; padding: 31px; display: flex; flex-direction: column; gap: 22px;">
-            <svg class="tl-anim" aria-hidden="true" viewBox="0 0 80 110" width="72" style="position: absolute; right: 22px; top: -14px; overflow: visible;"><g class="tl-pivot" style="animation: tl-swing 3.2s ease-in-out infinite; animation-delay: -1.6s;"><path d="M40 0 V26" stroke="#18161F" stroke-width="2"></path><path d="M24 30 L40 22 L56 30 V96 H24 Z" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path><circle cx="40" cy="34" r="4" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></circle><text x="40" y="68" text-anchor="middle" font-family="Caveat, cursive" font-size="24" font-weight="700" fill="#18161F">$19</text></g></svg>
-            <span style="display: flex; flex-direction: column; gap: 6px;">
-              <span style="font-weight: 700; font-size: 16px;">Pro</span>
-              <span style="display: flex; align-items: baseline; gap: 6px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.04em;">$19</span><span style="font-size: 16px; color: #47444F;">/ month</span></span>
-              <span style="font-size: 14px; color: #5F5B68;">Everything in Free, plus</span>
-            </span>
-            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px;">
-              <sc-for list="{{proList}}" as="f" hint-placeholder-count="3">
-                <li style="display: flex; gap: 10px; align-items: flex-start;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px;"><path d="m5 12 5 5 9-10"></path></svg><span>{{f}}</span></li>
-              </sc-for>
-            </ul>
-            <a href="AuthSignUp.dc.html" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 600; font-size: 15px;">Start with Pro</a>
+          <div role="group" aria-label="Billing period" style="display: flex; align-items: center; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+            <sc-for list="{{periods}}" as="pp" hint-placeholder-count="2">
+              <button type="button" aria-pressed="{{pp.pressed}}" onClick="{{pp.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: {{pp.bg}}; color: {{pp.ink}}; font: 600 15px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">{{pp.label}}<sc-if value="{{pp.save}}" hint-placeholder-val="{{false}}"><span style="padding: 2px 8px; border-radius: 9999px; background: {{pp.saveBg}}; color: #18161F; font-size: 12px; font-weight: 700;">{{pp.save}}</span></sc-if></button>
+            </sc-for>
           </div>
         </div>
-        <p style="margin: 0; max-width: 720px; font-size: 15px; line-height: 1.55; color: #47444F;">When customers pay you online, there’s a fee per payment on either plan: 2.9% + 30¢ for cards and 1% for bank transfers. Nothing if they pay you another way.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; align-items: stretch;">
+          <sc-for list="{{plans}}" as="pl" hint-placeholder-count="3">
+            <div class="tl-plan" style="position: relative; background: {{pl.bg}}; border: {{pl.border}}; border-radius: 24px; padding: {{pl.pad}}; display: flex; flex-direction: column; gap: 22px; min-width: 0;">
+              <svg class="tl-anim" aria-hidden="true" viewBox="0 0 80 110" width="72" style="position: absolute; right: 22px; top: -14px; overflow: visible;"><g class="tl-pivot" style="animation: tl-swing 3.2s ease-in-out infinite; animation-delay: {{pl.swing}};"><path d="M40 0 V26" stroke="#18161F" stroke-width="2"></path><path d="M24 30 L40 22 L56 30 V96 H24 Z" fill="{{pl.tagFill}}" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path><circle cx="40" cy="34" r="4" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></circle><text x="40" y="68" text-anchor="middle" font-family="Caveat, cursive" font-size="{{pl.tagSize}}" font-weight="700" fill="#18161F">{{pl.tagText}}</text></g></svg>
+              <span style="display: flex; flex-direction: column; gap: 6px; padding-right: 70px;">
+                <span style="font-weight: 700; font-size: 18px;">{{pl.name}}</span>
+                <sc-if value="{{pl.popular}}" hint-placeholder-val="{{false}}"><span style="align-self: flex-start; padding: 1px 10px; border-radius: 9999px; background: #B9A3FF; font-size: 13px; line-height: 19px; font-weight: 700;">{{pl.tag}}</span></sc-if>
+                <sc-if value="{{pl.plainTag}}" hint-placeholder-val="{{true}}"><span style="font-size: 14px; line-height: 21px; color: #5F5B68;">{{pl.tag}}</span></sc-if>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 6px;">
+                <span class="tl-price" style="display: flex; align-items: baseline; gap: 6px;" data-period="{{pl.period}}"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.04em;">{{pl.price}}</span><span style="font-size: 16px; color: #47444F;">{{pl.per}}</span></span>
+                <span style="font-size: 14px; color: #5F5B68; min-height: 21px;">{{pl.billed}}</span>
+              </span>
+              <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{pl.line}}</span>
+              <ul style="margin: 0; padding: 18px 0 0; border-top: 1px solid #EFEDF3; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px;">
+                <sc-for list="{{pl.features}}" as="f" hint-placeholder-count="5">
+                  <li style="display: flex; gap: 10px; align-items: flex-start;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px;"><path d="m5 12 5 5 9-10"></path></svg><span>{{f}}</span></li>
+                </sc-for>
+              </ul>
+              <a href="{{pl.href}}" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: {{pl.ctaBg}}; color: #18161F; text-decoration: none; font-weight: 700; font-size: 15px;">{{pl.cta}}</a>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+          <div style="flex: 999 1 560px; min-width: 0; background: #F7F6F9; border-radius: 24px; padding: clamp(20px, 3vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+            <span style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Add when you need them</span><span style="font-size: 13px; color: #5F5B68;">On any plan. Nothing to pay if you don’t use them.</span></span>
+            <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
+              <sc-for list="{{addons}}" as="ad" hint-placeholder-count="3">
+                <li style="background: #FFFFFF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-weight: 700; font-size: 15px;">{{ad.name}}</span>
+                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; color: #7A5AF8;">{{ad.price}}</span>
+                  <span style="font-size: 13.5px; line-height: 1.45; color: #47444F;">{{ad.line}}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+          <a href="SitePricing.dc.html" class="tl-who" style="flex: 1 1 260px; min-width: 0; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; padding: clamp(20px, 3vw, 28px); border-radius: 24px; background: #18161F; color: #FFFFFF; text-decoration: none; border: 1px solid #18161F;">
+            <span style="display: flex; flex-direction: column; gap: 8px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; color: #B9A3FF;">Compare plans</span><span style="font-size: 15px; line-height: 1.5; color: #EEE8FF;">Every feature side by side, what counts as a person, and what happens when you switch plans.</span></span>
+            <span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;">See full pricing<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -571,35 +614,14 @@ a{color:#18161F}a:hover{color:#000000}
     </section>
   </main>
 
-  <footer style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 8px clamp(16px, 4vw, 40px) 40px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; font-size: 14px; color: #47444F;">
-    <span style="display: flex; align-items: center; gap: 10px;">
-      <span style="width: 24px; height: 24px; border-radius: 8px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-      <span>© 2026 BillingEase</span>
-    </span>
-    <nav aria-label="Footer" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;">
-      <a href="#how" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">How it works</a>
-      <a href="#pricing" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">Pricing</a>
-      <a href="Help.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">Help center</a>
-      <a href="Everything.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">Everything it does</a>
-      <sc-for list="{{footLinks}}" as="fl" hint-placeholder-count="3">
-        <button type="button" onClick="{{fl.go}}" style="min-height: 36px; padding: 0 8px; border: 0; background: transparent; color: #47444F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{fl.label}}</button>
-      </sc-for>
-    </nav>
-  </footer>
-
-  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
-    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
-      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
-      <span>{{toast}}</span>
-    </div>
-  </sc-if>
+  <dc-import name="SiteFooter" band="off" hint-size="100%,640px"></dc-import>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5510}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { biz: 'studio', open: null, done: {}, faq: 0, toast: null, tw: 1 };
+    this.state = { biz: 'studio', open: null, done: {}, faq: 0, tw: 1, yearly: false };
   }
   componentDidMount() {
     this._reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -619,7 +641,6 @@ class Component extends DCLogic {
     this.setState({ tw: 0 });
     this._raf = requestAnimationFrame(step);
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
     const st = this.state;
     const money = (v) => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 0 });
@@ -636,7 +657,7 @@ class Component extends DCLogic {
     };
     // Coming in − Going out = profit; 25% of profit is set aside for tax; the rest is yours to keep.
     const BIZ = {
-      studio: { label: 'Design studio', caption: 'Northwind Studio, a design studio · October so far',
+      studio: { label: 'Design studio', href: 'SiteFreelancers.dc.html', more: 'BillingEase for studios and freelancers', caption: 'Northwind Studio, a design studio · October so far',
         inPaid: 12400, inExp: 12450, outPaid: 3180, outSch: 10460,
         ex: {
           inv: '“Bill Atlas Freight $6,300 for October logistics, due in 14 days” becomes a ready-to-send invoice.',
@@ -649,7 +670,7 @@ class Component extends DCLogic {
           tax: '$2,803 put aside this month, ready for the $6,950 estimated payment on Jan 15.',
           rep: 'Profit & loss, balance sheet and the full ledger, ready to share with your accountant.'
         } },
-      cafe: { label: 'Café', caption: 'Juniper Café, a neighborhood café · October so far',
+      cafe: { label: 'Café', href: 'SiteShops.dc.html', more: 'BillingEase for cafés and shops', caption: 'Juniper Café, a neighborhood café · October so far',
         inPaid: 31900, inExp: 6700, outPaid: 22680, outSch: 8560,
         ex: {
           inv: '“Bill Fairview Library $1,850 for the staff breakfast catering” becomes a finished invoice.',
@@ -662,7 +683,7 @@ class Component extends DCLogic {
           tax: '$1,840 put aside this month, 25% of profit, so tax time isn’t a surprise.',
           rep: 'Monthly profit & loss and the full books, ready for your accountant whenever they ask.'
         } },
-      contractor: { label: 'Contractor', caption: 'Cedar Ridge Builders, a remodeling contractor · October so far',
+      contractor: { label: 'Contractor', href: 'SiteTeams.dc.html', more: 'BillingEase for crews and teams', caption: 'Cedar Ridge Builders, a remodeling contractor · October so far',
         inPaid: 30500, inExp: 21800, outPaid: 24120, outSch: 12660,
         ex: {
           inv: '“Bill the Hendersons $14,500 for the kitchen remodel, half up front” becomes a deposit invoice.',
@@ -688,20 +709,20 @@ class Component extends DCLogic {
       keep: roll(keep), tax: money(tax), keepPct: pct(keep, profit), taxPct: 100 - pct(keep, profit)
     };
     const PANELS = {
-      in: { name: 'Coming in', dot: '#7A5AF8', tint: '#EEE8FF', lead: 'Getting paid, without chasing anyone.',
+      in: { name: 'Coming in', href: 'SiteComingIn.dc.html', dot: '#7A5AF8', tint: '#EEE8FF', lead: 'Getting paid, without chasing anyone.',
         items: [
           { icon: I.doc, title: 'Invoices in a sentence', tag: 'Invoicing', ex: e.inv },
           { icon: I.card, title: 'Paid online', tag: 'Card, bank transfer, Apple Pay', ex: e.pay },
           { icon: I.bell, title: 'Reminders that send themselves', tag: 'Automatic reminders', ex: e.rem }
         ] },
-      out: { name: 'Going out', dot: '#E0752D', tint: '#FDE6D6', lead: 'Every dollar out, sorted and on time.',
+      out: { name: 'Going out', href: 'SiteGoingOut.dc.html', dot: '#E0752D', tint: '#FDE6D6', lead: 'Every dollar out, sorted and on time.',
         items: [
           { icon: I.bill, title: 'Bills to pay', tag: 'Bills and vendors', ex: e.bills },
           { icon: I.cam, title: 'Receipts, scanned', tag: 'Snap or forward by email', ex: e.rcpt },
           { icon: I.sort, title: 'Card charges, sorted', tag: 'Bank and card feeds', ex: e.cards },
           { icon: I.people, title: 'Payroll', tag: 'Direct deposit and filings', ex: e.payroll }
         ] },
-      keep: { name: 'Yours to keep', dot: '#B9A3FF', tint: '#EEE8FF', lead: 'What’s left after tax, so you can actually spend it.',
+      keep: { name: 'Yours to keep', href: 'SiteKeep.dc.html', dot: '#B9A3FF', tint: '#EEE8FF', lead: 'What’s left after tax, so you can actually spend it.',
         items: [
           { icon: I.safe, title: 'Tax set aside for you', tag: '25% of profit, you can change it', ex: e.tax },
           { icon: I.chart, title: 'Reports for your accountant', tag: 'The full books, one click away', ex: e.rep }
@@ -746,9 +767,12 @@ class Component extends DCLogic {
     ].map((h) => Object.assign(h, { bg: '#EEE8FF', ink: '#18161F' }));
     const handled = justNow.concat(base).slice(0, 6);
 
+    const PL = {}; SITE.plans.forEach((x) => { PL[x.id] = x; });
+    const AD = {}; SITE.addons.forEach((x) => { AD[x.id] = x; });
     const FAQ = [
       { q: 'Do I need to know accounting?', a: 'No. You work with three numbers and plain words. Proper double-entry books are kept underneath, and they’re there for your accountant (or for you) whenever you want to look.' },
-      { q: 'Is the free plan really free?', a: 'Yes, with no time limit and no card needed. We make money from Pro subscriptions and from the small fee on payments your customers make online.' },
+      { q: 'Is the free plan really free?', a: 'Yes, with no time limit and no card needed. We make money from Pro (' + money(PL.pro.month) + ' a month) and Team (' + money(PL.team.month) + ' a month), and from the small fee when customers pay you online: ' + AD.card.price + ' by card, ' + AD.bank.price + ' by bank. Nothing if they pay you another way.' },
+      { q: 'What do Pro and Team cost, and can I switch?', a: 'Pro is ' + money(PL.pro.month) + ' a month and Team is ' + money(PL.team.month) + ' a month, or ' + money(PL.pro.year) + ' and ' + money(PL.team.year) + ' a month paid yearly (two months free). Both start with 30 days free. Move up, down or back to Free any time; your books stay exactly as they are. Payroll is an add-on: ' + AD.payroll.price + '.' },
       { q: 'Is it safe to connect my bank?', a: 'The connection is read-only, through a trusted bank connection provider. We never see or store your bank password, and we can’t move money out of your account.' },
       { q: 'What doesn’t BillingEase do?', a: 'It isn’t built for large warehouses, manufacturing or businesses with hundreds of staff. Stock for a small shop, overseas customers and a small team are covered.' }
     ];
@@ -756,12 +780,6 @@ class Component extends DCLogic {
       const on = st.faq === i;
       return Object.assign({}, f, { open: on, iconBg: on ? '#B9A3FF' : 'rgba(24,22,31,0.07)', icon: on ? 'M5 12h14' : 'M12 5v14M5 12h14', toggle: () => this.setState({ faq: on ? -1 : i }) });
     });
-    const FOOT = {
-      Privacy: 'Privacy, in short: we use your details to run your account and never sell them.',
-      Terms: 'Terms, in short: you own your data and can export or delete it any time.',
-      'Contact us': 'Write to help@billingease.com. A person answers within one working day.'
-    };
-    const footLinks = Object.keys(FOOT).map((l) => ({ label: l, go: () => this.notify(FOOT[l]) }));
 
     const SCENE = {
       studio: { ins: [['AF', 'Atlas Freight', '$6,300'], ['RO', 'Ridge Outdoor', '$3,960'], ['BY', 'Bluebird Yoga', '$540']], outs: [['Payroll', '$7,231'], ['Rent', '$1,200'], ['Software', '$135']],
@@ -778,6 +796,38 @@ class Component extends DCLogic {
     };
     const feedRows = [['ADOBE CREATIVE CLOUD', 'Software', '−$90'], ['STRIPE PAYOUT', 'Sales', '+$1,412'], ['SHELL 57412', 'Vehicle', '−$48']]
       .map((r, i) => ({ n: r[0], c: r[1], a: r[2], delay: (i * 0.5) + 's' }));
+    const yr = !!st.yearly;
+    const TAG = { free: '#FFF6E0', pro: '#B9A3FF', team: '#FDE6D6' };
+    const plans = SITE.plans.map((pl, i) => {
+      const price = yr ? pl.year : pl.month;
+      const free = !pl.month;
+      return {
+        name: pl.name, tag: pl.tag, popular: !!pl.popular, plainTag: !pl.popular, line: pl.line, features: pl.features, cta: pl.cta, href: pl.href,
+        price: money(price), per: free ? '' : '/ month', period: yr ? 'year' : 'month',
+        billed: free ? 'Free for as long as you like' : (yr ? money(pl.year * 12) + ' billed yearly · 2 months free' : 'Billed monthly · cancel any time'),
+        bg: pl.popular ? '#FFFFFF' : '#FFFFFF', border: pl.popular ? '2px solid #18161F' : '1px solid #E2DFE8', pad: pl.popular ? '31px' : '32px',
+        ctaBg: pl.popular ? '#B9A3FF' : 'rgba(24,22,31,0.07)',
+        tagFill: TAG[pl.id] || '#EEE8FF', tagText: free ? 'free' : money(price), tagSize: free ? 22 : 17, swing: (-i * 1.1) + 's'
+      };
+    });
+    const periods = [
+      { label: 'Monthly', on: !yr, save: false },
+      { label: 'Yearly', on: yr, save: '2 months free' }
+    ].map((x) => ({ label: x.label, save: x.save, pressed: x.on ? 'true' : 'false', bg: x.on ? '#18161F' : 'transparent', ink: x.on ? '#FFFFFF' : '#18161F', saveBg: x.on ? '#B9A3FF' : '#FFFFFF',
+      pick: () => { if (yr !== (x.label === 'Yearly')) this.setState({ yearly: x.label === 'Yearly' }); } }));
+    const addons = SITE.addons.map((x) => ({ name: x.name, price: x.price, line: x.line }));
+    const whoNav = (SITE.nav.find((g) => g.label === 'Who it’s for') || { items: [] }).items;
+    const WHO = {
+      'SiteFreelancers.dc.html': { tint: '#EEE8FF', chip: 'Retainer $540', cta: 'For freelancers and studios', body: 'Quotes that turn into invoices, retainers that bill themselves, and time you can bill by the hour.',
+        art: 'M30 74 V38 h66 v36 M18 80 h90 M60 74 v6 M126 62 h20 v14 a7 7 0 0 1 -7 7 h-6 a7 7 0 0 1 -7 -7 z M146 66 h4 a4 4 0 0 1 0 8 h-4 M42 50 h28 M42 60 h40' },
+      'SiteShops.dc.html': { tint: '#FDE6D6', chip: 'Pins: 9 left', cta: 'For shops and makers', body: 'Stock that counts down as you sell, sales tax worked out per item, and card payments at the counter or online.',
+        art: 'M20 44 h90 l-8 -18 h-74 z M28 44 v40 h74 v-40 M56 84 v-24 h18 v24 M34 52 h14 v12 h-14 z M82 52 h14 v12 h-14 z' },
+      'SiteTeams.dc.html': { tint: '#E2F6D5', chip: 'Payroll approved', cta: 'For teams', body: 'Up to 10 people with their own roles. Approve bills and payroll before anything leaves the bank.',
+        art: 'M30 46 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 M20 86 a21 21 0 0 1 42 0 M70 42 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 M60 86 a21 21 0 0 1 42 0' },
+      'SiteGlobal.dc.html': { tint: '#FFF0B8', chip: '€6,500 → $7,085', cta: 'Outside the US', body: 'Invoice in euros, pounds or dollars. VAT and GST worked out, at the rate on the day you’re paid.',
+        art: 'M36 56 a28 28 0 1 0 56 0 a28 28 0 1 0 -56 0 M36 56 h56 M64 28 c13 9 13 47 0 56 c-13 -9 -13 -47 0 -56 M40 42 h48 M40 70 h48' }
+    };
+    const who = whoNav.map((it, i) => Object.assign({ label: it.label, hint: it.hint, href: it.href, chipX: 120, chipTx: 176, delay: (-i * 0.8) + 's' }, WHO[it.href] || { tint: '#EEE8FF', chip: '', cta: 'Learn more', body: '', art: '' }));
     const basePanel = st.open ? PANELS[st.open] : false;
     const panel = basePanel ? Object.assign({}, basePanel, {
       isIn: st.open === 'in', isOut: st.open === 'out', isKeep: st.open === 'keep',
@@ -788,11 +838,8 @@ class Component extends DCLogic {
       closePanel: () => this.setState({ open: null }),
       tasks, openCount, allClear: openCount === 0, handled,
       resetDemo: () => this.setState({ done: {} }),
-      freeList: ['Your three numbers, always up to date', 'Unlimited invoices and customers', 'Unlimited receipt scanning', 'Unlimited bookkeeping and reports'],
-      proList: ['Automatic bank and card sync', 'Automatic payment reminders', 'Payroll add-on available'],
-      faqs, footLinks,
-      closeKicker: b.caption.split(',')[0] + ' this October',
-      toast: st.toast
+      faqs, plans, periods, addons, who,
+      closeKicker: b.caption.split(',')[0] + ' this October'
     };
   }
 }

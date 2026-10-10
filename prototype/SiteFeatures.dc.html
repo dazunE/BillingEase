@@ -1,8 +1,587 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SiteFeatures</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Features</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<div style="min-height:100vh;background:#F7F6F9"><dc-import name="SiteNav"></dc-import><main style="padding:40px 16px">Being designed.</main><dc-import name="SiteFooter"></dc-import></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+html{scroll-behavior:smooth}
+.sx{min-height:100vh;background:#F7F6F9;color:#18161F;font-family:'DM Sans',system-ui,sans-serif;overflow-x:clip}
+.sx a{color:#18161F}
+.sx :focus-visible{outline:3px solid #7A5AF8;outline-offset:2px}
+.sx-w{max-width:1200px;margin:0 auto;padding-left:clamp(16px,4vw,40px);padding-right:clamp(16px,4vw,40px);box-sizing:border-box}
+.sx-pad{padding-top:clamp(64px,9vw,120px);padding-bottom:clamp(64px,9vw,120px)}
+.sx-band{background:#FFFFFF;border-top:1px solid #E2DFE8;border-bottom:1px solid #E2DFE8}
+.sx-h1{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;text-wrap:balance}
+.sx-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,56px);line-height:1.05;letter-spacing:-0.035em;text-wrap:balance}
+.sx-h3{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;line-height:1.2;letter-spacing:-0.02em}
+.sx-h4{margin:0;font-weight:700;font-size:16px;line-height:1.3}
+.sx-lead{margin:0;font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:#47444F;text-wrap:pretty}
+.sx-p{margin:0;font-size:15px;line-height:1.55;color:#47444F;text-wrap:pretty}
+.sx-small{font-size:13px;line-height:1.45;color:#5F5B68}
+.sx-kick{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#18161F}
+.sx-dot{width:10px;height:10px;border-radius:9999px;flex:none;display:inline-block}
+.sx-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(20px,2.4vw,28px);box-sizing:border-box;min-width:0}
+.sx-soft{background:#F7F6F9;border-radius:18px;padding:18px;box-sizing:border-box;min-width:0}
+.sx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.sx-col{display:flex;flex-direction:column;min-width:0}
+.sx-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.sx-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 28px;border-radius:9999px;background:#B9A3FF;color:#18161F!important;text-decoration:none;font:700 17px 'DM Sans',sans-serif;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.sx-btn2{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 24px;border-radius:9999px;background:rgba(24,22,31,0.07);color:#18161F!important;text-decoration:none;font:600 16px 'DM Sans',sans-serif;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.sx-btnd{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:9999px;background:#18161F;color:#FFFFFF!important;text-decoration:none;font:600 15px 'DM Sans',sans-serif;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.sx-sm{min-height:44px;padding:0 18px;font-size:15px}
+.sx-lnk{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-weight:600;font-size:15px;color:#18161F;text-underline-offset:4px;text-decoration-thickness:1.5px}
+.sx-ico{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.sx-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap}
+.sx-chip{min-height:40px;padding:0 16px;border-radius:9999px;border:1px solid #CBC7D3;background:#FFFFFF;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer;white-space:nowrap}
+.sx-chip[aria-pressed="true"],.sx-chip[aria-selected="true"]{background:#18161F;border-color:#18161F;color:#FFFFFF}
+.sx-seg{display:flex;flex-wrap:wrap;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;width:max-content;max-width:100%;box-sizing:border-box}
+.sx-seg button{min-height:40px;padding:0 16px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer}
+.sx-seg button[aria-selected="true"],.sx-seg button[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.sx-input{min-height:48px;width:100%;border:1px solid #CBC7D3;border-radius:12px;padding:0 14px;font:500 16px 'DM Sans',sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box}
+.sx-label{font-size:13px;font-weight:700;color:#18161F}
+.sx-num{font-variant-numeric:tabular-nums}
+.sx-range{width:100%;accent-color:#7A5AF8;height:32px;margin:0;cursor:pointer}
+.sx-quote{margin:0;font-family:Sora,sans-serif;font-weight:600;font-size:clamp(20px,2vw,26px);line-height:1.35;letter-spacing:-0.02em;text-wrap:pretty}
+.sx-faq{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 0;border:0;background:transparent;text-align:left;cursor:pointer;color:#18161F;font:600 18px 'DM Sans',sans-serif}
+@keyframes sx-rowin{0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:none}}
+@keyframes sx-pulse{0%{box-shadow:0 0 0 0 rgba(47,87,17,.45)}70%,100%{box-shadow:0 0 0 8px rgba(47,87,17,0)}}
+@keyframes sx-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes sx-stamp{0%,40%{opacity:0;transform:rotate(-14deg) scale(2.2)}50%{opacity:1;transform:rotate(-14deg) scale(1)}90%{opacity:1;transform:rotate(-14deg) scale(1)}100%{opacity:0;transform:rotate(-14deg) scale(1)}}
+@keyframes sx-coin{0%{transform:translateX(-90px);opacity:0}12%{opacity:1}45%{transform:translateX(0);opacity:1}55%,100%{transform:translateX(0);opacity:0}}
+@keyframes sx-tag{0%,20%{opacity:0;transform:scale(.8)}30%,100%{opacity:1;transform:none}}
+@keyframes sx-grow{0%{width:0}35%,100%{width:75%}}
+@keyframes sx-grow-tax{0%,35%{width:0}55%,100%{width:25%}}
+@keyframes sx-light{0%,100%{background:#47444F}20%,40%{background:#B9A3FF}}
+@keyframes sx-ring{0%,100%{transform:rotate(0)}10%{transform:rotate(14deg)}20%{transform:rotate(-12deg)}30%{transform:rotate(8deg)}40%{transform:rotate(0)}}
+@keyframes sx-slide{0%{left:0;opacity:0}12%{opacity:1}78%{opacity:1}100%{left:100%;opacity:0}}
+.sx-c{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion: reduce){.sx-anim,.sx-anim *{animation:none!important;transition:none!important}}
+@media (max-width: 720px){.sx-hide-s{display:none!important}}
+</style>
+</helmet>
+<div class="sx">
+  <dc-import name="SiteNav" current="features"></dc-import>
+
+  <main>
+    <!-- 1 · Hero: the equation, live -->
+    <section aria-labelledby="hero-h" class="sx-w" style="padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(56px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: center; gap: 48px 56px;">
+      <div class="sx-col" style="flex: 1 1 440px; gap: 22px;">
+        <span class="sx-kick"><span class="sx-dot" style="background: #7A5AF8;"></span>Product overview</span>
+        <h1 id="hero-h" class="sx-h1" style="font-size: clamp(40px, 5.2vw, 68px);">Everything a small business needs, around three numbers.</h1>
+        <p class="sx-lead" style="max-width: 560px;">Invoices, receipts, bills, payroll, tax and the books behind them. Each one feeds what’s coming in, what’s going out, or what’s yours to keep, so you never have to go looking.</p>
+        <div class="sx-row" style="padding-top: 6px;">
+          <a href="AuthSignUp.dc.html" class="sx-btn">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="ThreeHome.dc.html" class="sx-btn2">See it in the demo</a>
+        </div>
+        <span class="sx-small">Free plan for as long as you like. Pro from {{proFrom}} a month. <a href="SitePricing.dc.html" style="color: #18161F; font-weight: 600;">See pricing</a></span>
+      </div>
+
+      <div class="sx-card" role="group" aria-label="Northwind Studio’s three numbers, updating as the month happens" style="flex: 1 1 420px; max-width: 560px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 30px 60px -30px rgba(24,22,31,0.25);">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">Northwind Studio</span><span class="sx-small">October so far · {{hero.day}}</span></span>
+          <span class="sx-pill" style="background: #E2F6D5; color: #2F5711;"><span class="sx-anim" style="display: inline-flex;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711; animation: sx-pulse 1.6s ease-out infinite;"></span></span>Up to date</span>
+        </div>
+        <sc-for list="{{hero.rows}}" as="r" hint-placeholder-count="3">
+          <a href="{{r.href}}" style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 18px; background: {{r.bg}}; color: {{r.ink}}; text-decoration: none;">
+            <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+              <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: {{r.labelInk}};"><span class="sx-dot" style="background: {{r.dot}};"></span>{{r.label}}</span>
+              <span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(26px, 3vw, 36px); letter-spacing: -0.03em; color: {{r.numInk}};">{{r.val}}</span>
+            </span>
+            <span style="display: flex; height: 8px; border-radius: 9999px; background: {{r.track}}; overflow: hidden;"><span style="width: {{r.pct}}%; background: {{r.dot}}; border-radius: 9999px; transition: width .6s ease;"></span></span>
+            <span style="font-size: 12px; color: {{r.subInk}};">{{r.sub}}</span>
+          </a>
+        </sc-for>
+        <div aria-live="polite" style="border-top: 1px solid #E2DFE8; padding-top: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 104px;">
+          <span class="sx-small" style="font-weight: 700;">What just happened</span>
+          <sc-if value="{{hero.evenNew}}" hint-placeholder-val="{{true}}">
+            <div class="sx-anim" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: {{hero.latest.bg}}; font-size: 14px; animation: sx-rowin .5s ease-out;"><span style="flex: 1; min-width: 0; font-weight: 600;">{{hero.latest.t}}</span><span class="sx-num" style="font-weight: 700; white-space: nowrap;">{{hero.latest.a}}</span></div>
+          </sc-if>
+          <sc-if value="{{hero.oddNew}}" hint-placeholder-val="{{false}}">
+            <p class="sx-anim" style="margin: 0; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: {{hero.latest.bg}}; font-size: 14px; animation: sx-rowin .5s ease-out;"><span style="flex: 1; min-width: 0; font-weight: 600;">{{hero.latest.t}}</span><span class="sx-num" style="font-weight: 700; white-space: nowrap;">{{hero.latest.a}}</span></p>
+          </sc-if>
+          <sc-for list="{{hero.prev}}" as="e" hint-placeholder-count="1">
+            <span style="display: flex; align-items: center; gap: 10px; padding: 0 12px; font-size: 13px; color: #5F5B68;"><span style="flex: 1; min-width: 0;">{{e.t}}</span><span class="sx-num" style="white-space: nowrap;">{{e.a}}</span></span>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <span style="display: flex; gap: 6px;" aria-hidden="true">
+            <sc-for list="{{hero.dots}}" as="d" hint-placeholder-count="7"><span style="width: {{d.w}}px; height: 6px; border-radius: 9999px; background: {{d.bg}}; transition: all .3s ease;"></span></sc-for>
+          </span>
+          <button type="button" onClick="{{hero.toggle}}" class="sx-chip" style="display: inline-flex; align-items: center; gap: 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{hero.toggleIcon}}"></path></svg>{{hero.toggleLabel}}</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · The three bands -->
+    <sc-for list="{{bands}}" as="b" hint-placeholder-count="3">
+      <section id="{{b.id}}" aria-labelledby="{{b.hid}}" class="{{b.cls}}" style="scroll-margin-top: 16px;">
+        <div class="sx-w sx-pad" style="display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: flex-start;">
+          <div class="sx-col" style="flex: 1 1 380px; gap: 18px; max-width: 460px;">
+            <span class="sx-kick"><span class="sx-dot" style="background: {{b.dot}}; border: {{b.dotBorder}};"></span>{{b.kick}}</span>
+            <h2 id="{{b.hid}}" class="sx-h2" style="font-size: clamp(32px, 3.8vw, 50px);">{{b.title}}</h2>
+            <p class="sx-p" style="font-size: 17px;">{{b.lead}}</p>
+            <div class="sx-row" style="gap: 4px 20px;">
+              <a href="{{b.page}}" class="sx-lnk">{{b.pageLabel}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+              <a href="{{b.demo}}" class="sx-lnk" style="color: #5B3FD6;">See it in the demo</a>
+            </div>
+            <div class="sx-anim" aria-hidden="true" style="margin-top: 10px; background: {{b.artBg}}; border-radius: 22px; padding: 22px; min-height: 220px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+              <sc-if value="{{b.isIn}}" hint-placeholder-val="{{true}}">
+                <span style="position: relative; width: 100%; max-width: 280px; display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E2DFE8; box-sizing: border-box;">
+                  <span style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; letter-spacing: .04em;"><span>INVOICE</span><span style="color: #5F5B68;">INV-0153</span></span>
+                  <span style="font-weight: 700; font-size: 15px;">Atlas Freight Co.</span>
+                  <span style="display: flex; justify-content: space-between; font-size: 13px; color: #47444F;"><span>October logistics design</span><span class="sx-num">$6,300.00</span></span>
+                  <span style="height: 1px; background: #E2DFE8;"></span>
+                  <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 13px; font-weight: 600;">Total</span><span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px;">$6,300</span></span>
+                  <span style="display: inline-flex; align-self: flex-start; align-items: center; height: 36px; padding: 0 16px; border-radius: 9999px; background: #7A5AF8; color: #FFFFFF; font-size: 13px; font-weight: 700;">Pay now</span>
+                  <span style="position: absolute; right: 14px; top: 58px; padding: 4px 10px; border: 3px solid #2F5711; border-radius: 8px; color: #2F5711; font-family: Sora, sans-serif; font-weight: 800; font-size: 18px; letter-spacing: .06em; background: rgba(226,246,213,0.9); animation: sx-stamp 5s ease-out infinite;">PAID</span>
+                </span>
+              </sc-if>
+              <sc-if value="{{b.isOut}}" hint-placeholder-val="{{false}}">
+                <span style="width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{sortRows}}" as="r" hint-placeholder-count="4">
+                    <span style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border-radius: 12px; padding: 10px 12px; font-size: 12px;">
+                      <span style="flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.n}}</span>
+                      <span style="padding: 3px 9px; border-radius: 9999px; background: {{r.bg}}; font-weight: 700; white-space: nowrap; animation: sx-tag 4s ease-out infinite; animation-delay: {{r.delay}};">{{r.c}}</span>
+                      <span class="sx-num" style="font-weight: 700;">{{r.a}}</span>
+                    </span>
+                  </sc-for>
+                </span>
+              </sc-if>
+              <sc-if value="{{b.isKeep}}" hint-placeholder-val="{{false}}">
+                <dc-import name="CashJar" size="{{280}}" amount="$8,407" uid="feat-band" hint-size="280px,233px"></dc-import>
+              </sc-if>
+            </div>
+          </div>
+          <ul style="flex: 999 1 520px; min-width: 0; margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px;">
+            <sc-for list="{{b.items}}" as="it" hint-placeholder-count="6">
+              <li style="background: {{b.tileBg}}; border: 1px solid {{b.tileBorder}}; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+                <span class="sx-ico" style="background: {{b.tint}};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"></path></svg></span>
+                <span style="display: flex; flex-direction: column; gap: 2px;">
+                  <h3 class="sx-h4" style="font-size: 17px;">{{it.title}}</h3>
+                  <span class="sx-small">{{it.tag}}</span>
+                </span>
+                <p class="sx-p" style="font-size: 14px;">{{it.ex}}</p>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </section>
+    </sc-for>
+
+    <!-- 3 · Handled for you -->
+    <section aria-labelledby="handled-h" style="background: #18161F; color: #FFFFFF;">
+      <div class="sx-w sx-pad" style="display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 48px;">
+          <div class="sx-col" style="gap: 14px; flex: 1 1 480px; max-width: 700px;">
+            <span class="sx-kick" style="color: #EEE8FF;"><span class="sx-dot" style="background: #B9A3FF;"></span>Handled for you</span>
+            <h2 id="handled-h" class="sx-h2" style="color: #FFFFFF;">The busywork happens while you’re doing the real work.</h2>
+            <p class="sx-p" style="font-size: 17px; color: #D9D4E6;">Four jobs BillingEase does on its own every day. If you’d rather approve each one, flip the switch and it will ask first.</p>
+          </div>
+          <div style="display: flex; gap: 28px; flex-wrap: wrap;">
+            <span style="display: flex; flex-direction: column;"><span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 40px; color: #B9A3FF; letter-spacing: -0.03em;">{{autoCount}}</span><span style="font-size: 13px; color: #D9D4E6;">things done on its own<br>in September</span></span>
+            <span style="display: flex; flex-direction: column;"><span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 40px; color: #FFFFFF; letter-spacing: -0.03em;">{{askCount}}</span><span style="font-size: 13px; color: #D9D4E6;">questions for Maya<br>at Northwind Studio</span></span>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px;">
+          <sc-for list="{{autos}}" as="a" hint-placeholder-count="4">
+            <article style="background: #24212C; border: 1px solid #36323F; border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0;">
+              <div class="sx-anim" aria-hidden="true" style="height: 116px; border-radius: 16px; background: #2E2A37; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 12px; box-sizing: border-box;">
+                <sc-if value="{{a.isMatch}}" hint-placeholder-val="{{true}}">
+                  <span style="position: relative; display: flex; align-items: center; gap: 12px;">
+                    <span style="display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 9999px; background: #7A5AF8; color: #FFFFFF; font-size: 12px; font-weight: 700; animation: sx-coin 4s ease-in-out infinite;">+$6,300</span>
+                    <span style="position: relative; width: 96px; height: 76px; border-radius: 10px; background: #FFFFFF; display: flex; flex-direction: column; gap: 6px; padding: 10px; box-sizing: border-box;">
+                      <span style="font-size: 9px; font-weight: 700; color: #18161F;">INV-0153</span>
+                      <span style="height: 5px; width: 80%; border-radius: 4px; background: #EFEDF3;"></span>
+                      <span style="height: 5px; width: 55%; border-radius: 4px; background: #EFEDF3;"></span>
+                      <span style="position: absolute; right: 6px; bottom: 8px; padding: 2px 6px; border: 2px solid #2F5711; border-radius: 6px; color: #2F5711; font: 800 11px Sora, sans-serif; background: #E2F6D5; animation: sx-stamp 4s ease-out infinite;">PAID</span>
+                    </span>
+                  </span>
+                </sc-if>
+                <sc-if value="{{a.isSort}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+                    <sc-for list="{{miniSort}}" as="r" hint-placeholder-count="3">
+                      <span style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border-radius: 8px; padding: 5px 8px; font-size: 11px; color: #18161F;"><span style="flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.n}}</span><span style="padding: 1px 7px; border-radius: 9999px; background: {{r.bg}}; font-weight: 700; animation: sx-tag 3.6s ease-out infinite; animation-delay: {{r.delay}};">{{r.c}}</span></span>
+                    </sc-for>
+                  </span>
+                </sc-if>
+                <sc-if value="{{a.isRemind}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
+                    <svg class="sx-c" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: sx-ring 3s ease-in-out infinite;"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg>
+                    <span style="display: flex; align-items: center; width: 100%; max-width: 200px; justify-content: space-between; position: relative;">
+                      <span style="position: absolute; left: 6px; right: 6px; top: 5px; height: 2px; background: #47444F;"></span>
+                      <sc-for list="{{remindDots}}" as="d" hint-placeholder-count="3">
+                        <span style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 9999px; background: #47444F; animation: sx-light 3.6s ease-in-out infinite; animation-delay: {{d.delay}};"></span><span style="font-size: 10px; color: #D9D4E6; white-space: nowrap;">{{d.t}}</span></span>
+                      </sc-for>
+                    </span>
+                  </span>
+                </sc-if>
+                <sc-if value="{{a.isTax}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                    <span style="display: flex; justify-content: space-between; font-size: 11px; color: #D9D4E6;"><span>Profit $11,210</span><span>25% set aside</span></span>
+                    <span style="display: flex; height: 18px; border-radius: 9999px; background: #47444F; overflow: hidden; gap: 2px;"><span style="background: #B9A3FF; animation: sx-grow 4s ease-out infinite;"></span><span style="background: #E3C38F; animation: sx-grow-tax 4s ease-out infinite;"></span></span>
+                    <span style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #FFFFFF;"><span>$8,407 yours</span><span style="color: #E3C38F;">$2,803 tax</span></span>
+                  </span>
+                </sc-if>
+              </div>
+              <div class="sx-col" style="gap: 6px; flex: 1;">
+                <h3 class="sx-h4" style="font-size: 18px; color: #FFFFFF;">{{a.title}}</h3>
+                <p class="sx-p" style="font-size: 14px; color: #D9D4E6;">{{a.text}}</p>
+              </div>
+              <button type="button" role="switch" aria-checked="{{a.on}}" onClick="{{a.flip}}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 0 4px 0 0; border: 0; background: transparent; color: #FFFFFF; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; text-align: left;">
+                <span>{{a.mode}}</span>
+                <span style="width: 44px; height: 26px; border-radius: 9999px; background: {{a.track}}; position: relative; flex: none; transition: background .2s ease;"><span style="position: absolute; top: 3px; left: {{a.knob}}px; width: 20px; height: 20px; border-radius: 9999px; background: #FFFFFF; transition: left .2s ease;"></span></span>
+              </button>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · Your business -->
+    <section aria-labelledby="biz-h" class="sx-w sx-pad" style="display: flex; flex-direction: column; gap: 36px;">
+      <div class="sx-col" style="gap: 14px; max-width: 720px;">
+        <span class="sx-kick"><span style="width: 10px; height: 10px; border-radius: 3px; border: 2px solid #18161F; box-sizing: border-box;"></span>Your business</span>
+        <h2 id="biz-h" class="sx-h2">Grows with you, stays out of the way.</h2>
+        <p class="sx-p" style="font-size: 17px;">People, currencies and security live under your business, not in the middle of your day. Tell BillingEase what you sell, where you are and who helps, and it only shows what applies.</p>
+      </div>
+      <div class="sx-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));">
+        <article class="sx-card" style="display: flex; flex-direction: column; gap: 18px;">
+          <div class="sx-soft" style="display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{team}}" as="p" hint-placeholder-count="4">
+              <span style="display: flex; align-items: center; gap: 10px; font-size: 13px;">
+                <span style="width: 32px; height: 32px; border-radius: 9999px; background: {{p.bg}}; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex: none;">{{p.ini}}</span>
+                <span style="flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{p.name}}</span>
+                <span class="sx-pill" style="background: #FFFFFF; border: 1px solid #E2DFE8;">{{p.role}}</span>
+              </span>
+            </sc-for>
+          </div>
+          <div class="sx-col" style="gap: 6px;">
+            <h3 class="sx-h3" style="font-size: 20px;">Team and roles</h3>
+            <p class="sx-p">Invite staff, an admin and your accountant. Roles decide who sees payroll and the bank, and bills can wait for your OK.</p>
+          </div>
+          <a href="SiteTeams.dc.html" class="sx-lnk" style="margin-top: auto;">BillingEase for teams<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </article>
+        <article class="sx-card" style="display: flex; flex-direction: column; gap: 18px;">
+          <div class="sx-soft" style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="sx-seg" role="tablist" aria-label="Invoice currency" style="background: #FFFFFF;">
+              <sc-for list="{{fx}}" as="c" hint-placeholder-count="3">
+                <button type="button" role="tab" aria-selected="{{c.on}}" onClick="{{c.pick}}">{{c.code}}</button>
+              </sc-for>
+            </div>
+            <span style="display: flex; flex-direction: column; gap: 2px; padding: 4px 4px 0;">
+              <span style="font-size: 13px; color: #5F5B68;">{{fxNow.who}}</span>
+              <span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em;">{{fxNow.amt}}</span>
+              <span class="sx-small">{{fxNow.note}}</span>
+            </span>
+          </div>
+          <div class="sx-col" style="gap: 6px;">
+            <h3 class="sx-h3" style="font-size: 20px;">Other currencies and VAT</h3>
+            <p class="sx-p">Bill in euros or pounds, see what it’s worth in dollars, and get the VAT wording right for customers abroad.</p>
+          </div>
+          <a href="SiteGlobal.dc.html" class="sx-lnk" style="margin-top: auto;">BillingEase outside the US<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </article>
+        <article class="sx-card" style="display: flex; flex-direction: column; gap: 18px;">
+          <div class="sx-soft" style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{sec}}" as="s" hint-placeholder-count="3">
+              <span style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600;">
+                <span style="width: 28px; height: 28px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{s.icon}}"></path></svg></span>
+                <span style="flex: 1; min-width: 0;">{{s.t}}</span>
+              </span>
+            </sc-for>
+          </div>
+          <div class="sx-col" style="gap: 6px;">
+            <h3 class="sx-h3" style="font-size: 20px;">Safe by default</h3>
+            <p class="sx-p">Your bank link is read-only, two-step sign-in is one switch away, and you can take all your data with you any time.</p>
+          </div>
+          <a href="SiteSecurity.dc.html" class="sx-lnk" style="margin-top: auto;">How we keep your books safe<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5 · Works with -->
+    <section aria-labelledby="int-h" class="sx-band">
+      <div class="sx-w sx-pad" style="display: flex; flex-direction: column; gap: 28px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 40px;">
+          <div class="sx-col" style="gap: 12px; flex: 1 1 420px; max-width: 640px;">
+            <h2 id="int-h" class="sx-h2" style="font-size: clamp(28px, 3.4vw, 44px);">Works with the money tools you already use.</h2>
+            <p class="sx-p" style="font-size: 17px;">Connect once. Charges, payouts and sales flow in every morning and sort themselves.</p>
+          </div>
+          <div class="sx-seg" role="tablist" aria-label="Kinds of connections">
+            <sc-for list="{{intTabs}}" as="t" hint-placeholder-count="4">
+              <button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}">{{t.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <ul role="tabpanel" aria-label="{{intLabel}}" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px;">
+          <sc-for list="{{ints}}" as="i" hint-placeholder-count="4">
+            <li style="display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid #E2DFE8; border-radius: 18px; background: #F7F6F9; min-width: 0;">
+              <span style="width: 44px; height: 44px; border-radius: 12px; background: {{i.bg}}; color: {{i.ink}}; display: flex; align-items: center; justify-content: center; font: 800 15px Sora, sans-serif; flex: none;">{{i.mono}}</span>
+              <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{i.name}}</span><span class="sx-small">{{i.what}}</span></span>
+            </li>
+          </sc-for>
+        </ul>
+        <p class="sx-small" style="margin: 0;">{{intNote}}</p>
+      </div>
+    </section>
+
+    <!-- 6 · Proof -->
+    <section aria-labelledby="proof-h" class="sx-w sx-pad" style="display: flex; flex-direction: column; gap: 32px;">
+      <h2 id="proof-h" class="sx-h2" style="font-size: clamp(28px, 3.4vw, 44px);">From people who’d rather not think about bookkeeping.</h2>
+      <div class="sx-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));">
+        <sc-for list="{{quotes}}" as="q" hint-placeholder-count="3">
+          <figure class="sx-card" style="margin: 0; display: flex; flex-direction: column; gap: 22px; background: {{q.bg}}; border-color: {{q.border}};">
+            <blockquote class="sx-quote" style="font-size: 20px; color: {{q.ink}};">“{{q.q}}”</blockquote>
+            <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 12px;">
+              <span style="width: 44px; height: 44px; border-radius: 9999px; background: {{q.avBg}}; color: #18161F; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex: none;">{{q.ini}}</span>
+              <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px; color: {{q.ink}};">{{q.who}}</span><span style="font-size: 13px; color: {{q.sub}};">{{q.biz}}</span></span>
+            </figcaption>
+          </figure>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- 7 · CTA -->
+    <section aria-labelledby="cta-h" style="padding: 0 clamp(16px, 4vw, 40px) clamp(64px, 8vw, 104px);">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; background: #EEE8FF; border-radius: 32px; padding: clamp(36px, 5vw, 72px) clamp(24px, 6vw, 80px); display: flex; flex-wrap: wrap; align-items: center; gap: 32px 48px;">
+        <div class="sx-col" style="flex: 999 1 420px; gap: 20px; align-items: flex-start;">
+          <span class="sx-kick"><span class="sx-dot" style="background: {{ctaDot}};"></span>{{ctaKick}}</span>
+          <h2 id="cta-h" class="sx-h2" style="font-size: clamp(34px, 4.6vw, 60px);">{{ctaTitle}}</h2>
+          <p class="sx-p" style="font-size: 17px; max-width: 520px;">{{ctaText}}</p>
+          <div class="sx-row">
+            <a href="AuthSignUp.dc.html" class="sx-btnd" style="min-height: 56px; padding: 0 28px; font-size: 17px; font-weight: 700;">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+            <a href="SitePricing.dc.html" class="sx-btn2" style="background: #FFFFFF;">See pricing</a>
+            <a href="{{ctaDemo}}" class="sx-lnk" style="padding: 0 8px;">See it in the demo</a>
+          </div>
+        </div>
+        <div aria-hidden="true" style="flex: 1 1 240px; display: flex; justify-content: center;">
+          <dc-import name="CashJar" size="{{320}}" amount="{{ctaJar}}" uid="cta" hint-size="320px,267px"></dc-import>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter"></dc-import>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px 'DM Sans', sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav, legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6400}}'>
+// Northwind Studio's October, a few moments at a time. Start + events = the sample totals
+// (Coming in $24,850, Going out $13,640, 25% of profit set aside → $8,407 yours to keep).
+const START = { in: 10850, out: 5125 };
+const EVENTS = [
+  { t: 'Atlas Freight paid INV-0153 by bank', k: 'in', v: 6300, day: 'Oct 2' },
+  { t: 'Payroll for Jordan, Priya and Sam scheduled', k: 'out', v: 7231, day: 'Oct 2' },
+  { t: 'Ridge Outdoor Supply paid by card', k: 'in', v: 3960, day: 'Oct 3' },
+  { t: 'WeWork rent, every month on the 1st', k: 'out', v: 1200, day: 'Oct 3' },
+  { t: 'Bluebird Yoga retainer charged to card', k: 'in', v: 540, day: 'Oct 3' },
+  { t: 'Staples receipt read and matched', k: 'out', v: 84, day: 'Oct 4' },
+  { t: 'INV-0156 sent to Lumen Dental Group', k: 'in', v: 3200, day: 'Oct 4' }
+];
+const totalsAt = (s) => {
+  let i = START.in, o = START.out;
+  EVENTS.slice(0, s).forEach((e) => { if (e.k === 'in') i += e.v; else o += e.v; });
+  return { in: i, out: o };
+};
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 2, prev: 2, tw: 1, playing: true, cur: 'eur', tab: 'banks', off: {}, toast: null };
+  }
+  componentDidMount() {
+    this._reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (this._reduce) { this.setState({ step: EVENTS.length, prev: EVENTS.length, playing: false }); return; }
+    this.queue();
+  }
+  componentWillUnmount() { clearTimeout(this._tick); cancelAnimationFrame(this._raf); clearTimeout(this._t); }
+  queue() { clearTimeout(this._tick); this._tick = setTimeout(() => this.next(), 2200); }
+  next() {
+    const s = this.state.step;
+    if (s >= EVENTS.length) { this.setState({ playing: false }); return; }
+    this.go(s + 1);
+    if (s + 1 < EVENTS.length && this.state.playing) this.queue(); else this.setState({ playing: false });
+  }
+  go(k) {
+    this.setState({ prev: this.state.step, step: k, tw: 0 });
+    if (typeof requestAnimationFrame === 'undefined') { this.setState({ tw: 1 }); return; }
+    cancelAnimationFrame(this._raf);
+    const t0 = performance.now();
+    const f = (t) => { const p = Math.min(1, (t - t0) / 700); this.setState({ tw: p }); if (p < 1) this._raf = requestAnimationFrame(f); };
+    this._raf = requestAnimationFrame(f);
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const st = this.state;
+    const money = (v) => (v < 0 ? '−$' : '$') + Math.abs(Math.round(v)).toLocaleString('en-US');
+    const I = {
+      doc: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5',
+      quote: 'M5 4h14v16H5zM8 9h8M8 13h8M8 17h4',
+      card: 'M3 6h18v12H3zM3 10h18M7 15h3',
+      bell: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4',
+      repeat: 'M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3',
+      box: 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8',
+      cam: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7',
+      sort: 'M4 6h16M4 12h10M4 18h6',
+      bill: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6',
+      cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
+      user: 'M20 21v-1a5 5 0 0 0-5-5H9a5 5 0 0 0-5 5v1M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
+      people: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8',
+      safe: 'M4 5h16v14H4zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6M12 9v1M8 19v2M16 19v2',
+      chart: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
+      pct: 'M19 5 5 19M7 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4',
+      bank: 'M3 10 12 4l9 6M5 10v8M19 10v8M9.5 10v8M14.5 10v8M3 20h18',
+      lock: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4',
+      check: 'm5 12 5 5 9-10',
+      shield: 'M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z',
+      dl: 'M12 4v12M6 10l6 6 6-6M4 20h16'
+    };
+    const payroll = (SITE.addons.find((a) => a.id === 'payroll') || {}).price || '';
+    const card = (SITE.addons.find((a) => a.id === 'card') || {}).price || '';
+    const pro = SITE.plans.find((p) => p.id === 'pro') || { year: 0 };
+
+    // Hero: numbers ease from the previous moment to this one.
+    const N = EVENTS.length;
+    const a = totalsAt(st.prev), b = totalsAt(st.step);
+    const k = 1 - Math.pow(1 - st.tw, 3);
+    const lerp = (x, y) => x + (y - x) * k;
+    const vin = lerp(a.in, b.in), vout = lerp(a.out, b.out);
+    const profit = vin - vout, tax = Math.round(profit * 0.25), keep = profit - tax;
+    const max = 26000;
+    const rows = [
+      { label: 'Coming in', val: money(vin), pct: Math.round(vin / max * 100), href: '#coming-in', dot: '#7A5AF8', bg: '#F7F6F9', ink: '#18161F', labelInk: '#18161F', numInk: '#18161F', track: '#E7E3EE', subInk: '#5F5B68', sub: 'Paid and on the way from customers' },
+      { label: 'Going out', val: money(vout), pct: Math.round(vout / max * 100), href: '#going-out', dot: '#E0752D', bg: '#F7F6F9', ink: '#18161F', labelInk: '#18161F', numInk: '#18161F', track: '#E7E3EE', subInk: '#5F5B68', sub: 'Paid and still to pay, bills and payroll included' },
+      { label: 'Yours to keep', val: money(keep), pct: Math.max(0, Math.round(keep / max * 100)), href: '#keep', dot: '#B9A3FF', bg: '#18161F', ink: '#FFFFFF', labelInk: '#EEE8FF', numInk: '#B9A3FF', track: 'rgba(238,232,255,0.16)', subInk: '#EEE8FF', sub: 'After ' + money(tax) + ' set aside for tax' }
+    ];
+    const done = EVENTS.slice(0, st.step);
+    const fmt = (e) => ({ t: e.t, a: (e.k === 'in' ? '+' : '−') + money(e.v), bg: e.k === 'in' ? '#EEE8FF' : '#FDE6D6' });
+    const latest = done.length ? fmt(done[done.length - 1]) : { t: 'Waiting for the first payment of the day', a: '', bg: '#F7F6F9' };
+    const hero = {
+      rows, latest,
+      evenNew: st.step % 2 === 0, oddNew: st.step % 2 === 1,
+      prev: done.slice(-3, -1).reverse().map(fmt),
+      day: (done.length ? done[done.length - 1].day : 'Oct 1') + ', 2026',
+      dots: EVENTS.map((e, i) => ({ w: i < st.step ? 16 : 6, bg: i < st.step ? '#7A5AF8' : '#E2DFE8' })),
+      toggleLabel: st.playing ? 'Pause' : (st.step >= N ? 'Replay the week' : 'Play'),
+      toggleIcon: st.playing ? 'M8 5v14M16 5v14' : (st.step >= N ? 'M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5' : 'M7 4v16l13-8z'),
+      toggle: () => {
+        if (st.playing) { clearTimeout(this._tick); this.setState({ playing: false }); return; }
+        if (st.step >= N) { this.setState({ playing: true, step: 0, prev: 0, tw: 1 }); this.queue(); return; }
+        this.setState({ playing: true }); this.next();
+      }
+    };
+
+    const bands = [
+      { id: 'coming-in', hid: 'in-h', cls: 'sx-band', kick: 'Coming in', dot: '#7A5AF8', dotBorder: '0', title: 'Get paid, without chasing anyone.',
+        lead: 'Everything between doing the work and the money landing in your bank: quotes, invoices, online payments and the reminders nobody likes to write.',
+        page: 'SiteComingIn.dc.html', pageLabel: 'Everything about Coming in', demo: 'ThreeIn.dc.html', artBg: '#EEE8FF', tint: '#EEE8FF', tileBg: '#F7F6F9', tileBorder: '#F7F6F9',
+        isIn: true, isOut: false, isKeep: false,
+        items: [
+          { icon: I.doc, title: 'Invoices in one sentence', tag: 'Invoicing', ex: 'Type “Bill Atlas Freight $6,300 for October logistics” and it becomes a finished, branded invoice.' },
+          { icon: I.quote, title: 'Quotes they accept online', tag: 'Estimates', ex: 'Send a price first. When Greenline Architects taps Accept, the $4,200 becomes an invoice.' },
+          { icon: I.card, title: 'Paid by card, bank or Apple Pay', tag: 'Online payments', ex: 'Customers pay straight from the invoice. Cards cost ' + card + '; you only pay when they do.' },
+          { icon: I.bell, title: 'Reminders that send themselves', tag: 'Automatic reminders', ex: 'A friendly note three days before the due date, a firmer one a week after. You never chase.' },
+          { icon: I.repeat, title: 'Repeating invoices and retainers', tag: 'Recurring invoices', ex: 'Bluebird Yoga’s $540 goes out on the 1st and charges the card they keep on file.' },
+          { icon: I.box, title: 'Products, stock and currencies', tag: 'Inventory · multi-currency', ex: 'Know what’s left on the shelf, and bill Kaffeehaus Berlin in euros without a calculator.' }
+        ] },
+      { id: 'going-out', hid: 'out-h', cls: '', kick: 'Going out', dot: '#E0752D', dotBorder: '0', title: 'Every dollar out, sorted and on time.',
+        lead: 'Receipts, card charges, bills, subscriptions and payroll in one place. BillingEase sorts what it recognizes and only asks about the rest.',
+        page: 'SiteGoingOut.dc.html', pageLabel: 'Everything about Going out', demo: 'ThreeOut.dc.html', artBg: '#FDE6D6', tint: '#FDE6D6', tileBg: '#FFFFFF', tileBorder: '#E2DFE8',
+        isIn: false, isOut: true, isKeep: false,
+        items: [
+          { icon: I.cam, title: 'Snap a receipt', tag: 'Receipt scanning', ex: 'Take a photo or forward the email. We read it and match it to the card charge.' },
+          { icon: I.sort, title: 'Charges sorted for you', tag: 'Bank and card feeds', ex: '19 of Northwind’s 23 charges sorted themselves this month. Only the new ones need you.' },
+          { icon: I.bill, title: 'Bills, in full or in parts', tag: 'Bills to pay', ex: 'Enter a bill once. Pay it on the due date, or $200 now and the rest next month.' },
+          { icon: I.cal, title: 'Every-month costs', tag: 'Recurring expenses', ex: 'Rent and subscriptions in one list, with a nudge when one looks unused.' },
+          { icon: I.user, title: 'Vendors and 1099s', tag: 'Contractors', ex: 'Who you pay and what you owe them, with year-end forms ready in January.' },
+          { icon: I.people, title: 'Payroll', tag: 'Add-on · ' + payroll, ex: 'Direct deposit, pay stubs and payroll taxes filed for you. US only for now.' }
+        ] },
+      { id: 'keep', hid: 'keep-h', cls: 'sx-band', kick: 'Yours to keep', dot: '#18161F', dotBorder: '2px solid #B9A3FF', title: 'Know what’s actually yours.',
+        lead: 'What’s left after everything’s paid, with tax already set aside. Behind it, proper books your accountant will be happy to see.',
+        page: 'SiteKeep.dc.html', pageLabel: 'Everything about Yours to keep', demo: 'ThreeKeep.dc.html', artBg: '#F7F6F9', tint: '#EEE8FF', tileBg: '#F7F6F9', tileBorder: '#F7F6F9',
+        isIn: false, isOut: false, isKeep: true,
+        items: [
+          { icon: I.safe, title: 'Tax set aside as you earn', tag: 'Estimated tax', ex: '25% of profit goes in the envelope, so April isn’t a surprise. Change the share any time.' },
+          { icon: I.chart, title: 'Reports in plain questions', tag: 'Profit & loss · balance sheet · cash flow', ex: 'How much did I make? What do I own? Where did the cash go? One tap each.' },
+          { icon: I.pct, title: 'Sales tax and VAT, ready to file', tag: 'Sales tax · VAT · GST', ex: '$412.63 of New York sales tax for Q3, worked out for you and due Oct 20.' },
+          { icon: I.bank, title: 'Check against your bank', tag: 'Reconciliation', ex: 'Line up your books with the statement and see exactly what’s missing.' },
+          { icon: I.user, title: 'Your accountant, invited', tag: 'Accountant access', ex: 'Read-only books and reports for your CPA. They can add fixes, never move money.' },
+          { icon: I.lock, title: 'Close the year', tag: 'Year-end close', ex: 'Lock last year once taxes are filed, so nothing changes by accident.' }
+        ] }
+    ];
+    const sortRows = [['ADOBE CREATIVE CLOUD', 'Software', '−$90', '#EEE8FF'], ['DELTA AIR LINES', 'Travel', '−$412', '#FDE6D6'], ['BLUE BOTTLE COFFEE', 'Meals', '−$18.50', '#E2F6D5'], ['STAPLES 0412', 'Office', '−$84', '#FFF0B8']]
+      .map((r, i) => ({ n: r[0], c: r[1], a: r[2], bg: r[3], delay: (i * 0.45) + 's' }));
+    const miniSort = sortRows.slice(0, 3);
+
+    const AUTOS = [
+      { id: 'match', title: 'Payments matched to invoices', text: 'Atlas Freight’s $6,300 landed in Chase. We found INV-0153, marked it paid and thanked them.', isMatch: true },
+      { id: 'sort', title: 'Charges sorted into categories', text: 'Adobe is Software, Delta is Travel. New merchants get a best guess you can fix in one tap.', isSort: true },
+      { id: 'remind', title: 'Reminders sent on time', text: 'Lumen Dental Group hears from you three days before $3,200 is due, and again if it slips.', isRemind: true },
+      { id: 'tax', title: 'Tax put aside every month', text: 'A quarter of profit moves to the tax envelope, ready for the Jan 15 estimated payment.', isTax: true }
+    ];
+    const autos = AUTOS.map((x) => {
+      const on = !st.off[x.id];
+      return Object.assign({ isMatch: false, isSort: false, isRemind: false, isTax: false }, x, {
+        on, mode: on ? 'Does it for you' : 'Asks you first',
+        track: on ? '#7A5AF8' : '#47444F', knob: on ? 21 : 3,
+        flip: () => {
+          const off = Object.assign({}, st.off); if (on) off[x.id] = 1; else delete off[x.id];
+          this.setState({ off });
+          this.notify(on ? x.title + ': we’ll ask you first' : x.title + ': back to automatic');
+        }
+      });
+    });
+    const offCount = Object.keys(st.off).length;
+    const remindDots = [['3 days before', '0s'], ['Due Oct 20', '1.2s'], ['7 days late', '2.4s']].map((d) => ({ t: d[0], delay: d[1] }));
+
+    const team = [['MC', 'Maya Chen', 'Owner', '#B9A3FF'], ['JL', 'Jordan Lee', 'Admin', '#FDE6D6'], ['PN', 'Priya Nair', 'Staff', '#E2F6D5'], ['DW', 'Dana Whitfield, CPA', 'Accountant', '#FFF0B8']]
+      .map((p) => ({ ini: p[0], name: p[1], role: p[2], bg: p[3] }));
+    const FX = {
+      usd: { code: 'USD', who: 'Atlas Freight Co. · Chicago', amt: '$6,300.00', note: 'Your home currency. No conversion needed.' },
+      eur: { code: 'EUR', who: 'Kaffeehaus Berlin GmbH · Germany', amt: '€6,500.00 ≈ $7,085', note: 'At 1 EUR = 1.09 USD · VAT reverse charged to the customer' },
+      gbp: { code: 'GBP', who: 'Thistle & Co. Ltd · United Kingdom', amt: '£1,200.00 ≈ $1,524', note: 'At 1 GBP = 1.27 USD · monthly retainer on the 15th' }
+    };
+    const fx = Object.keys(FX).map((c) => ({ code: FX[c].code, on: st.cur === c, pick: () => this.setState({ cur: c }) }));
+    const sec = [[I.lock, 'Read-only bank connection'], [I.shield, 'Two-step sign-in'], [I.dl, 'Export everything, any time']].map((s) => ({ icon: s[0], t: s[1] }));
+
+    const INT = {
+      banks: { label: 'Banks', note: 'Bank connections are read-only. BillingEase can see transactions, never move money.', items: [['HB', 'Harborline Bank', 'Checking and savings', '#EEE8FF'], ['KC', 'Keystone Credit Union', 'Daily feed', '#FDE6D6'], ['FM', 'First Meridian', 'Business checking', '#E2F6D5'], ['CB', 'Cobalt Business Bank', 'Checking and loans', '#FFF0B8'], ['PS', 'Prairie State Bank', 'Daily feed', '#E1EEF8'], ['NS', 'Northgate Savings', 'Savings and CDs', '#EEE8FF']] },
+      cards: { label: 'Cards', note: 'Card charges arrive the morning after, ready to match with your receipts.', items: [['MB', 'Meridian Business Card', 'Charges and refunds', '#EEE8FF'], ['AR', 'Arcline Rewards', 'Employee cards', '#FDE6D6'], ['CC', 'Corner Card', 'Prepaid spend cards', '#E2F6D5'], ['SC', 'Summit Corporate', 'Charge card', '#FFF0B8']] },
+      paid: { label: 'Getting paid', note: 'Payouts are matched to the invoices and sales they came from. Card payments through BillingEase cost ' + card + '.', items: [['TB', 'Tillbox', 'Card reader at the counter', '#EEE8FF'], ['SF', 'Shopfront', 'Online store orders', '#FDE6D6'], ['MS', 'Marketstall', 'Market and pop-up sales', '#E2F6D5'], ['PD', 'PayDock', 'Payouts and fees', '#FFF0B8']] },
+      tools: { label: 'Tools', note: 'Time, receipts and spreadsheets come in; reports go out to your accountant.', items: [['CW', 'Clockwise', 'Time you can bill', '#EEE8FF'], ['IP', 'Inkpost', 'Receipts by email', '#FDE6D6'], ['LL', 'Ledgerline', 'Accountant export', '#E2F6D5'], ['SW', 'Sheetwise', 'Spreadsheet import', '#FFF0B8']] }
+    };
+    const T = INT[st.tab];
+    const intTabs = Object.keys(INT).map((k) => ({ label: INT[k].label, on: st.tab === k, pick: () => this.setState({ tab: k }) }));
+    const ints = T.items.map((x) => ({ mono: x[0], name: x[1], what: x[2], bg: x[3], ink: '#18161F' }));
+
+    const quotes = [
+      { q: 'I used to lose Sunday nights to invoices. Now I type one sentence and the reminders do the chasing. My late invoices went from nine to two.', who: 'Renata Alves', biz: 'Alves Interiors · Austin, TX', ini: 'RA', avBg: '#B9A3FF', bg: '#FFFFFF', border: '#E2DFE8', ink: '#18161F', sub: '#5F5B68' },
+      { q: 'I snap the receipt at the counter and forget about it. At tax time my accountant had nothing to ask me, which has never happened.', who: 'Theo Grant', biz: 'Grant & Daughter Plumbing · Columbus, OH', ini: 'TG', avBg: '#FDE6D6', bg: '#FFFFFF', border: '#E2DFE8', ink: '#18161F', sub: '#5F5B68' },
+      { q: 'For the first time I know what I can pay myself on the 1st. The jar number is the only one I look at.', who: 'Hana Sato', biz: 'Kiln & Co. Ceramics · Portland, OR', ini: 'HS', avBg: '#B9A3FF', bg: '#18161F', border: '#18161F', ink: '#FFFFFF', sub: '#D9D4E6' }
+    ];
+
+    return {
+      proFrom: SITE.money(pro.year), hero, bands, sortRows, miniSort, autos, remindDots,
+      autoCount: (212 - offCount * 31).toLocaleString('en-US'), askCount: 9 + offCount * 31,
+      team, fx, fxNow: FX[st.cur], sec,
+      intTabs, ints, intLabel: T.label, intNote: T.note,
+      quotes, toast: st.toast,
+      ctaDot: '#7A5AF8', ctaKick: 'Free to start, no card needed', ctaTitle: 'See your own three numbers.', ctaText: 'Connect a bank or send one invoice. Your numbers fill in on their own, and the rest of the features show up as you need them.', ctaDemo: 'ThreeHome.dc.html', ctaJar: '$8,407'
+    };
+  }
+}
+</script>
+</body>
+</html>

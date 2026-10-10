@@ -1,8 +1,562 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SiteCareers</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Careers</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<div style="min-height:100vh;background:#F7F6F9"><dc-import name="SiteNav"></dc-import><main style="padding:40px 16px">Being designed.</main><dc-import name="SiteFooter"></dc-import></div>
+<!--CO-CSS-->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+html{scroll-behavior:smooth}
+.co{min-height:100vh;background:#F7F6F9;color:#18161F;font-family:'DM Sans',system-ui,sans-serif;overflow-x:clip}
+.co a{color:#18161F}
+.co :focus-visible{outline:3px solid #7A5AF8;outline-offset:3px;border-radius:12px}
+.co-wrap{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:clamp(64px,9vw,120px) clamp(16px,4vw,40px)}
+.co-band{background:#FFFFFF;border-top:1px solid #E2DFE8;border-bottom:1px solid #E2DFE8}
+.co-h1{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(40px,6.2vw,84px);line-height:1.02;letter-spacing:-0.035em;text-wrap:balance}
+.co-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,56px);line-height:1.05;letter-spacing:-0.035em;text-wrap:balance}
+.co-h3{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;line-height:1.2;letter-spacing:-0.02em}
+.co-lead{margin:0;font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:#47444F;text-wrap:pretty}
+.co-p{margin:0;font-size:16px;line-height:1.6;color:#47444F}
+.co-sm{font-size:14px;line-height:1.5;color:#5F5B68}
+.co-kick{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#47444F}
+.co-kick i{width:10px;height:10px;border-radius:9999px;background:#7A5AF8;display:inline-block}
+.co-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(22px,2.4vw,30px);box-sizing:border-box;min-width:0}
+.co-soft{background:#F7F6F9;border-radius:20px;box-sizing:border-box;min-width:0}
+.co-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.co-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:9999px;border:0;cursor:pointer;text-decoration:none;font:600 16px 'DM Sans',sans-serif;white-space:nowrap;box-sizing:border-box;transition:transform .15s ease,background .15s ease}
+.co-btn:hover{transform:translateY(-1px)}
+.co .co-ink{background:#18161F;color:#FFFFFF}
+.co .co-vio{background:#B9A3FF;color:#18161F}
+.co .co-ghost{background:rgba(24,22,31,0.07);color:#18161F}
+.co .co-ghost-d{background:rgba(238,232,255,0.12);color:#FFFFFF}
+.co-sbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border-radius:9999px;border:0;cursor:pointer;font:600 14px 'DM Sans',sans-serif;background:rgba(24,22,31,0.07);color:#18161F;text-decoration:none;white-space:nowrap}
+.co-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:9999px;background:#EEE8FF;font-size:13px;font-weight:600;color:#18161F;white-space:nowrap}
+.co-label{font-size:14px;font-weight:600;color:#18161F}
+.co-in{width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:1px solid #CBC7D3;border-radius:12px;background:#FFFFFF;font:400 16px 'DM Sans',sans-serif;color:#18161F}
+.co-in:focus{outline:3px solid #C9BCFB;outline-offset:0;border-color:#7A5AF8}
+textarea.co-in{min-height:120px;resize:vertical;line-height:1.5}
+.co-err{font-size:13px;font-weight:600;color:#A8200D}
+.co-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.co-ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.co-ul li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.5;color:#18161F}
+.co-ul li svg{flex:none;margin-top:3px}
+@keyframes co-sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes co-swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes co-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes co-steam{0%{transform:translateY(6px);opacity:0}30%{opacity:.8}100%{transform:translateY(-16px);opacity:0}}
+@keyframes co-draw{0%,10%{stroke-dashoffset:300}55%,100%{stroke-dashoffset:0}}
+@keyframes co-fade{0%,40%{opacity:0;transform:translateY(6px)}55%,100%{opacity:1;transform:none}}
+@keyframes co-blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes co-pulse{0%{box-shadow:0 0 0 0 rgba(122,90,248,.45)}70%,100%{box-shadow:0 0 0 10px rgba(122,90,248,0)}}
+@keyframes co-rowin{0%,6%{opacity:0;transform:translateX(-10px)}14%,100%{opacity:1;transform:none}}
+@keyframes co-hl{0%,20%,100%{background:#FFFFFF}30%,60%{background:#EEE8FF}}
+@keyframes co-scan{0%,100%{top:8%}50%{top:88%}}
+@keyframes co-slide{0%{transform:translateX(-10px);opacity:0}15%,85%{opacity:1;transform:none}100%{opacity:0}}
+.co-pivot{transform-box:fill-box;transform-origin:50% 0}
+.co-c{transform-box:fill-box;transform-origin:center}
+.co-b{transform-box:fill-box;transform-origin:50% 100%}
+@media (max-width: 640px){.co-person{display:grid!important;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:14px 16px!important}.co-person>:last-child{grid-column:1/-1}.co-person>:first-child{width:56px!important;height:56px!important;font-size:19px!important;box-shadow:3px 3px 0 #18161F!important}}
+.co-role{transition:border-color .15s ease,transform .15s ease}.co-role:hover{border-color:#B9A3FF!important;transform:translateY(-1px)}
+@media (max-width: 640px){.co-two{grid-template-columns:1fr 1fr!important;gap:10px!important}.co-two>li{padding:16px!important}.co-two .co-big{font-size:22px!important}}
+@media (max-width: 860px){.co-aside{order:-1;position:static!important}}
+@media (prefers-reduced-motion: reduce){.co-anim,.co-anim *{animation:none!important;transition:none!important}html{scroll-behavior:auto}.co-btn:hover{transform:none}}
+</style>
+</helmet>
+<!--/CO-CSS-->
+<div class="co">
+  <dc-import name="SiteNav" current="careers"></dc-import>
+
+  <main>
+  <!-- ============ LIST VIEW ============ -->
+  <sc-if value="{{isList}}" hint-placeholder-val="{{true}}">
+    <!-- 1 · Hero -->
+    <section aria-labelledby="ca-h" class="co-wrap" style="padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(56px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: center; gap: 40px 56px;">
+      <div style="flex: 1 1 500px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 22px;">
+        <span class="co-kick"><i></i>Careers at BillingEase</span>
+        <h1 id="ca-h" class="co-h1">Work on the calm side of money.</h1>
+        <p class="co-lead" style="max-width: 580px;">We’re 42 people making bookkeeping disappear for small businesses. We hire slowly, pay fairly, publish the salary for every role, and reply to every person who applies.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a href="#roles" class="co-btn co-ink">See {{roleCount}} open roles</a>
+          <a href="#hire" class="co-btn co-ghost">How we hire</a>
+        </div>
+      </div>
+      <div class="co-anim" aria-hidden="true" style="flex: 1 1 360px; min-width: 0; max-width: 480px; margin: 0 auto;">
+        <svg viewBox="0 0 440 380" width="100%" style="display: block; overflow: visible;">
+          <circle cx="220" cy="200" r="168" fill="#FDE6D6"></circle>
+          <!-- door -->
+          <path d="M120 360 V120 a100 100 0 0 1 200 0 V360 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="3"></path>
+          <path d="M146 360 V128 a74 74 0 0 1 148 0 V360" fill="#EEE8FF" stroke="#18161F" stroke-width="2.5"></path>
+          <path d="M220 54 V360 M146 190 H294" stroke="#18161F" stroke-width="2"></path>
+          <circle cx="276" cy="260" r="6" fill="#E0752D" stroke="#18161F" stroke-width="2"></circle>
+          <!-- hanging sign -->
+          <g class="co-pivot" style="animation: co-swing 4s ease-in-out infinite;">
+            <path d="M184 150 L220 120 L256 150" fill="none" stroke="#18161F" stroke-width="2"></path>
+            <circle cx="220" cy="120" r="4" fill="#18161F"></circle>
+            <rect x="160" y="150" width="120" height="70" rx="12" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5"></rect>
+            <text x="220" y="182" text-anchor="middle" font-family="Caveat, cursive" font-size="28" font-weight="700" fill="#18161F">Come in,</text>
+            <text x="220" y="208" text-anchor="middle" font-family="Caveat, cursive" font-size="24" font-weight="700" fill="#18161F">we’re hiring</text>
+          </g>
+          <!-- floating role cards -->
+          <g style="animation: co-bob 5s ease-in-out infinite;">
+            <rect x="8" y="238" width="148" height="44" rx="22" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></rect>
+            <circle cx="32" cy="260" r="7" fill="#7A5AF8"></circle>
+            <text x="48" y="265" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#18161F">Engineering · 3</text>
+          </g>
+          <g style="animation: co-bob 5s ease-in-out infinite; animation-delay: -2.5s;">
+            <rect x="300" y="282" width="128" height="44" rx="22" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></rect>
+            <circle cx="324" cy="304" r="7" fill="#E0752D"></circle>
+            <text x="340" y="309" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#18161F">Design · 2</text>
+          </g>
+          <g style="animation: co-bob 6s ease-in-out infinite; animation-delay: -1s;">
+            <rect x="306" y="70" width="128" height="44" rx="22" fill="#18161F"></rect>
+            <text x="370" y="97" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#B9A3FF">Salary listed</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 2 · Why work here -->
+    <section aria-labelledby="why-h" class="co-band">
+      <div class="co-wrap" style="display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px;">
+          <h2 id="why-h" class="co-h2">Why people stay</h2>
+          <p class="co-lead">Our median tenure is two and a half years, in a company that’s three and a half years old.</p>
+        </div>
+        <div class="co-grid">
+          <sc-for list="{{whys}}" as="w" hint-placeholder-count="4">
+            <div class="co-soft" style="padding: 26px; display: flex; flex-direction: column; gap: 12px;">
+              <span style="width: 48px; height: 48px; border-radius: 16px; background: {{w.bg}}; display: flex; align-items: center; justify-content: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{w.icon}}"></path></svg></span>
+              <span class="co-h3" style="font-size: 20px;">{{w.t}}</span>
+              <span class="co-p" style="font-size: 15px;">{{w.d}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <figure style="margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; padding: clamp(22px, 3vw, 32px); border-radius: 24px; background: #18161F;">
+          <span aria-hidden="true" style="width: 64px; height: 64px; border-radius: 9999px; background: #FDE6D6; border: 2.5px solid #EEE8FF; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; flex: none;">LH</span>
+          <div style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+            <blockquote style="margin: 0; font-family: Sora, sans-serif; font-weight: 600; font-size: clamp(18px, 1.8vw, 22px); line-height: 1.4; letter-spacing: -0.015em; color: #FFFFFF;">“I’d never worked somewhere that publishes every salary. It changes how people talk to each other. Nobody negotiates in the dark.”</blockquote>
+            <figcaption style="font-size: 14px; color: #EEE8FF;"><strong style="color: #B9A3FF;">Leila Haddad</strong> · Head of Support, joined 2023</figcaption>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 3 · Benefits -->
+    <section aria-labelledby="ben-h" class="co-wrap" style="display: flex; flex-direction: column; gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px;">
+        <h2 id="ben-h" class="co-h2">Benefits, in plain numbers</h2>
+        <p class="co-lead">The same for everyone, from their first day. US benefits shown; we match them as closely as we can in Canada.</p>
+      </div>
+      <ul class="co-two" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px;">
+        <sc-for list="{{benefits}}" as="b" hint-placeholder-count="8">
+          <li class="co-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px;">
+            <span class="co-big" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 30px; line-height: 1; letter-spacing: -0.03em;">{{b.v}}</span>
+            <span style="font-weight: 700; font-size: 16px;">{{b.t}}</span>
+            <span class="co-sm" style="font-size: 15px; color: #47444F;">{{b.d}}</span>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <!-- 4 · How we hire -->
+    <section id="hire" aria-labelledby="hire-h" class="co-band" style="scroll-margin-top: 16px;">
+      <div class="co-wrap" style="display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px;">
+          <h2 id="hire-h" class="co-h2">How we hire</h2>
+          <p class="co-lead">Four steps, usually done in three weeks. You’ll always know where you stand, and we reply to every application within 10 business days.</p>
+        </div>
+        <ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px;">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+            <li class="co-soft" style="padding: 26px; display: flex; flex-direction: column; gap: 14px;">
+              <span style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 48px; line-height: 1; letter-spacing: -0.04em;">{{s.n}}</span>
+                <span class="co-chip" style="background: {{s.bg}};">{{s.time}}</span>
+              </span>
+              <span class="co-h3" style="font-size: 20px;">{{s.t}}</span>
+              <span class="co-p" style="font-size: 15px;">{{s.d}}</span>
+            </li>
+          </sc-for>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 5 · Open roles -->
+    <section id="roles" aria-labelledby="roles-h" class="co-wrap" style="display: flex; flex-direction: column; gap: 28px; scroll-margin-top: 16px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 40px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 640px;">
+          <h2 id="roles-h" class="co-h2">Open roles</h2>
+          <p class="co-lead">{{roleCount}} roles across five teams. Every one lists its salary range.</p>
+        </div>
+        <div class="co-field" style="min-width: 220px;">
+          <label for="ca-loc" class="co-label">Where</label>
+          <select id="ca-loc" class="co-in" value="{{loc}}" onChange="{{setLoc}}" style="cursor: pointer;">
+            <option value="any">Anywhere</option>
+            <option value="remote">Remote</option>
+            <option value="office">Brooklyn office</option>
+          </select>
+        </div>
+      </div>
+      <div role="group" aria-label="Filter by team" style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <sc-for list="{{teamChips}}" as="c" hint-placeholder-count="6">
+          <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}; font: 600 14px 'DM Sans', sans-serif; cursor: pointer;">{{c.label}}<span style="font-size: 12px; font-weight: 700; opacity: 0.75;">{{c.count}}</span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{hasRoles}}" hint-placeholder-val="{{true}}">
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{shown}}" as="r" hint-placeholder-count="8">
+            <li>
+              <a href="{{r.href}}" class="co-role" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 22px 24px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; text-decoration: none; color: #18161F;">
+                <span style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">{{r.title}}</span>
+                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 14px; color: #5F5B68;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: #18161F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{r.dot}};"></span>{{r.team}}</span>
+                    <span>{{r.place}}</span>
+                  </span>
+                </span>
+                <span style="font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums;">{{r.pay}}</span>
+                <span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+              </a>
+            </li>
+          </sc-for>
+        </ul>
+      </sc-if>
+      <sc-if value="{{noRoles}}" hint-placeholder-val="{{false}}">
+        <div class="co-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+          <span class="co-p">No {{emptyTeam}} roles {{emptyLoc}} right now. Try another team or place.</span>
+          <button type="button" class="co-sbtn" onClick="{{clearFilters}}">Show all roles</button>
+        </div>
+      </sc-if>
+      <p class="co-sm" style="margin: 0; font-size: 15px;">Don’t see your role? Write to <strong style="color: #18161F;">{{jobsEmail}}</strong> with what you’d like to work on. We read every note.</p>
+    </section>
+
+    <!-- 6 · CTA -->
+    <section aria-labelledby="close-h" style="padding: 0 clamp(16px, 4vw, 40px) clamp(64px, 8vw, 104px);">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; background: #EEE8FF; border-radius: 32px; padding: clamp(36px, 6vw, 72px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px;">
+        <div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+          <h2 id="close-h" class="co-h2" style="font-size: clamp(30px, 4vw, 52px);">Curious what you’d be building?</h2>
+          <p class="co-lead">Open the demo business and click around. It’s the same app our customers use every morning.</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a href="ThreeHome.dc.html" class="co-btn co-ink">See it in the demo</a>
+          <a href="SiteAbout.dc.html" class="co-btn" style="background: #FFFFFF; color: #18161F;">Our story</a>
+        </div>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- ============ ROLE DETAIL ============ -->
+  <sc-if value="{{role}}" hint-placeholder-val="{{false}}">
+    <article aria-labelledby="role-h" class="co-wrap" style="padding-top: clamp(28px, 4vw, 56px); display: flex; flex-direction: column; gap: 32px;">
+      <a href="SiteCareers.dc.html#roles" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-weight: 600; font-size: 15px; text-decoration: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>All open roles</a>
+      <header style="display: flex; flex-direction: column; gap: 16px; max-width: 860px;">
+        <span class="co-kick"><i style="background: {{role.dot}};"></i>{{role.team}} team</span>
+        <h1 id="role-h" class="co-h1" style="font-size: clamp(36px, 5vw, 64px);">{{role.title}}</h1>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span class="co-chip" style="background: #FFFFFF; border: 1px solid #E2DFE8;">{{role.place}}</span>
+          <span class="co-chip" style="background: #FFFFFF; border: 1px solid #E2DFE8;">Full-time</span>
+          <span class="co-chip">{{role.pay}}</span>
+        </div>
+      </header>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 32px 48px;">
+        <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 36px;">
+          <section style="display: flex; flex-direction: column; gap: 14px;">
+            <h2 class="co-h3" style="font-size: 26px;">About the role</h2>
+            <sc-for list="{{role.about}}" as="p" hint-placeholder-count="2">
+              <p class="co-p" style="font-size: 17px;">{{p}}</p>
+            </sc-for>
+          </section>
+          <section style="display: flex; flex-direction: column; gap: 16px;">
+            <h2 class="co-h3" style="font-size: 26px;">What you’ll do</h2>
+            <ul class="co-ul">
+              <sc-for list="{{role.doList}}" as="d" hint-placeholder-count="4">
+                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span>{{d}}</span></li>
+              </sc-for>
+            </ul>
+          </section>
+          <section style="display: flex; flex-direction: column; gap: 16px;">
+            <h2 class="co-h3" style="font-size: 26px;">What you bring</h2>
+            <ul class="co-ul">
+              <sc-for list="{{role.bring}}" as="d" hint-placeholder-count="4">
+                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg><span>{{d}}</span></li>
+              </sc-for>
+            </ul>
+            <p class="co-sm" style="margin: 0; font-size: 15px;">Not a perfect match? Apply anyway. We hire for how people think, and teach the rest.</p>
+          </section>
+          <section style="display: flex; flex-direction: column; gap: 16px;">
+            <h2 class="co-h3" style="font-size: 26px;">Benefits</h2>
+            <ul class="co-two" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px;">
+              <sc-for list="{{benefits}}" as="b" hint-placeholder-count="8">
+                <li class="co-soft" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">{{b.v}}</strong><span class="co-sm">{{b.t}}</span></li>
+              </sc-for>
+            </ul>
+          </section>
+        </div>
+
+        <aside class="co-aside" style="flex: 1 1 300px; min-width: 0; position: sticky; top: 24px;">
+          <div class="co-card" style="display: flex; flex-direction: column; gap: 18px;">
+            <span style="display: flex; flex-direction: column; gap: 6px;">
+              <span class="co-sm" style="font-weight: 700;">Salary range</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; line-height: 1.15; letter-spacing: -0.03em;">{{role.pay}}</span>
+              <span class="co-sm">{{role.payNote}}</span>
+            </span>
+            <dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; font-size: 15px;">
+              <dt style="color: #5F5B68;">Team</dt><dd style="margin: 0; font-weight: 600;">{{role.team}}</dd>
+              <dt style="color: #5F5B68;">Where</dt><dd style="margin: 0; font-weight: 600;">{{role.place}}</dd>
+              <dt style="color: #5F5B68;">Reports to</dt><dd style="margin: 0; font-weight: 600;">{{role.lead}}</dd>
+            </dl>
+            <button type="button" class="co-btn co-ink" onClick="{{goApply}}" style="width: 100%;">Apply for this role</button>
+            <span class="co-sm" style="font-size: 13px;">Takes about 5 minutes. No cover letter.</span>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Application form -->
+      <section id="apply" aria-labelledby="apply-h" class="co-card" style="max-width: 860px; padding: clamp(24px, 4vw, 44px); scroll-margin-top: 16px; box-shadow: {{ring}}; transition: box-shadow .3s ease;">
+        <sc-if value="{{formOpen}}" hint-placeholder-val="{{true}}">
+          <form onSubmit="{{submit}}" novalidate style="display: flex; flex-direction: column; gap: 22px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <h2 id="apply-h" class="co-h2" style="font-size: clamp(28px, 3vw, 40px);">Apply for {{role.title}}</h2>
+              <p class="co-p">A person on the {{role.team}} team reads every application. We’ll reply within 10 business days, whatever the answer.</p>
+            </div>
+            <sc-if value="{{err.any}}" hint-placeholder-val="{{false}}">
+              <div role="alert" style="padding: 12px 16px; border-radius: 12px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{err.any}}</div>
+            </sc-if>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px;">
+              <div class="co-field">
+                <label for="ap-name" class="co-label">Your name</label>
+                <input id="ap-name" class="co-in" type="text" autocomplete="name" value="{{f.name}}" onChange="{{setName}}" aria-invalid="{{err.nameInv}}" aria-describedby="ap-name-e" style="border-color: {{err.nameB}};">
+                <sc-if value="{{err.name}}" hint-placeholder-val="{{false}}"><span id="ap-name-e" class="co-err">{{err.name}}</span></sc-if>
+              </div>
+              <div class="co-field">
+                <label for="ap-email" class="co-label">Email</label>
+                <input id="ap-email" class="co-in" type="email" autocomplete="email" value="{{f.email}}" onChange="{{setEmail}}" aria-invalid="{{err.emailInv}}" aria-describedby="ap-email-e" style="border-color: {{err.emailB}};">
+                <sc-if value="{{err.email}}" hint-placeholder-val="{{false}}"><span id="ap-email-e" class="co-err">{{err.email}}</span></sc-if>
+              </div>
+            </div>
+            <div class="co-field">
+              <label for="ap-links" class="co-label">Links <span style="font-weight: 400; color: #5F5B68;">(optional: portfolio, GitHub, LinkedIn)</span></label>
+              <input id="ap-links" class="co-in" type="text" autocomplete="url" placeholder="yoursite.com, github.com/you" value="{{f.links}}" onChange="{{setLinks}}" aria-invalid="{{err.linksInv}}" aria-describedby="ap-links-e" style="border-color: {{err.linksB}};">
+              <sc-if value="{{err.links}}" hint-placeholder-val="{{false}}"><span id="ap-links-e" class="co-err">{{err.links}}</span></sc-if>
+            </div>
+            <div class="co-field">
+              <label for="ap-ans" class="co-label">{{role.question}}</label>
+              <span class="co-sm">A few honest sentences beat a polished essay.</span>
+              <textarea id="ap-ans" class="co-in" maxlength="800" value="{{f.answer}}" onChange="{{setAnswer}}" aria-invalid="{{err.answerInv}}" aria-describedby="ap-ans-e ap-ans-c" style="border-color: {{err.answerB}};"></textarea>
+              <span style="display: flex; justify-content: space-between; gap: 12px;">
+                <sc-if value="{{err.answer}}" hint-placeholder-val="{{false}}"><span id="ap-ans-e" class="co-err">{{err.answer}}</span></sc-if>
+                <span id="ap-ans-c" class="co-sm" style="margin-left: auto; font-size: 13px; font-variant-numeric: tabular-nums;">{{count}} / 800</span>
+              </span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+              <button type="submit" class="co-btn co-ink">Send application</button>
+              <span class="co-sm">We only use this to consider you for this role.</span>
+            </div>
+          </form>
+        </sc-if>
+        <sc-if value="{{sent}}" hint-placeholder-val="{{false}}">
+          <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px 40px;">
+            <svg class="co-anim" aria-hidden="true" viewBox="0 0 160 140" width="150" style="flex: none; overflow: visible;">
+              <circle cx="80" cy="74" r="62" fill="#EEE8FF"></circle>
+              <path d="M30 50 H130 V116 H30 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+              <path d="M30 50 L80 88 L130 50" fill="none" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+              <g class="co-c" style="animation: co-bob 3s ease-in-out infinite;"><circle cx="124" cy="40" r="20" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5"></circle><path d="M115 40 l6 6 l11 -12" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></g>
+            </svg>
+            <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+              <h2 class="co-h2" style="font-size: clamp(28px, 3vw, 40px);">Thanks, {{firstName}}. It’s in.</h2>
+              <p class="co-p">Your application for <strong style="color: #18161F;">{{role.title}}</strong> reached {{role.lead}}. We sent a copy to <strong style="color: #18161F;">{{f.email}}</strong> and will reply within 10 business days, whatever the answer.</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px;">
+                <a href="SiteCareers.dc.html#roles" class="co-sbtn">See other roles</a>
+                <button type="button" class="co-sbtn" onClick="{{again}}" style="background: transparent; text-decoration: underline; text-underline-offset: 3px;">Edit my answers</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+
+      <sc-if value="{{hasMore}}" hint-placeholder-val="{{true}}">
+        <section aria-labelledby="more-h" style="display: flex; flex-direction: column; gap: 14px; padding-top: 12px;">
+          <h2 id="more-h" class="co-h3">Other open roles</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;">
+            <sc-for list="{{more}}" as="r" hint-placeholder-count="3">
+              <a href="{{r.href}}" class="co-role" style="display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; text-decoration: none; color: #18161F;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #5F5B68;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{r.dot}};"></span>{{r.team}}</span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.02em;">{{r.title}}</span>
+                <span class="co-sm">{{r.place}}</span>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+    </article>
+  </sc-if>
+  </main>
+
+  <dc-import name="SiteFooter"></dc-import>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav, legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { team: 'all', loc: 'any', f: { name: '', email: '', links: '', answer: '' }, tried: false, sent: false, hl: false };
+    this._hash = this.hashNow();
+  }
+  hashNow() { return (window.BE && BE.hash) ? BE.hash() : decodeURIComponent((location.hash || '').slice(1)); }
+  componentDidUpdate() {
+    const h = this.hashNow();
+    if (h !== this._hash) {
+      this._hash = h;
+      if (ROLES_BY[h]) { window.scrollTo(0, 0); this.setState({ f: { name: '', email: '', links: '', answer: '' }, tried: false, sent: false, hl: false }); }
+    }
+  }
+  errors() {
+    const f = this.state.f, e = {};
+    if (!f.name.trim()) e.name = 'Add your name.';
+    if (!f.email.trim()) e.email = 'Add an email so we can reply.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = 'That email doesn’t look right. Check for a typo?';
+    if (f.links.trim() && f.links.split(',').some((l) => l.trim() && !/^[^\s]+\.[a-z]{2,}(\/\S*)?$/i.test(l.trim().replace(/^https?:\/\//, '')))) e.links = 'Add full links, like yoursite.com or github.com/you, separated by commas.';
+    const n = f.answer.trim().length;
+    if (!n) e.answer = 'Write a short answer. A few sentences is plenty.';
+    else if (n < 60) e.answer = 'A little more, please: at least 60 characters (' + n + ' so far).';
+    return e;
+  }
+  renderVals() {
+    const st = this.state;
+    const h = this.hashNow();
+    const role = ROLES_BY[h] || null;
+    const deco = (r) => ({ ...r, href: 'SiteCareers.dc.html#' + r.slug, dot: TEAM_DOT[r.team] });
+    const benefits = [
+      { v: '100%', t: 'Health, dental, vision', d: 'Premiums fully covered for you, 90% for your family.' },
+      { v: '20 weeks', t: 'Paid parental leave', d: 'For every parent, however your family grows.' },
+      { v: '25 days', t: 'Vacation, plus holidays', d: 'And the office closes from Dec 24 to Jan 1.' },
+      { v: '4-day weeks', t: 'All of August', d: 'Same pay. Most of the company is offline on Fridays.' },
+      { v: '$2,000', t: 'Learning, every year', d: 'Courses, books, conferences. No approval needed under $300.' },
+      { v: '$1,500', t: 'Home office setup', d: 'Once when you join, plus a coworking pass if you need one.' },
+      { v: '4%', t: '401(k) match', d: 'Vested from your first paycheck.' },
+      { v: 'Equity', t: 'For everyone', d: 'Stock options in every offer, with 10 years to exercise.' }
+    ];
+    const roles = ROLES.map(deco);
+    const locOk = (r) => st.loc === 'any' || r.where === 'both' || r.where === st.loc;
+    const shown = roles.filter((r) => (st.team === 'all' || r.team === st.team) && locOk(r));
+    const teams = ['all', 'Engineering', 'Design', 'Support', 'Finance', 'Sales'];
+    const teamChips = teams.map((t) => {
+      const on = st.team === t;
+      return { label: t === 'all' ? 'All teams' : t, count: roles.filter((r) => (t === 'all' || r.team === t) && locOk(r)).length, on,
+        bg: on ? '#18161F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#18161F', bd: on ? '#18161F' : '#E2DFE8',
+        pick: () => this.setState({ team: t }) };
+    });
+    const e = st.tried ? this.errors() : {};
+    const bad = (k) => (e[k] ? '#A8200D' : '#CBC7D3');
+    const nErr = Object.keys(e).length;
+    const set = (k) => (ev) => this.setState({ f: { ...this.state.f, [k]: ev.target.value } });
+    return {
+      isList: !role,
+      role: role ? deco(role) : null,
+      roleCount: ROLES.length,
+      jobsEmail: 'jobs@billingease.app',
+      whys: [
+        { t: 'Customers you can name', d: 'Every engineer and designer joins two support shifts a month. You’ll know the bakery whose bug you fixed.', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8', bg: '#EEE8FF' },
+        { t: 'Small teams, whole problems', d: 'Teams of four to six own a part of the product end to end, from the first sketch to the help article.', icon: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z', bg: '#FDE6D6' },
+        { t: 'Calm hours', d: 'No meetings on Wednesdays. Most roles have no on-call nights; the ones that do pay extra and rotate weekly.', icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M12 7v5l3 2', bg: '#EEE8FF' },
+        { t: 'Salaries in the open', d: 'Every role has a published range, and everyone at the same level earns the same within it.', icon: 'M3 12V4h8l10 10-8 8zM7.5 7.5h.01', bg: '#FDE6D6' }
+      ],
+      benefits,
+      steps: [
+        { n: '1', t: 'Apply', time: '5 minutes', d: 'Your name, a link or two, and one short answer. No cover letter, no résumé required.', bg: '#EEE8FF' },
+        { n: '2', t: 'A first conversation', time: '30 minutes', d: 'A video call with the person you’d work for. Ask anything, including about pay.', bg: '#FDE6D6' },
+        { n: '3', t: 'A paid work sample', time: '3 hours, $500', d: 'A small, real problem from our backlog, done on your own time. We pay for it either way.', bg: '#EEE8FF' },
+        { n: '4', t: 'Meet the team', time: '2 conversations', d: 'Two calls with future teammates, then a yes or no within five business days.', bg: '#FDE6D6' }
+      ],
+      loc: st.loc,
+      setLoc: (ev) => this.setState({ loc: ev.target.value }),
+      teamChips, shown, hasRoles: shown.length > 0, noRoles: shown.length === 0,
+      emptyTeam: st.team === 'all' ? '' : st.team,
+      emptyLoc: st.loc === 'remote' ? 'that are remote' : st.loc === 'office' ? 'in Brooklyn' : '',
+      clearFilters: () => this.setState({ team: 'all', loc: 'any' }),
+      more: role ? roles.filter((r) => r.slug !== role.slug).sort((a, b) => (b.team === role.team) - (a.team === role.team)).slice(0, 3) : [],
+      hasMore: !!role,
+      f: st.f,
+      count: st.f.answer.length,
+      firstName: (st.f.name.trim().split(/\s+/)[0] || 'there'),
+      formOpen: !st.sent, sent: st.sent,
+      ring: st.hl ? '0 0 0 4px #C9BCFB' : 'none',
+      err: {
+        any: nErr ? (nErr === 1 ? 'One thing to fix before sending.' : nErr + ' things to fix before sending.') : null,
+        name: e.name, email: e.email, links: e.links, answer: e.answer,
+        nameInv: !!e.name, emailInv: !!e.email, linksInv: !!e.links, answerInv: !!e.answer,
+        nameB: bad('name'), emailB: bad('email'), linksB: bad('links'), answerB: bad('answer')
+      },
+      setName: set('name'), setEmail: set('email'), setLinks: set('links'), setAnswer: set('answer'),
+      goApply: () => {
+        this.setState({ hl: true });
+        const el = document.getElementById('apply');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => { const i = document.getElementById('ap-name'); if (i) i.focus({ preventScroll: true }); }, 400);
+        clearTimeout(this._hl); this._hl = setTimeout(() => this.setState({ hl: false }), 2200);
+      },
+      submit: (ev) => {
+        ev.preventDefault();
+        const errs = this.errors();
+        if (Object.keys(errs).length) { this.setState({ tried: true }); return; }
+        this.setState({ sent: true, tried: false });
+        const el = document.getElementById('apply'); if (el) el.scrollIntoView({ block: 'start' });
+      },
+      again: () => this.setState({ sent: false })
+    };
+  }
+}
+var TEAM_DOT = { Engineering: '#7A5AF8', Design: '#E0752D', Support: '#B9A3FF', Finance: '#18161F', Sales: '#F4C3A1' };
+var ROLES = [
+  { slug: 'senior-backend-engineer-banking', title: 'Senior Backend Engineer, Banking', team: 'Engineering', place: 'Remote (US)', where: 'remote', pay: '$175,000 – $210,000', payNote: 'Plus equity. Same range in every US city.', lead: 'Marcus Bell, Engineering lead',
+    about: ['Every morning, 11,000 bank and card connections send us yesterday’s transactions, and BillingEase sorts them before anyone wakes up. You’ll make that faster, more reliable and kinder when a bank has a bad day.', 'You’ll join a team of five that owns bank connections, matching and the “Check against your bank statement” flow.'],
+    doList: ['Build and run the services that import and match millions of transactions a week', 'Design how we recover when a bank connection breaks, so customers hear about it in plain words', 'Work with design on matching rules people can understand and undo', 'Join two support shifts a month and fix what you hear about'],
+    bring: ['6+ years building backend systems people rely on with their money', 'Comfort with Postgres, queues and the boring parts of reliability', 'Clear writing: you explain trade-offs in a short doc before you build', 'Patience with banks. Lots of patience with banks.'],
+    question: 'Tell us about a system you made more reliable. What broke, and what did you change?' },
+  { slug: 'frontend-engineer-invoices', title: 'Frontend Engineer, Invoices', team: 'Engineering', place: 'Brooklyn or remote (US)', where: 'both', pay: '$150,000 – $180,000', payNote: 'Plus equity. Same range in every US city.', lead: 'Kenji Watanabe, Invoices lead',
+    about: ['Invoices are how our customers get paid, so every second we save them is real money. You’ll build the invoice editor, quotes, reminders and the page customers pay from.', 'You’ll care as much about how a screen reads at 390 pixels wide as how fast it loads.'],
+    doList: ['Build the invoice editor, quotes and the payment page in our component system', 'Make forms that catch mistakes kindly before a customer sees them', 'Pair with design on motion and small details that make the product feel calm', 'Keep everything accessible by keyboard and screen reader'],
+    bring: ['4+ years building web interfaces people use daily', 'Strong JavaScript and CSS, with opinions about both', 'Care for accessibility and plain language', 'Bonus: you’ve sent invoices for your own work'],
+    question: 'Show us (with a link or words) an interface detail you’re proud of. Why does it matter?' },
+  { slug: 'mobile-engineer-ios', title: 'Mobile Engineer, iOS', team: 'Engineering', place: 'Remote (US or Canada)', where: 'remote', pay: '$160,000 – $195,000', payNote: 'Plus equity. Canadian offers in CAD at the same level.', lead: 'Theo Park, CTO',
+    about: ['Most receipts get snapped on a phone in a parking lot. You’ll own the iOS app: the three numbers at a glance, receipt capture that reads the total before you put the phone away, and approvals on the go.'],
+    doList: ['Build the camera flow that reads receipts and matches them to card charges', 'Make the home screen widget show the three numbers, up to date', 'Ship small, often, with careful releases', 'Help shape our Android plans for 2027'],
+    bring: ['4+ years shipping iOS apps in Swift and SwiftUI', 'Experience with camera, offline or background work', 'A habit of testing on old phones and slow networks', 'Interest in how small businesses actually work'],
+    question: 'What’s an app you use daily that gets one thing exactly right? What is it?' },
+  { slug: 'product-designer-going-out', title: 'Product Designer, Going out', team: 'Design', place: 'Brooklyn office', where: 'office', pay: '$140,000 – $170,000', payNote: 'Plus equity. In the office Tuesday to Thursday.', lead: 'Ruth Okafor, Head of Design',
+    about: ['Going out covers everything a business spends: card charges, receipts, bills, every-month costs and payroll. You’ll design how all of that stays calm, so the owner only sees what needs them.'],
+    doList: ['Design flows for bills, receipts and payroll, from sketch to shipped', 'Write the words on every screen with our content designer', 'Watch customers use the product every two weeks', 'Draw: we make our own illustrations, and you’ll help'],
+    bring: ['4+ years designing products people use for real work', 'A portfolio that shows your thinking, not just final screens', 'Comfort with numbers and tables that need to read clearly', 'You can say no to a feature and explain why'],
+    question: 'Pick a confusing screen from any app. How would you make it simpler, in a few sentences?' },
+  { slug: 'content-designer', title: 'Content Designer', team: 'Design', place: 'Remote (US)', where: 'remote', pay: '$120,000 – $145,000', payNote: 'Plus equity. Same range in every US city.', lead: 'Ana Sousa, Content design',
+    about: ['Plain words are our product. You’ll make sure “Money back to a customer” beats “Credit memo” everywhere: in the app, in emails, in help articles and on this site.'],
+    doList: ['Write and edit words across the app, emails and help center', 'Keep our word list: the plain term, and the accounting term it replaces', 'Test copy with customers and accountants', 'Coach engineers and designers to write like a person'],
+    bring: ['3+ years writing for products or services', 'A short, clear writing style you can adapt', 'Curiosity about money, tax and how people feel about them', 'Comfort defending one word in a meeting'],
+    question: 'Rewrite this so a busy café owner gets it: “Unapplied payments must be allocated prior to reconciliation.”' },
+  { slug: 'customer-support-specialist', title: 'Customer Support Specialist', team: 'Support', place: 'Remote (US, Eastern hours)', where: 'remote', pay: '$68,000 – $80,000', payNote: 'Plus equity and a $1,000 yearly certification budget.', lead: 'Leila Haddad, Head of Support',
+    about: ['When someone writes to us, a person answers within two hours. You’ll be that person: helping owners send their first invoice, fix a bank connection, or understand why their profit moved.'],
+    doList: ['Answer emails and chats from customers, kindly and clearly', 'Turn repeated questions into help articles', 'Tell product teams what customers struggle with, every week', 'Join a Saturday rotation once a month, with a weekday off in return'],
+    bring: ['2+ years in support, a front desk, a shop or any job with customers', 'Calm writing, especially when someone is upset', 'Comfort with numbers; bookkeeping experience is a plus', 'Available 9am to 5:30pm Eastern'],
+    question: 'Tell us about a time you helped someone who was frustrated. What did you say?' },
+  { slug: 'staff-accountant', title: 'Staff Accountant', team: 'Finance', place: 'Brooklyn office', where: 'office', pay: '$85,000 – $100,000', payNote: 'Plus equity and paid CPA exam fees.', lead: 'Daniel Cho, Finance & operations',
+    about: ['You’ll keep BillingEase’s own books, in BillingEase. You’ll also be the first person our product team asks, “is this how an accountant would see it?”'],
+    doList: ['Close our books every month and prepare reports for the leadership team', 'Handle bills, payroll checks and sales tax filings', 'Review new reports and features with the product team', 'Help write guides for our customers’ accountants'],
+    bring: ['2+ years in accounting, at a firm or in-house', 'Working toward a CPA, or already there', 'Care for details and for explaining them simply', 'Patience with a product team that asks a lot of questions'],
+    question: 'How would you explain the difference between profit and cash in the bank to a first-time business owner?' },
+  { slug: 'partner-account-manager', title: 'Partner Account Manager', team: 'Sales', place: 'Brooklyn or remote (US)', where: 'both', pay: '$95,000 – $115,000', payNote: 'Plus commission (about $30,000 at target) and equity.', lead: 'Sofia Lindqvist, Partners',
+    about: ['Over 600 accounting firms use BillingEase with their clients. You’ll help the next hundred get started, and make sure the ones we have are glad they chose us.'],
+    doList: ['Onboard new accounting and bookkeeping firms to the partner program', 'Run short training sessions for firms and their clients', 'Bring what partners need back to the product team', 'Visit firms in person a few times a quarter'],
+    bring: ['3+ years in account management, sales or at an accounting firm', 'Comfort talking with CPAs about their work', 'Organized follow-up; you never let a promise slip', 'A driver’s license helps, but isn’t required'],
+    question: 'What do you think an accounting firm worries about most when trying new software for clients?' }
+];
+var ROLES_BY = {}; ROLES.forEach(function (r) { ROLES_BY[r.slug] = r; });
+</script>
+</body>
+</html>

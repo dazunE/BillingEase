@@ -444,7 +444,7 @@
   }
 
   // The shared data store and the sample month load before any screen renders.
-  var DATA_FILES = ['store.js', 'site.js', 'data-home.js', 'data-in.js', 'data-sell.js', 'data-out.js', 'data-spend.js', 'data-books.js', 'data-biz.js'];
+  var DATA_FILES = ['store.js', 'site.js', 'site-content.js', 'data-home.js', 'data-in.js', 'data-sell.js', 'data-out.js', 'data-spend.js', 'data-books.js', 'data-biz.js'];
 
   function loadScript(src) {
     return new Promise(function (resolve) {

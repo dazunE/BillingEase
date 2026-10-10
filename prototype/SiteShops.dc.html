@@ -1,8 +1,793 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SiteShops</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase for shops and makers</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<div style="min-height:100vh;background:#F7F6F9"><dc-import name="SiteNav"></dc-import><main style="padding:40px 16px">Being designed.</main><dc-import name="SiteFooter"></dc-import></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+html{scroll-behavior:smooth}
+.wf a{color:#18161F}
+.wf a:focus-visible,.wf button:focus-visible,.wf input:focus-visible,.wf select:focus-visible{outline:3px solid #7A5AF8;outline-offset:2px}
+.wf-lift{transition:transform .15s ease, box-shadow .15s ease}
+.wf-lift:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(24,22,31,0.08)}
+.wf-c{transform-box:fill-box;transform-origin:center}
+.wf-top{transform-box:fill-box;transform-origin:50% 0}
+.wf-foot{transform-box:fill-box;transform-origin:50% 100%}
+.wf-tblwrap{overflow-x:auto;position:relative;-webkit-overflow-scrolling:touch}
+@keyframes wf-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes wf-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-10px) rotate(2deg)}}
+@keyframes wf-swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes wf-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes wf-spin{to{transform:rotate(360deg)}}
+@keyframes wf-pulse{0%{box-shadow:0 0 0 0 rgba(47,87,17,.45)}70%,100%{box-shadow:0 0 0 8px rgba(47,87,17,0)}}
+@keyframes wf-stamp{0%,40%{opacity:0;transform:scale(1.9)}48%{opacity:1;transform:scale(1)}90%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
+@keyframes wf-pop{0%,20%{opacity:0;transform:translateY(8px) scale(.96)}30%,88%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-4px)}}
+@keyframes wf-fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes wf-drop{0%{transform:translateY(-40px);opacity:0}15%{opacity:1}70%{transform:translateY(0);opacity:1}85%,100%{transform:translateY(4px);opacity:0}}
+@keyframes wf-plane{0%{transform:translate(0,0) rotate(-8deg);opacity:0}10%{opacity:1}60%{transform:translate(60px,-26px) rotate(6deg);opacity:1}75%,100%{transform:translate(78px,-18px) rotate(12deg);opacity:0}}
+@keyframes wf-blink{0%,100%{opacity:1}50%{opacity:.35}}
+.wf-in{animation:wf-fade .35s ease-out both}
+@media (max-width: 760px){.wf-hide-sm{display:none!important}}
+@media (max-width: 900px){.wf-op{flex-basis:100%!important;height:20px;font-size:26px!important}}
+@media (prefers-reduced-motion: reduce){.wf-anim,.wf-anim *,.wf-in{animation:none!important}.wf-lift:hover{transform:none}}
+
+</style>
+</helmet>
+<div class="wf" style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif; overflow-x: clip;">
+  <dc-import name="SiteNav" current="shops"></dc-import>
+
+  <main>
+    <!-- 1 · Hero -->
+    <section aria-labelledby="hero-h" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(32px, 6vw, 80px) clamp(16px, 4vw, 40px) clamp(56px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: center; gap: 40px 56px;">
+      <div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 22px;">
+        <span style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 14px; font-weight: 600; color: #47444F;">
+          <span style="width: 26px; height: 26px; border-radius: 9999px; background: {{P.tint}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{P.kickIcon}}"></path></svg></span>
+          Who it’s for<span aria-hidden="true" style="color: #CBC7D3;">/</span><span style="color: #18161F;">{{P.kicker}}</span>
+        </span>
+        <h1 id="hero-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5.4vw, 72px); line-height: 1.03; letter-spacing: -0.035em;">{{P.h1}}</h1>
+        <p style="margin: 0; max-width: 580px; font-size: clamp(17px, 1.5vw, 19px); line-height: 1.55; color: #47444F;">{{P.sub}}</p>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding-top: 4px;">
+          <a href="AuthSignUp.dc.html" style="display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 28px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 17px;">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="SitePricing.dc.html" style="display: inline-flex; align-items: center; min-height: 56px; padding: 0 26px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; text-decoration: none; font-weight: 600; font-size: 16px;">See pricing</a>
+        </div>
+        <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: 14px; color: #5F5B68;">
+          <span>Free to start. No card needed.</span>
+          <a href="{{P.demo.href}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-weight: 600; color: #18161F; text-underline-offset: 3px;">{{P.demo.label}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </span>
+      </div>
+      <div class="wf-anim" aria-hidden="true" style="flex: 1 1 380px; min-width: 0; max-width: 540px; margin: 0 auto;">
+        <svg viewBox="0 0 520 430" width="100%" style="display: block; overflow: visible;">
+          <circle cx="270" cy="210" r="176" fill="#FDE6D6"></circle>
+          <circle cx="448" cy="82" r="46" fill="#EEE8FF"></circle>
+          <!-- top shelf -->
+          <path d="M70 256 v26 h14 M450 256 v26 h-14" fill="none" stroke="#18161F" stroke-width="3" stroke-linejoin="round"></path>
+          <rect x="40" y="246" width="440" height="14" rx="4" fill="#E8C9A0" stroke="#18161F" stroke-width="3"></rect>
+          <!-- speckled mug with a swinging price tag -->
+          <g>
+            <path d="M152 186 c30 0 30 46 0 46" fill="none" stroke="#18161F" stroke-width="10" stroke-linecap="round"></path>
+            <path d="M152 186 c30 0 30 46 0 46" fill="none" stroke="#FFF6E0" stroke-width="5" stroke-linecap="round"></path>
+            <path d="M78 168 h78 v62 c0 10 -8 16 -18 16 h-42 c-10 0 -18 -6 -18 -16 z" fill="#FFF6E0" stroke="#18161F" stroke-width="3" stroke-linejoin="round"></path>
+            <path d="M78 168 h78 v16 h-78 z" fill="#7A5AF8" stroke="#18161F" stroke-width="3" stroke-linejoin="round"></path>
+            <circle cx="96" cy="200" r="2.4" fill="#5F5B68"></circle><circle cx="118" cy="214" r="2" fill="#5F5B68"></circle><circle cx="138" cy="198" r="2.4" fill="#5F5B68"></circle><circle cx="104" cy="228" r="2" fill="#5F5B68"></circle><circle cx="142" cy="226" r="2" fill="#5F5B68"></circle><circle cx="126" cy="236" r="1.8" fill="#5F5B68"></circle>
+            <path d="M100 160 c-4 -10 4 -14 0 -24 M120 158 c-4 -10 4 -14 0 -24" fill="none" stroke="#CBC7D3" stroke-width="3" stroke-linecap="round" style="animation: wf-blink 3s ease-in-out infinite;"></path>
+            <g class="wf-top" style="animation: wf-swing 3.4s ease-in-out infinite;">
+              <path d="M84 172 L58 206" stroke="#18161F" stroke-width="2"></path>
+              <path d="M38 204 l20 -8 l20 8 v40 h-40 z" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+              <circle cx="58" cy="208" r="3" fill="#18161F"></circle>
+              <text x="58" y="236" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#18161F">$38</text>
+            </g>
+          </g>
+          <!-- bud vase with a sprig -->
+          <g class="wf-foot" style="animation: wf-sway 5s ease-in-out infinite;">
+            <path d="M232 168 C230 140 222 120 210 106 M232 150 C240 132 252 124 262 120" fill="none" stroke="#2F5711" stroke-width="3" stroke-linecap="round"></path>
+            <ellipse cx="208" cy="104" rx="10" ry="6" fill="#B6E0AE" stroke="#18161F" stroke-width="2" transform="rotate(-40 208 104)"></ellipse>
+            <ellipse cx="262" cy="118" rx="10" ry="6" fill="#B6E0AE" stroke="#18161F" stroke-width="2" transform="rotate(-20 262 118)"></ellipse>
+          </g>
+          <path d="M232 246 C200 246 196 210 214 192 C222 184 222 174 218 164 L246 164 C242 174 242 184 250 192 C268 210 264 246 232 246 Z" fill="#B9A3FF" stroke="#18161F" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M214 216 C224 222 240 222 250 216" fill="none" stroke="#18161F" stroke-width="2" opacity="0.5"></path>
+          <!-- pour-over set -->
+          <path d="M296 136 h80 l-22 44 h-36 z" fill="#F4C3A1" stroke="#18161F" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M314 180 h44 l12 66 h-68 z" fill="#FFFFFF" stroke="#18161F" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M306 214 h60" stroke="#E0752D" stroke-width="3"></path>
+          <!-- plates -->
+          <g>
+            <ellipse cx="434" cy="240" rx="40" ry="8" fill="#FFF6E0" stroke="#18161F" stroke-width="2.5"></ellipse>
+            <ellipse cx="434" cy="228" rx="40" ry="8" fill="#FFF6E0" stroke="#18161F" stroke-width="2.5"></ellipse>
+            <ellipse cx="434" cy="216" rx="40" ry="8" fill="#FFF6E0" stroke="#18161F" stroke-width="2.5"></ellipse>
+            <ellipse cx="434" cy="216" rx="22" ry="4" fill="none" stroke="#7A5AF8" stroke-width="2"></ellipse>
+          </g>
+          <!-- boxes ready to ship -->
+          <g style="animation: wf-bob 6s ease-in-out infinite;">
+            <rect x="70" y="316" width="120" height="78" rx="4" fill="#E8C9A0" stroke="#18161F" stroke-width="3"></rect>
+            <path d="M70 336 h120 M130 316 v20" stroke="#18161F" stroke-width="2.5"></path>
+            <rect x="92" y="352" width="76" height="28" rx="4" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></rect>
+            <text x="130" y="371" text-anchor="middle" font-family="Sora, sans-serif" font-size="12" font-weight="800" fill="#18161F">46 mugs</text>
+            <rect x="96" y="282" width="72" height="36" rx="4" fill="#F4C3A1" stroke="#18161F" stroke-width="3"></rect>
+            <path d="M96 296 h72" stroke="#18161F" stroke-width="2"></path>
+          </g>
+          <ellipse cx="130" cy="402" rx="76" ry="8" fill="#18161F" opacity="0.08"></ellipse>
+          <!-- alerts -->
+          <g style="animation: wf-pop 8s ease-out infinite;">
+            <rect x="226" y="292" width="262" height="46" rx="23" fill="#FFFFFF" stroke="#E2DFE8" stroke-width="2"></rect>
+            <circle cx="250" cy="315" r="7" fill="#E0752D"></circle>
+            <text x="266" y="320" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#18161F">Bud vases: 7 left, reorder at 10</text>
+          </g>
+          <g style="animation: wf-pop 8s ease-out infinite; animation-delay: 1.4s;">
+            <rect x="226" y="348" width="236" height="46" rx="23" fill="#18161F"></rect>
+            <text x="250" y="376" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Mug sold · you keep</text>
+            <text x="438" y="376" text-anchor="end" font-family="Sora, sans-serif" font-size="15" font-weight="800" fill="#B9A3FF">$24.60</text>
+          </g>
+          <text x="300" y="420" font-family="Caveat, cursive" font-size="25" font-weight="700" fill="#18161F">not $38, and that’s fine</text>
+        </svg>
+
+      </div>
+    </section>
+
+    <!-- 2 · Meet the persona, and their three numbers -->
+    <section aria-labelledby="meet-h" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8;">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px; gap: 36px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px 40px;">
+          <svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true" style="flex: none; display: block;">
+            <circle cx="60" cy="60" r="58" fill="{{P.persona.bg}}"></circle>
+            <clipPath id="meet-clip"><circle cx="60" cy="60" r="58"></circle></clipPath>
+            <g clip-path="url(#meet-clip)">
+              <path d="M18 124 C18 92 36 82 60 82 C84 82 102 92 102 124 Z" fill="{{P.persona.shirt}}" stroke="#18161F" stroke-width="2.5"></path>
+              <rect x="51" y="66" width="18" height="20" fill="{{P.persona.skin}}" stroke="#18161F" stroke-width="2.2"></rect>
+              <path d="{{P.persona.hairBack}}" fill="{{P.persona.hair}}" stroke="#18161F" stroke-width="2.2"></path>
+              <circle cx="60" cy="50" r="22" fill="{{P.persona.skin}}" stroke="#18161F" stroke-width="2.5"></circle>
+              <path d="{{P.persona.hairTop}}" fill="{{P.persona.hair}}"></path>
+              <circle cx="52" cy="52" r="2.6" fill="#18161F"></circle>
+              <circle cx="68" cy="52" r="2.6" fill="#18161F"></circle>
+              <path d="M54 61 q6 4 12 0" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round"></path>
+            </g>
+          </svg>
+          <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+            <h2 id="meet-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">{{P.persona.headline}}</h2>
+            <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #47444F; max-width: 760px;">{{P.persona.story}}</p>
+            <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">{{P.persona.name}} · {{P.persona.biz}} · {{P.persona.city}}</span>
+          </div>
+        </div>
+        <div role="group" aria-label="{{P.persona.first}}’s three numbers" style="display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-size: 13px; color: #5F5B68;">{{P.persona.biz}} · {{P.persona.month}}</span>
+          <div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px;">
+            <div style="flex: 1 1 240px; min-width: 0; background: #F7F6F9; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+              <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 3.6vw, 48px); line-height: 1; letter-spacing: -0.035em; font-variant-numeric: tabular-nums;">{{num.in}}</span>
+              <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: {{num.inPaidPct}}%; background: #7A5AF8;"></span><span style="width: {{num.inExpPct}}%; background: #C9BCFB;"></span></span>
+              <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">{{num.inPaid}}</strong> received</span><span><strong style="color: #18161F;">{{num.inExp}}</strong> on the way</span></span>
+            </div>
+            <div aria-hidden="true" class="wf-op" style="flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 36px; color: #5F5B68;">−</div>
+            <div style="flex: 1 1 240px; min-width: 0; background: #F7F6F9; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+              <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Going out</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 3.6vw, 48px); line-height: 1; letter-spacing: -0.035em; font-variant-numeric: tabular-nums;">{{num.out}}</span>
+              <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: {{num.outPaidPct}}%; background: #E0752D;"></span><span style="width: {{num.outSchPct}}%; background: #F4C3A1;"></span></span>
+              <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">{{num.outPaid}}</strong> paid</span><span><strong style="color: #18161F;">{{num.outSch}}</strong> still to pay</span></span>
+            </div>
+            <div aria-hidden="true" class="wf-op" style="flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 36px; color: #5F5B68;">=</div>
+            <div style="flex: 1 1 240px; min-width: 0; background: #18161F; color: #FFFFFF; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+              <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 3.6vw, 48px); line-height: 1; letter-spacing: -0.035em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{num.keep}}</span>
+              <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;"><span style="width: 75%; background: #B9A3FF;"></span><span style="width: 25%; background: rgba(238,232,255,0.45);"></span></span>
+              <span style="font-size: 13px; color: #EEE8FF;">after <strong style="color: #FFFFFF;">{{num.tax}}</strong> set aside for tax</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · The page's own story (interactive) -->
+    <section id="margin" aria-labelledby="margin-h" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px; scroll-margin-top: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 800px;">
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #5F5B68;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Try it with your own numbers</span>
+        <h2 id="margin-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">What did that mug really earn me?</h2>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #47444F;">A $38 mug isn’t $38 in your pocket. Clay, firing, the box, the postage and the card fee all come off first. BillingEase does this sum for every sale, by itself. Here it is by hand.</p>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; border-radius: 28px; padding: clamp(20px, 3vw, 36px); display: flex; flex-wrap: wrap; gap: 32px 48px;">
+        <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span id="mc-ch" style="font-size: 13px; font-weight: 700; color: #18161F;">Where it sold</span>
+            <div role="group" aria-labelledby="mc-ch" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 24px; align-self: flex-start;">
+              <sc-for list="{{mc.channels}}" as="c" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; font: 600 14px DM Sans, sans-serif; cursor: pointer; background: {{c.bg}}; color: {{c.fg}};">{{c.label}}</button>
+              </sc-for>
+            </div>
+            <span style="font-size: 14px; color: #5F5B68;">{{mc.chNote}}</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 14px;">
+            <sc-for list="{{mc.fields}}" as="f" hint-placeholder-count="5">
+              <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                <label for="{{f.id}}" style="font-size: 13px; font-weight: 700; color: #18161F;">{{f.label}}</label>
+                <span style="position: relative; display: block;">
+                  <span aria-hidden="true" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 600; color: #5F5B68;">$</span>
+                  <input id="{{f.id}}" type="number" inputmode="decimal" min="0" step="0.01" value="{{f.value}}" onChange="{{f.set}}" aria-invalid="{{f.invalid}}" aria-describedby="{{f.id}}-hint" style="box-sizing: border-box; width: 100%; min-height: 44px; padding: 0 14px; border: 1px solid #CBC7D3; border-radius: 12px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F; padding-left: 28px; border-color: {{f.bd}};">
+                </span>
+                <span id="{{f.id}}-hint" style="font-size: 12px; color: {{f.hintInk}};">{{f.hint}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <button type="button" onClick="{{mc.reset}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none; cursor: pointer; align-self: flex-start; min-height: 40px; font-size: 14px;">Back to Rosa’s numbers</button>
+        </div>
+
+        <div aria-live="polite" style="flex: 1 1 380px; min-width: 0; background: #F7F6F9; border-radius: 22px; padding: clamp(18px, 3vw, 28px); box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+          <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">One {{mc.item}}, sold {{mc.where}}</span>
+          <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px;">
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(44px, 5vw, 64px); line-height: 1; letter-spacing: -0.04em; color: {{mc.ink}}; font-variant-numeric: tabular-nums;">{{mc.yours}}</span>
+            <span style="font-size: 16px; font-weight: 600; color: #47444F;">{{mc.yoursNote}}</span>
+          </span>
+          <span role="img" aria-label="{{mc.barLabel}}" style="display: flex; height: 18px; border-radius: 9999px; overflow: hidden; background: #E2DFE8; gap: 2px;">
+            <sc-for list="{{mc.bar}}" as="b" hint-placeholder-count="4">
+              <span title="{{b.title}}" style="width: {{b.w}}%; background: {{b.c}}; transition: width .3s ease;"></span>
+            </sc-for>
+          </span>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+            <sc-for list="{{mc.legend}}" as="l" hint-placeholder-count="4">
+              <li style="display: flex; align-items: center; gap: 10px;"><span style="width: 12px; height: 12px; border-radius: 4px; background: {{l.c}}; flex: none;"></span><span style="flex: 1; min-width: 0;">{{l.label}}</span><strong style="font-variant-numeric: tabular-nums;">{{l.v}}</strong></li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{mc.loss}}" hint-placeholder-val="{{false}}">
+            <span style="padding: 12px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">This one costs more than it earns. Try a higher price or a cheaper box.</span>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid #E2DFE8; font-size: 14px; line-height: 1.5; color: #47444F;">
+            <span><strong style="color: #18161F;">Sales tax isn’t yours.</strong> {{mc.taxNote}}</span>
+            <span><strong style="color: #18161F;">After the tax set-aside</strong> (25% of profit), {{mc.afterTax}} of each one is truly yours. Rosa’s 46 mugs on the shelf will earn her {{mc.shelf}}.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 4 · What's in it for this kind of business -->
+    <section aria-labelledby="feat-h" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8;">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px;">
+          <h2 id="feat-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">{{P.featH}}</h2>
+          <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #47444F;">{{P.featP}}</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px;">
+          <sc-for list="{{features}}" as="f" hint-placeholder-count="6">
+            <div style="background: #F7F6F9; border-radius: 24px; padding: 26px; display: flex; flex-direction: column; gap: 14px;">
+              <span style="width: 44px; height: 44px; border-radius: 14px; background: {{f.tint}}; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg></span>
+              <span style="display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{f.title}}</span>
+                <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">{{f.tag}}</span>
+              </span>
+              <span style="font-size: 15px; line-height: 1.55; color: #47444F;">{{f.body}}</span>
+              <a href="{{f.href}}" style="margin-top: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: 14px; font-weight: 700; color: #18161F; text-underline-offset: 3px;">{{f.link}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · Details -->
+    <section id="stock" aria-labelledby="stock-h" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px; scroll-margin-top: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 800px;">
+        <h2 id="stock-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">Stock that counts itself down.</h2>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #47444F;">Every sale takes one off the shelf, wherever it happened. When something runs low, you hear about it while there’s still time to make more.</p>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(16px, 2.6vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;">
+          <h3 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; letter-spacing: -0.02em;">Fernhill Ceramics · products</h3>
+          <span style="font-size: 14px; color: #5F5B68;">{{stock.summary}}</span>
+        </div>
+        <div class="wf-tblwrap">
+          <table style="width: 100%; min-width: 680px; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="text-align: left; color: #5F5B68; font-size: 12px;">
+                <th scope="col" style="padding: 10px 8px; font-weight: 700; border-bottom: 1px solid #E2DFE8;">Product</th>
+                <th scope="col" style="padding: 10px 8px; font-weight: 700; border-bottom: 1px solid #E2DFE8; text-align: right;">Price</th>
+                <th scope="col" style="padding: 10px 8px; font-weight: 700; border-bottom: 1px solid #E2DFE8; text-align: right;">Cost to make</th>
+                <th scope="col" style="padding: 10px 8px; font-weight: 700; border-bottom: 1px solid #E2DFE8; width: 170px;">On the shelf</th>
+                <th scope="col" style="padding: 10px 8px; font-weight: 700; border-bottom: 1px solid #E2DFE8;">Status</th>
+                <th scope="col" style="padding: 10px 8px; font-weight: 700; border-bottom: 1px solid #E2DFE8; text-align: right; position: relative;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Action</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{stock.rows}}" as="r" hint-placeholder-count="5">
+                <tr>
+                  <td style="padding: 14px 8px; border-bottom: 1px solid #EFEDF3;"><span style="display: flex; align-items: center; gap: 12px;"><span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 10px; background: {{r.tint}}; flex: none;"></span><strong>{{r.name}}</strong></span></td>
+                  <td style="padding: 14px 8px; border-bottom: 1px solid #EFEDF3; text-align: right; font-variant-numeric: tabular-nums;">{{r.price}}</td>
+                  <td style="padding: 14px 8px; border-bottom: 1px solid #EFEDF3; text-align: right; font-variant-numeric: tabular-nums;">{{r.cost}}</td>
+                  <td style="padding: 14px 8px; border-bottom: 1px solid #EFEDF3;"><span style="display: flex; align-items: center; gap: 10px;"><span style="flex: 1; height: 8px; border-radius: 9999px; background: #EFEDF3; overflow: hidden;"><span style="display: block; height: 100%; width: {{r.pct}}%; background: {{r.barC}}; border-radius: 9999px;"></span></span><strong style="width: 32px; text-align: right; font-variant-numeric: tabular-nums;">{{r.qty}}</strong></span></td>
+                  <td style="padding: 14px 8px; border-bottom: 1px solid #EFEDF3;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: {{r.bBg}}; color: {{r.bFg}}; font-size: 12px; font-weight: 700; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.bFg}};"></span>{{r.status}}</span></td>
+                  <td style="padding: 14px 8px; border-bottom: 1px solid #EFEDF3; text-align: right;">
+                    <sc-if value="{{r.canAct}}" hint-placeholder-val="{{false}}">
+                      <button type="button" onClick="{{r.act}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">Add to next firing</button>
+                    </sc-if>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 14px 16px; border-radius: 16px; background: {{clay.bg}};">
+          <span style="width: 36px; height: 36px; border-radius: 10px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8"></path></svg></span>
+          <span style="flex: 1 1 260px; min-width: 0; font-size: 14px; line-height: 1.45;"><strong>{{clay.title}}</strong> {{clay.body}}</span>
+          <sc-if value="{{clay.canOrder}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{clay.order}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none; cursor: pointer; min-height: 40px; font-size: 14px;">Reorder from Highwater Clays</button>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+        <div style="flex: 1 1 440px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 30px); display: flex; flex-direction: column; gap: 18px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #5F5B68;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Cost of goods, in plain words</span>
+          <h3 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; letter-spacing: -0.02em;">Stock isn’t Going out until you sell it.</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F;">Buying a pallet of clay in October doesn’t make October a bad month. What you make sits on the shelf as stock. Each piece’s cost moves to Going out the day it sells, so your profit matches what you actually sold.</p>
+          <div aria-live="polite" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 10px;">
+            <div style="background: #F7F6F9; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 700; color: #5F5B68;">Mugs on the shelf</span>
+              <span style="font: 700 28px Sora, sans-serif; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{cogs.shelf}}</span>
+              <span style="font-size: 13px; color: #47444F;">{{cogs.left}} mugs × $5.30, not counted yet</span>
+            </div>
+            <div style="background: #FDE6D6; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 700; color: #5F5B68;">Moved to Going out</span>
+              <span style="font: 700 28px Sora, sans-serif; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{cogs.out}}</span>
+              <span style="font-size: 13px; color: #47444F;">{{cogs.sold}} sold, $5.30 each</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto;">
+            <button type="button" onClick="{{cogs.sell1}}" disabled="{{cogs.empty}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none; cursor: pointer; min-height: 42px; font-size: 14px;">Sell a mug</button>
+            <button type="button" onClick="{{cogs.sell10}}" disabled="{{cogs.empty}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none; cursor: pointer; min-height: 42px; font-size: 14px;">Sell 10 at the market</button>
+            <button type="button" onClick="{{cogs.reset}}" disabled="{{cogs.none}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none; cursor: pointer; min-height: 42px; font-size: 14px; background: transparent; opacity: {{cogs.resetOp}};">Put them back</button>
+          </div>
+        </div>
+        <div style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 30px); display: flex; flex-direction: column; gap: 18px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #5F5B68;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Buying stock on bills</span>
+          <h3 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; letter-spacing: -0.02em;">Buy now, pay on your terms.</h3>
+          <div style="background: #F7F6F9; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+            <span style="display: flex; justify-content: space-between; gap: 12px; align-items: center;"><strong>Highwater Clays</strong><span style="padding: 3px 10px; border-radius: 9999px; background: {{bill.badgeBg}}; color: {{bill.badgeFg}}; font-size: 12px; font-weight: 700;">{{bill.badge}}</span></span>
+            <span style="color: #47444F;">8 boxes B-Mix clay, 4 gallons clear glaze</span>
+            <span style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #47444F;">Due Nov 9 (30 days)</span><strong style="font: 700 20px Sora, sans-serif;">$1,240.00</strong></span>
+          </div>
+          <div role="group" aria-label="When to pay" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 24px; align-self: flex-start;">
+            <sc-for list="{{bill.opts}}" as="o" hint-placeholder-count="3">
+              <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; font: 600 14px DM Sans, sans-serif; cursor: pointer; min-height: 36px; padding: 0 14px; background: {{o.bg}}; color: {{o.fg}};">{{o.label}}</button>
+            </sc-for>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 14px;">
+            <sc-for list="{{bill.plan}}" as="p" hint-placeholder-count="2">
+              <li style="display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #E2DFE8;"><span>{{p.when}}</span><strong style="font-variant-numeric: tabular-nums;">{{p.amt}}</strong></li>
+            </sc-for>
+          </ul>
+          <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; font-size: 14px; margin-top: auto;">Either way, the clay is added to stock. It reaches Going out a little at a time, as the pieces sell.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="sales-tax" aria-labelledby="stax-h" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8; scroll-margin-top: 16px;">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px; flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 40px 64px;">
+        <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #5F5B68;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Sales tax by state</span>
+          <h2 id="stax-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">The right rate, and only where you owe it.</h2>
+          <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #47444F;">You collect sales tax where you have a studio, and in other states only once your sales there pass that state’s line. BillingEase keeps count for you and says so when you get close.</p>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span id="st-pick" style="font-size: 13px; font-weight: 700; color: #18161F;">Pick a state Rosa ships to</span>
+            <div role="group" aria-labelledby="st-pick" style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{stx.chips}}" as="c" hint-placeholder-count="6">
+                <button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{c.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div aria-live="polite" style="flex: 1 1 440px; min-width: 0; background: #F7F6F9; border-radius: 28px; padding: clamp(20px, 3vw, 32px); box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <span style="display: flex; align-items: center; gap: 12px;"><span style="width: 44px; height: 44px; border-radius: 12px; background: #18161F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font: 700 15px Sora, sans-serif;">{{stx.cur.code}}</span><strong style="font: 700 22px Sora, sans-serif; letter-spacing: -0.02em;">{{stx.cur.name}}</strong></span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 9999px; background: {{stx.cur.bBg}}; color: {{stx.cur.bFg}}; font-size: 13px; font-weight: 700;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{stx.cur.bFg}};"></span>{{stx.cur.badge}}</span>
+          </div>
+          <div class="wf-in" style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 4.4vw, 56px); line-height: 1; letter-spacing: -0.04em;">{{stx.cur.rate}}</span>
+            <span style="font-size: 15px; color: #47444F;">{{stx.cur.detail}}</span>
+          </div>
+          <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; font-size: 14px;"><strong>Rosa’s sales there this year</strong><span style="font-variant-numeric: tabular-nums;">{{stx.cur.sales}}</span></span>
+            <sc-if value="{{stx.cur.hasLine}}" hint-placeholder-val="{{true}}">
+              <span role="img" aria-label="{{stx.cur.lineAria}}" style="display: block; height: 10px; border-radius: 9999px; background: #EFEDF3; overflow: hidden;"><span style="display: block; height: 100%; width: {{stx.cur.pct}}%; min-width: 6px; border-radius: 9999px; background: #7A5AF8;"></span></span>
+            </sc-if>
+            <span style="font-size: 14px; line-height: 1.5; color: #47444F;">{{stx.cur.note}}</span>
+          </div>
+          <span style="font-size: 13px; color: #5F5B68;">Rates and limits change. BillingEase keeps them up to date; your accountant has the final word.</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 6 · Proof -->
+    <section aria-labelledby="quote-h" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px;">
+        <h2 id="quote-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">{{P.quoteH}}</h2>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+        <figure style="flex: 999 1 520px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; border-radius: 32px; padding: clamp(28px, 4vw, 52px); display: flex; flex-direction: column; gap: 28px;">
+          <svg width="56" height="44" viewBox="0 0 56 44" aria-hidden="true"><path d="M4 44V26C4 12 11 4 24 1l3 6c-8 3-11 8-11 15h10v22zm28 0V26c0-14 7-22 20-25l3 6c-8 3-11 8-11 15h10v22z" fill="#B9A3FF" stroke="#18161F" stroke-width="2" stroke-linejoin="round"></path></svg>
+          <blockquote style="margin: 0;"><p style="margin: 0; font-family: Sora, sans-serif; font-weight: 600; font-size: clamp(22px, 2.5vw, 32px); line-height: 1.3; letter-spacing: -0.02em; text-wrap: pretty;">{{quote.text}}</p></blockquote>
+          <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 14px;">
+            <span aria-hidden="true" style="width: 52px; height: 52px; border-radius: 9999px; background: {{P.persona.bg}}; border: 2px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font: 700 16px Sora, sans-serif; flex: none;">{{quote.initials}}</span>
+            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><strong style="font-size: 16px;">{{quote.name}}</strong><span style="font-size: 14px; color: #5F5B68;">{{quote.biz}} · {{quote.city}}</span></span>
+          </figcaption>
+        </figure>
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{quotes}}" as="q" hint-placeholder-count="2">
+            <figure style="flex: 1 1 auto; margin: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 26px; display: flex; flex-direction: column; gap: 18px;">
+              <blockquote style="margin: 0;"><p style="margin: 0; font-size: 17px; line-height: 1.5; text-wrap: pretty;">“{{q.text}}”</p></blockquote>
+              <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 12px;">
+                <span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 9999px; background: {{q.tint}}; display: flex; align-items: center; justify-content: center; font: 700 13px Sora, sans-serif; flex: none;">{{q.initials}}</span>
+                <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;"><strong style="font-size: 15px;">{{q.name}}</strong><span style="font-size: 13px; color: #5F5B68;">{{q.biz}} · {{q.city}}</span></span>
+              </figcaption>
+            </figure>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · The plan that fits -->
+    <section id="plan" aria-labelledby="plan-h" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8; scroll-margin-top: 16px;">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px; flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 40px 64px;">
+        <div style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #5F5B68;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>The plan that fits</span>
+          <h2 id="plan-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">{{plan.headline}}</h2>
+          <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #47444F;">{{plan.why}}</p>
+          <ul style="margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; border-top: 1px solid #E2DFE8;">
+            <sc-for list="{{addons}}" as="a" hint-placeholder-count="2">
+              <li style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; padding: 16px 0; border-bottom: 1px solid #E2DFE8;">
+                <span style="display: flex; flex-direction: column; gap: 3px; flex: 1 1 260px; min-width: 0;"><strong style="font-size: 15px;">{{a.name}}</strong><span style="font-size: 14px; line-height: 1.5; color: #47444F;">{{a.line}}</span></span>
+                <span style="font-size: 14px; font-weight: 700; white-space: nowrap;">{{a.price}}</span>
+              </li>
+            </sc-for>
+          </ul>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center;">
+            <a href="SitePricing.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-weight: 700; font-size: 15px; color: #18161F; text-underline-offset: 3px;">Compare all plans<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+            <sc-if value="{{P.planExtra}}" hint-placeholder-val="{{false}}">
+              <a href="{{P.planExtra.href}}" style="display: inline-flex; align-items: center; min-height: 40px; font-weight: 600; font-size: 15px; color: #18161F; text-underline-offset: 3px;">{{P.planExtra.label}}</a>
+            </sc-if>
+          </div>
+        </div>
+        <div style="flex: 1 1 380px; min-width: 0; max-width: 520px; position: relative; border: 2px solid #18161F; border-radius: 28px; padding: clamp(24px, 3vw, 34px); box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; background: #FFFFFF;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <span style="display: flex; align-items: center; gap: 10px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">{{plan.name}}</span><span style="padding: 4px 10px; border-radius: 9999px; background: #EEE8FF; font-size: 12px; font-weight: 700;">{{plan.tag}}</span></span>
+            <div role="group" aria-label="Billing period" style="display: flex; gap: 2px; background: #EFEDF3; padding: 3px; border-radius: 9999px;">
+              <button type="button" aria-pressed="{{plan.mPressed}}" onClick="{{plan.setM}}" style="min-height: 34px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{plan.mBg}}; color: {{plan.mFg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Monthly</button>
+              <button type="button" aria-pressed="{{plan.yPressed}}" onClick="{{plan.setY}}" style="min-height: 34px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{plan.yBg}}; color: {{plan.yFg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Yearly</button>
+            </div>
+          </div>
+          <span style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 60px; line-height: 1; letter-spacing: -0.04em;">{{plan.price}}</span><span style="font-size: 16px; color: #47444F;">{{plan.per}}</span></span>
+            <span style="font-size: 14px; color: #5F5B68;">{{plan.note}}</span>
+          </span>
+          <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{plan.line}}</span>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px;">
+            <sc-for list="{{plan.features}}" as="f" hint-placeholder-count="6">
+              <li style="display: flex; gap: 10px; align-items: flex-start;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px;"><path d="m5 12 5 5 9-10"></path></svg><span>{{f}}</span></li>
+            </sc-for>
+          </ul>
+          <a href="{{plan.href}}" style="display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 22px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 16px;">{{plan.cta}}</a>
+          <span style="font-size: 13px; color: #5F5B68; text-align: center;">{{plan.others}}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · FAQ -->
+    <section aria-labelledby="faq-h" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; gap: 32px 64px;">
+      <div style="flex: 1 1 280px; display: flex; flex-direction: column; align-items: flex-start; gap: 18px;">
+        <h2 id="faq-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">Fair questions</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #47444F;">{{P.faqIntro}}</p>
+        <a href="SiteHelp.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; text-decoration: none; font-weight: 600; font-size: 15px;">Visit the help center</a>
+      </div>
+      <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; border-top: 1px solid #E2DFE8;">
+        <sc-for list="{{faqs}}" as="q" hint-placeholder-count="5">
+          <div style="border-bottom: 1px solid #E2DFE8;">
+            <h3 style="margin: 0;">
+              <button type="button" aria-expanded="{{q.expanded}}" onClick="{{q.toggle}}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 16px 0; border: 0; background: transparent; text-align: left; cursor: pointer; color: #18161F; font: 600 18px DM Sans, sans-serif;">
+                <span>{{q.q}}</span>
+                <span style="width: 32px; height: 32px; border-radius: 9999px; background: {{q.iconBg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{q.icon}}"></path></svg></span>
+              </button>
+            </h3>
+            <sc-if value="{{q.open}}" hint-placeholder-val="{{false}}">
+              <p class="wf-in" style="margin: 0; padding: 0 48px 22px 0; font-size: 16px; line-height: 1.6; color: #47444F;">{{q.a}}</p>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- 9 · The other three -->
+    <section aria-labelledby="also-h" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8;">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 40px; gap: 32px;">
+        <h2 id="also-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em;">BillingEase is also for</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px;">
+          <sc-for list="{{who}}" as="w" hint-placeholder-count="3">
+            <a href="{{w.href}}" class="wf-lift" style="display: flex; flex-direction: column; gap: 16px; padding: 26px; border-radius: 24px; background: #F7F6F9; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none;">
+              <span style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <span style="width: 48px; height: 48px; border-radius: 14px; background: {{w.tint}}; display: flex; align-items: center; justify-content: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{w.icon}}"></path></svg></span>
+                <span style="width: 40px; height: 40px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{w.label}}</span>
+                <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{w.hint}}. {{w.more}}</span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 · Closing call to action -->
+    <section aria-labelledby="close-h" style="padding: clamp(48px, 7vw, 96px) clamp(16px, 4vw, 40px);">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; background: #18161F; border-radius: 32px; padding: clamp(36px, 6vw, 80px) clamp(24px, 6vw, 72px); display: flex; flex-wrap: wrap; align-items: center; gap: 32px 48px;">
+        <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 24px;">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>{{P.persona.first}}’s {{P.persona.monthShort}}: {{num.keep}} yours to keep</span>
+          <h2 id="close-h" style="margin: 0; max-width: 820px; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(36px, 5.2vw, 68px); line-height: 1.03; letter-spacing: -0.04em; color: #B9A3FF;">{{P.close}}</h2>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+            <a href="AuthSignUp.dc.html" style="display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 30px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 17px;">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+            <a href="SitePricing.dc.html" style="color: #FFFFFF; font-weight: 600; font-size: 15px; text-underline-offset: 3px; min-height: 44px; display: inline-flex; align-items: center;">See pricing</a>
+            <a href="AuthSignIn.dc.html" style="color: #EEE8FF; font-weight: 600; font-size: 15px; text-underline-offset: 3px; min-height: 44px; display: inline-flex; align-items: center;">I already have an account</a>
+          </div>
+        </div>
+        <div style="flex: 1 1 260px; display: flex; justify-content: center; min-width: 0;">
+          <dc-import name="CashJar" size="{{360}}" amount="{{num.keep}}" line="#EEE8FF" uid="shopsclose" hint-size="360px,300px"></dc-import>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter"></dc-import>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav, legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = Object.assign({ faq: 0, yearly: true, toast: null }, this.initState());
+  }
+  componentDidMount() {
+    this._reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.didMount();
+  }
+  componentWillUnmount() { clearTimeout(this._t); clearInterval(this._iv); }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  // A pressed / not pressed pill, for segmented controls.
+  pill(on) { return { pressed: on ? 'true' : 'false', bg: on ? '#18161F' : 'transparent', fg: on ? '#FFFFFF' : '#18161F' }; }
+  renderVals() {
+    const st = this.state, P = this.page();
+    const money = SITE.money;
+    const sym = P.persona.sym || '$';
+    const cur = (v) => sym + Math.round(v).toLocaleString('en-US');
+    // The persona's month: Coming in − Going out = profit; 25% of profit is set aside for tax.
+    const N = P.persona.nums, inT = N.inPaid + N.inExp, outT = N.outPaid + N.outSch, profit = inT - outT, tax = Math.round(profit * 0.25);
+    const pct = (a, t) => Math.max(2, Math.round(a / t * 100));
+    const num = {
+      in: cur(inT), inPaid: cur(N.inPaid), inExp: cur(N.inExp), inPaidPct: pct(N.inPaid, inT), inExpPct: 100 - pct(N.inPaid, inT),
+      out: cur(outT), outPaid: cur(N.outPaid), outSch: cur(N.outSch), outPaidPct: pct(N.outPaid, outT), outSchPct: 100 - pct(N.outPaid, outT),
+      keep: cur(profit - tax), tax: cur(tax)
+    };
+    // The plan that fits, straight from SITE.plans.
+    const p = SITE.plans.find((x) => x.id === P.plan) || SITE.plans[1];
+    const yearly = st.yearly && p.month > 0;
+    const pm = this.pill(!yearly), py = this.pill(yearly);
+    const plan = {
+      name: p.name, tag: p.tag, line: p.line, cta: p.cta, href: p.href, features: p.features,
+      headline: P.planHeadline, why: P.planWhy,
+      price: money(yearly ? p.year : p.month), per: '/ month',
+      note: yearly ? 'Paid yearly, ' + money(p.year * 12) + ' a year. You save ' + money((p.month - p.year) * 12) + '.' : 'Paid monthly. Cancel any time.',
+      mPressed: pm.pressed, mBg: pm.bg, mFg: pm.fg, yPressed: py.pressed, yBg: py.bg, yFg: py.fg,
+      setM: () => this.setState({ yearly: false }), setY: () => this.setState({ yearly: true }),
+      others: 'Also: ' + SITE.plans.filter((x) => x.id !== p.id).map((x) => x.name + ' ' + money(x.month) + ' a month').join(' · ')
+    };
+    const addons = P.addons.map((id) => SITE.addons.find((a) => a.id === id)).filter(Boolean);
+    const faqs = P.faqs.map((f, i) => {
+      const on = st.faq === i;
+      return { q: f.q, a: f.a, open: on, expanded: on ? 'true' : 'false', iconBg: on ? '#B9A3FF' : 'rgba(24,22,31,0.07)', icon: on ? 'M5 12h14' : 'M12 5v14M5 12h14', toggle: () => this.setState({ faq: on ? -1 : i }) };
+    });
+    // The other three "Who it's for" pages, from the site map.
+    const WHO = {
+      'SiteFreelancers.dc.html': { icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7', tint: '#EEE8FF', more: 'Quotes, time you can bill, retainers and tax set aside.' },
+      'SiteShops.dc.html': { icon: 'M4 9h16l-1.5 11h-13zM8 9V7a4 4 0 0 1 8 0v2', tint: '#FDE6D6', more: 'Stock, cost of goods and what each sale really earns.' },
+      'SiteTeams.dc.html': { icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M16 4.2a3.5 3.5 0 0 1 0 6.6', tint: '#E2F6D5', more: 'Roles, approvals, payroll and several businesses.' },
+      'SiteGlobal.dc.html': { icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3', tint: '#FFF0B8', more: 'Any currency, VAT and GST, local bank payments.' }
+    };
+    const group = SITE.nav.find((n) => n.items && n.items.some((i) => WHO[i.href])) || { items: [] };
+    const who = group.items.filter((i) => i.href !== P.self && WHO[i.href]).map((i) => Object.assign({ label: i.label, hint: i.hint, href: i.href }, WHO[i.href]));
+    const quote = P.quote;
+    const quotes = P.quotes;
+    return Object.assign({ P, num, plan, addons, faqs, who, quote, quotes, features: P.features, toast: st.toast }, this.extra(st, P, { money, cur }));
+  }
+  initState() {
+    return { ch: 'online', vals: this.chDefaults('online'), made: {}, clay: false, sold: 0, pay: 'due', st8: 'NC' };
+  }
+  didMount() {}
+  // Rosa's real numbers for one mug, by where it sold.
+  chDefaults(ch) {
+    return {
+      online: { price: '38', mat: '3.50', fire: '1.80', pack: '2.20', ship: '4.50' },
+      market: { price: '38', mat: '3.50', fire: '1.80', pack: '0.40', ship: '0' },
+      wholesale: { price: '19', mat: '3.50', fire: '1.80', pack: '0.60', ship: '0' }
+    }[ch];
+  }
+  page() {
+    const card = SITE.addons.find((a) => a.id === 'card') || { price: '' };
+    return {
+      self: 'SiteShops.dc.html', kicker: 'Shops and makers', tint: '#FDE6D6',
+      kickIcon: 'M4 9h16l-1.5 11h-13zM8 9V7a4 4 0 0 1 8 0v2',
+      h1: 'Know what every sale really earns.',
+      sub: 'Products and stock that count themselves down, a heads-up before you sell out, the cost of each piece worked out for you, and sales tax kept by state. For online shops, market stalls and makers.',
+      demo: { label: 'See the catalog in the demo', href: 'SellCatalog.dc.html' },
+      persona: {
+        first: 'Rosa', name: 'Rosa Delgado', biz: 'Fernhill Ceramics', city: 'Asheville, NC', month: 'October so far', monthShort: 'October',
+        headline: 'Meet Rosa. She makes mugs, and knows what each one makes her.',
+        story: 'Rosa throws stoneware in a converted garage, sells online and at two weekend markets, and supplies a few local shops. She used to guess her margins. Now her month looks like this.',
+        nums: { inPaid: 11940, inExp: 2340, outPaid: 6150, outSch: 2470 },
+        bg: '#FDE6D6', skin: '#C98E66', hair: '#4A2B1C', shirt: '#7A5AF8',
+        hairBack: 'M38 46 C30 60 30 84 40 96 C44 84 46 72 48 62 Z M82 46 C90 60 90 84 80 96 C76 84 74 72 72 62 Z',
+        hairTop: 'M37 50 C36 32 48 25 60 25 C72 25 84 32 83 50 C78 42 70 38 60 38 C50 38 42 42 37 50 Z M52 26 C52 16 68 16 68 26 Z'
+      },
+      featH: 'Built for things you can hold.',
+      featP: 'The same three numbers as everyone else, with the tools a product business needs behind them.',
+      features: [
+        { icon: 'M4 7h16M4 12h16M4 17h10', tint: '#EEE8FF', title: 'One catalog, everywhere', tag: 'Products and services', body: 'Products with price, cost and stock, ready to drop onto an invoice, a payment link or a market sale.', link: 'How Coming in works', href: 'SiteComingIn.dc.html' },
+        { icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5', tint: '#EEE8FF', title: 'Wholesale invoices', tag: 'Net 30, deposits, reminders', body: 'Send a shop an invoice for 24 mugs with 30 days to pay. Reminders go out on their own, and stock comes off when it ships.', link: 'See invoicing', href: 'SiteComingIn.dc.html' },
+        { icon: 'M3 6h18v12H3zM3 10h18M7 15h3', tint: '#EEE8FF', title: 'Card payments at the market', tag: 'Card ' + card.price, body: 'Show a QR code or send a payment link. Each sale records its sales tax and takes one off the shelf.', link: 'See getting paid', href: 'SiteComingIn.dc.html' },
+        { icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7', tint: '#FDE6D6', title: 'Supplies and receipts', tag: 'Going out', body: 'Snap the receipt for glaze or packing tape. It’s read, sorted and matched to the card charge.', link: 'How Going out works', href: 'SiteGoingOut.dc.html' },
+        { icon: 'M4 20V10M10 20V4M16 20v-7M22 20H2', tint: '#E2DFE8', title: 'Sales tax report', tag: 'Yours to keep', body: 'What you collected, state by state, ready for each return. Collected tax never shows up as yours to keep.', link: 'How Yours to keep works', href: 'SiteKeep.dc.html' },
+        { icon: 'M4 4h16v16H4zM4 9h16M9 9v11', tint: '#E2F6D5', title: 'Leave the spreadsheet', tag: 'Bring your products with you', body: 'Import products, stock counts and last year’s sales from a spreadsheet or your old app in an afternoon.', link: 'Switch to BillingEase', href: 'SiteSwitch.dc.html' }
+      ],
+      quoteH: 'From people who sell what they make',
+      quote: { text: 'I thought my mugs made about thirty dollars each. After clay, firing, the box and the fees it was closer to twenty-four fifty. I raised the price by two dollars and nobody blinked.', name: 'Rosa Delgado', initials: 'RD', biz: 'Fernhill Ceramics', city: 'Asheville' },
+      quotes: [
+        { text: 'The low-stock email saved my holiday market. I poured more candles a week before I would have noticed.', name: 'Dev Patel', initials: 'DP', biz: 'Wick & Ember Candle Co.', city: 'Minneapolis', tint: '#EEE8FF' },
+        { text: 'Our wholesale invoices finally match what left the warehouse, and sales tax stopped being a December panic.', name: 'Jules Moreau', initials: 'JM', biz: 'Little Fox Toys, online shop', city: 'Portland, OR', tint: '#E2F6D5' }
+      ],
+      plan: 'pro', planHeadline: 'Shops and makers pick Pro.',
+      planWhy: 'Products and stock, bills for what you buy, and your bank connected are all in Pro. Free still works if you sell a few things and keep count yourself.',
+      addons: ['card', 'bank'],
+      faqIntro: 'What makers and shop owners ask before they move their products over.',
+      faqs: [
+        { q: 'How does BillingEase know what each piece costs me?', a: 'Enter what goes into a product once (materials, firing, packaging), or let us work it out from the bills you add for supplies. Every sale then records its cost on its own.' },
+        { q: 'Do I have to collect sales tax in every state?', a: 'No. You collect where you have a shop or studio, and in other states only once your sales there pass that state’s limit. We count your sales by state and tell you when you’re getting close.' },
+        { q: 'Does it work with my online store?', a: 'Import your store’s order export each week, or record sales as they happen. Payments your customers make through BillingEase are recorded, with stock and sales tax, automatically.' },
+        { q: 'What about markets and pop-ups?', a: 'Take card payments from your phone with a payment link or QR code. Card payments cost ' + card.price + ', and each sale takes one off the shelf.' },
+        { q: 'Can I track supplies like clay or wax too?', a: 'Yes. Add supplies as stock items with a reorder point, and we’ll nudge you before you run out, with a bill to your supplier ready to go.' },
+        { q: 'Is stock in the Free plan?', a: 'Products and stock are part of Pro. On Free you can still invoice for products; you just keep count of stock yourself.' }
+      ],
+      close: 'Price it right. Then sell out.'
+    };
+  }
+  extra(st, P, h) {
+    const m2 = (v) => (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    // Margin calculator.
+    const CH = {
+      online: { label: 'Online shop', where: 'in her online shop', note: 'Paid by card: ' + ((SITE.addons.find((a) => a.id === 'card') || {}).price || '') + '. Rosa pays part of the postage.', fee: (p) => p * 0.029 + 0.30, feeLabel: 'Card fee' },
+      market: { label: 'Market stall', where: 'at the Saturday market', note: 'Paid by card on her phone. No shipping, just a paper bag.', fee: (p) => p * 0.029 + 0.30, feeLabel: 'Card fee' },
+      wholesale: { label: 'Wholesale', where: 'wholesale to a shop', note: 'Half price, 24 at a time, paid by bank transfer at 1%.', fee: (p) => p * 0.01, feeLabel: 'Bank payment fee' }
+    };
+    const ch = CH[st.ch];
+    const F = [
+      { k: 'price', label: 'Price' }, { k: 'mat', label: 'Clay and glaze' }, { k: 'fire', label: 'Kiln firing' },
+      { k: 'pack', label: 'Packaging' }, { k: 'ship', label: 'Shipping you paid' }
+    ];
+    const num = {}, bad = {};
+    F.forEach((f) => {
+      const raw = String(st.vals[f.k] == null ? '' : st.vals[f.k]).trim();
+      const v = raw === '' ? NaN : Number(raw);
+      bad[f.k] = !(v >= 0) || (f.k === 'price' && v <= 0);
+      num[f.k] = bad[f.k] ? 0 : v;
+    });
+    const price = num.price, fee = price ? Math.round(ch.fee(price) * 100) / 100 : 0;
+    const goods = num.mat + num.fire, ship = num.pack + num.ship;
+    const yours = Math.round((price - goods - ship - fee) * 100) / 100;
+    const loss = yours < 0;
+    const base = loss ? (goods + ship + fee) || 1 : price || 1;
+    const pc = (v) => Math.max(0, v / base * 100);
+    const segs = [
+      { label: 'Cost of the piece (clay, glaze, firing)', v: goods, c: '#E0752D' },
+      { label: 'Packaging and postage', v: ship, c: '#F4C3A1' },
+      { label: ch.feeLabel, v: fee, c: '#A39EAD' },
+      { label: 'Yours, before income tax', v: Math.max(0, yours), c: '#7A5AF8' }
+    ];
+    const fields = F.map((f) => ({
+      id: 'mc-' + f.k, label: f.label, value: st.vals[f.k], invalid: bad[f.k] ? 'true' : 'false', bd: bad[f.k] ? '#A8200D' : '#CBC7D3',
+      hint: bad[f.k] ? (f.k === 'price' ? 'Enter a price above $0' : 'Enter an amount, like 3.50') : (f.k === 'price' ? 'What the customer pays' : 'Per piece'),
+      hintInk: bad[f.k] ? '#A8200D' : '#5F5B68',
+      set: (e) => this.setState({ vals: Object.assign({}, this.state.vals, { [f.k]: e.target.value }) })
+    }));
+    const taxNotes = {
+      online: 'Shipped within North Carolina, the customer also pays 7%, ' + m2(price * 0.07) + ' on this mug. It’s held for the state and goes out with your return, never into Yours to keep.',
+      market: 'At the market the customer pays 7% on top, ' + m2(price * 0.07) + ' here. It’s held for North Carolina, not counted as yours.',
+      wholesale: 'None on wholesale. The shop collects it when it resells the mug; keep its resale certificate on file in BillingEase.'
+    };
+    const mc = {
+      channels: Object.keys(CH).map((k) => { const pl = this.pill(st.ch === k); return { label: CH[k].label, pressed: pl.pressed, bg: pl.bg, fg: pl.fg, pick: () => this.setState({ ch: k, vals: this.chDefaults(k) }) }; }),
+      chNote: ch.note, fields, item: 'mug', where: ch.where,
+      yours: m2(yours), ink: loss ? '#A8200D' : '#18161F',
+      yoursNote: loss ? 'lost on each one' : (price ? Math.round(yours / price * 100) + '% of the price is yours' : ''),
+      bar: segs.map((s) => ({ w: Math.round(pc(s.v) * 10) / 10, c: s.c, title: s.label + ': ' + m2(s.v) })),
+      barLabel: segs.map((s) => s.label + ' ' + m2(s.v)).join(', '),
+      legend: segs.map((s) => ({ label: s.label, v: m2(s.v), c: s.c })),
+      loss, taxNote: taxNotes[st.ch],
+      afterTax: m2(Math.max(0, yours) * 0.75), shelf: m2(Math.max(0, yours) * 0.75 * 46),
+      reset: () => this.setState({ ch: 'online', vals: this.chDefaults('online') })
+    };
+    // Stock table.
+    const PR = [
+      { id: 'mug', name: 'Speckled mug', price: 38, cost: 5.30, qty: 46, at: 20, tint: '#FFF6E0' },
+      { id: 'vase', name: 'Bud vase', price: 54, cost: 7.80, qty: 7, at: 10, tint: '#B9A3FF' },
+      { id: 'pour', name: 'Pour-over set', price: 96, cost: 14.60, qty: 0, at: 6, tint: '#F4C3A1' },
+      { id: 'plate', name: 'Dinner plate', price: 32, cost: 4.90, qty: 120, at: 30, tint: '#EEE8FF' },
+      { id: 'sponge', name: 'Sponge holder', price: 16, cost: 2.10, qty: 14, at: 15, tint: '#B6E0AE' }
+    ];
+    let lowN = 0;
+    const rows = PR.map((p) => {
+      const made = !!st.made[p.id], out = p.qty === 0, low = !out && p.qty <= p.at;
+      if ((out || low) && !made) lowN++;
+      const s = made ? { status: 'In next firing · 24 by Oct 16', bBg: '#EEE8FF', bFg: '#5B3FD6' }
+        : out ? { status: 'Sold out', bBg: '#FBE3DF', bFg: '#A8200D' }
+        : low ? { status: 'Low · make more at ' + p.at, bBg: '#FFF0B8', bFg: '#6B5000' }
+        : { status: 'In stock', bBg: '#E2F6D5', bFg: '#2F5711' };
+      return Object.assign({ name: p.name, price: m2(p.price), cost: m2(p.cost), qty: p.qty, tint: p.tint,
+        pct: Math.min(100, Math.round(p.qty / 120 * 100)), barC: out ? '#A8200D' : (low ? '#E0752D' : '#7A5AF8'),
+        canAct: (out || low) && !made,
+        act: () => { this.setState({ made: Object.assign({}, st.made, { [p.id]: true }) }); this.notify(p.name + ': 24 more added to your next firing'); } }, s);
+    });
+    const stock = { rows, summary: lowN ? lowN + (lowN === 1 ? ' product needs' : ' products need') + ' you · counts updated with every sale' : 'Everything’s covered · counts updated with every sale' };
+    const clay = st.clay
+      ? { bg: '#E2F6D5', canOrder: false, title: 'Bill drafted for Highwater Clays.', body: '8 boxes of B-Mix and 4 gallons of glaze, $1,240, due Nov 9. It’s waiting below.' }
+      : { bg: '#FFF0B8', canOrder: true, title: 'B-Mix clay is low: 2 boxes left.', body: 'You reorder at 4. Last time it took 6 days to arrive.',
+          order: () => { this.setState({ clay: true }); this.notify('Bill drafted for Highwater Clays · $1,240 due Nov 9'); } };
+    // Cost of goods demo: 46 mugs at $5.30 each.
+    const sold = st.sold, left = 46 - sold;
+    const cogs = {
+      shelf: m2(left * 5.30), out: m2(sold * 5.30), left, sold, empty: left <= 0, none: sold === 0, resetOp: sold ? 1 : 0.5,
+      sell1: () => this.setState({ sold: Math.min(46, sold + 1) }),
+      sell10: () => this.setState({ sold: Math.min(46, sold + 10) }),
+      reset: () => this.setState({ sold: 0 })
+    };
+    const PAY = {
+      due: { label: 'On the due date', plan: [{ when: 'Nov 9, from First Bank ••2290', amt: '$1,240.00' }] },
+      now: { label: 'Today', plan: [{ when: 'Today, Oct 10, from First Bank ••2290', amt: '$1,240.00' }] },
+      split: { label: 'In two parts', plan: [{ when: 'Oct 26', amt: '$620.00' }, { when: 'Nov 9', amt: '$620.00' }] }
+    };
+    const bill = {
+      badge: st.clay ? 'New draft' : 'Scheduled', badgeBg: st.clay ? '#EEE8FF' : '#E1EEF8', badgeFg: st.clay ? '#5B3FD6' : '#1F5E91',
+      opts: Object.keys(PAY).map((k) => { const pl = this.pill(st.pay === k); return { label: PAY[k].label, pressed: pl.pressed, bg: pl.bg, fg: pl.fg, pick: () => this.setState({ pay: k }) }; }),
+      plan: PAY[st.pay].plan
+    };
+    // Sales tax by state.
+    const S = [
+      { code: 'NC', name: 'North Carolina', rate: '7%', detail: '4.75% state plus 2.25% Buncombe County, where the studio is.', sales: '$41,380 · home state', hasLine: false, badge: 'Collecting', bBg: '#E2F6D5', bFg: '#2F5711',
+        note: 'Rosa has a studio here, so every sale to North Carolina includes it. The quarterly report is ready the day the quarter ends.' },
+      { code: 'NY', name: 'New York', rate: '4% to 8.875%', detail: '4% state plus local tax; 8.875% in New York City.', sales: '$14,620 · 112 orders', hasLine: true, pct: 3, lineAria: '3% of the way to $500,000', badge: 'Not yet', bBg: '#EFEDF3', bFg: '#47444F',
+        note: 'New York asks you to collect after $500,000 in sales and 100 orders in a year. Rosa has passed the order count but is nowhere near the sales, so nothing to do.' },
+      { code: 'CA', name: 'California', rate: 'From 7.25%', detail: '7.25% statewide, more in most cities and counties.', sales: '$9,880 · 74 orders', hasLine: true, pct: 2, lineAria: '2% of the way to $500,000', badge: 'Not yet', bBg: '#EFEDF3', bFg: '#47444F',
+        note: 'California’s line is $500,000 in sales a year. We’ll tell you long before you’re close.' },
+      { code: 'TX', name: 'Texas', rate: '6.25% to 8.25%', detail: '6.25% state plus up to 2% local.', sales: '$4,210 · 31 orders', hasLine: true, pct: 1, lineAria: '1% of the way to $500,000', badge: 'Not yet', bBg: '#EFEDF3', bFg: '#47444F',
+        note: 'Texas’s line is $500,000 in sales a year.' },
+      { code: 'WA', name: 'Washington', rate: '6.5% plus local', detail: '6.5% state; about 10% in Seattle with local tax.', sales: '$8,940 · 66 orders', hasLine: true, pct: 9, lineAria: '9% of the way to $100,000', badge: 'Watching', bBg: '#FFF0B8', bFg: '#6B5000',
+        note: 'Washington’s line is lower, $100,000 a year. Rosa is 9% of the way there; we’ll warn her at 75%.' },
+      { code: 'OR', name: 'Oregon', rate: '0%', detail: 'Oregon has no sales tax.', sales: '$3,060 · 25 orders', hasLine: false, badge: 'Nothing to collect', bBg: '#E2F6D5', bFg: '#2F5711',
+        note: 'Sales to Oregon never carry sales tax, so BillingEase leaves it off at checkout.' }
+    ];
+    const cur = S.find((s) => s.code === st.st8) || S[0];
+    const stx = {
+      cur,
+      chips: S.map((s) => { const on = s.code === st.st8; return { label: s.name, pressed: on ? 'true' : 'false', bg: on ? '#18161F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#18161F', bd: on ? '#18161F' : '#E2DFE8', pick: () => this.setState({ st8: s.code }) }; })
+    };
+    return { mc, stock, clay, cogs, bill, stx };
+  }
+
+}
+</script>
+</body>
+</html>

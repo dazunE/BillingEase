@@ -1,8 +1,205 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SiteFooter</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Site footer</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<footer style="background:#18161F;color:#FFFFFF;font-family:DM Sans,sans-serif;padding:40px 16px"><sc-for list="{{legal}}" as="l"><a href="{{l.href}}" style="color:#FFFFFF;margin-right:16px">{{l.label}}</a></sc-for></footer>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+.sf a{color:#FFFFFF}
+.sf-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width: 1180px){.sf-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width: 560px){.sf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sf-col a{color:#CBC7D3;text-decoration:none;transition:color .15s ease}
+.sf-col a:hover{color:#FFFFFF;text-decoration:underline;text-underline-offset:3px}
+.sf a:focus-visible,.sf button:focus-visible,.sf input:focus-visible,.sf-ck a:focus-visible,.sf-ck button:focus-visible{outline:3px solid #B9A3FF;outline-offset:2px}
+.sf-start:hover{background:#A98FFB!important}
+.sf-ghost:hover{background:rgba(255,255,255,0.08)!important}
+.sf-legal a{color:#CBC7D3;text-decoration:none}
+.sf-legal a:hover{color:#FFFFFF;text-decoration:underline;text-underline-offset:3px}
+.sf-ck{animation:sf-up .35s ease-out}
+@keyframes sf-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes sf-coin{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.sf-coin{animation:sf-coin 3.6s ease-in-out infinite}
+.sf-space{height:120px}
+@media (max-width: 640px){.sf-space{height:210px}}
+@media (prefers-reduced-motion: reduce){.sf-ck,.sf-coin{animation:none!important}}
+</style>
+</helmet>
+<footer class="sf" style="background: #18161F; color: #FFFFFF; font-family: DM Sans, system-ui, sans-serif;">
+  <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 0 clamp(16px, 4vw, 40px);">
+
+    <!-- Closing band -->
+    <sc-if value="{{band}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 40px; padding: clamp(48px, 6vw, 72px) 0; border-bottom: 1px solid rgba(255,255,255,0.12);">
+        <div style="flex: 1 1 420px; min-width: 0; display: flex; align-items: center; gap: 20px;">
+          <svg class="sf-coin" aria-hidden="true" width="56" height="56" viewBox="0 0 56 56" style="flex: none;"><ellipse cx="28" cy="34" rx="22" ry="9" fill="#D99A12"></ellipse><ellipse cx="28" cy="28" rx="22" ry="9" fill="#FFC53D" stroke="#18161F" stroke-width="2"></ellipse><path d="M20 28h16" stroke="#18161F" stroke-width="2" stroke-linecap="round"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+            <p style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(26px, 3.2vw, 40px); line-height: 1.1; letter-spacing: -0.03em; color: #FFFFFF;">See your three numbers <span style="color: #B9A3FF;">by tonight.</span></p>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #CBC7D3;">Free to start, no card needed. Most people send their first invoice in under ten minutes.</p>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+          <a href="AuthSignUp.dc.html" class="sf-start" style="display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 26px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 16px; transition: background-color .15s ease;">Start free<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="SitePricing.dc.html" class="sf-ghost" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 22px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.28); color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 16px;">See pricing</a>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- Brand, newsletter and the site map -->
+    <div style="display: flex; flex-wrap: wrap; gap: 48px clamp(32px, 5vw, 72px); padding: clamp(48px, 6vw, 64px) 0 40px;">
+      <div style="flex: 1 1 300px; max-width: 360px; display: flex; flex-direction: column; gap: 22px;">
+        <a href="ThreeLanding.dc.html" aria-label="BillingEase home" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none; align-self: flex-start;">
+          <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; color: #FFFFFF;">BillingEase</span>
+        </a>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #CBC7D3;">Coming in − Going out = Yours to keep. Bookkeeping for small businesses that would rather be doing the work.</p>
+
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <sc-if value="{{nlForm}}" hint-placeholder-val="{{true}}">
+            <form novalidate onSubmit="{{subscribe}}" style="display: flex; flex-direction: column; gap: 10px; margin: 0;">
+              <label for="sf-email" style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 700; font-size: 15px; color: #FFFFFF;">Money notes, once a month</span>
+                <span style="font-size: 13px; line-height: 1.45; color: #CBC7D3;">One short letter: a tax date, a guide, what changed. No spam.</span>
+              </label>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <input id="sf-email" type="email" inputmode="email" autocomplete="email" placeholder="you@yourbusiness.com" value="{{nlEmail}}" onChange="{{setEmail}}" aria-invalid="{{nlInvalid}}" aria-describedby="sf-email-msg" style="flex: 1 1 180px; min-width: 0; min-height: 46px; box-sizing: border-box; padding: 0 16px; border-radius: 9999px; border: 1px solid {{nlBorder}}; background: #FFFFFF; color: #18161F; font: 400 15px DM Sans, sans-serif; outline-offset: 2px;">
+                <button type="submit" style="flex: none; min-height: 46px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 700 15px DM Sans, sans-serif; cursor: pointer;">Subscribe</button>
+              </div>
+              <span id="sf-email-msg" aria-live="polite" style="font-size: 13px; color: #FFB89A; min-height: 0;">{{nlError}}</span>
+            </form>
+          </sc-if>
+          <sc-if value="{{nlDone}}" hint-placeholder-val="{{false}}">
+            <div role="status" style="display: flex; gap: 12px; align-items: flex-start;">
+              <span style="width: 32px; height: 32px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+              <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                <span style="font-weight: 700; font-size: 15px;">You’re on the list.</span>
+                <span style="font-size: 13.5px; line-height: 1.5; color: #CBC7D3; overflow-wrap: anywhere;">The first letter goes to {{nlSaved}} on Nov 2. Every letter has a one-click unsubscribe.</span>
+                <button type="button" onClick="{{nlReset}}" style="align-self: flex-start; margin-top: 4px; padding: 6px 0; border: 0; background: transparent; color: #FFFFFF; font: 600 13.5px DM Sans, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">Use a different email</button>
+              </span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <nav aria-label="Footer" class="sf-grid" style="flex: 999 1 560px; min-width: 0; display: grid; gap: 36px 24px;">
+        <sc-for list="{{cols}}" as="c" hint-placeholder-count="5">
+          <div class="sf-col" style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+            <h2 style="margin: 0 0 2px; font: 700 13px DM Sans, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: #B9A3FF;">{{c.label}}</h2>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{c.items}}" as="l" hint-placeholder-count="4">
+                <li><a href="{{l.href}}" style="font-size: 15px; line-height: 1.35;">{{l.label}}</a></li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-for>
+      </nav>
+    </div>
+
+    <!-- Company -->
+    <div style="display: flex; flex-wrap: wrap; gap: 16px 40px; padding: 24px 0; border-top: 1px solid rgba(255,255,255,0.12); font-size: 14px; line-height: 1.5; color: #CBC7D3;">
+      <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="color: #FFFFFF; font-weight: 700;">{{co.name}}</span><span>{{co.address}}</span></span>
+      <sc-for list="{{mails}}" as="m" hint-placeholder-count="4">
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="color: #FFFFFF; font-weight: 700;">{{m.label}}</span><span style="overflow-wrap: anywhere;">{{m.email}}</span></span>
+      </sc-for>
+    </div>
+
+    <!-- Legal -->
+    <div class="sf-legal" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 20px 0 32px; border-top: 1px solid rgba(255,255,255,0.12); font-size: 14px; color: #CBC7D3;">
+      <span>© 2026 BillingEase, Inc. Made in Brooklyn.</span>
+      <span style="display: flex; flex-wrap: wrap; gap: 6px 20px;">
+        <sc-for list="{{legal}}" as="l" hint-placeholder-count="3">
+          <a href="{{l.href}}" style="display: inline-flex; align-items: center; min-height: 32px;">{{l.label}}</a>
+        </sc-for>
+        <a href="SiteLegal.dc.html#cookies" style="display: inline-flex; align-items: center; min-height: 32px;">Cookie settings</a>
+      </span>
+    </div>
+  </div>
+  <sc-if value="{{showBar}}" hint-placeholder-val="{{false}}"><div class="sf-space" aria-hidden="true"></div></sc-if>
+</footer>
+
+<!-- Cookie notice: small, bottom-left, remembered in be.cookies -->
+<sc-if value="{{showBar}}" hint-placeholder-val="{{false}}">
+  <div class="sf-ck" role="region" aria-label="Cookie notice" style="position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 70; max-width: 460px; box-sizing: border-box; background: #FFFFFF; color: #18161F; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px 16px 16px 18px; box-shadow: 0 16px 40px rgba(24,22,31,0.18); font-family: DM Sans, system-ui, sans-serif; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px;">
+    <span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 4 4 0 0 1-4-4 4 4 0 0 1-5-5zM8.5 11.5h.01M12 16h.01M15.5 13h.01M9 15.5h.01"></path></svg></span>
+    <p style="flex: 1 1 260px; min-width: 0; margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">We use a few cookies to keep you signed in. With your OK, we also count visits to make the site better. <a href="SiteLegal.dc.html#cookies" style="color: #18161F; font-weight: 600; text-underline-offset: 3px;">Cookie policy</a></p>
+    <span style="display: flex; gap: 8px; margin-left: auto;">
+      <button type="button" onClick="{{necessary}}" style="min-height: 40px; padding: 0 14px; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">Only necessary</button>
+      <button type="button" onClick="{{accept}}" style="min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 700 14px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">Accept</button>
+    </span>
+  </div>
+</sc-if>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav, legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"band":{"editor":"text","default":"on"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let choice = null;
+    try { choice = localStorage.getItem('be.cookies'); } catch (e) { choice = null; }
+    this.state = { choice, email: '', error: '', saved: null };
+  }
+  componentDidMount() {
+    // SiteLegal's cookie settings write the same key; follow along without a reload.
+    this._ck = (e) => this.setState({ choice: e && e.detail ? e.detail : null });
+    window.addEventListener('be:cookies', this._ck);
+  }
+  setChoice(v) {
+    try { localStorage.setItem('be.cookies', v); } catch (e) { /* private mode: remember for this page only */ }
+    this.setState({ choice: v });
+    try { window.dispatchEvent(new CustomEvent('be:cookies', { detail: v })); } catch (e) { /* ignore */ }
+  }
+  renderVals() {
+    const st = this.state;
+    const nav = SITE.nav;
+    const pick = (label) => (nav.find((n) => n.label === label) || { items: [] }).items.map((i) => ({ label: i.label, href: i.href }));
+    const pricing = nav.find((n) => !n.items) || { label: 'Pricing', href: 'SitePricing.dc.html' };
+    const cols = [
+      { label: 'Product', items: pick('Product') },
+      { label: 'Who it’s for', items: pick('Who it’s for') },
+      { label: pricing.label, items: [
+        { label: 'Plans and prices', href: pricing.href },
+        { label: 'Start free', href: 'AuthSignUp.dc.html' },
+        { label: 'Sign in', href: 'AuthSignIn.dc.html' },
+        { label: 'See it in the demo', href: 'ThreeHome.dc.html' }
+      ] },
+      { label: 'Resources', items: pick('Resources') },
+      { label: 'Company', items: pick('Company') }
+    ];
+    const co = SITE.company;
+    const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    const band = !(this.props.band === 'off' || this.props.band === false);
+    return {
+      band, cols, co, legal: SITE.legal,
+      mails: [
+        { label: 'Say hello', email: co.email },
+        { label: 'Help', email: co.support },
+        { label: 'Sales', email: co.sales },
+        { label: 'Press', email: co.press }
+      ],
+      nlForm: !st.saved, nlDone: !!st.saved, nlSaved: st.saved,
+      nlEmail: st.email, nlError: st.error, nlInvalid: st.error ? 'true' : 'false',
+      nlBorder: st.error ? '#E0752D' : '#FFFFFF',
+      setEmail: (e) => this.setState({ email: e.target.value, error: '' }),
+      subscribe: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        const v = st.email.trim();
+        if (!v) { this.setState({ error: 'Type your email address first.' }); return; }
+        if (!valid(v)) { this.setState({ error: 'That doesn’t look like an email address. Check for a typo, like a missing @ or dot.' }); return; }
+        this.setState({ saved: v, error: '' });
+      },
+      nlReset: () => this.setState({ saved: null, email: '' }),
+      showBar: !st.choice,
+      accept: () => this.setChoice('all'),
+      necessary: () => this.setChoice('necessary')
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,8 +1,511 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SiteKeep</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Yours to keep</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<div style="min-height:100vh;background:#F7F6F9"><dc-import name="SiteNav"></dc-import><main style="padding:40px 16px">Being designed.</main><dc-import name="SiteFooter"></dc-import></div>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+html{scroll-behavior:smooth}
+.sx{min-height:100vh;background:#F7F6F9;color:#18161F;font-family:'DM Sans',system-ui,sans-serif;overflow-x:clip}
+.sx a{color:#18161F}
+.sx :focus-visible{outline:3px solid #7A5AF8;outline-offset:2px}
+.sx-w{max-width:1200px;margin:0 auto;padding-left:clamp(16px,4vw,40px);padding-right:clamp(16px,4vw,40px);box-sizing:border-box}
+.sx-pad{padding-top:clamp(64px,9vw,120px);padding-bottom:clamp(64px,9vw,120px)}
+.sx-band{background:#FFFFFF;border-top:1px solid #E2DFE8;border-bottom:1px solid #E2DFE8}
+.sx-h1{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;text-wrap:balance}
+.sx-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,56px);line-height:1.05;letter-spacing:-0.035em;text-wrap:balance}
+.sx-h3{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;line-height:1.2;letter-spacing:-0.02em}
+.sx-h4{margin:0;font-weight:700;font-size:16px;line-height:1.3}
+.sx-lead{margin:0;font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:#47444F;text-wrap:pretty}
+.sx-p{margin:0;font-size:15px;line-height:1.55;color:#47444F;text-wrap:pretty}
+.sx-small{font-size:13px;line-height:1.45;color:#5F5B68}
+.sx-kick{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#18161F}
+.sx-dot{width:10px;height:10px;border-radius:9999px;flex:none;display:inline-block}
+.sx-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(20px,2.4vw,28px);box-sizing:border-box;min-width:0}
+.sx-soft{background:#F7F6F9;border-radius:18px;padding:18px;box-sizing:border-box;min-width:0}
+.sx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.sx-col{display:flex;flex-direction:column;min-width:0}
+.sx-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.sx-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 28px;border-radius:9999px;background:#B9A3FF;color:#18161F!important;text-decoration:none;font:700 17px 'DM Sans',sans-serif;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.sx-btn2{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 24px;border-radius:9999px;background:rgba(24,22,31,0.07);color:#18161F!important;text-decoration:none;font:600 16px 'DM Sans',sans-serif;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.sx-btnd{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:9999px;background:#18161F;color:#FFFFFF!important;text-decoration:none;font:600 15px 'DM Sans',sans-serif;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.sx-sm{min-height:44px;padding:0 18px;font-size:15px}
+.sx-lnk{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-weight:600;font-size:15px;color:#18161F;text-underline-offset:4px;text-decoration-thickness:1.5px}
+.sx-ico{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.sx-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap}
+.sx-chip{min-height:40px;padding:0 16px;border-radius:9999px;border:1px solid #CBC7D3;background:#FFFFFF;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer;white-space:nowrap}
+.sx-chip[aria-pressed="true"],.sx-chip[aria-selected="true"]{background:#18161F;border-color:#18161F;color:#FFFFFF}
+.sx-seg{display:flex;flex-wrap:wrap;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;width:max-content;max-width:100%;box-sizing:border-box}
+.sx-seg button{min-height:40px;padding:0 16px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer}
+.sx-seg button[aria-selected="true"],.sx-seg button[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.sx-input{min-height:48px;width:100%;border:1px solid #CBC7D3;border-radius:12px;padding:0 14px;font:500 16px 'DM Sans',sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box}
+.sx-label{font-size:13px;font-weight:700;color:#18161F}
+.sx-num{font-variant-numeric:tabular-nums}
+.sx-range{width:100%;accent-color:#7A5AF8;height:32px;margin:0;cursor:pointer}
+.sx-quote{margin:0;font-family:Sora,sans-serif;font-weight:600;font-size:clamp(20px,2vw,26px);line-height:1.35;letter-spacing:-0.02em;text-wrap:pretty}
+.sx-faq{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 0;border:0;background:transparent;text-align:left;cursor:pointer;color:#18161F;font:600 18px 'DM Sans',sans-serif}
+@keyframes sx-rowin{0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:none}}
+@keyframes sx-pulse{0%{box-shadow:0 0 0 0 rgba(47,87,17,.45)}70%,100%{box-shadow:0 0 0 8px rgba(47,87,17,0)}}
+@keyframes sx-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes sx-stamp{0%,40%{opacity:0;transform:rotate(-14deg) scale(2.2)}50%{opacity:1;transform:rotate(-14deg) scale(1)}90%{opacity:1;transform:rotate(-14deg) scale(1)}100%{opacity:0;transform:rotate(-14deg) scale(1)}}
+@keyframes sx-coin{0%{transform:translateX(-90px);opacity:0}12%{opacity:1}45%{transform:translateX(0);opacity:1}55%,100%{transform:translateX(0);opacity:0}}
+@keyframes sx-tag{0%,20%{opacity:0;transform:scale(.8)}30%,100%{opacity:1;transform:none}}
+@keyframes sx-grow{0%{width:0}35%,100%{width:75%}}
+@keyframes sx-grow-tax{0%,35%{width:0}55%,100%{width:25%}}
+@keyframes sx-light{0%,100%{background:#47444F}20%,40%{background:#B9A3FF}}
+@keyframes sx-ring{0%,100%{transform:rotate(0)}10%{transform:rotate(14deg)}20%{transform:rotate(-12deg)}30%{transform:rotate(8deg)}40%{transform:rotate(0)}}
+@keyframes sx-slide{0%{left:0;opacity:0}12%{opacity:1}78%{opacity:1}100%{left:100%;opacity:0}}
+.sx-c{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion: reduce){.sx-anim,.sx-anim *{animation:none!important;transition:none!important}}
+@media (max-width: 720px){.sx-hide-s{display:none!important}}
+</style>
+</helmet>
+<div class="sx">
+  <dc-import name="SiteNav" current="keep"></dc-import>
+
+  <main>
+    <!-- 1 · Hero: the calculator fills the jar -->
+    <section aria-labelledby="hero-h" class="sx-w" style="padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(56px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: center; gap: 48px 56px;">
+      <div class="sx-col" style="flex: 1 1 400px; gap: 22px;">
+        <span class="sx-kick"><span class="sx-dot" style="background: #18161F; border: 2px solid #B9A3FF;"></span>Yours to keep</span>
+        <h1 id="hero-h" class="sx-h1" style="font-size: clamp(40px, 5.2vw, 68px);">Know what’s actually yours.</h1>
+        <p class="sx-lead" style="max-width: 520px;">Money in the bank isn’t all yours. Some of it is owed to suppliers, some to the tax office. BillingEase takes those out first, so the number in the jar is what you can really spend.</p>
+        <div class="sx-row" style="padding-top: 6px;">
+          <a href="AuthSignUp.dc.html" class="sx-btn">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="ThreeKeep.dc.html" class="sx-btn2">See it in the demo</a>
+        </div>
+        <span class="sx-small">Reports and sales tax are on every plan. <a href="SitePricing.dc.html" style="color: #18161F; font-weight: 600;">See pricing</a></span>
+      </div>
+
+      <div class="sx-card" role="group" aria-labelledby="calc-h" style="flex: 1 1 460px; max-width: 600px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 30px 60px -30px rgba(24,22,31,0.25);">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <h2 id="calc-h" style="margin: 0; font-weight: 700; font-size: 15px;">Try it with your own month</h2>
+          <button type="button" onClick="{{calc.reset}}" class="sx-chip" style="min-height: 36px; font-size: 13px;">{{calc.resetLabel}}</button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px;">
+          <div style="flex: 1 1 220px; display: flex; justify-content: center; min-width: 0;" aria-live="polite">
+            <dc-import name="CashJar" size="{{300}}" amount="{{calc.keepShort}}" tax-pct="{{calc.pctLabel}}" uid="keep-hero" hint-size="300px,250px"></dc-import>
+          </div>
+          <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+            <sc-for list="{{calc.sliders}}" as="s" hint-placeholder-count="3">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+                  <label for="{{s.id}}" style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700;"><span class="sx-dot" style="width: 8px; height: 8px; background: {{s.dot}};"></span>{{s.label}}</label>
+                  <span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px;">{{s.shown}}</span>
+                </div>
+                <input id="{{s.id}}" type="range" min="{{s.min}}" max="{{s.max}}" step="{{s.step}}" value="{{s.val}}" onChange="{{s.set}}" class="sx-range" style="accent-color: {{s.accent}};">
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; padding: 12px; border-radius: 18px; background: #F7F6F9;">
+          <sc-for list="{{calc.eq}}" as="e" hint-placeholder-count="5">
+            <span style="flex: {{e.flex}}; display: flex; flex-direction: column; justify-content: center; align-items: {{e.align}}; padding: {{e.pad}}; border-radius: 12px; background: {{e.bg}}; color: {{e.ink}}; min-width: 0;">
+              <span style="font-size: 11px; font-weight: 700; color: {{e.sub}};">{{e.label}}</span>
+              <span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: {{e.size}}; white-space: nowrap;">{{e.v}}</span>
+            </span>
+          </sc-for>
+        </div>
+        <p class="sx-small" style="margin: 0;">{{calc.note}}</p>
+      </div>
+    </section>
+
+    <!-- 2 · The tax set-aside, explained -->
+    <section aria-labelledby="tax-h" class="sx-band">
+      <div class="sx-w sx-pad" style="display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 48px;">
+          <div class="sx-col" style="gap: 14px; flex: 1 1 460px; max-width: 700px;">
+            <span class="sx-kick"><span class="sx-dot" style="background: #E3C38F;"></span>The tax set-aside</span>
+            <h2 id="tax-h" class="sx-h2" style="font-size: clamp(32px, 3.8vw, 50px);">April stops being a surprise.</h2>
+            <p class="sx-p" style="font-size: 17px;">Each month BillingEase works out your profit and moves a share of it into a tax envelope. When the estimated payment is due, the money is already there.</p>
+          </div>
+          <button type="button" role="switch" aria-checked="{{vault.on}}" onClick="{{vault.flip}}" style="display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 0 8px 0 18px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #F7F6F9; color: #18161F; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; text-align: left; max-width: 100%;">
+            <span>{{vault.label}}</span>
+            <span style="width: 44px; height: 26px; border-radius: 9999px; background: {{vault.track}}; position: relative; flex: none; transition: background .2s ease;"><span style="position: absolute; top: 3px; left: {{vault.knob}}px; width: 20px; height: 20px; border-radius: 9999px; background: #FFFFFF; transition: left .2s ease;"></span></span>
+          </button>
+        </div>
+        <ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px;">
+          <sc-for list="{{taxSteps}}" as="t" hint-placeholder-count="3">
+            <li style="background: #F7F6F9; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: -0.04em;">{{t.n}}</span>
+              <h3 class="sx-h4" style="font-size: 18px;">{{t.t}}</h3>
+              <p class="sx-p">{{t.d}}</p>
+              <span class="sx-num" style="margin-top: auto; align-self: flex-start; padding: 6px 12px; border-radius: 9999px; background: {{t.bg}}; font-weight: 700; font-size: 14px;">{{t.v}}</span>
+            </li>
+          </sc-for>
+        </ol>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <span class="sx-label">Estimated tax payments for 2026, US federal</span>
+          <div style="position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px;">
+            <sc-for list="{{quarters}}" as="q" hint-placeholder-count="4">
+              <div style="padding: 16px; border-radius: 18px; border: {{q.border}}; background: {{q.bg}}; color: {{q.ink}}; display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-size: 13px; font-weight: 700; color: {{q.sub}};">{{q.d}}</span>
+                <span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px;">{{q.a}}</span>
+                <span style="font-size: 13px; color: {{q.sub}};">{{q.s}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <span class="sx-small">Your share and dates depend on where you live. Set your own in Your business, or let your accountant set them.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · Reports in plain questions -->
+    <section aria-labelledby="rep-h" class="sx-w sx-pad" style="display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: flex-start;">
+      <div class="sx-col" style="flex: 1 1 340px; gap: 18px; max-width: 420px;">
+        <span class="sx-kick"><span class="sx-dot" style="background: #7A5AF8;"></span>Reports</span>
+        <h2 id="rep-h" class="sx-h2" style="font-size: clamp(32px, 3.8vw, 50px);">Reports that answer the question you actually asked.</h2>
+        <p class="sx-p" style="font-size: 17px;">Every standard report is here, named after the question it answers. The formal name is underneath for your accountant and your bank.</p>
+        <div role="tablist" aria-label="Questions" style="display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{rep.tabs}}" as="t" hint-placeholder-count="3">
+            <button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 14px 18px; border-radius: 18px; border: {{t.border}}; background: {{t.bg}}; color: {{t.ink}}; cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif;">
+              <span style="font-weight: 700; font-size: 17px;">{{t.q}}</span>
+              <span style="font-size: 13px; color: {{t.sub}};">{{t.formal}}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      <div class="sx-card" role="tabpanel" aria-label="{{rep.cur.q}}" style="flex: 999 1 520px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+          <span style="display: flex; flex-direction: column;"><span class="sx-small">{{rep.cur.formal}} · Northwind Studio · {{rep.cur.period}}</span><span style="font-weight: 700; font-size: 20px;">{{rep.cur.q}}</span></span>
+          <button type="button" onClick="{{rep.share}}" class="sx-chip">Share with Dana, CPA</button>
+        </div>
+        <div style="padding: 18px 20px; border-radius: 18px; background: #18161F; color: #FFFFFF; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 13px; color: #EEE8FF;">{{rep.cur.answerLabel}}</span>
+          <span class="sx-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 44px); letter-spacing: -0.03em; color: #B9A3FF;">{{rep.cur.answer}}</span>
+          <span style="font-size: 13px; color: #EEE8FF;">{{rep.cur.answerSub}}</span>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+          <sc-for list="{{rep.cur.rows}}" as="r" hint-placeholder-count="6">
+            <li style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-bottom: 1px solid #EFEDF3;">
+              <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;"><span style="font-weight: {{r.w}};">{{r.t}}</span><span class="sx-num" style="font-weight: 700;">{{r.v}}</span></span>
+              <sc-if value="{{r.bar}}" hint-placeholder-val="{{false}}"><span style="display: block; height: 6px; border-radius: 9999px; background: #EFEDF3;"><span style="display: block; width: {{r.pct}}%; height: 100%; border-radius: 9999px; background: {{r.color}}; transition: width .4s ease;"></span></span></sc-if>
+            </li>
+          </sc-for>
+        </ul>
+        <a href="BooksReports.dc.html" class="sx-lnk" style="align-self: flex-start;">Open every report in the demo<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+    </section>
+
+    <!-- 4 · Sales tax + bank check -->
+    <section aria-labelledby="file-h" class="sx-band">
+      <div class="sx-w sx-pad" style="display: flex; flex-direction: column; gap: 36px;">
+        <div class="sx-col" style="gap: 14px; max-width: 720px;">
+          <span class="sx-kick"><span class="sx-dot" style="background: #18161F; border: 2px solid #B9A3FF;"></span>Ready when they ask</span>
+          <h2 id="file-h" class="sx-h2" style="font-size: clamp(32px, 3.8vw, 50px);">Sales tax worked out. Books that match the bank.</h2>
+          <p class="sx-p" style="font-size: 17px;">The two jobs most likely to eat a weekend, done as you go and checked before anyone has to look.</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+          <article class="sx-card" style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 14px; background: #F7F6F9; border-color: #F7F6F9;">
+            <div style="display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; flex-wrap: wrap;">
+              <div class="sx-col" style="gap: 4px;"><h3 class="sx-h3">Sales tax you collected</h3><span class="sx-small">Sales tax · VAT · GST</span></div>
+              <span class="sx-pill" style="background: {{stx.pillBg}}; color: {{stx.pillInk}};">{{stx.status}}</span>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+              <span class="sx-small">New York · Q3 2026 (Jul to Sep) · due Oct 20, 2026</span>
+              <span style="display: flex; justify-content: space-between; gap: 12px;"><span>Taxable product sales</span><span class="sx-num">$4,649.38</span></span>
+              <span style="display: flex; justify-content: space-between; gap: 12px;"><span>Rate</span><span class="sx-num">8.875%</span></span>
+              <span style="display: flex; justify-content: space-between; gap: 12px;"><span>Design services (not taxed in NY)</span><span class="sx-num">$0.00</span></span>
+              <span style="display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid #EFEDF3; padding-top: 10px; font-weight: 700;"><span>You owe the state</span><span class="sx-num" style="font-family: Sora, sans-serif; font-size: 20px;">$412.63</span></span>
+            </div>
+            <span class="sx-small">Selling to Kaffeehaus Berlin? EU invoices get “VAT reverse charged to the customer” and stay out of this total.</span>
+            <div class="sx-row" style="gap: 10px; margin-top: auto;">
+              <sc-if value="{{stx.open}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{stx.file}}" class="sx-btnd">Mark as filed and paid</button></sc-if>
+              <sc-if value="{{stx.filed}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{stx.undo}}" class="sx-chip">Undo</button></sc-if>
+              <span class="sx-small">{{stx.note}}</span>
+            </div>
+          </article>
+          <article class="sx-card" style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 14px; background: #F7F6F9; border-color: #F7F6F9;">
+            <div class="sx-col" style="gap: 4px;"><h3 class="sx-h3">Check against your bank statement</h3><span class="sx-small">Reconciliation · Chase Business Checking ••4417 · September</span></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 8px;">
+              <div style="background: #FFFFFF; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column;"><span class="sx-small">Bank statement</span><span class="sx-num" style="font-weight: 700; font-size: 17px;">$41,286.40</span></div>
+              <div style="background: #FFFFFF; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column;"><span class="sx-small">BillingEase</span><span class="sx-num" style="font-weight: 700; font-size: 17px;">$41,198.40</span></div>
+              <div style="background: {{rec.diffBg}}; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column;"><span class="sx-small" style="color: {{rec.diffInk}};">Left to explain</span><span class="sx-num" style="font-weight: 700; font-size: 17px; color: {{rec.diffInk}};">{{rec.diff}}</span></div>
+            </div>
+            <sc-for list="{{rec.items}}" as="it" hint-placeholder-count="2">
+              <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; padding: 12px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;">
+                <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{it.t}}</span><span class="sx-small">{{it.d}}</span></span>
+                <span class="sx-num" style="font-weight: 700;">{{it.a}}</span>
+                <sc-if value="{{it.open}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{it.fix}}" class="sx-btnd sx-sm" style="min-height: 38px; font-size: 13px;">{{it.cta}}</button></sc-if>
+                <sc-if value="{{it.done}}" hint-placeholder-val="{{false}}"><span class="sx-pill" style="background: #E2F6D5; color: #2F5711;">{{it.doneText}}</span></sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{rec.balanced}}" hint-placeholder-val="{{false}}">
+              <div role="status" style="display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711; font-weight: 600; font-size: 14px; margin-top: auto;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+                <span style="flex: 1; min-width: 0;">September matches the bank to the cent.</span>
+                <button type="button" onClick="{{rec.reset}}" style="flex: none; min-height: 32px; padding: 0 10px; border: 0; background: transparent; color: #2F5711; font: 600 13px 'DM Sans', sans-serif; text-decoration: underline; cursor: pointer;">Start over</button>
+              </div>
+            </sc-if>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · Accountant + year end -->
+    <section aria-labelledby="acct-h" class="sx-w sx-pad" style="display: flex; flex-direction: column; gap: 36px;">
+      <div class="sx-col" style="gap: 14px; max-width: 720px;">
+        <span class="sx-kick"><span class="sx-dot" style="background: #7A5AF8;"></span>Your accountant and the year end</span>
+        <h2 id="acct-h" class="sx-h2" style="font-size: clamp(32px, 3.8vw, 50px);">Hand over the books without handing over the keys.</h2>
+        <p class="sx-p" style="font-size: 17px;">Proper double-entry books are kept underneath the three numbers. Invite your accountant to see them, then lock the year once taxes are filed.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+        <article class="sx-card" style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 16px;">
+          <div class="sx-col" style="gap: 4px;"><h3 class="sx-h3">Accountant access</h3><span class="sx-small">Read-only books, reports and fixes · free on Pro and Team</span></div>
+          <div class="sx-soft" style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="display: flex; align-items: center; gap: 10px;"><span style="width: 36px; height: 36px; border-radius: 9999px; background: #FFF0B8; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex: none;">DW</span><span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 14px;">Dana Whitfield, CPA</span><span class="sx-small">Accountant for Northwind Studio</span></span></span>
+            <sc-for list="{{acct.can}}" as="c" hint-placeholder-count="4">
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 13px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.ink}}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{c.icon}}"></path></svg><span style="color: {{c.ink}};">{{c.t}}</span></span>
+            </sc-for>
+          </div>
+          <sc-if value="{{acct.formOpen}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <span class="sx-label">Try inviting your own accountant</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <span style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 4px;"><label for="ac-name" class="sx-small" style="font-weight: 700; color: #18161F;">Name</label><input id="ac-name" value="{{acct.name}}" onChange="{{acct.setName}}" placeholder="Sam Rivera" class="sx-input" style="min-height: 44px; border-color: {{acct.nameBorder}};"></span>
+                <span style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 4px;"><label for="ac-mail" class="sx-small" style="font-weight: 700; color: #18161F;">Email</label><input id="ac-mail" type="email" value="{{acct.email}}" onChange="{{acct.setEmail}}" placeholder="sam@riveracpa.com" class="sx-input" style="min-height: 44px; border-color: {{acct.emailBorder}};"></span>
+              </div>
+              <sc-if value="{{acct.err}}" hint-placeholder-val="{{false}}"><span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{acct.err}}</span></sc-if>
+              <button type="button" onClick="{{acct.invite}}" class="sx-btnd" style="align-self: flex-start;">Preview the invite</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{acct.sent}}" hint-placeholder-val="{{false}}">
+            <div role="status" style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 16px; background: #EEE8FF;">
+              <span style="font-weight: 700;">Invite ready for {{acct.name}}</span>
+              <span style="font-size: 14px; color: #47444F; overflow-wrap: anywhere;">In your real account, {{acct.email}} gets a link to read-only books. Nothing was sent from this page.</span>
+              <button type="button" onClick="{{acct.again}}" style="align-self: flex-start; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px 'DM Sans', sans-serif; text-decoration: underline; cursor: pointer;">Invite someone else</button>
+            </div>
+          </sc-if>
+        </article>
+        <article class="sx-card" style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 14px;">
+          <div class="sx-col" style="gap: 4px;"><h3 class="sx-h3">Close the year</h3><span class="sx-small">Year-end close · 2025</span></div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ye.items}}" as="i" hint-placeholder-count="4">
+              <li><button type="button" role="checkbox" aria-checked="{{i.on}}" onClick="{{i.flip}}" disabled="{{ye.locked}}" style="width: 100%; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 14px; border-radius: 14px; border: 1px solid #E2DFE8; background: {{i.bg}}; color: #18161F; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; text-align: left;">
+                <span style="width: 22px; height: 22px; border-radius: 7px; border: 2px solid {{i.box}}; background: {{i.fill}}; display: flex; align-items: center; justify-content: center; flex: none; box-sizing: border-box;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span>{{i.t}}</span><span style="font-size: 12px; font-weight: 500; color: #5F5B68;">{{i.d}}</span></span>
+              </button></li>
+            </sc-for>
+          </ul>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto;">
+            <span class="sx-small" aria-live="polite">{{ye.note}}</span>
+            <sc-if value="{{ye.unlocked}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{ye.lock}}" disabled="{{ye.notReady}}" class="sx-btnd" style="opacity: {{ye.opacity}};">Lock 2025</button></sc-if>
+            <sc-if value="{{ye.locked}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{ye.unlock}}" class="sx-chip">Unlock</button></sc-if>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6 · Proof -->
+    <section aria-labelledby="proof-h" style="background: #18161F; color: #FFFFFF;">
+      <div class="sx-w sx-pad" style="display: flex; flex-wrap: wrap; align-items: center; gap: 40px 64px;">
+        <figure style="margin: 0; flex: 999 1 520px; display: flex; flex-direction: column; gap: 24px;">
+          <h2 id="proof-h" class="sx-kick" style="margin: 0; color: #EEE8FF;"><span class="sx-dot" style="background: #B9A3FF;"></span>From a customer</h2>
+          <blockquote class="sx-quote" style="font-size: clamp(24px, 2.8vw, 36px); line-height: 1.25; color: #FFFFFF;">“Last April I had the $9,400 tax bill sitting in the envelope, ready. My accountant said it was the first time a client had sent her books with nothing to fix.”</blockquote>
+          <figcaption style="display: flex; align-items: center; gap: 12px;">
+            <span style="width: 48px; height: 48px; border-radius: 9999px; background: #B9A3FF; color: #18161F; display: flex; align-items: center; justify-content: center; font-weight: 700;">JO</span>
+            <span style="display: flex; flex-direction: column;"><span style="font-weight: 700;">Jules Okafor</span><span style="font-size: 13px; color: #D9D4E6;">Okafor Physio · Minneapolis, MN</span></span>
+          </figcaption>
+        </figure>
+        <div style="flex: 1 1 260px; display: flex; justify-content: center;" aria-hidden="true">
+          <dc-import name="CashJar" size="{{300}}" amount="$9,400" line="#EEE8FF" uid="keep-proof" hint-size="300px,250px"></dc-import>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · FAQ -->
+    <section aria-labelledby="faq-h" class="sx-w sx-pad" style="display: flex; flex-wrap: wrap; gap: 32px 64px;">
+      <div class="sx-col" style="flex: 1 1 280px; gap: 16px;">
+        <h2 id="faq-h" class="sx-h2" style="font-size: clamp(30px, 3.4vw, 44px);">Profit and tax, answered</h2>
+        <p class="sx-p">Something else? <a href="SiteHelp.dc.html" style="font-weight: 600;">Ask the help center</a>.</p>
+      </div>
+      <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; border-top: 1px solid #E2DFE8;">
+        <sc-for list="{{faqs}}" as="f" hint-placeholder-count="5">
+          <div style="border-bottom: 1px solid #E2DFE8;">
+            <h3 style="margin: 0;"><button type="button" class="sx-faq" aria-expanded="{{f.open}}" onClick="{{f.toggle}}"><span>{{f.q}}</span><span style="width: 32px; height: 32px; border-radius: 9999px; background: {{f.iconBg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg></span></button></h3>
+            <sc-if value="{{f.open}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 0 48px 22px 0; font-size: 16px; line-height: 1.6; color: #47444F;">{{f.a}}</p></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- 7 · CTA -->
+    <section aria-labelledby="cta-h" style="padding: 0 clamp(16px, 4vw, 40px) clamp(64px, 8vw, 104px);">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; background: #EEE8FF; border-radius: 32px; padding: clamp(36px, 5vw, 72px) clamp(24px, 6vw, 80px); display: flex; flex-wrap: wrap; align-items: center; gap: 32px 48px;">
+        <div class="sx-col" style="flex: 999 1 420px; gap: 20px; align-items: flex-start;">
+          <span class="sx-kick"><span class="sx-dot" style="background: {{ctaDot}};"></span>{{ctaKick}}</span>
+          <h2 id="cta-h" class="sx-h2" style="font-size: clamp(34px, 4.6vw, 60px);">{{ctaTitle}}</h2>
+          <p class="sx-p" style="font-size: 17px; max-width: 520px;">{{ctaText}}</p>
+          <div class="sx-row">
+            <a href="AuthSignUp.dc.html" class="sx-btnd" style="min-height: 56px; padding: 0 28px; font-size: 17px; font-weight: 700;">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+            <a href="SitePricing.dc.html" class="sx-btn2" style="background: #FFFFFF;">See pricing</a>
+            <a href="{{ctaDemo}}" class="sx-lnk" style="padding: 0 8px;">See it in the demo</a>
+          </div>
+        </div>
+        <div aria-hidden="true" style="flex: 1 1 240px; display: flex; justify-content: center;">
+          <dc-import name="CashJar" size="{{320}}" amount="{{ctaJar}}" uid="cta" hint-size="320px,267px"></dc-import>
+        </div>
+      </div>
+    </section>
+  
+  </main>
+
+  <dc-import name="SiteFooter"></dc-import>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px 'DM Sans', sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav, legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6400}}'>
+const SAMPLE = { inc: 24850, out: 13640, pct: 25 };
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = Object.assign({}, SAMPLE, { vault: false, rep: 'make', taxFiled: false, rec: {}, acName: '', acEmail: '', acTried: false, acSent: false,
+      ye: { sorted: true, bank: true, forms: true, filed: false }, locked: false, faq: 0, toast: null });
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  componentWillUnmount() { clearTimeout(this._t); }
+  renderVals() {
+    const st = this.state;
+    const m0 = (v) => (v < 0 ? '−$' : '$') + Math.abs(Math.round(v)).toLocaleString('en-US');
+    const m2 = (v) => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Calculator: Coming in − Going out = profit; pct of profit set aside; the rest is yours to keep.
+    const profit = st.inc - st.out;
+    const tax = profit > 0 ? Math.round(profit * st.pct / 100) : 0;
+    const keep = profit > 0 ? profit - tax : 0;
+    const isSample = st.inc === SAMPLE.inc && st.out === SAMPLE.out && st.pct === SAMPLE.pct;
+    const calc = {
+      keepShort: m0(keep), pctLabel: st.pct + '%',
+      resetLabel: isSample ? 'Northwind Studio, October' : 'Back to the sample',
+      reset: () => { if (isSample) { this.setState({ inc: 9000, out: 3200, pct: 30 }); this.notify('Switched to a freelancer’s month · $9,000 in, $3,200 out'); } else this.setState(SAMPLE); },
+      sliders: [
+        { id: 'k-in', label: 'Coming in this month', dot: '#7A5AF8', accent: '#7A5AF8', min: 0, max: 60000, step: 50, val: st.inc, shown: m0(st.inc), set: (e) => this.setState({ inc: Number(e.target.value) }) },
+        { id: 'k-out', label: 'Going out this month', dot: '#E0752D', accent: '#E0752D', min: 0, max: 60000, step: 50, val: st.out, shown: m0(st.out), set: (e) => this.setState({ out: Number(e.target.value) }) },
+        { id: 'k-pct', label: 'Set aside for tax', dot: '#E3C38F', accent: '#B4501A', min: 0, max: 40, step: 1, val: st.pct, shown: st.pct + '%', set: (e) => this.setState({ pct: Number(e.target.value) }) }
+      ],
+      eq: [
+        { label: 'Profit', v: m0(profit), flex: '1 1 90px', align: 'flex-start', pad: '8px 12px', bg: '#FFFFFF', ink: '#18161F', sub: '#5F5B68', size: '18px' },
+        { label: 'Tax envelope', v: m0(tax), flex: '1 1 90px', align: 'flex-start', pad: '8px 12px', bg: '#FFF6E0', ink: '#6B3E0E', sub: '#6B3E0E', size: '18px' },
+        { label: 'Yours to keep', v: m0(keep), flex: '1 1 120px', align: 'flex-start', pad: '8px 12px', bg: '#18161F', ink: '#B9A3FF', sub: '#EEE8FF', size: '22px' }
+      ],
+      note: profit > 0
+        ? (isSample ? 'Northwind Studio’s October so far. Drag the sliders to try your own month.' : 'That’s ' + m0(tax) + ' a month in the envelope, about ' + m0(tax * 12) + ' over a year like this one.')
+        : 'More went out than came in, so there’s no profit to tax and nothing extra to keep this month. It happens; the jar refills when sales do.'
+    };
+
+    const vault = {
+      on: st.vault, label: st.vault ? 'Moves it to a tax savings account' : 'Keeps it in your checking, labelled',
+      track: st.vault ? '#7A5AF8' : '#CBC7D3', knob: st.vault ? 21 : 3,
+      flip: () => { this.setState({ vault: !st.vault }); this.notify(st.vault ? 'Tax money stays in checking, set aside on paper' : 'Each month’s set-aside moves to Harborline tax savings'); }
+    };
+    const taxSteps = [
+      { n: '1', t: 'Profit is worked out every month', d: 'Coming in minus Going out, using the categories your charges were sorted into.', v: 'Oct so far: ' + m0(SAMPLE.inc - SAMPLE.out), bg: '#EEE8FF' },
+      { n: '2', t: 'A share goes in the envelope', d: '25% unless you or your accountant choose another share. You see it leave your number, so it never feels like yours.', v: 'Set aside: $2,803', bg: '#FFF6E0' },
+      { n: '3', t: 'It’s there when the payment is due', d: 'Four estimated payments a year. We remind you a week before, with the amount ready to pay.', v: 'Next: $6,950 on Jan 15', bg: '#E2F6D5' }
+    ];
+    const quarters = [['Apr 15', '$5,820', 'Paid Apr 11'], ['Jun 15', '$6,110', 'Paid Jun 9'], ['Sep 15', '$6,480', 'Paid Sep 12'], ['Jan 15, 2027', '$6,950', 'In the envelope: $5,140 so far']].map((q, i) => {
+      const next = i === 3;
+      return { d: q[0], a: q[1], s: q[2], bg: next ? '#18161F' : '#FFFFFF', ink: next ? '#FFFFFF' : '#18161F', sub: next ? '#EEE8FF' : '#5F5B68', border: next ? '1px solid #18161F' : '1px solid #E2DFE8' };
+    });
+
+    // Reports
+    const REP = {
+      make: { q: 'How much did I make?', formal: 'Profit & loss', period: 'October 1 to 4, 2026', answerLabel: 'Profit so far in October', answer: '$11,210', answerSub: 'Before the $2,803 tax set-aside',
+        rows: [['Coming in · paid', '$12,400'], ['Coming in · on the way', '$12,450'], ['Going out · paid', '−$3,180'], ['Going out · still to pay', '−$10,460'], ['Profit', '$11,210', 700]] },
+      own: { q: 'What do I own?', formal: 'Balance sheet', period: 'as of October 4, 2026', answerLabel: 'What the business is worth', answer: '$43,264', answerSub: 'What you own minus what you owe',
+        rows: [['Cash in Chase ••4417', '$41,198'], ['Customers owe you', '$12,450'], ['Stock on the shelf, at cost', '$1,775'], ['Bills and payroll you owe', '−$10,460'], ['Sales tax collected, due Oct 20', '−$413'], ['Amex ••1009 balance', '−$1,286']] },
+      cash: { q: 'Where did the cash go?', formal: 'Cash flow · spending by category', period: 'October 2026, paid and scheduled', answerLabel: 'Going out this month', answer: '$13,640', answerSub: 'Payroll is the biggest share, then bills',
+        rows: [['Payroll', 7231], ['Bills to pay', 2447], ['Rent', 1200], ['Travel and meals', 1128], ['Every-month subscriptions', 782], ['Office and supplies', 605], ['Software', 247]] }
+    };
+    const R = REP[st.rep];
+    const maxCash = 7231;
+    const rep = {
+      tabs: Object.keys(REP).map((k) => {
+        const on = st.rep === k;
+        return { q: REP[k].q, formal: REP[k].formal, on, pick: () => this.setState({ rep: k }), bg: on ? '#18161F' : '#FFFFFF', ink: on ? '#FFFFFF' : '#18161F', sub: on ? '#D9D4E6' : '#5F5B68', border: on ? '1px solid #18161F' : '1px solid #E2DFE8' };
+      }),
+      cur: Object.assign({}, R, { rows: R.rows.map((r) => typeof r[1] === 'number'
+        ? { t: r[0], v: m0(r[1]), w: 600, bar: true, pct: Math.round(r[1] / maxCash * 100), color: '#E0752D' }
+        : { t: r[0], v: r[1], w: r[2] || 500, bar: false, pct: 0, color: '' }) }),
+      share: () => this.notify('“' + R.q + '” shared with Dana Whitfield, CPA')
+    };
+
+    const stx = {
+      open: !st.taxFiled, filed: st.taxFiled,
+      status: st.taxFiled ? 'Filed Oct 4' : 'Due in 16 days', pillBg: st.taxFiled ? '#E2F6D5' : '#FFF0B8', pillInk: st.taxFiled ? '#2F5711' : '#6B5000',
+      note: st.taxFiled ? '$412.63 paid to New York State. Next return due Jan 20.' : 'We remind you a week before.',
+      file: () => { this.setState({ taxFiled: true }); this.notify('Q3 New York sales tax marked filed · $412.63 paid'); },
+      undo: () => this.setState({ taxFiled: false })
+    };
+
+    const RI = [
+      { id: 'fee', t: 'Bank fee not in your books', d: 'Monthly service fee, Sep 30', a: '$15.00', v: 15, cta: 'Add it', doneText: 'Added as Bank fees' },
+      { id: 'chk', t: 'Check #1042 hasn’t cleared', d: 'To Lena Park, written Sep 28', a: '$73.00', v: 73, cta: 'Mark as on its way', doneText: 'Will clear in October' }
+    ];
+    const left = 88 - RI.filter((i) => st.rec[i.id]).reduce((s, i) => s + i.v, 0);
+    const rec = {
+      diff: m2(left), diffBg: left === 0 ? '#E2F6D5' : '#FFF0B8', diffInk: left === 0 ? '#2F5711' : '#6B5000', balanced: left === 0,
+      items: RI.map((i) => ({ t: i.t, d: i.d, a: i.a, cta: i.cta, doneText: i.doneText, open: !st.rec[i.id], done: !!st.rec[i.id],
+        fix: () => this.setState({ rec: Object.assign({}, st.rec, { [i.id]: true }) }) })),
+      reset: () => this.setState({ rec: {} })
+    };
+
+    const nameOk = st.acName.trim().length > 1, emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(st.acEmail.trim());
+    const acErr = st.acTried && !nameOk ? 'Add your accountant’s name.' : (st.acTried && !emailOk ? 'That email doesn’t look right. Try name@firm.com.' : false);
+    const acct = {
+      can: [['Sees every report and the full books', true], ['Adds fixes (journal entries) and downloads reports', true], ['Can’t see your bank password or move money', false], ['Can’t run payroll or send invoices', false]]
+        .map((c) => ({ t: c[0], icon: c[1] ? 'm5 12 5 5 9-10' : 'M6 6l12 12M18 6 6 18', ink: c[1] ? '#2F5711' : '#47444F' })),
+      formOpen: !st.acSent, sent: st.acSent, name: st.acName.trim(), email: st.acEmail.trim(), err: acErr,
+      nameBorder: st.acTried && !nameOk ? '#A8200D' : '#CBC7D3', emailBorder: st.acTried && nameOk && !emailOk ? '#A8200D' : '#CBC7D3',
+      setName: (e) => this.setState({ acName: e.target.value }), setEmail: (e) => this.setState({ acEmail: e.target.value }),
+      invite: () => { if (!nameOk || !emailOk) { this.setState({ acTried: true }); return; } this.setState({ acSent: true, acTried: false }); },
+      again: () => this.setState({ acSent: false, acName: '', acEmail: '' })
+    };
+
+    const YE = [['sorted', 'Every 2025 charge sorted', '1,284 charges, 0 waiting'], ['bank', 'Checked against December statements', 'Chase and Amex both match'], ['forms', '1099s sent to contractors', 'Sent Jan 28, 2026'], ['filed', 'Taxes for 2025 filed', 'Tick this once your accountant files']];
+    const allOn = YE.every((y) => st.ye[y[0]]);
+    const ye = {
+      locked: st.locked, unlocked: !st.locked, notReady: !allOn, opacity: allOn ? 1 : 0.45,
+      items: YE.map((y) => { const on = !!st.ye[y[0]]; return { t: y[1], d: y[2], on, bg: on ? '#F7F6F9' : '#FFFFFF', box: on ? '#7A5AF8' : '#CBC7D3', fill: on ? '#7A5AF8' : '#FFFFFF',
+        flip: () => this.setState({ ye: Object.assign({}, st.ye, { [y[0]]: !on }) }) }; }),
+      note: st.locked ? '2025 is locked. Nothing in it can change by accident.' : (allOn ? 'Ready. Locking keeps 2025 exactly as filed.' : 'Tick everything to lock the year.'),
+      lock: () => { if (!allOn) return; this.setState({ locked: true }); this.notify('2025 locked · your accountant can still read it'); },
+      unlock: () => this.setState({ locked: false })
+    };
+
+    const FAQ = [
+      { q: 'Is 25% the right amount to set aside?', a: 'It’s a safe starting point for many US sole owners, but it depends on your income, state and deductions. Change it any time, or let your accountant set it. The jar updates straight away.' },
+      { q: 'Does BillingEase pay my taxes for me?', a: 'Not income tax. It sets the money aside, tells you what’s due and when, and has the amount ready. Sales tax and payroll taxes can be filed for you.' },
+      { q: 'Is “Yours to keep” the same as my bank balance?', a: 'No. Your bank also holds money you owe: unpaid bills, payroll, sales tax you collected and the tax set-aside. Yours to keep takes those out first.' },
+      { q: 'Will my accountant be happy with this?', a: 'Underneath the three numbers are proper double-entry books, with a chart of accounts, journal entries and every standard report. Invite them and they can check for themselves.' },
+      { q: 'Can I use cash or accrual?', a: 'Both. Count money when it moves (cash) or when you invoice and get billed (accrual). Switch views any time; the books underneath stay the same.' }
+    ];
+    const faqs = FAQ.map((f, i) => {
+      const on = st.faq === i;
+      return Object.assign({}, f, { open: on, iconBg: on ? '#B9A3FF' : 'rgba(24,22,31,0.07)', icon: on ? 'M5 12h14' : 'M12 5v14M5 12h14', toggle: () => this.setState({ faq: on ? -1 : i }) });
+    });
+
+    return {
+      calc, vault, taxSteps, quarters, rep, stx, rec, acct, ye, faqs, toast: st.toast,
+      ctaDot: '#18161F', ctaKick: 'Yours to keep', ctaTitle: 'Find out what’s really yours.', ctaText: 'Connect your bank and BillingEase works out your profit, the tax on it and what’s left, starting with this month.', ctaDemo: 'ThreeKeep.dc.html', ctaJar: m0(keep)
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,8 +1,302 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SiteNav</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Site navigation</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<header style="background:#FFFFFF;border-bottom:1px solid #E2DFE8;font-family:DM Sans,sans-serif"><div style="max-width:1200px;margin:0 auto;padding:12px clamp(16px,4vw,40px);display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center"><a href="ThreeLanding.dc.html" style="font:700 19px Sora,sans-serif;color:#18161F;text-decoration:none">BillingEase</a><sc-for list="{{nav}}" as="n"><a href="{{n.first}}" style="color:#18161F">{{n.label}}</a></sc-for><a href="AuthSignIn.dc.html" style="margin-left:auto;color:#18161F">Sign in</a><a href="AuthSignUp.dc.html" style="color:#18161F">Start free</a></div></header>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+.sn-hd{position:sticky;top:0;z-index:50;transition:background-color .25s ease,box-shadow .25s ease,border-color .25s ease}
+.sn-hd a,.sn-hd button{-webkit-tap-highlight-color:transparent}
+.sn-hd a:focus-visible,.sn-hd button:focus-visible,.sn-mob a:focus-visible,.sn-mob button:focus-visible{outline:3px solid #7A5AF8;outline-offset:2px}
+.sn-trig:hover{background:rgba(24,22,31,0.06)!important}
+.sn-item:hover{background:#F7F6F9}
+.sn-item[aria-current="page"]{background:#EEE8FF}
+.sn-feat:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(24,22,31,0.10)}
+.sn-feat{transition:transform .2s ease,box-shadow .2s ease}
+.sn-sign:hover{background:rgba(24,22,31,0.06)}
+.sn-start:hover{background:#A98FFB!important}
+.sn-mlink:hover{background:#FFFFFF}
+.sn-mlink[aria-current="page"]{background:#EEE8FF}
+.sn-panel{animation:sn-in .18s ease-out}
+.sn-mob{animation:sn-fade .2s ease-out}
+@keyframes sn-in{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes sn-fade{from{opacity:0}to{opacity:1}}
+@keyframes sn-strip{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.sn-mbtn,.sn-mstart{display:none!important}
+@media (max-width: 899px){.sn-desk,.sn-sign,.sn-start,.sn-panel{display:none!important}.sn-mbtn,.sn-mstart{display:inline-flex!important}}
+@media (min-width: 900px){.sn-mob{display:none!important}}
+@media (max-width: 360px){.sn-mstart{display:none!important}}
+@media (prefers-reduced-motion: reduce){.sn-panel,.sn-mob,.sn-feat,.sn-feat *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="display: contents;">
+<header class="sn-hd" onKeyDown="{{onKey}}" onFocusOut="{{onBlur}}" style="background: {{hdBg}}; border-bottom: 1px solid {{hdLine}}; box-shadow: {{hdShadow}}; font-family: DM Sans, system-ui, sans-serif; color: #18161F; -webkit-backdrop-filter: saturate(1.4) blur(10px); backdrop-filter: saturate(1.4) blur(10px);">
+  <nav aria-label="Main" style="position: relative; max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; align-items: center; gap: 12px clamp(8px, 2vw, 24px);">
+    <a href="ThreeLanding.dc.html" aria-label="BillingEase home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #18161F; flex: none; border-radius: 12px;">
+      <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+      <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+    </a>
+
+    <ul class="sn-desk" style="margin: 0 0 0 clamp(4px, 1.5vw, 20px); padding: 0; list-style: none; display: flex; align-items: center; gap: 2px;">
+      <sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+        <li style="position: static;">
+          <sc-if value="{{g.menu}}" hint-placeholder-val="{{true}}">
+            <button type="button" class="sn-trig" id="{{g.trigId}}" aria-expanded="{{g.expanded}}" aria-controls="{{g.panelId}}" onClick="{{g.toggle}}" onKeyDown="{{g.trigKey}}" style="position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{g.bg}}; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">
+              {{g.label}}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition: transform .2s ease; transform: rotate({{g.rot}}deg);"><path d="m6 9 6 6 6-6"></path></svg>
+              <sc-if value="{{g.current}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="position: absolute; left: 14px; right: 34px; bottom: 5px; height: 2px; border-radius: 2px; background: #7A5AF8;"></span><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">(current section)</span></sc-if>
+            </button>
+          </sc-if>
+          <sc-if value="{{g.link}}" hint-placeholder-val="{{false}}">
+            <a href="{{g.href}}" class="sn-trig" aria-current="{{g.aria}}" style="position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; color: #18161F; text-decoration: none; font-weight: 600; font-size: 15px; white-space: nowrap;">
+              {{g.label}}
+              <sc-if value="{{g.current}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="position: absolute; left: 14px; right: 14px; bottom: 5px; height: 2px; border-radius: 2px; background: #7A5AF8;"></span></sc-if>
+            </a>
+          </sc-if>
+        </li>
+      </sc-for>
+    </ul>
+
+    <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+      <a href="AuthSignIn.dc.html" class="sn-sign" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; color: #18161F; text-decoration: none; font-weight: 600; font-size: 15px; white-space: nowrap;">Sign in</a>
+      <a href="AuthSignUp.dc.html" class="sn-start" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 15px; white-space: nowrap; transition: background-color .15s ease;">Start free<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="AuthSignUp.dc.html" class="sn-mstart" style="align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 14px; white-space: nowrap;">Start free</a>
+      <button type="button" class="sn-mbtn" aria-label="Open menu" aria-expanded="{{mobOpen}}" aria-controls="sn-mobile" onClick="{{openMob}}" style="align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; cursor: pointer; flex: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"></path></svg></button>
+    </div>
+
+    <!-- The open dropdown: one panel at a time, centred under the bar so it never runs off the screen -->
+    <sc-if value="{{panel}}" hint-placeholder-val="{{false}}">
+      <div class="sn-panel" id="{{panel.panelId}}" role="region" aria-label="{{panel.label}}" style="position: absolute; left: 50%; top: calc(100% - 2px); transform: translateX(-50%); width: {{panel.width}}; max-width: calc(100vw - 32px); box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 12px; box-shadow: 0 24px 60px rgba(24,22,31,0.16); display: flex; gap: 12px; align-items: stretch;">
+        <ul style="flex: 1 1 auto; margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: {{panel.cols}}; gap: 2px; align-content: start;">
+          <sc-for list="{{panel.items}}" as="it" hint-placeholder-count="6">
+            <li>
+              <a href="{{it.href}}" class="sn-item" aria-current="{{it.aria}}" onClick="{{closeAll}}" style="display: flex; align-items: flex-start; gap: 14px; padding: 12px; border-radius: 16px; text-decoration: none; color: #18161F;">
+                <span style="width: 40px; height: 40px; border-radius: 12px; background: {{it.tint}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{it.ink}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"></path></svg></span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-top: 1px;">
+                  <span style="font-weight: 700; font-size: 15px;">{{it.label}}</span>
+                  <span style="font-size: 13px; line-height: 1.4; color: #5F5B68;">{{it.hint}}</span>
+                </span>
+              </a>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{panel.featured}}" hint-placeholder-val="{{false}}">
+          <a href="SiteFeatures.dc.html" class="sn-feat" onClick="{{closeAll}}" style="flex: 0 0 248px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 18px; background: #18161F; color: #FFFFFF; text-decoration: none;">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: #B9A3FF;">THE WHOLE IDEA</span>
+            <span style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 12px; background: #FFFFFF; color: #18161F; font-size: 12.5px; font-weight: 600; animation: sn-strip 4s ease-in-out infinite;"><span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px;">$24,850</span></span>
+              <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 12px; background: #FFFFFF; color: #18161F; font-size: 12.5px; font-weight: 600; animation: sn-strip 4s ease-in-out infinite; animation-delay: .3s;"><span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px;">$13,640</span></span>
+              <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 12px; background: #B9A3FF; color: #18161F; font-size: 12.5px; font-weight: 700; animation: sn-strip 4s ease-in-out infinite; animation-delay: .6s;"><span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #18161F;"></span>Yours to keep</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px;">$8,407</span></span>
+            </span>
+            <span style="font-size: 13.5px; line-height: 1.45; color: #EEE8FF;">Everything BillingEase does sits behind one of three numbers.</span>
+            <span style="margin-top: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: #FFFFFF;">See all features<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </a>
+        </sc-if>
+        <sc-if value="{{panel.aside}}" hint-placeholder-val="{{false}}">
+          <a href="{{panel.aside.href}}" class="sn-feat" onClick="{{closeAll}}" style="flex: 0 0 220px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 18px; background: {{panel.aside.bg}}; color: #18161F; text-decoration: none;">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: #47444F;">{{panel.aside.kicker}}</span>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 17px; line-height: 1.25; letter-spacing: -0.01em;">{{panel.aside.title}}</span>
+            <span style="font-size: 13px; line-height: 1.45; color: #47444F;">{{panel.aside.body}}</span>
+            <span style="margin-top: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700;">{{panel.aside.cta}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </a>
+        </sc-if>
+      </div>
+    </sc-if>
+  </nav>
+
+</header>
+  <!-- Phone and small tablet: full-height menu -->
+  <sc-if value="{{mobOpen}}" hint-placeholder-val="{{false}}">
+    <div class="sn-mob" id="sn-mobile" role="dialog" aria-modal="true" aria-label="Menu" style="position: fixed; inset: 0; z-index: 90; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif; display: flex; flex-direction: column; height: 100vh; height: 100dvh;">
+      <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #E2DFE8; background: #F7F6F9;">
+        <a href="ThreeLanding.dc.html" onClick="{{closeAll}}" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #18161F;">
+          <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
+        </a>
+        <button type="button" class="sn-mclose" aria-label="Close menu" onClick="{{closeMob}}" style="width: 44px; height: 44px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      </div>
+      <div style="flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 16px 24px; display: flex; flex-direction: column; gap: 18px;">
+        <sc-for list="{{mobGroups}}" as="mg" hint-placeholder-count="5">
+          <section style="display: flex; flex-direction: column; gap: 2px;">
+            <h2 style="margin: 12px 0 4px; padding: 0 12px; font: 700 12px DM Sans, sans-serif; letter-spacing: 0.06em; color: #5F5B68; text-transform: uppercase;">{{mg.label}}</h2>
+            <sc-for list="{{mg.items}}" as="it" hint-placeholder-count="4">
+              <a href="{{it.href}}" class="sn-mlink" aria-current="{{it.aria}}" onClick="{{closeAll}}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 12px; border-radius: 14px; text-decoration: none; color: #18161F;">
+                <span style="width: 36px; height: 36px; border-radius: 11px; background: {{it.tint}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{it.ink}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"></path></svg></span>
+                <span style="display: flex; flex-direction: column; min-width: 0;">
+                  <span style="font-weight: 700; font-size: 16px;">{{it.label}}</span>
+                  <span style="font-size: 13px; color: #5F5B68;">{{it.hint}}</span>
+                </span>
+              </a>
+            </sc-for>
+          </section>
+        </sc-for>
+      </div>
+      <div style="flex: none; display: flex; gap: 10px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #E2DFE8; background: #FFFFFF;">
+        <a href="AuthSignIn.dc.html" onClick="{{closeAll}}" style="flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 9999px; border: 1px solid #CBC7D3; color: #18161F; text-decoration: none; font-weight: 700; font-size: 16px;">Sign in</a>
+        <a href="AuthSignUp.dc.html" onClick="{{closeAll}}" style="flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 16px;">Start free</a>
+      </div>
+    </div>
+  </sc-if>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav.map((n) => ({ label: n.label, first: n.href || n.items[0].href })), legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"current":{"editor":"text","default":"home"},"$preview":{"width":1440,"height":520}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: null, mob: false, scrolled: false };
+  }
+  componentDidMount() {
+    this._doc = (e) => {
+      if (this.state.open == null) return;
+      const host = this.__inst && this.__inst.host;
+      if (host && !host.contains(e.target)) this.setState({ open: null });
+    };
+    this._esc = (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.state.mob) { this.closeMob(true); return; }
+      if (this.state.open != null) { const i = this.state.open; this.setState({ open: null }); this.focus('#sn-trig-' + i); }
+    };
+    this._scroll = () => {
+      const s = (window.scrollY || document.documentElement.scrollTop) > 8;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    this._resize = () => { if (this.state.mob && window.innerWidth >= 900) this.closeMob(false); };
+    document.addEventListener('click', this._doc);
+    document.addEventListener('keydown', this._esc);
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    this._scroll();
+  }
+  focus(sel, last) {
+    setTimeout(() => {
+      const host = this.__inst && this.__inst.host;
+      if (!host) return;
+      const els = host.querySelectorAll(sel);
+      const el = last ? els[els.length - 1] : els[0];
+      if (el) el.focus();
+    }, 0);
+  }
+  lock(on) {
+    try { document.documentElement.style.overflow = on ? 'hidden' : ''; } catch (e) { /* ignore */ }
+  }
+  closeMob(refocus) {
+    this.lock(false);
+    this.setState({ mob: false });
+    if (refocus) this.focus('.sn-mbtn');
+  }
+  renderVals() {
+    const st = this.state;
+    const cur = String(this.props.current || 'home');
+    const KEY = {
+      'SiteFeatures.dc.html': 'features', 'SiteComingIn.dc.html': 'in', 'SiteGoingOut.dc.html': 'out', 'SiteKeep.dc.html': 'keep',
+      'SiteSecurity.dc.html': 'security', 'SiteChangelog.dc.html': 'changelog', 'SiteFreelancers.dc.html': 'freelancers', 'SiteShops.dc.html': 'shops',
+      'SiteTeams.dc.html': 'teams', 'SiteGlobal.dc.html': 'global', 'SitePricing.dc.html': 'pricing', 'SiteGuides.dc.html': 'guides',
+      'SiteHelp.dc.html': 'help', 'SiteSwitch.dc.html': 'switch', 'SitePartners.dc.html': 'partners', 'SiteAbout.dc.html': 'about',
+      'SiteCareers.dc.html': 'careers', 'SitePress.dc.html': 'press', 'SiteContact.dc.html': 'contact'
+    };
+    const V = { t: '#EEE8FF', i: '#18161F' }, O = { t: '#FDE6D6', i: '#18161F' }, K = { t: '#18161F', i: '#B9A3FF' }, G = { t: '#EFEDF3', i: '#18161F' };
+    const ICON = {
+      features: ['M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 16.5h7M16.5 13v7', V],
+      in: ['M12 4v11M7 10l5 5 5-5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4', V],
+      out: ['M12 20V9M7 14l5-5 5 5M4 5h16', O],
+      keep: ['M7 4h10M8 4v2a4 4 0 0 0-3 4v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a4 4 0 0 0-3-4V4M9 14h6', K],
+      security: ['M12 3 5 6v5c0 4.5 3 8.5 7 10 4-1.5 7-5.5 7-10V6zM9 12l2 2 4-4', G],
+      changelog: ['M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 17l.8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8z', V],
+      freelancers: ['M4 5h16v11H4zM2 19h20M12 16v3', V],
+      shops: ['M4 9h16l-1.5-5h-13zM5 9v11h14V9M9 20v-6h6v6', O],
+      teams: ['M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M15.5 4.2a3.5 3.5 0 0 1 0 6.6', V],
+      global: ['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3', O],
+      guides: ['M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M8 7h7M8 11h5', V],
+      help: ['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', G],
+      'switch': ['M4 8h13l-3-3M20 16H7l3 3', O],
+      partners: ['M3 7h18v12H3zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18', V],
+      about: ['M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z', V],
+      careers: ['M12 3v4M5 8l2.5 2.5M19 8l-2.5 2.5M4 21h16M7 21v-4a5 5 0 0 1 10 0v4', O],
+      press: ['M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5M8 16h3', G],
+      contact: ['M4 5h16v11H8l-4 4zM8 9h8M8 12h5', V]
+    };
+    const decorate = (it) => {
+      const key = KEY[it.href] || '';
+      const ic = ICON[key] || ['M5 12h14', G];
+      return { label: it.label, hint: it.hint, href: it.href, key, icon: ic[0], tint: ic[1].t, ink: ic[1].i, aria: key === cur ? 'page' : false };
+    };
+    const ASIDE = {
+      'Who it’s for': { kicker: 'SEE IT WITH REAL NUMBERS', title: 'Walk through Northwind Studio’s October.', body: 'A sample design studio in Brooklyn. Click anything, nothing is real.', cta: 'Open the demo', href: 'ThreeHome.dc.html', bg: '#FDE6D6' },
+      Resources: { kicker: 'MOVING OVER?', title: 'We bring your books across, free.', body: 'From Wave, QuickBooks or a spreadsheet, usually in under an hour.', cta: 'How switching works', href: 'SiteSwitch.dc.html', bg: '#EEE8FF' },
+      Company: { kicker: 'TALK TO A PERSON', title: 'Setting up a team or a practice?', body: 'Write to ' + SITE.company.sales + '. We answer within one working day.', cta: 'Contact sales', href: 'SiteContact.dc.html', bg: '#EFEDF3' }
+    };
+    const groups = SITE.nav.map((n, i) => {
+      if (!n.items) {
+        const key = KEY[n.href];
+        return { menu: false, link: true, label: n.label, href: n.href, current: key === cur, aria: key === cur ? 'page' : false };
+      }
+      const items = n.items.map(decorate);
+      const isCur = items.some((x) => x.key === cur);
+      const open = st.open === i;
+      return {
+        menu: true, link: false, label: n.label, current: isCur, expanded: open ? 'true' : 'false',
+        trigId: 'sn-trig-' + i, panelId: 'sn-panel-' + i, rot: open ? 180 : 0,
+        bg: open ? 'rgba(24,22,31,0.07)' : 'transparent',
+        items,
+        toggle: () => this.setState({ open: open ? null : i }),
+        trigKey: (e) => {
+          if (e.key === 'ArrowDown') { e.preventDefault(); this.setState({ open: i }); this.focus('#sn-panel-' + i + ' a'); }
+          if (e.key === 'ArrowUp' && open) { e.preventDefault(); this.focus('#sn-panel-' + i + ' a', true); }
+        }
+      };
+    });
+    let panel = false;
+    if (st.open != null && groups[st.open] && groups[st.open].menu) {
+      const g = groups[st.open];
+      const isProduct = st.open === 0;
+      const aside = ASIDE[g.label] || false;
+      panel = {
+        label: g.label, panelId: g.panelId, items: g.items,
+        featured: isProduct, aside: isProduct ? false : aside,
+        cols: g.items.length > 4 ? 'repeat(2, minmax(0, 1fr))' : (aside ? 'repeat(2, minmax(0, 1fr))' : '1fr'),
+        width: isProduct ? '820px' : (aside ? '760px' : '420px')
+      };
+    }
+    const mobGroups = SITE.nav.filter((n) => n.items).map((n) => ({ label: n.label, items: n.items.map(decorate) }));
+    const pr = SITE.nav.find((n) => !n.items);
+    if (pr) mobGroups.splice(2, 0, { label: 'Plans', items: [{ label: pr.label, hint: 'Free, Pro $' + SITE.plans[1].month + ' and Team $' + SITE.plans[2].month + ' a month', href: pr.href, icon: 'M20 12l-8 8-9-9V3h8zM7.5 7.5h.01', tint: '#B9A3FF', ink: '#18161F', aria: cur === 'pricing' ? 'page' : false }] });
+    const s = st.scrolled || st.open != null;
+    return {
+      groups, panel, mobGroups,
+      mobOpen: st.mob,
+      hdBg: s ? 'rgba(255,255,255,0.92)' : '#F7F6F9',
+      hdLine: s ? '#E2DFE8' : 'transparent',
+      hdShadow: s ? '0 6px 24px rgba(24,22,31,0.06)' : 'none',
+      closeAll: () => { this.lock(false); this.setState({ open: null, mob: false }); },
+      openMob: () => { this.lock(true); this.setState({ mob: true, open: null }); this.focus('.sn-mclose'); },
+      closeMob: () => this.closeMob(true),
+      onKey: (e) => {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        const panelEl = e.target.closest && e.target.closest('.sn-panel');
+        if (!panelEl) return;
+        const links = Array.prototype.slice.call(panelEl.querySelectorAll('a'));
+        const at = links.indexOf(e.target);
+        if (at < 0) return;
+        e.preventDefault();
+        const nx = links[(at + (e.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length];
+        if (nx) nx.focus();
+      },
+      onBlur: (e) => {
+        if (st.open == null) return;
+        const host = this.__inst && this.__inst.host;
+        const to = e.relatedTarget;
+        if (to && host && !host.contains(to)) this.setState({ open: null });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

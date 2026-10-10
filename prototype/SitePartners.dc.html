@@ -1,8 +1,556 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SitePartners</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · For accountants</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<div style="min-height:100vh;background:#F7F6F9"><dc-import name="SiteNav"></dc-import><main style="padding:40px 16px">Being designed.</main><dc-import name="SiteFooter"></dc-import></div>
+<!--CO-CSS-->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+html{scroll-behavior:smooth}
+.co{min-height:100vh;background:#F7F6F9;color:#18161F;font-family:'DM Sans',system-ui,sans-serif;overflow-x:clip}
+.co a{color:#18161F}
+.co :focus-visible{outline:3px solid #7A5AF8;outline-offset:3px;border-radius:12px}
+.co-wrap{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:clamp(64px,9vw,120px) clamp(16px,4vw,40px)}
+.co-band{background:#FFFFFF;border-top:1px solid #E2DFE8;border-bottom:1px solid #E2DFE8}
+.co-h1{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(40px,6.2vw,84px);line-height:1.02;letter-spacing:-0.035em;text-wrap:balance}
+.co-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,56px);line-height:1.05;letter-spacing:-0.035em;text-wrap:balance}
+.co-h3{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;line-height:1.2;letter-spacing:-0.02em}
+.co-lead{margin:0;font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:#47444F;text-wrap:pretty}
+.co-p{margin:0;font-size:16px;line-height:1.6;color:#47444F}
+.co-sm{font-size:14px;line-height:1.5;color:#5F5B68}
+.co-kick{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#47444F}
+.co-kick i{width:10px;height:10px;border-radius:9999px;background:#7A5AF8;display:inline-block}
+.co-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(22px,2.4vw,30px);box-sizing:border-box;min-width:0}
+.co-soft{background:#F7F6F9;border-radius:20px;box-sizing:border-box;min-width:0}
+.co-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.co-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:9999px;border:0;cursor:pointer;text-decoration:none;font:600 16px 'DM Sans',sans-serif;white-space:nowrap;box-sizing:border-box;transition:transform .15s ease,background .15s ease}
+.co-btn:hover{transform:translateY(-1px)}
+.co .co-ink{background:#18161F;color:#FFFFFF}
+.co .co-vio{background:#B9A3FF;color:#18161F}
+.co .co-ghost{background:rgba(24,22,31,0.07);color:#18161F}
+.co .co-ghost-d{background:rgba(238,232,255,0.12);color:#FFFFFF}
+.co-sbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border-radius:9999px;border:0;cursor:pointer;font:600 14px 'DM Sans',sans-serif;background:rgba(24,22,31,0.07);color:#18161F;text-decoration:none;white-space:nowrap}
+.co-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:9999px;background:#EEE8FF;font-size:13px;font-weight:600;color:#18161F;white-space:nowrap}
+.co-label{font-size:14px;font-weight:600;color:#18161F}
+.co-in{width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:1px solid #CBC7D3;border-radius:12px;background:#FFFFFF;font:400 16px 'DM Sans',sans-serif;color:#18161F}
+.co-in:focus{outline:3px solid #C9BCFB;outline-offset:0;border-color:#7A5AF8}
+textarea.co-in{min-height:120px;resize:vertical;line-height:1.5}
+.co-err{font-size:13px;font-weight:600;color:#A8200D}
+.co-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.co-ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.co-ul li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.5;color:#18161F}
+.co-ul li svg{flex:none;margin-top:3px}
+@keyframes co-sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes co-swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes co-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes co-steam{0%{transform:translateY(6px);opacity:0}30%{opacity:.8}100%{transform:translateY(-16px);opacity:0}}
+@keyframes co-draw{0%,10%{stroke-dashoffset:300}55%,100%{stroke-dashoffset:0}}
+@keyframes co-fade{0%,40%{opacity:0;transform:translateY(6px)}55%,100%{opacity:1;transform:none}}
+@keyframes co-blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes co-pulse{0%{box-shadow:0 0 0 0 rgba(122,90,248,.45)}70%,100%{box-shadow:0 0 0 10px rgba(122,90,248,0)}}
+@keyframes co-rowin{0%,6%{opacity:0;transform:translateX(-10px)}14%,100%{opacity:1;transform:none}}
+@keyframes co-hl{0%,20%,100%{background:#FFFFFF}30%,60%{background:#EEE8FF}}
+@keyframes co-scan{0%,100%{top:8%}50%{top:88%}}
+@keyframes co-slide{0%{transform:translateX(-10px);opacity:0}15%,85%{opacity:1;transform:none}100%{opacity:0}}
+.co-pivot{transform-box:fill-box;transform-origin:50% 0}
+.co-c{transform-box:fill-box;transform-origin:center}
+.co-b{transform-box:fill-box;transform-origin:50% 100%}
+@media (max-width: 640px){.co-person{display:grid!important;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:14px 16px!important}.co-person>:last-child{grid-column:1/-1}.co-person>:first-child{width:56px!important;height:56px!important;font-size:19px!important;box-shadow:3px 3px 0 #18161F!important}}
+.co-role{transition:border-color .15s ease,transform .15s ease}.co-role:hover{border-color:#B9A3FF!important;transform:translateY(-1px)}
+@media (max-width: 640px){.co-two{grid-template-columns:1fr 1fr!important;gap:10px!important}.co-two>li{padding:16px!important}.co-two .co-big{font-size:22px!important}}
+@media (max-width: 860px){.co-aside{order:-1;position:static!important}}
+@media (prefers-reduced-motion: reduce){.co-anim,.co-anim *{animation:none!important;transition:none!important}html{scroll-behavior:auto}.co-btn:hover{transform:none}}
+</style>
+</helmet>
+<!--/CO-CSS-->
+<div class="co">
+  <dc-import name="SiteNav" current="partners"></dc-import>
+
+  <main>
+    <!-- 1 · Hero with the client dashboard -->
+    <section aria-labelledby="pa-h" class="co-wrap" style="padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(56px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: center; gap: 40px 56px;">
+      <div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 22px;">
+        <span class="co-kick"><i></i>For accountants and bookkeepers</span>
+        <h1 id="pa-h" class="co-h1" style="font-size: clamp(40px, 5.4vw, 72px);">Your clients’ books, already sorted when you open them.</h1>
+        <p class="co-lead" style="max-width: 560px;">BillingEase does the daily bookkeeping with your clients, in plain words they understand. You get one sign-in for every client, books that tie out, and the reports you’d have built yourself.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a href="#apply" class="co-btn co-ink">Join the partner program</a>
+          <a href="SiteContact.dc.html" class="co-btn co-ghost">Talk to our partners team</a>
+        </div>
+        <span class="co-sm">Free for your own firm. 600+ firms already in.</span>
+      </div>
+      <div class="co-anim" aria-label="Illustration of a partner’s client list: five clients, each with a status like Ready to review or 3 charges to sort." role="img" style="flex: 1 1 440px; min-width: 0; max-width: 560px; margin: 0 auto; position: relative;">
+        <div style="position: absolute; inset: 24px -12px -16px 24px; border-radius: 28px; background: #EEE8FF;"></div>
+        <div style="position: relative; background: #FFFFFF; border: 2px solid #18161F; border-radius: 24px; padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 6px 6px 0 #18161F;">
+          <span style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <span style="display: flex; flex-direction: column;"><span style="font-size: 12px; font-weight: 700; color: #5F5B68;">Whitfield &amp; Co.</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Your clients · 31</span></span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 9999px; background: #F7F6F9; font-size: 12px; font-weight: 600; color: #5F5B68;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14M20 20l-4-4"></path></svg>Find a client</span>
+          </span>
+          <sc-for list="{{dash}}" as="r" hint-placeholder-count="5">
+            <span style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 14px; animation: co-hl 10s ease-in-out infinite; animation-delay: {{r.delay}};">
+              <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{r.bg}}; border: 1.5px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 11px; flex: none;">{{r.i}}</span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.n}}</span><span style="font-size: 12px; color: #5F5B68; font-variant-numeric: tabular-nums;">Keep {{r.keep}} · {{r.month}}</span></span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: {{r.sBg}}; color: {{r.sFg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.sFg}};"></span>{{r.s}}</span>
+            </span>
+          </sc-for>
+          <span style="display: flex; gap: 8px; padding-top: 4px; border-top: 1px solid #E2DFE8;">
+            <span style="flex: 1; padding: 10px; border-radius: 12px; background: #F7F6F9; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11px; font-weight: 700; color: #5F5B68;">Ready to review</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px;">22</span></span>
+            <span style="flex: 1; padding: 10px; border-radius: 12px; background: #FFF0B8; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11px; font-weight: 700; color: #6B5000;">Need the client</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px;">6</span></span>
+            <span style="flex: 1; padding: 10px; border-radius: 12px; background: #E1EEF8; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11px; font-weight: 700; color: #1F5E91;">Tax due soon</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px;">3</span></span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · What clients get -->
+    <section aria-labelledby="cl-h" class="co-band">
+      <div class="co-wrap" style="display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px;">
+          <span class="co-kick"><i style="background: #E0752D;"></i>What your clients get</span>
+          <h2 id="cl-h" class="co-h2">Clients who stop sending you shoeboxes.</h2>
+          <p class="co-lead">They see three numbers they understand. BillingEase handles the bookkeeping underneath, the way you’d want it done.</p>
+        </div>
+        <div class="co-grid">
+          <sc-for list="{{clientGets}}" as="g" hint-placeholder-count="4">
+            <div class="co-soft" style="padding: 26px; display: flex; flex-direction: column; gap: 12px;">
+              <span style="width: 48px; height: 48px; border-radius: 16px; background: {{g.bg}}; display: flex; align-items: center; justify-content: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{g.icon}}"></path></svg></span>
+              <span class="co-h3" style="font-size: 20px;">{{g.t}}</span>
+              <span class="co-p" style="font-size: 15px;">{{g.d}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · What you get (interactive) -->
+    <section aria-labelledby="you-h" class="co-wrap" style="display: flex; flex-direction: column; gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px;">
+        <span class="co-kick"><i></i>What you get</span>
+        <h2 id="you-h" class="co-h2">Everything an accountant needs, nothing your client has to learn.</h2>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+        <div role="tablist" aria-label="Partner tools" aria-orientation="vertical" style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{tools}}" as="t" hint-placeholder-count="5">
+            <button type="button" role="tab" id="{{t.tabId}}" aria-selected="{{t.on}}" aria-controls="tool-panel" onClick="{{t.pick}}" style="display: flex; align-items: flex-start; gap: 14px; text-align: left; padding: 18px 20px; border-radius: 20px; border: 1px solid {{t.bd}}; background: {{t.bg}}; color: #18161F; cursor: pointer; font: inherit;">
+              <span style="width: 40px; height: 40px; border-radius: 12px; background: {{t.iconBg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg></span>
+              <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.01em;">{{t.t}}</span>
+                <span style="font-size: 14px; line-height: 1.5; color: #47444F;">{{t.d}}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+        <div id="tool-panel" role="tabpanel" aria-labelledby="{{toolTab}}" class="co-anim" style="flex: 1.3 1 420px; min-width: 0; border-radius: 28px; background: #EEE8FF; padding: clamp(20px, 3vw, 40px); display: flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: 420px;">
+          <!-- one sign-in -->
+          <sc-if value="{{tool.signin}}" hint-placeholder-val="{{true}}">
+            <div style="width: 100%; max-width: 380px; background: #FFFFFF; border: 2px solid #18161F; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 6px; box-shadow: 6px 6px 0 #18161F;">
+              <span style="font-size: 12px; font-weight: 700; color: #5F5B68; padding: 0 8px 6px;">Switch client</span>
+              <sc-for list="{{switcher}}" as="s" hint-placeholder-count="5">
+                <span style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: {{s.bg}}; animation: co-rowin 6s ease-out infinite; animation-delay: {{s.delay}};">
+                  <span style="width: 30px; height: 30px; border-radius: 9px; background: {{s.tile}}; border: 1.5px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none;">{{s.i}}</span>
+                  <span style="flex: 1; min-width: 0; font-weight: 600; font-size: 14px;">{{s.n}}</span>
+                  <span style="font-size: 12px; color: #5F5B68;">{{s.r}}</span>
+                </span>
+              </sc-for>
+              <span style="margin-top: 6px; padding: 10px; border-radius: 12px; border: 1.5px dashed #CBC7D3; font-size: 13px; font-weight: 600; text-align: center; color: #47444F;">+ Invite a client</span>
+            </div>
+          </sc-if>
+          <!-- read-only -->
+          <sc-if value="{{tool.read}}" hint-placeholder-val="{{false}}">
+            <div style="width: 100%; max-width: 380px; background: #FFFFFF; border: 2px solid #18161F; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 6px 6px 0 #18161F;">
+              <span style="display: flex; align-items: center; gap: 12px;">
+                <span style="width: 44px; height: 44px; border-radius: 9999px; background: #B9A3FF; border: 2px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 14px;">DW</span>
+                <span style="display: flex; flex-direction: column;"><strong style="font-size: 15px;">Dana Whitfield, CPA</strong><span style="font-size: 13px; color: #5F5B68;">Accountant at Northwind Studio</span></span>
+              </span>
+              <sc-for list="{{perms}}" as="p" hint-placeholder-count="5">
+                <span style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 12px; background: #F7F6F9; font-size: 14px;">
+                  <span>{{p.t}}</span>
+                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{p.bg}}; color: {{p.fg}}; font-size: 12px; font-weight: 700;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{{p.fg}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg>{{p.s}}</span>
+                </span>
+              </sc-for>
+            </div>
+          </sc-if>
+          <!-- journal entries -->
+          <sc-if value="{{tool.journal}}" hint-placeholder-val="{{false}}">
+            <div style="width: 100%; max-width: 400px; background: #FFFFFF; border: 2px solid #18161F; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 6px 6px 0 #18161F;">
+              <span style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-family: Sora, sans-serif; font-size: 16px;">Move money between categories by hand</strong><span style="font-size: 12px; color: #5F5B68;">Journal entry · JE-0042 · Oct 4, 2026</span></span>
+              <span style="display: grid; grid-template-columns: 1fr auto auto; gap: 8px 14px; font-size: 13px; align-items: center;">
+                <span style="font-weight: 700; color: #5F5B68;">Category</span><span style="font-weight: 700; color: #5F5B68; text-align: right;">Debit</span><span style="font-weight: 700; color: #5F5B68; text-align: right;">Credit</span>
+                <span>Equipment</span><span style="text-align: right; font-variant-numeric: tabular-nums;">$1,240.00</span><span></span>
+                <span>Office supplies</span><span></span><span style="text-align: right; font-variant-numeric: tabular-nums;">$1,240.00</span>
+              </span>
+              <span style="padding: 10px 12px; border-radius: 12px; background: #F7F6F9; font-size: 13px; color: #47444F;">Note: the MacBook from Sep 18 is equipment, not supplies.</span>
+              <span style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #2F5711;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #2F5711; animation: co-pulse 1.8s ease-out infinite;"></span>Balanced</span>
+                <span style="padding: 8px 16px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-size: 13px; font-weight: 700;">Post entry</span>
+              </span>
+              <span style="font-size: 12px; color: #5F5B68;">Maya sees: “Your accountant moved $1,240 from Office supplies to Equipment.”</span>
+            </div>
+          </sc-if>
+          <!-- reports -->
+          <sc-if value="{{tool.reports}}" hint-placeholder-val="{{false}}">
+            <div style="width: 100%; max-width: 380px; background: #FFFFFF; border: 2px solid #18161F; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 6px; box-shadow: 6px 6px 0 #18161F;">
+              <span style="font-size: 12px; font-weight: 700; color: #5F5B68; padding: 0 6px 6px;">Northwind Studio · Sep 2026</span>
+              <sc-for list="{{reports}}" as="r" hint-placeholder-count="6">
+                <span style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: #F7F6F9;">
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><strong style="font-size: 14px;">{{r.p}}</strong><span style="font-size: 12px; color: #5F5B68;">{{r.j}}</span></span>
+                  <span style="padding: 3px 9px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 11px; font-weight: 700;">CSV</span>
+                  <span style="padding: 3px 9px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 11px; font-weight: 700;">Excel</span>
+                </span>
+              </sc-for>
+            </div>
+          </sc-if>
+          <!-- invite flow -->
+          <sc-if value="{{tool.invite}}" hint-placeholder-val="{{false}}">
+            <ol style="width: 100%; max-width: 420px; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{inviteSteps}}" as="s" hint-placeholder-count="3">
+                <li style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: #FFFFFF; border: 2px solid #18161F; border-radius: 18px; animation: co-fade 6s ease-out infinite; animation-delay: {{s.delay}};">
+                  <span style="width: 36px; height: 36px; border-radius: 9999px; background: {{s.bg}}; border: 2px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; flex: none;">{{s.n}}</span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><strong style="font-size: 15px;">{{s.t}}</strong><span style="font-size: 13px; color: #47444F;">{{s.d}}</span></span>
+                </li>
+              </sc-for>
+            </ol>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · Testimonial -->
+    <section aria-label="What a partner says" style="padding: 0 clamp(16px, 4vw, 40px);">
+      <figure style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; background: #18161F; border-radius: 32px; padding: clamp(32px, 5vw, 64px); display: flex; flex-wrap: wrap; align-items: center; gap: 32px 56px;">
+        <div class="co-anim" aria-hidden="true" style="flex: 0 1 220px; min-width: 160px; margin: 0 auto;">
+          <svg viewBox="0 0 220 220" width="100%" style="display: block; overflow: visible;">
+            <circle cx="110" cy="116" r="96" fill="#2B2733"></circle>
+            <path d="M40 220 C40 170 70 152 110 152 C150 152 180 170 180 220 Z" fill="#B9A3FF" stroke="#EEE8FF" stroke-width="2.5"></path>
+            <rect x="100" y="128" width="20" height="26" fill="#E2B08F" stroke="#EEE8FF" stroke-width="2.2"></rect>
+            <circle cx="110" cy="104" r="30" fill="#E2B08F" stroke="#EEE8FF" stroke-width="2.5"></circle>
+            <path d="M78 108 C70 72 96 62 112 62 C136 62 150 78 144 112 C140 94 128 84 110 84 C96 84 84 94 78 108 Z" fill="#8A4B2A" stroke="#EEE8FF" stroke-width="2"></path>
+            <circle cx="98" cy="106" r="9" fill="none" stroke="#EEE8FF" stroke-width="2.2"></circle>
+            <circle cx="122" cy="106" r="9" fill="none" stroke="#EEE8FF" stroke-width="2.2"></circle>
+            <path d="M107 106 h6" stroke="#EEE8FF" stroke-width="2.2"></path>
+            <path d="M102 122 q8 6 16 0" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round"></path>
+            <g class="co-c" style="animation: co-bob 3.5s ease-in-out infinite;">
+              <rect x="150" y="30" width="62" height="40" rx="10" fill="#FFFFFF" stroke="#EEE8FF" stroke-width="2"></rect>
+              <text x="181" y="56" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" font-weight="800" fill="#18161F">CPA</text>
+            </g>
+          </svg>
+        </div>
+        <div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+          <blockquote style="margin: 0; font-family: Sora, sans-serif; font-weight: 600; font-size: clamp(22px, 2.4vw, 32px); line-height: 1.3; letter-spacing: -0.02em; color: #FFFFFF;">“I used to start every month chasing receipts. Now I open one list, see which of my 31 clients are ready, and spend my time on advice instead of data entry.”</blockquote>
+          <figcaption style="display: flex; flex-direction: column; gap: 2px; color: #EEE8FF; font-size: 15px;"><strong style="color: #B9A3FF; font-size: 16px;">Dana Whitfield, CPA</strong>Whitfield &amp; Co., Brooklyn, NY · Premier partner since 2025</figcaption>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px 28px; padding-top: 16px; border-top: 1px solid rgba(238,232,255,0.2);">
+            <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; color: #B9A3FF;">31</span><span style="font-size: 13px; color: #EEE8FF;">clients on BillingEase</span></span>
+            <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; color: #B9A3FF;">1 day</span><span style="font-size: 13px; color: #EEE8FF;">saved at every month-end</span></span>
+            <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; color: #B9A3FF;">0</span><span style="font-size: 13px; color: #EEE8FF;">shoeboxes this year</span></span>
+          </div>
+        </div>
+      </figure>
+    </section>
+
+    <!-- 5 · Tiers -->
+    <section aria-labelledby="tier-h" class="co-wrap" style="display: flex; flex-direction: column; gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px;">
+        <h2 id="tier-h" class="co-h2">Partner levels and perks</h2>
+        <p class="co-lead">Joining is free. Perks grow with the number of clients you bring to BillingEase.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px;">
+        <sc-for list="{{tiers}}" as="t" hint-placeholder-count="3">
+          <div style="position: relative; background: #FFFFFF; border: {{t.border}}; border-radius: 24px; padding: 30px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box;">
+            <span style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+              <span style="display: inline-flex; align-items: center; gap: 10px;">
+                <span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 9999px; background: {{t.badge}}; border: 2px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"></path></svg></span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{t.name}}</span>
+              </span>
+              <sc-if value="{{t.tag}}" hint-placeholder-val="{{false}}"><span class="co-chip">{{t.tag}}</span></sc-if>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 36px; line-height: 1; letter-spacing: -0.03em;">{{t.who}}</span>
+              <span class="co-sm">{{t.sub}}</span>
+            </span>
+            <ul class="co-ul" style="gap: 10px;">
+              <sc-for list="{{t.perks}}" as="p" hint-placeholder-count="4">
+                <li style="font-size: 15px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg><span>{{p}}</span></li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-for>
+      </div>
+      <p class="co-sm" style="margin: 0; font-size: 15px;">Client discounts apply to the Pro plan (normally ${{pro.month}} a month) and Team plan (${{team.month}} a month) when your firm pays for the client. Clients who pay for themselves keep the usual prices on <a href="SitePricing.dc.html" style="font-weight: 600;">the pricing page</a>.</p>
+    </section>
+
+    <!-- 6 · Application -->
+    <section id="apply" aria-labelledby="apply-h" class="co-band" style="scroll-margin-top: 16px;">
+      <div class="co-wrap" style="display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: flex-start;">
+        <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+          <h2 id="apply-h" class="co-h2">Apply to the partner program</h2>
+          <p class="co-lead">Two minutes. Sofia from our partners team will reply within two business days with your partner account and a 30-minute walkthrough.</p>
+          <ul class="co-ul" style="margin-top: 6px;">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg><span>No minimum number of clients to join</span></li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg><span>Free for your own firm’s books</span></li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg><span>Bring clients from QuickBooks, Xero or a spreadsheet; we help move them</span></li>
+          </ul>
+          <span class="co-sm">Rather just try it first? <a href="AuthSignUp.dc.html" style="font-weight: 600;">Start a free account</a> and invite one client.</span>
+        </div>
+        <div class="co-card" style="flex: 1.4 1 460px; padding: clamp(22px, 3.4vw, 40px);">
+          <sc-if value="{{formOpen}}" hint-placeholder-val="{{true}}">
+            <form onSubmit="{{submit}}" novalidate style="display: flex; flex-direction: column; gap: 20px;">
+              <sc-if value="{{err.any}}" hint-placeholder-val="{{false}}">
+                <div role="alert" style="padding: 12px 16px; border-radius: 12px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{err.any}}</div>
+              </sc-if>
+              <div class="co-field">
+                <label for="pf-firm" class="co-label">Firm name</label>
+                <input id="pf-firm" class="co-in" type="text" autocomplete="organization" value="{{f.firm}}" onChange="{{setFirm}}" aria-invalid="{{err.firmInv}}" style="border-color: {{err.firmB}};">
+                <sc-if value="{{err.firm}}" hint-placeholder-val="{{false}}"><span class="co-err">{{err.firm}}</span></sc-if>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 18px;">
+                <div class="co-field">
+                  <label for="pf-name" class="co-label">Your name</label>
+                  <input id="pf-name" class="co-in" type="text" autocomplete="name" value="{{f.name}}" onChange="{{setName}}" aria-invalid="{{err.nameInv}}" style="border-color: {{err.nameB}};">
+                  <sc-if value="{{err.name}}" hint-placeholder-val="{{false}}"><span class="co-err">{{err.name}}</span></sc-if>
+                </div>
+                <div class="co-field">
+                  <label for="pf-email" class="co-label">Work email</label>
+                  <input id="pf-email" class="co-in" type="email" autocomplete="email" value="{{f.email}}" onChange="{{setEmail}}" aria-invalid="{{err.emailInv}}" style="border-color: {{err.emailB}};">
+                  <sc-if value="{{err.email}}" hint-placeholder-val="{{false}}"><span class="co-err">{{err.email}}</span></sc-if>
+                </div>
+              </div>
+              <div class="co-field">
+                <label for="pf-count" class="co-label">How many small-business clients do you work with?</label>
+                <select id="pf-count" class="co-in" value="{{f.count}}" onChange="{{setCount}}" aria-invalid="{{err.countInv}}" style="border-color: {{err.countB}}; cursor: pointer;">
+                  <option value="">Choose one</option>
+                  <option value="1-9">1 to 9</option>
+                  <option value="10-39">10 to 39</option>
+                  <option value="40-99">40 to 99</option>
+                  <option value="100+">100 or more</option>
+                </select>
+                <sc-if value="{{err.count}}" hint-placeholder-val="{{false}}"><span class="co-err">{{err.count}}</span></sc-if>
+              </div>
+              <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+                <legend class="co-label" style="padding: 0; margin-bottom: 10px;">What do your clients use today? <span style="font-weight: 400; color: #5F5B68;">Pick all that apply.</span></legend>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{software}}" as="s" hint-placeholder-count="6">
+                    <button type="button" aria-pressed="{{s.on}}" onClick="{{s.toggle}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{s.bd}}; background: {{s.bg}}; color: {{s.fg}}; font: 600 14px 'DM Sans', sans-serif; cursor: pointer;"><sc-if value="{{s.on}}" hint-placeholder-val="{{false}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></sc-if>{{s.label}}</button>
+                  </sc-for>
+                </div>
+                <sc-if value="{{err.soft}}" hint-placeholder-val="{{false}}"><span class="co-err">{{err.soft}}</span></sc-if>
+              </fieldset>
+              <div class="co-field">
+                <label for="pf-note" class="co-label">Anything we should know? <span style="font-weight: 400; color: #5F5B68;">(optional)</span></label>
+                <textarea id="pf-note" class="co-in" style="min-height: 96px;" maxlength="500" value="{{f.note}}" onChange="{{setNote}}" placeholder="For example: most of my clients are restaurants in New Jersey."></textarea>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+                <button type="submit" class="co-btn co-ink">Send application</button>
+                <span class="co-sm">Questions first? <a href="SiteContact.dc.html" style="font-weight: 600;">Contact us</a></span>
+              </div>
+            </form>
+          </sc-if>
+          <sc-if value="{{sent}}" hint-placeholder-val="{{false}}">
+            <div role="status" style="display: flex; flex-direction: column; gap: 18px;">
+              <svg class="co-anim" aria-hidden="true" viewBox="0 0 120 100" width="120" style="overflow: visible;">
+                <circle cx="56" cy="54" r="44" fill="#EEE8FF"></circle>
+                <path d="M20 34 H92 V82 H20 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+                <path d="M20 34 L56 62 L92 34" fill="none" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+                <g class="co-c" style="animation: co-bob 3s ease-in-out infinite;"><circle cx="94" cy="28" r="17" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5"></circle><path d="M86 28 l5 5 l10 -10" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></g>
+              </svg>
+              <h3 class="co-h2" style="font-size: clamp(26px, 3vw, 36px);">Thanks, {{firstName}}. {{sentFirm}} is on the list.</h3>
+              <p class="co-p">Sofia Lindqvist from our partners team will email <strong style="color: #18161F;">{{f.email}}</strong> within two business days to set up your partner account and a 30-minute walkthrough. With {{countText}} clients, you’d start at the <strong style="color: #18161F;">{{tierName}}</strong> level.</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <a href="AuthSignUp.dc.html" class="co-btn co-ink" style="min-height: 48px;">Create your firm’s free account</a>
+                <button type="button" class="co-sbtn" onClick="{{again}}" style="min-height: 48px;">Edit my answers</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · FAQ -->
+    <section aria-labelledby="faq-h" class="co-wrap" style="display: flex; flex-wrap: wrap; gap: 32px 64px;">
+      <div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 16px;">
+        <h2 id="faq-h" class="co-h2">Questions from accountants</h2>
+        <p class="co-p">Something else? <a href="SiteContact.dc.html" style="font-weight: 600;">Ask the partners team</a> or read the <a href="SiteHelp.dc.html" style="font-weight: 600;">help center</a>.</p>
+      </div>
+      <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; border-top: 1px solid #E2DFE8;">
+        <sc-for list="{{faqs}}" as="q" hint-placeholder-count="6">
+          <div style="border-bottom: 1px solid #E2DFE8;">
+            <h3 style="margin: 0;">
+              <button type="button" aria-expanded="{{q.open}}" aria-controls="{{q.id}}" onClick="{{q.toggle}}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 16px 0; border: 0; background: transparent; text-align: left; cursor: pointer; color: #18161F; font: 600 18px 'DM Sans', sans-serif;">
+                <span>{{q.q}}</span>
+                <span style="width: 32px; height: 32px; border-radius: 9999px; background: {{q.iconBg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{q.icon}}"></path></svg></span>
+              </button>
+            </h3>
+            <sc-if value="{{q.open}}" hint-placeholder-val="{{false}}">
+              <p id="{{q.id}}" style="margin: 0; padding: 0 48px 22px 0; font-size: 16px; line-height: 1.6; color: #47444F;">{{q.a}}</p>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- 8 · CTA -->
+    <section aria-labelledby="close-h" style="padding: 0 clamp(16px, 4vw, 40px) clamp(64px, 8vw, 104px);">
+      <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; background: #EEE8FF; border-radius: 32px; padding: clamp(36px, 6vw, 72px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px;">
+        <div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+          <h2 id="close-h" class="co-h2" style="font-size: clamp(30px, 4vw, 52px);">Open your firm’s account today.</h2>
+          <p class="co-lead">Free for your firm. Invite your first client in two clicks, and see their books tomorrow morning.</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a href="AuthSignUp.dc.html" class="co-btn co-ink">Start free</a>
+          <a href="SiteContact.dc.html" class="co-btn" style="background: #FFFFFF; color: #18161F;">Talk to us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter"></dc-import>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return { nav: SITE.nav, legal: SITE.legal }; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tool: 0, faq: 0, f: { firm: '', name: '', email: '', count: '', note: '' }, soft: {}, tried: false, sent: false };
+  }
+  errors() {
+    const f = this.state.f, e = {};
+    if (!f.firm.trim()) e.firm = 'Add your firm’s name. Your own name is fine if you work solo.';
+    if (!f.name.trim()) e.name = 'Add your name.';
+    if (!f.email.trim()) e.email = 'Add an email so we can reply.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = 'That email doesn’t look right. Check for a typo?';
+    if (!f.count) e.count = 'Pick a range. A rough guess is fine.';
+    if (!Object.keys(this.state.soft).some((k) => this.state.soft[k])) e.soft = 'Pick at least one, or “Something else”.';
+    return e;
+  }
+  renderVals() {
+    const st = this.state;
+    const pro = SITE.plans.find((p) => p.id === 'pro');
+    const team = SITE.plans.find((p) => p.id === 'team');
+    const off = (n, pct) => '$' + (n * (1 - pct)).toFixed(2).replace(/\.00$/, '');
+    const I = {
+      eq: 'M4 9h16M4 15h16',
+      inv: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5',
+      cam: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7',
+      chat: 'M4 5h16v11H9l-5 4z',
+      key: 'M15 7a4 4 0 1 1-3.9 5H3v3h3v3h3v-3h2.1A4 4 0 0 1 15 7z',
+      eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6',
+      move: 'M4 8h13l-3-3M20 16H7l3 3',
+      chart: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
+      mail: 'M3 6h18v12H3zM3 6l9 7 9-7'
+    };
+    const tools = [
+      { k: 'signin', t: 'One sign-in for all your clients', d: 'Every client in one list, sorted by what needs you. Switch in a click.', icon: I.key },
+      { k: 'read', t: 'Read-only access by default', d: 'You see the books and reports. Clients stay in charge of their money.', icon: I.eye },
+      { k: 'journal', t: 'Journal entries', d: 'Make adjusting entries; the client sees them explained in plain words.', icon: I.move },
+      { k: 'reports', t: 'The reports you expect', d: 'P&L, balance sheet, trial balance, general ledger and sales tax, ready to export.', icon: I.chart },
+      { k: 'invite', t: 'A two-click client invite', d: 'Send an invite, or let your client add you. Their books appear in your list.', icon: I.mail }
+    ];
+    const cur = tools[st.tool].k;
+    const tool = {}; tools.forEach((t) => { tool[t.k] = t.k === cur; });
+    const sw = ['QuickBooks', 'Xero', 'Wave', 'FreshBooks', 'Spreadsheets', 'Something else'];
+    const e = st.tried ? this.errors() : {};
+    const bad = (k) => (e[k] ? '#A8200D' : '#CBC7D3');
+    const nErr = Object.keys(e).length;
+    const set = (k) => (ev) => this.setState({ f: { ...this.state.f, [k]: ev.target.value } });
+    const countText = { '1-9': '1 to 9', '10-39': '10 to 39', '40-99': '40 to 99', '100+': '100 or more' }[st.f.count] || '';
+    const tierName = st.f.count === '1-9' ? 'Partner' : st.f.count === '10-39' ? 'Certified' : 'Premier';
+    const faqs = [
+      { q: 'Does the partner program cost anything?', a: 'No. Joining is free, and so is BillingEase for your own firm’s books at every level. You only pay if you choose to pay for a client’s plan, and then you get the partner discount.' },
+      { q: 'What can I see and do in a client’s books?', a: 'As an Accountant you can see every transaction, category and report, add journal entries, and export reports. You can’t send invoices, pay bills or move money unless the client gives you more access.' },
+      { q: 'My client already uses BillingEase. How do I get in?', a: 'Ask them to open Your business, then Team, and invite you as Accountant. Or send them an invite from your client list. Either way they appear in your list as soon as they say yes.' },
+      { q: 'Can I export to my tax software?', a: 'Yes. Every report exports to CSV and Excel, and the trial balance uses a standard layout that imports into the common tax packages. Account mapping is saved per client.' },
+      { q: 'Who pays for the client’s plan?', a: 'Either works. Most clients pay for themselves at the usual price. If your firm pays, you get 20% or 30% off depending on your level, on one monthly bill for all of them.' },
+      { q: 'Can my clients see my notes?', a: 'Notes you mark private stay in your firm. Journal entries are always visible to the client, with your explanation, so nothing changes in their books without them knowing why.' }
+    ];
+    return {
+      dash: [
+        { i: 'NS', n: 'Northwind Studio', keep: '$8,407', month: 'Oct', s: 'Ready to review', sBg: '#E2F6D5', sFg: '#2F5711', bg: '#B9A3FF', delay: '0s' },
+        { i: 'OB', n: 'Oak Street Bakery', keep: '$3,120', month: 'Oct', s: '3 to sort', sBg: '#FFF0B8', sFg: '#6B5000', bg: '#FDE6D6', delay: '2s' },
+        { i: 'BY', n: 'Bluebird Yoga', keep: '$2,640', month: 'Oct', s: 'Checked to bank', sBg: '#E2F6D5', sFg: '#2F5711', bg: '#EEE8FF', delay: '4s' },
+        { i: 'HP', n: 'Harbor & Pine Café', keep: '$5,910', month: 'Oct', s: 'Sales tax Oct 20', sBg: '#E1EEF8', sFg: '#1F5E91', bg: '#E0752D', delay: '6s' },
+        { i: 'RO', n: 'Ridge Outdoor Supply', keep: '—', month: 'invited', s: 'Waiting to join', sBg: '#EFEDF3', sFg: '#47444F', bg: '#FFFFFF', delay: '8s' }
+      ],
+      clientGets: [
+        { t: 'Three numbers, every morning', d: 'Coming in, going out and theirs to keep, always up to date. They finally know where they stand.', icon: I.eq, bg: '#EEE8FF' },
+        { t: 'Invoices that get paid', d: 'Card and bank payments on every invoice, with polite reminders sent for them.', icon: I.inv, bg: '#FDE6D6' },
+        { t: 'Receipts read for them', d: 'They snap a photo; BillingEase reads it and matches it to the charge. You get the image with it.', icon: I.cam, bg: '#EEE8FF' },
+        { t: 'Questions in plain words', d: 'When something can’t be sorted automatically, they get one clear question, not a ledger.', icon: I.chat, bg: '#FDE6D6' }
+      ],
+      tools: tools.map((t, i) => {
+        const on = st.tool === i;
+        return { ...t, on, tabId: 'tool-tab-' + i, bg: on ? '#FFFFFF' : 'transparent', bd: on ? '#18161F' : '#E2DFE8', iconBg: on ? '#B9A3FF' : '#EFEDF3', pick: () => this.setState({ tool: i }) };
+      }),
+      toolTab: 'tool-tab-' + st.tool,
+      tool,
+      switcher: [
+        { i: 'NS', n: 'Northwind Studio', r: 'Ready', tile: '#B9A3FF', bg: '#EEE8FF', delay: '0s' },
+        { i: 'OB', n: 'Oak Street Bakery', r: '3 to sort', tile: '#FDE6D6', bg: '#FFFFFF', delay: '0.3s' },
+        { i: 'BY', n: 'Bluebird Yoga', r: 'Ready', tile: '#EEE8FF', bg: '#FFFFFF', delay: '0.6s' },
+        { i: 'HP', n: 'Harbor & Pine Café', r: 'Tax due', tile: '#E0752D', bg: '#FFFFFF', delay: '0.9s' },
+        { i: 'LD', n: 'Lumen Dental Group', r: 'Ready', tile: '#F4C3A1', bg: '#FFFFFF', delay: '1.2s' }
+      ],
+      perms: [
+        { t: 'See books and reports', s: 'Yes', ok: true },
+        { t: 'Add journal entries', s: 'Yes', ok: true },
+        { t: 'Export reports', s: 'Yes', ok: true },
+        { t: 'Send invoices', s: 'No', ok: false },
+        { t: 'Pay bills or move money', s: 'No', ok: false }
+      ].map((p) => ({ ...p, bg: p.ok ? '#E2F6D5' : '#EFEDF3', fg: p.ok ? '#2F5711' : '#47444F', icon: p.ok ? 'm5 12 5 5 9-10' : 'M6 6l12 12M18 6 6 18' })),
+      reports: [
+        { p: 'Profit & loss', j: 'What came in, went out, and what’s left' },
+        { p: 'Balance sheet', j: 'What the business owns and owes' },
+        { p: 'Trial balance', j: 'Every category, debits and credits' },
+        { p: 'General ledger', j: 'Every transaction, by category' },
+        { p: 'Sales tax', j: 'NY, Q3 2026: $412.63 collected' }
+      ],
+      inviteSteps: [
+        { n: '1', t: 'You send an invite', d: 'From your client list: “Invite Ridge Outdoor Supply”.', bg: '#B9A3FF', delay: '0s' },
+        { n: '2', t: 'Your client says yes', d: 'They sign up free, or add you from Your business → Team.', bg: '#FDE6D6', delay: '1s' },
+        { n: '3', t: 'Their books appear in your list', d: 'Read-only, with history imported from their bank.', bg: '#E2F6D5', delay: '2s' }
+      ],
+      pro, team,
+      tiers: [
+        { name: 'Partner', who: '1+ client', sub: 'Everyone starts here', badge: '#FFFFFF', border: '1px solid #E2DFE8',
+          perks: ['BillingEase free for your firm’s own books', 'Accountant access to every client', 'Free training and certification course', '10% off client plans you pay for (Pro ' + off(pro.month, 0.1) + ')'] },
+        { name: 'Certified', who: '10+ clients', sub: 'After the certification course', badge: '#B9A3FF', border: '2px solid #18161F', tag: 'Most firms',
+          perks: ['Everything in Partner', 'Listed in our accountant directory', '20% off client plans (Pro ' + off(pro.month, 0.2) + ', Team ' + off(team.month, 0.2) + ')', 'A priority line to a person on support'] },
+        { name: 'Premier', who: '40+ clients', sub: 'For established practices', badge: '#E0752D', border: '1px solid #E2DFE8',
+          perks: ['Everything in Certified', '30% off client plans (Pro ' + off(pro.month, 0.3) + ', Team ' + off(team.month, 0.3) + ')', 'A named partner manager', 'Early access and co-hosted client workshops'] }
+      ],
+      formOpen: !st.sent, sent: st.sent, f: st.f,
+      software: sw.map((s) => {
+        const on = !!st.soft[s];
+        return { label: s, on, bg: on ? '#18161F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#18161F', bd: on ? '#18161F' : '#CBC7D3', toggle: () => this.setState({ soft: { ...this.state.soft, [s]: !on } }) };
+      }),
+      err: {
+        any: nErr ? (nErr === 1 ? 'One thing to fix before sending.' : nErr + ' things to fix before sending.') : null,
+        firm: e.firm, name: e.name, email: e.email, count: e.count, soft: e.soft,
+        firmInv: !!e.firm, nameInv: !!e.name, emailInv: !!e.email, countInv: !!e.count,
+        firmB: bad('firm'), nameB: bad('name'), emailB: bad('email'), countB: bad('count')
+      },
+      setFirm: set('firm'), setName: set('name'), setEmail: set('email'), setCount: set('count'), setNote: set('note'),
+      firstName: st.f.name.trim().split(/\s+/)[0] || 'there',
+      sentFirm: st.f.firm.trim(), countText, tierName,
+      submit: (ev) => {
+        ev.preventDefault();
+        if (Object.keys(this.errors()).length) { this.setState({ tried: true }); return; }
+        this.setState({ sent: true, tried: false });
+        const el = document.getElementById('apply'); if (el) el.scrollIntoView({ block: 'start' });
+      },
+      again: () => this.setState({ sent: false }),
+      faqs: faqs.map((q, i) => {
+        const open = st.faq === i;
+        return { ...q, id: 'faq-' + i, open, iconBg: open ? '#B9A3FF' : 'rgba(24,22,31,0.07)', icon: open ? 'M6 12h12' : 'M12 6v12M6 12h12', toggle: () => this.setState({ faq: open ? -1 : i }) };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
