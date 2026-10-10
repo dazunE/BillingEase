@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your business navigation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+.bn-item{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 12px;border-radius:16px;text-decoration:none;color:#18161F;box-sizing:border-box}
+.bn-item:hover{background:#F7F6F9}
+.bn-item[aria-current="page"]{background:#18161F;color:#FFFFFF}
+.bn-item[aria-current="page"]:hover{background:#18161F}
+.bn-tile{width:36px;height:36px;border-radius:11px;background:#EFEDF3;display:flex;align-items:center;justify-content:center;flex:none}
+.bn-item[aria-current="page"] .bn-tile{background:#B9A3FF}
+.bn-sub{font-size:12.5px;color:#5F5B68;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bn-item[aria-current="page"] .bn-sub{color:#D9CFFF}
+.bn-more{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 12px;border-radius:12px;text-decoration:none;color:#47444F;font-size:13.5px;font-weight:600}
+.bn-more:hover{background:#F7F6F9;color:#18161F}
+.bn-item:focus-visible,.bn-more:focus-visible{outline:3px solid #7A5AF8;outline-offset:2px}
+.bn-short{display:none}
+@media (min-width: 901px){.bn-side{position:sticky;top:16px}}
+@media (max-width: 900px){
+  .bn-side{flex:1 1 100%!important;width:100%!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+  .bn-head,.bn-label,.bn-foot,.bn-sub,.bn-tile,.bn-long{display:none!important}
+  .bn-short{display:inline}
+  .bn-list{flex-direction:row!important;gap:4px!important;background:#EFEDF3;padding:4px;border-radius:9999px}
+  .bn-item{flex:1 1 0;min-height:42px;padding:0 12px;border-radius:9999px;justify-content:center;white-space:nowrap}
+}
+</style>
+</helmet>
+<!-- The side menu for Your business: who you are, the three settings screens, then quieter extras. current: profile | team | security -->
+<aside class="bn-side" aria-label="Your business" style="flex: 0 0 280px; width: 280px; max-width: 100%; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 16px; display: flex; flex-direction: column; gap: 14px; font-family: DM Sans, system-ui, sans-serif; color: #18161F;">
+  <div class="bn-head" style="display: flex; align-items: center; gap: 12px; padding: 4px 4px 14px; border-bottom: 1px solid #EFEDF3;">
+    <span style="width: 44px; height: 44px; border-radius: 14px; background: #18161F; color: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none; font: 700 16px Sora, sans-serif;">{{biz.ini}}</span>
+    <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+      <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15.5px; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz.name}}</span>
+      <span style="font-size: 12.5px; color: #5F5B68; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz.sub}}</span>
+    </span>
+  </div>
+  <span class="bn-label" style="padding: 0 6px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5F5B68;">Settings</span>
+  <nav aria-label="Business settings">
+    <div class="bn-list" style="display: flex; flex-direction: column; gap: 4px;">
+      <sc-for list="{{items}}" as="it" hint-placeholder-count="3">
+        <a class="bn-item" href="{{it.href}}" aria-current="{{it.cur}}">
+          <span class="bn-tile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"></path></svg></span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <span style="font-weight: 700; font-size: 14.5px;"><span class="bn-long">{{it.label}}</span><span class="bn-short">{{it.short}}</span></span>
+            <span class="bn-sub">{{it.sub}}</span>
+          </span>
+        </a>
+      </sc-for>
+    </div>
+  </nav>
+  <div class="bn-foot" style="display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 1px solid #EFEDF3;">
+    <a class="bn-more" href="BizTeam.dc.html#businesses"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"></path></svg>Switch business</a>
+    <a class="bn-more" href="SetupProfile.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"></path></svg>Run setup again</a>
+    <a class="bn-more" href="Everything.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>Everything BillingEase does</a>
+  </div>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"current":{"editor":"text","default":"profile"},"$preview":{"width":320,"height":520}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = BE.get('profile') || {};
+    const cur = this.props.current || 'profile';
+    const n = BE.all('team').length;
+    const others = BE.all('businesses').filter((b) => !b.current).length;
+    const where = [p.role || 'Owner', p.currency || 'USD', p.city].filter(Boolean).join(' · ');
+    const items = [
+      { k: 'profile', href: 'BizProfile.dc.html', label: 'Business profile', short: 'Profile', sub: 'Name, branding, country', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
+      { k: 'team', href: 'BizTeam.dc.html', label: 'Team and access', short: 'Team', sub: (n > 1 ? n + ' people' : 'Just you') + (others ? ' · ' + (others + 1) + ' businesses' : ''), icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M16 4.2a3.5 3.5 0 0 1 0 6.6' },
+      { k: 'security', href: 'BizSecurity.dc.html', label: 'Security and data', short: 'Security', sub: 'Sign-in, import, export', icon: 'M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6zM9 12l2 2 4-4' }
+    ].map((it) => Object.assign({}, it, { cur: it.k === cur ? 'page' : false }));
+    return {
+      biz: { name: p.business || 'Your business', ini: BE.initials(p.business || 'Y').charAt(0) || 'Y', sub: where },
+      items
+    };
+  }
+}
+</script>
+</body>
+</html>

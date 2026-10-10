@@ -13,7 +13,7 @@
 <style>
 /* Illustrations for the signed-out screens, in the landing page's hand. Purely decorative (aria-hidden). */
 .aa-bd{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.aa-it{position:absolute;display:block}
+.aa-it{position:absolute;display:block;transform:rotate(var(--r,0deg))}
 .aa-blob{position:absolute;display:block;border-radius:9999px}
 .aa-band{display:none}
 .aa-lane{position:relative;display:block;flex:1 1 0;min-width:36px;height:28px;overflow:hidden}
@@ -46,7 +46,7 @@
 @keyframes aa-fly{0%{transform:translate(0,0) rotate(-8deg);opacity:0}10%{opacity:1}55%{transform:translate(44px,-16px) rotate(6deg);opacity:1}66%,100%{transform:translate(52px,-8px) rotate(12deg);opacity:0}}
 /* Setup's margins are narrower: smaller paper */
 .aa-xl .aa-it svg{width:66%;height:auto}
-@media (max-width: 1099px){.aa-wide{display:none!important}}
+@media (max-width: 1239px){.aa-wide{display:none!important}}
 @media (max-width: 1359px){.aa-xl{display:none!important}}
 @media (max-width: 760px){
   .aa-bd{position:relative;inset:auto;z-index:0;flex:none;height:84px;margin:-4px 0}
@@ -192,7 +192,7 @@
   <sc-if value="{{sc.jar}}" hint-placeholder-val="{{true}}">
     <span class="aa-jar" style="position: relative; flex: none; display: block; width: 150px;">
       <dc-import name="CashJar" size="{{150}}" envelope="{{false}}" amount="{{sc.amount}}" line="#EEE8FF" uid="{{sc.uid}}" hint-size="150px,206px"></dc-import>
-      <svg width="40" height="54" viewBox="0 0 40 54" style="position: absolute; left: 55px; top: 30px; overflow: visible; display: {{sc.lock}};">
+      <svg width="40" height="54" viewBox="0 0 40 54" style="position: absolute; left: 94px; top: 20px; overflow: visible; display: {{sc.lock}};">
         <g class="aa-top" style="animation: aa-swing 5s ease-in-out infinite;">
           <path d="M20 0 V6" stroke="#EEE8FF" stroke-width="2"></path>
           <path d="M11 22 V15 a9 9 0 0 1 18 0 V22" fill="none" stroke="#EEE8FF" stroke-width="3.5" stroke-linecap="round"></path>
@@ -205,7 +205,7 @@
   </sc-if>
 
   <sc-if value="{{sc.mail}}" hint-placeholder-val="{{false}}">
-    <svg width="170" height="150" viewBox="0 0 170 150" style="flex: none; display: block; overflow: visible;">
+    <svg width="148" height="131" viewBox="0 0 170 150" style="flex: none; display: block; overflow: visible;">
       <circle cx="85" cy="80" r="64" fill="#B9A3FF" opacity="0.16"></circle>
       <rect x="20" y="62" width="130" height="80" rx="6" fill="#CBC7D3" stroke="#18161F" stroke-width="2.5"></rect>
       <path d="M20 64 L85 24 L150 64 Z" fill="#9E98AC" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
@@ -222,7 +222,7 @@
   </sc-if>
 
   <sc-if value="{{sc.team}}" hint-placeholder-val="{{false}}">
-    <svg width="180" height="150" viewBox="0 0 180 150" style="flex: none; display: block; overflow: visible;">
+    <svg width="150" height="125" viewBox="0 0 180 150" style="flex: none; display: block; overflow: visible;">
       <circle cx="90" cy="84" r="62" fill="#B9A3FF" opacity="0.16"></circle>
       <!-- Jordan -->
       <g transform="translate(46 64)">
@@ -384,9 +384,9 @@ class Component extends DCLogic {
     const SC = {
       signup: { jar: true, amount: '$8,407', chips: [chipIn('$6,300 invoice paid'), chipOut('$1,200 rent'), chipKeep('$8,407 yours to keep')] },
       signin: { jar: true, amount: '', chips: [done('Payments matched'), done('Card charges sorted'), done('Tax put aside')] },
-      forgot: { jar: true, lock: true, amount: '', chips: [done('Invoices still go out'), done('Payments still come in'), done('Every number still adds up')] },
-      verify: { mail: true, chips: [done('One click in the email'), done('Then invoices can go out')] },
-      invite: { team: true, chips: [done('Your own sign-in'), done('Only what Staff can see')] }
+      forgot: { jar: true, lock: true, amount: '', chips: [done('Invoices still go out'), done('Payments still come in'), done('Every number adds up')] },
+      verify: { mail: true, chips: [done('One click in the email'), done('Then invoices go out')] },
+      invite: { team: true, chips: [done('Your own sign-in'), done('Only Staff access')] }
     };
     const s = SC[v] || SC.signup;
     const sc = {
