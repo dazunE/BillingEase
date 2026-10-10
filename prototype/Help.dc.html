@@ -1,11 +1,285 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · Help</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Help</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-search::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.be-q:hover{background:#F7F6F9}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+    <dc-import name="AppCrumbs" area="home" here="Help"></dc-import>
+
+    <section aria-labelledby="help-h" style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 720px;">
+        <h1 id="help-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">How can we help, {{first}}?</h1>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Short answers in plain words, each with a link to the place where you do it.</p>
+      </div>
+      <label style="display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 0 18px; border-radius: 9999px; border: 1px solid #CBC7D3; background: #FFFFFF; max-width: 720px; box-sizing: border-box;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none;"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search help</span>
+        <input class="be-field be-search" type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="Ask in your own words: “late payment”, “VAT”, “export”" style="flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; border-radius: 8px; background: transparent; font: 400 16px DM Sans, sans-serif; color: #18161F;">
+        <sc-if value="{{hasQuery}}" hint-placeholder-val="{{false}}">
+          <button type="button" onClick="{{clearQuery}}" aria-label="Clear search" style="width: 36px; height: 36px; flex: none; border: 0; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+        </sc-if>
+      </label>
+      <div role="group" aria-label="Topics" style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <sc-for list="{{topics}}" as="tp" hint-placeholder-count="6">
+          <button type="button" aria-pressed="{{tp.pressed}}" onClick="{{tp.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid {{tp.border}}; border-radius: 9999px; background: {{tp.bg}}; color: {{tp.color}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{tp.dot}};"></span>{{tp.label}}</button>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section aria-labelledby="ans-h" style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="ans-h" style="margin: 0; font-size: 14px; font-weight: 600; color: #5F5B68;" aria-live="polite">{{status}}</h2>
+        <sc-if value="{{hasResults}}" hint-placeholder-val="{{true}}">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 8px; display: flex; flex-direction: column; gap: 2px;">
+            <sc-for list="{{answers}}" as="a" hint-placeholder-count="7">
+              <div style="border-radius: 16px; background: {{a.bg}};">
+                <button type="button" class="be-q" aria-expanded="{{a.expanded}}" onClick="{{a.toggle}}" style="width: 100%; display: flex; align-items: center; gap: 14px; min-height: 60px; padding: 10px 14px; border: 0; border-radius: 16px; background: transparent; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+                  <span style="width: 10px; height: 10px; box-sizing: border-box; border-radius: 9999px; background: {{a.dot}}; border: {{a.dotBorder}}; flex: none;"></span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-weight: 700; font-size: 16px; line-height: 1.35;">{{a.q}}</span>
+                    <span style="font-size: 13px; color: #5F5B68;">{{a.area}}</span>
+                  </span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{a.chev}}"></path></svg>
+                </button>
+                <sc-if value="{{a.open}}" hint-placeholder-val="{{false}}">
+                  <div style="padding: 0 18px 18px 38px; display: flex; flex-direction: column; gap: 10px;">
+                    <sc-for list="{{a.body}}" as="para" hint-placeholder-count="2">
+                      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #2E2B36;">{{para}}</p>
+                    </sc-for>
+                    <sc-if value="{{a.live}}" hint-placeholder-val="{{false}}">
+                      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 12px 14px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 13.5px; font-weight: 600;">
+                        <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>{{n.in}}</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">−</span>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>{{n.out}}</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">=</span>
+                        <span>{{n.profit}} profit</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">−</span>
+                        <span>{{n.tax}} for tax</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">=</span>
+                        <span style="padding: 2px 10px; border-radius: 9999px; background: #18161F; color: #B9A3FF;">{{n.keep}} yours to keep</span>
+                      </div>
+                    </sc-if>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 2px;">
+                      <sc-for list="{{a.links}}" as="l" hint-placeholder-count="2">
+                        <a href="{{l.href}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: {{l.bg}}; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{l.label}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">No answer for “{{query}}” yet</span>
+            <span style="font-size: 15px; color: #47444F; max-width: 440px; line-height: 1.5;">Ask a person below and we&#39;ll write back, or look through every feature.</span>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 4px;">
+              <button type="button" onClick="{{askAbout}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Ask a person about this</button>
+              <a href="Everything.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">See everything BillingEase does</a>
+            </div>
+          </div>
+        </sc-if>
+        <p style="margin: 4px 0 0; font-size: 14px; color: #47444F;">Looking for a feature rather than an answer? <a href="Everything.dc.html" style="font-weight: 600;">Everything BillingEase does</a> lists them all in plain words.</p>
+      </section>
+
+      <!-- Talk to a person -->
+      <section aria-labelledby="ask-h" style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 id="ask-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Talk to a person</h2>
+          <span style="font-size: 14px; color: #47444F; line-height: 1.45;">A real person reads every question. We usually reply within one working day.</span>
+        </div>
+        <sc-if value="{{sent}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711;">
+            <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>We got your question</span>
+            <span style="font-size: 14px; line-height: 1.45;">We&#39;ll reply to {{sentTo}}. You&#39;ll also see it in Notifications.</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 14px; font-weight: 600;">
+              <a href="Notifications.dc.html" style="color: #2F5711;">Open notifications</a>
+              <button type="button" onClick="{{askAgain}}" style="min-height: 32px; padding: 0; border: 0; background: transparent; color: #2F5711; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Ask something else</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{notSent}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Your name
+              <input class="be-field" type="text" value="{{f.name}}" onChange="{{setName}}" autocomplete="name" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; box-sizing: border-box; width: 100%;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email for the reply
+              <input class="be-field" type="email" value="{{f.email}}" onChange="{{setEmail}}" autocomplete="email" aria-invalid="{{err.emailBad}}" style="min-height: 44px; padding: 0 12px; border: 1px solid {{err.emailBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; box-sizing: border-box; width: 100%;">
+              <sc-if value="{{err.email}}" hint-placeholder-val="{{false}}"><span style="font-weight: 600; font-size: 13px; color: #A8200D;">{{err.email}}</span></sc-if>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What it&#39;s about
+              <select class="be-field" value="{{f.topic}}" onChange="{{setTopic}}" style="min-height: 44px; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; box-sizing: border-box; width: 100%;">
+                <sc-for list="{{topicOpts}}" as="o" hint-placeholder-count="5"><option value="{{o}}">{{o}}</option></sc-for>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Your question
+              <textarea class="be-field" rows="5" value="{{f.msg}}" onChange="{{setMsg}}" aria-invalid="{{err.msgBad}}" placeholder="Tell us what you were trying to do and what happened." style="padding: 10px 12px; border: 1px solid {{err.msgBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; resize: vertical; box-sizing: border-box; width: 100%;"></textarea>
+              <sc-if value="{{err.msg}}" hint-placeholder-val="{{false}}"><span style="font-weight: 600; font-size: 13px; color: #A8200D;">{{err.msg}}</span></sc-if>
+            </label>
+            <button type="button" onClick="{{send}}" style="align-self: flex-start; min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Send question</button>
+            <span style="font-size: 12.5px; color: #5F5B68; line-height: 1.45;">Or write to help@billingease.com. We never ask for your password.</span>
+          </div>
+        </sc-if>
+      </section>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const p = BE.get('profile') || {};
+    this.state = {
+      query: '', topic: 'all', open: { numbers: true }, toast: null, sent: null, tried: false,
+      f: { name: p.owner && p.owner !== 'You' ? p.owner : '', email: p.email || '', topic: 'Something else', msg: '' }
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  renderVals() {
+    const st = this.state;
+    const prof = BE.get('profile') || {};
+    const t = BE.totals('month');
+    const rate = Math.round(t.rate * 100) + '%';
+    const hasNums = t.in !== 0 || t.out !== 0;
+    const AREAS = {
+      start: { label: 'Basics', dot: '#B9A3FF', border: '0' },
+      in: { label: 'Coming in', dot: '#7A5AF8', border: '0' },
+      out: { label: 'Going out', dot: '#E0752D', border: '0' },
+      keep: { label: 'Yours to keep', dot: '#18161F', border: '2px solid #B9A3FF' },
+      biz: { label: 'Your business', dot: '#CBC7D3', border: '0' },
+      proto: { label: 'This prototype', dot: '#FFF0B8', border: '1px solid #6B5000' }
+    };
+    const A = [
+      { id: 'numbers', g: 'start', q: 'How do the three numbers work?', live: true, kw: 'coming in going out yours to keep profit equation home numbers keep',
+        body: ['Coming in is money customers paid you this month plus what’s on the way from invoices that aren’t late. Going out is what you’ve paid plus bills, payroll and monthly costs still to pay this month.',
+          'Coming in minus Going out is your profit. We set ' + rate + ' of it aside for tax, and the rest is yours to keep.' + (hasNums ? ' Here’s this month:' : ' They all start at $0 and fill in as you bill and spend.')],
+        links: [['Open Yours to keep', 'ThreeKeep.dc.html'], ['Back to Home', 'ThreeHome.dc.html']] },
+      { id: 'paid', g: 'in', q: 'How do I get paid?', kw: 'invoice bill someone getting paid card bank apple pay payment online customer',
+        body: ['Bill someone in one sentence, like “Atlas Freight, $1,200 for fleet decals, due in 30 days”. Your customer gets an email with a Pay button for card, bank transfer or Apple Pay.',
+          'When the money lands we match it to the invoice for you, and it moves from on the way to received in Coming in.'],
+        links: [['Bill someone', 'ThreeIn.dc.html#bill'], ['Getting paid online', 'SellPayments.dc.html']] },
+      { id: 'late', g: 'in', q: 'A customer is paying late. What happens?', kw: 'late overdue reminder nudge unpaid chase',
+        body: ['We send polite automatic reminders. If those don’t work, the invoice shows up in Needs you on Home so you can send a short personal nudge.',
+          'Late invoices aren’t counted in this month’s Coming in until they’re paid, so your numbers stay honest.'],
+        links: [['All invoices', 'SellInvoices.dc.html'], ['Needs you on Home', 'ThreeHome.dc.html']] },
+      { id: 'quotes', g: 'in', q: 'Can I send a price before I invoice?', kw: 'quote estimate proposal accept',
+        body: ['Yes. Send a quote; your customer accepts it online, and it becomes an invoice in one tap. Quotes don’t count in Coming in until you invoice them.'],
+        links: [['Send a quote', 'SellQuotes.dc.html#new']] },
+      { id: 'receipts', g: 'out', q: 'What do I do with receipts?', kw: 'receipt scan photo snap upload match expense',
+        body: ['Snap a photo or forward the email. We read the total, the date and the shop, and match it to the card charge so you don’t have to.',
+          'If a photo is too blurry to read, we ask you to type the total. That’s it.'],
+        links: [['Receipts', 'SpendReceipts.dc.html'], ['Record an expense', 'ThreeOut.dc.html#expense']] },
+      { id: 'bills', g: 'out', q: 'What’s the difference between an expense and a bill?', kw: 'bill expense payable pay later vendor',
+        body: ['An expense is already paid, by card or cash. A bill is something you’ll pay later; it counts as still to pay in Going out until you pay it, in full or in parts.'],
+        links: [['Enter a bill', 'SpendBill.dc.html#new'], ['Going out', 'ThreeOut.dc.html']] },
+      { id: 'payroll', g: 'out', q: 'How does payroll work?', kw: 'payroll salary wages employees approve direct deposit',
+        body: ['A few days before payday, payroll shows up in Needs you. Approve it and your team is paid by direct deposit. Payroll taxes are filed for you.'],
+        links: [['Payroll', 'SpendPayroll.dc.html']] },
+      { id: 'salestax', g: 'keep', q: 'How is sales tax handled?', kw: 'sales tax vat gst filing state collected',
+        body: ['When you sell taxable things we add sales tax to the invoice and keep track of what you collected. It isn’t yours, so it never counts in Coming in.',
+          'We remind you before each filing date and show the exact amount to file. Outside the US it’s called VAT or GST, and works the same way.'],
+        links: [['Sales tax', 'BooksTax.dc.html']] },
+      { id: 'settax', g: 'keep', q: 'Why do you set money aside for tax?', kw: 'income tax set aside estimated quarterly rate',
+        body: ['So tax day isn’t a surprise. We set aside ' + rate + ' of each month’s profit. You can change the rate on Yours to keep; your accountant can tell you what fits.'],
+        links: [['Change the rate', 'ThreeKeep.dc.html']] },
+      { id: 'bank', g: 'keep', q: 'How do I check my books against the bank?', kw: 'reconcile bank statement balance difference connect bank',
+        body: ['Connect your bank and we bring in charges every morning. Once a month, line up your books with the statement; we point out anything that doesn’t match.'],
+        links: [['Check against your bank', 'BooksReconcile.dc.html']] },
+      { id: 'team', g: 'biz', q: 'What can each person on my team do?', kw: 'team roles permissions invite admin staff accountant owner',
+        body: ['Owner: everything. Admin: everything except deleting the business. Staff: quotes, invoices and time, but not payroll or the bank. Accountant: reads the books, adds journal entries and downloads reports, but can’t move money.'],
+        links: [['Team and access', 'BizTeam.dc.html']] },
+      { id: 'export', g: 'biz', q: 'Can I take my data out?', kw: 'export download csv spreadsheet data import leave',
+        body: ['Yes, any time. Security and your data shows each export as a table you can copy into a spreadsheet: invoices, expenses, customers and the full books.'],
+        links: [['Security and your data', 'BizSecurity.dc.html'], ['All reports', 'BooksReports.dc.html']] },
+      { id: 'reset', g: 'proto', q: 'How do I reset this prototype?', kw: 'reset prototype sample data start over empty demo',
+        body: ['Everything you do here is saved in this browser so it carries across screens. Reset the sample to go back to Northwind Studio’s October on Sunday, Oct 4.',
+          'Or start empty to see what a brand new business looks like. You can also reset from the menu under your initials.'],
+        links: [['Reset sample data', 'ThreeHome.dc.html#reset'], ['Start empty', 'ThreeHome.dc.html#start-empty']] }
+    ];
+    const q = st.query.trim().toLowerCase();
+    const words = q.split(/\s+/).filter(Boolean);
+    const match = (a) => words.every((w) => (a.q + ' ' + a.kw + ' ' + a.body.join(' ')).toLowerCase().indexOf(w) >= 0);
+    const list = A.filter((a) => (st.topic === 'all' || a.g === st.topic) && match(a));
+    const answers = list.map((a) => {
+      const open = words.length ? (st.open[a.id] !== false && (list.length <= 2 || !!st.open[a.id])) : !!st.open[a.id];
+      const AR = AREAS[a.g];
+      return {
+        q: a.q, area: AR.label, dot: AR.dot, dotBorder: AR.border, body: a.body, live: !!a.live && hasNums,
+        links: a.links.map((l, i) => ({ label: l[0], href: l[1], bg: i === 0 ? '#B9A3FF' : 'rgba(24,22,31,0.07)' })),
+        open, expanded: open ? 'true' : 'false', bg: open ? '#F7F6F9' : 'transparent', chev: open ? 'm6 15 6-6 6 6' : 'm6 9 6 6 6-6',
+        toggle: () => this.setState({ open: Object.assign({}, st.open, { [a.id]: !open }) })
+      };
+    });
+    const topics = [['all', 'All', '#18161F', '0']].concat(Object.keys(AREAS).map((k) => [k, AREAS[k].label, AREAS[k].dot, AREAS[k].border])).map(([id, label, dot]) => {
+      const on = st.topic === id;
+      return { label, dot: id === 'all' ? (on ? '#B9A3FF' : '#18161F') : dot, pressed: on ? 'true' : 'false', border: on ? '#18161F' : '#CBC7D3', bg: on ? '#18161F' : '#FFFFFF', color: on ? '#FFFFFF' : '#18161F', pick: () => this.setState({ topic: id }) };
+    });
+
+    // Talk to a person
+    const f = st.f;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim());
+    const msgOk = f.msg.trim().length >= 10;
+    const err = {
+      email: st.tried && !emailOk ? (f.email.trim() ? 'That email doesn’t look right.' : 'Add an email so we can reply.') : false,
+      msg: st.tried && !msgOk ? 'Tell us a little more (at least a sentence).' : false
+    };
+    err.emailBad = err.email ? 'true' : 'false'; err.msgBad = err.msg ? 'true' : 'false';
+    err.emailBorder = err.email ? '#A8200D' : '#CBC7D3'; err.msgBorder = err.msg ? '#A8200D' : '#CBC7D3';
+    const setF = (k) => (e) => this.setState({ f: Object.assign({}, st.f, { [k]: e.target.value }) });
+    const n = {
+      in: t.fmt.in, out: t.fmt.out, profit: t.fmt.profit, tax: t.fmt.tax, keep: t.fmt.keep
+    };
+    return {
+      first: prof.first && prof.first !== 'there' ? prof.first : 'there', n,
+      query: st.query, hasQuery: st.query.length > 0,
+      setQuery: (e) => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      topics, answers, hasResults: answers.length > 0, noResults: answers.length === 0,
+      status: words.length ? answers.length + (answers.length === 1 ? ' answer' : ' answers') + ' for “' + st.query.trim() + '”' : answers.length + ' common questions',
+      askAbout: () => this.setState({ f: Object.assign({}, st.f, { msg: st.f.msg || 'I was looking for help with “' + st.query.trim() + '”. ' }) , sent: null }),
+      f, err, sent: !!st.sent, notSent: !st.sent, sentTo: st.sent || '',
+      topicOpts: ['Something else', 'Getting paid', 'Expenses and receipts', 'Payroll', 'Tax', 'My team', 'My account'],
+      setName: setF('name'), setEmail: setF('email'), setTopic: setF('topic'), setMsg: setF('msg'),
+      send: () => {
+        if (!emailOk || !msgOk) { this.setState({ tried: true }); this.notify('Check the highlighted fields'); return; }
+        const email = f.email.trim();
+        BE.notify('We got your question', f.topic + ': “' + f.msg.trim().slice(0, 70) + (f.msg.trim().length > 70 ? '…' : '') + '” · we’ll reply to ' + email + ' within a working day', 'Help.dc.html');
+        this.setState({ sent: email, tried: false, f: Object.assign({}, st.f, { msg: '' }) });
+        this.notify('Question sent. We’ll reply to ' + email);
+      },
+      askAgain: () => this.setState({ sent: null }),
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

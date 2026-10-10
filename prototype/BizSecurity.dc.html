@@ -61,73 +61,18 @@ select.bz-in{cursor:pointer;padding-right:8px}
 
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
-                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <div style="padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;">
-                <span style="font-weight: 700; font-size: 15px;">Maya Chen</span>
-                <span style="font-size: 13px; color: #5F5B68;">maya@northwind.studio · Owner</span>
-              </div>
-              <sc-for list="{{acctItems}}" as="m" hint-placeholder-count="5">
-                <a href="{{m.href}}" role="menuitem" aria-current="{{m.cur}}" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; background: {{m.bg}}; font-size: 14px; font-weight: 600;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.icon}}"></path></svg>
-                  {{m.label}}
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 20px;">
 
-    <a href="ThreeHome.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-weight: 600; font-size: 14px; text-decoration: none; color: #18161F;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-      Home
-    </a>
+    <dc-import name="AppCrumbs" area="biz" here="Security and data"></dc-import>
 
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
     <aside class="bz-side" aria-label="Your business" style="flex: 1 1 230px; max-width: 100%; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px;">
       <div class="bz-sidex" style="display: flex; align-items: center; gap: 12px; padding: 6px 6px 12px; border-bottom: 1px solid #EFEDF3;">
         <span style="width: 40px; height: 40px; border-radius: 12px; background: #18161F; color: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none; font: 700 15px Sora, sans-serif;">{{bizInitial}}</span>
-        <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{bizName}}</span><span style="font-size: 12px; color: #5F5B68;">Your business · you&#39;re the Owner</span></span>
+        <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{bizName}}</span><span style="font-size: 12px; color: #5F5B68;">{{bizSub}}</span></span>
       </div>
       <nav class="bz-nav" aria-label="Business settings" style="display: flex; flex-direction: column; gap: 4px;">
         <a href="BizProfile.dc.html">
@@ -136,7 +81,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
         </a>
         <a href="BizTeam.dc.html">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8"></path></svg>
-          <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;"><span style="font-weight: 600; font-size: 14px;"><span class="bz-long">Team and access</span><span class="bz-short">Team</span></span><span class="bz-navsub">5 people, roles, your businesses</span></span>
+          <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;"><span style="font-weight: 600; font-size: 14px;"><span class="bz-long">Team and access</span><span class="bz-short">Team</span></span><span class="bz-navsub">{{teamSub}}</span></span>
         </a>
         <a href="BizSecurity.dc.html" aria-current="page">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6zM9 12l2 2 4-4"></path></svg>
@@ -154,12 +99,12 @@ select.bz-in{cursor:pointer;padding-right:8px}
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">Your business</span>
         <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Security and data</h1>
-        <p class="bz-sub" style="max-width: 620px;">How you sign in, where you&#39;re signed in, and what happens to Northwind Studio&#39;s data: bring it in, take it out, or close things down.</p>
+        <p class="bz-sub" style="max-width: 620px;">How you sign in, where you&#39;re signed in, and what happens to {{bizName}}&#39;s data: bring it in, take it out, or close things down.</p>
       </div>
 
       <!-- Sign-in -->
       <section class="bz-card" aria-labelledby="signin-h">
-        <div class="bz-head"><div><h2 id="signin-h" class="bz-h2">Signing in</h2><span class="bz-mut">maya@northwind.studio</span></div>
+        <div class="bz-head"><div><h2 id="signin-h" class="bz-h2">Signing in</h2><span class="bz-mut">{{email}}</span></div>
           <span class="bz-badge" style="background: {{tfaBadgeBg}}; color: {{tfaBadgeFg}};">{{tfaBadge}}</span>
         </div>
 
@@ -214,7 +159,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
             <div style="background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 16px;">
               <span class="bz-mut" style="font-weight: 600;">Step 1 of 2 · Connect an authenticator app</span>
               <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
-                <div role="img" aria-label="QR code for BillingEase, maya@northwind.studio" style="flex: none; width: 168px; height: 168px; box-sizing: border-box; padding: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; display: grid; grid-template-columns: repeat(21, 1fr); grid-auto-rows: 1fr;">
+                <div role="img" aria-label="QR code for BillingEase, {{email}}" style="flex: none; width: 168px; height: 168px; box-sizing: border-box; padding: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; display: grid; grid-template-columns: repeat(21, 1fr); grid-auto-rows: 1fr;">
                   <sc-for list="{{qr}}" as="q" hint-placeholder-count="441"><span style="background: {{q}};"></span></sc-for>
                 </div>
                 <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
@@ -295,105 +240,72 @@ select.bz-in{cursor:pointer;padding-right:8px}
 
       <!-- Import -->
       <section class="bz-card" aria-labelledby="imp-h">
-        <div class="bz-head"><div><h2 id="imp-h" class="bz-h2">Bring your books in</h2><span class="bz-mut">Moving from another app? Bring your history so your three numbers start complete.</span></div></div>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
-          <span class="bz-lbl" id="src-l">From</span>
-          <div role="group" aria-labelledby="src-l" class="bz-seg">
-            <sc-for list="{{sources}}" as="o" hint-placeholder-count="4"><button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for>
-          </div>
+        <div class="bz-head"><div><h2 id="imp-h" class="bz-h2">Bring your customers in</h2><span class="bz-mut">Moving from another app or a spreadsheet? Add a CSV with a name and an email column, one customer per row.</span></div></div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 18px; border: 2px dashed #CBC7D3; border-radius: 18px;">
+          <span style="width: 44px; height: 44px; border-radius: 12px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M12 18v-6M9 15l3-3 3 3"></path></svg></span>
+          <span style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">Choose a CSV file</strong><span class="bz-mut">The first row names the columns, like <strong style="color: #18161F;">name,email</strong>. Other columns are ignored.</span></span>
+          <label class="bz-btn" style="position: relative; overflow: hidden;">
+            Choose file
+            <input type="file" accept=".csv,text/csv" onChange="{{pickFile}}" aria-label="Choose a CSV file of customers" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+          </label>
         </div>
-
-        <sc-if value="{{imp.pick}}" hint-placeholder-val="{{true}}">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 18px; border: 2px dashed #CBC7D3; border-radius: 18px;">
-            <span style="width: 44px; height: 44px; border-radius: 12px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M12 18v-6M9 15l3-3 3 3"></path></svg></span>
-            <span style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">{{src.title}}</strong><span class="bz-mut">{{src.how}}</span></span>
-            <button type="button" class="bz-btn" onClick="{{chooseFile}}">Choose file</button>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{imp.map}}" hint-placeholder-val="{{false}}">
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 14px; border-radius: 16px; background: #F7F6F9;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5"></path></svg>
-              <span style="flex: 1 1 200px; min-width: 0; font-size: 14px;"><strong>{{src.file}}</strong> · 1,284 rows · Jan 1, 2024 – Sep 30, 2026</span>
-              <button type="button" class="bz-link" style="font-size: 13px;" onClick="{{resetImport}}">Choose a different file</button>
-            </div>
-            <span class="bz-h3">Match your columns</span>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 10px;">
-              <sc-for list="{{cols}}" as="c" hint-placeholder-count="5">
-                <div class="bz-field" style="padding: 10px 12px; border: 1px solid #E2DFE8; border-radius: 14px;">
-                  <label class="bz-mut" for="{{c.id}}" style="font-weight: 600;">“{{c.from}}” becomes</label>
-                  <select id="{{c.id}}" class="bz-in" value="{{c.to}}" onChange="{{c.set}}" style="min-height: 40px;">
-                    <option value="date">Date</option>
-                    <option value="desc">Description</option>
-                    <option value="amount">Amount</option>
-                    <option value="cat">Category</option>
-                    <option value="who">Customer or vendor</option>
-                    <option value="skip">Don&#39;t import</option>
-                  </select>
-                </div>
-              </sc-for>
-            </div>
-            <span class="bz-h3">Preview <span style="font-weight: 400; color: #5F5B68;">· first 3 of 1,284</span></span>
-            <div class="bz-tw">
-              <table style="min-width: 560px;">
-                <thead><tr><sc-for list="{{prevHead}}" as="h" hint-placeholder-count="5"><th scope="col">{{h}}</th></sc-for></tr></thead>
-                <tbody>
-                  <sc-for list="{{prevRows}}" as="r" hint-placeholder-count="3">
-                    <tr><sc-for list="{{r}}" as="cell" hint-placeholder-count="5"><td style="font-variant-numeric: tabular-nums;">{{cell}}</td></sc-for></tr>
-                  </sc-for>
-                </tbody>
-              </table>
-            </div>
-            <sc-if value="{{mapErr}}" hint-placeholder-val="{{false}}">
-              <div class="bz-note" style="background: #FBE3DF; color: #A8200D;"><span>{{mapErr}}</span></div>
-            </sc-if>
-            <div class="bz-note"><span>12 rows are already in BillingEase (same date, amount and description), so we&#39;ll skip them. Money in adds to Coming in, money out to Going out, for the months they happened.</span></div>
+        <button type="button" class="bz-link" style="align-self: flex-start;" aria-expanded="{{pasteOpen}}" onClick="{{togglePaste}}">{{pasteLabel}}</button>
+        <sc-if value="{{pasteOpen}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #E2DFE8; border-radius: 16px;">
+            <label class="bz-lbl" for="imp-paste">CSV text</label>
+            <textarea id="imp-paste" class="bz-in" rows="4" value="{{paste}}" onInput="{{setPaste}}" style="font-family: ui-monospace, monospace; font-size: 13px;" placeholder="name,email"></textarea>
             <span style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button type="button" class="bz-btn" disabled="{{mapBlocked}}" onClick="{{runImport}}">Import 1,272 transactions</button>
-              <button type="button" class="bz-btn bz-btn2" onClick="{{resetImport}}">Cancel</button>
+              <button type="button" class="bz-btn" onClick="{{usePaste}}">Add these customers</button>
+              <button type="button" class="bz-btn bz-btn2" onClick="{{fillExample}}">Fill in an example</button>
             </span>
           </div>
         </sc-if>
-
+        <sc-if value="{{imp.err}}" hint-placeholder-val="{{false}}">
+          <div class="bz-note" role="status" style="background: #FBE3DF; color: #A8200D;"><span>{{imp.err}}</span></div>
+        </sc-if>
         <sc-if value="{{imp.done}}" hint-placeholder-val="{{false}}">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px 18px; border-radius: 18px; background: #E2F6D5; color: #2F5711;">
+          <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px 18px; border-radius: 18px; background: #E2F6D5; color: #2F5711;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
-            <span style="flex: 1 1 260px; min-width: 0; font-size: 14px; line-height: 1.5;"><strong>Imported 1,272 transactions from {{src.label}}.</strong> We sorted 1,189 on our own; 83 are waiting in Going out for a category.</span>
-            <a href="ThreeOut.dc.html" class="bz-btn bz-sm">Sort the 83</a>
-            <button type="button" class="bz-btn bz-sm" style="background: rgba(47,87,17,0.12); color: #2F5711;" onClick="{{undoImport}}">Undo import</button>
+            <span style="flex: 1 1 260px; min-width: 0; font-size: 14px; line-height: 1.5;"><strong>{{imp.title}}</strong> {{imp.detail}}</span>
+            <a href="SellCustomers.dc.html" class="bz-btn bz-sm">See customers</a>
+            <sc-if value="{{imp.canUndo}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-sm" style="background: rgba(47,87,17,0.12); color: #2F5711;" onClick="{{undoImport}}">Undo import</button></sc-if>
           </div>
         </sc-if>
+        <span class="bz-mut">Imported customers don’t change your three numbers. Money only moves when you bill them.</span>
       </section>
 
       <!-- Export -->
       <section class="bz-card" aria-labelledby="export-h">
-        <div class="bz-head"><div><h2 id="export-h" class="bz-h2">Take your data out</h2><span class="bz-mut">It&#39;s yours. Export any time, even on the free plan.</span></div></div>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 18px; border-radius: 20px; background: #18161F; color: #FFFFFF;">
-          <span style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
-            <strong style="font: 700 18px Sora, sans-serif; letter-spacing: -0.02em;">Export everything</strong>
-            <span style="font-size: 14px; line-height: 1.5; color: #EEE8FF;">{{exp.text}}</span>
-          </span>
-          <sc-if value="{{exp.idle}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn" onClick="{{prepExport}}">Prepare export</button></sc-if>
-          <sc-if value="{{exp.ready}}" hint-placeholder-val="{{false}}"><button type="button" class="bz-btn" onClick="{{downloadZip}}">Download zip</button></sc-if>
-        </div>
+        <div class="bz-head"><div><h2 id="export-h" class="bz-h2">Take your data out</h2><span class="bz-mut">It&#39;s yours. Each file is built from {{bizName}}&#39;s books right now and opens in any spreadsheet.</span></div></div>
         <div>
-          <span class="bz-h3" style="display: block; margin-bottom: 6px;">One report at a time</span>
-          <sc-for list="{{reports}}" as="r" hint-placeholder-count="6">
-            <div class="bz-row" style="padding: 10px 0;">
+          <sc-for list="{{exports}}" as="r" hint-placeholder-count="3">
+            <div class="bz-row" style="padding: 12px 0;">
               <span style="width: 10px; height: 10px; border-radius: 9999px; background: {{r.dot}}; flex: none;"></span>
               <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">{{r.name}}</span><span class="bz-mut" style="font-size: 12px;">{{r.sub}}</span></span>
-              <span style="display: flex; gap: 6px;">
-                <sc-for list="{{r.fmts}}" as="f" hint-placeholder-count="2"><button type="button" class="bz-btn bz-btn2 bz-sm" aria-label="{{f.aria}}" onClick="{{f.go}}">{{f.label}}</button></sc-for>
+              <span style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <button type="button" class="bz-btn bz-btn2 bz-sm" aria-label="{{r.showAria}}" aria-expanded="{{r.shown}}" onClick="{{r.show}}">{{r.showLabel}}</button>
+                <button type="button" class="bz-btn bz-sm" aria-label="{{r.aria}}" onClick="{{r.go}}">Download CSV</button>
               </span>
             </div>
           </sc-for>
         </div>
+        <sc-if value="{{pv.on}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 10px; background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 18px; padding: 16px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><strong style="font-size: 14px; overflow-wrap: anywhere;">{{pv.file}}</strong><span class="bz-mut" style="font-size: 12px;">{{pv.meta}}</span></span>
+              <span style="display: flex; gap: 6px;">
+                <button type="button" class="bz-btn bz-sm" onClick="{{pv.copy}}">Copy CSV</button>
+                <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{pv.close}}">Close</button>
+              </span>
+            </div>
+            <pre aria-label="CSV contents" style="margin: 0; max-height: 260px; overflow: auto; padding: 12px 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12.5px/1.6 ui-monospace, monospace; white-space: pre; color: #18161F;">{{pv.text}}</pre>
+          </div>
+        </sc-if>
       </section>
 
       <!-- Close things down -->
       <section class="bz-card" aria-labelledby="del-h">
-        <div class="bz-head"><div><h2 id="del-h" class="bz-h2">Close things down</h2><span class="bz-mut">Nothing here happens by accident: you type the name, and you have 30 days to change your mind.</span></div></div>
+        <div class="bz-head"><div><h2 id="del-h" class="bz-h2">Close things down</h2><span class="bz-mut">Nothing here happens by accident: you type the name first.</span></div></div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; align-items: start;">
           <sc-for list="{{dels}}" as="d" hint-placeholder-count="2">
             <div style="border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px;">
@@ -403,28 +315,28 @@ select.bz-in{cursor:pointer;padding-right:8px}
               </ul>
               <sc-if value="{{d.idle}}" hint-placeholder-val="{{true}}">
                 <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
-                  <button type="button" class="bz-btn bz-btnline" style="border-color: #A8200D; color: #A8200D;" onClick="{{d.open}}">{{d.cta}}</button>
-                  <a href="#export-h" style="font-size: 13px; font-weight: 600;">Export everything first</a>
+                  <sc-if value="{{d.can}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-btnline" style="border-color: #A8200D; color: #A8200D;" onClick="{{d.open}}">{{d.cta}}</button></sc-if>
+                  <a href="#export-h" style="font-size: 13px; font-weight: 600;">Export your data first</a>
                 </span>
               </sc-if>
               <sc-if value="{{d.confirming}}" hint-placeholder-val="{{false}}">
                 <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: #FBE3DF;">
+                  <span style="font-size: 13px; line-height: 1.5; color: #A8200D; font-weight: 600;">{{d.warn}}</span>
                   <label class="bz-lbl" for="{{d.id}}">Type <strong>{{d.phrase}}</strong> to confirm</label>
-                  <input id="{{d.id}}" class="bz-in" type="text" autocomplete="off" value="{{d.typed}}" onChange="{{d.type}}">
+                  <input id="{{d.id}}" class="bz-in" type="text" autocomplete="off" value="{{d.typed}}" onInput="{{d.type}}" onChange="{{d.type}}">
                   <span style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" class="bz-btn bz-btnred" disabled="{{d.blocked}}" onClick="{{d.confirm}}">{{d.confirmLabel}}</button>
+                    <sc-if value="{{d.blocked}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-btnred" disabled="{{true}}">{{d.confirmLabel}}</button></sc-if>
+                    <sc-if value="{{d.ready}}" hint-placeholder-val="{{false}}"><a href="{{d.href}}" class="bz-btn bz-btnred" onClick="{{d.confirm}}">{{d.confirmLabel}}</a></sc-if>
                     <button type="button" class="bz-btn" style="background: #FFFFFF;" onClick="{{d.cancel}}">Keep it</button>
                   </span>
                 </div>
               </sc-if>
-              <sc-if value="{{d.scheduled}}" hint-placeholder-val="{{false}}">
-                <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 16px; background: #FFF0B8; color: #6B5000;">
-                  <span style="flex: 1 1 200px; font-size: 13px; line-height: 1.5; font-weight: 600;">{{d.schedText}}</span>
-                  <button type="button" class="bz-btn bz-sm" style="background: rgba(107,80,0,0.12); color: #6B5000;" onClick="{{d.restore}}">Restore</button>
-                </div>
-              </sc-if>
             </div>
           </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+          <span style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span class="bz-h3">Reset sample data</span><span class="bz-mut">For this prototype only: puts Northwind Studio&#39;s October back exactly as it started, Oct 4, 2026, undoing everything you&#39;ve tried.</span></span>
+          <a href="ThreeHome.dc.html#reset" class="bz-btn bz-btn2">Reset sample data</a>
         </div>
       </section>
     </div>
@@ -445,62 +357,101 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = {
-      pw: { open: false, cur: '', next: '', show: false, others: true, tried: false, flag: false }, pwChanged: 'Last changed March 12, 2026',
-      tfa: { stage: 'off', code: '', tried: false, setup: false }, codeSet: 0,
-      devices: [
-        { id: 'mac', name: 'MacBook Pro · Chrome', where: 'Brooklyn, NY', when: 'Active now', here: true, icon: 'M4 5h16v11H4zM2 19h20' },
-        { id: 'iphone', name: 'iPhone 15 · BillingEase app', where: 'Brooklyn, NY', when: 'Active 2 hours ago', icon: 'M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2' },
-        { id: 'ipad', name: 'iPad · Safari', where: 'Jersey City, NJ', when: 'Last active Sep 28', icon: 'M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2' },
-        { id: 'win', name: 'Windows PC · Edge', where: 'Philadelphia, PA', when: 'Last active Sep 12', icon: 'M4 5h16v11H4zM9 20h6M12 16v4' }
-      ],
-      reviewed: false,
-      src: 'wave', imp: 'pick', map: null,
-      exp: 'idle',
+      pw: { open: false, cur: '', next: '', show: false, others: true, tried: false, flag: false },
+      tfa: { stage: 'idle', code: '', tried: false }, codeSet: 0,
+      paste: '', pasteOpen: false, imp: null,
+      preview: null,
       del: { biz: { stage: 'idle', typed: '' }, acct: { stage: 'idle', typed: '' } },
-      newOpen: false, acctOpen: false, toast: null
+      toast: null
     };
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  common(page) {
-    const st = this.state;
-    const acct = [
-      { k: 'profile', label: 'Business profile', href: 'BizProfile.dc.html', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
-      { k: 'team', label: 'Team and access', href: 'BizTeam.dc.html', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' },
-      { k: 'security', label: 'Security and your data', href: 'BizSecurity.dc.html', icon: 'M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6zM9 12l2 2 4-4' },
-      { k: 'switch', label: 'Switch business', href: 'BizTeam.dc.html#businesses', icon: 'M7 7h13l-4-4M17 17H4l4 4' },
-      { k: 'all', label: 'Everything BillingEase does', href: 'Everything.dc.html', icon: 'M4 6h16M4 12h16M4 18h10' },
-      { k: 'out', label: 'Sign out', href: 'AuthSignIn.dc.html', icon: 'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10' }
-    ].map((m) => Object.assign({}, m, { cur: m.k === page ? 'page' : false, bg: m.k === page ? '#EEE8FF' : 'transparent' }));
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  side() {
+    const p = BE.get('profile') || {};
+    const n = BE.all('team').length;
     return {
-      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen, acctItems: acct, toast: st.toast,
-      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
-      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
-      verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-      ]
+      bizName: p.business || 'Your business', bizInitial: (p.business || 'Y').charAt(0).toUpperCase(),
+      bizSub: 'Your business · you’re the ' + (p.role || 'Owner'),
+      teamSub: (n > 1 ? n + ' people' : 'Just you') + ', roles, your businesses'
     };
+  }
+  strength(v) {
+    if (!v || v.length < 8) return 0;
+    let n = 1;
+    if (v.length >= 12) n++;
+    if (/\d/.test(v) && /[a-zA-Z]/.test(v)) n++;
+    if (/[^a-zA-Z0-9]/.test(v)) n++;
+    return Math.min(4, n);
+  }
+  // ---- CSV helpers ----
+  parseCsv(text) {
+    const rows = []; let row = [], cell = '', q = false;
+    const t = String(text || '').replace(/^﻿/, '');
+    for (let i = 0; i < t.length; i++) {
+      const ch = t[i];
+      if (q) {
+        if (ch === '"' && t[i + 1] === '"') { cell += '"'; i++; } else if (ch === '"') q = false; else cell += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === ',' || ch === ';' || ch === '\t') { row.push(cell); cell = ''; }
+      else if (ch === '\n' || ch === '\r') { if (ch === '\r' && t[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+      else cell += ch;
+    }
+    if (cell || row.length) { row.push(cell); rows.push(row); }
+    return rows.map((r) => r.map((c) => c.trim())).filter((r) => r.some(Boolean));
+  }
+  importCustomers(text, file) {
+    const rows = this.parseCsv(text);
+    if (!rows.length) { this.setState({ imp: { err: (file || 'That text') + ' is empty. Add a row per customer, like: Juniper Florals,hello@juniperflorals.com' } }); return; }
+    const head = rows[0].map((h) => h.toLowerCase());
+    let ni = head.findIndex((h) => /^(name|customer|company|business|client)/.test(h));
+    let ei = head.findIndex((h) => /e-?mail/.test(h));
+    let body = rows.slice(1);
+    if (ni < 0 && ei < 0) { ni = 0; ei = rows[0].findIndex((c) => c.indexOf('@') > 0); body = rows; }
+    if (ni < 0) ni = ei === 0 ? 1 : 0;
+    const p = BE.get('profile') || {};
+    const have = {};
+    BE.all('customers').forEach((c) => { have[String(c.name).toLowerCase()] = 1; if (c.email) have[String(c.email).toLowerCase()] = 1; });
+    const added = [], dupes = [], bad = [];
+    body.forEach((r, i) => {
+      const name = r[ni] || '', email = ei >= 0 ? (r[ei] || '') : '';
+      if (!name) { bad.push(i + 2); return; }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { bad.push(i + 2); return; }
+      if (have[name.toLowerCase()] || (email && have[email.toLowerCase()])) { dupes.push(name); return; }
+      have[name.toLowerCase()] = 1; if (email) have[email.toLowerCase()] = 1;
+      added.push({ id: BE.id('cust'), name, contact: '', email, phone: '', address: '', country: p.country || 'United States', cur: p.currency || 'USD', tax: '', since: 'Imported ' + BE.today, paid: 0, note: '', invoices: [], quotes: [], recurring: [], credits: [], imported: true });
+    });
+    const src = file || 'the pasted rows';
+    if (!added.length) {
+      this.setState({ imp: { err: 'No customers added from ' + src + '. ' + (dupes.length ? dupes.length + ' already in your list. ' : '') + (bad.length ? bad.length + ' row' + (bad.length === 1 ? '' : 's') + ' without a name or with an email that doesn’t look right.' : '') + (dupes.length || bad.length ? '' : 'We couldn’t find a name column.') } });
+      return;
+    }
+    BE.change((data) => {
+      data.customers = (data.customers || []).concat(added);
+      BE._log(data, 'Imported ' + added.length + ' customer' + (added.length === 1 ? '' : 's') + ' from ' + src);
+    });
+    const names = added.slice(0, 3).map((c) => c.name).join(', ') + (added.length > 3 ? ' and ' + (added.length - 3) + ' more' : '');
+    this.setState({ paste: '', imp: {
+      done: true, ids: added.map((c) => c.id), title: 'Added ' + added.length + ' customer' + (added.length === 1 ? '' : 's') + ' from ' + src + '.',
+      detail: names + '.' + (dupes.length ? ' Skipped ' + dupes.length + ' already in your list.' : '') + (bad.length ? ' Skipped ' + bad.length + ' row' + (bad.length === 1 ? '' : 's') + ' with no name or a broken email (row ' + bad.join(', ') + ').' : '')
+    } });
+    this.notify('Added ' + added.length + ' customer' + (added.length === 1 ? '' : 's') + '. They’re in your customer list now.');
+  }
+  csv(rows) {
+    const esc = (v) => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    return rows.map((r) => r.map(esc).join(',')).join('\n') + '\n';
   }
 
-  strength(p) {
-    let n = 0;
-    if (p.length >= 8) n++;
-    if (p.length >= 12) n++;
-    if (/[a-z]/.test(p) && /[A-Z]/.test(p)) n++;
-    if (/\d/.test(p) && /[^A-Za-z0-9]/.test(p)) n++;
-    if (p.length < 8) n = Math.min(n, 0);
-    return n;
-  }
   renderVals() {
     const s = this.state;
+    const p = BE.get('profile') || {};
+    const sec = BE.get('security') || {};
+    const sessions = BE.all('sessions');
+    const email = p.email || 'No email yet';
     const setPw = (o) => this.setState({ pw: Object.assign({}, s.pw, o) });
     const sc = this.strength(s.pw.next);
     const LBL = ['Too short', 'Weak', 'Okay', 'Strong', 'Very strong'];
     const COL = ['#A8200D', '#E0752D', '#C9A100', '#7A5AF8', '#2F5711'];
-    const pwErr = s.pw.tried ? (!s.pw.cur ? 'Enter your current password.' : (s.pw.next.length < 8 ? 'Your new password needs at least 8 characters.' : (sc < 2 ? 'Make it a little stronger: add length or mix in numbers and symbols.' : null))) : null;
+    const pwErr = s.pw.tried ? (!s.pw.cur ? 'Enter your current password.' : (s.pw.next.length < 8 ? 'Your new password needs at least 8 characters.' : (sc < 2 ? 'Make it a little stronger: add length or mix in numbers and symbols.' : (s.pw.next === s.pw.cur ? 'Pick a password different from the one you have now.' : null)))) : null;
     const pw = {
       open: s.pw.open, cur: s.pw.cur, next: s.pw.next, others: s.pw.others, flag: s.pw.flag,
       type: s.pw.show ? 'text' : 'password', showLabel: s.pw.show ? 'Hide' : 'Show', shown: s.pw.show ? 'true' : 'false',
@@ -510,16 +461,17 @@ class Component extends DCLogic {
       err: pwErr
     };
 
+    // Two-step: on/off lives in the shared data; the setup steps are local.
+    const isOn = !!sec.twoStep;
     const tStage = s.tfa.stage;
     const setTfa = (o) => this.setState({ tfa: Object.assign({}, s.tfa, o) });
     const codeOk = /^\d{6}$/.test(s.tfa.code);
     const tfaErr = s.tfa.tried && !codeOk ? 'Enter the 6 digits from your app.' : null;
     const tfa = {
-      off: tStage === 'off', scan: tStage === 'scan', codes: tStage === 'codes' || tStage === 'oncodes', on: tStage === 'on' || tStage === 'oncodes',
+      off: !isOn && tStage === 'idle', scan: !isOn && tStage === 'scan', codes: tStage === 'codes' || (isOn && tStage === 'show'), on: isOn,
       setup: tStage === 'codes', code: s.tfa.code, err: tfaErr, border: tfaErr ? '#A8200D' : '#CBC7D3',
-      codesBtn: tStage === 'oncodes' ? 'Hide backup codes' : 'Backup codes', doneLabel: tStage === 'codes' ? 'I saved them, finish' : 'Done'
+      codesBtn: isOn && tStage === 'show' ? 'Hide backup codes' : 'Backup codes', doneLabel: tStage === 'codes' ? 'I saved them, finish' : 'Done'
     };
-    // fake QR: finder patterns + deterministic noise
     const qr = [];
     const finder = (r, c) => {
       const f = (r0, c0) => { const y = r - r0, x = c - c0; if (y < 0 || x < 0 || y > 6 || x > 6) return null; return (y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4)); };
@@ -537,12 +489,27 @@ class Component extends DCLogic {
       ['4KQ7-9MZD', 'H2XP-6TRA', 'W8NC-3JLV', 'B5FY-7QKE', 'R9DM-2UWS', 'T6GH-8PXN', 'L3VA-5ZCK', 'E7JR-4MBQ', 'Y2WT-9FDH', 'P8KS-6NLA'],
       ['M3TX-8RQA', 'C9LV-2WHE', 'K6ZP-4DJN', 'F2BG-7YUS', 'Q8NH-3KTM', 'V5RD-9XCL', 'A7WJ-6PFE', 'N4SY-2GQB', 'U9EK-5MVD', 'G3HT-8ZRW']
     ];
+    const copyText = (text, ok) => {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => this.notify(ok), () => this.notify('Your browser blocked copying. Select the text and copy it yourself.'));
+          return;
+        }
+      } catch (e) { /* fall through */ }
+      this.notify('Your browser blocked copying. Select the text and copy it yourself.');
+    };
 
-    const devices = s.devices.map((d) => Object.assign({}, d, { here: !!d.here, other: !d.here, out: () => { this.setState({ devices: s.devices.filter((x) => x.id !== d.id) }); this.notify('Signed out of ' + d.name.split(' · ')[0]); } }));
-    const hasOthers = s.devices.length > 1;
+    const ICON = { laptop: 'M4 5h16v11H4zM2 19h20', phone: 'M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2', tablet: 'M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2', desktop: 'M4 5h16v11H4zM9 20h6M12 16v4' };
+    const devices = sessions.map((d) => Object.assign({}, d, { icon: ICON[d.kind] || ICON.laptop, here: !!d.here, other: !d.here, out: () => {
+      BE.change((data) => { data.sessions = data.sessions.filter((x) => x.id !== d.id); BE._log(data, 'Signed out ' + d.name.split(' · ')[0]); });
+      this.notify('Signed out of ' + d.name.split(' · ')[0] + '. It needs your password to get back in.');
+    } }));
+    const others = sessions.filter((d) => !d.here).length;
 
-    const ACT = [
-      { when: 'Today, 7:38 AM', what: 'Chrome on Mac', where: 'Brooklyn, NY', how: tfa.on ? 'Password and code' : 'Password', result: 'Signed in', ok: 1 },
+    const ACT = sec.reviewed === true && sessions.length <= 1 && !/northwind/.test(p.email || '') ? [
+      { when: 'Today', what: 'This browser', where: 'Where you signed up', how: isOn ? 'Password and code' : 'Password', result: 'Signed in', ok: 1 }
+    ] : [
+      { when: 'Today, 7:38 AM', what: 'Chrome on Mac', where: 'Brooklyn, NY', how: isOn ? 'Password and code' : 'Password', result: 'Signed in', ok: 1 },
       { when: 'Today, 6:05 AM', what: 'BillingEase app on iPhone', where: 'Brooklyn, NY', how: 'Face ID', result: 'Signed in', ok: 1 },
       { when: 'Oct 2, 11:14 PM', what: 'Firefox on Windows', where: 'Toronto, Canada', how: 'Wrong password 3 times', result: 'Blocked', ok: 0, ask: true },
       { when: 'Sep 28, 8:50 PM', what: 'Safari on iPad', where: 'Jersey City, NJ', how: 'Password', result: 'Signed in', ok: 1 },
@@ -550,74 +517,123 @@ class Component extends DCLogic {
     ];
     const activity = ACT.map((a) => Object.assign({}, a, {
       bg: a.ok ? '#E2F6D5' : '#FBE3DF', fg: a.ok ? '#2F5711' : '#A8200D',
-      result: !a.ok && s.reviewed ? (s.reviewed === 'mine' ? 'Blocked · you said it was you' : 'Blocked · secured') : a.result,
-      ask: !!a.ask && !s.reviewed,
-      mine: () => { this.setState({ reviewed: 'mine' }); this.notify('Thanks. We’ll trust that device next time.'); },
-      notMine: () => { this.setState({ reviewed: 'not', pw: Object.assign({}, s.pw, { open: true, flag: true }), devices: s.devices.filter((x) => x.here) }); this.notify('Signed out everywhere else. Now choose a new password.'); }
+      result: !a.ok && sec.reviewed ? (sec.reviewed === 'mine' ? 'Blocked · you said it was you' : 'Blocked · secured') : a.result,
+      ask: !!a.ask && !sec.reviewed,
+      mine: () => { BE.patch('security', { reviewed: 'mine' }); this.notify('Thanks. We’ll trust that device next time.'); },
+      notMine: () => {
+        BE.change((data) => { data.security = Object.assign({}, data.security, { reviewed: 'not' }); data.sessions = (data.sessions || []).filter((x) => x.here); BE._log(data, 'Signed out every other device after a blocked sign-in'); });
+        this.setState({ pw: Object.assign({}, s.pw, { open: true, flag: true }) });
+        this.notify('Signed out everywhere else. Now choose a new password.');
+      }
     }));
 
     // Import
-    const SRC = {
-      wave: { label: 'Wave', title: 'Export from Wave, then add the file here', how: 'In Wave: Accounting → Transactions → Export. We read the CSV it gives you.', file: 'wave-transactions-2026.csv', cols: ['Transaction Date', 'Description', 'Amount', 'Account', 'Customer/Vendor'] },
-      qb: { label: 'QuickBooks', title: 'Export from QuickBooks, then add the file here', how: 'In QuickBooks: Reports → Transaction Detail → Export to Excel or CSV.', file: 'quickbooks-transaction-detail.csv', cols: ['Date', 'Memo', 'Amount', 'Category', 'Name'] },
-      xero: { label: 'Xero', title: 'Export from Xero, then add the file here', how: 'In Xero: Accounting → Reports → Account Transactions → Export CSV.', file: 'xero-account-transactions.csv', cols: ['Date', 'Reference', 'Gross', 'Account', 'Contact'] },
-      csv: { label: 'a CSV file', title: 'Any spreadsheet saved as CSV', how: 'One row per transaction, with at least a date and an amount. Your bank’s download works too.', file: 'northwind-2024-2026.csv', cols: ['When', 'Details', 'Amount', 'Type', 'Payee'] }
-    };
-    const src = SRC[s.src];
-    const DEF = ['date', 'desc', 'amount', 'cat', 'who'];
-    const map = s.map || DEF;
-    const FIELD = { date: 'Date', desc: 'Description', amount: 'Amount', cat: 'Category', who: 'Customer or vendor' };
-    const ROWS = [
-      ['Sep 30, 2026', 'Payment, INV-0148', '6,300.00', 'Sales', 'Atlas Freight Co.'],
-      ['Sep 28, 2026', 'Menu boards reprint', '−236.00', 'Printing', 'Local Print Shop'],
-      ['Sep 27, 2026', 'Fuel', '−48.00', 'Car and travel', 'Shell']
-    ];
-    const keep = map.map((m, i) => i).filter((i) => map[i] !== 'skip');
-    const cols = src.cols.map((from, i) => ({ id: 'map-' + i, from, to: map[i], set: (e) => { const n = map.slice(); n[i] = e.target.value; this.setState({ map: n }); } }));
-    const missing = ['date', 'amount'].filter((k) => map.indexOf(k) < 0).map((k) => FIELD[k]);
-    const dup = map.filter((m, i) => m !== 'skip' && map.indexOf(m) !== i).map((k) => FIELD[k]);
-    const mapErr = missing.length ? 'Pick a column for ' + missing.join(' and ') + '. Every transaction needs one.' : (dup.length ? 'Two columns are set to ' + dup[0] + '. Choose one.' : false);
-    const sources = Object.keys(SRC).map((k) => ({ label: k === 'csv' ? 'CSV file' : SRC[k].label, on: s.src === k, pick: () => this.setState({ src: k, imp: 'pick', map: null }) }));
+    const imp = s.imp || {};
+    const EXAMPLE = 'name,email\nJuniper Florals,hello@juniperflorals.com\nCobalt Bikes,accounts@cobaltbikes.com\nMarlow & Finch,studio@marlowfinch.co';
 
-    // Export
-    const exp = {
-      idle: s.exp === 'idle', ready: s.exp === 'ready',
-      text: s.exp === 'ready' ? 'northwind-studio-2026-10-04.zip is ready · 38 MB · the link also went to maya@northwind.studio and works for 7 days.' : 'Your books as CSV files, plus every invoice, quote, bill and receipt as a PDF, in one zip. Takes about a minute.'
+    // Export: built from the shared data, right now.
+    const invs = BE.all('invoices'), exps = BE.all('expenses'), custs = BE.all('customers');
+    const slug = String(p.business || 'billingease').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'billingease';
+    const FILES = {
+      invoices: { name: 'Invoices', dot: '#7A5AF8', file: slug + '-invoices-2026-10-04.csv', n: invs.length,
+        rows: () => [['Number', 'Customer', 'What', 'Currency', 'Total', 'Paid', 'Still open', 'Status', 'Issued', 'Due']].concat(invs.map((i) => [i.draft ? 'Draft' : i.num, i.who, i.what, i.cur || 'USD', BE.invTotal(i).toFixed(2), (Number(i.paid) || 0).toFixed(2), BE.invOpen(i).toFixed(2), BE.invStatus(i), i.issued || '', i.due || ''])) },
+      expenses: { name: 'Expenses', dot: '#E0752D', file: slug + '-expenses-2026-10-04.csv', n: exps.length,
+        rows: () => [['Date', 'Paid to', 'Category', 'Amount (USD)', 'Paid with', 'Kind', 'Receipt', 'Note']].concat(exps.map((x) => [x.date, x.who, x.cat, (Number(x.amount) || 0).toFixed(2), x.how || '', x.kind || 'business', x.receipt ? 'Yes' : 'No', x.note || ''])) },
+      customers: { name: 'Customers', dot: '#18161F', file: slug + '-customers-2026-10-04.csv', n: custs.length,
+        rows: () => [['Name', 'Contact', 'Email', 'Phone', 'Country', 'Currency']].concat(custs.map((c) => [c.name, c.contact || '', c.email || '', c.phone || '', c.country || '', c.cur || 'USD'])) }
     };
-    const REP = [
-      ['Profit and loss', 'Coming in − Going out · 2026 so far', '#7A5AF8', 'profit-and-loss-2026', ['CSV', 'PDF']],
-      ['Balance sheet', 'What you own and owe · Sep 30, 2026', '#18161F', 'balance-sheet-2026-09-30', ['CSV', 'PDF']],
-      ['Sales tax you collected', 'NY · Q3 2026 · $412.63', '#18161F', 'ny-sales-tax-q3-2026', ['CSV', 'PDF']],
-      ['All transactions', 'Every money in and out · 2026', '#E0752D', 'transactions-2026', ['CSV']],
-      ['Customers and what they owe', '7 customers · $16,080 open', '#7A5AF8', 'customers-2026-10-04', ['CSV']],
-      ['Invoices', 'INV-0101 to INV-0165 as PDFs', '#7A5AF8', 'invoices-2026', ['ZIP']]
-    ];
-    const reports = REP.map(([name, sub, dot, file, fmts]) => ({ name, sub, dot, fmts: fmts.map((f) => ({ label: f, aria: 'Download ' + name + ' as ' + f, go: () => this.notify('Downloaded ' + file + '.' + f.toLowerCase()) })) }));
+    const exports = Object.keys(FILES).map((k) => {
+      const f = FILES[k];
+      const shown = s.preview === k;
+      return {
+        name: f.name, dot: f.dot,
+        sub: f.n ? f.n + ' ' + f.name.toLowerCase() + ' · ' + f.file : 'None yet: the file has just the column names',
+        shown: shown ? 'true' : 'false', showLabel: shown ? 'Hide' : 'Show', showAria: (shown ? 'Hide ' : 'Show ') + f.name.toLowerCase() + ' CSV',
+        aria: 'Download ' + f.name.toLowerCase() + ' as CSV',
+        show: () => this.setState({ preview: shown ? null : k }),
+        go: () => {
+          const text = this.csv(f.rows());
+          let ok = false;
+          try {
+            const url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+            const a = document.createElement('a');
+            a.href = url; a.download = f.file; a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 4000);
+            ok = true;
+          } catch (e) { ok = false; }
+          this.setState({ preview: k });
+          BE.log('Exported ' + f.name.toLowerCase() + ' (' + f.n + ' rows)');
+          this.notify((ok ? 'Downloaded ' + f.file : 'Download blocked here') + ' · ' + f.n + ' row' + (f.n === 1 ? '' : 's') + '. It’s also shown below to copy.');
+        }
+      };
+    });
+    const pf = s.preview && FILES[s.preview];
+    const pText = pf ? this.csv(pf.rows()) : '';
+    const pv = pf ? {
+      on: true, file: pf.file, text: pText, meta: pf.n + ' row' + (pf.n === 1 ? '' : 's') + ' plus a header · ' + pText.length.toLocaleString('en-US') + ' characters',
+      copy: () => copyText(pText, 'Copied ' + pf.file + ' (' + pf.n + ' rows). Paste it into any spreadsheet.'),
+      close: () => this.setState({ preview: null })
+    } : { on: false };
 
-    // Delete
+    // Close things down
+    const list = BE.bizList();
+    const cur = list.find((b) => b.current) || list[0];
+    const other = list.find((b) => !b.current);
+    const t = BE.totals('month');
+    const openIn = invs.filter((i) => BE.invOpen(i) > 0).length;
+    const tm = BE.all('team').filter((m) => !(m.you || m.status === 'You'));
     const D = {
-      biz: { title: 'Delete Northwind Studio', cta: 'Delete this business', phrase: 'Northwind Studio', confirmLabel: 'Delete Northwind Studio', schedText: 'Northwind Studio will be deleted on Nov 3, 2026. Until then, everything can be restored.',
-        what: ['Payment links on unpaid invoices stop working today, so the $12,450 on the way can’t be paid online.', 'Bank connections and payroll stop. Oct 9 payroll ($7,231) won’t run.', 'Jordan, Priya, Sam and Dana lose access. Maya Chen Photography isn’t touched.', 'After 30 days the books, invoices and receipts are erased. Payroll tax filings stay downloadable for as long as the law requires.'] },
-      acct: { title: 'Delete your account', cta: 'Delete my account', phrase: 'Maya Chen', confirmLabel: 'Delete my account', schedText: 'Your account will be deleted on Nov 3, 2026. Sign in before then to stop it.',
-        what: ['You own 2 businesses. Both are deleted with your account, unless you transfer them first.', 'To keep Northwind Studio running, make Jordan the owner on Team and access.', 'You’re signed out everywhere and maya@northwind.studio can be used for a new account later.', 'Same 30 days to change your mind.'] }
+      biz: {
+        title: 'Delete ' + cur.name, cta: 'Delete this business', phrase: cur.name, confirmLabel: 'Delete ' + cur.name, href: 'ThreeHome.dc.html', can: !!other,
+        warn: other ? 'This erases ' + cur.name + '’s books right away and opens ' + other.name + '. It can’t be undone.' : '',
+        what: other ? [
+          openIn ? 'Payment links on ' + openIn + ' unpaid invoice' + (openIn === 1 ? '' : 's') + ' stop working, so ' + t.fmt.inExp + ' on the way can’t be paid online.' : 'There are no unpaid invoices to worry about.',
+          tm.length ? tm.map((m) => String(m.name).split(/[\s,]+/)[0]).join(', ') + ' lose access.' : 'Nobody else has access, so nobody is affected.',
+          other.name + ' isn’t touched. You land there next.',
+          'Your sign-in stays the same.'
+        ] : ['This is your only business, so there’s nothing to switch to.', 'To close it, delete your account instead.']
+      },
+      acct: {
+        title: 'Delete your account', cta: 'Delete my account', phrase: p.owner && p.owner !== 'You' ? p.owner : 'delete my account', confirmLabel: 'Delete my account', href: 'ThreeLanding.dc.html', can: true,
+        warn: 'This erases every business, invoice, expense and customer from BillingEase right away, signs you out and takes you to the BillingEase front page. You can’t undo it.',
+        what: [
+          list.length > 1 ? 'You own ' + list.length + ' businesses. All of them are deleted with your account.' : 'Your one business, ' + cur.name + ', is deleted with your account.',
+          tm.length ? 'Anyone you invited loses access too.' : 'Nobody else has access.',
+          'You’re signed out everywhere' + (p.email ? ' and ' + p.email + ' can be used for a new account later.' : '.'),
+          'Export your data first if you want to keep a copy.'
+        ]
+      }
     };
     const dels = Object.keys(D).map((k) => {
       const st = s.del[k];
       const setD = (o) => this.setState({ del: Object.assign({}, s.del, { [k]: Object.assign({}, st, o) }) });
+      const ready = st.typed.trim().toLowerCase() === D[k].phrase.toLowerCase();
       return Object.assign({}, D[k], {
-        id: 'del-' + k, typed: st.typed, idle: st.stage === 'idle', confirming: st.stage === 'confirm', scheduled: st.stage === 'scheduled',
-        blocked: st.typed.trim() !== D[k].phrase,
+        id: 'del-' + k, typed: st.typed, idle: st.stage === 'idle', confirming: st.stage === 'confirm',
+        blocked: !ready, ready,
         open: () => setD({ stage: 'confirm', typed: '' }),
         type: (e) => setD({ typed: e.target.value }),
         cancel: () => setD({ stage: 'idle', typed: '' }),
-        confirm: () => { setD({ stage: 'scheduled', typed: '' }); this.notify(k === 'biz' ? 'Northwind Studio is scheduled for deletion' : 'Your account is scheduled for deletion'); },
-        restore: () => { setD({ stage: 'idle', typed: '' }); this.notify('Restored. Nothing was deleted.'); }
+        confirm: () => {
+          if (k === 'acct') {
+            BE.startEmpty();
+            try { sessionStorage.setItem('be.flash', 'Your account was deleted. Everything was erased.'); } catch (e) { /* ignore */ }
+          } else {
+            BE.openBusiness(other.id);
+            BE.change((data) => {
+              data.businesses = (data.businesses || []).filter((b) => b.id !== cur.id);
+              if (data._stash) delete data._stash[cur.id];
+              BE._log(data, 'Deleted ' + cur.name);
+            });
+            try { sessionStorage.setItem('be.flash', cur.name + ' was deleted. You’re in ' + other.name + ' now.'); } catch (e) { /* ignore */ }
+          }
+        }
       });
     });
 
-    return Object.assign(this.common('security'), {
-      bizName: 'Northwind Studio', bizInitial: 'N',
-      pw, pwChanged: s.pwChanged, pwClosed: !s.pw.open,
+    return Object.assign(this.side(), {
+      toast: s.toast, email,
+      pw, pwChanged: sec.pwChanged || 'Set when you signed up', pwClosed: !s.pw.open,
       openPw: () => setPw({ open: true, cur: '', next: '', tried: false, show: false, flag: false }),
       closePw: () => setPw({ open: false, tried: false, flag: false }),
       setPwCur: (e) => setPw({ cur: e.target.value }),
@@ -625,38 +641,78 @@ class Component extends DCLogic {
       togglePwShow: () => setPw({ show: !s.pw.show }),
       togglePwOthers: (e) => setPw({ others: e.target.checked }),
       savePw: () => {
-        if (!s.pw.cur || s.pw.next.length < 8 || sc < 2) { setPw({ tried: true }); return; }
-        this.setState({ pw: Object.assign({}, s.pw, { open: false, tried: false, cur: '', next: '', flag: false }), pwChanged: 'Changed just now', devices: s.pw.others ? s.devices.filter((d) => d.here) : s.devices });
-        this.notify(s.pw.others ? 'Password changed. Other devices were signed out.' : 'Password changed');
+        if (!s.pw.cur || s.pw.next.length < 8 || sc < 2 || s.pw.next === s.pw.cur) { setPw({ tried: true }); return; }
+        const n = others;
+        BE.change((data) => {
+          data.security = Object.assign({}, data.security, { pwChanged: 'Changed today, ' + BE.today });
+          if (s.pw.others) data.sessions = (data.sessions || []).filter((d) => d.here);
+          BE._log(data, 'Changed your password' + (s.pw.others && n ? ' and signed out ' + n + ' other device' + (n === 1 ? '' : 's') : ''));
+        });
+        this.setState({ pw: Object.assign({}, s.pw, { open: false, tried: false, cur: '', next: '', flag: false }) });
+        this.notify(s.pw.others && n ? 'Password changed. ' + n + ' other device' + (n === 1 ? ' was' : 's were') + ' signed out.' : 'Password changed');
       },
       tfa, qr, backup: SETS[s.codeSet],
-      tfaBadge: tfa.on ? 'Two-step sign-in on' : 'Two-step sign-in off', tfaBadgeBg: tfa.on ? '#E2F6D5' : '#FFF0B8', tfaBadgeFg: tfa.on ? '#2F5711' : '#6B5000',
-      tfaSub: tfa.on ? 'On · authenticator app · 10 backup codes' : 'Off. Turn it on so a stolen password alone can’t open your books or move money.',
+      tfaBadge: isOn ? 'Two-step sign-in on' : 'Two-step sign-in off', tfaBadgeBg: isOn ? '#E2F6D5' : '#FFF0B8', tfaBadgeFg: isOn ? '#2F5711' : '#6B5000',
+      tfaSub: isOn ? 'On · authenticator app · 10 backup codes' : 'Off. Turn it on so a stolen password alone can’t open your books or move money.',
       tfaStart: () => setTfa({ stage: 'scan', code: '', tried: false }),
-      tfaCancel: () => setTfa({ stage: 'off', code: '', tried: false }),
+      tfaCancel: () => setTfa({ stage: 'idle', code: '', tried: false }),
       setTfaCode: (e) => setTfa({ code: e.target.value.replace(/\D/g, '').slice(0, 6) }),
-      tfaVerify: () => (codeOk ? setTfa({ stage: 'codes', tried: false }) : setTfa({ tried: true })),
-      tfaDone: () => { const first = tStage === 'codes'; setTfa({ stage: 'on' }); if (first) this.notify('Two-step sign-in is on'); },
-      tfaShowCodes: () => setTfa({ stage: tStage === 'oncodes' ? 'on' : 'oncodes' }),
-      tfaOff: () => { setTfa({ stage: 'off', code: '' }); this.notify('Two-step sign-in is off'); },
-      copyKey: () => this.notify('Setup key copied'),
-      copyCodes: () => this.notify('10 backup codes copied'),
-      downloadCodes: () => this.notify('Downloaded billingease-backup-codes.txt'),
+      tfaVerify: () => {
+        if (!codeOk) { setTfa({ tried: true }); return; }
+        BE.change((data) => { data.security = Object.assign({}, data.security, { twoStep: true }); BE._log(data, 'Turned on two-step sign-in'); });
+        setTfa({ stage: 'codes', tried: false });
+        this.notify('Two-step sign-in is on. Save your backup codes.');
+      },
+      tfaDone: () => setTfa({ stage: 'idle' }),
+      tfaShowCodes: () => setTfa({ stage: tStage === 'show' ? 'idle' : 'show' }),
+      tfaOff: () => {
+        BE.change((data) => { data.security = Object.assign({}, data.security, { twoStep: false }); BE._log(data, 'Turned off two-step sign-in'); });
+        setTfa({ stage: 'idle', code: '' });
+        this.notify('Two-step sign-in is off. Your password alone opens your books now.');
+      },
+      copyKey: () => copyText('JBSWY3DPEHPK3PXP', 'Setup key copied'),
+      copyCodes: () => copyText(SETS[s.codeSet].join('\n'), '10 backup codes copied'),
+      downloadCodes: () => {
+        try {
+          const url = URL.createObjectURL(new Blob(['BillingEase backup codes for ' + email + '\n\n' + SETS[s.codeSet].join('\n') + '\n'], { type: 'text/plain' }));
+          const a = document.createElement('a'); a.href = url; a.download = 'billingease-backup-codes.txt'; a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          this.notify('Downloaded billingease-backup-codes.txt');
+        } catch (e) { this.notify('Download blocked here. Use Copy codes instead.'); }
+      },
       newCodes: () => { this.setState({ codeSet: 1 - s.codeSet }); this.notify('New codes made. The old ones no longer work.'); },
-      devices, hasOthers,
-      signOutOthers: () => { this.setState({ devices: s.devices.filter((d) => d.here) }); this.notify('Signed out of 3 other devices'); },
+      devices, hasOthers: others > 0,
+      signOutOthers: () => {
+        BE.change((data) => { data.sessions = (data.sessions || []).filter((d) => d.here); BE._log(data, 'Signed out ' + others + ' other device' + (others === 1 ? '' : 's')); });
+        this.notify('Signed out of ' + others + ' other device' + (others === 1 ? '' : 's') + '. Only this one is signed in now.');
+      },
       activity,
-      sources, src, cols, mapErr, mapBlocked: !!mapErr,
-      prevHead: keep.map((i) => FIELD[map[i]]),
-      prevRows: ROWS.map((r) => keep.map((i) => r[i])),
-      imp: { pick: s.imp === 'pick', map: s.imp === 'map', done: s.imp === 'done' },
-      chooseFile: () => this.setState({ imp: 'map', map: null }),
-      resetImport: () => this.setState({ imp: 'pick', map: null }),
-      runImport: () => { this.setState({ imp: 'done' }); this.notify('Imported 1,272 transactions from ' + src.label); },
-      undoImport: () => { this.setState({ imp: 'pick', map: null }); this.notify('Import undone. Those 1,272 transactions were removed.'); },
-      exp, reports,
-      prepExport: () => this.setState({ exp: 'ready' }),
-      downloadZip: () => this.notify('Downloaded northwind-studio-2026-10-04.zip'),
+      imp: { err: imp.err || false, done: !!imp.done, title: imp.title || '', detail: imp.detail || '', canUndo: !!(imp.ids && imp.ids.length) },
+      paste: s.paste, pasteOpen: s.pasteOpen, pasteLabel: s.pasteOpen ? 'Hide the paste box' : 'Or paste the rows instead',
+      togglePaste: () => this.setState({ pasteOpen: !s.pasteOpen }),
+      setPaste: (e) => this.setState({ paste: e.target.value }),
+      fillExample: () => this.setState({ paste: EXAMPLE, imp: null }),
+      usePaste: () => {
+        if (!String(s.paste).trim()) { this.setState({ imp: { err: 'Paste some rows first, or choose “Fill in an example”.' } }); return; }
+        this.importCustomers(s.paste, null);
+      },
+      pickFile: (e) => {
+        const input = e.target;
+        const f = input.files && input.files[0];
+        if (!f) return;
+        if (!/\.csv$/i.test(f.name) && !/csv|text/.test(f.type || '')) { this.setState({ imp: { err: f.name + ' isn’t a CSV file. Save your spreadsheet as CSV and try again.' } }); input.value = ''; return; }
+        const r = new FileReader();
+        r.onload = () => { this.importCustomers(String(r.result || ''), f.name); input.value = ''; };
+        r.onerror = () => this.setState({ imp: { err: 'We couldn’t read ' + f.name + '. Try saving it again as CSV.' } });
+        r.readAsText(f);
+      },
+      undoImport: () => {
+        const ids = imp.ids || [];
+        BE.change((data) => { data.customers = (data.customers || []).filter((c) => ids.indexOf(c.id) < 0); BE._log(data, 'Undid the import of ' + ids.length + ' customers'); });
+        this.setState({ imp: null });
+        this.notify('Import undone. Those ' + ids.length + ' customers were removed.');
+      },
+      exports, pv,
       dels
     });
   }

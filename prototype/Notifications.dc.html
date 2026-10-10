@@ -1,11 +1,168 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · Notifications</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Notifications</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-ntf:hover{background:#F7F6F9!important}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+    <dc-import name="AppCrumbs" area="home" here="Notifications"></dc-import>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section aria-labelledby="nt-h" style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px;">
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+            <h1 id="nt-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Notifications</h1>
+            <p style="margin: 0; font-size: 15px; color: #47444F;">{{summary}}</p>
+          </div>
+          <sc-if value="{{hasAny}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+              <div role="group" aria-label="Show" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+                <sc-for list="{{filters}}" as="f" hint-placeholder-count="2">
+                  <button type="button" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{f.bg}}; color: {{f.color}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{f.label}}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{hasUnread}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{markAll}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Mark all as read</button>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{showList}}" hint-placeholder-val="{{true}}">
+          <ul aria-label="Notifications" style="margin: 0; padding: 8px; list-style: none; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; display: flex; flex-direction: column; gap: 2px;">
+            <sc-for list="{{items}}" as="n" hint-placeholder-count="6">
+              <li style="display: flex; align-items: center; gap: 8px; border-radius: 16px; background: {{n.bg}};">
+                <a href="{{n.href}}" onClick="{{n.open}}" class="be-ntf" style="flex: 1; min-width: 0; display: flex; align-items: flex-start; gap: 14px; padding: 14px 4px 14px 14px; border-radius: 16px; text-decoration: none; color: #18161F; background: {{n.bg}};">
+                  <span style="width: 40px; height: 40px; border-radius: 12px; background: {{n.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+                  </span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;">
+                      <sc-if value="{{n.unread}}" hint-placeholder-val="{{true}}"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D; flex: none;"></span><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">New:</span></sc-if>
+                      <span style="font-weight: {{n.weight}}; font-size: 15px; line-height: 1.35;">{{n.title}}</span>
+                    </span>
+                    <span style="font-size: 14px; color: #47444F; line-height: 1.4;">{{n.body}}</span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{n.when}}</span>
+                  </span>
+                </a>
+                <button type="button" onClick="{{n.toggle}}" aria-label="{{n.toggleLabel}}" title="{{n.toggleLabel}}" style="flex: none; width: 40px; height: 40px; margin-right: 8px; border: 0; border-radius: 9999px; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.toggleIcon}}"></path></svg>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-if>
+
+        <sc-if value="{{caughtUp}}" hint-placeholder-val="{{false}}">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+            <span style="width: 48px; height: 48px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">You&#39;re all caught up</span>
+            <span style="font-size: 15px; color: #47444F; max-width: 420px; line-height: 1.5;">Nothing new since you last looked. Older ones are still under All.</span>
+            <button type="button" onClick="{{showAll}}" style="margin-top: 6px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Show all</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{noneYet}}" hint-placeholder-val="{{false}}">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+            <span style="width: 48px; height: 48px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Nothing here yet</span>
+            <span style="font-size: 15px; color: #47444F; max-width: 440px; line-height: 1.5;">When a customer views a quote, pays an invoice or something needs your OK, you&#39;ll hear about it here.</span>
+            <a href="ThreeIn.dc.html#bill" style="margin-top: 6px; display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Send your first invoice</a>
+          </div>
+        </sc-if>
+      </section>
+
+      <aside aria-labelledby="how-h" style="flex: 1 1 280px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="how-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">What you hear about</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.45; color: #47444F;">
+          <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span><span>Payments that land, and quotes or invoices a customer opens</span></li>
+          <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #E0752D; flex: none;"></span><span>Payroll to approve, bills coming due, stock running low</span></li>
+          <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #18161F; flex: none;"></span><span>Tax dates, and changes to your team</span></li>
+        </ul>
+        <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.45;">What we handle on our own goes to Handled for you on Home instead, so this list stays short.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 14px; font-weight: 600;">
+          <a href="ThreeHome.dc.html">Back to Home</a>
+          <a href="Help.dc.html">Help</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'all', toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const st = this.state;
+    const all = BE.all('notifications');
+    const unread = all.filter((n) => !n.read).length;
+    // Unread first, then read; newest first within each (the list is stored newest first).
+    const sorted = all.filter((n) => !n.read).concat(all.filter((n) => n.read));
+    const shown = st.filter === 'unread' ? sorted.filter((n) => !n.read) : sorted;
+    const kind = (n) => {
+      const h = n.href || '';
+      if (/^Sell|^ThreeIn/.test(h)) return { tint: '#EEE8FF', icon: /Quote/.test(h) ? 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' : 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' };
+      if (/^Spend|^ThreeOut/.test(h)) return { tint: '#FDE6D6', icon: /Payroll/.test(h) ? 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' : 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' };
+      if (/^Books|^ThreeKeep/.test(h)) return { tint: '#EFEDF3', icon: 'M4 20V10M10 20V4M16 20v-7M22 20H2' };
+      if (/^Biz/.test(h)) return { tint: '#EFEDF3', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' };
+      return { tint: '#EEE8FF', icon: 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0' };
+    };
+    const items = shown.map((n) => {
+      const k = kind(n);
+      return {
+        title: n.title, body: n.body, when: n.when, href: n.href || 'Notifications.dc.html', unread: !n.read,
+        tint: k.tint, icon: k.icon, weight: n.read ? 500 : 700, bg: n.read ? '#FFFFFF' : '#F7F5FF',
+        open: () => { if (!n.read) BE.update('notifications', n.id, { read: true }); },
+        toggle: () => { BE.update('notifications', n.id, { read: !n.read }); this.notify(n.read ? 'Marked as unread' : 'Marked as read'); },
+        toggleLabel: n.read ? 'Mark as unread: ' + n.title : 'Mark as read: ' + n.title,
+        toggleIcon: n.read ? 'M4 6h16v12H4zM4 7l8 6 8-6' : 'm5 12 5 5 9-10'
+      };
+    });
+    const F = [['all', 'All'], ['unread', 'Unread' + (unread ? ' (' + unread + ')' : '')]];
+    return {
+      summary: !all.length ? 'Things that happened while you were away.' : unread ? unread + ' new · ' + all.length + ' in all' : 'Nothing new · ' + all.length + ' in all',
+      hasAny: all.length > 0, hasUnread: unread > 0,
+      filters: F.map(([id, label]) => ({ label, pressed: st.filter === id ? 'true' : 'false', bg: st.filter === id ? '#18161F' : 'transparent', color: st.filter === id ? '#FFFFFF' : '#18161F', pick: () => this.setState({ filter: id }) })),
+      markAll: () => {
+        const n = unread;
+        BE.change((s) => { s.notifications = (s.notifications || []).map((x) => x.read ? x : Object.assign({}, x, { read: true })); });
+        this.notify(n + ' notification' + (n === 1 ? '' : 's') + ' marked as read');
+      },
+      items, showList: items.length > 0,
+      caughtUp: all.length > 0 && items.length === 0,
+      noneYet: all.length === 0,
+      showAll: () => this.setState({ filter: 'all' }),
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

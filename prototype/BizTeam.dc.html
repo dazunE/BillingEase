@@ -61,73 +61,18 @@ select.bz-in{cursor:pointer;padding-right:8px}
 
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
-                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <div style="padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;">
-                <span style="font-weight: 700; font-size: 15px;">Maya Chen</span>
-                <span style="font-size: 13px; color: #5F5B68;">maya@northwind.studio · Owner</span>
-              </div>
-              <sc-for list="{{acctItems}}" as="m" hint-placeholder-count="5">
-                <a href="{{m.href}}" role="menuitem" aria-current="{{m.cur}}" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; background: {{m.bg}}; font-size: 14px; font-weight: 600;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.icon}}"></path></svg>
-                  {{m.label}}
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 20px;">
 
-    <a href="ThreeHome.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-weight: 600; font-size: 14px; text-decoration: none; color: #18161F;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-      Home
-    </a>
+    <dc-import name="AppCrumbs" area="biz" here="Team and access"></dc-import>
 
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
     <aside class="bz-side" aria-label="Your business" style="flex: 1 1 230px; max-width: 100%; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px;">
       <div class="bz-sidex" style="display: flex; align-items: center; gap: 12px; padding: 6px 6px 12px; border-bottom: 1px solid #EFEDF3;">
         <span style="width: 40px; height: 40px; border-radius: 12px; background: #18161F; color: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none; font: 700 15px Sora, sans-serif;">{{bizInitial}}</span>
-        <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{bizName}}</span><span style="font-size: 12px; color: #5F5B68;">Your business · you&#39;re the Owner</span></span>
+        <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{bizName}}</span><span style="font-size: 12px; color: #5F5B68;">{{bizSub}}</span></span>
       </div>
       <nav class="bz-nav" aria-label="Business settings" style="display: flex; flex-direction: column; gap: 4px;">
         <a href="BizProfile.dc.html">
@@ -136,7 +81,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
         </a>
         <a href="BizTeam.dc.html" aria-current="page">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8"></path></svg>
-          <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;"><span style="font-weight: 600; font-size: 14px;"><span class="bz-long">Team and access</span><span class="bz-short">Team</span></span><span class="bz-navsub">5 people, roles, your businesses</span></span>
+          <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;"><span style="font-weight: 600; font-size: 14px;"><span class="bz-long">Team and access</span><span class="bz-short">Team</span></span><span class="bz-navsub">{{teamSub}}</span></span>
         </a>
         <a href="BizSecurity.dc.html">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6zM9 12l2 2 4-4"></path></svg>
@@ -288,7 +233,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
         <sc-if value="{{payrollNote}}" hint-placeholder-val="{{true}}">
           <div class="bz-note" style="background: #FDE6D6;">
             <span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D; flex: none; margin-top: 5px;"></span>
-            <span>Pay for Jordan, Priya and Sam runs through payroll in Going out: <strong>$7,231</strong> on Oct 9. Dana bills you as a contractor. <a href="ThreeOut.dc.html" style="font-weight: 600;">See Going out</a></span>
+            <span>{{payrollText}} <a href="SpendPayroll.dc.html" style="font-weight: 600;">See payroll</a></span>
           </div>
         </sc-if>
       </section>
@@ -326,18 +271,18 @@ select.bz-in{cursor:pointer;padding-right:8px}
       </section>
 
       <!-- Transfer ownership -->
-      <sc-if value="{{isNorthwind}}" hint-placeholder-val="{{true}}">
       <section class="bz-card" aria-labelledby="transfer-h">
         <div class="bz-head"><div><h2 id="transfer-h" class="bz-h2">Transfer ownership</h2><span class="bz-mut">Hand {{bizName}} to someone else. You stay on as an Admin unless they remove you.</span></div></div>
-        <sc-if value="{{tr.pick}}" hint-placeholder-val="{{true}}">
+        <sc-if value="{{noCandidates}}" hint-placeholder-val="{{false}}">
+          <span class="bz-mut">Nobody else has joined yet. Once someone accepts an invite, you can hand {{bizName}} to them here.</span>
+        </sc-if>
+        <sc-if value="{{trPick}}" hint-placeholder-val="{{true}}">
           <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;">
             <div class="bz-field" style="flex: 1 1 260px;">
               <label class="bz-lbl" for="tr-who">New owner</label>
               <select id="tr-who" class="bz-in" value="{{tr.who}}" onChange="{{setTrWho}}" aria-invalid="{{tr.invalid}}" style="border-color: {{tr.border}};">
                 <option value="">Choose someone on the team</option>
-                <option value="jordan">Jordan Lee · Admin</option>
-                <option value="priya">Priya Nair · Staff</option>
-                <option value="dana">Dana Whitfield, CPA · Accountant</option>
+                <sc-for list="{{tr.options}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.label}}</option></sc-for>
               </select>
             </div>
             <button type="button" class="bz-btn bz-btnline" onClick="{{trContinue}}">Continue</button>
@@ -365,7 +310,6 @@ select.bz-in{cursor:pointer;padding-right:8px}
           </div>
         </sc-if>
       </section>
-      </sc-if>
 
       <!-- Your businesses -->
       <section id="businesses" class="bz-card" aria-labelledby="biz-h">
@@ -384,7 +328,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
               <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid #EFEDF3; padding-top: 12px;">
                 <span style="font-size: 13px; color: #47444F;">{{b.keepLabel}} <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{b.keep}}</strong></span>
                 <sc-if value="{{b.current}}" hint-placeholder-val="{{true}}"><span class="bz-badge" style="background: #18161F; color: #B9A3FF;">You&#39;re here</span></sc-if>
-                <sc-if value="{{b.other}}" hint-placeholder-val="{{false}}"><button type="button" class="bz-btn bz-sm" onClick="{{b.switchTo}}">Switch</button></sc-if>
+                <sc-if value="{{b.other}}" hint-placeholder-val="{{false}}"><a href="ThreeHome.dc.html" class="bz-btn bz-sm" onClick="{{b.switchTo}}" aria-label="Switch to {{b.name}}">Switch</a></sc-if>
               </div>
             </article>
           </sc-for>
@@ -436,95 +380,92 @@ select.bz-in{cursor:pointer;padding-right:8px}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    const maya = { id: 'maya', name: 'Maya Chen', email: 'maya@northwind.studio', role: 'Owner', status: 'Active now', you: true };
     this.state = {
-      current: 'northwind', switched: false,
-      team: {
-        northwind: [
-          maya,
-          { id: 'jordan', name: 'Jordan Lee', email: 'jordan@northwind.studio', role: 'Admin', status: 'Active today, 9:12 AM' },
-          { id: 'priya', name: 'Priya Nair', email: 'priya@northwind.studio', role: 'Staff', status: 'Active yesterday' },
-          { id: 'sam', name: 'Sam Ortiz', email: 'sam@northwind.studio', role: 'Staff', status: 'Invited by Jordan Lee on Oct 2', pending: true },
-          { id: 'dana', name: 'Dana Whitfield, CPA', email: 'dana@whitfieldcpa.com', role: 'Accountant', status: 'Active Sep 30' }
-        ],
-        photo: [Object.assign({}, maya, { email: 'maya@mayachen.photo' })]
-      },
-      bizList: [
-        { id: 'northwind', name: 'Northwind Studio', meta: 'Brooklyn, NY · USD · Owner', shows: 'Services and products, a team of 5, customers in Germany and the UK.', keepLabel: 'Yours to keep in October', keep: '$8,407' },
-        { id: 'photo', name: 'Maya Chen Photography', meta: 'Brooklyn, NY · USD · Owner', shows: 'Sole proprietor, services only. No stock, payroll or team screens.', note: 'Its Home shows services only, with no stock, payroll or team screens.', keepLabel: 'Yours to keep in October', keep: '$1,960' }
-      ],
-      open: null, draftRole: null, undo: null, lastRemoved: null,
+      open: null, draftRole: null, undo: null, lastRemoved: null, switched: null,
       inv: { open: false, email: '', role: 'Staff', msg: '', tried: false },
       tr: { stage: 'pick', who: '', tried: false },
       add: { open: false, name: '', country: 'United States', sells: 'services', tried: false },
-      newOpen: false, acctOpen: false, toast: null
+      toast: null
     };
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  common(page) {
-    const st = this.state;
-    const acct = [
-      { k: 'profile', label: 'Business profile', href: 'BizProfile.dc.html', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
-      { k: 'team', label: 'Team and access', href: 'BizTeam.dc.html', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' },
-      { k: 'security', label: 'Security and your data', href: 'BizSecurity.dc.html', icon: 'M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6zM9 12l2 2 4-4' },
-      { k: 'switch', label: 'Switch business', href: 'BizTeam.dc.html#businesses', icon: 'M7 7h13l-4-4M17 17H4l4 4' },
-      { k: 'all', label: 'Everything BillingEase does', href: 'Everything.dc.html', icon: 'M4 6h16M4 12h16M4 18h10' },
-      { k: 'out', label: 'Sign out', href: 'AuthSignIn.dc.html', icon: 'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10' }
-    ].map((m) => Object.assign({}, m, { cur: m.k === page ? 'page' : false, bg: m.k === page ? '#EEE8FF' : 'transparent' }));
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  side() {
+    const p = BE.get('profile') || {};
+    const n = BE.all('team').length;
     return {
-      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen, acctItems: acct, toast: st.toast,
-      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
-      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
-      verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-      ]
+      bizName: p.business || 'Your business', bizInitial: (p.business || 'Y').charAt(0).toUpperCase(),
+      bizSub: 'Your business · you’re the ' + (p.role || 'Owner'),
+      teamSub: (n > 1 ? n + ' people' : 'Just you') + ', roles, your businesses'
     };
   }
 
   renderVals() {
     const s = this.state;
+    const p = BE.get('profile') || {};
     const ROLE = {
-      Owner: { hint: 'Everything', desc: '' },
+      Owner: { hint: 'Everything', desc: 'Everything, including billing, the team and deleting the business.' },
       Admin: { hint: 'All but deleting', desc: 'Everything except deleting the business: money, bank, payroll, settings and the team.' },
       Staff: { hint: 'Quotes, invoices, time', desc: 'Creates quotes and invoices and logs time. Can’t see the bank, payroll or other people’s pay.' },
       Accountant: { hint: 'Books, read-only', desc: 'Sees the books read-only, adds journal entries and downloads reports. Can’t send or pay anything.' }
     };
-    const AV = { maya: ['#18161F', '#B9A3FF'], jordan: ['#EEE8FF', '#18161F'], priya: ['#FDE6D6', '#18161F'], sam: ['#EFEDF3', '#47444F'], dana: ['#E1EEF8', '#1F5E91'] };
-    const team = s.team[s.current] || [];
+    const AV = [['#EEE8FF', '#18161F'], ['#FDE6D6', '#18161F'], ['#EFEDF3', '#47444F'], ['#E1EEF8', '#1F5E91'], ['#E2F6D5', '#2F5711']];
+    const isYou = (m) => !!m.you || m.status === 'You';
+    const me = { id: 'you', name: p.owner || 'You', email: p.email || 'No email yet', role: 'Owner', status: 'You', you: true };
+    const stored = BE.all('team');
+    // A new business has nobody stored yet: it's just you.
+    const team = stored.length ? stored : [me];
     const owners = team.filter((m) => m.role === 'Owner' && !m.pending).length;
-    const setTeam = (list, extra) => this.setState(Object.assign({ team: Object.assign({}, s.team, { [s.current]: list }) }, extra || {}));
-    const people = team.map((m) => {
-      const first = m.name.split(' ')[0];
+    const firstOf = (n) => String(n || '').split(/[\s,]+/)[0];
+    const withYou = (data) => (data.team && data.team.length ? data.team : [Object.assign({}, me, { id: 'you' })]);
+
+    const people = team.map((m, i) => {
+      const first = isYou(m) ? 'you' : firstOf(m.name);
       const isOwner = m.role === 'Owner';
-      const av = AV[m.id] || ['#EEE8FF', '#18161F'];
+      const av = isYou(m) ? ['#18161F', '#B9A3FF'] : AV[i % AV.length];
       return Object.assign({}, m, {
-        first, initials: m.name.split(' ').slice(0, 2).map((w) => w[0]).join(''),
-        you: !!m.you, pending: !!m.pending, active: !m.pending, isOwner, notOwner: !isOwner || owners > 1,
+        first: firstOf(m.name), initials: BE.initials(m.name) || '?',
+        status: isYou(m) ? 'Signed in now' : m.status,
+        you: isYou(m), pending: !!m.pending, active: !m.pending, isOwner, notOwner: !isOwner || owners > 1,
         canChange: !isOwner, avBg: av[0], avFg: av[1],
-        roleHint: ROLE[m.role].hint,
+        roleHint: (ROLE[m.role] || ROLE.Staff).hint,
         changing: s.open === m.id + ':change', removing: s.open === m.id + ':remove', chId: 'ch-' + m.id,
-        draftDesc: ROLE[s.draftRole || m.role].desc,
+        draftDesc: (ROLE[s.draftRole || m.role] || ROLE.Staff).desc,
         roleOpts: ['Admin', 'Staff', 'Accountant'].map((r) => ({ label: r, on: (s.draftRole || m.role) === r, pick: () => this.setState({ draftRole: r }) })),
         change: () => this.setState({ open: s.open === m.id + ':change' ? null : m.id + ':change', draftRole: m.role }),
         remove: () => this.setState({ open: s.open === m.id + ':remove' ? null : m.id + ':remove' }),
         saveRole: () => {
           const r = s.draftRole || m.role;
-          setTeam(team.map((x) => (x.id === m.id ? Object.assign({}, x, { role: r }) : x)), { open: null, draftRole: null });
-          this.notify(r === m.role ? first + ' stays ' + r : first + ' is now ' + (r === 'Admin' || r === 'Accountant' ? 'an ' : '') + r + '. We emailed them.');
+          this.setState({ open: null, draftRole: null });
+          if (r === m.role) { this.notify(firstOf(m.name) + ' stays ' + r); return; }
+          BE.change((data) => {
+            data.team = data.team.map((x) => (x.id === m.id ? Object.assign({}, x, { role: r }) : x));
+            BE._log(data, firstOf(m.name) + ' is now ' + r + ' (was ' + m.role + ')');
+          });
+          this.notify(firstOf(m.name) + ' is now ' + (r === 'Admin' || r === 'Accountant' ? 'an ' : '') + r + '. ' + ROLE[r].hint + '. We emailed them.');
         },
-        confirmRemove: () => setTeam(team.filter((x) => x.id !== m.id), { open: null, undo: m.name + ' was removed and signed out.', lastRemoved: { m, at: team.indexOf(m) } }),
-        resend: () => { setTeam(team.map((x) => (x.id === m.id ? Object.assign({}, x, { status: 'Invite resent just now' }) : x))); this.notify('Invite sent again to ' + m.email); },
-        cancel: () => setTeam(team.filter((x) => x.id !== m.id), { undo: 'Invite to ' + m.name + ' canceled. The link no longer works.', lastRemoved: { m, at: team.indexOf(m) } })
+        confirmRemove: () => {
+          const at = stored.findIndex((x) => x.id === m.id);
+          BE.change((data) => { data.team = data.team.filter((x) => x.id !== m.id); BE._log(data, 'Removed ' + m.name + ' from the team'); });
+          this.setState({ open: null, undo: m.name + ' was removed and signed out.', lastRemoved: { m, at } });
+          this.notify(m.name + ' removed. Their quotes, invoices and time stay in the books.');
+        },
+        resend: () => {
+          BE.update('team', m.id, { status: 'Invite resent just now' });
+          this.notify('Invite sent again to ' + m.email + '. The link works for 7 more days.');
+        },
+        cancel: () => {
+          const at = stored.findIndex((x) => x.id === m.id);
+          BE.change((data) => { data.team = data.team.filter((x) => x.id !== m.id); BE._log(data, 'Canceled the invite to ' + m.email); });
+          this.setState({ undo: 'Invite to ' + m.name + ' canceled. The link no longer works.', lastRemoved: { m, at } });
+          this.notify('Invite to ' + m.email + ' canceled');
+        }
       });
     });
 
     // Invite composer
     const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
-    const invErr = s.inv.tried ? (!s.inv.email.trim() ? 'Enter their email.' : (!validEmail(s.inv.email) ? 'That doesn’t look like an email address.' : (team.some((m) => m.email === s.inv.email.trim()) ? 'They’re already on the team.' : null))) : null;
+    const lower = (v) => String(v || '').trim().toLowerCase();
+    const invErr = s.inv.tried ? (!s.inv.email.trim() ? 'Enter their email.' : (!validEmail(s.inv.email) ? 'That doesn’t look like an email address. Try name@example.com.' : (team.some((m) => lower(m.email) === lower(s.inv.email)) ? 'They’re already on the team.' : null))) : null;
     const setInv = (o) => this.setState({ inv: Object.assign({}, s.inv, o) });
     const inv = {
       open: s.inv.open, email: s.inv.email, msg: s.inv.msg, err: invErr, invalid: invErr ? 'true' : 'false', border: invErr ? '#A8200D' : '#CBC7D3',
@@ -548,50 +489,75 @@ class Component extends DCLogic {
     const perms = ROWS.map(([label, sub, cells]) => ({ label, sub, cells: cells.map((c) => ({ text: c.t, fg: c.fg, icon: c.icon })) }));
     const roleCols = ['Owner', 'Admin', 'Staff', 'Accountant'].map((r) => { const n = team.filter((m) => m.role === r).length; return { label: r, count: n === 0 ? 'Nobody yet' : n + (n === 1 ? ' person' : ' people') }; });
 
-    // Transfer
-    const NAMES = { jordan: 'Jordan Lee', priya: 'Priya Nair', dana: 'Dana Whitfield, CPA' };
-    const trErr = s.tr.tried && !s.tr.who ? 'Choose who should become the owner.' : null;
+    // Transfer ownership: anyone active who isn't you
+    const candidates = team.filter((m) => !isYou(m) && !m.pending).map((m) => ({ id: m.id, label: m.name + ' · ' + m.role, name: m.name }));
+    const pickTr = candidates.find((x) => x.id === s.tr.who);
+    const trErr = s.tr.tried && !pickTr ? 'Choose who should become the owner.' : null;
     const setTr = (o) => this.setState({ tr: Object.assign({}, s.tr, o) });
     const tr = {
       pick: s.tr.stage === 'pick', confirm: s.tr.stage === 'confirm', sent: s.tr.stage === 'sent',
-      who: s.tr.who, name: NAMES[s.tr.who] || '', first: (NAMES[s.tr.who] || '').split(' ')[0],
-      err: trErr, invalid: trErr ? 'true' : 'false', border: trErr ? '#A8200D' : '#CBC7D3'
+      who: s.tr.who, name: pickTr ? pickTr.name : '', first: pickTr ? firstOf(pickTr.name) : '',
+      err: trErr, invalid: trErr ? 'true' : 'false', border: trErr ? '#A8200D' : '#CBC7D3', options: candidates
     };
 
     // Businesses
-    const businesses = s.bizList.map((b, i) => {
-      const cur = b.id === s.current;
+    const t = BE.totals('month');
+    const stash = BE.get('_stash') || {};
+    const SELLS = { services: 'Services', products: 'Products', both: 'Services and products' };
+    const list = BE.bizList();
+    const businesses = list.map((b, i) => {
+      const cur = !!b.current;
+      const bp = cur ? p : ((stash[b.id] && stash[b.id].profile) || b.profile || {});
+      const tm = cur ? team.length : ((stash[b.id] && stash[b.id].team && stash[b.id].team.length) || 1);
+      const opened = cur || !!stash[b.id];
       return Object.assign({}, b, {
-        initial: b.name[0], current: cur, other: !cur, border: cur ? '#18161F' : '#E2DFE8',
+        initial: (b.name || '?').charAt(0).toUpperCase(), current: cur, other: !cur, border: cur ? '#18161F' : '#E2DFE8',
         tileBg: i === 0 ? '#18161F' : (i === 1 ? '#EEE8FF' : '#FDE6D6'), tileFg: i === 0 ? '#B9A3FF' : '#18161F',
-        switchTo: () => { this.setState({ current: b.id, switched: true, open: null, undo: null, inv: Object.assign({}, s.inv, { open: false }) }); this.notify('Switched to ' + b.name); }
+        shows: (SELLS[bp.sells] || 'Services') + ' · ' + (tm > 1 ? 'a team of ' + tm : 'just you') + (bp.overseas ? ' · customers abroad' : ''),
+        keepLabel: cur ? 'Yours to keep in October' : (opened ? 'Opens as you left it' : 'Not opened yet · starts empty'),
+        keep: cur ? t.fmt.keep : '',
+        switchTo: () => {
+          BE.openBusiness(b.id);
+          try { sessionStorage.setItem('be.flash', 'You’re in ' + b.name + ' now. Its books, team and three numbers are its own.'); } catch (e) { /* ignore */ }
+        }
       });
     });
-    const curBiz = s.bizList.find((b) => b.id === s.current);
-    const addErr = s.add.tried && !s.add.name.trim() ? 'Give the business a name.' : null;
+    const addErr = s.add.tried && !s.add.name.trim() ? 'Give the business a name.' : (s.add.tried && list.some((b) => lower(b.name) === lower(s.add.name)) ? 'You already have a business with that name.' : null);
     const setAdd = (o) => this.setState({ add: Object.assign({}, s.add, o) });
     const add = {
       open: s.add.open, name: s.add.name, country: s.add.country, err: addErr, invalid: addErr ? 'true' : 'false', border: addErr ? '#A8200D' : '#CBC7D3',
       sells: [['services', 'Services'], ['products', 'Products'], ['both', 'Both']].map(([v, l]) => ({ label: l, on: s.add.sells === v, pick: () => setAdd({ sells: v }) }))
     };
-    const SELLS = { services: 'services only', products: 'products only', both: 'services and products' };
-    const CUR = { 'United States': 'USD', Germany: 'EUR', 'United Kingdom': 'GBP', Canada: 'CAD' };
+    const CODE = { 'United States': ['US', 'USD'], Germany: ['DE', 'EUR'], 'United Kingdom': ['GB', 'GBP'], Canada: ['CA', 'CAD'] };
+
+    // Payroll link: only when someone is on payroll
+    const run = BE.all('payroll').filter((r) => r.status !== 'paid')[0];
+    const payrollText = run ? 'Pay for ' + (run.people || []).map((x) => firstOf(x.name)).join(', ').replace(/, ([^,]*)$/, ' and $1') + ' runs through payroll in Going out: ' + BE.money(run.net) + ' on ' + run.date + '.' : false;
 
     const active = team.filter((m) => !m.pending).length, pend = team.length - active;
-    return Object.assign(this.common('team'), {
-      bizName: curBiz.name, bizInitial: curBiz.name.charAt(0), people, inv, perms, roleCols, tr, businesses, add,
-      isNorthwind: s.current === 'northwind' && team.length > 1,
-      payrollNote: s.current === 'northwind',
+    const switchedBiz = s.switched ? list.find((b) => b.current) : null;
+    return Object.assign(this.side(), {
+      toast: s.toast,
+      people, inv, perms, roleCols, tr, businesses, add,
+      hasCandidates: candidates.length > 0, noCandidates: candidates.length === 0, trPick: tr.pick && candidates.length > 0,
+      payrollNote: !!payrollText, payrollText,
       solo: team.length === 1,
       peopleCount: team.length,
-      peopleSub: active + (active === 1 ? ' person has' : ' people have') + ' access' + (pend ? ' · ' + pend + ' invite waiting' : ''),
-      switchedNote: s.switched && s.current !== 'northwind' ? curBiz.note : false,
-      switchBack: () => { this.setState({ current: 'northwind', switched: false }); this.notify('Back in Northwind Studio'); },
+      peopleSub: active + (active === 1 ? ' person has' : ' people have') + ' access' + (pend ? ' · ' + pend + (pend === 1 ? ' invite' : ' invites') + ' waiting' : ''),
+      switchedNote: switchedBiz ? 'It starts with its own empty books and just you on the team. ' + (s.switched.prevName ? s.switched.prevName + ' is kept exactly as you left it.' : '') : false,
+      switchBack: () => {
+        const prev = s.switched && s.switched.prev;
+        if (!prev) return;
+        BE.openBusiness(prev);
+        this.setState({ switched: null, open: null, undo: null });
+        this.notify('Back in ' + s.switched.prevName + '. Everything is as you left it.');
+      },
       undo: s.undo,
       undoIt: () => {
         const r = s.lastRemoved; if (!r) return;
-        const list = team.slice(); list.splice(r.at, 0, r.m);
-        setTeam(list, { undo: null, lastRemoved: null });
+        BE.change((data) => { const l = (data.team || []).slice(); l.splice(Math.max(0, r.at), 0, r.m); data.team = l; });
+        this.setState({ undo: null, lastRemoved: null });
+        this.notify(r.m.name + ' is back on the team');
       },
       closeRow: () => this.setState({ open: null, draftRole: null }),
       openInvite: () => this.setState({ inv: { open: true, email: '', role: 'Staff', msg: '', tried: false } }),
@@ -600,28 +566,41 @@ class Component extends DCLogic {
       setInvMsg: (e) => setInv({ msg: e.target.value }),
       sendInvite: () => {
         const v = s.inv.email.trim();
-        if (!v || !validEmail(v) || team.some((m) => m.email === v)) { setInv({ tried: true }); return; }
-        const name = v.split('@')[0].split(/[._-]/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        setTeam(team.concat([{ id: 'n' + Date.now(), name, email: v, role: s.inv.role, status: 'Invited by you just now', pending: true }]), { inv: Object.assign({}, s.inv, { open: false, tried: false }) });
-        this.notify('Invite sent to ' + v + ' as ' + s.inv.role);
+        if (!v || !validEmail(v) || team.some((m) => lower(m.email) === lower(v))) { setInv({ tried: true }); return; }
+        const name = v.split('@')[0].split(/[._-]/).filter(Boolean).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        const role = s.inv.role;
+        BE.change((data) => {
+          data.team = withYou(data).concat([{ id: BE.id('tm'), name, email: v, role, status: 'Invited by you on ' + BE.today, pending: true }]);
+          if (data.profile && data.profile.team === 'solo') data.profile = Object.assign({}, data.profile, { team: role === 'Accountant' ? 'accountant' : 'team' });
+          BE._log(data, 'Invited ' + v + ' to join as ' + role);
+          BE._notify(data, 'Invite sent to ' + name, v + ' joins as ' + role + ' once they accept. The link works for 7 days.', 'BizTeam.dc.html');
+        });
+        this.setState({ inv: Object.assign({}, s.inv, { open: false, tried: false }) });
+        this.notify('Invite sent to ' + v + ' as ' + role + '. They show as pending until they accept.');
       },
       setTrWho: (e) => setTr({ who: e.target.value }),
-      trContinue: () => (s.tr.who ? setTr({ stage: 'confirm', tried: false }) : setTr({ tried: true })),
-      trSend: () => { setTr({ stage: 'sent' }); this.notify('Transfer request sent to ' + tr.name); },
+      trContinue: () => (pickTr ? setTr({ stage: 'confirm', tried: false }) : setTr({ tried: true })),
+      trSend: () => {
+        setTr({ stage: 'sent' });
+        BE.log('Asked ' + tr.name + ' to take over as owner');
+        this.notify('Transfer request sent to ' + tr.name + '. You stay the owner until they accept.');
+      },
       trCancel: () => setTr({ stage: 'pick', who: '', tried: false }),
       toggleAdd: () => setAdd({ open: !s.add.open, tried: false }),
       setAddName: (e) => setAdd({ name: e.target.value }),
       setAddCountry: (e) => setAdd({ country: e.target.value }),
       createBiz: () => {
         const n = s.add.name.trim();
-        if (!n) { setAdd({ tried: true }); return; }
-        const id = 'b' + Date.now();
+        if (!n || list.some((b) => lower(b.name) === lower(n))) { setAdd({ tried: true }); return; }
+        const prevBiz = list.find((b) => b.current);
+        const cc = CODE[s.add.country] || ['US', 'USD'];
+        BE.addBusiness({ name: n, countryCode: cc[0], currency: cc[1], sells: s.add.sells });
         this.setState({
-          bizList: s.bizList.concat([{ id, name: n, meta: s.add.country + ' · ' + CUR[s.add.country] + ' · Owner', shows: 'New. Sells ' + SELLS[s.add.sells] + '; just you for now.', note: 'Its Home stays empty until you send a first invoice or record an expense.', keepLabel: 'Nothing recorded yet', keep: '' }]),
-          team: Object.assign({}, s.team, { [id]: [{ id: 'maya', name: 'Maya Chen', email: 'maya@northwind.studio', role: 'Owner', status: 'Active now', you: true }] }),
-          add: { open: false, name: '', country: 'United States', sells: 'services', tried: false }
+          switched: { prev: prevBiz.id, prevName: prevBiz.name }, open: null, undo: null,
+          add: { open: false, name: '', country: 'United States', sells: 'services', tried: false },
+          inv: Object.assign({}, s.inv, { open: false })
         });
-        this.notify(n + ' created. Switch to it to start.');
+        this.notify(n + ' created and opened. Its books start empty.');
       }
     });
   }

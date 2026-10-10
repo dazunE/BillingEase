@@ -1,11 +1,335 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · SpendReceipt</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Receipt</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-file:focus-within{outline:2px solid #7A5AF8;outline-offset:2px}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+
+    <dc-import name="AppCrumbs" area="out" mid="Receipts" mid-href="SpendReceipts.dc.html" here="{{crumb}}"></dc-import>
+
+    <!-- Not found / deleted -->
+    <sc-if value="{{missing}}" hint-placeholder-val="{{false}}">
+      <section style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.02em;">{{missingTitle}}</h1>
+        <p style="margin: 0; font-size: 15px; color: #47444F; line-height: 1.5; max-width: 560px;">{{missingText}}</p>
+        <a href="SpendReceipts.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">Go to Receipts</a>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{found}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+
+        <!-- The receipt itself -->
+        <section aria-label="The receipt" style="flex: 1 1 280px; min-width: 0; max-width: 100%; display: flex; flex-direction: column; gap: 12px;">
+          <div style="background: #EFEDF3; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; justify-content: center;">
+            <div aria-hidden="true" style="width: 100%; max-width: 260px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 8px; box-shadow: 0 1px 2px rgba(24,22,31,0.06); padding: 22px 20px; display: flex; flex-direction: column; gap: 10px; font-size: 12px; color: #47444F; filter: {{img.blur}}; position: relative; overflow: hidden;">
+              <strong style="font-size: 14px; color: #18161F; text-align: center; text-transform: uppercase; letter-spacing: 0.04em;">{{img.merchant}}</strong>
+              <span style="text-align: center;">{{img.date}}, 2026</span>
+              <span style="height: 1px; background: #E2DFE8; margin: 4px 0;"></span>
+              <span style="height: 5px; width: 85%; border-radius: 3px; background: #EFEDF3;"></span>
+              <span style="height: 5px; width: 70%; border-radius: 3px; background: #EFEDF3;"></span>
+              <span style="height: 5px; width: 78%; border-radius: 3px; background: #EFEDF3;"></span>
+              <span style="height: 5px; width: 60%; border-radius: 3px; background: #EFEDF3;"></span>
+              <span style="height: 1px; background: #E2DFE8; margin: 4px 0;"></span>
+              <span style="display: flex; justify-content: space-between;"><span>Tax</span><span>{{img.tax}}</span></span>
+              <span style="display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; color: #18161F;"><span>Total</span><span>{{img.total}}</span></span>
+              <sc-if value="{{isReading}}" hint-placeholder-val="{{false}}"><span style="position: absolute; left: 0; right: 0; top: 46%; height: 2px; background: #E0752D;"></span></sc-if>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; font-size: 13px; color: #5F5B68;">
+            <span style="min-width: 0; overflow-wrap: anywhere;">{{r.file}} · {{r.source}}</span>
+            <label class="be-file" style="position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">
+              Replace photo
+              <input type="file" accept="image/*,application/pdf" onChange="{{replaceFile}}" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+            </label>
+          </div>
+        </section>
+
+        <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+
+          <!-- Title -->
+          <section style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 28px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 24px;">
+            <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 14px; font-weight: 700;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Receipt
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{status.bg}}; color: {{status.fg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{status.fg}};"></span>{{status.label}}</span>
+              </span>
+              <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.03em; overflow-wrap: anywhere;">{{title}}</h1>
+              <span style="font-size: 14px; color: #47444F;">{{sub}}</span>
+            </div>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{img.total}}</span>
+          </section>
+
+          <!-- What we read -->
+          <section aria-labelledby="rd-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 26px); display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+              <h2 id="rd-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">What we read</h2>
+              <span style="font-size: 13px; color: #5F5B68;">{{readNote}}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 12px;">
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Store
+                <input class="be-field" type="text" value="{{d.merchant}}" onChange="{{setMerchant}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F; width: 100%;">
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Date
+                <input class="be-field" type="text" value="{{d.date}}" onChange="{{setDate}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F; width: 100%;">
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Total
+                <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{d.total}}" onChange="{{setTotal}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Tax on it
+                <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{d.tax}}" onChange="{{setTax}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
+                <select class="be-field" value="{{d.cat}}" onChange="{{setCat}}" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F; width: 100%;">
+                  <sc-for list="{{cats}}" as="c" hint-placeholder-count="6"><option value="{{c}}">{{c}}</option></sc-for>
+                </select>
+              </label>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;">
+              <button type="button" onClick="{{save}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: {{saveBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{saveLabel}}</button>
+              <sc-if value="{{dirty}}" hint-placeholder-val="{{false}}">
+                <button type="button" onClick="{{undo}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Undo changes</button>
+              </sc-if>
+              <span style="font-size: 13px; color: #5F5B68; flex: 1 1 200px;">{{catNote}}</span>
+            </div>
+            <sc-if value="{{err}}" hint-placeholder-val="{{false}}">
+              <div role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{err}}</div>
+            </sc-if>
+          </section>
+
+          <!-- The charge -->
+          <section aria-labelledby="ch-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 26px); display: flex; flex-direction: column; gap: 14px;">
+            <h2 id="ch-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{chTitle}}</h2>
+
+            <sc-if value="{{hasExp}}" hint-placeholder-val="{{true}}">
+              <a href="{{exp.href}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9; text-decoration: none; color: #18161F;">
+                <span style="width: 40px; height: 40px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 12px;">{{exp.ini}}</span>
+                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-weight: 700; font-size: 15px;">{{exp.who}}</span>
+                  <span style="font-size: 13px; color: #47444F; overflow-wrap: anywhere;">{{exp.meta}}</span>
+                </span>
+                <strong style="font-family: Sora, sans-serif; font-size: 17px; font-variant-numeric: tabular-nums;">{{exp.amount}}</strong>
+                <span style="font-size: 14px; font-weight: 600; text-decoration: underline;">Open</span>
+              </a>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; font-size: 14px; color: #47444F;">
+                <span style="flex: 1 1 260px; min-width: 0; line-height: 1.45;">{{exp.note}}</span>
+                <button type="button" onClick="{{unmatch}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{unmatchLabel}}</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{hasOld}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9; font-size: 14px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M3 6h18v12H3zM3 10h18M7 15h3"></path></svg>
+                <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px; overflow-wrap: anywhere;">{{r.charge}}</span><span style="color: #5F5B68; font-size: 13px;">Counted in {{oldMonth}}’s Going out. It’s in your books for the year.</span></span>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{isWaiting}}" hint-placeholder-val="{{false}}">
+              <sc-for list="{{cands}}" as="c" hint-placeholder-count="1">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: {{c.bg}};">
+                  <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-size: 13px; color: #5F5B68;">{{c.reason}}</span>
+                    <span style="font-size: 14px; overflow-wrap: anywhere;"><span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px;">{{c.label}}</span> · {{c.date}} · {{c.how}}</span>
+                    <span style="font-size: 13px; color: #47444F;">{{c.effect}}</span>
+                  </span>
+                  <button type="button" onClick="{{c.match}}" aria-label="{{c.matchLabel}}" style="min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: {{c.btnBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Match</button>
+                </div>
+              </sc-for>
+              <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 4px;">
+                <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{makeText}}</span>
+                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
+                  <label style="flex: 0 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid with
+                    <select class="be-field" value="{{how}}" onChange="{{setHow}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                      <option value="Cash">Cash</option>
+                      <option value="Personal card">A personal card</option>
+                      <option value="Amex ••1009">Amex ••1009</option>
+                      <option value="Chase ••4417">Chase ••4417</option>
+                    </select>
+                  </label>
+                  <button type="button" onClick="{{make}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: {{makeBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{makeLabel}}</button>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{needsTotal}}" hint-placeholder-val="{{false}}">
+              <p style="margin: 0; padding: 12px 14px; border-radius: 14px; background: #FFF0B8; color: #6B5000; font-size: 14px; font-weight: 600; line-height: 1.45;">{{needsText}}</p>
+            </sc-if>
+          </section>
+
+          <!-- Notes -->
+          <section aria-labelledby="nt-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 26px); display: flex; flex-direction: column; gap: 12px;">
+            <h2 id="nt-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Notes</h2>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What was it for?
+              <textarea class="be-field" rows="3" value="{{note}}" onChange="{{setNote}}" placeholder="e.g. Lunch with Greenline Architects about the lobby signage" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+            </label>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;">
+              <button type="button" onClick="{{saveNote}}" style="min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save note</button>
+              <span style="font-size: 13px; color: #5F5B68;">A line on who or what it was for helps if you’re ever asked.</span>
+            </div>
+          </section>
+
+          <!-- Delete -->
+          <section aria-labelledby="dl-h" style="display: flex; flex-direction: column; gap: 10px; padding: 4px 4px 0;">
+            <sc-if value="{{delIdle}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px;">
+                <span id="dl-h" style="font-size: 14px; color: #47444F;">Wrong photo, or a duplicate?</span>
+                <button type="button" onClick="{{askDelete}}" style="min-height: 40px; padding: 0 16px; border: 1px solid #A8200D; border-radius: 9999px; background: #FFFFFF; color: #A8200D; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Delete receipt</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{delAsk}}" hint-placeholder-val="{{false}}">
+              <div role="alert" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 16px; border-radius: 16px; background: #FBE3DF; color: #A8200D;">
+                <span style="flex: 1 1 260px; min-width: 0; font-size: 14px; font-weight: 600; line-height: 1.45;">{{delText}}</span>
+                <button type="button" onClick="{{doDelete}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #A8200D; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Delete it</button>
+                <button type="button" onClick="{{cancelDelete}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep it</button>
+              </div>
+            </sc-if>
+          </section>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { toast: null, d: null, err: '', how: 'Cash', note: null, del: false, deleted: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._r); }
+  renderVals() {
+    const st = this.state;
+    const money = (n) => BE.money(n, 'USD', { cents: true });
+    const out = () => BE.totals().fmt.out;
+    const all = BE.all('receipts');
+    const id = BE.hash();
+    const r = BE.find('receipts', id) || (id ? null : all[0]) || null;
+    const CATS = ['Office supplies', 'Travel', 'Meals', 'Software', 'Fuel', 'Printing', 'Equipment', 'Contractors', 'Rent', 'Internet & phone', 'Insurance', 'Advertising', 'Other'];
+    const blank = { found: false, missing: true, crumb: 'Receipt', toast: st.toast,
+      missingTitle: st.deleted ? 'Receipt deleted' : (all.length ? 'This receipt isn’t here' : 'No receipts yet'),
+      missingText: st.deleted ? 'The ' + st.deleted + ' receipt is gone. Its charge stays in your books, just without the proof.' : (all.length ? 'It may have been deleted, or the link is out of date. Every receipt you have is in Receipts.' : 'Receipts you snap, upload or forward show up in Receipts, matched to the charge they belong to.') };
+    if (!r) return blank;
+
+    const reading = BE.receiptReading(r);
+    if (reading && !this._r) this._r = setTimeout(() => { this._r = null; this.setState({ d: null }); }, Math.max(50, r.readyAt - Date.now() + 60));
+    const blurry = !reading && r.status === 'blurry';
+    const matched = r.status === 'matched';
+    const x = r.expenseId ? BE.find('expenses', r.expenseId) : null;
+
+    const base = { id: r.id, merchant: r.merchant || '', date: r.date || '', total: r.total ? String(r.total) : '', tax: r.tax ? String(r.tax) : '', cat: r.cat || 'Other' };
+    const d = st.d && st.d.id === r.id ? st.d : base;
+    const dirty = ['merchant', 'date', 'total', 'tax', 'cat'].some((k) => String(d[k]) !== String(base[k]));
+    const setD = (k) => (e) => this.setState({ d: Object.assign({}, d, { [k]: e.target.value }), err: '' });
+    const save = () => {
+      const total = BE.num(d.total), tax = BE.num(d.tax);
+      if (!d.merchant.trim()) { this.setState({ err: 'Add the store’s name.' }); return; }
+      if (!(total > 0)) { this.setState({ err: 'Add the total from the bottom of the receipt, like 56.12.' }); return; }
+      if (matched && x && Math.abs(total - x.amount) > 0.005) { this.setState({ err: 'This receipt is matched to a ' + money(x.amount) + ' charge. Take it off the charge first if the total is different.' }); return; }
+      const patch = { merchant: d.merchant.trim(), date: d.date.trim() || r.date, total: Math.round(total * 100) / 100, tax: Math.round(tax * 100) / 100, cat: d.cat };
+      if (r.status === 'blurry') patch.status = 'waiting';
+      BE.update('receipts', r.id, patch);
+      const catChanged = d.cat !== (r.cat || 'Other');
+      if (matched && x && catChanged) BE.update('expenses', x.id, { cat: d.cat });
+      this.setState({ d: null, err: '' });
+      this.notify(dirty ? 'Saved' + (matched && x && catChanged ? ' · ' + (x.raw || x.who) + ' moved to ' + d.cat : '') : 'Nothing changed');
+    };
+
+    // Matching
+    const cands = matched || reading || blurry ? [] : BE.receiptCandidates(r);
+    const doMatch = (c) => {
+      const e = BE.matchReceipt(r.id, c.kind, c.id);
+      if (!e) return;
+      this.notify(c.kind === 'charge' ? 'Matched · ' + c.label + ' sorted as ' + (r.cat || 'Other') + ' · ' + money(c.amount) + ' added to Going out (now ' + out() + ')' : 'Matched to ' + c.label + ' · Going out stays ' + out());
+    };
+    const make = () => {
+      const e = BE.receiptToExpense(r.id, st.how);
+      if (!e) return;
+      this.notify(money(e.amount) + ' to ' + e.who + ' added to Going out (' + st.how + ') · now ' + out());
+    };
+    const status = reading ? { label: 'Reading', bg: '#E1EEF8', fg: '#1F5E91' } : blurry ? { label: 'Needs a total', bg: '#FFF0B8', fg: '#6B5000' } : matched ? { label: r.made ? 'Added as an expense' : 'Matched', bg: '#E2F6D5', fg: '#2F5711' } : { label: 'Waiting to match', bg: '#FDE6D6', fg: '#18161F' };
+    const note = st.note != null && st.note.id === r.id ? st.note.v : (r.note || '');
+    const ini = BE.initials(x ? x.who : r.merchant);
+    const monthName = { Sep: 'September', Aug: 'August', Jul: 'July' }[r.month] || 'an earlier month';
+    return {
+      found: true, missing: false, toast: st.toast,
+      crumb: r.merchant || 'Receipt', r: { file: r.file || 'receipt', source: r.source || '', charge: r.charge || '' },
+      title: reading ? 'Reading ' + (r.file || 'your receipt') + '…' : (r.merchant || 'Receipt'),
+      sub: (r.date ? r.date + ', 2026' : '') + ' · added ' + (r.added || BE.today),
+      status, isReading: reading,
+      img: { merchant: reading ? '' : r.merchant, date: r.date, tax: reading || blurry ? '·····' : money(r.tax || 0), total: reading || blurry ? '······' : money(r.total), blur: blurry ? 'blur(2.4px)' : 'none' },
+      readNote: reading ? 'Reading the photo…' : blurry ? 'The photo is blurry. Type the total and save.' : (r.typed ? 'You typed the total' : 'Fix anything we got wrong'),
+      d, cats: CATS, dirty,
+      setMerchant: setD('merchant'), setDate: setD('date'), setTotal: setD('total'), setTax: setD('tax'), setCat: setD('cat'),
+      save, saveLabel: blurry ? 'Save total' : 'Save changes', saveBg: dirty || blurry ? '#B9A3FF' : 'rgba(24,22,31,0.07)',
+      undo: () => this.setState({ d: null, err: '' }),
+      catNote: matched && x ? 'A new category also moves the charge.' : 'Tax is noted for your deductions in Taxes.',
+      err: st.err,
+      chTitle: matched ? (r.made ? 'The expense it became' : 'Matched to') : 'Which charge is it?',
+      hasExp: !!x,
+      exp: x ? { href: 'SpendTransaction.dc.html#' + x.id, ini, who: x.who, amount: money(x.amount), meta: (x.raw ? x.raw + ' · ' : '') + x.date + ' · ' + x.how + ' · ' + x.cat,
+        note: r.made ? 'No charge showed up, so this receipt became its own expense and counts in Going out.' : 'Already counted in Going out. The receipt is the proof.' } : { href: '#', ini: '', who: '', amount: '', meta: '', note: '' },
+      unmatchLabel: r.made ? 'Undo, it wasn’t paid that way' : 'Not this charge',
+      unmatch: () => {
+        if (r.made && x) {
+          BE.change((s) => { s.expenses = s.expenses.filter((e) => e.id !== x.id); });
+          BE.unmatchReceipt(r.id);
+          this.notify('Removed the ' + money(x.amount) + ' expense · Going out is ' + out() + ' again');
+        } else { BE.unmatchReceipt(r.id); this.notify('Taken off ' + (x ? (x.raw || x.who) : 'the charge') + '. The receipt is waiting to match again'); }
+      },
+      hasOld: matched && !x && !!r.charge, oldMonth: monthName,
+      isWaiting: !matched && !reading && !blurry,
+      cands: cands.map((c, i) => ({
+        reason: (i === 0 ? 'Best guess · ' : '') + c.reason, label: c.label, date: c.date, how: c.how,
+        effect: c.kind === 'charge' ? 'Not sorted yet: matching sorts it as ' + (r.cat || 'Other') + ' and adds ' + money(c.amount) + ' to Going out.' : 'Already in Going out. Matching attaches the proof.',
+        bg: c.kind === 'charge' ? '#FDE6D6' : '#F7F6F9', btnBg: i === 0 ? '#B9A3FF' : 'rgba(24,22,31,0.07)',
+        matchLabel: 'Match to ' + c.label, match: () => doMatch(c)
+      })),
+      makeText: cands.length ? 'None of these? If you paid cash or with a personal card, add it as its own expense.' : 'No charge for ' + money(r.total) + ' on your cards or bank. If you paid cash or with a personal card, add it as its own expense: ' + money(r.total) + ' to Going out.',
+      how: st.how, setHow: (e) => this.setState({ how: e.target.value }),
+      make, makeLabel: 'Add ' + money(r.total) + ' to Going out', makeBg: cands.length ? 'rgba(24,22,31,0.07)' : '#B9A3FF',
+      needsTotal: reading || blurry, needsText: reading ? 'Reading the photo. This takes a few seconds.' : 'Type the total above and save. Then we’ll look for its charge.',
+      note, setNote: (e) => this.setState({ note: { id: r.id, v: e.target.value } }),
+      saveNote: () => { BE.update('receipts', r.id, { note: note.trim() }); this.setState({ note: null }); this.notify(note.trim() ? 'Note saved' : 'Note cleared'); },
+      replaceFile: (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        BE.update('receipts', r.id, { file: f.name, source: 'Replaced ' + BE.today });
+        try { e.target.value = ''; } catch (err) { /* ignore */ }
+        this.notify('Replaced the photo with ' + f.name);
+      },
+      delIdle: !st.del, delAsk: st.del,
+      delText: matched && x ? 'Delete this receipt? ' + (x.raw || x.who) + ' stays in Going out, just without its proof.' : 'Delete this receipt? Nothing changes in your numbers.',
+      askDelete: () => this.setState({ del: true }),
+      cancelDelete: () => this.setState({ del: false }),
+      doDelete: () => { const name = r.merchant || 'unread'; BE.deleteReceipt(r.id); this.setState({ del: false, deleted: name }); this.notify('Deleted the ' + name + ' receipt'); }
+    };
+  }
+}
+</script>
+</body>
+</html>

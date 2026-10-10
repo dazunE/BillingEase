@@ -18,107 +18,37 @@ a{color:#18161F}a:hover{color:#000000}
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="5">
-                <a href="{{v.href}}" role="menuitem" onClick="{{closeNew}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <span style="display: flex; flex-direction: column; gap: 2px; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;">
-                <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">Your business</span>
-                <span style="font-weight: 700; font-size: 15px;">Northwind Studio</span>
-                <span style="font-size: 13px; color: #47444F;">Maya Chen · Owner</span>
-              </span>
-              <sc-for list="{{acctItems}}" as="ai" hint-placeholder-count="4">
-                <a href="{{ai.href}}" role="menuitem" onClick="{{closeAcct}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ai.label}}</a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
 
-    <!-- Back + compact equation strip -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
-      <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
-        <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-          Home
-        </a>
-        <span aria-hidden="true">/</span>
-        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">Coming in</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page" style="color: #18161F;">Detailed invoice</span>
-      </nav>
-      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-        <a href="ThreeIn.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #EEE8FF; border: 2px solid #7A5AF8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
-        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
-        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
-      </nav>
-    </div>
+    <dc-import name="AppCrumbs" area="in" mid="All invoices" mid-href="SellInvoices.dc.html" here="{{crumbHere}}"></dc-import>
 
     <!-- Title -->
     <section aria-labelledby="inv-h" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px;">
       <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
         <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>{{inv.num}} · {{inv.state}}</span>
-        <h1 id="inv-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;">New invoice</h1>
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 640px;">The full editor, for when one sentence isn’t enough: several lines, products, discounts, other currencies. For a quick one, use <a href="ThreeIn.dc.html#bill" style="font-weight: 600;">Bill someone</a>.</p>
+        <h1 id="inv-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;">{{title}}</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 640px;">{{intro}} For a quick one, use <a href="ThreeIn.dc.html#bill" style="font-weight: 600;">Bill someone</a>.</p>
       </div>
     </section>
 
-    <!-- Sent state -->
-    <sc-if value="{{sent.on}}" hint-placeholder-val="{{false}}">
-      <section aria-labelledby="sent-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: center; gap: 18px 24px;">
-        <span style="width: 52px; height: 52px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+    <!-- Paid or voided: can't be edited -->
+    <sc-if value="{{locked.on}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="lock-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: center; gap: 18px 24px;">
+        <span style="width: 52px; height: 52px; border-radius: 9999px; background: {{locked.bg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{locked.fg}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{locked.icon}}"></path></svg></span>
         <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-          <h2 id="sent-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{sent.title}}</h2>
-          <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{sent.body}}</span>
-          <sc-if value="{{sent.repeat}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; color: #47444F;">It repeats every month. <a href="SellRecurring.dc.html" style="font-weight: 600;">Manage repeating invoices</a></span></sc-if>
+          <h2 id="lock-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{locked.title}}</h2>
+          <span style="font-size: 15px; line-height: 1.5; color: #47444F;">{{locked.body}}</span>
         </div>
         <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-          <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">See it in Coming in</a>
-          <button type="button" onClick="{{startOver}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Start another invoice</button>
+          <a href="{{locked.backHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">See {{locked.num}}</a>
+          <a href="{{locked.copyHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Copy into a new invoice</a>
         </div>
       </section>
     </sc-if>
 
-    <sc-if value="{{sent.off}}" hint-placeholder-val="{{true}}">
+    <sc-if value="{{editing}}" hint-placeholder-val="{{true}}">
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
       <!-- Editor -->
       <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
@@ -132,8 +62,10 @@ a{color:#18161F}a:hover{color:#000000}
               <select class="be-field" value="{{f.who}}" onChange="{{setWho}}" aria-invalid="{{whoErr}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: {{whoBorder}}; border-radius: 10px; background: #FFFFFF; color: #18161F; font: 400 15px DM Sans, sans-serif; cursor: pointer;">
                 <option value="">Choose a customer</option>
                 <sc-for list="{{customers}}" as="cu" hint-placeholder-count="9"><option value="{{cu.name}}">{{cu.label}}</option></sc-for>
+                <option value="__new">+ New customer</option>
               </select>
               <sc-if value="{{whoErr}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">Choose who you’re billing.</span></sc-if>
+              <sc-if value="{{cust.hasLink}}" hint-placeholder-val="{{false}}"><a href="{{cust.href}}" style="font-size: 13px; font-weight: 600;">See {{f.who}}</a></sc-if>
               <sc-if value="{{cust.hasInfo}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F;">{{cust.info}}</span></sc-if>
             </label>
             <label style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
@@ -146,9 +78,32 @@ a{color:#18161F}a:hover{color:#000000}
                 <option value="45">Within 45 days</option>
                 <option value="60">Within 60 days</option>
               </select>
-              <span style="font-size: 13px; color: #47444F;">Dated Oct 4 · due {{dueDate}}</span>
+              <span style="font-size: 13px; color: #47444F;">Dated {{today}} · due {{dueDate}}</span>
             </label>
           </div>
+          <sc-if value="{{nc.on}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 18px; border: 2px solid #7A5AF8;">
+              <span style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">New customer</strong><span style="font-size: 13px; color: #5F5B68;">A name and where to send it. The rest can wait for their page.</span></span>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px;">
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Business or person
+                  <input class="be-field" type="text" value="{{nc.name}}" onChange="{{setNcName}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email for invoices
+                  <input class="be-field" type="email" value="{{nc.email}}" onChange="{{setNcEmail}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">They pay in
+                  <select class="be-field" value="{{nc.cur}}" onChange="{{setNcCur}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                    <option value="USD">US dollars</option><option value="EUR">Euros</option><option value="GBP">Pounds</option><option value="CAD">Canadian dollars</option>
+                  </select>
+                </label>
+              </div>
+              <sc-if value="{{nc.errOn}}" hint-placeholder-val="{{false}}"><span role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{nc.err}}</span></sc-if>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button type="button" onClick="{{saveCustomer}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Add customer</button>
+                <sc-if value="{{nc.canCancel}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{cancelCustomer}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button></sc-if>
+              </div>
+            </div>
+          </sc-if>
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;">
             <span id="cur-l" style="font-size: 13px; font-weight: 600;">Currency</span>
             <div role="group" aria-labelledby="cur-l" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
@@ -161,7 +116,7 @@ a{color:#18161F}a:hover{color:#000000}
           <sc-if value="{{cust.reverse}}" hint-placeholder-val="{{false}}">
             <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #E1EEF8; color: #1F5E91; font-size: 14px; line-height: 1.45;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5E91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5"></path></svg>
-              <span>Kaffeehaus Berlin is a business in the EU, so you don’t charge VAT. The invoice says “VAT reverse charged to the customer” and shows their VAT ID. US sales tax is off too.</span>
+              <span>{{cust.reverseText}}</span>
             </div>
           </sc-if>
         </section>
@@ -170,7 +125,7 @@ a{color:#18161F}a:hover{color:#000000}
         <section aria-labelledby="lines-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 14px;">
           <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
             <h2 id="lines-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">What you’re billing for</h2>
-            <span style="font-size: 13px; color: #5F5B68;">Products get NY sales tax (8.875%). Services don’t.</span>
+            <span style="font-size: 13px; color: #5F5B68;">{{taxNote}}</span>
           </div>
           <sc-if value="{{noLines}}" hint-placeholder-val="{{false}}">
             <span style="padding: 14px 16px; border-radius: 14px; border: 1px dashed #CBC7D3; font-size: 14px; color: #5F5B68;">No lines yet. Add something from your catalog or type your own.</span>
@@ -214,12 +169,13 @@ a{color:#18161F}a:hover{color:#000000}
                       </button>
                     </sc-if>
                   </sc-for>
+                  <sc-if value="{{catEmpty}}" hint-placeholder-val="{{false}}"><span style="padding: 10px 12px; font-size: 13px; color: #47444F;">Nothing in your catalog yet. Add what you sell once and pick it here.</span></sc-if>
                   <a href="SellCatalog.dc.html" style="display: flex; align-items: center; min-height: 40px; padding: 0 12px; font-size: 13px; font-weight: 600; border-top: 1px solid #EFEDF3; margin-top: 4px;">Edit your catalog</a>
                 </div>
               </sc-if>
             </div>
             <button type="button" onClick="{{addBlank}}" style="min-height: 40px; padding: 0 12px; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Type your own line</button>
-            <span style="font-size: 13px; color: #5F5B68;">Unbilled time? <a href="SellCatalog.dc.html" style="font-weight: 600;">Priya has 6.5 hours for Greenline</a></span>
+            <sc-if value="{{time.on}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #5F5B68;">Unbilled time? <a href="SellCatalog.dc.html" style="font-weight: 600;">{{time.text}}</a></span></sc-if>
           </div>
         </section>
 
@@ -284,7 +240,7 @@ a{color:#18161F}a:hover{color:#000000}
                   <input class="be-field" type="text" placeholder="Optional" value="{{f.po}}" onChange="{{setPo}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
                 </label>
                 <div style="flex: 1 1 200px; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                  <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Send me a copy</span><span style="font-size: 13px; color: #5F5B68;">To maya@northwind.studio</span></span>
+                  <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Send me a copy</span><span style="font-size: 13px; color: #5F5B68; overflow-wrap: anywhere;">{{meEmail}}</span></span>
                   <button type="button" role="switch" aria-checked="{{f.copy}}" aria-label="Send me a copy" onClick="{{toggleCopy}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{copyBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{copyLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
                 </div>
               </div>
@@ -303,7 +259,8 @@ a{color:#18161F}a:hover{color:#000000}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg>
             {{sendLabel}}
           </button>
-          <button type="button" onClick="{{saveDraft}}" style="min-height: 48px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Save draft</button>
+          <button type="button" onClick="{{saveDraft}}" style="min-height: 48px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{saveLabel}}</button>
+          <sc-if value="{{hasBack}}" hint-placeholder-val="{{false}}"><a href="{{backHref}}" style="font-size: 14px; font-weight: 600;">Cancel</a></sc-if>
           <span style="font-size: 13px; color: #5F5B68;">{{feed}}</span>
         </div>
       </div>
@@ -314,8 +271,8 @@ a{color:#18161F}a:hover{color:#000000}
           <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 1px 2px rgba(24,22,31,0.06);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
               <span style="display: flex; flex-direction: column; gap: 4px;">
-                <span style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 8px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span><span style="font-weight: 700; font-size: 14px;">Northwind Studio</span></span>
-                <span style="font-size: 12px; color: #5F5B68;">Brooklyn, NY · maya@northwind.studio</span>
+                <span style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 8px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span><span style="font-weight: 700; font-size: 14px;">{{biz.name}}</span></span>
+                <span style="font-size: 12px; color: #5F5B68; overflow-wrap: anywhere;">{{biz.line}}</span>
               </span>
               <span style="font-size: 12px; color: #5F5B68; text-align: right; white-space: nowrap;">Invoice<br><strong style="color: #18161F; font-size: 13px;">{{inv.num}}</strong></span>
             </div>
@@ -325,7 +282,7 @@ a{color:#18161F}a:hover{color:#000000}
                 <span style="font-weight: 700; font-size: 15px; color: {{pv.custColor}};">{{pv.cust}}</span>
                 <sc-if value="{{cust.hasInfo}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F;">{{cust.info}}</span></sc-if>
               </span>
-              <span style="display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #47444F;"><span>Dated Oct 4, 2026</span><span>Due {{dueDate}}</span><sc-if value="{{pv.hasPo}}" hint-placeholder-val="{{false}}"><span>PO {{f.po}}</span></sc-if></span>
+              <span style="display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #47444F;"><span>Dated {{today}}, 2026</span><span>Due {{dueDate}}</span><sc-if value="{{pv.hasPo}}" hint-placeholder-val="{{false}}"><span>PO {{f.po}}</span></sc-if></span>
             </div>
             <div style="display: flex; flex-direction: column; border-top: 1px solid #EFEDF3;">
               <sc-for list="{{pv.rows}}" as="pr" hint-placeholder-count="2">
@@ -378,114 +335,123 @@ a{color:#18161F}a:hover{color:#000000}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1846}}'>
 class Component extends DCLogic {
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  common(inDelta) {
-    const st = this.state;
-    const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
-    const inT = 24850 + (inDelta || 0), outT = 13640, profit = inT - outT, keep = profit - Math.round(profit * 0.25);
-    const verbs = [
-      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-      { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-      { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-      { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-    ];
-    const acctItems = [
-      { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
-      { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
-      { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
-      { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
-      { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
-      { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
-    ];
-    return {
-      n: { in: money(inT), out: money(outT), keep: money(keep) },
-      verbs, acctItems, newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
-      toggleNew: () => this.setState({ newOpen: !this.state.newOpen, acctOpen: false }),
-      closeNew: () => this.setState({ newOpen: false }),
-      toggleAcct: () => this.setState({ acctOpen: !this.state.acctOpen, newOpen: false }),
-      closeAcct: () => this.setState({ acctOpen: false }),
-      toast: st.toast || null
-    };
-  }
   constructor(props) {
     super(props);
+    const h = BE.hash();
     this.state = {
-      newOpen: false, acctOpen: false, toast: null, inDelta: 0, seq: 10, num: 166,
-      catOpen: false, moreOpen: false, errors: [], tried: false, sent: null,
-      f: this.blank()
+      toast: null, seq: 50, catOpen: false, moreOpen: false, tried: false,
+      loadedFor: h, f: this.formFor(h),
+      nc: { open: false, name: '', email: '', cur: 'USD', err: '' }
     };
   }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  /** Catalog items: services and products from the store (or Northwind's defaults until that collection exists). */
+  catalogItems() {
+    const svc = BE.get('services'), prd = BE.get('products');
+    const FALLBACK_S = [
+      { name: 'Brand strategy workshop', unit: 'workshop', per: 'Flat', price: 1800 }, { name: 'Design hours', unit: 'hour', per: 'Hourly', price: 120 },
+      { name: 'Website page design', unit: 'page', per: 'Per page', price: 950 }, { name: 'Photo editing', unit: 'hour', per: 'Hourly', price: 85 },
+      { name: 'Monthly social retainer', unit: 'month', per: 'Monthly', price: 540 }
+    ];
+    const FALLBACK_P = [
+      { name: 'Printed brand kit', unit: 'kit', price: 65, stock: 48, reorder: 15 }, { name: 'Enamel logo pin', unit: 'pin', price: 8, stock: 310, reorder: 50 },
+      { name: 'Letterpress card set', unit: 'set', price: 24, stock: 9, reorder: 15 }, { name: 'Tote bag', unit: 'bag', price: 28, stock: 0, reorder: 10 }
+    ];
+    const useFallback = svc === undefined && prd === undefined && !BE.isEmpty();
+    const services = (useFallback ? FALLBACK_S : BE.all('services')).filter((x) => x.active !== false && x.archived !== true);
+    const products = (useFallback ? FALLBACK_P : BE.all('products')).filter((x) => x.active !== false && x.archived !== true);
+    return { services, products, fallback: useFallback };
+  }
+  productOf(name) { return this.catalogItems().products.find((p) => p.name === name) || null; }
   blank() {
+    const p = BE.get('profile') || {};
     return {
-      who: '', cur: 'USD', terms: '30', discType: '%', disc: '', ship: '', dep: '', notes: 'Thank you for working with Northwind Studio.', po: '', repeat: false, copy: true,
-      pay: { card: true, bank: true, apple: true },
-      lines: [
-        { id: 1, name: 'Website page design', kind: 'service', unit: 'page', rateType: 'Flat · per page', qty: '3', rate: '950', base: 950, tax: false },
-        { id: 2, name: 'Printed brand kit', kind: 'product', unit: 'kit', stock: 48, qty: '20', rate: '65', base: 65, tax: true }
-      ]
+      who: '', cur: p.currency || 'USD', terms: '30', discType: '%', disc: '', ship: '', dep: '', po: '', repeat: false, copy: true,
+      notes: p.business && p.business !== 'Your business' ? 'Thank you for working with ' + p.business + '.' : 'Thank you for your business.',
+      pay: Object.assign({ card: true, bank: true, apple: true }, (BE.get('paySettings') || {}).methods || {}),
+      lines: []
     };
+  }
+  /** The form for a hash: '' new, 'copy=INV-…' a new copy, 'INV-…' or 'D-…' that invoice. */
+  formFor(h) {
+    const copy = /^copy=/.test(h);
+    const inv = BE.find('invoices', copy ? h.slice(5) : h, 'num');
+    if (!inv) return this.blank();
+    const m = inv.form || {};
+    const b = this.blank();
+    let ship = '', id = 0;
+    const lines = [];
+    (inv.lines || []).forEach((l) => {
+      if (l.kind === 'ship' || l.unit === 'shipping') { ship = String(l.rate); return; }
+      const prod = l.kind === 'product' || (!l.kind && this.productOf(l.name));
+      lines.push({ id: ++id, name: l.name, kind: prod ? 'product' : 'service', unit: String(l.unit || 'item').replace(/s$/, ''), rateType: l.rateType || '', qty: String(l.qty), rate: String(l.rate), base: null, tax: prod ? (l.tax !== false && (inv.tax > 0 || !!l.tax)) : !!l.tax });
+    });
+    return Object.assign(b, {
+      who: inv.who, cur: inv.cur || b.cur, terms: String(m.terms != null ? m.terms : (inv.dueIn >= 0 && inv.dueIn < 99 && !copy ? 30 : 30)),
+      discType: m.discType || 'amt', disc: m.disc != null ? String(m.disc) : (inv.discount ? String(inv.discount) : ''),
+      ship: ship, dep: copy ? '' : (inv.deposit ? String(inv.deposit) : ''), po: m.po || '', repeat: !!inv.repeat, copy: m.copy !== false,
+      notes: inv.note || b.notes, pay: Object.assign({}, b.pay, m.pay || {}), lines
+    });
   }
   renderVals() {
-    const st = this.state, f = st.f;
-    const SYM = { USD: '$', EUR: '€', GBP: '£' }, FX = { USD: 1, EUR: 1.09, GBP: 1.27 };
-    const num = (s) => { const v = parseFloat(String(s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; };
+    const st = this.state;
+    const hash = BE.hash();
+    const f = st.loadedFor === hash ? st.f : this.formFor(hash);
+    const profile = BE.get('profile') || {};
+    const home = profile.currency || 'USD';
+    const SYM = (c) => (BE.SYM[c] || (c + ' '));
+    const FX = BE.FX;
+    const num = BE.num;
     const r2 = (n) => Math.round(n * 100) / 100;
-    const fmt = (n) => SYM[f.cur] + r2(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
-    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const dayOn = (days) => { const d = new Date(2026, 9, 4 + days); return MON[d.getMonth()] + ' ' + d.getDate(); };
-    const setF = (patch) => this.setState({ f: Object.assign({}, this.state.f, patch) });
-    const CUST = [
-      { name: 'Atlas Freight Co.', cur: 'USD', region: 'US' }, { name: 'Bluebird Yoga', cur: 'USD', region: 'US' },
-      { name: 'Greenline Architects', cur: 'USD', region: 'US' }, { name: 'Harbor & Pine Café', cur: 'USD', region: 'US' },
-      { name: 'Kaffeehaus Berlin GmbH', cur: 'EUR', region: 'EU', info: 'Berlin, Germany · VAT ID DE 812 345 678' },
-      { name: 'Lumen Dental Group', cur: 'USD', region: 'US' }, { name: 'Oak Street Bakery', cur: 'USD', region: 'US' },
-      { name: 'Ridge Outdoor Supply', cur: 'USD', region: 'US' }, { name: 'Thistle & Co. Ltd', cur: 'GBP', region: 'UK', info: 'United Kingdom · no US sales tax' }
-    ];
-    const cu = CUST.find((x) => x.name === f.who);
-    const region = cu ? cu.region : 'US';
-    const taxable = region === 'US';
-    const CAT = [
-      { head: 'Services · not taxed' },
-      { name: 'Brand strategy workshop', kind: 'service', unit: 'workshop', rateType: 'Flat', price: 1800, sub: 'Flat price' },
-      { name: 'Design hours', kind: 'service', unit: 'hour', rateType: 'Hourly', price: 120, sub: 'Per hour' },
-      { name: 'Website page design', kind: 'service', unit: 'page', rateType: 'Flat · per page', price: 950, sub: 'Per page' },
-      { name: 'Photo editing', kind: 'service', unit: 'hour', rateType: 'Hourly', price: 85, sub: 'Per hour' },
-      { name: 'Monthly social retainer', kind: 'service', unit: 'month', rateType: 'Monthly', price: 540, sub: 'Per month' },
-      { head: 'Products · NY sales tax' },
-      { name: 'Printed brand kit', kind: 'product', unit: 'kit', price: 65, stock: 48 },
-      { name: 'Enamel logo pin', kind: 'product', unit: 'pin', price: 8, stock: 310 },
-      { name: 'Letterpress card set', kind: 'product', unit: 'set', price: 24, stock: 9, low: true },
-      { name: 'Tote bag', kind: 'product', unit: 'bag', price: 28, stock: 0 }
-    ];
-    const convTo = (usdPrice, cur) => cur === 'USD' ? usdPrice : Math.max(1, Math.round(usdPrice / FX[cur] / (usdPrice >= 100 ? 5 : 1)) * (usdPrice >= 100 ? 5 : 1));
-    const conv = (usdPrice) => convTo(usdPrice, f.cur);
-    const reprice = (l, from, to) => Object.assign({}, l, { rate: String(l.base ? convTo(l.base, to) : r2(num(l.rate) * FX[from] / FX[to])) });
+    const fmt = (n) => BE.money(n, f.cur, { cents: true });
+    const usd = (n) => BE.money(n, 'USD', { whole: true });
+    const setF = (patch) => this.setState({ f: Object.assign({}, f, patch), loadedFor: hash });
+
+    // which invoice this is
+    const isCopy = /^copy=/.test(hash);
+    const editInv = isCopy ? null : BE.find('invoices', hash, 'num');
+    const mode = !editInv ? 'new' : editInv.void || BE.invStatus(editInv) === 'paid' ? 'locked' : editInv.draft ? 'draft' : 'sent';
+    const invNum = editInv ? editInv.num : BE.nextNumber('INV');
+
+    // customers and tax
+    const customers = BE.all('customers').slice().sort((a, b) => a.name.localeCompare(b.name));
+    const cu = customers.find((x) => x.name === f.who) || null;
+    const EU = ['Germany', 'France', 'Netherlands', 'Ireland', 'Spain', 'Italy', 'Belgium', 'Austria', 'Portugal', 'Sweden', 'Denmark', 'Finland'];
+    const homeCountry = profile.country || 'United States';
+    const region = !cu || !cu.country || cu.country === homeCountry ? 'home' : EU.indexOf(cu.country) >= 0 ? 'EU' : 'abroad';
+    const rm = String(profile.taxLabel || '').match(/([\d.]+)%/);
+    const taxRate = rm ? Number(rm[1]) / 100 : 0;
+    const taxName = rm ? String(profile.taxLabel).replace(/\s*on products$/i, '') : 'Sales tax';
+    const taxable = region === 'home' && taxRate > 0;
+
+    // catalog
+    const cat = this.catalogItems();
+    const convTo = (homePrice, cur) => cur === home ? homePrice : Math.max(1, Math.round(homePrice / (FX[cur] || 1) / (homePrice >= 100 ? 5 : 1)) * (homePrice >= 100 ? 5 : 1));
+    const reprice = (l, from, to) => Object.assign({}, l, { rate: String(l.base ? convTo(l.base, to) : r2(num(l.rate) * (FX[from] || 1) / (FX[to] || 1))) });
 
     // totals
     const amt = (l) => num(l.qty) * num(l.rate);
     const sub = f.lines.reduce((a, l) => a + amt(l), 0);
-    const discRaw = f.discType === '%' ? sub * Math.min(num(f.disc), 100) / 100 : Math.min(num(f.disc), sub);
-    const disc = r2(discRaw);
+    const disc = r2(f.discType === '%' ? sub * Math.min(num(f.disc), 100) / 100 : Math.min(num(f.disc), sub));
     const ratio = sub ? disc / sub : 0;
     const taxBase = taxable ? f.lines.filter((l) => l.tax).reduce((a, l) => a + amt(l), 0) * (1 - ratio) : 0;
-    const tax = r2(taxBase * 0.08875);
+    const tax = r2(taxBase * taxRate);
     const ship = num(f.ship), dep = num(f.dep);
-    const total = sub - disc + tax + ship;
-    const due = total - dep;
-    const dueUsd = due * FX[f.cur];
+    const total = r2(sub - disc + tax + ship);
+    const due = r2(total - dep);
+    const dueUsd = BE.usd(due, f.cur);
 
-    const lineSet = (id, patch) => setF({ lines: this.state.f.lines.map((l) => l.id === id ? Object.assign({}, l, patch) : l) });
+    const lineSet = (id, patch) => setF({ lines: f.lines.map((l) => l.id === id ? Object.assign({}, l, patch) : l) });
     const errLine = (l) => st.tried && (!l.name.trim() || !(amt(l) > 0));
     const lines = f.lines.map((l) => {
       const taxOn = taxable && l.tax;
-      const unitPl = l.unit + (num(l.qty) === 1 ? '' : 's');
       let warn = '', warnFg = '#6B5000';
-      if (l.kind === 'product' && l.stock !== undefined) {
-        if (l.stock === 0) { warn = 'Out of stock. You can still bill it; it will show as a back order.'; warnFg = '#A8200D'; }
-        else if (num(l.qty) > l.stock) { warn = 'Only ' + l.stock + ' in stock.'; warnFg = '#A8200D'; }
-        else warn = (l.stock - num(l.qty)) + ' left in stock after this invoice' + (l.stock - num(l.qty) < 15 ? ' (below your reorder point)' : '');
+      const prod = l.kind === 'product' ? this.productOf(l.name) : null;
+      if (prod && prod.stock != null) {
+        const stock = Number(prod.stock) || 0, reorder = Number(prod.reorder || prod.reorderAt || 15);
+        if (stock === 0) { warn = 'Out of stock. You can still bill it; it shows as a back order.'; warnFg = '#A8200D'; }
+        else if (num(l.qty) > stock) { warn = 'Only ' + stock + ' in stock.'; warnFg = '#A8200D'; }
+        else warn = (stock - num(l.qty)) + ' left in stock after you send this' + (stock - num(l.qty) < reorder ? ' (below your reorder point)' : '');
       }
       if (errLine(l)) { warn = !l.name.trim() ? 'Add a description.' : 'Add a quantity and a rate.'; warnFg = '#A8200D'; }
       return {
@@ -494,29 +460,35 @@ class Component extends DCLogic {
         kindLabel: l.kind === 'product' ? 'Product' : (l.rateType ? 'Service · ' + l.rateType.toLowerCase() : 'Service'),
         kindBg: l.kind === 'product' ? '#FDE6D6' : '#EEE8FF',
         amount: fmt(amt(l)), removeLabel: 'Remove ' + (l.name || 'line'),
-        taxOn, taxLocked: !taxable, taxLabel: !taxable ? 'No sales tax' : l.tax ? 'NY tax 8.875%' : 'No tax',
+        taxOn, taxLocked: !taxable, taxLabel: !taxable ? 'No sales tax' : l.tax ? taxName : 'No tax',
         taxBg: taxOn ? '#EEE8FF' : '#FFFFFF', taxBorder: taxOn ? '#7A5AF8' : '#CBC7D3',
         hasWarn: !!warn, warn, warnFg, border: errLine(l) ? '1px solid #A8200D' : '1px solid transparent',
         setName: (e) => lineSet(l.id, { name: e.target.value }), setQty: (e) => lineSet(l.id, { qty: e.target.value }), setRate: (e) => lineSet(l.id, { rate: e.target.value, base: null }),
         toggleTax: () => lineSet(l.id, { tax: !l.tax }),
-        remove: () => setF({ lines: this.state.f.lines.filter((x) => x.id !== l.id) }),
-        unitPl
+        remove: () => setF({ lines: f.lines.filter((x) => x.id !== l.id) })
       };
     });
-    const catalog = CAT.map((c) => c.head ? { isHead: true, isItem: false, label: c.head } : {
-      isHead: false, isItem: true, label: c.name, price: SYM[f.cur] + conv(c.price).toLocaleString('en-US'),
-      sub: c.kind === 'product' ? (c.stock === 0 ? 'Out of stock' : c.stock + ' in stock' + (c.low ? ' · low' : '')) : c.sub,
-      subFg: c.kind === 'product' && (c.stock === 0 || c.low) ? '#A8200D' : '#5F5B68',
-      add: () => {
-        this.setState({ seq: st.seq + 1, catOpen: false, f: Object.assign({}, f, { lines: f.lines.concat([{ id: st.seq + 1, name: c.name, kind: c.kind, unit: c.unit, rateType: c.rateType, stock: c.stock, qty: '1', rate: String(conv(c.price)), base: c.price, tax: c.kind === 'product' }]) }) });
-        this.notify(c.name + ' added');
-      }
+    const addItem = (c, kind) => {
+      const seq = st.seq + 1;
+      const unit = String(c.unit || (kind === 'product' ? 'item' : 'item')).replace(/^per\s+/i, '').replace(/s$/, '');
+      this.setState({ seq, catOpen: false, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: seq, name: c.name, kind, unit, rateType: kind === 'service' ? (c.per || c.billing || c.rateType || '') : '', qty: '1', rate: String(convTo(Number(c.price) || 0, f.cur)), base: Number(c.price) || 0, tax: kind === 'product' }]) }) });
+      this.notify(c.name + ' added');
+    };
+    const catalog = [];
+    if (cat.services.length) catalog.push({ isHead: true, isItem: false, label: 'Services · ' + (taxRate ? 'not taxed' : 'what you do') });
+    cat.services.forEach((c) => catalog.push({ isHead: false, isItem: true, label: c.name, price: SYM(f.cur) + convTo(Number(c.price) || 0, f.cur).toLocaleString('en-US'), sub: c.per || c.billing || (c.unit ? 'Per ' + String(c.unit).replace(/^per\s+/i, '') : 'Flat price'), subFg: '#5F5B68', add: () => addItem(c, 'service') }));
+    if (cat.products.length) catalog.push({ isHead: true, isItem: false, label: 'Products' + (taxRate ? ' · ' + taxName : '') });
+    cat.products.forEach((c) => {
+      const stock = c.stock == null ? null : Number(c.stock), low = stock != null && stock > 0 && stock < Number(c.reorder || c.reorderAt || 15);
+      catalog.push({ isHead: false, isItem: true, label: c.name, price: SYM(f.cur) + convTo(Number(c.price) || 0, f.cur).toLocaleString('en-US'),
+        sub: stock == null ? 'Product' : stock === 0 ? 'Out of stock' : stock + ' in stock' + (low ? ' · low' : ''), subFg: stock === 0 || low ? '#A8200D' : '#5F5B68', add: () => addItem(c, 'product') });
     });
-    const curs = ['USD', 'EUR', 'GBP'].map((k) => ({
-      label: SYM[k] + ' ' + k, on: f.cur === k, bg: f.cur === k ? '#18161F' : 'transparent', fg: f.cur === k ? '#FFFFFF' : '#18161F',
+    const curList = ['USD', 'EUR', 'GBP'].concat([home, cu && cu.cur].filter((c) => c && ['USD', 'EUR', 'GBP'].indexOf(c) < 0));
+    const curs = curList.map((k) => ({
+      label: SYM(k).trim() + ' ' + k, on: f.cur === k, bg: f.cur === k ? '#18161F' : 'transparent', fg: f.cur === k ? '#FFFFFF' : '#18161F',
       pick: () => {
         if (k === f.cur) return;
-        const fx = FX[f.cur] / FX[k];
+        const fx = (FX[f.cur] || 1) / (FX[k] || 1);
         setF({ cur: k, lines: f.lines.map((l) => reprice(l, f.cur, k)), ship: f.ship ? String(r2(num(f.ship) * fx)) : '', dep: f.dep ? String(r2(num(f.dep) * fx)) : '', disc: f.discType === 'amt' && f.disc ? String(r2(num(f.disc) * fx)) : f.disc });
       }
     }));
@@ -534,53 +506,152 @@ class Component extends DCLogic {
 
     const sums = [{ label: 'Subtotal', value: fmt(sub) }];
     if (disc) sums.push({ label: 'Discount' + (f.discType === '%' ? ' ' + num(f.disc) + '%' : ''), value: '−' + fmt(disc) });
-    if (taxable) sums.push({ label: 'NY sales tax 8.875% on products', value: fmt(tax) });
+    if (taxable) sums.push({ label: taxName + ' on products', value: fmt(tax) });
     if (ship) sums.push({ label: 'Shipping', value: fmt(ship) });
     if (dep) { sums.push({ label: 'Total', value: fmt(total) }); sums.push({ label: 'Deposit already paid', value: '−' + fmt(dep) }); }
 
     const pv = {
       cust: f.who || 'Choose a customer', custColor: f.who ? '#18161F' : '#5F5B68', hasPo: !!f.po.trim(),
       rows: f.lines.length ? f.lines.map((l) => ({ name: l.name || 'Untitled line', color: l.name ? '#18161F' : '#5F5B68', qty: num(l.qty) + ' ' + l.unit + (num(l.qty) === 1 ? '' : 's') + ' × ' + fmt(num(l.rate)) + (taxable && l.tax ? ' · taxed' : ''), amount: fmt(amt(l)) })) : [{ name: 'No lines yet', color: '#5F5B68', qty: '', amount: '' }],
-      sums, due: fmt(due), foreign: f.cur !== 'USD', usd: '≈ ' + usd(dueUsd) + ' at 1 ' + f.cur + ' = ' + FX[f.cur] + ' USD',
+      sums, due: fmt(due), foreign: f.cur !== home, usd: '≈ ' + usd(dueUsd) + ' at 1 ' + f.cur + ' = ' + (FX[f.cur] || 1) + ' ' + home,
       methods: mNames.length ? 'They can pay by ' + mNames.join(', ') : 'No online payment; they pay you directly',
       hasNotes: !!f.notes.trim()
     };
 
-    const validate = () => {
+    const validate = (draft) => {
       const e = [];
       if (!f.who) e.push('Choose who you’re billing.');
+      if (draft) return e;
       if (!f.lines.length) e.push('Add at least one line.');
       if (f.lines.some((l) => !l.name.trim())) e.push('Every line needs a description.');
       if (f.lines.some((l) => l.name.trim() && !(amt(l) > 0))) e.push('Every line needs a quantity and a rate above zero.');
       if (dep > total) e.push('The deposit is more than the invoice total.');
       return e;
     };
-    const liveErr = st.tried ? validate() : [];
-    const invNum = 'INV-0' + st.num;
-    const send = () => {
-      const e = validate();
-      if (e.length) { this.setState({ tried: true }); return; }
-      this.setState({ sent: { who: f.who, due, dueUsd, cur: f.cur, dueDate: dayOn(+f.terms), repeat: f.repeat, num: invNum }, inDelta: st.inDelta + dueUsd, errors: [], tried: false });
-      this.notify(invNum + ' sent to ' + f.who + ' · ' + usd(dueUsd) + ' added to Coming in');
+    const liveErr = st.tried ? validate(false) : [];
+
+    // what gets written to the store
+    const record = () => {
+      const ls = f.lines.filter((l) => l.name.trim() || amt(l) > 0).map((l) => ({ name: l.name.trim() || 'Untitled line', qty: num(l.qty), unit: l.unit + (num(l.qty) === 1 ? '' : 's'), rate: num(l.rate), kind: l.kind, tax: !!(taxable && l.tax), rateType: l.rateType || '' }));
+      if (ship) ls.push({ name: 'Shipping', qty: 1, unit: 'shipping', rate: ship, kind: 'ship' });
+      const first = ls[0] ? ls[0].name : 'Invoice';
+      const what = editInv && editInv.what ? editInv.what : (ls.length > 1 ? first + ' and ' + (ls.length - 1) + ' more' : first);
+      return {
+        who: f.who, what, cur: f.cur, lines: ls.length ? ls : [{ name: 'Untitled line', qty: 1, unit: 'item', rate: 0 }], tax, discount: disc, deposit: dep,
+        note: f.notes, repeat: f.repeat, email: cu ? cu.email : (editInv ? editInv.email : ''), taxLabel: taxable ? taxName + ' on products' : '',
+        vat: region === 'EU' ? 'VAT reverse charged to the customer' + (cu && cu.tax ? ' (VAT ID ' + cu.tax + ')' : '') : '',
+        form: { terms: +f.terms, discType: f.discType, disc: f.disc, po: f.po, copy: f.copy, pay: f.pay }
+      };
     };
-    const s = st.sent;
-    const sent = s ? {
-      on: true, off: false, repeat: s.repeat,
-      title: s.num + ' is on its way to ' + s.who,
-      body: (s.cur === 'USD' ? usd(s.dueUsd) : SYM[s.cur] + r2(s.due).toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' (≈ ' + usd(s.dueUsd) + ')') + ' is now in Coming in as money on the way, due ' + s.dueDate + '. We’ll send a reminder 3 days before, and match the payment when it lands.'
-    } : { on: false, off: true, repeat: false, title: '', body: '' };
+    const go = (num, msg) => {
+      try { sessionStorage.setItem('be.flash', msg); } catch (e) { /* ignore */ }
+      try { location.href = 'SellInvoices.dc.html#' + num; } catch (e) { /* ignore */ }
+    };
+    const stockNote = (changed) => {
+      const low = changed.filter((c) => c.left < 15);
+      return low.length ? ' · ' + low.map((c) => c.left + ' ' + c.name.toLowerCase() + ' left').join(', ') : '';
+    };
+    const productLines = () => f.lines.map((l) => ({ name: l.name, kind: l.kind, qty: num(l.qty) }));
+    const send = () => {
+      const e = validate(false);
+      if (e.length) { this.setState({ tried: true, loadedFor: hash, f }); return; }
+      const r = record();
+      const amtText = (f.cur === 'USD' ? usd(dueUsd) : BE.money(due, f.cur) + ' (≈ ' + usd(dueUsd) + ')');
+      let n;
+      if (mode === 'new') {
+        const inv = BE.createInvoice(Object.assign({}, r, { terms: +f.terms }));
+        n = inv.num;
+        BE.update('invoices', n, { form: r.form, taxLabel: r.taxLabel, vat: r.vat, paid: dep, deposit: dep }, 'num');
+        const ch = BE.takeStock(productLines());
+        go(n, n + ' sent to ' + f.who + ' · ' + amtText + ' added to Coming in' + stockNote(ch));
+      } else if (mode === 'draft') {
+        BE.update('invoices', editInv.num, Object.assign({}, r, { paid: dep }), 'num');
+        n = BE.sendDraft(editInv.num, +f.terms);
+        const ch = BE.takeStock(productLines());
+        go(n, n + ' sent to ' + f.who + ' · ' + amtText + ' added to Coming in' + stockNote(ch));
+      } else {
+        const before = BE.usd(BE.invOpen(editInv), editInv.cur);
+        BE.update('invoices', editInv.num, (x) => Object.assign({}, r, { paid: Math.max(x.paid || 0, dep), events: (x.events || []).concat([{ label: 'Changed and sent again to ' + (r.email || f.who), date: BE.today, todo: false }]) }), 'num');
+        BE.log('Updated ' + editInv.num + ' for ' + f.who + ' and sent it again');
+        const after = BE.usd(BE.invOpen(BE.find('invoices', editInv.num, 'num')), f.cur === editInv.cur ? f.cur : f.cur);
+        const diff = Math.round(after - before);
+        go(editInv.num, editInv.num + ' updated and sent again' + (editInv.inMonth && editInv.dueIn >= 0 && diff ? ' · Coming in ' + (diff > 0 ? '+' : '−') + usd(Math.abs(diff)) : ''));
+      }
+    };
+    const saveDraft = () => {
+      const e = validate(true);
+      if (e.length) { this.setState({ tried: true, loadedFor: hash, f }); return; }
+      const r = record();
+      if (mode === 'new') {
+        const inv = BE.createInvoice(Object.assign({}, r, { draft: true }));
+        BE.update('invoices', inv.num, { form: r.form, taxLabel: r.taxLabel, vat: r.vat }, 'num');
+        this.setState({ loadedFor: inv.num, f, tried: false });
+        try { location.hash = inv.num; } catch (er) { /* ignore */ }
+        this.notify('Draft ' + inv.num + ' saved for ' + f.who + '. Drafts don’t count in Coming in until you send them.');
+      } else if (mode === 'draft') {
+        BE.update('invoices', editInv.num, r, 'num');
+        this.setState({ loadedFor: hash, f, tried: false });
+        this.notify('Draft saved. It still doesn’t count in Coming in.');
+      } else {
+        BE.update('invoices', editInv.num, (x) => Object.assign({}, r, { paid: x.paid, events: (x.events || []).concat([{ label: 'Changed by ' + (profile.owner || 'you') + ' (not re-sent)', date: BE.today, todo: false }]) }), 'num');
+        this.setState({ loadedFor: hash, f, tried: false });
+        this.notify(editInv.num + ' saved. ' + f.who + ' sees the change next time they open it.');
+      }
+    };
+
+    const nc = st.nc;
+    const ncOn = nc.open || f.who === '__new';
+    const saveCustomer = () => {
+      const name = nc.name.trim(), email = nc.email.trim();
+      if (!name) { this.setState({ nc: Object.assign({}, nc, { open: true, err: 'Add the name you bill them under.' }) }); return; }
+      if (customers.some((c) => c.name.toLowerCase() === name.toLowerCase())) { this.setState({ nc: Object.assign({}, nc, { open: true, err: name + ' is already a customer.' }) }); return; }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { this.setState({ nc: Object.assign({}, nc, { open: true, err: 'That email doesn’t look right. Try name@company.com.' }) }); return; }
+      const c = BE.addCustomer({ name, email, cur: nc.cur });
+      const fx = (FX[f.cur] || 1) / (FX[c.cur] || 1);
+      this.setState({ nc: { open: false, name: '', email: '', cur: home, err: '' }, loadedFor: hash,
+        f: Object.assign({}, f, { who: c.name, cur: c.cur, lines: c.cur === f.cur ? f.lines : f.lines.map((l) => reprice(l, f.cur, c.cur)), ship: f.ship && c.cur !== f.cur ? String(r2(num(f.ship) * fx)) : f.ship }) });
+      this.notify(name + ' added to your customers');
+    };
 
     const feedAmt = f.cur === 'USD' ? usd(dueUsd) : '≈ ' + usd(dueUsd);
-    return Object.assign(this.common(st.inDelta), {
-      inv: { num: invNum, state: s ? 'Sent' : 'Draft' }, sent, f, customers: CUST.map((x) => ({ name: x.name, label: x.name + (x.cur !== 'USD' ? ' · ' + x.cur : '') })),
-      cust: { hasInfo: !!(cu && cu.info), info: cu && cu.info ? cu.info : '', reverse: region === 'EU' },
+    const st0 = editInv ? BE.invStatus(editInv) : '';
+    const locked = mode === 'locked' ? {
+      on: true, num: editInv.num, backHref: 'SellInvoices.dc.html#' + editInv.num, copyHref: 'SellInvoice.dc.html#copy=' + editInv.num,
+      bg: editInv.void ? '#EFEDF3' : '#E2F6D5', fg: editInv.void ? '#47444F' : '#2F5711', icon: editInv.void ? 'M6 6l12 12M18 6 6 18' : 'm5 12 5 5 9-10',
+      title: editInv.num + (editInv.void ? ' was voided' : ' is paid'),
+      body: editInv.void ? 'A voided invoice stays in your records as it was. Copy it into a new invoice to bill the work again.' : editInv.who + ' paid it in full, so it stays as they saw it. To bill them again, copy it into a new invoice.'
+    } : { on: false };
+    const time = BE.all('time').filter((x) => !x.billed);
+    const tHours = time.reduce((a, x) => a + (Number(x.hours) || 0), 0);
+    const tWho = time.length ? (time[0].who || time[0].customer || '') : '';
+    return {
+      crumbHere: mode === 'new' ? (isCopy ? 'New copy' : 'New invoice') : (editInv.draft ? 'Draft for ' + editInv.who : 'Edit ' + editInv.num),
+      title: mode === 'new' ? 'New invoice' : mode === 'draft' ? 'Finish the draft' : mode === 'sent' ? 'Edit ' + editInv.num : editInv.num,
+      intro: mode === 'sent' ? 'Change anything and send it again; ' + editInv.who + ' gets the updated version and the same link.' : 'The full editor, for when one sentence isn’t enough: several lines, products, discounts, other currencies.',
+      inv: { num: mode === 'draft' && /^D-/.test(invNum) ? 'Draft' : invNum, state: mode === 'new' ? 'Not saved yet' : mode === 'draft' ? 'Draft' : st0 === 'late' ? 'Sent · late' : st0 === 'part' ? 'Sent · part paid' : mode === 'locked' ? (editInv.void ? 'Void' : 'Paid') : 'Sent' },
+      locked, editing: mode !== 'locked', today: BE.today,
+      f: Object.assign({}, f, { who: ncOn && !cu ? '__new' : f.who }), biz: { name: profile.business || 'Your business', line: [profile.city, profile.email].filter(Boolean).join(' · ') },
+      meEmail: profile.email ? 'To ' + profile.email : 'To the email on your account',
+      customers: customers.map((x) => ({ name: x.name, label: x.name + (x.cur && x.cur !== home ? ' · ' + x.cur : '') })),
+      cust: {
+        hasInfo: !!(cu && (cu.country !== homeCountry || cu.tax)), info: cu ? [cu.country !== homeCountry ? cu.country : '', cu.tax ? 'VAT ID ' + cu.tax : ''].filter(Boolean).join(' · ') + (region === 'abroad' ? ' · no ' + (taxRate ? 'sales tax' : 'tax added') : '') : '',
+        reverse: region === 'EU', reverseText: (cu ? cu.name : 'This customer') + ' is a business in the EU, so you don’t charge VAT. The invoice says “VAT reverse charged to the customer” and shows their VAT ID. ' + (taxRate ? 'Your sales tax is off too.' : ''),
+        hasLink: !!cu, href: cu ? 'SellCustomer.dc.html#' + cu.id : 'SellCustomers.dc.html'
+      },
+      nc: { on: ncOn, name: nc.name, email: nc.email, cur: nc.cur, err: nc.err, errOn: !!nc.err, canCancel: customers.length > 0 },
+      setNcName: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { name: e.target.value, err: '' }) }),
+      setNcEmail: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { email: e.target.value, err: '' }) }),
+      setNcCur: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { cur: e.target.value }) }),
+      saveCustomer, cancelCustomer: () => { this.setState({ nc: { open: false, name: '', email: '', cur: home, err: '' } }); setF({ who: '' }); },
       whoErr: st.tried && !f.who, whoBorder: st.tried && !f.who ? '2px solid #A8200D' : '1px solid #CBC7D3',
-      dueDate: f.terms === '0' ? 'on receipt (Oct 4)' : dayOn(+f.terms),
-      curs, curNote: f.cur === 'USD' ? 'Your home currency' : 'Converted for your books: ' + feedAmt + ' at 1 ' + f.cur + ' = ' + FX[f.cur] + ' USD (Oct 4)',
-      sym: SYM[f.cur], lines, noLines: f.lines.length === 0, catalog, catOpen: st.catOpen,
+      dueDate: f.terms === '0' ? 'on receipt (' + BE.today + ')' : BE.inDays(+f.terms),
+      curs, curNote: f.cur === home ? 'Your home currency' : 'Converted for your books: ' + feedAmt + ' at 1 ' + f.cur + ' = ' + (FX[f.cur] || 1) + ' ' + home + ' (' + BE.today + ')',
+      taxNote: taxRate ? (region === 'home' ? 'Products get ' + taxName + '. Services don’t.' : 'No ' + taxName + ' for customers outside ' + homeCountry + '.') : 'No sales tax is set up for your business.',
+      sym: SYM(f.cur), lines, noLines: f.lines.length === 0, catalog, catOpen: st.catOpen, catEmpty: catalog.length === 0,
+      time: time.length ? { on: true, text: tHours + ' unbilled ' + (tHours === 1 ? 'hour' : 'hours') + (tWho ? ' for ' + tWho : '') } : { on: false },
       toggleCat: () => this.setState({ catOpen: !st.catOpen }),
-      addBlank: () => this.setState({ seq: st.seq + 1, f: Object.assign({}, f, { lines: f.lines.concat([{ id: st.seq + 1, name: '', kind: 'service', unit: 'item', qty: '1', rate: '', tax: false }]) }) }),
-      discTypes: [{ k: '%', label: '%', aria: 'Discount as a percentage' }, { k: 'amt', label: SYM[f.cur], aria: 'Discount as an amount' }].map((d) => ({
+      addBlank: () => this.setState({ seq: st.seq + 1, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: st.seq + 1, name: '', kind: 'service', unit: 'item', qty: '1', rate: '', tax: false }]) }) }),
+      discTypes: [{ k: '%', label: '%', aria: 'Discount as a percentage' }, { k: 'amt', label: SYM(f.cur).trim(), aria: 'Discount as an amount' }].map((d) => ({
         label: d.label, aria: d.aria, on: f.discType === d.k, bg: f.discType === d.k ? '#18161F' : 'transparent', fg: f.discType === d.k ? '#FFFFFF' : '#18161F',
         pick: () => setF({ discType: d.k })
       })),
@@ -588,26 +659,31 @@ class Component extends DCLogic {
       depBorder: dep > total ? '#A8200D' : '#CBC7D3',
       methods, setNotes: (e) => setF({ notes: e.target.value }), setPo: (e) => setF({ po: e.target.value }),
       setWho: (e) => {
-        const c2 = CUST.find((x) => x.name === e.target.value);
-        const cur = c2 ? c2.cur : f.cur;
-        const fx = FX[f.cur] / FX[cur];
-        setF({ who: e.target.value, cur, lines: cur === f.cur ? f.lines : f.lines.map((l) => reprice(l, f.cur, cur)), ship: f.ship && cur !== f.cur ? String(r2(num(f.ship) * fx)) : f.ship });
+        const v = e.target.value;
+        if (v === '__new') { this.setState({ nc: Object.assign({}, this.state.nc, { open: true, cur: home }), loadedFor: hash, f: Object.assign({}, f, { who: '' }) }); return; }
+        const c2 = customers.find((x) => x.name === v);
+        const cur = c2 && c2.cur ? c2.cur : f.cur;
+        const fx = (FX[f.cur] || 1) / (FX[cur] || 1);
+        this.setState({ nc: Object.assign({}, this.state.nc, { open: false, err: '' }) });
+        setF({ who: v, cur, lines: cur === f.cur ? f.lines : f.lines.map((l) => reprice(l, f.cur, cur)), ship: f.ship && cur !== f.cur ? String(r2(num(f.ship) * fx)) : f.ship });
       },
       setTerms: (e) => setF({ terms: e.target.value }),
       toggleRepeat: () => setF({ repeat: !f.repeat }), repeatBg: f.repeat ? '#7A5AF8' : '#CBC7D3', repeatLeft: f.repeat ? '25px' : '3px',
-      repeatHint: f.repeat ? 'Goes out on the 4th of every month. Next one Nov 4. Change it later in repeating invoices.' : 'Sends the same invoice on this day each month.',
+      repeatHint: f.repeat ? 'Goes out on the ' + (new Date(2026, 9, 4).getDate()) + 'th of every month. Next one ' + BE.inDays(31) + '. Change it later in repeating invoices.' : 'Sends the same invoice on this day each month.',
       toggleCopy: () => setF({ copy: !f.copy }), copyBg: f.copy ? '#7A5AF8' : '#CBC7D3', copyLeft: f.copy ? '25px' : '3px',
       moreOpen: st.moreOpen, moreIcon: st.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
       pv, errors: liveErr, hasErrors: liveErr.length > 0,
-      sendLabel: 'Send · ' + fmt(due),
-      feed: 'Sending adds ' + feedAmt + ' to Coming in.',
-      feedLong: 'When you send it, ' + feedAmt + ' is added to Coming in as money on the way' + (dep ? ' (the ' + fmt(dep) + ' deposit was already counted when it arrived)' : '') + '. Drafts don’t count.',
-      send,
-      saveDraft: () => this.notify(invNum + ' saved as a draft. Drafts don’t count in Coming in.'),
-      startOver: () => this.setState({ sent: null, num: st.num + 1, f: this.blank(), errors: [], tried: false })
-    });
+      sendLabel: (mode === 'sent' ? 'Save and send again · ' : 'Send · ') + fmt(due),
+      saveLabel: mode === 'sent' ? 'Save without sending' : 'Save draft',
+      hasBack: !!editInv, backHref: editInv ? 'SellInvoices.dc.html#' + editInv.num : 'SellInvoices.dc.html',
+      feed: mode === 'sent' ? 'It already counts in Coming in; we’ll update the amount.' : 'Sending adds ' + feedAmt + ' to Coming in.',
+      feedLong: mode === 'sent'
+        ? 'This invoice is already in Coming in. Saving changes updates what’s counted to ' + feedAmt + '.'
+        : 'When you send it, ' + feedAmt + ' is added to Coming in as money on the way' + (dep ? ' (the ' + fmt(dep) + ' deposit was already counted when it arrived)' : '') + '. Drafts don’t count.' + (f.lines.some((l) => l.kind === 'product') ? ' Products you sell come off your stock.' : ''),
+      send, saveDraft,
+      toast: st.toast
+    };
   }
-
 }
 </script>
 </body>

@@ -85,4 +85,119 @@
           invoices: [I('INV-0159', 'September design retainer', 1200, 'Viewed', 'Due Nov 14', 'viewed')], quotes: [],
           recurring: [{ title: 'Monthly design retainer', sub: 'Every month on the 15th · emailed · 7 sent so far · next Oct 15', amt: 1200, status: 'Active' }], credits: [] }
       ]);
+
+  // Getting paid online: which methods new invoices offer, payouts and the one open card dispute.
+  BE.define('paySettings', {
+    live: false, legal: 'Northwind Studio LLC', ein: '', payoutTo: 'Chase ••4417',
+    methods: { card: true, bank: true, apple: true }, saveCards: true, passFee: false, sched: 'daily', day: 'Friday',
+    dispute: { state: 'open', inv: 'INV-0160', who: 'Oak Street Bakery', contact: 'Rosa Medina', amount: 720, fee: 15, card: 'Visa ••8812', by: 'Oct 17' }
+  }, {
+    live: false, legal: '', ein: '', payoutTo: '',
+    methods: { card: true, bank: true, apple: true }, saveCards: true, passFee: false, sched: 'daily', day: 'Friday',
+    dispute: null
+  });
+
+  // ---- Coming in helpers (used by ThreeIn, SellInvoices, SellInvoice, SellPayments) ----
+  var ONLINE = { 'Card': 1, 'Apple Pay': 1, 'Bank payment': 1 };
+  /** The customer record for a name on an invoice (or null). */
+  BE.customerOf = function (name) { return BE.find('customers', name, 'name'); };
+  /** Where a customer's name should link. */
+  BE.customerHref = function (name) { var c = BE.customerOf(name); return c ? 'SellCustomer.dc.html#' + c.id : 'SellCustomers.dc.html'; };
+  /** Add a customer with just a name (and optionally email/currency). Returns it. */
+  BE.addCustomer = function (o) {
+    var name = String(o.name || '').trim();
+    var base = name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'customer';
+    var id = base, n = 2;
+    while (BE.find('customers', id)) id = base + '-' + (n++);
+    var p = BE.get('profile') || {};
+    var c = { id: id, name: name, contact: o.contact || '', email: o.email || '', phone: '', address: '', country: o.country || p.country || 'United States', cur: o.cur || p.currency || 'USD', tax: '',
+      since: 'Customer since ' + 'October 2026', paid: 0, note: '', invoices: [], quotes: [], recurring: [], credits: [], isNew: true };
+    BE.change(function (s) {
+      s.customers = [c].concat(s.customers || []);
+      BE._log(s, 'Added ' + name + ' as a customer');
+    });
+    return c;
+  };
+  /** Online payments come in through the invoice link; the rest were recorded by hand. */
+  BE.payIsOnline = function (p) { return !p.manual && !!ONLINE[p.how] && p.amount > 0; };
+  /** What the payment company keeps from an online payment, in USD. */
+  BE.payFee = function (p) {
+    if (!BE.payIsOnline(p)) return 0;
+    var a = Number(p.amount) || 0;
+    return Math.round((p.how === 'Bank payment' ? a * 0.01 : a * 0.029 + 0.30) * 100) / 100;
+  };
+  /** A reminder or nudge you sent: adds it to the invoice's history and to "Handled for you". */
+  BE.remindInvoice = function (num, label, logText) {
+    return BE.change(function (s) {
+      var out = null;
+      s.invoices = (s.invoices || []).map(function (x) {
+        if (x.num !== num) return x;
+        out = Object.assign({}, x, { events: (x.events || []).concat([{ label: label, date: BE.today, todo: false, mine: true }]) });
+        return out;
+      });
+      if (out) BE._log(s, logText || (label + ' · ' + num));
+      return out;
+    });
+  };
+  /** Take back the last event you added to an invoice with remindInvoice. */
+  BE.undoReminder = function (num, label) {
+    return BE.update('invoices', num, function (x) {
+      var ev = (x.events || []).slice(), i;
+      for (i = ev.length - 1; i >= 0; i--) if (ev[i].mine && ev[i].label === label) { ev.splice(i, 1); break; }
+      return { events: ev };
+    }, 'num');
+  };
+  /** Record money you got another way (check, cash, a transfer straight to your bank). */
+  BE.recordPayment = function (num, amount, how, date) {
+    var inv = BE.payInvoice(num, amount, how);
+    if (!inv) return null;
+    BE.change(function (s) {
+      if (s.payments && s.payments[0] && s.payments[0].inv === num) s.payments[0] = Object.assign({}, s.payments[0], { manual: true, date: date || BE.today });
+    });
+    return inv;
+  };
+  /** Send a draft. Drafts numbered D-… get the next invoice number. Returns the invoice number. */
+  BE.sendDraft = function (num, terms) {
+    var n = num;
+    if (/^D-/.test(num)) {
+      n = BE.nextNumber('INV');
+      BE.update('invoices', num, { num: n }, 'num');
+    }
+    BE.sendInvoice(n, terms);
+    return n;
+  };
+  /** Selling stocked products lowers their stock (products collection, field `stock`). */
+  BE.takeStock = function (lines) {
+    var sold = {};
+    (lines || []).forEach(function (l) { if (l.kind === 'product') sold[l.name] = (sold[l.name] || 0) + (Number(l.qty) || 0); });
+    if (!Object.keys(sold).length || !BE.all('products').length) return [];
+    var changed = [];
+    BE.change(function (s) {
+      s.products = (s.products || []).map(function (p) {
+        if (!sold[p.name] || p.stock == null) return p;
+        var left = Math.max(0, (Number(p.stock) || 0) - sold[p.name]);
+        changed.push({ name: p.name, left: left });
+        return Object.assign({}, p, { stock: left });
+      });
+    });
+    return changed;
+  };
+  /** Settle the open card dispute: 'accepted' refunds it (comes off Coming in), 'sent' sends proof, 'open' undoes. */
+  BE.settleDispute = function (state) {
+    BE.change(function (s) {
+      var ps = Object.assign({}, s.paySettings || {});
+      var d = ps.dispute ? Object.assign({}, ps.dispute) : null;
+      if (!d) return;
+      s.payments = (s.payments || []).filter(function (p) { return !(p.refund && p.inv === d.inv); });
+      if (state === 'accepted') {
+        s.payments = [{ id: BE.id('pay'), inv: d.inv, who: d.who, amount: -d.amount, cur: 'USD', how: 'Refund after a dispute', date: BE.today, inMonth: true, refund: true, manual: true }].concat(s.payments);
+        BE._log(s, 'Refunded ' + BE.money(d.amount) + ' to ' + d.who + ' after a card dispute on ' + d.inv);
+      } else if (state === 'sent') {
+        BE._log(s, 'Sent proof to ' + d.who + '’s bank for the ' + d.inv + ' dispute');
+      }
+      d.state = state;
+      ps.dispute = d;
+      s.paySettings = ps;
+    });
+  };
 })();

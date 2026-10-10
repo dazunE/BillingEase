@@ -18,96 +18,55 @@ a{color:#18161F}a:hover{color:#000000}
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <!-- Top bar: no sidebar, the three numbers are the navigation -->
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
-                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-label="Account: Maya Chen, Northwind Studio" aria-haspopup="menu" aria-expanded="{{acctOpen}}" onClick="{{account}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 270px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF2; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Maya Chen</span><span style="font-size: 12.5px; color: #5F5B68;">Owner · Northwind Studio</span></span>
-              <sc-for list="{{acctLinks}}" as="a" hint-placeholder-count="5">
-                <a href="{{a.href}}" role="menuitem" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14.5px;">{{a.label}}</a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
 
-    <!-- Where you are: back link + compact equation strip -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-weight: 600; font-size: 14px; text-decoration: none; color: #18161F;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-        Home
-      </a>
-      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; color: #18161F; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <span style="font-variant-numeric: tabular-nums;">$24,850</span></a>
-        <span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
-        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; color: #18161F; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <span style="font-variant-numeric: tabular-nums;">$13,640</span></a>
-        <span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
-        <a href="ThreeKeep.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; text-decoration: none; color: #FFFFFF; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <span style="color: #B9A3FF; font-variant-numeric: tabular-nums;">{{k.keep}}</span></a>
-      </nav>
+    <dc-import name="AppCrumbs" area="keep"></dc-import>
+
+    <!-- Period -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;">
+      <div role="group" aria-label="Period" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px; max-width: 100%; box-sizing: border-box;">
+        <sc-for list="{{periods}}" as="pd" hint-placeholder-count="3">
+          <button type="button" aria-pressed="{{pd.on}}" onClick="{{pd.pick}}" style="min-height: 38px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{pd.bg}}; color: {{pd.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">{{pd.label}}</button>
+        </sc-for>
+      </div>
+      <span style="font-size: 13px; color: #5F5B68;">{{k.periodNote}}</span>
     </div>
 
     <!-- Lead: the dark keep card -->
-    <section aria-labelledby="keep-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(22px, 3vw, 36px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 32px;">
+    <section aria-labelledby="keep-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(22px, 3vw, 36px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px;">
       <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-        <h1 id="keep-h" style="margin: 0; display: flex; align-items: center; gap: 8px; font: 700 15px DM Sans, sans-serif; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep · October 2026</h1>
+        <h1 id="keep-h" style="margin: 0; display: flex; align-items: center; gap: 8px; font: 700 15px DM Sans, sans-serif; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep · {{k.periodName}}</h1>
         <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(48px, 7vw, 76px); line-height: 1; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{k.keep}}</span>
-        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #EEE8FF; max-width: 560px;">That&#39;s what&#39;s left after every bill, every paycheck and <strong style="color: #FFFFFF;">{{k.tax}}</strong> set aside for tax. Pay yourself, save it, or put it back into the studio.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #EEE8FF; max-width: 560px;">{{k.lead}}</p>
+        <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 10px; max-width: 420px; margin-top: 6px;">
+            <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;">
+              <span style="width: {{k.keepPct}}%; background: #B9A3FF;"></span>
+              <span style="width: {{k.taxPct}}%; background: rgba(238,232,255,0.45);"></span>
+            </span>
+            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #EEE8FF;">
+              <span><strong style="color: #FFFFFF;">{{k.keepPct}}%</strong> of profit is yours</span>
+              <span><strong style="color: #FFFFFF;">{{k.ratePct}}</strong> for tax</span>
+            </span>
+          </div>
+        </sc-if>
+        <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
+          <a href="ThreeIn.dc.html#bill" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none; margin-top: 6px;">Bill someone</a>
+        </sc-if>
       </div>
-      <div style="flex: 0 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-        <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;">
-          <span style="width: {{k.keepPct}}%; background: #B9A3FF;"></span>
-          <span style="width: {{k.taxPct}}%; background: rgba(238,232,255,0.45);"></span>
-        </span>
-        <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #EEE8FF;">
-          <span><strong style="color: #FFFFFF;">{{k.keepPct}}%</strong> of profit is yours</span>
-          <span><strong style="color: #FFFFFF;">{{k.ratePct}}</strong> for tax</span>
-        </span>
+      <div style="flex: 0 1 300px; min-width: 0; display: flex; justify-content: center;">
+        <dc-import name="CashJar" size="{{300}}" amount="{{k.keep}}" tax-pct="{{k.ratePct}}" line="#EEE8FF" uid="keep" hint-size="300px,250px"></dc-import>
       </div>
     </section>
 
     <!-- The math, as a waterfall -->
+    <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}">
     <section aria-labelledby="math-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
       <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;">
         <h2 id="math-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">How we got to {{k.keep}}</h2>
-        <span style="font-size: 13px; color: #5F5B68;">October 1 – 31 · includes money on the way and bills still to pay</span>
+        <span style="font-size: 13px; color: #5F5B68;">{{k.mathNote}}</span>
       </div>
       <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
         <sc-for list="{{steps}}" as="s" hint-placeholder-count="5">
@@ -115,7 +74,7 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="flex: 1 1 260px; max-width: 320px; min-width: 0; display: flex; align-items: center; gap: 12px;">
               <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 9999px; background: {{s.signBg}}; color: #18161F; display: flex; align-items: center; justify-content: center; flex: none; font-family: Sora, sans-serif; font-weight: 700; font-size: 17px;">{{s.sign}}</span>
               <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
-                <span style="font-weight: 700; font-size: 15px;">{{s.label}}</span>
+                <a href="{{s.href}}" style="font-weight: 700; font-size: 15px; text-decoration: none;">{{s.label}}</a>
                 <span style="font-size: 13px; color: #5F5B68; line-height: 1.35;">{{s.sub}}</span>
               </span>
             </div>
@@ -123,12 +82,13 @@ a{color:#18161F}a:hover{color:#000000}
               <div style="position: relative; flex: 1; min-width: 0; height: 28px; border-radius: 8px; background: #F7F6F9;">
                 <div title="{{s.title}}" style="position: absolute; top: 0; bottom: 0; left: {{s.left}}%; width: {{s.width}}%; border-radius: 8px; background: {{s.color}};"></div>
               </div>
-              <span style="flex: none; width: 96px; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{s.amount}}</span>
+              <span style="flex: none; min-width: 96px; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{s.amount}}</span>
             </div>
           </li>
         </sc-for>
       </ol>
     </section>
+    </sc-if>
 
     <!-- Tax set-aside + Safe to spend -->
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
@@ -137,42 +97,41 @@ a{color:#18161F}a:hover{color:#000000}
           <h2 id="tax-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Tax set-aside</h2>
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <span id="rate-l" style="font-size: 13px; font-weight: 600; color: #47444F;">Share of profit</span>
-            <div role="group" aria-labelledby="rate-l" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-              <sc-for list="{{rates}}" as="r" hint-placeholder-count="3">
-                <sc-if value="{{r.on}}" hint-placeholder-val="{{false}}">
-                  <button type="button" aria-pressed="true" onClick="{{r.pick}}" style="min-height: 40px; min-width: 56px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{r.label}}</button>
-                </sc-if>
-                <sc-if value="{{r.off}}" hint-placeholder-val="{{true}}">
-                  <button type="button" aria-pressed="false" onClick="{{r.pick}}" style="min-height: 40px; min-width: 56px; padding: 0 14px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{r.label}}</button>
-                </sc-if>
+            <div role="group" aria-labelledby="rate-l" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+              <sc-for list="{{rates}}" as="r" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{r.on}}" onClick="{{r.pick}}" style="min-height: 40px; min-width: 52px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{r.bg}}; color: {{r.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{r.label}}</button>
               </sc-for>
             </div>
           </div>
         </div>
         <div style="display: flex; flex-wrap: wrap; gap: 12px;">
           <div style="flex: 1 1 200px; min-width: 0; background: #EEE8FF; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-size: 13px; font-weight: 600; color: #47444F;">Set aside this month</span>
+            <span style="font-size: 13px; font-weight: 600; color: #47444F;">Set aside {{k.periodShort}}</span>
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{k.tax}}</span>
             <span style="font-size: 13px; color: #47444F;">{{k.ratePct}} of {{k.profit}} profit</span>
           </div>
-          <div style="flex: 1 1 200px; min-width: 0; background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-size: 13px; font-weight: 600; color: #47444F;">Next estimated tax payment</span>
-            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$6,950</span>
-            <span style="font-size: 13px; color: #47444F;">due Jan 15, 2027 · we&#39;ll remind you</span>
+          <sc-if value="{{hasNext}}" hint-placeholder-val="{{true}}">
+            <div style="flex: 1 1 200px; min-width: 0; background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 13px; font-weight: 600; color: #47444F;">Next estimated tax payment</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{k.next}}</span>
+              <span style="font-size: 13px; color: #47444F;">due {{k.nextDue}} · we&#39;ll remind you</span>
+            </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{hasNext}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3;">
+              <span style="width: {{k.coverPct}}%; background: #7A5AF8; border-radius: 9999px;"></span>
+            </span>
+            <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 13px; color: #47444F;">
+              <span><strong style="color: #18161F;">{{k.yearTax}}</strong> of {{k.next}} ready so far this quarter</span>
+              <span>{{k.coverNote}}</span>
+            </span>
           </div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3;">
-            <span style="width: {{k.coverPct}}%; background: #7A5AF8; border-radius: 9999px;"></span>
-          </span>
-          <span style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 13px; color: #47444F;">
-            <span><strong style="color: #18161F;">{{k.tax}}</strong> of $6,950 ready so far</span>
-            <span>{{k.coverNote}}</span>
-          </span>
-        </div>
+        </sc-if>
         <div style="border-top: 1px solid #E2DFE8; padding-top: 16px; display: flex; flex-direction: column; gap: 6px;">
           <h3 style="margin: 0; font-size: 15px; font-weight: 700;">Why we do this</h3>
-          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #47444F;">When you work for yourself, nobody takes tax out of your pay. The IRS expects it in four payments a year instead. Each month we move a share of your profit into a separate tax pot, so when January 15 comes the money is already waiting. 25% is a common starting point; your accountant can tell you if yours should be higher or lower.</p>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #47444F;">When you work for yourself, nobody takes tax out of your pay. The IRS expects it in four payments a year instead. Each month we move a share of your profit into a separate tax pot, so when the payment is due the money is already waiting. 25% is a common starting point; your accountant can tell you if yours should be higher or lower. Changing it here changes Yours to keep everywhere.</p>
         </div>
       </section>
 
@@ -181,37 +140,43 @@ a{color:#18161F}a:hover{color:#000000}
           <h2 id="safe-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Safe to spend today</h2>
           <span style="font-size: 14px; color: #47444F; line-height: 1.45;">The cash you can use without touching money that&#39;s already spoken for.</span>
         </div>
-        <dl style="margin: 0; display: flex; flex-direction: column;">
-          <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EFEDF3;">
-            <dt style="font-size: 14px;">Cash in the bank<br><span style="font-size: 12px; color: #5F5B68;">Chase Business Checking ••4417</span></dt>
-            <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">$42,918</dd>
+        <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}">
+          <dl style="margin: 0; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EFEDF3;">
+              <dt style="font-size: 14px;">Cash in the bank<br><span style="font-size: 12px; color: #5F5B68;">{{safe.bank}}</span></dt>
+              <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">{{safe.cash}}</dd>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EFEDF3;">
+              <dt style="font-size: 14px;">− Bills still to pay<br><span style="font-size: 12px; color: #5F5B68;">Payroll, bills and subscriptions due this month</span></dt>
+              <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">−{{safe.still}}</dd>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EFEDF3;">
+              <dt style="font-size: 14px;">− Tax set aside this month<br><span style="font-size: 12px; color: #5F5B68;">Waiting for the next tax payment</span></dt>
+              <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">−{{safe.tax}}</dd>
+            </div>
+          </dl>
+          <div style="margin-top: auto; background: #18161F; color: #FFFFFF; border-radius: 18px; padding: 16px 18px; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+            <span style="font-weight: 700; font-size: 15px; color: #EEE8FF;">= Safe to spend</span>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{safe.safe}}</span>
           </div>
-          <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EFEDF3;">
-            <dt style="font-size: 14px;">− Bills still to pay<br><span style="font-size: 12px; color: #5F5B68;">Payroll, bills and subscriptions due in October</span></dt>
-            <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">−$10,460</dd>
-          </div>
-          <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EFEDF3;">
-            <dt style="font-size: 14px;">− Tax set aside so far<br><span style="font-size: 12px; color: #5F5B68;">Waiting for the January payment</span></dt>
-            <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">−{{k.tax}}</dd>
-          </div>
-        </dl>
-        <div style="margin-top: auto; background: #18161F; color: #FFFFFF; border-radius: 18px; padding: 16px 18px; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-          <span style="font-weight: 700; font-size: 15px; color: #EEE8FF;">= Safe to spend</span>
-          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{k.safe}}</span>
-        </div>
+        </sc-if>
+        <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; padding: 16px; border-radius: 16px; background: #F7F6F9; font-size: 14px; line-height: 1.5; color: #47444F;">Once money moves through the business, this shows the cash that isn&#39;t already promised to bills, payroll or tax.</p>
+        </sc-if>
       </section>
     </div>
 
     <!-- Chart + accountant -->
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+      <sc-if value="{{hasChart}}" hint-placeholder-val="{{true}}">
       <section aria-labelledby="trend-h" style="flex: 3 1 440px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
         <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;">
           <h2 id="trend-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Yours to keep, month by month</h2>
-          <span style="font-size: 13px; color: #5F5B68;">Apr – Sep average <strong style="color: #18161F;">$3,727</strong></span>
+          <span style="font-size: 13px; color: #5F5B68;">{{avgLabel}} average <strong style="color: #18161F;">{{avg}}</strong></span>
         </div>
         <div role="img" aria-label="{{chartLabel}}" style="display: flex; gap: 10px;">
           <div aria-hidden="true" style="flex: none; display: flex; flex-direction: column; justify-content: space-between; height: 180px; padding-top: 22px; box-sizing: content-box; font-size: 12px; color: #5F5B68; text-align: right; font-variant-numeric: tabular-nums;">
-            <span style="line-height: 0;">$10k</span><span style="line-height: 0;">$5k</span><span style="line-height: 0;">$0</span>
+            <span style="line-height: 0;">{{axisTop}}</span><span style="line-height: 0;">{{axisMid}}</span><span style="line-height: 0;">$0</span>
           </div>
           <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
             <div style="position: relative; height: 202px;">
@@ -243,58 +208,41 @@ a{color:#18161F}a:hover{color:#000000}
           <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{k.ytd}}</span>
         </div>
       </section>
+      </sc-if>
 
       <section aria-labelledby="acct-h" style="flex: 2 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 14px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <h2 id="acct-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Ready for your accountant</h2>
-          <span style="font-size: 14px; color: #47444F; line-height: 1.45;">Your books are up to date through today. Ask a question, get the report.</span>
+          <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{acctIntro}}</span>
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <a href="BooksReports.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border-radius: 16px; background: #F7F6F9; text-decoration: none; color: #18161F;">
-            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">How much did I make?</span><span style="font-size: 12px; color: #5F5B68;">Profit &amp; Loss</span></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-          </a>
-          <sc-for list="{{reports}}" as="rp" hint-placeholder-count="3">
+          <sc-for list="{{reports}}" as="rp" hint-placeholder-count="4">
             <a href="{{rp.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border-radius: 16px; background: #F7F6F9; text-decoration: none; color: #18161F;">
               <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{rp.q}}</span><span style="font-size: 12px; color: #5F5B68;">{{rp.name}}</span></span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+              <span style="font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap;">{{rp.value}}</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
             </a>
           </sc-for>
         </div>
-        <sc-if value="{{invitedText}}" hint-placeholder-val="{{false}}">
-          <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>{{invitedText}}</span>
-        </sc-if>
-        <sc-if value="{{inviteOpen}}" hint-placeholder-val="{{false}}">
-          <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8;">
-            <label for="acct-email" style="font-size: 13px; font-weight: 600;">Your accountant&#39;s email</label>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <input id="acct-email" type="email" value="{{email}}" onChange="{{setEmail}}" placeholder="name@firm.com" style="flex: 1 1 180px; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-              <button type="button" onClick="{{sendInvite}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Send</button>
-              <button type="button" onClick="{{toggleInvite}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
-            </div>
-            <sc-if value="{{emailError}}" hint-placeholder-val="{{false}}">
-              <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{emailError}}</span>
-            </sc-if>
-            <span style="font-size: 12px; color: #5F5B68;">They&#39;ll see your books and reports. They can&#39;t move money.</span>
-          </div>
+        <sc-if value="{{accountant}}" hint-placeholder-val="{{true}}">
+          <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>{{accountant}}</span>
         </sc-if>
         <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px;">
-          <sc-if value="{{inviteClosed}}" hint-placeholder-val="{{true}}">
-            <button type="button" onClick="{{toggleInvite}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M19 8v6M16 11h6"></path></svg>
-              Invite your accountant
-            </button>
-          </sc-if>
-          <button type="button" onClick="{{download}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+          <a href="BizTeam.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: {{inviteBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M19 8v6M16 11h6"></path></svg>
+            {{inviteLabel}}
+          </a>
+          <a href="BooksTax.dc.html#yearend" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: none;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
-            Download year-end package
-          </button>
+            Year-end package
+          </a>
         </div>
       </section>
     </div>
     <!-- Quiet way into the full books -->
     <nav aria-label="Full books" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
       <span>More for Yours to keep:</span>
+      <a href="BooksReports.dc.html" style="font-weight: 600;">Reports</a>
       <a href="BooksTax.dc.html" style="font-weight: 600;">Sales tax and year-end</a>
       <a href="BooksReconcile.dc.html" style="font-weight: 600;">Check against your bank</a>
       <a href="BooksCategories.dc.html" style="font-weight: 600;">Categories and manual entries</a>
@@ -310,81 +258,87 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1980}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2100}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { acctOpen: false, rate: 25, newOpen: false, inviteOpen: false, email: '', emailError: '', invited: '', toast: null };
+    this.state = { period: 'month', toast: null };
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
   renderVals() {
     const st = this.state;
-    const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
-    // October: Coming in − Going out = profit; a share of profit is set aside for tax; the rest is yours to keep.
-    const IN = 24850, OUT = 13640, PROFIT = IN - OUT, CASH = 42918, STILL = 10460, NEXT = 6950;
-    const tax = Math.round(PROFIT * st.rate / 100), keep = PROFIT - tax;
-    const keepPct = Math.round(keep / PROFIT * 100);
-    const coverPct = Math.min(100, Math.round(tax / NEXT * 100));
+    const W = (n) => BE.money(n, 'USD', { whole: true });
+    const empty = BE.isEmpty();
+    const t = BE.totals(st.period), tm = BE.totals('month'), ty = BE.totals('year');
+    const hasData = !!(t.in || t.out);
+    const ratePctN = Math.round(t.rate * 100);
+    const PN = { month: ['October 2026', 'this month', 'October 1 – 31 · includes money on the way and bills still to pay'],
+      quarter: ['Q4 2026 so far', 'this quarter', 'October 1 – today · Q4 started Oct 1, so it’s October so far'],
+      year: ['2026 so far', 'this year', 'January 1 – October 31 · earlier months plus October'] }[st.period];
+    const keepPct = t.profit > 0 ? Math.round(t.keep / t.profit * 100) : 0;
+    const nt = BE.get('balances') || {};
+    const next = (nt.nextTax && nt.nextTax.amount) || 0;
+    const tq = BE.totals('quarter');
+    const coverPct = next ? Math.min(100, Math.round(tq.tax / next * 100)) : 0;
     const k = {
-      keep: money(keep), tax: money(tax), profit: money(PROFIT), ratePct: st.rate + '%',
-      keepPct, taxPct: 100 - keepPct, safe: money(CASH - STILL - tax),
-      coverPct, ytd: money(31005 + keep), coverNote: 'About ' + coverPct + '% covered · 3 months to go'
+      keep: W(t.keep), tax: W(t.tax), profit: W(t.profit), ratePct: ratePctN + '%', periodName: PN[0], periodShort: PN[1], mathNote: PN[2],
+      periodNote: hasData ? 'Coming in ' + t.fmt.in + ' − Going out ' + t.fmt.out + ' = profit ' + t.fmt.profit : 'Nothing counted yet',
+      keepPct, taxPct: t.profit > 0 ? 100 - keepPct : 0,
+      lead: !hasData ? 'Nothing here yet. When you bill someone or record what you spend, your profit, the share set aside for tax and what’s yours will show up here.'
+        : (t.profit > 0 ? 'That’s what’s left after every bill, every paycheck and ' + W(t.tax) + ' set aside for tax. Pay yourself, save it, or put it back into ' + ((BE.get('profile') || {}).business || 'the business') + '.'
+          : 'Going out is bigger than Coming in ' + PN[1] + ', so there’s nothing to set aside for tax.'),
+      next: W(next), nextDue: (nt.nextTax && nt.nextTax.due) || '', yearTax: W(tq.tax),
+      coverPct, coverNote: 'About ' + coverPct + '% covered', ytd: W(ty.keep)
     };
-    const pc = (v) => Math.round(v / IN * 1000) / 10;
+    const max = Math.max(t.in, t.out, 1);
+    const pc = (v) => Math.max(0, Math.round(v / max * 1000) / 10);
+    const pos = Math.max(t.profit, 0);
     const steps = [
-      { sign: '+', signBg: '#EEE8FF', label: 'Coming in', sub: 'Paid to you or on the way this month', amount: money(IN), left: 0, width: 100, color: '#7A5AF8', rowBg: '#FFFFFF' },
-      { sign: '−', signBg: '#FDE6D6', label: 'Going out', sub: 'Spending, bills and payroll, paid or still to pay', amount: '−' + money(OUT), left: pc(PROFIT), width: pc(OUT), color: '#E0752D', rowBg: '#FFFFFF' },
-      { sign: '=', signBg: '#EFEDF3', label: 'Profit', sub: 'What the studio earned this month', amount: money(PROFIT), left: 0, width: pc(PROFIT), color: '#47444F', rowBg: '#F7F6F9' },
-      { sign: '−', signBg: '#EFEDF3', label: 'Set aside for tax (' + st.rate + '%)', sub: 'Moved to your tax pot so January isn’t a surprise', amount: '−' + money(tax), left: pc(keep), width: pc(tax), color: '#C9BCFB', rowBg: '#FFFFFF' },
-      { sign: '=', signBg: '#B9A3FF', label: 'Yours to keep', sub: 'Pay yourself, save it or reinvest it', amount: money(keep), left: 0, width: pc(keep), color: '#18161F', rowBg: '#EEE8FF' }
+      { sign: '+', signBg: '#EEE8FF', label: 'Coming in', sub: 'Paid to you or on the way', amount: W(t.in), left: 0, width: pc(t.in), color: '#7A5AF8', rowBg: '#FFFFFF', href: 'ThreeIn.dc.html' },
+      { sign: '−', signBg: '#FDE6D6', label: 'Going out', sub: 'Spending, bills and payroll, paid or still to pay', amount: '−' + W(t.out), left: pc(Math.max(t.in - t.out, 0)), width: pc(Math.min(t.out, t.in) || t.out), color: '#E0752D', rowBg: '#FFFFFF', href: 'ThreeOut.dc.html' },
+      { sign: '=', signBg: '#EFEDF3', label: 'Profit', sub: 'Every line is in Profit & Loss', amount: W(t.profit), left: 0, width: pc(pos), color: '#47444F', rowBg: '#F7F6F9', href: 'BooksReports.dc.html#profit' },
+      { sign: '−', signBg: '#EFEDF3', label: 'Set aside for tax (' + ratePctN + '%)', sub: 'Moved to your tax pot so the next payment isn’t a surprise', amount: '−' + W(t.tax), left: pc(Math.max(t.keep, 0)), width: pc(t.tax), color: '#C9BCFB', rowBg: '#FFFFFF', href: 'BooksTax.dc.html' },
+      { sign: '=', signBg: '#B9A3FF', label: 'Yours to keep', sub: 'Pay yourself, save it or reinvest it', amount: W(t.keep), left: 0, width: pc(Math.max(t.keep, 0)), color: '#18161F', rowBg: '#EEE8FF', href: 'BooksReports.dc.html#balance' }
     ].map((s) => Object.assign(s, { title: s.label + ': ' + s.amount }));
-    const rates = [20, 25, 30].map((r) => ({
-      label: r + '%', on: st.rate === r, off: st.rate !== r,
-      pick: () => { if (st.rate !== r) { this.setState({ rate: r }); this.notify('Tax set-aside changed to ' + r + '% of profit'); } }
-    }));
-    const raw = [['Apr', 3120], ['May', 4480], ['Jun', 2960], ['Jul', 3850], ['Aug', 4210], ['Sep', 3740], ['Oct', keep]];
-    const months = raw.map(([m, v], i) => {
-      const last = i === raw.length - 1;
-      return { label: m, note: last ? 'so far' : '', short: '$' + (v / 1000).toFixed(1) + 'k', h: Math.round(v / 10000 * 180), color: last ? '#C9BCFB' : '#7A5AF8', title: (last ? 'October so far' : m + ' 2026') + ': ' + money(v) };
+    const rates = [15, 20, 25, 30, 35].map((r) => {
+      const on = ratePctN === r;
+      return {
+        label: r + '%', on, bg: on ? '#18161F' : 'transparent', fg: on ? '#FFFFFF' : '#18161F',
+        pick: () => {
+          if (on) return;
+          BE.patch('profile', { setAside: r / 100 });
+          BE.log('Changed the tax set-aside to ' + r + '% of profit');
+          const n = BE.totals('month');
+          this.notify('Tax set-aside is now ' + r + '% · Yours to keep is ' + n.fmt.keep + ' this month');
+        }
+      };
     });
-    const chartLabel = 'Yours to keep per month: ' + months.map((m) => m.title).join(', ');
+    // Safe to spend (this month, today)
+    const bal = BE.books.balance();
+    const safe = { bank: nt.bankName || 'Your business account', cash: W(bal.cash), still: W(tm.outSch), tax: W(tm.tax), safe: W(bal.cash - tm.outSch - tm.tax) };
+    // Chart: earlier months + October
+    const past = BE.all('pastMonths');
+    const raw = past.map((p) => [p.m, p.keep, false]).concat([['Oct', tm.keep, true]]);
+    const top = Math.max(10000, Math.ceil(Math.max.apply(null, raw.map((r) => r[1])) / 5000) * 5000);
+    const months = raw.map(([m, v, last]) => ({ label: m, note: last ? 'so far' : '', short: '$' + (v / 1000).toFixed(1) + 'k', h: Math.max(0, Math.round(v / top * 180)), color: last ? '#C9BCFB' : '#7A5AF8', title: (last ? 'October so far' : m + ' 2026') + ': ' + W(v) }));
+    const avgN = past.length ? past.reduce((a, p) => a + p.keep, 0) / past.length : 0;
+    const team = BE.all('team').filter((p) => p.role === 'Accountant')[0];
+    const ptax = BE.books.salesTax();
     const reports = [
-      { q: 'What do I own and owe?', name: 'Balance Sheet', href: 'BooksReports.dc.html#balance' },
-      { q: 'Where did the cash go?', name: 'Cash Flow', href: 'BooksReports.dc.html#cash' },
-      { q: 'How much sales tax did I collect?', name: 'Sales tax collected', href: 'BooksTax.dc.html' }
-    ];
-    const verbs = [
-      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-      { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-      { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-      { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+      { q: 'How much did I make?', name: 'Profit & Loss', href: 'BooksReports.dc.html#profit', value: hasData ? W(t.profit) : '' },
+      { q: 'What do I own and owe?', name: 'Balance sheet', href: 'BooksReports.dc.html#balance', value: hasData ? W(bal.tEq) + ' yours' : '' },
+      { q: 'Where did the cash go?', name: 'Cash flow', href: 'BooksReports.dc.html#cash', value: hasData ? W(BE.books.cash().paidOut) + ' out' : '' },
+      { q: 'How much sales tax did I collect?', name: 'Sales tax collected', href: 'BooksTax.dc.html', value: ptax.owed ? BE.money(ptax.owed, 'USD', { cents: true }) + ' owed' : '' }
     ];
     return {
-      k, steps, rates, months, chartLabel, reports,
-      newOpen: st.newOpen, verbs,
-      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
-      acctOpen: st.acctOpen, acctLinks: [
-        { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
-        { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
-        { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
-        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
-        { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
-        { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
-      ],
-      account: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
-      inviteOpen: st.inviteOpen, inviteClosed: !st.inviteOpen,
-      toggleInvite: () => this.setState({ inviteOpen: !st.inviteOpen, emailError: '' }),
-      email: st.email, emailError: st.emailError,
-      setEmail: (e) => this.setState({ email: e.target.value, emailError: '' }),
-      sendInvite: () => {
-        const v = (st.email || '').trim();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { this.setState({ emailError: 'Add an email address, like name@firm.com' }); return; }
-        this.setState({ inviteOpen: false, email: '', invited: v });
-        this.notify('Invite sent to ' + v);
-      },
-      invitedText: st.invited ? 'Invited ' + st.invited : false,
-      download: () => this.notify('Downloaded Northwind-Studio-2026-year-end.zip'),
+      k, steps, rates, months, hasData, isEmpty: !hasData, hasChart: !empty && past.length > 0, hasNext: !!next,
+      chartLabel: 'Yours to keep per month: ' + months.map((m) => m.title).join(', '),
+      avgLabel: past.length ? past[0].m + ' – ' + past[past.length - 1].m : '', avg: W(avgN), axisTop: '$' + top / 1000 + 'k', axisMid: '$' + top / 2000 + 'k',
+      safe, reports,
+      acctIntro: hasData ? 'Your books are up to date through today. Each answer below opens the full report.' : 'Reports fill in as you bill and spend. They open here whenever you or your accountant need them.',
+      accountant: team ? team.name + ' has read-only access to your books' : false,
+      inviteLabel: team ? 'Manage access' : 'Invite your accountant', inviteBg: team ? 'rgba(24,22,31,0.07)' : '#B9A3FF',
+      periods: [['month', 'This month'], ['quarter', 'This quarter'], ['year', 'This year']].map(([kk, l]) => ({ label: l, on: st.period === kk, bg: st.period === kk ? '#18161F' : 'transparent', fg: st.period === kk ? '#FFFFFF' : '#18161F', pick: () => { if (st.period !== kk) this.setState({ period: kk }); } })),
       toast: st.toast
     };
   }

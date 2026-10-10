@@ -23,7 +23,15 @@ a{color:#18161F}a:hover{color:#000000}
       <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
       <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
     </a>
-    <a href="BizProfile.dc.html" aria-label="Your business: Maya Chen, Northwind Studio" style="width: 44px; height: 44px; border-radius: 9999px; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; display: flex; align-items: center; justify-content: center; text-decoration: none; flex: none;">MC</a>
+    <span style="display: flex; align-items: center; gap: 8px;">
+      <a href="Notifications.dc.html" aria-label="{{bellLabel}}" style="position: relative; width: 44px; height: 44px; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; text-decoration: none; flex: none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+        <sc-if value="{{unread}}" hint-placeholder-val="{{false}}">
+          <span aria-hidden="true" style="position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9999px; background: #E0752D; color: #FFFFFF; font: 700 11px DM Sans, sans-serif; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF;">{{unread}}</span>
+        </sc-if>
+      </a>
+      <a href="BizProfile.dc.html" aria-label="{{acctLabel}}" style="width: 44px; height: 44px; border-radius: 9999px; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; display: flex; align-items: center; justify-content: center; text-decoration: none; flex: none;">{{prof.initials}}</a>
+    </span>
   </header>
 
   <!-- Scrolling content -->
@@ -55,8 +63,8 @@ a{color:#18161F}a:hover{color:#000000}
 
     <sc-if value="{{onHome}}" hint-placeholder-val="{{true}}">
       <section style="display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">Sunday, October 4 · Northwind Studio</span>
-        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.15; letter-spacing: -0.03em;">You&#39;re on track to keep <span style="background: #EEE8FF; border-radius: 10px; padding: 0 8px;">$8,407</span> this October.</h1>
+        <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">Sunday, October 4 · {{biz}}</span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.15; letter-spacing: -0.03em; overflow-wrap: anywhere;">{{p.sentenceA}} <span style="background: #EEE8FF; border-radius: 10px; padding: 0 8px; box-decoration-break: clone; -webkit-box-decoration-break: clone;">{{p.hl}}</span> {{p.sentenceB}}</h1>
       </section>
 
       <!-- The equation, stacked -->
@@ -64,72 +72,135 @@ a{color:#18161F}a:hover{color:#000000}
         <a href="ThreeIn.dc.html" style="text-decoration: none; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
           <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
             <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in</span>
-            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$24,850<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.in}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
           </span>
-          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: 50%; background: #7A5AF8;"></span><span style="width: 50%; background: #C9BCFB;"></span></span>
-          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">$12,400</strong> received</span><span><strong style="color: #18161F;">$12,450</strong> on the way</span></span>
+          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: {{p.inPaidPct}}%; background: #7A5AF8;"></span><span style="width: {{p.inExpPct}}%; background: #C9BCFB;"></span></span>
+          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">{{p.inPaid}}</strong> received</span><span><strong style="color: #18161F;">{{p.inExp}}</strong> on the way</span></span>
         </a>
         <span aria-hidden="true" style="align-self: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; line-height: 1; color: #5F5B68;">−</span>
         <a href="ThreeOut.dc.html" style="text-decoration: none; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
           <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
             <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Going out</span>
-            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$13,640<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.out}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
           </span>
-          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: 23%; background: #E0752D;"></span><span style="width: 77%; background: #F4C3A1;"></span></span>
-          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">$3,180</strong> paid</span><span><strong style="color: #18161F;">$10,460</strong> still to pay</span></span>
+          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: {{p.outPaidPct}}%; background: #E0752D;"></span><span style="width: {{p.outSchPct}}%; background: #F4C3A1;"></span></span>
+          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">{{p.outPaid}}</strong> paid</span><span><strong style="color: #18161F;">{{p.outSch}}</strong> still to pay</span></span>
         </a>
         <span aria-hidden="true" style="align-self: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; line-height: 1; color: #5F5B68;">=</span>
         <a href="ThreeKeep.dc.html" style="text-decoration: none; color: #FFFFFF; background: #18161F; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
           <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
             <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep</span>
-            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EEE8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{p.keep}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EEE8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
           </span>
-          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;"><span style="width: 75%; background: #B9A3FF;"></span><span style="width: 25%; background: rgba(238,232,255,0.45);"></span></span>
-          <span style="font-size: 13px; color: #EEE8FF;">after <strong style="color: #FFFFFF;">$2,803</strong> set aside for tax</span>
+          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;"><span style="width: {{p.keepPct}}%; background: #B9A3FF;"></span><span style="width: {{p.taxPct}}%; background: rgba(238,232,255,0.45);"></span></span>
+          <span style="font-size: 13px; color: #EEE8FF;">{{p.keepNoteA}} <strong style="color: #FFFFFF;">{{p.tax}}</strong> {{p.keepNoteB}}</span>
         </a>
       </section>
 
-      <!-- Needs you -->
-      <section aria-labelledby="needs-h" style="display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
-          <h2 id="needs-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Needs you <span style="color: #5F5B68; font-weight: 600;">{{openCount}}</span></h2>
-          <span style="font-size: 12px; color: #5F5B68;">Only what we can&#39;t do alone</span>
-        </div>
-        <sc-for list="{{tasks}}" as="t" hint-placeholder-count="3">
-          <sc-if value="{{t.open}}" hint-placeholder-val="{{true}}">
-            <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
-              <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <span style="width: 40px; height: 40px; border-radius: 12px; background: {{t.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+      <!-- Get started (new business) -->
+      <sc-if value="{{showStart}}" hint-placeholder-val="{{false}}">
+        <section aria-labelledby="start-h" style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+            <h2 id="start-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Get started <span style="color: #5F5B68; font-weight: 600;">{{check.done}} of {{check.total}}</span></h2>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column;">
+            <sc-for list="{{check.items}}" as="c" hint-placeholder-count="5">
+              <a href="{{c.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 10px; border-radius: 14px; text-decoration: none; color: #18161F;">
+                <span style="width: 26px; height: 26px; box-sizing: border-box; border-radius: 9999px; border: {{c.ring}}; background: {{c.bg}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                  <sc-if value="{{c.done}}" hint-placeholder-val="{{false}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></sc-if>
                 </span>
-                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-                  <span style="font-weight: 700; font-size: 15px;">{{t.title}}</span>
-                  <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{t.body}}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+                  <span style="font-weight: 700; font-size: 15px; text-decoration: {{c.strike}}; color: {{c.color}};">{{c.label}}</span>
+                  <span style="font-size: 12.5px; color: #5F5B68;">{{c.sub}}</span>
+                </span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m9 6 6 6-6 6"></path></svg>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+      <!-- Needs you -->
+      <sc-if value="{{showNeeds}}" hint-placeholder-val="{{true}}">
+        <section aria-labelledby="needs-h" style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+            <h2 id="needs-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Needs you <span style="color: #5F5B68; font-weight: 600;">{{openCount}}</span></h2>
+            <span style="font-size: 12px; color: #5F5B68;">Only what we can&#39;t do alone</span>
+          </div>
+          <sc-for list="{{tasks}}" as="t" hint-placeholder-count="3">
+            <sc-if value="{{t.open}}" hint-placeholder-val="{{true}}">
+              <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                  <span style="width: 40px; height: 40px; border-radius: 12px; background: {{t.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+                  </span>
+                  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-weight: 700; font-size: 15px;">{{t.title}}</span>
+                    <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{t.body}}</span>
+                  </div>
                 </div>
+                <div style="display: flex; gap: 8px;">
+                  <sc-if value="{{t.alt}}" hint-placeholder-val="{{true}}">
+                    <a href="{{t.altHref}}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.alt}}</a>
+                  </sc-if>
+                  <sc-if value="{{t.href}}" hint-placeholder-val="{{false}}">
+                    <a href="{{t.href}}" style="flex: 1.4; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.ctaShort}}</a>
+                  </sc-if>
+                  <sc-if value="{{t.isBtn}}" hint-placeholder-val="{{true}}">
+                    <button type="button" onClick="{{t.act}}" style="flex: 1.4; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{t.ctaShort}}</button>
+                  </sc-if>
+                </div>
+              </article>
+            </sc-if>
+            <sc-if value="{{t.done}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 10px 8px 10px 16px; border-radius: 20px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600; line-height: 1.35;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+                <span style="flex: 1; min-width: 0;">{{t.doneText}}</span>
+                <sc-if value="{{t.canUndo}}" hint-placeholder-val="{{false}}">
+                  <button type="button" onClick="{{t.undo}}" style="flex: none; min-height: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
+                </sc-if>
+                <sc-if value="{{t.viewDone}}" hint-placeholder-val="{{false}}">
+                  <a href="{{t.altHref}}" style="flex: none; display: inline-flex; align-items: center; min-height: 40px; padding: 0 10px; color: #2F5711; font-weight: 600; font-size: 13px;">View</a>
+                </sc-if>
               </div>
-              <div style="display: flex; gap: 8px;">
-                <a href="{{t.altHref}}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.alt}}</a>
-                <button type="button" onClick="{{t.act}}" style="flex: 1.4; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{t.cta}}</button>
-              </div>
-            </article>
-          </sc-if>
-          <sc-if value="{{t.done}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 8px 10px 16px; border-radius: 20px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600; line-height: 1.35;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
-              <span style="flex: 1; min-width: 0;">{{t.doneText}}</span>
-              <button type="button" onClick="{{t.undo}}" style="flex: none; min-height: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
+            </sc-if>
+          </sc-for>
+          <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
+            <div style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #B9A3FF;">All clear.</span>
+              <span style="font-size: 14px; color: #EEE8FF;">Nothing needs you today. Your books are up to date.</span>
             </div>
           </sc-if>
-        </sc-for>
-        <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
-          <div style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #B9A3FF;">All clear.</span>
-            <span style="font-size: 14px; color: #EEE8FF;">Nothing needs you today. Your books are up to date.</span>
-          </div>
+        </section>
+      </sc-if>
+
+      <!-- Handled for you -->
+      <section aria-labelledby="handled-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="handled-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.02em;">Handled for you</h2>
+        <sc-if value="{{hasHandled}}" hint-placeholder-val="{{true}}">
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{handledShown}}" as="h" hint-placeholder-count="3">
+              <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.4;">
+                <span style="width: 22px; height: 22px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; margin-top: 1px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+                <span style="display: flex; flex-direction: column; min-width: 0;"><span>{{h.t}}</span><span style="font-size: 12px; color: #5F5B68;">{{h.when}}</span></span>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{hasMoreHandled}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{toggleHandled}}" style="align-self: flex-start; min-height: 40px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">{{handledToggle}}</button>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{noHandled}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">What we do on our own shows up here, like matching payments and sorting charges.</p>
         </sc-if>
       </section>
 
-      <a href="ThreeHome.dc.html" style="align-self: center; font-size: 14px; font-weight: 600;">Open the full home on the web</a>
+      <nav aria-label="More places" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; font-size: 14px; font-weight: 600;">
+        <a href="Notifications.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">{{notifLabel}}</a>
+        <a href="Help.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">Help</a>
+        <a href="Everything.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">Everything</a>
+        <a href="ThreeHome.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">Full home on the web</a>
+      </nav>
     </sc-if>
   </main>
 
@@ -186,46 +257,82 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { tab: 'home', sheet: false, done: {}, query: '', toast: null };
+    this.state = { tab: 'home', sheet: false, query: '', showAllHandled: false, toast: null };
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
   renderVals() {
     const st = this.state;
-    const T = [
-      { id: 'late', icon: 'M12 8v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', tint: '#FBE3DF', title: 'Harbor & Pine Café is 32 days late', body: '$2,480 for August menu design. Two automatic reminders didn’t work, so a personal note might.', cta: 'Send a nudge', alt: 'See invoice', altHref: 'ThreeIn.dc.html', doneText: 'Nudge sent to Daniel at Harbor & Pine Café' },
-      { id: 'sort', icon: 'M4 6h16M4 12h10M4 18h6', tint: '#FFF0B8', title: '4 card charges need a category', body: 'Blue Bottle → Meals, Amazon → Office supplies, Uber → Travel, Canva → Software. Look right?', cta: 'Use these', alt: 'Review', altHref: 'ThreeOut.dc.html', doneText: '4 charges sorted. We’ll remember these next time.' },
-      { id: 'payroll', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8', tint: '#EEE8FF', title: 'Approve Friday’s payroll · $7,231', body: '3 people, paid Oct 9 by direct deposit. Payroll taxes are filed for you.', cta: 'Approve', alt: 'Review', altHref: 'ThreeOut.dc.html', doneText: 'Payroll approved. Jordan, Priya and Sam get paid Friday.' }
-    ];
-    const tasks = T.map((t) => {
-      const isDone = !!st.done[t.id];
-      return Object.assign({}, t, {
-        open: !isDone, done: isDone,
-        act: () => this.setState({ done: Object.assign({}, st.done, { [t.id]: true }) }),
-        undo: () => { const n = Object.assign({}, st.done); delete n[t.id]; this.setState({ done: n }); }
-      });
+    const prof = BE.get('profile') || {};
+    const empty = BE.isEmpty();
+    const t = BE.totals('month');
+    let sA = 'You’re on track to keep', hl = t.fmt.keep, sB = 'this October.';
+    if (t.in === 0 && t.out === 0) { const nm = prof.first && prof.first !== 'there' ? ', ' + prof.first : ''; sA = 'Welcome' + nm + '. Let’s get'; hl = !prof.business || prof.business === 'Your business' ? 'your business' : prof.business; sB = 'set up.'; }
+    else if (t.profit < 0) { sA = 'Going out is ahead of Coming in by'; hl = BE.money(-t.profit, 'USD', { whole: true }); }
+    const inPaidPct = t.in > 0 ? t.inPaidPct : 0, outPaidPct = t.out > 0 ? t.outPaidPct : 0, keepPct = t.profit > 0 ? t.keepPct : 0;
+    const p = {
+      sentenceA: sA, hl, sentenceB: sB,
+      in: t.fmt.in, inPaid: t.fmt.inPaid, inExp: t.fmt.inExp, inPaidPct, inExpPct: t.in > 0 ? 100 - inPaidPct : 0,
+      out: t.fmt.out, outPaid: t.fmt.outPaid, outSch: t.fmt.outSch, outPaidPct, outSchPct: t.out > 0 ? 100 - outPaidPct : 0,
+      keep: t.fmt.keep, keepPct, taxPct: keepPct > 0 ? 100 - keepPct : 0,
+      tax: t.profit > 0 ? t.fmt.tax : '', keepNoteA: t.profit > 0 ? 'after' : 'Nothing to set aside for tax yet', keepNoteB: t.profit > 0 ? 'set aside for tax' : ''
+    };
+
+    const tasks = BE.homeNeeds().map((n) => {
+      let act = null, undo = null;
+      if (n.kind === 'late') act = () => { const r = BE.nudgeInvoice(n.num); if (r) this.notify('Nudge sent to ' + r.to); };
+      if (n.kind === 'payroll') {
+        act = () => { const r = BE.approvePayroll(n.runId); if (r) this.notify('Payroll approved · paid ' + r.date); };
+        undo = () => { BE.unapprovePayroll(n.runId); this.notify('Approval undone'); };
+      }
+      return Object.assign({}, n, { open: !n.done, href: n.href || false, isBtn: n.kind !== 'sort', act, undo, canUndo: !!undo, viewDone: n.kind === 'late' });
     });
-    const openCount = tasks.filter((t) => t.open).length;
+    const openCount = tasks.filter((x) => x.open).length;
+    const check = BE.homeChecklist();
+    const showStart = empty && !check.all;
+    check.items = check.items.map((c) => Object.assign({}, c, {
+      ring: c.done ? '0' : '2px solid #CBC7D3', bg: c.done ? '#E2F6D5' : '#FFFFFF',
+      strike: c.done ? 'line-through' : 'none', color: c.done ? '#5F5B68' : '#18161F', sub: c.done ? 'Done' : c.hint
+    }));
+    const handled = BE.all('activity');
+
     const verbs = [
       { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-      { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
+      { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html#new', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
       { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
       { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-      { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
+      { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html#new', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
     ];
-    const ALL = [
-      { t: 'Harbor & Pine Café', sub: 'INV-0142 · 32 days late', amt: '$2,480', href: 'ThreeIn.dc.html', dot: '#7A5AF8' },
-      { t: 'Atlas Freight Co.', sub: 'INV-0156 · due Oct 7', amt: '$6,300', href: 'ThreeIn.dc.html', dot: '#7A5AF8' },
-      { t: 'Lumen Dental Group', sub: 'INV-0163 · due Oct 20', amt: '$3,200', href: 'ThreeIn.dc.html', dot: '#7A5AF8' },
-      { t: 'Payroll for Oct 9', sub: 'Jordan, Priya and Sam', amt: '$7,231', href: 'ThreeOut.dc.html', dot: '#E0752D' },
-      { t: 'Local Print Shop', sub: 'Bill · due Oct 12', amt: '$640', href: 'ThreeOut.dc.html', dot: '#E0752D' },
-      { t: 'WeWork rent', sub: 'Paid Oct 1', amt: '$1,200', href: 'ThreeOut.dc.html', dot: '#E0752D' },
-      { t: 'Profit & Loss', sub: 'Report · How much did I make?', amt: '', href: 'BooksReports.dc.html', dot: '#18161F' }
-    ];
+
+    // Search over the shared data
+    const IN = '#7A5AF8', OUT = '#E0752D', INK = '#18161F';
+    const ALL = [];
+    BE.all('invoices').forEach((i) => {
+      if (i.void) return;
+      const stt = BE.invStatus(i);
+      const sub = i.draft ? 'Draft · ' + i.what : stt === 'late' ? i.num + ' · ' + (-i.dueIn) + ' days late' : stt === 'paid' ? i.num + ' · paid' : i.num + ' · due ' + i.due;
+      ALL.push({ t: i.who, sub, amt: BE.money(i.draft ? BE.invTotal(i) : (BE.invOpen(i) || BE.invTotal(i)), i.cur, { whole: true }), href: 'SellInvoices.dc.html#' + i.num, dot: IN, rank: stt === 'late' ? 0 : stt === 'paid' ? 3 : 1 });
+    });
+    BE.all('customers').forEach((c) => ALL.push({ t: c.name, sub: 'Customer · ' + (c.contact || c.email || ''), amt: '', href: 'SellCustomer.dc.html#' + c.id, dot: IN, rank: 4 }));
+    BE.all('payroll').forEach((r) => { if (r.status !== 'paid') ALL.push({ t: (r.label || 'Payroll') + ' · ' + r.date, sub: (r.people || []).map((x) => x.name.split(' ')[0]).join(', ') || 'Payroll', amt: BE.money(r.net, 'USD', { whole: true }), href: 'SpendPayroll.dc.html', dot: OUT, rank: 1 }); });
+    BE.all('bills').forEach((b) => { if (b.status !== 'paid') ALL.push({ t: b.who, sub: 'Bill · due ' + b.due, amt: BE.money(b.amount - (b.paid || 0), 'USD', { whole: true }), href: 'SpendBill.dc.html#' + b.id, dot: OUT, rank: 2 }); });
+    BE.all('expenses').forEach((x) => ALL.push({ t: x.who, sub: x.cat + ' · paid ' + x.date, amt: BE.money(x.amount, 'USD', { whole: true }), href: 'SpendTransaction.dc.html#' + x.id, dot: OUT, rank: 3 }));
+    [['Profit & Loss', 'Report · How much did I make?', 'BooksReports.dc.html'], ['Notifications', 'Payments, quotes viewed, reminders', 'Notifications.dc.html'], ['Help', 'Answers, and talk to a person', 'Help.dc.html'], ['Everything BillingEase does', 'Every feature in plain words', 'Everything.dc.html']]
+      .forEach((x) => ALL.push({ t: x[0], sub: x[1], amt: '', href: x[2], dot: INK, rank: 5 }));
     const q = (st.query || '').trim().toLowerCase();
-    const results = q ? ALL.filter((r) => (r.t + ' ' + r.sub).toLowerCase().indexOf(q) >= 0) : ALL.slice(0, 5);
+    const results = q ? ALL.filter((r) => (r.t + ' ' + r.sub).toLowerCase().indexOf(q) >= 0).slice(0, 12)
+      : ALL.slice().sort((a, b) => a.rank - b.rank).slice(0, 6);
     const onHome = st.tab === 'home';
+    const unread = BE.unread();
     return {
-      tasks, openCount, allClear: openCount === 0, verbs,
+      prof, biz: prof.business || 'Your business', p,
+      unread: unread || false, bellLabel: unread ? 'Notifications, ' + unread + ' new' : 'Notifications',
+      acctLabel: 'Your business: ' + (prof.owner || '') + ', ' + (prof.business || ''),
+      tasks, openCount, check, showStart, showNeeds: !showStart, allClear: !showStart && openCount === 0, verbs,
+      handledShown: st.showAllHandled ? handled.slice(0, 12) : handled.slice(0, 3),
+      hasHandled: handled.length > 0, noHandled: handled.length === 0, hasMoreHandled: handled.length > 3,
+      handledToggle: st.showAllHandled ? 'Show less' : 'Show more',
+      toggleHandled: () => this.setState({ showAllHandled: !st.showAllHandled }),
+      notifLabel: unread ? 'Notifications (' + unread + ')' : 'Notifications',
       onHome, onSearch: !onHome,
       homePressed: onHome ? "true" : "false", searchPressed: onHome ? "false" : "true",
       homeFont: onHome ? '700 12px DM Sans, sans-serif' : '500 12px DM Sans, sans-serif',
@@ -235,11 +342,11 @@ class Component extends DCLogic {
       goSearch: () => this.setState({ tab: 'search', sheet: false }),
       query: st.query, setQuery: (e) => this.setState({ query: e.target.value }),
       results, noResults: results.length === 0,
-      resultsLabel: q ? results.length + (results.length === 1 ? ' match' : ' matches') : 'Recent',
+      resultsLabel: q ? results.length + (results.length === 1 ? ' match' : ' matches') : (ALL.length > 4 ? 'Worth a look' : 'Places to go'),
       sheetOpen: st.sheet,
       toggleSheet: () => this.setState({ sheet: !st.sheet }),
       closeSheet: () => this.setState({ sheet: false }),
-      plusLabel: st.sheet ? 'Close actions' : 'New: bill, expense, receipt or payment',
+      plusLabel: st.sheet ? 'Close actions' : 'New: bill, quote, expense, receipt or bill to pay',
       plusIcon: st.sheet ? 'M6 6l12 12M18 6 6 18' : 'M12 5v14M5 12h14',
       toast: st.toast
     };
