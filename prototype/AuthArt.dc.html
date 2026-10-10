@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Signed-out illustrations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600;700&amp;display=swap">
+<style>
+/* Illustrations for the signed-out screens, in the landing page's hand. Purely decorative (aria-hidden). */
+.aa-bd{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.aa-it{position:absolute;display:block}
+.aa-blob{position:absolute;display:block;border-radius:9999px}
+.aa-band{display:none}
+.aa-lane{position:relative;display:block;flex:1 1 0;min-width:36px;height:28px;overflow:hidden}
+.aa-lane-line{position:absolute;left:0;right:0;top:50%;border-top:2px dashed #C9BCFB}
+.aa-pill{position:absolute;top:2px;display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:9999px;box-sizing:border-box;font:700 11px 'DM Sans',sans-serif;white-space:nowrap}
+.aa-scene{flex:1 1 auto;min-height:200px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px 18px;padding:6px 0}
+.aa-chips{flex:1 1 150px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.aa-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;box-sizing:border-box;padding:7px 12px;border-radius:9999px;font:700 12px/1.3 'DM Sans',sans-serif;box-shadow:0 6px 16px rgba(0,0,0,0.18);animation:aa-chip 12s ease-out infinite both}
+.aa-step{flex:none;width:168px;display:block}
+.aa-c{transform-box:fill-box;transform-origin:center}
+.aa-top{transform-box:fill-box;transform-origin:50% 0}
+.aa-foot{transform-box:fill-box;transform-origin:50% 100%}
+/* The landing's cash jar, at half speed: calmer next to a form */
+.aa-jar [style*="cj-coin"]{animation-duration:5.2s!important}
+.aa-jar [style*="cj-settle"]{animation-duration:5.2s!important;animation-delay:3.2s!important}
+.aa-jar [style*="cj-bill"]{animation-duration:6.8s!important;animation-delay:1.8s!important}
+.aa-jar [style*="cj-tax"],.aa-jar [style*="cj-env"]{animation-duration:6.8s!important;animation-delay:3.4s!important}
+.aa-jar [style*="cj-glint"]{animation-duration:6.8s!important}
+@keyframes aa-drift{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-14px) rotate(calc(var(--r,0deg) + 2deg))}}
+@keyframes aa-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes aa-sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes aa-swing{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes aa-slide{0%{left:-10%;opacity:0}14%{opacity:1}80%{opacity:1}100%{left:100%;opacity:0}}
+@keyframes aa-stamp{0%,6%{opacity:0;transform:scale(1.8)}13%{opacity:1;transform:scale(1)}92%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
+@keyframes aa-plane{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(26px,-14px) rotate(4deg)}}
+@keyframes aa-chip{0%,3%{opacity:0;transform:translateY(10px)}10%,86%{opacity:1;transform:none}94%,100%{opacity:0;transform:translateY(-6px)}}
+@keyframes aa-rise{0%,100%{transform:translateY(16px)}45%,70%{transform:translateY(0)}}
+@keyframes aa-pop{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.12);opacity:1}}
+@keyframes aa-spin{to{transform:rotate(360deg)}}
+@keyframes aa-fly{0%{transform:translate(0,0) rotate(-8deg);opacity:0}10%{opacity:1}55%{transform:translate(44px,-16px) rotate(6deg);opacity:1}66%,100%{transform:translate(52px,-8px) rotate(12deg);opacity:0}}
+/* Setup's margins are narrower: smaller paper */
+.aa-xl .aa-it svg{width:66%;height:auto}
+@media (max-width: 1099px){.aa-wide{display:none!important}}
+@media (max-width: 1359px){.aa-xl{display:none!important}}
+@media (max-width: 760px){
+  .aa-bd{position:relative;inset:auto;z-index:0;flex:none;height:84px;margin:-4px 0}
+  .aa-band{display:flex}
+  .aa-noband{display:none}
+  .aa-scene{display:none}
+}
+@media (max-width: 600px){.aa-step{order:-1;width:120px}}
+@media (prefers-reduced-motion: reduce){.aa,.aa *{animation:none!important}}
+</style>
+</helmet>
+
+<!-- ======================= Backdrop: drifting paper in the margins ======================= -->
+<sc-if value="{{isBackdrop}}" hint-placeholder-val="{{true}}">
+<div class="aa aa-bd {{bd.rootCls}}" aria-hidden="true">
+  <div class="aa-wide {{bd.cls}}">
+    <!-- soft discs, like the landing page -->
+    <span class="aa-blob" style="{{bd.blobL}} width: {{bd.blobSize}}; height: {{bd.blobSize}}; background: #EEE8FF;"></span>
+    <span class="aa-blob" style="{{bd.blobR}} width: {{bd.blobSize}}; height: {{bd.blobSize}}; background: #FDE6D6; opacity: 0.7;"></span>
+
+    <!-- invoice, getting stamped PAID -->
+    <span class="aa-it" style="{{bd.inv}} display: {{bd.showInv}}; --r: -8deg; animation: aa-drift 12s ease-in-out infinite;">
+      <svg width="132" height="168" viewBox="0 0 132 168" style="display: block; overflow: visible;">
+        <rect x="6" y="8" width="124" height="158" rx="9" fill="#18161F" opacity="0.06"></rect>
+        <rect x="2" y="2" width="124" height="158" rx="9" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5"></rect>
+        <rect x="14" y="14" width="22" height="22" rx="7" fill="#B9A3FF" stroke="#18161F" stroke-width="1.8"></rect>
+        <path d="M20 31 l4 -12 h6 l-4 12 z" fill="#18161F"></path>
+        <text x="114" y="24" text-anchor="end" font-family="Sora, sans-serif" font-size="9" font-weight="800" fill="#18161F" letter-spacing="0.8">INVOICE</text>
+        <text x="114" y="35" text-anchor="end" font-family="DM Sans, sans-serif" font-size="8.5" font-weight="600" fill="#5F5B68">{{bd.invNo}}</text>
+        <text x="14" y="56" font-family="DM Sans, sans-serif" font-size="8.5" font-weight="700" fill="#18161F">{{bd.invWho}}</text>
+        <path d="M14 70 H84 M14 82 H100 M14 94 H70" stroke="#EEE8FF" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M14 70 H40" stroke="#B9A3FF" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M14 122 H114" stroke="#E2DFE8" stroke-width="1.5"></path>
+        <text x="14" y="142" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" fill="#5F5B68">Total</text>
+        <text x="114" y="143" text-anchor="end" font-family="Sora, sans-serif" font-size="15" font-weight="800" fill="#18161F">{{bd.invAmt}}</text>
+        <g transform="rotate(-14 86 98)">
+          <g class="aa-c" style="animation: aa-stamp 10s ease-out infinite;">
+            <rect x="56" y="85" width="60" height="26" rx="6" fill="#E2F6D5" fill-opacity="0.9" stroke="#2F5711" stroke-width="2.5"></rect>
+            <text x="86" y="103.5" text-anchor="middle" font-family="Sora, sans-serif" font-size="14" font-weight="800" fill="#2F5711" letter-spacing="1.2">PAID</text>
+          </g>
+        </g>
+      </svg>
+    </span>
+
+    <!-- money coming in -->
+    <span class="aa-it" style="{{bd.laneIn}} display: {{bd.showLanes}}; width: 168px;">
+      <span style="display: block; font: 700 10px 'DM Sans', sans-serif; letter-spacing: 0.04em; color: #5F5B68; margin: 0 0 4px 4px;">COMING IN</span>
+      <span class="aa-lane" style="flex: none; width: 168px;"><span class="aa-lane-line"></span><span class="aa-pill" style="background: #7A5AF8; color: #FFFFFF; animation: aa-slide 8s linear infinite;">{{bd.inPill}}</span></span>
+    </span>
+
+    <!-- coins -->
+    <span class="aa-it" style="{{bd.coins}} animation: aa-bob 7s ease-in-out infinite; animation-delay: -2s;">
+      <svg width="64" height="58" viewBox="0 0 64 58" style="display: block; overflow: visible;">
+        <ellipse cx="32" cy="52" rx="28" ry="5" fill="#18161F" opacity="0.08"></ellipse>
+        <g transform="translate(30 44)"><ellipse cx="0" cy="3" rx="17" ry="7" fill="#D99A12"></ellipse><ellipse cx="0" cy="0" rx="17" ry="7" fill="#FFC53D" stroke="#18161F" stroke-width="2"></ellipse></g>
+        <g transform="translate(30 36)"><ellipse cx="0" cy="3" rx="17" ry="7" fill="#D99A12"></ellipse><ellipse cx="0" cy="0" rx="17" ry="7" fill="#FFC53D" stroke="#18161F" stroke-width="2"></ellipse></g>
+        <g transform="translate(32 28)"><ellipse cx="0" cy="3" rx="17" ry="7" fill="#D99A12"></ellipse><ellipse cx="0" cy="0" rx="17" ry="7" fill="#FFD465" stroke="#18161F" stroke-width="2"></ellipse></g>
+        <g transform="translate(46 10) rotate(-24)"><ellipse cx="0" cy="3" rx="12" ry="5" fill="#D99A12"></ellipse><ellipse cx="0" cy="0" rx="12" ry="5" fill="#FFC53D" stroke="#18161F" stroke-width="1.8"></ellipse></g>
+      </svg>
+    </span>
+
+    <!-- a bank note -->
+    <span class="aa-it" style="{{bd.note}} --r: 10deg; animation: aa-drift 14s ease-in-out infinite; animation-delay: -5s;">
+      <svg width="100" height="50" viewBox="0 0 100 50" style="display: block; overflow: visible;">
+        <rect x="2" y="2" width="96" height="46" rx="4" fill="#B6E0AE" stroke="#18161F" stroke-width="2"></rect>
+        <rect x="8" y="8" width="84" height="34" rx="2" fill="none" stroke="#4F7F49" stroke-width="1.3"></rect>
+        <circle cx="50" cy="25" r="11" fill="#D3EDCE" stroke="#4F7F49" stroke-width="1.3"></circle>
+        <text x="50" y="30" text-anchor="middle" font-family="Sora, sans-serif" font-size="14" font-weight="800" fill="#2F5711">$</text>
+      </svg>
+    </span>
+
+    <!-- receipt -->
+    <span class="aa-it" style="{{bd.rcpt}} display: {{bd.showRcpt}}; --r: 7deg; animation: aa-drift 13s ease-in-out infinite; animation-delay: -3s;">
+      <svg width="110" height="160" viewBox="0 0 110 160" style="display: block; overflow: visible;">
+        <path d="M4 4 H106 V150 L99.6 157 L93.2 150 L86.9 157 L80.5 150 L74.1 157 L67.8 150 L61.4 157 L55.0 150 L48.6 157 L42.2 150 L35.9 157 L29.5 150 L23.1 157 L16.8 150 L10.4 157 L4.0 150 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+        <text x="55" y="26" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" font-weight="800" fill="#18161F" letter-spacing="1">RECEIPT</text>
+        <path d="M16 36 H94" stroke="#18161F" stroke-width="1.2" stroke-dasharray="3 3"></path>
+        <text x="16" y="54" font-family="DM Sans, sans-serif" font-size="9" font-weight="700" fill="#18161F">{{bd.rcWho}}</text>
+        <path d="M16 66 H62 M16 78 H52 M16 90 H68" stroke="#FDE6D6" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M16 66 H32" stroke="#E0752D" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M16 106 H94" stroke="#18161F" stroke-width="1.2" stroke-dasharray="3 3"></path>
+        <text x="16" y="126" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" fill="#5F5B68">Paid</text>
+        <text x="94" y="127" text-anchor="end" font-family="Sora, sans-serif" font-size="14" font-weight="800" fill="#18161F">{{bd.rcAmt}}</text>
+      </svg>
+    </span>
+
+    <!-- money going out -->
+    <span class="aa-it" style="{{bd.laneOut}} display: {{bd.showLanes}}; width: 168px;">
+      <span style="display: block; font: 700 10px 'DM Sans', sans-serif; letter-spacing: 0.04em; color: #5F5B68; margin: 0 0 4px 4px;">GOING OUT</span>
+      <span class="aa-lane" style="flex: none; width: 168px;"><span class="aa-lane-line" style="border-top-color: #F4C3A1;"></span><span class="aa-pill" style="background: #FDE6D6; border: 1px solid #E0752D; color: #18161F; animation: aa-slide 9s linear infinite; animation-delay: -3s;">{{bd.outPill}}</span></span>
+    </span>
+
+    <!-- tax envelope -->
+    <span class="aa-it" style="{{bd.env}}">
+      <svg width="100" height="96" viewBox="0 0 100 96" style="display: block; overflow: visible;">
+        <ellipse cx="50" cy="72" rx="44" ry="5" fill="#18161F" opacity="0.08"></ellipse>
+        <g class="aa-foot" style="animation: aa-sway 7s ease-in-out infinite;">
+          <rect x="4" y="4" width="92" height="64" rx="6" fill="#E3C38F" stroke="#18161F" stroke-width="2.5"></rect>
+          <path d="M4 8 L50 40 L96 8" fill="#D3AC70" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
+          <text x="50" y="60" text-anchor="middle" font-family="Sora, sans-serif" font-size="14" font-weight="800" fill="#6B3E0E" letter-spacing="1.5">TAX</text>
+        </g>
+        <text x="50" y="92" text-anchor="middle" font-family="Caveat, cursive" font-size="19" font-weight="700" fill="#18161F">set aside</text>
+      </svg>
+    </span>
+
+    <!-- invoice flying out -->
+    <span class="aa-it" style="{{bd.plane}} display: {{bd.showPlane}};">
+      <svg width="90" height="60" viewBox="0 0 90 60" style="display: block; overflow: visible;">
+        <path d="M2 50 C 22 56, 30 34, 50 40" fill="none" stroke="#CBC7D3" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"></path>
+        <g transform="translate(50 20)"><g class="aa-c" style="animation: aa-plane 11s ease-in-out infinite;"><path d="M0 12 L32 0 L22 27 L16 17 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path><path d="M16 17 L32 0" stroke="#18161F" stroke-width="1.8"></path></g></g>
+      </svg>
+    </span>
+  </div>
+
+  <!-- Phone: one small band above the form -->
+  <sc-if value="{{bd.band}}" hint-placeholder-val="{{true}}">
+    <div class="aa-band" style="height: 100%; max-width: 440px; margin: 0 auto; align-items: center; gap: 6px;">
+      <svg width="40" height="52" viewBox="0 0 40 52" style="flex: none; display: block; overflow: visible; transform: rotate(-8deg);">
+        <rect x="2" y="2" width="36" height="48" rx="5" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></rect>
+        <rect x="7" y="7" width="9" height="9" rx="3" fill="#B9A3FF" stroke="#18161F" stroke-width="1.3"></rect>
+        <path d="M8 24 H30 M8 31 H26 M8 38 H22" stroke="#EEE8FF" stroke-width="3.5" stroke-linecap="round"></path>
+        <path d="M8 24 H16" stroke="#7A5AF8" stroke-width="3.5" stroke-linecap="round"></path>
+      </svg>
+      <span class="aa-lane"><span class="aa-lane-line"></span><span class="aa-pill" style="background: #7A5AF8; color: #FFFFFF; animation: aa-slide 7s linear infinite;">{{bd.inPill}}</span></span>
+      <span class="aa-jar" style="flex: none; display: block; width: 58px;">
+        <dc-import name="CashJar" size="{{58}}" envelope="{{false}}" amount="" uid="{{bd.bandUid}}" hint-size="58px,80px"></dc-import>
+      </span>
+      <span class="aa-lane"><span class="aa-lane-line" style="border-top-color: #F4C3A1;"></span><span class="aa-pill" style="background: #FDE6D6; border: 1px solid #E0752D; color: #18161F; animation: aa-slide 8s linear infinite; animation-delay: -3s;">{{bd.outPill}}</span></span>
+      <svg width="38" height="54" viewBox="0 0 42 56" style="flex: none; display: block; overflow: visible; transform: rotate(7deg);">
+        <path d="M2 2 H40 V50 L36.2 54 L32.4 50 L28.6 54 L24.8 50 L21.0 54 L17.2 50 L13.4 54 L9.6 50 L5.8 54 L2.0 50 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="2" stroke-linejoin="round"></path>
+        <path d="M8 12 H34 M8 20 H26 M8 28 H30" stroke="#FDE6D6" stroke-width="3.5" stroke-linecap="round"></path>
+        <path d="M8 12 H18" stroke="#E0752D" stroke-width="3.5" stroke-linecap="round"></path>
+        <path d="M8 38 H34" stroke="#18161F" stroke-width="1" stroke-dasharray="2 2"></path>
+      </svg>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<!-- ======================= Scene: inside the dark side panel ======================= -->
+<sc-if value="{{isScene}}" hint-placeholder-val="{{false}}">
+<div class="aa aa-scene" aria-hidden="true">
+  <sc-if value="{{sc.jar}}" hint-placeholder-val="{{true}}">
+    <span class="aa-jar" style="position: relative; flex: none; display: block; width: 150px;">
+      <dc-import name="CashJar" size="{{150}}" envelope="{{false}}" amount="{{sc.amount}}" line="#EEE8FF" uid="{{sc.uid}}" hint-size="150px,206px"></dc-import>
+      <svg width="40" height="54" viewBox="0 0 40 54" style="position: absolute; left: 55px; top: 30px; overflow: visible; display: {{sc.lock}};">
+        <g class="aa-top" style="animation: aa-swing 5s ease-in-out infinite;">
+          <path d="M20 0 V6" stroke="#EEE8FF" stroke-width="2"></path>
+          <path d="M11 22 V15 a9 9 0 0 1 18 0 V22" fill="none" stroke="#EEE8FF" stroke-width="3.5" stroke-linecap="round"></path>
+          <rect x="5" y="21" width="30" height="26" rx="6" fill="#FFC53D" stroke="#18161F" stroke-width="2.5"></rect>
+          <circle cx="20" cy="32" r="3.5" fill="#18161F"></circle>
+          <path d="M20 34 V40" stroke="#18161F" stroke-width="2.5" stroke-linecap="round"></path>
+        </g>
+      </svg>
+    </span>
+  </sc-if>
+
+  <sc-if value="{{sc.mail}}" hint-placeholder-val="{{false}}">
+    <svg width="170" height="150" viewBox="0 0 170 150" style="flex: none; display: block; overflow: visible;">
+      <circle cx="85" cy="80" r="64" fill="#B9A3FF" opacity="0.16"></circle>
+      <rect x="20" y="62" width="130" height="80" rx="6" fill="#CBC7D3" stroke="#18161F" stroke-width="2.5"></rect>
+      <path d="M20 64 L85 24 L150 64 Z" fill="#9E98AC" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+      <g style="animation: aa-rise 8s ease-in-out infinite;">
+        <rect x="36" y="38" width="98" height="78" rx="5" fill="#FFF6E0" stroke="#18161F" stroke-width="2.2"></rect>
+        <path d="M48 52 H104 M48 62 H90" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" opacity="0.35"></path>
+        <rect x="48" y="72" width="54" height="16" rx="8" fill="#B9A3FF" stroke="#18161F" stroke-width="1.8"></rect>
+        <text x="75" y="83.5" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="700" fill="#18161F">Verify</text>
+      </g>
+      <path d="M20 66 L85 106 L150 66 V136 a6 6 0 0 1 -6 6 H26 a6 6 0 0 1 -6 -6 Z" fill="#EEE8FF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+      <circle cx="85" cy="108" r="13" fill="#7A5AF8" stroke="#18161F" stroke-width="2.2"></circle>
+      <path d="M79 108 l4 4 l8 -9" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </sc-if>
+
+  <sc-if value="{{sc.team}}" hint-placeholder-val="{{false}}">
+    <svg width="180" height="150" viewBox="0 0 180 150" style="flex: none; display: block; overflow: visible;">
+      <circle cx="90" cy="84" r="62" fill="#B9A3FF" opacity="0.16"></circle>
+      <!-- Jordan -->
+      <g transform="translate(46 64)">
+        <path d="M-28 70 C-28 40 -16 30 0 30 C16 30 28 40 28 70 Z" fill="#F4C3A1" stroke="#18161F" stroke-width="2.5"></path>
+        <circle cx="0" cy="12" r="16" fill="#C68B6E" stroke="#18161F" stroke-width="2.5"></circle>
+        <path d="M-16 8 C-16 -6 -6 -10 2 -10 C12 -10 18 -2 16 8 C10 0 -4 0 -16 8 Z" fill="#2B2233" stroke="#18161F" stroke-width="2"></path>
+        <path d="M-6 16 q6 5 12 0" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round"></path>
+      </g>
+      <!-- invite flying across -->
+      <g transform="translate(70 52)"><g class="aa-c" style="animation: aa-fly 7s ease-in-out infinite;"><path d="M0 9 L24 0 L16 20 L12 13 Z" fill="#FFFFFF" stroke="#18161F" stroke-width="2" stroke-linejoin="round"></path><path d="M12 13 L24 0" stroke="#18161F" stroke-width="1.6"></path></g></g>
+      <!-- you -->
+      <g transform="translate(134 64)">
+        <circle class="aa-c" cx="0" cy="34" r="40" fill="none" stroke="#B9A3FF" stroke-width="2" stroke-dasharray="5 6" style="animation: aa-pop 6s ease-in-out infinite;"></circle>
+        <path d="M-28 70 C-28 40 -16 30 0 30 C16 30 28 40 28 70 Z" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5"></path>
+        <circle cx="0" cy="12" r="16" fill="#E9B896" stroke="#18161F" stroke-width="2.5"></circle>
+        <path d="M-16 6 C-14 -8 12 -12 16 6 C8 -2 -6 -2 -16 6 Z" fill="#7A4A2A" stroke="#18161F" stroke-width="2"></path>
+        <path d="M-6 16 q6 5 12 0" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round"></path>
+      </g>
+      <text x="134" y="150" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#EEE8FF">you</text>
+      <text x="46" y="150" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#EEE8FF">Jordan</text>
+    </svg>
+  </sc-if>
+
+  <div class="aa-chips">
+    <sc-for list="{{sc.chips}}" as="c" hint-placeholder-count="3">
+      <span class="aa-chip" style="background: {{c.bg}}; color: {{c.fg}}; border: {{c.bd}}; animation-delay: {{c.delay}};"><span style="color: {{c.mk}}; flex: none;">{{c.mark}}</span><span style="min-width: 0;">{{c.t}}</span></span>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<!-- ======================= Setup: a small picture of the question ======================= -->
+<sc-if value="{{isStep}}" hint-placeholder-val="{{false}}">
+<span class="aa aa-step" aria-hidden="true">
+  <svg viewBox="0 0 180 130" width="100%" style="display: {{st.svg}}; overflow: visible;">
+    <circle cx="94" cy="70" r="58" fill="#EEE8FF"></circle>
+    <rect x="22" y="118" width="144" height="6" rx="3" fill="#18161F" opacity="0.9"></rect>
+
+    <!-- 1 · your business: a shopfront and a pin -->
+    <g style="display: {{st.s1}};">
+      <rect x="52" y="56" width="90" height="62" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5"></rect>
+      <path d="M46 40 H148 L142 58 H52 Z" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5" stroke-linejoin="round"></path>
+      <path d="M64 40 L60 58 M82 40 L80 58 M100 40 L100 58 M118 40 L120 58 M136 40 L140 58" stroke="#18161F" stroke-width="2"></path>
+      <rect x="62" y="70" width="36" height="28" rx="2" fill="#EEE8FF" stroke="#18161F" stroke-width="2"></rect>
+      <g class="aa-top" style="animation: aa-swing 4.5s ease-in-out infinite;">
+        <path d="M74 70 L80 76 L86 70" fill="none" stroke="#18161F" stroke-width="1.4"></path>
+        <rect x="68" y="76" width="24" height="14" rx="3" fill="#FFF6E0" stroke="#18161F" stroke-width="1.6"></rect>
+        <text x="80" y="87" text-anchor="middle" font-family="Caveat, cursive" font-size="12" font-weight="700" fill="#18161F">open</text>
+      </g>
+      <rect x="108" y="72" width="24" height="46" rx="2" fill="#FDE6D6" stroke="#18161F" stroke-width="2"></rect>
+      <circle cx="113" cy="96" r="1.8" fill="#18161F"></circle>
+      <g transform="translate(156 12)"><g style="animation: aa-bob 5s ease-in-out infinite;">
+        <path d="M0 0 c-9 0 -15 7 -15 15 c0 11 15 25 15 25 s15 -14 15 -25 c0 -8 -6 -15 -15 -15 z" fill="#E0752D" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
+        <circle cx="0" cy="15" r="5.5" fill="#FFFFFF" stroke="#18161F" stroke-width="1.8"></circle>
+      </g></g>
+    </g>
+
+    <!-- 2 · what you sell: time, things, or both -->
+    <g style="display: {{st.s2}};">
+      <g opacity="{{st.svcOp}}">
+        <circle cx="66" cy="76" r="30" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5"></circle>
+        <path d="M66 50 V55 M66 97 V102 M40 76 H45 M87 76 H92" stroke="#18161F" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M66 76 L56 70" stroke="#18161F" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M66 76 V58" stroke="#7A5AF8" stroke-width="3" stroke-linecap="round" style="transform-origin: 66px 76px; transform-box: view-box; animation: aa-spin 24s linear infinite;"></path>
+        <circle cx="66" cy="76" r="3" fill="#18161F"></circle>
+      </g>
+      <g opacity="{{st.prdOp}}">
+        <g style="animation: aa-bob 6s ease-in-out infinite; animation-delay: -1.5s;">
+          <path d="M106 64 L130 54 L154 64 L130 74 Z" fill="#E9CFA0" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
+          <path d="M106 64 V100 L130 110 V74 Z" fill="#E3C38F" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
+          <path d="M154 64 V100 L130 110 V74 Z" fill="#D3AC70" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
+          <path d="M118 59 L142 69 V80" fill="none" stroke="#FFF6E0" stroke-width="4"></path>
+        </g>
+      </g>
+      <text x="94" y="26" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#18161F">{{st.sellNote}}</text>
+    </g>
+
+    <!-- 3 · who works in it -->
+    <g style="display: {{st.s3}};">
+      <g style="display: {{st.teamOn}};">
+        <g transform="translate(52 66)"><g style="animation: aa-bob 6s ease-in-out infinite; animation-delay: -2s;">
+          <path d="M-22 52 C-22 30 -12 22 0 22 C12 22 22 30 22 52 Z" fill="#F4C3A1" stroke="#18161F" stroke-width="2.2"></path>
+          <circle cx="0" cy="8" r="12" fill="#8E5B3F" stroke="#18161F" stroke-width="2.2"></circle>
+        </g></g>
+        <g transform="translate(136 66)"><g style="animation: aa-bob 6s ease-in-out infinite; animation-delay: -4s;">
+          <path d="M-22 52 C-22 30 -12 22 0 22 C12 22 22 30 22 52 Z" fill="#B6E0AE" stroke="#18161F" stroke-width="2.2"></path>
+          <circle cx="0" cy="8" r="12" fill="#E9B896" stroke="#18161F" stroke-width="2.2"></circle>
+        </g></g>
+      </g>
+      <g transform="translate(94 56)"><g style="animation: aa-bob 6s ease-in-out infinite;">
+        <path d="M-28 62 C-28 34 -16 26 0 26 C16 26 28 34 28 62 Z" fill="#B9A3FF" stroke="#18161F" stroke-width="2.5"></path>
+        <circle cx="0" cy="8" r="16" fill="#C68B6E" stroke="#18161F" stroke-width="2.5"></circle>
+        <path d="M-16 6 C-16 -8 -6 -12 2 -12 C12 -12 18 -4 16 6 C10 -2 -4 -2 -16 6 Z" fill="#2B2233" stroke="#18161F" stroke-width="2"></path>
+        <path d="M-6 14 q6 5 12 0" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round"></path>
+      </g></g>
+      <g style="display: {{st.acctOn}};" transform="translate(150 22)">
+        <g class="aa-c" style="animation: aa-sway 6s ease-in-out infinite;">
+          <rect x="-13" y="-4" width="26" height="34" rx="4" fill="#FFFFFF" stroke="#18161F" stroke-width="2"></rect>
+          <rect x="-6" y="-8" width="12" height="7" rx="2" fill="#CBC7D3" stroke="#18161F" stroke-width="1.6"></rect>
+          <path d="M-7 8 H7 M-7 15 H7 M-7 22 H2" stroke="#7A5AF8" stroke-width="2" stroke-linecap="round"></path>
+        </g>
+      </g>
+    </g>
+
+    <!-- 4 · customers abroad: a globe and its coins -->
+    <g style="display: {{st.s4}};">
+      <circle cx="94" cy="72" r="34" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5"></circle>
+      <path d="M60 72 H128 M94 38 C80 52 80 92 94 106 C108 92 108 52 94 38 M66 54 H122 M66 90 H122" fill="none" stroke="#18161F" stroke-width="1.8"></path>
+      <path d="M78 50 c6 4 10 2 14 6 c-2 6 -10 6 -12 12 c-4 -2 -6 -10 -2 -18 z M104 76 c6 -2 12 2 14 8 c-4 6 -10 8 -14 4 z" fill="#B6E0AE" stroke="#18161F" stroke-width="1.5"></path>
+      <g transform="translate(40 40)" opacity="{{st.farOp}}"><g style="animation: aa-bob 5s ease-in-out infinite;"><circle r="13" fill="#FFC53D" stroke="#18161F" stroke-width="2"></circle><text y="5" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" font-weight="800" fill="#6B3E0E">{{st.far1}}</text></g></g>
+      <g transform="translate(150 46)" opacity="{{st.farOp}}"><g style="animation: aa-bob 5s ease-in-out infinite; animation-delay: -1.7s;"><circle r="13" fill="#FFC53D" stroke="#18161F" stroke-width="2"></circle><text y="5" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" font-weight="800" fill="#6B3E0E">{{st.far2}}</text></g></g>
+      <g transform="translate(144 104)"><g style="animation: aa-bob 5s ease-in-out infinite; animation-delay: -3.4s;"><circle r="13" fill="#FFC53D" stroke="#18161F" stroke-width="2"></circle><text y="5" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" font-weight="800" fill="#6B3E0E">{{st.home}}</text></g></g>
+    </g>
+  </svg>
+
+  <!-- 5 · done: the jar -->
+  <span class="aa-jar" style="display: {{st.s5}}; width: 100%; padding-top: 4px;">
+    <dc-import name="CashJar" size="{{168}}" envelope="{{true}}" amount="" uid="setupjar" hint-size="168px,140px"></dc-import>
+  </span>
+</span>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"part":{"editor":"enum","options":["backdrop","scene","step"],"default":"backdrop"},"variant":{"editor":"enum","options":["signup","signin","forgot","verify","invite","setup"],"default":"signup"},"step":{"editor":"int","default":1},"sell":{"editor":"text","default":""},"team":{"editor":"text","default":""},"acct":{"editor":"boolean","default":false},"abroad":{"editor":"text","default":""},"cur":{"editor":"text","default":"$"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const P = this.props;
+    const part = P.part || 'backdrop';
+    const v = P.variant || 'signup';
+    const setup = v === 'setup';
+
+    // Backdrop: items sit in the margins beside the centred cards, anchored to the page centre
+    // so they never slide under the form. Setup's content is wider, so its margins start further out.
+    const C = setup ? 606 : 468;
+    const L = (off, top) => 'right: calc(50% + ' + (C + off) + 'px); top: ' + top + '%;';
+    const R = (off, top) => 'left: calc(50% + ' + (C + off) + 'px); top: ' + top + '%;';
+    const word = v === 'signin'
+      ? { invNo: 'INV-0151', invWho: 'Bluebird Yoga', invAmt: '$540', inPill: '+$540', outPill: '−$135', rcWho: 'Software · Oct', rcAmt: '$135' }
+      : { invNo: 'INV-0156', invWho: 'Atlas Freight', invAmt: '$6,300', inPill: '+$6,300', outPill: '−$1,200', rcWho: 'Rent · Oct', rcAmt: '$1,200' };
+    const bd = Object.assign({}, word, setup ? {
+      cls: 'aa-xl', rootCls: 'aa-noband', band: false, bandUid: 'band-' + v,
+      blobL: L(-30, 8), blobR: R(-40, 46), blobSize: '200px',
+      inv: L(0, 0), showInv: 'none', laneIn: L(0, 0), laneOut: R(0, 0), showLanes: 'none',
+      coins: L(26, 34), note: L(10, 68), rcpt: R(12, 18), showRcpt: 'block', env: R(18, 60), plane: R(0, 0), showPlane: 'none'
+    } : {
+      cls: '', rootCls: '', band: true, bandUid: 'band-' + v,
+      blobL: L(-10, 8), blobR: R(-40, 42), blobSize: '300px',
+      inv: L(74, 13), showInv: 'block',
+      laneIn: L(36, 44), laneOut: R(36, 41), showLanes: 'block',
+      coins: L(156, 58), note: L(60, 72),
+      rcpt: R(96, 12), showRcpt: 'block',
+      env: R(130, 56), plane: R(48, 77), showPlane: 'block'
+    });
+
+    // Scene in the dark side panel: the jar, and the equation as small pills.
+    const chipIn = (t) => ({ t, mark: '+', bg: '#7A5AF8', fg: '#FFFFFF', mk: '#FFFFFF', bd: '0' });
+    const chipOut = (t) => ({ t, mark: '−', bg: '#FDE6D6', fg: '#18161F', mk: '#18161F', bd: '1px solid #E0752D' });
+    const chipKeep = (t) => ({ t, mark: '=', bg: '#B9A3FF', fg: '#18161F', mk: '#18161F', bd: '0' });
+    const done = (t) => ({ t, mark: '✓', bg: '#FFFFFF', fg: '#18161F', mk: '#2F5711', bd: '0' });
+    const SC = {
+      signup: { jar: true, amount: '$8,407', chips: [chipIn('$6,300 invoice paid'), chipOut('$1,200 rent'), chipKeep('$8,407 yours to keep')] },
+      signin: { jar: true, amount: '', chips: [done('Payments matched'), done('Card charges sorted'), done('Tax put aside')] },
+      forgot: { jar: true, lock: true, amount: '', chips: [done('Invoices still go out'), done('Payments still come in'), done('Every number still adds up')] },
+      verify: { mail: true, chips: [done('One click in the email'), done('Then invoices can go out')] },
+      invite: { team: true, chips: [done('Your own sign-in'), done('Only what Staff can see')] }
+    };
+    const s = SC[v] || SC.signup;
+    const sc = {
+      jar: !!s.jar, mail: !!s.mail, team: !!s.team, lock: s.lock ? 'block' : 'none',
+      amount: s.amount || '', uid: 'scene-' + v,
+      chips: s.chips.map((c, i) => Object.assign({}, c, { delay: (i * 1.2) + 's' }))
+    };
+
+    // Setup: a picture of the current question that answers back.
+    const step = +P.step || 1, sell = P.sell || '', team = P.team || '';
+    const far = ['€', '£', '$', '¥'].filter((x) => x !== (P.cur || '$'));
+    const show = (on) => on ? 'inline' : 'none';
+    const st = {
+      s1: show(step === 1), s2: show(step === 2), s3: show(step === 3), s4: show(step === 4), s5: step === 5 ? 'block' : 'none', svg: step === 5 ? 'none' : 'block',
+      svcOp: sell === 'products' ? 0.25 : 1, prdOp: sell === 'services' ? 0.25 : 1,
+      sellNote: { services: 'your time', products: 'your things', both: 'a bit of both' }[sell] || '',
+      teamOn: show(team === 'team'), acctOn: show(!!P.acct),
+      farOp: P.abroad === 'no' ? 0.25 : 1, home: P.cur || '$',
+      far1: far[0], far2: far[1]
+    };
+
+    return { isBackdrop: part === 'backdrop', isScene: part === 'scene', isStep: part === 'step', bd, sc, st };
+  }
+}
+</script>
+</body>
+</html>

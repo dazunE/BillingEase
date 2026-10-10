@@ -59,7 +59,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
 </style>
 </helmet>
 
-<div style="min-height: 100vh; box-sizing: border-box; background: #F7F6F9; font-family: DM Sans, system-ui, sans-serif; color: #18161F; display: flex; flex-direction: column;">
+<div style="position: relative; z-index: 0; min-height: 100vh; box-sizing: border-box; background: #F7F6F9; font-family: DM Sans, system-ui, sans-serif; color: #18161F; display: flex; flex-direction: column;">
 
   <sc-if value="{{banner}}" hint-placeholder-val="{{false}}">
     <div role="status" style="background: #FFF0B8; color: #6B5000; padding: 10px clamp(16px, 4vw, 32px); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; font-size: 14px;">
@@ -85,6 +85,9 @@ select.bz-in{cursor:pointer;padding-right:8px}
         <sc-for list="{{flows}}" as="f" hint-placeholder-count="3"><button type="button" aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="min-height: 36px; font-size: 13px;">{{f.label}}</button></sc-for>
       </div>
     </div>
+
+    <!-- Illustrations in the margins (a small band on phones) -->
+    <dc-import name="AuthArt" part="backdrop" variant="forgot" hint-size="100%,84px"></dc-import>
 
     <main style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 16px;">
       <div style="flex: 1 1 360px; max-width: 480px; min-width: 0; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 5vw, 40px); display: flex; flex-direction: column; gap: 20px;">
@@ -296,6 +299,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
             </sc-for>
           </ul>
         </sc-if>
+        <dc-import name="AuthArt" part="scene" variant="{{panel.art}}" hint-size="100%,206px"></dc-import>
         <span style="margin-top: auto; font-size: 13px; color: #EEE8FF;">{{panel.foot}}</span>
       </aside>
     </main>
@@ -405,9 +409,9 @@ class Component extends DCLogic {
     const yes = (t) => ({ t, icon: CHK, bg: '#B9A3FF', stroke: '#18161F', fg: '#FFFFFF' });
     const no = (t) => ({ t, icon: NO, bg: 'rgba(238,232,255,0.16)', stroke: '#EEE8FF', fg: '#EEE8FF' });
     let panel;
-    if (isF) panel = { eyebrow: P.business || 'Your business', eqLabel: (P.business || 'Your business') + ' this October', title: 'Your books are safe.', body: 'A new password doesn’t touch anything in your business. Invoices still go out, payments still come in, and October still adds up.', eq: true, list: false, foot: 'We never ask for your password by email or phone.' };
-    else if (isV) panel = { eyebrow: 'Why we ask', title: s.v.done ? 'All set.' : 'Two things wait for a verified email.', body: 'Customers reply to the address on your invoices, and we need a way to reach you about money moving.', eq: false, list: [s.v.done ? yes('Sending invoices') : no('Sending invoices'), s.v.done ? yes('Getting paid online') : no('Getting paid online'), yes('Setting up your business'), yes('Adding expenses and receipts')], foot: 'The link in the email works for 24 hours.' };
-    else panel = { eyebrow: 'Staff at Northwind Studio', title: 'What you’ll be able to do', body: 'Jordan picked the Staff role for you. An Owner or Admin can change it later.', eq: false, list: [yes('Create quotes and invoices'), yes('Log time you can bill'), yes('See invoices you made'), no('See the bank or payroll'), no('Pay bills or change settings')], foot: 'Your pay stays private: Staff can’t see anyone’s payroll.' };
+    if (isF) panel = { art: 'forgot', eyebrow: P.business || 'Your business', eqLabel: (P.business || 'Your business') + ' this October', title: 'Your books are safe.', body: 'A new password doesn’t touch anything in your business. Invoices still go out, payments still come in, and October still adds up.', eq: true, list: false, foot: 'We never ask for your password by email or phone.' };
+    else if (isV) panel = { art: 'verify', eyebrow: 'Why we ask', title: s.v.done ? 'All set.' : 'Two things wait for a verified email.', body: 'Customers reply to the address on your invoices, and we need a way to reach you about money moving.', eq: false, list: [s.v.done ? yes('Sending invoices') : no('Sending invoices'), s.v.done ? yes('Getting paid online') : no('Getting paid online'), yes('Setting up your business'), yes('Adding expenses and receipts')], foot: 'The link in the email works for 24 hours.' };
+    else panel = { art: 'invite', eyebrow: 'Staff at Northwind Studio', title: 'What you’ll be able to do', body: 'Jordan picked the Staff role for you. An Owner or Admin can change it later.', eq: false, list: [yes('Create quotes and invoices'), yes('Log time you can bill'), yes('See invoices you made'), no('See the bank or payroll'), no('Pay bills or change settings')], foot: 'Your pay stays private: Staff can’t see anyone’s payroll.' };
 
     return {
       toast: s.toast, flows, steps, panel, fp, np, v, iv, t,

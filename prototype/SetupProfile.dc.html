@@ -20,7 +20,10 @@ a{color:#18161F}a:hover{color:#000000}
 @media (max-width: 600px){.be-steplabel{display:none!important}.be-signedin{display:none}}
 </style>
 </helmet>
-<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+<div style="position: relative; z-index: 0; min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <!-- A few drifting coins and papers in the wide margins -->
+  <dc-import name="AuthArt" part="backdrop" variant="setup" hint-size="100%,0px"></dc-import>
 
   <!-- Signed-out style: logo only, no app header -->
   <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 20px clamp(16px, 4vw, 40px) 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
@@ -68,9 +71,12 @@ a{color:#18161F}a:hover{color:#000000}
       <!-- Step 1: name + country -->
       <sc-if value="{{s1}}" hint-placeholder-val="{{true}}">
         <div style="display: flex; flex-direction: column; gap: 22px;">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px;">
+          <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
             <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">What&#39;s your business called, and where is it?</h1>
             <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Your country sets the currency, how dates look and what we call tax. You won&#39;t have to pick any of that yourself.</p>
+          </div>
+          <dc-import name="AuthArt" part="step" variant="setup" step="{{art.step}}" cur="{{art.cur}}" hint-size="168px,121px"></dc-import>
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label for="biz-name" style="font-size: 14px; font-weight: 600;">Business name</label>
@@ -128,9 +134,12 @@ a{color:#18161F}a:hover{color:#000000}
       <!-- Steps 2-5: one question, big choices -->
       <sc-if value="{{choiceStep}}" hint-placeholder-val="{{false}}">
         <div style="display: flex; flex-direction: column; gap: 22px;">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px;">
+          <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
             <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">{{q.title}}</h1>
             <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">{{q.help}}</p>
+          </div>
+          <dc-import name="AuthArt" part="step" variant="setup" step="{{art.step}}" sell="{{art.sell}}" team="{{art.team}}" acct="{{art.acct}}" abroad="{{art.abroad}}" cur="{{art.cur}}" hint-size="168px,121px"></dc-import>
           </div>
           <div role="group" aria-label="{{q.title}}" style="display: flex; flex-direction: column; gap: 10px;">
             <sc-for list="{{q.choices}}" as="ch" hint-placeholder-count="3">
@@ -194,10 +203,13 @@ a{color:#18161F}a:hover{color:#000000}
       <!-- Final: summary -->
       <sc-if value="{{s6}}" hint-placeholder-val="{{false}}">
         <div style="display: flex; flex-direction: column; gap: 22px;">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px;">
+          <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
             <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>All set up</span>
             <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">Here&#39;s your BillingEase</h1>
             <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Three numbers on your home, and only the features behind them that fit how {{bizName}} works. {{hiddenSentence}}</p>
+          </div>
+          <dc-import name="AuthArt" part="step" variant="setup" step="{{art.step}}" hint-size="168px,140px"></dc-import>
           </div>
           <dl style="margin: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px 20px; display: flex; flex-direction: column;">
             <sc-for list="{{summary}}" as="sm" hint-placeholder-count="5">
@@ -525,8 +537,12 @@ class Component extends DCLogic {
 
     const shown = feats.filter((f) => f.on).length;
 
+    let curSym = '$';
+    try { curSym = (new Intl.NumberFormat(C.loc, { style: 'currency', currency: C.cur }).formatToParts(0).find((x) => x.type === 'currency') || {}).value || '$'; } catch (e) { /* keep $ */ }
+    const art = { step, sell: a.sell || '', team: a.team || '', acct: !!a.acct, abroad: a.abroad || '', cur: curSym.length > 2 ? '$' : curSym };
+
     return {
-      steps, progressLabel: step === 5 ? 'All 4 steps done' : 'Step ' + step + ' of 4 · ' + STEP_NAMES[step - 1],
+      art, steps, progressLabel: step === 5 ? 'All 4 steps done' : 'Step ' + step + ' of 4 · ' + STEP_NAMES[step - 1],
       s1: step === 1, choiceStep: step >= 2 && step <= 4, s6: step === 5, inSteps: step <= 4,
       askYou: !st.fromSignup, signedInAs: st.fromSignup ? email : false, owner: a.owner, email: a.email, city: a.city,
       ownerError: st.ownerError || false, emailError: st.emailError || false,
