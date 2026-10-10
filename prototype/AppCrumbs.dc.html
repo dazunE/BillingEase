@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Breadcrumb and three numbers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+</helmet>
+<!-- Where you are, plus the three numbers (live from the shared data). area: in | out | keep | biz | home -->
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; font-family: DM Sans, system-ui, sans-serif; color: #18161F;">
+  <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
+    <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+      Home
+    </a>
+    <sc-for list="{{trail}}" as="t" hint-placeholder-count="2">
+      <span aria-hidden="true">/</span>
+      <a href="{{t.href}}" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">{{t.label}}</a>
+    </sc-for>
+    <sc-if value="{{here}}" hint-placeholder-val="{{true}}">
+      <span aria-hidden="true">/</span>
+      <span aria-current="page" style="color: #18161F;">{{here}}</span>
+    </sc-if>
+  </nav>
+  <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <a href="ThreeIn.dc.html" aria-current="{{inCur}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: {{pin.bg}}; border: {{pin.border}}; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
+    <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
+    <a href="ThreeOut.dc.html" aria-current="{{outCur}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: {{pout.bg}}; border: {{pout.border}}; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
+    <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
+    <a href="ThreeKeep.dc.html" aria-current="{{keepCur}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: {{pkeep.border}}; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap; box-shadow: {{pkeep.ring}};"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"area":{"editor":"text","default":"in"},"here":{"editor":"text","default":""},"mid":{"editor":"text","default":""},"midHref":{"editor":"text","default":""},"$preview":{"width":1200,"height":60}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const area = this.props.area || 'in';
+    const t = BE.totals('month');
+    const AREAS = {
+      in: { label: 'Coming in', href: 'ThreeIn.dc.html' },
+      out: { label: 'Going out', href: 'ThreeOut.dc.html' },
+      keep: { label: 'Yours to keep', href: 'ThreeKeep.dc.html' },
+      biz: { label: 'Your business', href: 'BizProfile.dc.html' },
+      home: null
+    };
+    const trail = [];
+    if (AREAS[area]) trail.push(AREAS[area]);
+    if (this.props.mid) trail.push({ label: this.props.mid, href: this.props.midHref || '#' });
+    const on = (a, bg, border) => area === a ? { bg, border: '2px solid ' + border } : { bg: '#FFFFFF', border: '1px solid #E2DFE8' };
+    return {
+      trail, here: this.props.here || '',
+      n: t.fmt,
+      pin: on('in', '#EEE8FF', '#7A5AF8'),
+      pout: on('out', '#FDE6D6', '#E0752D'),
+      pkeep: area === 'keep' ? { border: '2px solid #18161F', ring: '0 0 0 2px #B9A3FF' } : { border: '1px solid #18161F', ring: 'none' },
+      inCur: area === 'in' ? 'true' : false, outCur: area === 'out' ? 'true' : false, keepCur: area === 'keep' ? 'true' : false
+    };
+  }
+}
+</script>
+</body>
+</html>

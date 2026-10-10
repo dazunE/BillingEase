@@ -438,10 +438,47 @@
       window.__dcRoot = inst;
     }).catch(function (e) {
       console.error('[dc] boot failed', e);
+      if (!/NotFound\.dc\.html$/.test(page) && /\(404\)/.test(String(e && e.message))) { location.replace('NotFound.dc.html#' + encodeURIComponent(page)); return; }
       host.textContent = 'Could not load this screen. Serve the prototype folder over HTTP (see README).';
     });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+  // The shared data store and the sample month load before any screen renders.
+  var DATA_FILES = ['store.js', 'data-home.js', 'data-in.js', 'data-sell.js', 'data-out.js', 'data-spend.js', 'data-books.js', 'data-biz.js'];
+
+  function loadScript(src) {
+    return new Promise(function (resolve) {
+      var el = document.createElement('script');
+      el.src = src;
+      el.onload = resolve;
+      el.onerror = function () { console.error('[dc] could not load ' + src); resolve(); };
+      document.head.appendChild(el);
+    });
+  }
+
+  function rerender() {
+    if (window.__dcRoot) window.__dcRoot.render();
+  }
+
+  function start() {
+    var chain = Promise.resolve();
+    DATA_FILES.forEach(function (f) { chain = chain.then(function () { return loadScript(f); }); });
+    chain.then(function () {
+      // ?reset=1 puts the sample month back; ?start=empty starts a brand new business.
+      if (window.BE && /[?&]reset=1\b/.test(location.search)) {
+        window.BE.reset();
+        try { sessionStorage.setItem('be.flash', 'Sample data reset. You’re back at Oct 4 with Northwind Studio’s October.'); } catch (e) { /* ignore */ }
+        history.replaceState(null, '', location.pathname + location.hash);
+      } else if (window.BE && /[?&]start=empty\b/.test(location.search)) {
+        window.BE.startEmpty();
+        history.replaceState(null, '', location.pathname + location.hash);
+      }
+      window.addEventListener('be:change', rerender);
+      window.addEventListener('hashchange', rerender);
+      boot();
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
