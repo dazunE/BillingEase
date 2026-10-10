@@ -320,23 +320,15 @@ a{color:#18161F}a:hover{color:#000000}
             </div>
           </sc-if>
 
-          <!-- Every month, still to come -->
+          <!-- Every month, still to come: one line here, the full list has its own section below -->
           <sc-if value="{{hasMoGroup}}" hint-placeholder-val="{{true}}">
-            <div style="display: flex; flex-direction: column; border-top: {{g.moTop}};">
-              <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; padding: 14px 0 2px;">
-                <h3 style="margin: 0; font-size: 14px; font-weight: 700;">Every month <span style="color: #5F5B68; font-weight: 600; font-variant-numeric: tabular-nums;">· {{g.monthly}}</span></h3>
-                <a href="SpendEveryMonth.dc.html" style="font-size: 13px; font-weight: 600;">Manage</a>
-              </div>
-              <ul style="margin: 0; padding: 0; list-style: none;">
-                <sc-for list="{{moDue}}" as="m" hint-placeholder-count="4">
-                  <li style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: {{m.border}};">
-                    <span style="width: 8px; height: 8px; border-radius: 9999px; background: #F4C3A1; flex: none; margin: 0 16px;"></span>
-                    <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 15px;">{{m.who}}</span><span style="font-size: 13px; color: #5F5B68;">{{m.when}}</span></span>
-                    <span style="font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px;">{{m.amount}}</span>
-                  </li>
-                </sc-for>
-              </ul>
-            </div>
+            <a class="be-row" href="#every-month" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 14px 8px; margin: 0 -8px; border-top: {{g.moTop}}; border-radius: 12px; text-decoration: none; color: #18161F;">
+              <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 14px; font-weight: 700;">Every month <span style="color: #5F5B68; font-weight: 600; font-variant-numeric: tabular-nums;">· {{g.monthly}}</span></span>
+                <span style="font-size: 13px; color: #5F5B68;">{{moLine}}</span>
+              </span>
+              <span style="font-size: 13px; font-weight: 600;">See the list ↓</span>
+            </a>
           </sc-if>
 
           <!-- Nothing still to pay -->
@@ -385,6 +377,49 @@ a{color:#18161F}a:hover{color:#000000}
         </div>
       </section>
     </div>
+
+    <!-- Every month: its own section -->
+    <section id="every-month" aria-labelledby="mo-h" style="display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px;">
+        <h2 id="mo-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E0752D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"></path></svg><span>Every month <span style="color: #5F5B68; font-weight: 600;">· <span style="font-variant-numeric: tabular-nums;">{{mo.total}}</span> a month</span></span></h2>
+        <span style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px;"><a href="SpendEveryMonth.dc.html#add" style="font-weight: 600;">Add a cost</a><a href="SpendEveryMonth.dc.html" style="font-weight: 600;">Manage</a></span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+        <sc-if value="{{mo.has}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;">
+              <span style="width: {{mo.paidPct}}%; background: #E0752D;"></span>
+              <span style="width: {{mo.duePct}}%; background: #F4C3A1;"></span>
+            </span>
+            <span style="display: flex; flex-wrap: wrap; gap: 4px 24px; font-size: 14px; color: #47444F;">
+              <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D;"></span><strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{mo.paid}}</strong> paid so far</span>
+              <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1;"></span><strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{mo.due}}</strong> still to come, paid automatically</span>
+              <span>{{mo.count}}</span>
+            </span>
+          </div>
+          <ul class="be-mo" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); column-gap: 32px;">
+            <sc-for list="{{mo.rows}}" as="m" hint-placeholder-count="8">
+              <li style="border-top: 1px solid #EFEDF3;">
+                <a class="be-row" href="SpendEveryMonth.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 8px; margin: 0 -8px; border-radius: 12px; text-decoration: none; color: #18161F;">
+                  <span style="width: 8px; height: 8px; border-radius: 9999px; background: {{m.dot}}; flex: none;"></span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 600; font-size: 15px;">{{m.who}}</span><sc-if value="{{m.flag}}" hint-placeholder-val="{{false}}"><span style="padding: 1px 8px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12px; font-weight: 700;">{{m.flag}}</span></sc-if></span>
+                    <span style="font-size: 13px; color: #5F5B68;">{{m.when}}</span>
+                  </span>
+                  <span style="font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px;">{{m.amount}}</span>
+                </a>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-if>
+        <sc-if value="{{mo.none}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;">
+            <span style="flex: 1 1 260px; font-size: 14px; line-height: 1.5; color: #47444F;">Rent, software and insurance you pay every month go here, so Going out knows what’s coming before it leaves.</span>
+            <a href="SpendEveryMonth.dc.html#add" style="font-weight: 600; font-size: 14px;">Add a cost</a>
+          </div>
+        </sc-if>
+      </div>
+    </section>
   </main>
 
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
@@ -523,6 +558,25 @@ class Component extends DCLogic {
       who: m.who, when: 'Oct ' + m.day + ' · automatic' + (m.card ? ', ' + m.card : ''), amount: money(m.amount), border: i === 0 ? '0' : '1px solid #EFEDF3'
     }));
 
+    // Every month: its own section, paid and still to come together
+    const moAll = MO.slice().sort((a, b) => a.day - b.day);
+    const moPaidSum = moAll.filter((m) => m.paidDay).reduce((x, m) => x + m.amount, 0);
+    const moDueSum = moDue.length ? MO.filter((m) => !m.paidDay && m.day > 4).reduce((x, m) => x + m.amount, 0) : 0;
+    const moTotal = moAll.reduce((x, m) => x + m.amount, 0);
+    const paused = BE.all('monthly').filter((m) => m.active === false).length;
+    const mo = {
+      has: moAll.length > 0, none: moAll.length === 0,
+      total: money(moTotal), paid: money(moPaidSum), due: money(moDueSum),
+      paidPct: moTotal ? Math.round(moPaidSum / moTotal * 100) : 0, duePct: moTotal ? 100 - Math.round(moPaidSum / moTotal * 100) : 0,
+      count: moAll.length + (moAll.length === 1 ? ' cost' : ' costs') + (paused ? ' · ' + paused + ' paused or cancelled' : ''),
+      rows: moAll.map((m) => ({
+        who: m.who, amount: money(m.amount), dot: m.paidDay ? '#E0752D' : '#F4C3A1',
+        when: m.paidDay ? 'Paid Oct ' + m.paidDay + (m.card ? ' · ' + m.card : '') : 'Oct ' + m.day + ' · automatic' + (m.card ? ' · ' + m.card : ''),
+        flag: m.unused ? 'Unused?' : false
+      }))
+    };
+    const moLine = moDue.length ? moDue.length + (moDue.length === 1 ? ' cost' : ' costs') + ' still to come: ' + moDue.slice(0, 3).map((m) => m.who.replace(/ rent$/, '')).join(', ') + (moDue.length > 3 ? ' and more' : '') : '';
+
     // Paid this month
     const EXP = BE.all('expenses').filter((x) => x.inMonth);
     const counted = EXP.filter((x) => x.kind !== 'personal' && x.kind !== 'transfer');
@@ -591,7 +645,7 @@ class Component extends DCLogic {
 
     return {
       n, bills, billsClear: allBills.length > 0 && open.length === 0,
-      hasBillGroup, hasMoGroup, moDue, stillNone: !pr.row && !hasBillGroup && !hasMoGroup,
+      hasBillGroup, hasMoGroup, moDue, mo, moLine, stillNone: !pr.row && !hasBillGroup && !hasMoGroup,
       stillNoneText: empty ? 'Nothing to pay yet. Bills you enter, payroll and costs that repeat show up here with their dates.' : 'Nothing waiting to be paid this month.',
       g: { payroll: pr.paid ? 'paid' : money(t.outPayroll), bills: money(t.outBills), monthly: money(t.outMonthly), billsTop: pr.row ? line : '0', moTop: pr.row || hasBillGroup ? line : '0' },
       sorting, sortDone,
