@@ -250,15 +250,21 @@ a{color:#18161F}a:hover{color:#000000}
       </sc-if>
     </section>
 
-    <!-- The two halves of the bar: still to pay, and paid -->
-    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+    <!-- The two halves of the bar, full width: switch between still to pay and paid -->
+    <section aria-labelledby="money-h" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;">
+        <h2 id="money-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">This month’s money out</h2>
+        <div role="tablist" aria-label="Still to pay or paid" style="display: inline-flex; gap: 4px; padding: 4px; border-radius: 9999px; background: #EFEDF3; max-width: 100%;">
+          <sc-for list="{{moneyTabs}}" as="tb" hint-placeholder-count="2">
+            <button type="button" role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{tb.bg}}; box-shadow: {{tb.shadow}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: {{tb.dot}}; flex: none;"></span>{{tb.label}} <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{tb.amount}}</strong></button>
+          </sc-for>
+        </div>
+      </div>
 
       <!-- Still to pay -->
-      <section aria-labelledby="still-h" style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
-        <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-          <h2 id="still-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;"><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 4px; background: #F4C3A1; flex: none;"></span><span>Still to pay <span style="color: #5F5B68; font-weight: 600;">· <span style="font-variant-numeric: tabular-nums;">{{n.sch}}</span></span></span></h2>
-          <span style="font-size: 13px; color: #5F5B68;">{{n.upNote}}</span>
-        </div>
+      <sc-if value="{{tabStill}}" hint-placeholder-val="{{true}}">
+      <section role="tabpanel" aria-label="Still to pay" style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 13px; color: #5F5B68;">{{n.upNote}}</span>
         <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 4px 20px;">
 
           <!-- Payroll -->
@@ -340,13 +346,12 @@ a{color:#18161F}a:hover{color:#000000}
           </sc-if>
         </div>
       </section>
+      </sc-if>
 
       <!-- Paid this month -->
-      <section aria-labelledby="paid-h" style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
-        <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-          <h2 id="paid-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;"><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 4px; background: #E0752D; flex: none;"></span><span>Paid this month <span style="color: #5F5B68; font-weight: 600;">· <span style="font-variant-numeric: tabular-nums;">{{n.paid}}</span></span></span></h2>
-          <span style="font-size: 13px; color: #5F5B68;">{{paidNote}}</span>
-        </div>
+      <sc-if value="{{tabPaid}}" hint-placeholder-val="{{false}}">
+      <section role="tabpanel" aria-label="Paid this month" style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 13px; color: #5F5B68;">{{paidNote}}</span>
         <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px 20px;">
           <sc-if value="{{hasPaid}}" hint-placeholder-val="{{true}}">
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 0;">
@@ -376,7 +381,8 @@ a{color:#18161F}a:hover{color:#000000}
           </sc-if>
         </div>
       </section>
-    </div>
+      </sc-if>
+    </section>
 
     <!-- Every month: its own section -->
     <section id="every-month" aria-labelledby="mo-h" style="display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px;">
@@ -435,7 +441,7 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = {
-      toast: null, sorted: [], prOpen: false, prDone: null, paidOpen: false, last: null, expOpen: null,
+      toast: null, sorted: [], prOpen: false, prDone: null, paidOpen: false, last: null, expOpen: null, moneyTab: BE.hash() === 'paid' ? 'paid' : 'still',
       e: { amount: '', who: '', what: '', paidWith: 'Amex ••1009', cat: '' }, errors: []
     };
   }
@@ -645,6 +651,11 @@ class Component extends DCLogic {
 
     return {
       n, bills, billsClear: allBills.length > 0 && open.length === 0,
+      tabStill: st.moneyTab !== 'paid', tabPaid: st.moneyTab === 'paid',
+      moneyTabs: [{ k: 'still', label: 'Still to pay', amount: n.sch, dot: '#F4C3A1' }, { k: 'paid', label: 'Paid', amount: n.paid, dot: '#E0752D' }].map((tb) => {
+        const on = (st.moneyTab === 'paid' ? 'paid' : 'still') === tb.k;
+        return Object.assign({}, tb, { on, bg: on ? '#FFFFFF' : 'transparent', shadow: on ? '0 1px 3px rgba(24,22,31,0.12)' : 'none', pick: () => this.setState({ moneyTab: tb.k }) });
+      }),
       hasBillGroup, hasMoGroup, moDue, mo, moLine, stillNone: !pr.row && !hasBillGroup && !hasMoGroup,
       stillNoneText: empty ? 'Nothing to pay yet. Bills you enter, payroll and costs that repeat show up here with their dates.' : 'Nothing waiting to be paid this month.',
       g: { payroll: pr.paid ? 'paid' : money(t.outPayroll), bills: money(t.outBills), monthly: money(t.outMonthly), billsTop: pr.row ? line : '0', moTop: pr.row || hasBillGroup ? line : '0' },
