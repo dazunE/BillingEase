@@ -460,7 +460,7 @@ class Component extends DCLogic {
     // credit notes applied to an invoice
     const creditLabel = (x) => {
       const cn = BE.all('creditNotes').find((c) => [c.inv, c.invoice, c.applied, c.appliedTo].indexOf(x.num) >= 0);
-      if (cn) return 'Money back, ' + cn.num;
+      if (cn) return 'Money back, ' + cn.num + (cn.reason ? ' · ' + cn.reason.toLowerCase() : '');
       const m = JSON.stringify(x.events || []).match(/CN-\d+/);
       return 'Money back' + (m ? ', ' + m[0] : '');
     };

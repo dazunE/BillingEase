@@ -341,7 +341,7 @@
       var list = s.businesses || [];
       var cur = list.filter(function (b) { return b.current; })[0];
       if (!cur || cur.id === id) return;
-      var keepOut = { _stash: 1, businesses: 1, _seq: 1 };
+      var keepOut = { _stash: 1, businesses: 1, _seq: 1, security: 1, sessions: 1 };
       var stash = s._stash || {};
       var mine = {};
       Object.keys(s).forEach(function (k) { if (!keepOut[k]) mine[k] = s[k]; });
@@ -355,7 +355,8 @@
         next.profile = Object.assign({}, s.profile, { business: target.name || 'New business', sells: 'services', team: 'solo', overseas: false }, clone(profile || {}));
       }
       var seq = s._seq;
-      state = Object.assign({}, next, { _stash: stash, _seq: seq, businesses: list.map(function (b) { return Object.assign({}, b, { current: b.id === id }); }) });
+      if (next.security === undefined) delete next.security; if (next.sessions === undefined) delete next.sessions;
+      state = Object.assign({}, next, { security: s.security, sessions: s.sessions, _stash: stash, _seq: seq, businesses: list.map(function (b) { return Object.assign({}, b, { current: b.id === id }); }) });
       save();
     },
     /** Re-read storage (another tab changed it). */
