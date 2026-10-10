@@ -97,7 +97,7 @@
   // Bank statement being checked (reconcile). amount: + money in, − money out. cleared = ticked.
   var T = function (id, date, name, sub, amount, cleared, extra) { return Object.assign({ id: id, date: date, name: name, sub: sub, amount: amount, cleared: cleared }, extra || {}); };
   BE.define('bank', {
-    acct: 'Chase Business Checking ••4417', month: 'September 2026', short: 'September', opening: 38267.40, ending: 41286.40,
+    connected: true, acct: 'Chase Business Checking ••4417', month: 'September 2026', short: 'September', opening: 38267.40, ending: 41286.40,
     feeAdded: false, feeExp: '', done: false, doneOn: '',
     lines: [
       T('t1', 'Sep 1', 'WeWork', 'Rent', -1200, true),

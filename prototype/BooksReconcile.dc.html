@@ -35,12 +35,39 @@ a{color:#18161F}a:hover{color:#000000}
     </section>
 
     <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
-      <section aria-labelledby="empty-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 3vw, 36px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px;">
-        <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-          <h2 id="empty-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">No statement to check yet</h2>
-          <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 640px;">When your bank sends its first monthly statement, you’ll tick off each line here until BillingEase and the bank agree to the cent.</p>
+      <section aria-labelledby="empty-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 3vw, 36px); display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px;">
+          <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+            <h2 id="empty-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{cn.title}}</h2>
+            <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 640px;">{{cn.text}}</p>
+          </div>
+          <sc-if value="{{cn.canOpen}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{cn.open}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Connect your bank</button>
+          </sc-if>
+          <sc-if value="{{cn.connected}}" hint-placeholder-val="{{false}}">
+            <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Connected</span>
+          </sc-if>
         </div>
-        <a href="BizSecurity.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none;">Import a bank statement</a>
+        <sc-if value="{{cn.formOpen}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 18px; border: 1px solid #E2DFE8;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px;">
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Your bank
+                <select class="be-field" value="{{cn.bank}}" onChange="{{cn.setBank}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                  <sc-for list="{{cn.banks}}" as="bk" hint-placeholder-count="4"><option value="{{bk}}">{{bk}}</option></sc-for>
+                </select>
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Last 4 digits of the account
+                <input class="be-field" type="text" inputmode="numeric" maxlength="4" value="{{cn.last4}}" onChange="{{cn.setLast4}}" placeholder="e.g. 4417" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+              </label>
+            </div>
+            <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">We only read transactions. Nobody at BillingEase can move money from your account.</span>
+            <sc-if value="{{cn.err}}" hint-placeholder-val="{{false}}"><span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{cn.err}}</span></sc-if>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" onClick="{{cn.connect}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Connect</button>
+              <button type="button" onClick="{{cn.cancel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+            </div>
+          </div>
+        </sc-if>
       </section>
     </sc-if>
     <sc-if value="{{hasBank}}" hint-placeholder-val="{{true}}">
@@ -257,7 +284,7 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { acct: 'chase', stmt: 'sep', endInput: null, filter: 'all', feeOpen: false, feeAmt: '15.00', feeDate: 'Sep 30', feeErr: '', toast: null };
+    this.state = { connectOpen: false, cBank: '', cLast4: '', cErr: '', acct: 'chase', stmt: 'sep', endInput: null, filter: 'all', feeOpen: false, feeAmt: '15.00', feeDate: 'Sep 30', feeErr: '', toast: null };
   }
 
   moreLinks(cur) {
@@ -281,8 +308,29 @@ class Component extends DCLogic {
       dl: 'Report for ' + p.month + ', ' + p.acct,
       download: () => this.notify(p.month + ' · ' + p.acct + ' matched at ' + p.bal + ', checked ' + p.when + ' by ' + p.who)
     }));
-    const base = { hasBank: !!bank, isEmpty: !bank, hasPast: past.length > 0, past, more: this.moreLinks('rec'), toast: st.toast };
-    if (!bank) return base;
+    const hasStmt = !!(bank && bank.lines && bank.lines.length);
+    const banks = ['Chase', 'Bank of America', 'Wells Fargo', 'Citi', 'Capital One', 'Another bank'];
+    const cn = {
+      connected: !!(bank && bank.connected), canOpen: !bank && !st.connectOpen, formOpen: !bank && !!st.connectOpen,
+      title: bank ? 'Connected to ' + bank.acct : 'Connect your bank first',
+      text: bank ? 'Your first monthly statement arrives around Nov 2. When it does, you’ll tick off each line here until BillingEase and the bank agree to the cent.' : 'Once your bank is connected, we bring in its transactions every morning. When the monthly statement arrives, you’ll tick off each line here until BillingEase and the bank agree to the cent.',
+      banks, bank: st.cBank || banks[0], last4: st.cLast4 || '', err: st.cErr || '',
+      open: () => this.setState({ connectOpen: true, cErr: '' }),
+      cancel: () => this.setState({ connectOpen: false, cErr: '' }),
+      setBank: (e) => this.setState({ cBank: e.target.value }),
+      setLast4: (e) => this.setState({ cLast4: e.target.value, cErr: '' }),
+      connect: () => {
+        const l4 = String(st.cLast4 || '').trim();
+        if (!/^\d{4}$/.test(l4)) { this.setState({ cErr: 'Type the last 4 digits of the account number' }); return; }
+        const name = (st.cBank || banks[0]) + ' ••' + l4;
+        BE.set('bank', { connected: true, acct: name, month: '', short: '', opening: 0, ending: 0, feeAdded: true, feeExp: '', done: false, doneOn: '', lines: [] });
+        BE.log('Connected ' + name + '. Transactions come in every morning.');
+        this.setState({ connectOpen: false });
+        this.notify('Connected ' + name);
+      }
+    };
+    const base = { hasBank: hasStmt, isEmpty: !hasStmt, cn, hasPast: past.length > 0, past, more: this.moreLinks('rec'), toast: st.toast };
+    if (!hasStmt) return base;
 
     const r2 = (n) => Math.round(n * 100) / 100;
     const endStr = st.endInput == null ? bank.ending.toLocaleString('en-US', { minimumFractionDigits: 2 }) : st.endInput;
