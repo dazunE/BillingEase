@@ -41,12 +41,70 @@ a{color:#18161F}a:hover{color:#000000}
       </div>
       <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
         <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">{{n.lead}}</p>
-        <a href="#expense" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-          Record an expense
-        </a>
+        <button type="button" onClick="{{toggleExp}}" aria-expanded="{{expOpen}}" aria-controls="expense" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="{{expIcon}}"></path></svg>
+          {{expLabel}}
+        </button>
       </div>
     </section>
+
+    <!-- Record an expense: opens from the button above (or New → Record an expense) -->
+    <sc-if value="{{expOpen}}" hint-placeholder-val="{{true}}">
+    <section id="expense" aria-labelledby="exp-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 28px); box-shadow: 0 12px 32px rgba(24,22,31,0.08); display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+        <h2 id="exp-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Record an expense</h2>
+        <span style="font-size: 14px; color: #47444F;">Cash or card you’ve already spent. It goes into Going out as paid.</span>
+          </div>
+          <button type="button" onClick="{{closeExp}}" aria-label="Close record an expense" style="flex: none; width: 40px; height: 40px; border: 0; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        <label style="flex: 1 1 120px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
+          <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{e.amount}}" onChange="{{setAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+        </label>
+        <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid to
+          <input class="be-field" type="text" placeholder="e.g. Joe’s Diner, Staples" value="{{e.who}}" onChange="{{setWho}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+        </label>
+        <label style="flex: 2 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;"><span>What for <span style="font-weight: 400; color: #5F5B68;">(optional)</span></span>
+          <input class="be-field" type="text" placeholder="e.g. Client lunch, printer ink" value="{{e.what}}" onChange="{{setWhat}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+        </label>
+        <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid with
+          <select class="be-field" value="{{e.paidWith}}" onChange="{{setPaidWith}}" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+            <option value="Amex ••1009">Amex Business ••1009</option>
+            <option value="Chase ••4417">Chase Business Checking ••4417</option>
+            <option value="Cash">Cash</option>
+            <option value="Personal card">Personal card (we’ll track what you’re owed)</option>
+          </select>
+        </label>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 13px; font-weight: 600;">{{catHint}}</span>
+        <div role="group" aria-label="Category" style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+            <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{c.label}}</button>
+          </sc-for>
+        </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+        <button type="button" onClick="{{addExpense}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{addLabel}}</button>
+        <a href="SpendReceipts.dc.html" style="font-size: 14px; font-weight: 600;">Scan a receipt instead</a>
+          </div>
+          <sc-if value="{{hasErrors}}" hint-placeholder-val="{{false}}">
+        <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
+          <sc-for list="{{errors}}" as="er" hint-placeholder-count="1">
+            <span>{{er}}</span>
+          </sc-for>
+        </div>
+          </sc-if>
+          <sc-if value="{{last.has}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 16px; border-radius: 14px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+          <span style="flex: 1 1 180px; min-width: 0;">{{last.text}}</span>
+          <a href="{{last.href}}" style="color: #2F5711;">Open it</a>
+        </div>
+          </sc-if>
+    </section>
+    </sc-if>
 
     <!-- Sort these -->
     <section aria-labelledby="sort-h" style="display: flex; flex-direction: column; gap: 12px;">
@@ -258,58 +316,6 @@ a{color:#18161F}a:hover{color:#000000}
       </section>
 
       <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
-        <!-- Record an expense -->
-        <section id="expense" aria-labelledby="exp-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px;">
-          <div style="display: flex; flex-direction: column; gap: 4px;">
-            <h2 id="exp-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Record an expense</h2>
-            <span style="font-size: 14px; color: #47444F;">Cash or card you’ve already spent. It goes into Going out as paid.</span>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-            <label style="flex: 1 1 120px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
-              <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{e.amount}}" onChange="{{setAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-            </label>
-            <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid to
-              <input class="be-field" type="text" placeholder="e.g. Joe’s Diner, Staples" value="{{e.who}}" onChange="{{setWho}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-            </label>
-            <label style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;"><span>What for <span style="font-weight: 400; color: #5F5B68;">(optional)</span></span>
-              <input class="be-field" type="text" placeholder="e.g. Client lunch, printer ink" value="{{e.what}}" onChange="{{setWhat}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-            </label>
-            <label style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid with
-              <select class="be-field" value="{{e.paidWith}}" onChange="{{setPaidWith}}" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                <option value="Amex ••1009">Amex Business ••1009</option>
-                <option value="Chase ••4417">Chase Business Checking ••4417</option>
-                <option value="Cash">Cash</option>
-                <option value="Personal card">Personal card (we’ll track what you’re owed)</option>
-              </select>
-            </label>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <span style="font-size: 13px; font-weight: 600;">{{catHint}}</span>
-            <div role="group" aria-label="Category" style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
-                <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{c.label}}</button>
-              </sc-for>
-            </div>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
-            <button type="button" onClick="{{addExpense}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{addLabel}}</button>
-            <a href="SpendReceipts.dc.html" style="font-size: 14px; font-weight: 600;">Scan a receipt instead</a>
-          </div>
-          <sc-if value="{{hasErrors}}" hint-placeholder-val="{{false}}">
-            <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
-              <sc-for list="{{errors}}" as="er" hint-placeholder-count="1">
-                <span>{{er}}</span>
-              </sc-for>
-            </div>
-          </sc-if>
-          <sc-if value="{{last.has}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 16px; border-radius: 14px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
-              <span style="flex: 1 1 180px; min-width: 0;">{{last.text}}</span>
-              <a href="{{last.href}}" style="color: #2F5711;">Open it</a>
-            </div>
-          </sc-if>
-        </section>
 
         <!-- Paid this month -->
         <section aria-labelledby="paid-h" style="display: flex; flex-direction: column; gap: 12px;">
@@ -371,11 +377,13 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = {
-      toast: null, sorted: [], prOpen: false, paidOpen: false, last: null,
+      toast: null, sorted: [], prOpen: false, paidOpen: false, last: null, expOpen: null,
       e: { amount: '', who: '', what: '', paidWith: 'Amex ••1009', cat: '' }, errors: []
     };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  focusExp() { setTimeout(() => { const el = document.querySelector('#expense input'); if (el) { el.focus({ preventScroll: true }); document.getElementById('expense').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }, 60); }
+  componentDidMount() { if (BE.hash() === 'expense') this.focusExp(); this._hc = () => { if (BE.hash() === 'expense') { this.setState({ expOpen: null }); this.focusExp(); } }; window.addEventListener('hashchange', this._hc); }
   setE(patch) { this.setState({ e: Object.assign({}, this.state.e, patch), errors: [] }); }
   renderVals() {
     const st = this.state;
@@ -535,6 +543,12 @@ class Component extends DCLogic {
       this.setState({ e: { amount: '', who: '', what: '', paidWith: e.paidWith, cat: '' }, errors: [], last: { id: x.id, who, amount: amt } });
       this.notify(money(amt) + ' to ' + who + ' recorded · Going out now ' + outNow());
     };
+    // The form is closed until asked for: the button, or #expense from New → Record an expense.
+    const expOpen = st.expOpen !== null ? st.expOpen : BE.hash() === 'expense';
+    const closeExp = () => {
+      try { if (location.hash) history.replaceState(null, '', location.pathname); } catch (er) { /* ignore */ }
+      this.setState({ expOpen: null, errors: [], last: null });
+    };
     const lastX = st.last && BE.find('expenses', st.last.id);
     const last = lastX ? { has: true, text: 'Recorded ' + money(lastX.amount) + ' to ' + lastX.who + ' under ' + lastX.cat + '.', href: 'SpendTransaction.dc.html#' + lastX.id } : { has: false };
 
@@ -553,6 +567,9 @@ class Component extends DCLogic {
       setWho: (ev) => this.setE({ who: ev.target.value }),
       setWhat: (ev) => this.setE({ what: ev.target.value }),
       setPaidWith: (ev) => this.setE({ paidWith: ev.target.value }),
+      expOpen, expLabel: expOpen ? 'Close' : 'Record an expense', expIcon: expOpen ? 'M6 6l12 12M18 6 6 18' : 'M12 5v14M5 12h14',
+      toggleExp: () => { if (expOpen) closeExp(); else { this.setState({ expOpen: true, errors: [] }); this.focusExp(); } },
+      closeExp,
       addExpense, addLabel: amt > 0 ? 'Add ' + money(amt) + ' expense' : 'Add expense', last,
       errors: st.errors, hasErrors: st.errors.length > 0,
       toast: st.toast
