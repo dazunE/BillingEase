@@ -306,6 +306,7 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
             <strong style="font-family: Sora, sans-serif; font-size: 20px;">{{company.name}}</strong>
             <span>{{company.address}}</span>
             <span style="font-size: 15px; color: #47444F;">Monday to Friday, 9 AM to 6 PM Eastern. Coffee’s on us if you call ahead.</span>
+            <span style="font-size: 15px; color: #47444F;">{{aboutLine}}</span>
           </address>
           <dl style="margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
             <sc-for list="{{emails}}" as="e" hint-placeholder-count="4">
@@ -363,7 +364,7 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
     </section>
   </main>
 
-  <dc-import name="SiteFooter"></dc-import>
+  <dc-import name="SiteFooter" band="off"></dc-import>
 
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
     <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px 'DM Sans', sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
@@ -454,7 +455,8 @@ class Component extends DCLogic {
         { tint: '#FDE6D6', init: 'RT', who: 'Ray Tanaka', biz: 'Tanaka Landscape Co., Sacramento', text: 'I asked if we really needed Team. Ana said not yet, and told me exactly when we would.' },
         { tint: '#E2F6D5', init: 'GA', who: 'Grace Adeyemi', biz: 'Little Lantern Daycare, Houston', text: 'They walked me through payroll for our eight teachers before I paid a cent.' }
       ],
-      emails: [{ k: 'Say hello', v: C.email }, { k: 'Sales', v: C.sales }, { k: 'Help', v: C.support }, { k: 'Press', v: C.press }],
+      emails: [{ k: 'Say hello', v: C.email }, { k: 'Sales', v: C.sales }, { k: 'Help', v: C.support }, { k: 'Press', v: C.press }].concat(C.privacy ? [{ k: 'Privacy', v: C.privacy }] : []).concat(C.jobs ? [{ k: 'Jobs', v: C.jobs }] : []),
+      aboutLine: C.founders ? 'Founded in ' + C.founded + ' by ' + C.founders + '. ' + C.people + ' of us, helping ' + C.businesses + ' businesses.' : '',
       company: C,
       toast: st.toast
     };

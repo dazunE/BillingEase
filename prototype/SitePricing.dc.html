@@ -366,6 +366,7 @@ a{color:#18161F}
         <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 14px; align-items: flex-start;">
           <h2 id="sales-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 44px); line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance;">More than 10 people, or books for clients?</h2>
           <p class="s3-p" style="font-size: 17px; color: #18161F; max-width: 620px;">Bigger teams and accountants get a person who’ll set up roles, move your books over and price it around how you work. A short call, no pressure.</p>
+          <p class="s3-p" style="font-size: 15px; color: #18161F;"><strong>Accountants:</strong> {{partnerLine}}</p>
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding-top: 4px;">
             <a href="SiteContact.dc.html" class="s3-btn s3-btn-dark">Talk to sales</a>
             <a href="SitePartners.dc.html" style="font-weight: 600; font-size: 15px; text-underline-offset: 3px;">See the accountant program</a>
@@ -417,7 +418,7 @@ a{color:#18161F}
     </section>
   </main>
 
-  <dc-import name="SiteFooter"></dc-import>
+  <dc-import name="SiteFooter" band="off"></dc-import>
 
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
     <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px 'DM Sans', sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
@@ -624,6 +625,7 @@ class Component extends DCLogic {
       tags: { pro: money(priceOf(byId.pro)), team: money(priceOf(byId.team)), per: yr ? 'paid yearly' : 'a month', note: yr ? '2 months on us' : 'pay as you go' },
       plans, addons, calc, cmp, quotes, faqs,
       company: S.company,
+      partnerLine: (function () { const d = S.partnerDiscounts || []; if (!d.length) return 'ask about partner pricing for your clients.'; return 'partners save ' + d.map((x) => x.off + '% (' + x.level + ')').join(', ').replace(/, ([^,]*)$/, ' or $1') + ' on every client plan.'; })(),
       toast: st.toast
     };
   }

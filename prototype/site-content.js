@@ -19,8 +19,8 @@
   function EX(title, rows, total, note) { return { t: 'example', title: title, rows: rows, total: total, note: note }; }
 
   var AUTHORS = {
-    ines: { name: 'Ines Calderón, EA', role: 'Tax lead', initials: 'IC', bg: '#FDE6D6', bio: 'Enrolled agent. Spent eleven years doing tax returns for freelancers in Queens before joining BillingEase.' },
-    theo: { name: 'Theo Marsh', role: 'Product writer', initials: 'TM', bg: '#EEE8FF', bio: 'Writes every word you read in the app, and rewrites them when customers tell us they’re confusing.' },
+    ines: { name: 'Lucía Ferrer, EA', role: 'Tax lead', initials: 'LF', bg: '#FDE6D6', bio: 'Enrolled agent. Spent eleven years doing tax returns for freelancers in Queens before joining BillingEase.' },
+    theo: { name: 'Owen Pritchard', role: 'Product writer', initials: 'OP', bg: '#EEE8FF', bio: 'Writes every word you read in the app, and rewrites them when customers tell us they’re confusing.' },
     hana: { name: 'Hana Sato', role: 'Customer success lead', initials: 'HS', bg: '#E2F6D5', bio: 'Ran a stationery shop in Portland for six years. Now helps new customers get set up.' },
     renata: { name: 'Renata Okafor, CPA', role: 'Head of accounting education', initials: 'RO', bg: '#EEE8FF', bio: 'Accountant to small businesses for fifteen years. Believes nobody should need a dictionary to read their own books.' },
     kofi: { name: 'Kofi Mensah', role: 'Payroll specialist', initials: 'KM', bg: '#FDE6D6', bio: 'Has run payroll for businesses with one employee and with four hundred. Prefers the first kind.' }
@@ -125,7 +125,7 @@
         L(['Self-employment tax: 15.3% on about 92% of your profit. It pays for Social Security and Medicare, the part an employer would normally share with you.', 'Federal income tax: on what’s left after the standard deduction, at 10%, then 12%, then 22% and up as profit rises.', 'State income tax: from nothing in states like Texas and Florida to 5–7% in many others, and more in a few.']),
         P('Added together, most people with $40,000 to $120,000 of profit pay somewhere between 22% and 32% of it. That’s why 25% is our default, and why 30% is the safer choice if you earn more or live somewhere with a high state tax.'),
         EX('A worked example: $60,000 of profit, single filer', [['Profit for the year', '$60,000'], ['Self-employment tax (15.3% × 92.35%)', '$8,478'], ['Federal income tax, after deductions', '$3,560'], ['State income tax (a 5% state, roughly)', '$2,300']], ['Total tax', '$14,338'], 'That’s 23.9% of profit. A 25% set-aside ($15,000) covers it with $662 to spare.'),
-        Q('The set-aside isn’t money you lose. It’s money that was never yours, parked where you can’t spend it by accident.', 'Ines Calderón, EA'),
+        Q('The set-aside isn’t money you lose. It’s money that was never yours, parked where you can’t spend it by accident.', 'Lucía Ferrer, EA'),
         H('Pay four times a year, not once'),
         P('The IRS expects tax as you earn it, through quarterly estimated payments. Miss them and you pay a small penalty, a bit like interest, on top of the tax itself. The quarters aren’t quite even:'),
         T('Estimated tax dates for 2026 income', ['Income earned', 'Payment due'], [['Jan 1 – Mar 31', 'Apr 15, 2026'], ['Apr 1 – May 31', 'Jun 15, 2026'], ['Jun 1 – Aug 31', 'Sep 15, 2026'], ['Sep 1 – Dec 31', 'Jan 15, 2027']]),
@@ -158,7 +158,7 @@
         H('How they connect: a worked example'),
         P('Here’s one job from start to finish, for a design studio making lobby signs for an architecture firm.'),
         EX('Greenline Architects: lobby signage', [['Quote Q-0031 sent Sep 30', '$4,200'], ['Accepted Oct 6, deposit invoice (50%)', '$2,100'], ['Deposit paid Oct 8, receipt sent', '$2,100'], ['Final invoice after install, Oct 27', '$2,100']], ['Total billed', '$4,200'], 'The quote itself never counted as income. Coming in grew by $2,100 with each invoice, and when the second receipt went out the whole $4,200 was paid.'),
-        Q('When a customer says yes to a quote, turn it into the invoice in one step. Retyping is where the mistakes come from.', 'Theo Marsh'),
+        Q('When a customer says yes to a quote, turn it into the invoice in one step. Retyping is where the mistakes come from.', 'Owen Pritchard'),
         H('Common mix-ups'),
         L(['Sending an invoice when you meant a quote: the customer may pay it, or their accounts team may log it as a debt. Send a quote first for anything not yet agreed.', 'Changing an invoice after sending it: don’t edit it quietly. Void it and send a corrected one, or give money back to the customer (a credit note) for the difference.', 'Treating a “pro forma” as an invoice: it’s a quote dressed up as an invoice, often for customs or a purchase order. Nothing is owed until the real invoice.']),
         P('If you remember one thing: quote to agree, invoice to ask, receipt to confirm.')
@@ -212,7 +212,7 @@
         T('What usually applies (always check your state)', ['Item', 'Usually taxed?'], [['Candles, jewelry, prints, ceramics', 'Yes'], ['Clothing', 'In most states; a few exempt basics'], ['Shipping charged to the buyer', 'Depends on the state'], ['Digital downloads and patterns', 'In about half of states'], ['Design or consulting services', 'Rarely']]),
         H('Registering and filing'),
         L(['Register with your home state before your first taxable sale. It’s usually free and online.', 'Your state tells you how often to file (monthly, quarterly or yearly), based on how much you collect.', 'File even when you owe nothing. A “zero return” still counts, and skipping it can mean a fine.', 'Keep a record of the tax on each sale, by state. That’s the first thing an audit asks for.']),
-        Q('Sales tax you collect isn’t income. It passes through your account on its way to the state, so treat it like someone else’s money.', 'Ines Calderón, EA'),
+        Q('Sales tax you collect isn’t income. It passes through your account on its way to the state, so treat it like someone else’s money.', 'Lucía Ferrer, EA'),
         C('How BillingEase keeps it apart', 'Tax you collect on product sales is held out of Yours to keep and shown as “Sales tax you collected”, so you never spend it by mistake.', 'note'),
         P('If you start selling at wholesale, ask each shop for its resale certificate. With one on file, you don’t charge them sales tax; the shop collects it when it sells to the final buyer.')
       ]

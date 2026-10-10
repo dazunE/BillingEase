@@ -84,7 +84,7 @@ a{color:#18161F}
       <div style="flex: 999 1 500px; min-width: 0; display: flex; flex-direction: column; gap: 20px; align-items: flex-start;">
         <span class="s3-kick"><span class="s3-dot"></span>Security</span>
         <h1 id="sec-h" class="s3-h1">Your books, locked up properly.</h1>
-        <p class="s3-lead">Your invoices, your bank and your payroll are the most private things your business has. Here’s exactly how BillingEase keeps them safe, in plain words.</p>
+        <p class="s3-lead">Your invoices, your bank and your payroll are the most private things your business has. Here’s exactly how BillingEase keeps them safe for {{trustCount}} businesses, in plain words.</p>
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding-top: 6px;">
           <a href="#status" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; font-weight: 600; font-size: 15px;"><span class="s3-anim" style="display: inline-flex;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #2F5711; animation: s3-pulse 1.8s ease-out infinite;"></span></span>{{status.headline}}</a>
           <a href="BizSecurity.dc.html" style="font-weight: 600; font-size: 15px; text-underline-offset: 3px;">See it in the demo</a>
@@ -243,7 +243,7 @@ a{color:#18161F}
             </div>
           </sc-for>
         </div>
-        <a href="SiteLegal.dc.html#privacy" class="s3-btn" style="align-self: flex-start;">Read the privacy notice</a>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;"><a href="SiteLegal.dc.html#privacy" class="s3-btn">Read the privacy notice</a><span style="font-size: 15px; color: #EEE8FF;">Privacy questions: <strong style="color: #FFFFFF;">{{privEmail}}</strong></span></div>
       </div>
     </section>
 
@@ -338,7 +338,7 @@ a{color:#18161F}
     </section>
   </main>
 
-  <dc-import name="SiteFooter"></dc-import>
+  <dc-import name="SiteFooter" band="off"></dc-import>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6200}}'>
@@ -434,7 +434,7 @@ class Component extends DCLogic {
     ];
     const faqs = FAQ.map((q, i) => { const on = st.faq === i; return Object.assign({}, q, { open: on, iconBg: on ? '#B9A3FF' : 'rgba(24,22,31,0.07)', icon: on ? 'M5 12h14' : 'M12 5v14M5 12h14', toggle: () => set({ faq: on ? -1 : i }) }); });
 
-    return { locks, roles, role, status, privacy, badges, disclosure, faqs, secEmail };
+    return { trustCount: S.company.businesses || 'thousands of', privEmail: S.company.privacy || S.company.email, locks, roles, role, status, privacy, badges, disclosure, faqs, secEmail };
   }
 }
 </script>
