@@ -67,7 +67,7 @@
       { label: 'Terms', href: 'SiteLegal.dc.html#terms' },
       { label: 'Cookies', href: 'SiteLegal.dc.html#cookies' }
     ],
-    company: { name: 'BillingEase, Inc.', address: '55 Washington St, Brooklyn, NY 11201', email: 'hello@billingease.app', sales: 'sales@billingease.app', press: 'press@billingease.app', support: 'help@billingease.app', privacy: 'privacy@billingease.app', jobs: 'jobs@billingease.app',
+    company: { name: 'BillingEase, Inc.', address: '55 Washington St, Brooklyn, NY 11201', email: 'hello@billingease.app', sales: 'sales@billingease.app', press: 'press@billingease.app', support: 'help@billingease.app', privacy: 'privacy@billingease.app', jobs: 'jobs@billingease.app', security: 'security@billingease.app',
       founded: 2023, founders: 'Ines Alvarez and Theo Park', people: 42, businesses: '38,000', raised: '$31M', leadInvestor: 'Northbank Capital' },
     partnerDiscounts: [{ level: 'Partner', off: 10 }, { level: 'Silver', off: 20 }, { level: 'Gold', off: 30 }],
     money: function (n) { return '$' + Number(n).toLocaleString('en-US'); }
