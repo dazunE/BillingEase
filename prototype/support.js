@@ -465,16 +465,20 @@
     DATA_FILES.forEach(function (f) { chain = chain.then(function () { return loadScript(f); }); });
     chain.then(function () {
       // ?reset=1 puts the sample month back; ?start=empty starts a brand new business.
-      if (window.BE && /[?&]reset=1\b/.test(location.search)) {
+      if (window.BE && (/[?&]reset=1\b/.test(location.search) || location.hash === '#reset')) {
         window.BE.reset();
         try { sessionStorage.setItem('be.flash', 'Sample data reset. You’re back at Oct 4 with Northwind Studio’s October.'); } catch (e) { /* ignore */ }
-        history.replaceState(null, '', location.pathname + location.hash);
-      } else if (window.BE && /[?&]start=empty\b/.test(location.search)) {
+        history.replaceState(null, '', location.pathname + (location.hash === '#reset' ? '' : location.hash));
+      } else if (window.BE && (/[?&]start=empty\b/.test(location.search) || location.hash === '#start-empty')) {
         window.BE.startEmpty();
-        history.replaceState(null, '', location.pathname + location.hash);
+        history.replaceState(null, '', location.pathname + (location.hash === '#start-empty' ? '' : location.hash));
       }
       window.addEventListener('be:change', rerender);
-      window.addEventListener('hashchange', rerender);
+      window.addEventListener('hashchange', function () {
+        // A reset link clicked while already on that screen only changes the hash.
+        if (location.hash === '#reset' || location.hash === '#start-empty') { location.reload(); return; }
+        rerender();
+      });
       boot();
     });
   }
