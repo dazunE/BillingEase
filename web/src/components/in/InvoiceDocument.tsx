@@ -1,5 +1,6 @@
 import { formatDate } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
+import { BrandMark } from "@/components/ui";
 
 type Doc = {
   business: { name: string };
@@ -17,11 +18,7 @@ export function InvoiceDocument({ doc, className = "" }: { doc: Doc; className?:
     <article aria-label={`Invoice ${invoice.number}`} className={`flex flex-col gap-7 rounded-3xl border border-line bg-white p-[clamp(20px,4vw,44px)] ${className}`}>
       <header className="flex flex-wrap items-start justify-between gap-4">
         <span className="flex items-center gap-2.5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-violet print:border print:border-ink">
-            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
-              <path d="M5 19 11 5h8l-6 14z" fill="#18161F" />
-            </svg>
-          </span>
+          <BrandMark size={36} />
           <span className="font-display text-xl font-bold tracking-[-0.02em]">{business.name}</span>
         </span>
         <span className="text-right">

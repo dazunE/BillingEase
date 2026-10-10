@@ -90,14 +90,25 @@ export function SectionTitle({ children, aside, id }: { children: ReactNode; asi
   );
 }
 
+/**
+ * The BillingEase mark ("The Equation"): coming in (violet), going out
+ * (orange, taken from the right) and what's left, yours to keep (white).
+ */
+export function BrandMark({ size = 32, tile = "#18161F", className }: { size?: number; tile?: string; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden className={cx("shrink-0", className)}>
+      <rect width="48" height="48" rx="13" fill={tile} />
+      <rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF" />
+      <rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D" />
+      <rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF" />
+    </svg>
+  );
+}
+
 export function Logo({ size = 32 }: { size?: number }) {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="flex items-center justify-center rounded-[10px] bg-violet" style={{ width: size, height: size }}>
-        <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 24 24" aria-hidden>
-          <path d="M5 19 11 5h8l-6 14z" fill="#18161F" />
-        </svg>
-      </span>
+      <BrandMark size={size} />
       <span className="font-display text-[19px] font-bold tracking-[-0.02em]">BillingEase</span>
     </span>
   );

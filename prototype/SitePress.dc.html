@@ -168,7 +168,7 @@ textarea.co-in{min-height:120px;resize:vertical;line-height:1.5}
           <sc-for list="{{logos}}" as="l" hint-placeholder-count="3">
             <figure style="margin: 0; display: flex; flex-direction: column; border: 1px solid #E2DFE8; border-radius: 24px; overflow: hidden; background: #FFFFFF;">
               <div style="height: 180px; display: flex; align-items: center; justify-content: center; gap: 14px; background: {{l.bg}};" role="img" aria-label="{{l.alt}}">
-                <span style="width: 56px; height: 56px; border-radius: 17px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+                <svg width="56" height="56" viewBox="0 0 48 48" aria-hidden="true" style="flex: none; display: block;"><rect width="48" height="48" rx="13" fill="{{l.tile}}"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg>
                 <sc-if value="{{l.word}}" hint-placeholder-val="{{true}}"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: {{l.fg}};">BillingEase</span></sc-if>
               </div>
               <figcaption style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 14px 20px; border-top: 1px solid #E2DFE8;">
@@ -367,17 +367,19 @@ class Component extends DCLogic {
     ];
     const tagBg = { Product: '#EEE8FF', Funding: '#FDE6D6', Partners: '#E2F6D5', Company: '#EFEDF3' };
     const boiler = 'BillingEase is bookkeeping for small businesses that would rather be doing the work. It shows a business as three numbers (what’s coming in, what’s going out, and what’s yours to keep after tax) and handles invoices, payments, receipts, bills, payroll and reports behind them, in plain words. Founded in 2023 and based in Brooklyn, New York, BillingEase is used by more than 38,000 businesses in 19 countries. Learn more at billingease.app.';
-    const logoSvg = (fg) => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 32"><rect width="32" height="32" rx="10" fill="#B9A3FF"/><path d="M7 25 15 7h10l-8 18z" fill="#18161F"/><text x="42" y="23" font-family="Sora" font-weight="700" font-size="20" fill="' + fg + '">BillingEase</text></svg>';
+    // The Equation mark: in (violet), out (orange, taken from the right), what's left (white).
+    const markSvg = (tile, x, y, size) => '<g transform="translate(' + x + ' ' + y + ') scale(' + (size / 48) + ')"><rect width="48" height="48" rx="13" fill="' + tile + '"/><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"/><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"/><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"/></g>';
+    const logoSvg = (fg, tile) => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 32">' + markSvg(tile, 0, 0, 32) + '<text x="42" y="23" font-family="Sora" font-weight="700" font-size="20" letter-spacing="-0.5" fill="' + fg + '">BillingEase</text></svg>';
     const logos = [
-      { key: 'light', name: 'On light', use: 'For white and light backgrounds', bg: '#F7F6F9', fg: '#18161F', word: true, alt: 'BillingEase logo on a light background', svg: logoSvg('#18161F') },
-      { key: 'dark', name: 'On dark', use: 'For dark backgrounds and photos', bg: '#18161F', fg: '#FFFFFF', word: true, alt: 'BillingEase logo on a dark background', svg: logoSvg('#FFFFFF') },
-      { key: 'mark', name: 'Mark only', use: 'For app icons and small spaces', bg: '#EEE8FF', fg: '#18161F', word: false, alt: 'BillingEase mark: a violet rounded square with a slanted ink shape', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#B9A3FF"/><path d="M7 25 15 7h10l-8 18z" fill="#18161F"/></svg>' }
+      { key: 'light', name: 'On light', use: 'For white and light backgrounds', bg: '#F7F6F9', fg: '#18161F', tile: '#18161F', word: true, alt: 'BillingEase logo on a light background', svg: logoSvg('#18161F', '#18161F') },
+      { key: 'dark', name: 'On dark', use: 'For dark backgrounds and photos', bg: '#18161F', fg: '#FFFFFF', tile: '#2E2A38', word: true, alt: 'BillingEase logo on a dark background', svg: logoSvg('#FFFFFF', '#2E2A38') },
+      { key: 'mark', name: 'Mark only', use: 'For app icons and small spaces', bg: '#EEE8FF', fg: '#18161F', tile: '#18161F', word: false, alt: 'BillingEase mark: three bars on a dark rounded square, for coming in, going out and yours to keep', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">' + markSvg('#18161F', 0, 0, 48) + '</svg>' }
     ].map((l) => ({ ...l, label: st.copied === 'logo-' + l.key ? 'Copied' : 'Copy SVG', copy: () => this.copy('logo-' + l.key, l.svg, 'Logo SVG copied (' + l.name.toLowerCase() + ')') }));
     const colors = [
-      { name: 'Violet', hex: '#B9A3FF', use: 'Logo, buttons, Yours to keep' },
+      { name: 'Violet', hex: '#B9A3FF', use: 'Logo top bar, buttons' },
       { name: 'Deep violet', hex: '#7A5AF8', use: 'Coming in' },
       { name: 'Orange', hex: '#E0752D', use: 'Going out' },
-      { name: 'Ink', hex: '#18161F', use: 'Text and dark panels' },
+      { name: 'Ink', hex: '#18161F', use: 'Logo tile, text and dark panels' },
       { name: 'Lavender', hex: '#EEE8FF', use: 'Soft backgrounds' },
       { name: 'Ground', hex: '#F7F6F9', use: 'Page background' }
     ].map((s) => ({ ...s, label: st.copied === s.hex ? 'Copied' : 'Copy', btnBg: st.copied === s.hex ? '#E2F6D5' : 'rgba(24,22,31,0.07)', aria: 'Copy ' + s.name + ' ' + s.hex, copy: () => this.copy(s.hex, s.hex, s.name + ' ' + s.hex + ' copied') }));

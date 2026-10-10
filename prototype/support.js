@@ -428,6 +428,13 @@
       vp.content = 'width=device-width, initial-scale=1';
       document.head.appendChild(vp);
     }
+    if (!document.querySelector('link[rel=icon]')) {
+      // The Equation mark: coming in (violet), going out (orange), yours to keep (white).
+      var ic = document.createElement('link');
+      ic.rel = 'icon';
+      ic.href = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#18161F"/><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"/><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"/><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"/></svg>');
+      document.head.appendChild(ic);
+    }
     var page = location.pathname.split('/').pop() || 'Main.dc.html';
     var host = document.createElement('div');
     host.id = 'dc-root';

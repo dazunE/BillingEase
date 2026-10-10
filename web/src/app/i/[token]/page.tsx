@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getDb } from "@/db/client";
 import { PayForm } from "@/components/in/PayForm";
 import { TestModeBanner } from "@/components/in/TestModeBanner";
-import { ICONS, Icon } from "@/components/ui";
+import { ICONS, Icon, BrandMark } from "@/components/ui";
 import { currentUser } from "@/lib/auth";
 import { formatDate, today } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
@@ -35,11 +35,7 @@ export default async function PayPage({ params, searchParams }: { params: Promis
       {paymentsProvider().name === "sandbox" && <TestModeBanner />}
       <main className="mx-auto flex w-full max-w-[560px] flex-1 flex-col gap-5 px-4 pb-12 pt-8">
         <div className="flex items-center gap-2.5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-violet">
-            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
-              <path d="M5 19 11 5h8l-6 14z" fill="#18161F" />
-            </svg>
-          </span>
+          <BrandMark size={36} />
           <span className="font-display text-xl font-bold tracking-[-0.02em]">{business.name}</span>
         </div>
 

@@ -7,7 +7,7 @@ import { HeroScene } from "@/components/landing/HeroScene";
 import { BankScene, BillScene, KeepScene, MayaAtDesk, PriceTag, ThinkingPerson } from "@/components/landing/Illustrations";
 import { NeedsYouDemo } from "@/components/landing/NeedsYouDemo";
 import { SampleProvider } from "@/components/landing/SampleProvider";
-import { Logo } from "@/components/ui";
+import { Logo, BrandMark } from "@/components/ui";
 import { currentUser } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -214,11 +214,7 @@ export default async function Landing() {
 
       <footer className={`${wrap} flex flex-wrap items-center justify-between gap-x-6 gap-y-4 pb-10 pt-2 text-sm text-ink2`}>
         <span className="flex items-center gap-2.5">
-          <span className="flex size-6 items-center justify-center rounded-lg bg-violet">
-            <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden>
-              <path d="M5 19 11 5h8l-6 14z" fill="#18161F" />
-            </svg>
-          </span>
+          <BrandMark size={24} />
           <span>© 2026 BillingEase</span>
         </span>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-1.5 gap-y-1">

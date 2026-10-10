@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { billSomeoneAction, type BillState } from "@/app/app/in/actions";
-import { ICONS, Icon, cx } from "@/components/ui";
+import { ICONS, Icon, cx, BrandMark } from "@/components/ui";
 import { addDays, formatDate } from "@/lib/dates";
 import { formatMoney, parseMoney } from "@/lib/money";
 import { DUE_DAYS, NEW_CUSTOMER } from "./shared";
@@ -309,11 +309,7 @@ export function BillComposer({
         <div className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-5 shadow-[0_1px_2px_rgba(24,22,31,0.06)]">
           <div className="flex items-start justify-between gap-3">
             <span className="flex min-w-0 items-center gap-2">
-              <span className="flex size-[26px] shrink-0 items-center justify-center rounded-lg bg-violet">
-                <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden>
-                  <path d="M5 19 11 5h8l-6 14z" fill="#18161F" />
-                </svg>
-              </span>
+              <BrandMark size={26} />
               <span className="truncate text-sm font-bold">{businessName}</span>
             </span>
             <span className="text-right text-xs text-muted">

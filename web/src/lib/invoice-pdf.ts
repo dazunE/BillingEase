@@ -28,6 +28,24 @@ const MUTED = hex("#5f5b68");
 const LINE = hex("#e2dfe8");
 const DIVIDER = hex("#efedf2");
 const VIOLET = hex("#b9a3ff");
+const ORANGE = hex("#e0752d");
+
+/** A rounded rectangle as an SVG path, for drawSvgPath (y grows downward). */
+const roundRect = (x: number, y: number, w: number, h: number, r: number) =>
+  `M${x + r} ${y}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}v${h - 2 * r}a${r} ${r} 0 0 1 ${-r} ${r}h${-(w - 2 * r)}a${r} ${r} 0 0 1 ${-r} ${-r}v${-(h - 2 * r)}a${r} ${r} 0 0 1 ${r} ${-r}z`;
+
+/**
+ * The BillingEase mark ("The Equation", drawn on a 48-unit grid): an ink tile
+ * with coming in (violet), going out (orange, taken from the right) and what's
+ * left, yours to keep (white). (x, y) is the top-left corner.
+ */
+function drawMark(page: PDFPage, x: number, y: number, size: number) {
+  const k = size / 48;
+  page.drawSvgPath(roundRect(0, 0, 48, 48, 13), { x, y, scale: k, color: INK });
+  page.drawSvgPath(roundRect(9, 11, 30, 7, 3.5), { x, y, scale: k, color: VIOLET });
+  page.drawSvgPath(roundRect(22, 20.5, 17, 7, 3.5), { x, y, scale: k, color: ORANGE });
+  page.drawSvgPath(roundRect(9, 30, 13, 7, 3.5), { x, y, scale: k, color: rgb(1, 1, 1) });
+}
 const TINT = hex("#eee8ff");
 const POS = hex("#2f5711");
 const POS_BG = hex("#e2f6d5");
@@ -161,9 +179,7 @@ export async function renderInvoicePdf(d: InvoicePdfData): Promise<Uint8Array> {
 
   // --- Header
   newPage();
-  page.drawSvgPath("M8 0h14a8 8 0 0 1 8 8v14a8 8 0 0 1-8 8H8a8 8 0 0 1-8-8V8a8 8 0 0 1 8-8z", { x: M, y, color: VIOLET });
-  // the BillingEase mark, scaled from its 24px box
-  page.drawSvgPath("M5 19 11 5h8l-6 14z", { x: M + 3, y: y - 3, scale: 1, color: INK });
+  drawMark(page, M, y, 30);
   const nameLines = wrap(D, business.name, 17, 300);
   nameLines.forEach((l, i) => draw(page, D, l, M + 42, y - 21 - i * 21, 17));
   drawRight(page, D, "Invoice", RIGHT, y - 22, 24);
