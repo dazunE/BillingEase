@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tools for one of the three numbers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+.be-tools{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (min-width:1000px){.be-tools-5{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.be-tool{transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+.be-tool:hover{border-color:#CBC7D3!important;box-shadow:0 6px 18px rgba(24,22,31,0.07);transform:translateY(-1px)}
+.be-tool:focus-visible{outline:2px solid #7A5AF8;outline-offset:2px}
+@media (max-width:620px){
+  .be-tools{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .be-tools-5 .be-tool:last-child{grid-column:span 2}
+  .be-tool{padding:14px!important;gap:8px!important}
+  .be-tool-d{display:none!important}
+}
+@media (prefers-reduced-motion: reduce){.be-tool{transition:none}.be-tool:hover{transform:none}}
+</style>
+</helmet>
+<!-- The tools behind one of the three numbers: one card per screen, each with a live status. area: in | out | keep -->
+<section aria-labelledby="{{hid}}" style="display: flex; flex-direction: column; gap: 12px; font-family: DM Sans, system-ui, sans-serif; color: #18161F;">
+  <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+    <h2 id="{{hid}}" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{title}}</h2>
+    <span style="font-size: 13px; color: #5F5B68;">{{note}}</span>
+  </div>
+  <nav aria-label="{{title}}" class="{{gridClass}}">
+    <sc-for list="{{tools}}" as="t" hint-placeholder-count="6">
+      <a class="be-tool" href="{{t.href}}" style="display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 16px 18px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none;">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <span style="width: 40px; height: 40px; border-radius: 12px; background: {{tint.bg}}; display: flex; align-items: center; justify-content: center; flex: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{tint.fg}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A8594" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+          <span style="font-weight: 700; font-size: 16px; line-height: 1.25;">{{t.name}}</span>
+          <span class="be-tool-d" style="font-size: 13px; line-height: 1.4; color: #5F5B68;">{{t.desc}}</span>
+        </span>
+        <span style="margin-top: auto; display: flex; min-width: 0;">
+          <sc-if value="{{t.pill}}" hint-placeholder-val="{{true}}">
+            <span style="display: inline-flex; align-items: center; gap: 6px; max-width: 100%; box-sizing: border-box; padding: 3px 10px; border-radius: 10px; background: {{t.bg}}; color: {{t.fg}}; font-size: 12px; font-weight: 600; line-height: 1.35;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{t.fg}}; flex: none;"></span><span style="min-width: 0;">{{t.status}}</span></span>
+          </sc-if>
+          <sc-if value="{{t.hint}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; line-height: 1.35; color: #5F5B68;">{{t.status}}</span>
+          </sc-if>
+        </span>
+      </a>
+    </sc-for>
+  </nav>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"area":{"editor":"text","default":"keep"},"$preview":{"width":1200,"height":260}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const area = ['in', 'out', 'keep'].indexOf(this.props.area) >= 0 ? this.props.area : 'keep';
+    const fn = (k) => typeof BE[k] === 'function';
+    const W = (n) => BE.money(n, 'USD', { whole: true });
+    const plural = (n, one, many) => n + ' ' + (n === 1 ? one : (many || one + 's'));
+    const t = BE.totals('month');
+    const TONE = { attn: ['#FFF0B8', '#6B5000'], good: ['#E2F6D5', '#2F5711'], plain: ['#EFEDF3', '#47444F'] };
+    // live: a status from the data (tone: attn | good | plain), or null for the plain hint.
+    const tool = (href, name, desc, icon, live, hint) => {
+      const on = live && live[0];
+      const tone = TONE[(live && live[1]) || 'plain'];
+      return { href, name, desc, icon, status: on ? live[0] : hint, pill: !!on, hint: !on, bg: tone[0], fg: tone[1] };
+    };
+    const I = {
+      invoice: 'M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6',
+      quote: 'M9 3h6v3H9zM7 4.5H5V21h14V4.5h-2M9 11h6M9 15h4',
+      people: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M16 4.2a3.5 3.5 0 0 1 0 6.6',
+      repeat: 'M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3',
+      box: 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8',
+      card: 'M3 6h18v12H3zM3 10h18M7 15h3',
+      receipt: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h3',
+      bill: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4',
+      cycle: 'M21 12a9 9 0 1 1-3-6.7M21 4v5h-5',
+      team: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1',
+      shop: 'M3 9l2-5h14l2 5M4 9v11h16V9M3 9h18M9 20v-6h6v6',
+      list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+      chart: 'M4 20V10M10 20V4M16 20v-7M2 20h20',
+      percent: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3',
+      bank: 'M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18',
+      folder: 'M3 6h7l2 2h9v11H3z',
+      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18'
+    };
+    let tools = [];
+
+    if (area === 'in') {
+      const inv = BE.all('invoices').filter((i) => !i.void);
+      const open = inv.filter((i) => !i.draft && BE.invOpen(i) > 0);
+      const late = fn('invStatus') ? open.filter((i) => BE.invStatus(i) === 'late') : [];
+      const drafts = inv.filter((i) => i.draft).length;
+      const quotes = BE.all('quotes');
+      const waiting = quotes.filter((q) => q.state === 'waiting' || q.state === 'changes').length;
+      const qDrafts = quotes.filter((q) => q.state === 'draft').length;
+      const custs = BE.all('customers');
+      const lateWho = {}; late.forEach((i) => { lateWho[i.who] = 1; });
+      const nLateWho = Object.keys(lateWho).length;
+      const rec = BE.all('recurring');
+      const recOn = rec.filter((r) => !r.paused).length;
+      const prods = BE.all('products'), svcs = BE.all('services');
+      const out = prods.filter((p) => (Number(p.stock) || 0) <= 0).length;
+      const low = prods.filter((p) => (Number(p.stock) || 0) > 0 && p.reorder != null && p.stock <= p.reorder).length;
+      const pays = BE.all('payments').filter((p) => p.inMonth);
+      tools = [
+        tool('SellInvoices.dc.html', 'All invoices', 'Every invoice, sent, paid or late', I.invoice,
+          open.length ? [open.length + ' unpaid' + (late.length ? ' · ' + late.length + ' late' : ''), late.length ? 'attn' : 'plain'] : (inv.length ? [drafts ? plural(drafts, 'draft') + ' · none unpaid' : 'All paid', drafts ? 'plain' : 'good'] : null),
+          'Your first one shows here'),
+        tool('SellQuotes.dc.html', 'Quotes', 'Price a job before you bill it', I.quote,
+          waiting ? [waiting + ' waiting for an answer', 'plain'] : (qDrafts ? [plural(qDrafts, 'draft') + ' to send', 'attn'] : (quotes.length ? [plural(quotes.length, 'quote'), 'plain'] : null)),
+          'Send one before you start'),
+        tool('SellCustomers.dc.html', 'Customers', 'Who you work for and what they owe', I.people,
+          custs.length ? [plural(custs.length, 'customer') + (nLateWho ? ' · ' + nLateWho + ' late' : ''), nLateWho ? 'attn' : 'plain'] : null,
+          'Add who you work for'),
+        tool('SellRecurring.dc.html', 'Repeating', 'Retainers that bill themselves', I.repeat,
+          rec.length ? [recOn ? recOn + ' active' : 'All paused', 'plain'] : null,
+          'For monthly retainers'),
+        tool('SellCatalog.dc.html', 'Products and services', 'What you sell, prices and stock', I.box,
+          (low || out) ? [[low ? low + ' low on stock' : '', out ? out + ' out of stock' : ''].filter(Boolean).join(' · '), 'attn'] : ((prods.length + svcs.length) ? [plural(prods.length + svcs.length, 'item'), 'plain'] : null),
+          'Add what you sell'),
+        tool('SellPayments.dc.html', 'Getting paid online', 'Card, bank transfer and Apple Pay', I.card,
+          pays.length ? [W(t.inPaid) + ' received', 'good'] : null,
+          'Let customers pay by card')
+      ];
+    } else if (area === 'out') {
+      const rc = BE.all('receipts').filter((r) => r.month === 'Oct' || !r.month);
+      const rWait = rc.filter((r) => r.status === 'waiting').length;
+      const rBlur = rc.filter((r) => r.status === 'blurry').length;
+      const left = (b) => (fn('billLeft') ? BE.billLeft(b) : b.amount - (b.paid || 0));
+      const bills = BE.all('bills');
+      const openB = bills.filter((b) => left(b) > 0);
+      const runs = BE.all('payroll');
+      const run = runs.filter((r) => r.status !== 'paid' && r.inMonth)[0];
+      const paidRun = runs.filter((r) => r.status === 'paid' && r.paidOn)[0];
+      const emps = BE.all('employees');
+      const mo = BE.all('monthly').filter((m) => m.active !== false);
+      const vendors = BE.all('vendors');
+      const exp = BE.all('expenses').filter((x) => x.inMonth);
+      let payLive = null;
+      if (run) payLive = run.status === 'needs' ? ['Needs approval · ' + run.date, 'attn'] : ['Approved · pays ' + run.date, 'good'];
+      else if (paidRun) payLive = ['Paid ' + paidRun.paidOn, 'good'];
+      else if (emps.length) payLive = [plural(emps.length, 'person', 'people') + ' on payroll', 'plain'];
+      tools = [
+        tool('SpendReceipts.dc.html', 'Receipts', 'Snap or forward them, we match them', I.receipt,
+          rWait ? [rWait + ' waiting to match', 'attn'] : rBlur ? [rBlur + ' to retype', 'attn'] : (rc.length ? ['All matched', 'good'] : null),
+          'Snap your first receipt'),
+        tool('SpendBill.dc.html', 'Bills', 'What you owe and when it’s due', I.bill,
+          openB.length ? [openB.length + ' to pay · ' + W(openB.reduce((a, b) => a + left(b), 0)), 'plain'] : (bills.length ? ['All paid', 'good'] : null),
+          'Enter one to pay later'),
+        tool('SpendEveryMonth.dc.html', 'Every month', 'Rent, software and insurance', I.cycle,
+          mo.length ? (t.outMonthly > 0 ? [W(t.outMonthly) + ' still to come', 'plain'] : ['All paid this month', 'good']) : null,
+          'Repeats show up on their own'),
+        tool('SpendPayroll.dc.html', 'Payroll', 'Pay your team, taxes filed for you', I.team, payLive, 'Set it up when you hire'),
+        tool('SpendVendors.dc.html', 'Vendors', 'Everyone you pay, and how much', I.shop,
+          vendors.length ? [plural(vendors.length, 'vendor'), 'plain'] : null,
+          'Added as you pay people'),
+        tool('SpendTransaction.dc.html', 'Transactions', 'Each payment, in detail', I.list,
+          exp.length ? [exp.length + ' this month', 'plain'] : null,
+          'They appear as you spend')
+      ];
+    } else {
+      const hasData = !!(t.in || t.out);
+      const books = BE.books || {};
+      const tax = typeof books.salesTax === 'function' ? books.salesTax() : null;
+      let taxLive = null;
+      if (tax && tax.open && !tax.filed) taxLive = [BE.money(tax.open.tax, 'USD', { cents: true }) + ' due ' + tax.open.due, 'attn'];
+      else if (tax && tax.filed) taxLive = ['Filed' + (tax.filed.when ? ' ' + tax.filed.when : ''), 'good'];
+      else if (tax && tax.owed > 0) taxLive = [BE.money(tax.owed, 'USD', { cents: true }) + ' collected', 'plain'];
+      const bank = BE.get('bank');
+      let bankLive = null;
+      if (bank && bank.done) bankLive = [(bank.short || 'Last month') + ' matched', 'good'];
+      else if (bank && (bank.lines || []).length) {
+        const cleared = (Number(bank.opening) || 0) + bank.lines.filter((l) => l.cleared).reduce((a, l) => a + l.amount, 0);
+        const diff = Math.round((cleared - (Number(bank.ending) || 0)) * 100) / 100;
+        bankLive = diff === 0 ? [(bank.short || 'Statement') + ' ready to finish', 'good'] : [W(Math.abs(diff)) + ' to check', 'attn'];
+      } else if (bank && bank.connected) bankLive = ['Connected', 'good'];
+      const cats = BE.all('categories').filter((c) => !c.archived);
+      const fx = BE.all('invoices').filter((i) => !i.draft && !i.void && i.cur && i.cur !== ((BE.get('profile') || {}).currency || 'USD') && BE.invOpen(i) > 0).length;
+      const curs = BE.all('currencies');
+      tools = [
+        tool('BooksReports.dc.html', 'Reports', 'Profit & loss, balance sheet, cash flow', I.chart,
+          hasData ? ['Profit ' + t.fmt.profit, 'plain'] : null,
+          'Fill in as you bill and spend'),
+        tool('BooksTax.dc.html', 'Sales tax', 'File on time, then close the year', I.percent, taxLive, 'Only if you sell products'),
+        tool('BooksReconcile.dc.html', 'Bank check', 'Tick your statement against the books', I.bank, bankLive, 'Connect your bank'),
+        tool('BooksCategories.dc.html', 'Categories', 'Where every dollar is filed', I.folder,
+          (!BE.isEmpty() && cats.length) ? [plural(cats.length, 'category', 'categories'), 'plain'] : null,
+          'A short starter list'),
+        tool('BooksCurrencies.dc.html', 'Currencies', 'Billing in euros, pounds and more', I.globe,
+          fx ? [plural(fx, 'foreign invoice') + ' open', 'plain'] : (curs.length ? [curs.map((c) => c.code).join(' and ') + ' in use', 'plain'] : null),
+          'If you bill abroad')
+      ];
+    }
+
+    const HEAD = {
+      in: ['Tools for Coming in', 'Invoices, quotes, customers and getting paid'],
+      out: ['Tools for Going out', 'Receipts, bills, payroll and who you pay'],
+      keep: ['Your books', 'Reports, tax and the checks your accountant asks for']
+    }[area];
+    const TINT = { in: { bg: '#EEE8FF', fg: '#18161F' }, out: { bg: '#FDE6D6', fg: '#18161F' }, keep: { bg: '#18161F', fg: '#B9A3FF' } }[area];
+    return {
+      tools, title: HEAD[0], note: HEAD[1], tint: TINT, hid: 'tools-' + area + '-h',
+      gridClass: 'be-tools be-tools-' + tools.length
+    };
+  }
+}
+</script>
+</body>
+</html>
