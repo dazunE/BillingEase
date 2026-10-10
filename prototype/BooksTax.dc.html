@@ -15,92 +15,22 @@ body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
 .be-show-sm{display:none}
-@media (max-width: 560px){.be-hide-sm{display:none}.be-show-sm{display:inline}}
+@media (max-width: 640px){.be-hide-sm{display:none!important}.be-show-sm{display:inline}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-
-  <!-- Top bar: same as ThreeHome -->
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-sizing: border-box; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
-                <a href="{{v.href}}" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-sizing: border-box; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Maya Chen</span><span style="font-size: 12px; color: #5F5B68;">Owner · Northwind Studio</span></span>
-              <sc-for list="{{acctLinks}}" as="al" hint-placeholder-count="4">
-                <a href="{{al.href}}" role="menuitem" style="display: flex; flex-direction: column; justify-content: center; min-height: 44px; padding: 4px 12px; border-radius: 12px; text-decoration: none; color: #18161F;"><span style="font-weight: 600; font-size: 14px;">{{al.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{al.hint}}</span></a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+    <dc-import name="AppCrumbs" area="keep" here="Sales tax and year-end"></dc-import>
 
-    <!-- Back + compact equation strip (Yours to keep highlighted) -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
-      <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
-        <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-          Home
-        </a>
-        <span aria-hidden="true">/</span>
-        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">Yours to keep</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page" style="color: #18161F;">Sales tax and year-end</span>
-      </nav>
-      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$24,850</strong></a>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
-        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">$13,640</strong></a></span>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
-        <a href="ThreeKeep.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 2px solid #B9A3FF; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407</strong></a></span>
-      </nav>
-    </div>
-
-    <!-- Page intro -->
     <section aria-labelledby="pg-h" style="display: flex; flex-direction: column; gap: 10px;">
       <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF; box-shadow: 0 0 0 2px #18161F;"></span>Yours to keep · Your books</span>
       <h1 id="pg-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Tax and year-end</h1>
       <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 700px;">Sales tax you hold for the state, how your three numbers are counted, and putting a finished year away for good.</p>
     </section>
-
     <!-- 1. Sales tax you collected -->
-    <section aria-labelledby="st-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 20px;">
+    <section id="salestax" aria-labelledby="st-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 20px;">
       <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 20px;">
         <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
           <h2 id="st-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{tx.title}}</h2>
@@ -117,13 +47,16 @@ a{color:#18161F}a:hover{color:#000000}
       </div>
 
       <!-- US sales tax -->
-      <sc-if value="{{isUS}}" hint-placeholder-val="{{true}}">
+      <sc-if value="{{usEmpty}}" hint-placeholder-val="{{false}}">
+        <p style="margin: 0; padding: 16px; border-radius: 16px; background: #F7F6F9; font-size: 15px; line-height: 1.5; color: #47444F;">{{usEmptyText}}</p>
+      </sc-if>
+      <sc-if value="{{usOn}}" hint-placeholder-val="{{true}}">
         <div style="display: flex; flex-direction: column; gap: 20px;">
           <div style="display: flex; flex-wrap: wrap; gap: 20px 32px; align-items: flex-end;">
             <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 14px; font-weight: 600; color: #47444F;">New York State · July – September 2026</span>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5vw, 56px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$412.63</span>
-              <span style="font-size: 15px; color: #47444F; line-height: 1.5;">8.875% on <strong style="color: #18161F;">$4,649.38</strong> of product sales. Design work isn&#39;t taxed in New York, so it&#39;s left out.</span>
+              <span style="font-size: 14px; font-weight: 600; color: #47444F;">{{q.title}}</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5vw, 56px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{q.tax}}</span>
+              <span style="font-size: 15px; color: #47444F; line-height: 1.5;">{{q.rate}} on <strong style="color: #18161F;">{{q.sales}}</strong> of product sales. Design work isn&#39;t taxed in New York, so it&#39;s left out.</span>
             </div>
             <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
               <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background: {{f.badgeBg}}; color: {{f.badgeFg}}; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{f.badgeFg}};"></span>{{f.badge}}</span>
@@ -133,7 +66,7 @@ a{color:#18161F}a:hover{color:#000000}
                   Mark as filed and paid
                 </button>
               </sc-if>
-              <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">This money was never yours. It isn&#39;t in Coming in, and paying it isn&#39;t Going out.</span>
+              <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">This money was never yours. Paying it comes out of the tax you collected, so it doesn&#39;t change Going out.</span>
             </div>
           </div>
 
@@ -144,11 +77,11 @@ a{color:#18161F}a:hover{color:#000000}
                 <span style="width: 28px; height: 28px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 14px;">1</span>
                 <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
                   <span style="font-weight: 700; font-size: 16px;">File with New York State</span>
-                  <span style="font-size: 14px; color: #47444F; line-height: 1.5;">Sign in to NY Tax Online Services and fill in the quarterly return (Form ST-100). These are the three numbers it asks for:</span>
+                  <span style="font-size: 14px; color: #47444F; line-height: 1.5;">Sign in to NY Tax Online Services and fill in the quarterly return ({{q.form}}). These are the three numbers it asks for:</span>
                   <dl style="margin: 0; display: flex; flex-wrap: wrap; gap: 8px;">
-                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Taxable sales</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">$4,649.38</dd></div>
-                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Rate · Kings County</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">8.875%</dd></div>
-                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Sales tax due</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">$412.63</dd></div>
+                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Taxable sales</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{q.sales}}</dd></div>
+                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Rate · {{q.county}}</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{q.rate}}</dd></div>
+                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Sales tax due</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{q.tax}}</dd></div>
                   </dl>
                   <button type="button" onClick="{{f.copy}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h11v11H9zM5 15H4V4h11v1"></path></svg>
@@ -180,7 +113,7 @@ a{color:#18161F}a:hover{color:#000000}
                   <sc-if value="{{f.err}}" hint-placeholder-val="{{false}}">
                     <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{f.err}}</span>
                   </sc-if>
-                  <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">When the payment shows up in your bank feed, we&#39;ll match it here instead of counting it as Going out.</span>
+                  <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">We record it as paid out of the sales tax you collected (a transfer), not as a cost. Going out stays the same, because it was your customers&#39; money all along.</span>
                   <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                     <button type="button" onClick="{{f.record}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Record payment</button>
                     <button type="button" onClick="{{f.cancel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
@@ -192,10 +125,18 @@ a{color:#18161F}a:hover{color:#000000}
 
           <sc-if value="{{f.done}}" hint-placeholder-val="{{false}}">
             <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711;">
-              <span style="font-size: 14px; line-height: 1.45;"><strong>{{f.doneText}}</strong> Next quarter (Oct – Dec) is due Jan 20, 2027. We&#39;ll remind you.</span>
+              <span style="font-size: 14px; line-height: 1.45;"><strong>{{f.doneText}}</strong> Going out didn&#39;t change. Next quarter ({{q.nextLabel}}) is due {{q.nextDue}}. We&#39;ll remind you.</span>
               <button type="button" onClick="{{f.undo}}" style="min-height: 36px; padding: 0 14px; border: 1px solid #2F5711; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Undo</button>
             </div>
           </sc-if>
+
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 16px; border-radius: 16px; background: #EEE8FF;">
+            <span style="flex: 1 1 300px; min-width: 0; font-size: 14px; line-height: 1.5;"><strong>{{q4.title}}</strong> {{q4.text}}</span>
+            <sc-for list="{{q4.links}}" as="ql" hint-placeholder-count="1">
+              <a href="{{ql.href}}" style="font-size: 14px; font-weight: 600;">{{ql.num}}</a>
+            </sc-for>
+            <sc-if value="{{q4.none}}" hint-placeholder-val="{{true}}"><a href="SellInvoice.dc.html" style="font-size: 14px; font-weight: 600;">Invoice a product</a></sc-if>
+          </div>
 
           <!-- By month -->
           <div style="display: flex; flex-wrap: wrap; gap: 24px;">
@@ -222,9 +163,9 @@ a{color:#18161F}a:hover{color:#000000}
                     </sc-for>
                     <tr style="border-top: 2px solid #E2DFE8;">
                       <td style="padding: 12px 0; font-weight: 700;">Quarter</td>
-                      <td style="padding: 12px 0; font-weight: 700;">$4,649.38</td>
+                      <td style="padding: 12px 0; font-weight: 700;">{{q.sales}}</td>
                       <td class="be-hide-sm"></td>
-                      <td style="padding: 12px 0; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 16px;">$412.63</td>
+                      <td style="padding: 12px 0; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 16px;">{{q.tax}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -280,13 +221,25 @@ a{color:#18161F}a:hover{color:#000000}
             <li>In the EU, sales to a business in another EU country with a VAT ID (like Kaffeehaus Berlin GmbH) say &#8220;VAT reverse charged to the customer&#8221; and add nothing here.</li>
             <li>Just like sales tax, VAT never counts in Coming in or Going out. Your three numbers are always before VAT.</li>
           </ul>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <h3 style="margin: 0; font-size: 15px; font-weight: 700;">Your overseas customers</h3>
+            <sc-if value="{{noOverseas}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; color: #47444F;">When you bill a customer abroad, what we put on the invoice about VAT shows here.</span></sc-if>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+              <sc-for list="{{overseas}}" as="ov" hint-placeholder-count="2">
+                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 0; border-top: 1px solid #EFEDF3;">
+                  <span style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><a href="{{ov.href}}" style="font-weight: 700; font-size: 15px; text-decoration: none;">{{ov.who}}</a><span style="font-size: 13px; color: #47444F;">{{ov.vat}}</span></span>
+                  <a href="{{ov.invHref}}" style="font-size: 13px; font-weight: 600;">{{ov.num}} · {{ov.amt}}</a>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
           <a href="BizProfile.dc.html" style="align-self: flex-start; font-size: 14px; font-weight: 600;">Change your country and tax settings</a>
         </div>
       </sc-if>
     </section>
 
     <!-- 2. How we count -->
-    <section aria-labelledby="hc-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+    <section id="method" aria-labelledby="hc-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
         <h2 id="hc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">How we count</h2>
         <span style="align-self: flex-start; padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Accounting method: accrual or cash basis</span>
@@ -314,7 +267,7 @@ a{color:#18161F}a:hover{color:#000000}
       </div>
       <sc-if value="{{hc.changed}}" hint-placeholder-val="{{false}}">
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
-          <span style="flex: 1 1 280px; font-size: 14px; color: #47444F; line-height: 1.45;">This only changes what you see in BillingEase. Your tax return keeps the method Dana Whitfield, CPA uses for it.</span>
+          <span style="flex: 1 1 280px; font-size: 14px; color: #47444F; line-height: 1.45;">{{hc.changeNote}}</span>
           <div style="display: flex; flex-wrap: wrap; gap: 8px;">
             <button type="button" onClick="{{hc.apply}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Count this way</button>
             <button type="button" onClick="{{hc.keep}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep it as is</button>
@@ -324,7 +277,7 @@ a{color:#18161F}a:hover{color:#000000}
     </section>
 
     <!-- 3. Year-end -->
-    <section aria-labelledby="ye-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 20px;">
+    <section id="yearend" aria-labelledby="ye-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 20px;">
       <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 20px;">
         <div style="display: flex; flex-direction: column; gap: 6px;">
           <h2 id="ye-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Put 2025 away</h2>
@@ -332,7 +285,11 @@ a{color:#18161F}a:hover{color:#000000}
         </div>
         <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background: {{ye.badgeBg}}; color: {{ye.badgeFg}}; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{ye.badgeFg}};"></span>{{ye.badge}}</span>
       </div>
-      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 820px;">Once your accountant has filed for 2025, lock it. Nothing dated on or before <strong style="color: #18161F;">December 31, 2025</strong> can be added, changed or deleted, so the numbers on your tax return always match your books. Only you or Dana can unlock it, and we note who did and when.</p>
+      <sc-if value="{{yeFresh}}" hint-placeholder-val="{{false}}">
+        <p style="margin: 0; padding: 16px; border-radius: 16px; background: #F7F6F9; font-size: 15px; line-height: 1.5; color: #47444F;">Nothing to put away yet. Your first year ends Dec 31, 2026; when it does, a short checklist shows up here so you can hand the year to your accountant and lock it.</p>
+      </sc-if>
+      <sc-if value="{{yeOn}}" hint-placeholder-val="{{true}}">
+      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 820px;">Once your accountant has filed for 2025, lock it. Nothing dated on or before <strong style="color: #18161F;">December 31, 2025</strong> can be added, changed or deleted, so the numbers on your tax return always match your books. Only you or your accountant can unlock it, and we note who did and when.</p>
 
       <div style="display: flex; flex-wrap: wrap; gap: 24px;">
         <div style="flex: 3 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
@@ -354,8 +311,8 @@ a{color:#18161F}a:hover{color:#000000}
           </ul>
         </div>
         <div style="flex: 2 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-          <h3 style="margin: 0; font-size: 15px; font-weight: 700;">What Dana gets</h3>
-          <span style="font-size: 13px; color: #47444F; line-height: 1.45;">Dana Whitfield, CPA already has read-only access. Closing the year also puts these in one package:</span>
+          <h3 style="margin: 0; font-size: 15px; font-weight: 700;">What {{ye.first}} gets</h3>
+          <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{ye.who}} already has read-only access. Closing the year also puts these in one package:</span>
           <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
             <sc-for list="{{pkg}}" as="pk" hint-placeholder-count="6">
               <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFEDF3;">
@@ -380,7 +337,7 @@ a{color:#18161F}a:hover{color:#000000}
         <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 20px; padding: 18px 20px; border-radius: 20px; background: #18161F; color: #FFFFFF;">
           <span style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 4px;">
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #B9A3FF;">2025 is closed</span>
-            <span style="font-size: 14px; color: #EEE8FF; line-height: 1.45;">Locked through Dec 31, 2025 by Maya Chen on Oct 4, 2026.{{ye.sentText}}</span>
+            <span style="font-size: 14px; color: #EEE8FF; line-height: 1.45;">{{ye.closedText}}{{ye.sentText}}</span>
           </span>
           <div style="display: flex; flex-wrap: wrap; gap: 8px;">
             <button type="button" onClick="{{ye.send}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{ye.sendLabel}}</button>
@@ -388,9 +345,10 @@ a{color:#18161F}a:hover{color:#000000}
           </div>
         </div>
       </sc-if>
+      </sc-if>
     </section>
 
-    <!-- More in your books -->
+
     <nav aria-label="More in your books" style="display: flex; flex-direction: column; gap: 10px;">
       <span style="font-size: 13px; font-weight: 600; color: #47444F;">More in your books</span>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px;">
@@ -412,103 +370,140 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2290}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = {
-      view: 'us', fileStep: 'idle', amt: '412.63', date: '2026-10-04', from: 'Chase ••4417', conf: '', err: '',
-      filings: [
-        { q: 'Apr – Jun 2026', amt: '$388.14', when: 'Filed and paid Jul 17 · Chase ••4417' },
-        { q: 'Jan – Mar 2026', amt: '$301.77', when: 'Filed and paid Apr 16 · Chase ••4417' }
-      ],
-      method: 'accrual', preview: 'accrual',
-      receiptsOk: false, closed: false, sent: false,
-      toast: null
-    };
+    this.state = { view: 'us', fileStep: 'idle', amt: '', date: '2026-10-04', from: 'Chase ••4417', conf: '', err: '', preview: null, toast: null };
   }
+
+  moreLinks(cur) {
+    return [
+      { key: 'keep', label: 'Yours to keep', formal: 'Profit after tax, month by month', href: 'ThreeKeep.dc.html' },
+      { key: 'rep', label: 'Reports', formal: 'Profit & loss, balance sheet, cash flow', href: 'BooksReports.dc.html' },
+      { key: 'tax', label: 'Tax and year-end', formal: 'Sales tax, accounting method, year-end close', href: 'BooksTax.dc.html' },
+      { key: 'rec', label: 'Check against your bank statement', formal: 'Bank reconciliation', href: 'BooksReconcile.dc.html' },
+      { key: 'cat', label: 'Categories', formal: 'Chart of accounts and journal entries', href: 'BooksCategories.dc.html' },
+      { key: 'fx', label: 'Currencies', formal: 'Exchange rates, gains and losses', href: 'BooksCurrencies.dc.html' }
+    ].filter((l) => l.key !== cur);
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
   renderVals() {
     const st = this.state;
-    const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
-    const cents = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const fmtDate = (iso) => { const p = (iso || '').split('-'); const mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; return p.length === 3 ? mo[+p[1] - 1] + ' ' + (+p[2]) : iso; };
+    const M = (n) => BE.money(n, 'USD', { whole: true });
+    const C2 = (n) => BE.money(n, 'USD', { cents: true });
+    const fmtDate = (iso) => { const p = (iso || '').split('-'); return p.length === 3 ? BE.MON[+p[1] - 1] + ' ' + (+p[2]) : BE.today; };
+    const ST = BE.books.salesTax();
+    const S = ST.s || {}, open = ST.open, filed = ST.filed;
+    const team = BE.all('team').filter((p) => p.role === 'Accountant')[0];
+    const acctName = team ? team.name : 'Your accountant';
 
     // 1. Sales tax / VAT
     const isUS = st.view === 'us';
-    const views = [['us', 'Sales tax (US)'], ['vat', 'VAT (UK / EU example)']].map(([k, label]) => ({
+    const views = [['us', 'Sales tax (US)'], ['vat', 'VAT (UK / EU)']].map(([k, label]) => ({
       label, on: st.view === k, bg: st.view === k ? '#18161F' : 'transparent', fg: st.view === k ? '#FFFFFF' : '#18161F',
       pick: () => { if (st.view !== k) this.setState({ view: k }); }
     }));
     const tx = isUS
-      ? { title: 'Sales tax you collected', jargon: 'Sales tax payable', note: 'Shown because you sell products in New York' }
-      : { title: 'VAT you owe', jargon: 'VAT return · output and input VAT', note: 'Shown for businesses registered for VAT' };
-    const done = st.fileStep === 'done';
+      ? { title: 'Sales tax you collected', jargon: 'Sales tax payable', note: open ? 'Shown because you sell products in New York' : 'Shown for businesses that sell products' }
+      : { title: 'VAT for overseas customers', jargon: 'VAT · reverse charge', note: 'Shown because you bill customers abroad' };
+    const q = open ? {
+      title: (S.state || 'Your state') + ' · ' + open.label.replace('Jul – Sep', 'July – September'),
+      tax: C2(open.tax), sales: C2(open.sales), rate: (Math.round((S.rate || 0) * 100000) / 1000) + '%', county: S.county || '', form: S.form || 'the quarterly return',
+      nextLabel: (S.next && S.next.label) || 'next quarter', nextDue: (S.next && S.next.due) || ''
+    } : { title: '', tax: '', sales: '', rate: '', county: '', form: '', nextLabel: '', nextDue: '' };
+    const amtStr = st.amt === '' && open ? String(open.tax.toFixed(2)) : st.amt;
     const f = {
-      idle: st.fileStep === 'idle', filing: st.fileStep === 'filing', done,
-      badge: done ? 'Filed and paid' : 'Due Oct 20 · in 16 days',
-      badgeBg: done ? '#E2F6D5' : '#FFF0B8', badgeFg: done ? '#2F5711' : '#6B5000',
-      amt: st.amt, date: st.date, from: st.from, conf: st.conf, err: st.err,
+      idle: !filed && st.fileStep !== 'filing', filing: !filed && st.fileStep === 'filing', done: !!filed,
+      badge: filed ? 'Filed and paid ' + filed.when : (open ? 'Due ' + open.due + ' · in ' + open.dueIn + ' days' : ''),
+      badgeBg: filed ? '#E2F6D5' : '#FFF0B8', badgeFg: filed ? '#2F5711' : '#6B5000',
+      amt: amtStr, date: st.date, from: st.from, conf: st.conf, err: st.err,
       start: () => this.setState({ fileStep: 'filing', err: '' }),
       cancel: () => this.setState({ fileStep: 'idle', err: '' }),
-      copy: () => this.notify('Copied: taxable sales $4,649.38, rate 8.875%, tax $412.63'),
+      copy: () => { const ok = BE.books.copy('Taxable sales ' + q.sales + ', rate ' + q.rate + ', sales tax due ' + q.tax); this.notify(ok ? 'Copied: taxable sales ' + q.sales + ', rate ' + q.rate + ', tax ' + q.tax : 'Taxable sales ' + q.sales + ' · rate ' + q.rate + ' · tax ' + q.tax); },
       setAmt: (e) => this.setState({ amt: e.target.value, err: '' }),
       setDate: (e) => this.setState({ date: e.target.value }),
       setFrom: (e) => this.setState({ from: e.target.value }),
       setConf: (e) => this.setState({ conf: e.target.value }),
       record: () => {
-        const n = parseFloat(String(st.amt).replace(/[$,\s]/g, ''));
-        if (!(n > 0)) { this.setState({ err: 'Add the amount you paid, like 412.63' }); return; }
-        const row = { q: 'Jul – Sep 2026', amt: cents(n), when: 'Filed and paid ' + fmtDate(st.date) + ' · ' + st.from + (st.conf ? ' · #' + st.conf : '') };
-        this.setState({ fileStep: 'done', filings: [row].concat(st.filings) });
-        this.notify('Recorded ' + cents(n) + ' paid to New York State');
+        const n = Math.round(parseFloat(String(amtStr).replace(/[$,\s]/g, '')) * 100) / 100;
+        if (!(n > 0)) { this.setState({ err: 'Add the amount you paid, like ' + (open ? open.tax.toFixed(2) : '412.63') }); return; }
+        const when = fmtDate(st.date);
+        const x = BE.addExpense({ who: (S.state || 'State') + ' Dept. of Taxation', cat: 'Sales tax', amount: n, how: st.from, date: when, kind: 'transfer', note: open.label + ' sales tax, paid from the tax you collected' });
+        BE.add('taxFilings', { q: open.label, amount: n, when, from: st.from, conf: st.conf, expId: x.id });
+        BE.log('Filed and paid ' + open.label + ' sales tax to ' + (S.state || 'the state') + ' · ' + C2(n) + ', out of the tax you collected');
+        this.setState({ fileStep: 'idle', amt: '', conf: '' });
+        this.notify(C2(n) + ' paid to ' + (S.state || 'the state') + '. Going out doesn’t change: it was your customers’ money.');
       },
-      doneText: 'Q3 filed and paid, ' + (st.filings[0] && st.filings[0].q === 'Jul – Sep 2026' ? st.filings[0].amt : '') + '.',
-      undo: () => { this.setState({ fileStep: 'idle', filings: st.filings.filter((x) => x.q !== 'Jul – Sep 2026') }); this.notify('Payment record removed. Q3 is due again.'); }
+      doneText: filed ? open.label + ' filed and paid, ' + C2(filed.amount) + ' on ' + filed.when + ' from ' + filed.from + '.' : '',
+      undo: () => {
+        if (!filed) return;
+        if (filed.expId) BE.remove('expenses', filed.expId);
+        BE.remove('taxFilings', filed.id);
+        BE.log('Removed the ' + open.label + ' sales tax payment record');
+        this.notify('Payment record removed. ' + open.label + ' is due again.');
+      }
     };
-    const monthsRaw = [['July', 1402.00, 124.43], ['August', 1688.50, 149.85], ['September', 1558.88, 138.35]];
-    const months = monthsRaw.map(([label, s, t]) => ({ label, sales: cents(s), tax: cents(t), pct: Math.round(s / 1688.5 * 100), title: label + ': ' + cents(t) + ' collected on ' + cents(s) }));
+    const monthsRaw = open ? open.months : [];
+    const maxM = Math.max.apply(null, monthsRaw.map((m) => m.sales).concat([1]));
+    const months = monthsRaw.map((m) => ({ label: m.label, sales: C2(m.sales), tax: C2(m.tax), pct: Math.round(m.sales / maxM * 100), title: m.label + ': ' + C2(m.tax) + ' collected on ' + C2(m.sales) }));
+    const filings = ST.filings.map((x) => ({ q: x.q, amt: C2(x.amount), when: 'Filed and paid ' + x.when + ' · ' + x.from + (x.conf ? ' · #' + x.conf : '') }));
+    const q4i = ST.q4.invoices;
+    const q4 = {
+      title: ((S.next && S.next.label) || 'This quarter') + ' so far:',
+      text: ST.q4.tax ? C2(ST.q4.tax) + ' collected on ' + C2(ST.q4.sales) + ' of product sales. It’s due ' + ((S.next && S.next.due) || 'after the quarter ends') + '.' : 'nothing collected yet. Tax on product invoices you send this quarter adds up here.',
+      links: q4i.map((i) => ({ num: i.num, href: 'SellInvoices.dc.html#' + i.num })), none: !q4i.length
+    };
+    const overseas = BE.all('invoices').filter((i) => i.cur && i.cur !== 'USD' && !i.draft && !i.void).map((i) => {
+      const c = BE.all('customers').filter((x) => x.name === i.who)[0];
+      return { who: i.who, href: c ? 'SellCustomer.dc.html#' + c.id : 'SellInvoices.dc.html#' + i.num, vat: i.vat || 'No VAT added', num: i.num, amt: BE.money(BE.invTotal(i), i.cur), invHref: 'SellInvoices.dc.html#' + i.num };
+    });
 
     // 2. How we count
-    const NUM = {
-      accrual: { in: 24850, out: 13640, keep: 8407 },
-      cash: { in: 12400, out: 3180, keep: 6915 }
-    };
-    const pv = NUM[st.preview], other = NUM[st.preview === 'accrual' ? 'cash' : 'accrual'];
+    const settings = BE.get('bookSettings') || {};
+    const method = settings.method || 'accrual';
+    const preview = st.preview || method;
+    const tA = BE.totals('month'), pc = BE.books.pl('month', 'cash');
+    const NUM = { accrual: { in: tA.in, out: tA.out, keep: tA.keep }, cash: { in: pc.tIn, out: pc.tOut, keep: pc.keep } };
+    const pv = NUM[preview], other = NUM[preview === 'accrual' ? 'cash' : 'accrual'];
     const methods = [
       { k: 'accrual', label: 'When you bill or get billed', formal: 'Accrual basis' },
       { k: 'cash', label: 'When money actually moves', formal: 'Cash basis' }
     ].map((m) => ({
-      label: m.label, sub: m.formal + (st.method === m.k ? ' · what you use now' : ''),
-      on: st.preview === m.k, bg: st.preview === m.k ? '#EEE8FF' : '#FFFFFF', border: st.preview === m.k ? '2px solid #7A5AF8' : '1px solid #E2DFE8',
-      dot: st.preview === m.k ? '#18161F' : 'transparent',
-      pick: () => { if (st.preview !== m.k) this.setState({ preview: m.k }); }
+      label: m.label, sub: m.formal + (method === m.k ? ' · what your reports use now' : ''),
+      on: preview === m.k, bg: preview === m.k ? '#EEE8FF' : '#FFFFFF', border: preview === m.k ? '2px solid #7A5AF8' : '1px solid #E2DFE8',
+      dot: preview === m.k ? '#18161F' : 'transparent',
+      pick: () => { if (preview !== m.k) this.setState({ preview: m.k }); }
     }));
-    const diff = (a, b) => (a === b ? 'Same either way' : (a > b ? '+' : '−') + money(Math.abs(a - b)) + ' vs the other way');
+    const diff = (a, b) => (a === b ? 'Same either way' : (a > b ? '+' : '−') + M(Math.abs(a - b)) + ' vs the other way');
+    const ratePct = Math.round(tA.rate * 100) + '%';
     const hc = {
-      para: st.preview === 'accrual'
-        ? 'A sale counts the day you send the invoice, and a bill counts the day it arrives, even if nobody has paid yet. October already includes the $12,450 on the way to you and the $10,460 you still have to pay. It shows how the month really went, which is why we start here.'
+      para: preview === 'accrual'
+        ? 'A sale counts the day you send the invoice, and a bill counts the day it arrives, even if nobody has paid yet. October already includes the ' + tA.fmt.inExp + ' on the way to you and the ' + tA.fmt.outSch + ' you still have to pay. It shows how the month really went, which is why we start here.'
         : 'Money counts only when it lands in or leaves your bank. Invoices on the way and bills you haven’t paid wait until they’re paid. It matches your bank balance, but a month can look great just because a big bill hasn’t gone out yet.',
       caption: 'October with this way of counting',
       nums: [
-        { label: 'Coming in', value: money(pv.in), sub: diff(pv.in, other.in), dot: '#7A5AF8', bg: '#F7F6F9', fg: '#18161F', numFg: '#18161F', subFg: '#47444F' },
-        { label: 'Going out', value: money(pv.out), sub: diff(pv.out, other.out), dot: '#E0752D', bg: '#F7F6F9', fg: '#18161F', numFg: '#18161F', subFg: '#47444F' },
-        { label: 'Yours to keep', value: money(pv.keep), sub: diff(pv.keep, other.keep) + ' · after 25% tax', dot: '#B9A3FF', bg: '#18161F', fg: '#EEE8FF', numFg: '#B9A3FF', subFg: '#EEE8FF' }
+        { label: 'Coming in', value: M(pv.in), sub: diff(pv.in, other.in), dot: '#7A5AF8', bg: '#F7F6F9', fg: '#18161F', numFg: '#18161F', subFg: '#47444F' },
+        { label: 'Going out', value: M(pv.out), sub: diff(pv.out, other.out), dot: '#E0752D', bg: '#F7F6F9', fg: '#18161F', numFg: '#18161F', subFg: '#47444F' },
+        { label: 'Yours to keep', value: M(pv.keep), sub: diff(pv.keep, other.keep) + ' · after ' + ratePct + ' tax', dot: '#B9A3FF', bg: '#18161F', fg: '#EEE8FF', numFg: '#B9A3FF', subFg: '#EEE8FF' }
       ],
-      changed: st.preview !== st.method,
-      apply: () => { this.setState({ method: st.preview }); this.notify(st.preview === 'cash' ? 'Now counting when money moves' : 'Now counting when you bill or get billed'); },
-      keep: () => this.setState({ preview: st.method })
+      changed: preview !== method,
+      changeNote: 'Your reports will open this way. The three numbers at the top of every screen keep counting money on the way and bills still to pay, so you always see what’s coming. Your tax return keeps the method ' + acctName + ' uses for it.',
+      apply: () => { BE.patch('bookSettings', { method: preview }); BE.log(preview === 'cash' ? 'Reports now count when money moves (cash basis)' : 'Reports now count when you bill or get billed (accrual basis)'); this.setState({ preview: null }); this.notify(preview === 'cash' ? 'Reports now count when money moves' : 'Reports now count when you bill or get billed'); },
+      keep: () => this.setState({ preview: null })
     };
 
     // 3. Year-end
+    const Y = BE.get('yearEnd') || {};
     const OKI = 'm5 12 5 5 9-10', WARN = 'M12 7v6M12 17h.01';
     const okC = { iconBg: '#E2F6D5', iconFg: '#2F5711', icon: OKI, badge: 'Done', badgeBg: '#E2F6D5', badgeFg: '#2F5711', fixable: false };
     const checks = [
       Object.assign({ label: 'Every charge sorted', sub: 'Every 2025 charge has a category. Nothing is waiting in “Sort these”.', link: 'See categories', href: 'BooksCategories.dc.html' }, okC),
       Object.assign({ label: 'Bank checked', sub: 'Chase ••4417 and Amex ••1009 match your statements through Dec 31, 2025.', link: 'See past checks', href: 'BooksReconcile.dc.html' }, okC),
-      st.receiptsOk
+      Y.receiptsOk
         ? Object.assign({ label: 'Receipts matched', sub: 'All matched. 2 marked fine without a receipt (Delta Air Lines $386.00, Local Print Shop $142.00).', link: 'Open receipts', href: 'SpendReceipts.dc.html' }, okC)
-        : { label: 'Receipts matched', sub: 'Delta Air Lines $386.00 (Mar 3) and Local Print Shop $142.00 (Nov 18) have no receipt. Find them, or tell us they’re fine without.', link: 'Find them in Receipts', href: 'SpendReceipts.dc.html', iconBg: '#FFF0B8', iconFg: '#6B5000', icon: WARN, badge: '2 missing', badgeBg: '#FFF0B8', badgeFg: '#6B5000', fixable: true, fix: () => { this.setState({ receiptsOk: true }); this.notify('2 charges marked fine without a receipt'); } },
-      Object.assign({ label: 'Accountant’s changes in', sub: 'Dana added her year-end entries on Mar 12, including $1,000 of equipment wear (depreciation).', link: 'See entries by hand', href: 'BooksCategories.dc.html' }, okC)
+        : { label: 'Receipts matched', sub: 'Delta Air Lines $386.00 (Mar 3) and Local Print Shop $142.00 (Nov 18) have no receipt. Find them, or tell us they’re fine without.', link: 'Find them in Receipts', href: 'SpendReceipts.dc.html', iconBg: '#FFF0B8', iconFg: '#6B5000', icon: WARN, badge: '2 missing', badgeBg: '#FFF0B8', badgeFg: '#6B5000', fixable: true, fix: () => { BE.patch('yearEnd', { receiptsOk: true }); BE.log('Marked 2 charges from 2025 fine without a receipt'); this.notify('2 charges marked fine without a receipt'); } },
+      Object.assign({ label: 'Accountant’s changes in', sub: acctName + ' added the year-end entries on Mar 12, including $1,000 of equipment wear (depreciation).', link: 'See entries by hand', href: 'BooksCategories.dc.html#entries' }, okC)
     ];
     const pkg = [
       { plain: 'What you earned in 2025', formal: 'Profit & Loss' },
@@ -519,60 +514,31 @@ class Component extends DCLogic {
       { plain: 'Contractors paid $600 or more', formal: '1099-NEC list' },
       { plain: 'All receipts, in one folder', formal: 'Receipts archive (.zip)' }
     ];
-    const blocked = !st.receiptsOk;
+    const blocked = !Y.receiptsOk;
+    const owner = (BE.get('profile') || {}).owner || 'You';
     const ye = {
-      open: !st.closed, closed: st.closed, blocked,
-      badge: st.closed ? 'Closed · locked through Dec 31, 2025' : (blocked ? '1 thing left' : 'Ready to close'),
-      badgeBg: st.closed ? '#E2F6D5' : (blocked ? '#FFF0B8' : '#E1EEF8'), badgeFg: st.closed ? '#2F5711' : (blocked ? '#6B5000' : '#1F5E91'),
+      open: !Y.closed, closed: !!Y.closed, blocked, who: acctName, first: team ? acctName.split(' ')[0] : 'Your accountant',
+      badge: Y.closed ? 'Closed · locked through Dec 31, 2025' : (blocked ? '1 thing left' : 'Ready to close'),
+      badgeBg: Y.closed ? '#E2F6D5' : (blocked ? '#FFF0B8' : '#E1EEF8'), badgeFg: Y.closed ? '#2F5711' : (blocked ? '#6B5000' : '#1F5E91'),
       btnBg: blocked ? '#EFEDF3' : '#B9A3FF', btnFg: blocked ? '#5F5B68' : '#18161F', cursor: blocked ? 'not-allowed' : 'pointer',
-      hint: blocked ? 'Sort out the receipts first.' : 'You can unlock it later if Dana needs a change.',
-      close: () => { if (!blocked) { this.setState({ closed: true }); this.notify('2025 closed. Nothing on or before Dec 31, 2025 can change.'); } },
-      unlock: () => { this.setState({ closed: false, sent: false }); this.notify('2025 unlocked. We noted that you did it today.'); },
-      send: () => { this.setState({ sent: true }); this.notify(st.sent ? 'Sent again to Dana Whitfield, CPA' : 'Year-end package sent to Dana Whitfield, CPA'); },
-      sendLabel: st.sent ? 'Send again' : 'Send package to Dana',
-      sentText: st.sent ? ' Package sent to Dana Whitfield, CPA.' : ''
+      hint: blocked ? 'Sort out the receipts first.' : 'You can unlock it later if your accountant needs a change.',
+      close: () => { if (blocked) return; BE.patch('yearEnd', { closed: true, closedOn: BE.today }); BE.log('Closed 2025 and locked it'); this.notify('2025 closed. Nothing on or before Dec 31, 2025 can change.'); },
+      unlock: () => { BE.patch('yearEnd', { closed: false, sent: false }); BE.log('Unlocked 2025'); this.notify('2025 unlocked. We noted that you did it today.'); },
+      send: () => { BE.patch('yearEnd', { sent: true }); BE.log('Sent the 2025 year-end package to ' + acctName); this.notify(Y.sent ? 'Sent again to ' + acctName : 'Year-end package sent to ' + acctName); },
+      sendLabel: Y.sent ? 'Send again' : 'Send package to ' + (team ? acctName.split(' ')[0] : 'your accountant'),
+      closedText: 'Locked through Dec 31, 2025 by ' + owner + ' on ' + (Y.closedOn || BE.today) + ', 2026.',
+      sentText: Y.sent ? ' Package sent to ' + acctName + '.' : ''
     };
 
-    return Object.assign(this.hdr(), {
-      isUS, isVAT: !isUS, views, tx, f, months, filings: st.filings,
-      methods, hc, checks, pkg, ye, more: this.moreLinks('tax')
-    });
-  }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  moreLinks(cur) {
-    return [
-      { key: 'keep', label: 'Yours to keep', formal: 'Profit after tax, month by month', href: 'ThreeKeep.dc.html' },
-      { key: 'tax', label: 'Tax and year-end', formal: 'Sales tax, accounting method, year-end close', href: 'BooksTax.dc.html' },
-      { key: 'rec', label: 'Check against your bank statement', formal: 'Bank reconciliation', href: 'BooksReconcile.dc.html' },
-      { key: 'cat', label: 'Categories', formal: 'Chart of accounts and journal entries', href: 'BooksCategories.dc.html' },
-      { key: 'fx', label: 'Currencies', formal: 'Exchange rates, gains and losses', href: 'BooksCurrencies.dc.html' }
-    ].filter((l) => l.key !== cur);
-  }
-  hdr() {
-    const st = this.state;
     return {
-      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
-      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
-      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
-      verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-      ],
-      acctLinks: [
-        { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
-        { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
-        { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
-        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
-        { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
-        { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
-      ],
-      toast: this.state.toast
+      isUS, isVAT: !isUS, usOn: isUS && !!open, usEmpty: isUS && !open,
+      usEmptyText: ST.q4.tax ? 'You’ve collected ' + C2(ST.q4.tax) + ' of sales tax on product invoices this quarter. It’s due ' + ((S.next && S.next.due) || 'after the quarter ends') + '. It’s your customers’ money, so it never counts in your three numbers.' : 'No sales tax yet. When you invoice products somewhere that taxes them, what you collect shows here with the date it’s due. It’s your customers’ money, so it never counts in your three numbers.',
+      views, tx, q, f, months, filings, q4, overseas, noOverseas: !overseas.length,
+      methods, hc, checks, pkg, ye, yeFresh: !!Y.fresh, yeOn: !Y.fresh, more: this.moreLinks('tax'), toast: st.toast
     };
   }
 }
+
 </script>
 </body>
 </html>

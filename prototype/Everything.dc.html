@@ -237,7 +237,7 @@ class Component extends DCLogic {
     const describe = (name, o) => {
       const sells = o.services && o.products ? 'services and products' : o.products ? 'products' : 'services';
       const bits = [sells + (o.services && o.products ? '' : ' only')];
-      bits.push(o.overseas ? 'bills customers abroad' : 'in ' + (prof.country || 'the US'));
+      bits.push(o.overseas ? 'bills customers abroad' : 'in ' + (!prof.country || prof.country === 'United States' ? 'the US' : prof.country));
       const who = o.team ? (o.accountant ? 'has a team with an accountant' : 'has a team') : (o.accountant ? 'it’s you and your accountant' : 'it’s just you');
       return {
         hint: [sells.charAt(0).toUpperCase() + sells.slice(1) + (o.services && o.products ? '' : ' only'), o.team ? 'team' : 'just you', o.overseas ? 'abroad' : ''].filter(Boolean).join(' · '),

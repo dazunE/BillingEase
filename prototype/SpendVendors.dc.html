@@ -14,305 +14,190 @@
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-row:hover{background:#F7F6F9}
 @media (max-width: 640px){.be-hide-sm{display:none!important}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
-                <a href="{{v.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Your business: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 270px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Northwind Studio</span><span style="font-size: 13px; color: #5F5B68;">Maya Chen · Owner</span></span>
-              <sc-for list="{{acct}}" as="ac" hint-placeholder-count="4">
-                <a href="{{ac.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ac.label}}</a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
 
-    <!-- Back + compact equation strip -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
-      <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
-        <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-          Home
-        </a>
-        <span aria-hidden="true">/</span>
-        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">Going out</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page" style="color: #18161F;">Vendors</span>
-      </nav>
-      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
-        <a href="ThreeOut.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FDE6D6; border: 2px solid #E0752D; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
-        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
-      </nav>
-    </div>
+    <dc-import name="AppCrumbs" area="out" here="Vendors"></dc-import>
 
     <!-- Title -->
     <section aria-labelledby="vd-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
       <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
         <h1 id="vd-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Who you pay <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">Vendors</span></h1>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5.5vw, 58px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{top.spent}}</span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: {{top.size}}; line-height: 1.05; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{top.big}}</span>
         <span style="font-size: 14px; color: #47444F;">{{top.line}}</span>
       </div>
       <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">Everyone the studio pays: suppliers, subscriptions, your landlord and contractors. We add them for you from bills, receipts and card charges.</p>
-        <button type="button" onClick="{{openAdd}}" aria-pressed="{{isAdd}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">{{intro}}</p>
+        <button type="button" onClick="{{openAdd}}" aria-expanded="{{addOpen}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Add a vendor
         </button>
       </div>
     </section>
 
-    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
-      <!-- List -->
-      <nav aria-labelledby="vl-h" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
-        <h2 id="vl-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Your vendors <span style="color: #5F5B68; font-weight: 600;">{{count}}</span></h2>
-        <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #CBC7D3;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search vendors</span>
-          <input type="search" value="{{q}}" onInput="{{setQ}}" placeholder="Search by name or category" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-        </label>
-        <div role="group" aria-label="Show" style="display: flex; flex-wrap: wrap; gap: 6px;">
-          <sc-for list="{{filters}}" as="fl" hint-placeholder-count="3">
-            <button type="button" aria-pressed="{{fl.on}}" onClick="{{fl.pick}}" style="min-height: 36px; padding: 0 11px; border-radius: 9999px; border: 1px solid {{fl.border}}; background: {{fl.bg}}; color: #18161F; font: 600 12.5px DM Sans, sans-serif; cursor: pointer;">{{fl.label}}</button>
-          </sc-for>
+    <!-- Add a vendor -->
+    <sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="add-h" style="background: #FFFFFF; border: 2px solid #E0752D; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 id="add-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Add a vendor</h2>
+          <span style="font-size: 14px; color: #47444F;">Who they are and where their costs usually go. You can change it later.</span>
         </div>
-        <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; gap: 2px;">
-          <sc-for list="{{list}}" as="v" hint-placeholder-count="8">
-            <button type="button" aria-pressed="{{v.on}}" onClick="{{v.pick}}" style="text-align: left; display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 14px; border: 0; background: {{v.bg}}; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
-              <span style="width: 36px; height: 36px; border-radius: 9999px; background: {{v.iniBg}}; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 12px;">{{v.ini}}</span>
-              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
-                <span style="font-weight: 700; font-size: 14px;">{{v.name}}</span>
-                <span style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 12px; color: #5F5B68;"><span>{{v.cat}}</span><sc-if value="{{v.hasOpen}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: {{v.openFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{v.openFg}};"></span>{{v.openShort}}</span></sc-if></span>
-              </span>
-              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex: none;">
-                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums;">{{v.ytd}}</span>
-                <span style="font-size: 11px; color: #5F5B68;">this year</span>
-              </span>
-            </button>
-          </sc-for>
-          <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px;">
-              <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{noResultsText}}</span>
-              <button type="button" onClick="{{addFromSearch}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{addFromSearchLabel}}</button>
-            </div>
-          </sc-if>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Name
+            <input class="be-field" type="text" value="{{f.name}}" onChange="{{setName}}" placeholder="e.g. Brooklyn Paper Co." style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Contact person (optional)
+            <input class="be-field" type="text" value="{{f.contact}}" onChange="{{setContact}}" placeholder="e.g. Dan Ruiz" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email (optional)
+            <input class="be-field" type="email" value="{{f.email}}" onChange="{{setEmail}}" placeholder="billing@example.com" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Usually goes to
+            <select class="be-field" value="{{f.cat}}" onChange="{{setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+              <sc-for list="{{catOpts}}" as="c" hint-placeholder-count="6"><option value="{{c}}">{{c}}</option></sc-for>
+            </select>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Payment terms
+            <select class="be-field" value="{{f.terms}}" onChange="{{setTerms}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+              <sc-for list="{{termOpts}}" as="o" hint-placeholder-count="4"><option value="{{o}}">{{o}}</option></sc-for>
+            </select>
+          </label>
         </div>
-      </nav>
-
-      <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
-
-        <!-- ============ ADD A VENDOR ============ -->
-        <sc-if value="{{isAdd}}" hint-placeholder-val="{{false}}">
-          <section aria-labelledby="add-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <h2 id="add-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">Add a vendor</h2>
-              <span style="font-size: 14px; color: #47444F;">Who they are and where their costs usually go. You can change it later.</span>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px;">
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Name
-                <input class="be-field" type="text" value="{{f.name}}" onChange="{{setName}}" placeholder="e.g. Brooklyn Paper Co." style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-              </label>
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Contact (optional)
-                <input class="be-field" type="text" value="{{f.contact}}" onChange="{{setContact}}" placeholder="Email or phone" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-              </label>
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Usually goes to
-                <select class="be-field" value="{{f.cat}}" onChange="{{setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <option value="Printing">Printing</option><option value="Office supplies">Office supplies</option><option value="Software">Software</option><option value="Contractors">Contractors</option><option value="Rent">Rent</option><option value="Internet &amp; phone">Internet &amp; phone</option><option value="Travel">Travel</option><option value="Meals">Meals</option><option value="Stock you sell">Stock you sell</option><option value="Other">Other</option>
-                </select>
-              </label>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
-              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">They’re a contractor (1099)</span><span style="font-size: 13px; color: #5F5B68; line-height: 1.4;">A person you pay for work, not an employee. We’ll ask them for a W-9 and track what you pay toward their 1099.</span></span>
-              <button type="button" role="switch" aria-checked="{{f.contractor}}" aria-label="They’re a contractor" onClick="{{toggleFContractor}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{f.swBg}}; cursor: pointer; padding: 0;">
-                <span style="position: absolute; top: 3px; left: {{f.swLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span>
-              </button>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
-              <button type="button" onClick="{{saveVendor}}" style="min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 16px DM Sans, sans-serif; cursor: pointer;">Save vendor</button>
-              <button type="button" onClick="{{cancelAdd}}" style="min-height: 48px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
-            </div>
-            <sc-if value="{{hasErr}}" hint-placeholder-val="{{false}}">
-              <div role="alert" style="padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{err}}</div>
-            </sc-if>
-          </section>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">They’re a contractor (1099)</span><span style="font-size: 13px; color: #5F5B68; line-height: 1.4;">A person you pay for work, not an employee. We’ll ask them for a W-9 and track what you pay toward their 1099.</span></span>
+          <button type="button" role="switch" aria-checked="{{f.contractor}}" aria-label="They’re a contractor" onClick="{{toggleFContractor}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{f.swBg}}; cursor: pointer; padding: 0;">
+            <span style="position: absolute; top: 3px; left: {{f.swLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span>
+          </button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+          <button type="button" onClick="{{saveVendor}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Save vendor</button>
+          <button type="button" onClick="{{closeAdd}}" style="min-height: 46px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+          <span style="font-size: 13px; color: #5F5B68;">Adding a vendor doesn’t change your numbers. Their bills and payments do.</span>
+        </div>
+        <sc-if value="{{err}}" hint-placeholder-val="{{false}}">
+          <div role="alert" style="padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{err}}</div>
         </sc-if>
+      </section>
+    </sc-if>
 
-        <!-- ============ PROFILE ============ -->
-        <sc-if value="{{isProfile}}" hint-placeholder-val="{{true}}">
-          <section aria-labelledby="pf-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 22px;">
-            <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 20px;">
-              <span style="width: 56px; height: 56px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 18px;">{{p.ini}}</span>
-              <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-                <h2 id="pf-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.02em;">{{p.name}}</h2>
-                <span style="font-size: 14px; color: #47444F;">{{p.contact}}</span>
-                <span style="display: flex; flex-wrap: wrap; gap: 6px;">
-                  <sc-for list="{{p.tags}}" as="tg" hint-placeholder-count="2">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{tg.bg}}; color: {{tg.fg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{tg.fg}};"></span>{{tg.label}}</span>
-                  </sc-for>
-                </span>
-              </div>
-              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin-left: auto;">
-                <span style="font-size: 13px; color: #47444F;">Spent in 2026</span>
-                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{p.ytd}}</span>
-                <span style="font-size: 13px; color: #47444F;">{{p.openText}}</span>
-              </span>
+    <!-- Found in your books -->
+    <sc-if value="{{hasSug}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="sg-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px;">
+        <h2 id="sg-h" style="margin: 0; font-size: 16px; font-weight: 700;">You’ve paid these, but they aren’t in your list yet</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{sug}}" as="s" hint-placeholder-count="2">
+            <button type="button" onClick="{{s.add}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{s.label}}</button>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+      <div style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 20px; padding: 24px; font-size: 15px; color: #47444F; line-height: 1.5;">
+        Suppliers, subscriptions, your landlord and contractors show up here as you enter bills and record what you pay. Add one now if you already know who you’ll be paying.
+      </div>
+    </sc-if>
+
+    <sc-if value="{{has}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+        <!-- List -->
+        <section aria-labelledby="vl-h" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+            <h2 id="vl-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Your vendors <span style="color: #5F5B68; font-weight: 600;">{{count}}</span></h2>
+            <div role="group" aria-label="Show" style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <sc-for list="{{filters}}" as="fl" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{fl.on}}" onClick="{{fl.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 9999px; border: 1px solid {{fl.border}}; background: {{fl.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{fl.label}}</button>
+              </sc-for>
             </div>
-
-            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-              <a href="SpendBill.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 22px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Enter a bill</a>
-              <a href="SpendTransaction.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 20px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">See transactions</a>
-              <sc-if value="{{p.isMonthly}}" hint-placeholder-val="{{false}}">
-                <a href="SpendEveryMonth.dc.html" style="display: inline-flex; align-items: center; min-height: 46px; padding: 0 6px; color: #18161F; font-weight: 600; font-size: 14px;">In Every month</a>
-              </sc-if>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
-              <!-- Bills -->
-              <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
-                <span style="font-size: 15px; font-weight: 700;">Bills</span>
-                <sc-if value="{{p.noBills}}" hint-placeholder-val="{{false}}">
-                  <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: #F7F6F9; font-size: 14px; color: #47444F; line-height: 1.45;">{{p.noBillsText}}</p>
-                </sc-if>
-                <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
-                  <sc-for list="{{p.bills}}" as="b" hint-placeholder-count="2">
-                    <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid #E2DFE8;">
-                      <span style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-                        <span style="font-weight: 600; font-size: 14px;">{{b.desc}}</span>
-                        <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 9999px; background: {{b.bg}}; color: {{b.fg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{b.fg}};"></span>{{b.status}}</span>
+          </div>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #CBC7D3;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search vendors</span>
+            <input type="search" value="{{q}}" onInput="{{setQ}}" placeholder="Search by name or category" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+          </label>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px 8px;">
+            <ul style="margin: 0; padding: 0; list-style: none;">
+              <sc-for list="{{list}}" as="v" hint-placeholder-count="8">
+                <li style="border-top: {{v.border}}; display: flex; flex-direction: column;">
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <a href="{{v.href}}" class="be-row" style="flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px; border-radius: 14px; text-decoration: none; color: #18161F; background: {{v.bg}};">
+                      <span style="width: 38px; height: 38px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 12px;">{{v.ini}}</span>
+                      <span style="flex: 1 1 170px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                        <span style="font-weight: 700; font-size: 15px;">{{v.name}}</span>
+                        <span style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 13px; color: #5F5B68;"><span>{{v.cat}}</span><sc-if value="{{v.hasOpen}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: {{v.openFg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{v.openFg}};"></span>{{v.openShort}}</span></sc-if></span>
                       </span>
-                      <span style="display: inline-flex; align-items: center; gap: 10px; margin-left: auto;">
-                        <strong style="font-family: Sora, sans-serif; font-size: 15px; font-variant-numeric: tabular-nums;">{{b.amt}}</strong>
-                        <sc-if value="{{b.open}}" hint-placeholder-val="{{true}}">
-                          <button type="button" onClick="{{b.pay}}" aria-label="{{b.payLabel}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Pay</button>
-                        </sc-if>
+                      <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; margin-left: auto;">
+                        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums;">{{v.ytd}}</span>
+                        <span style="font-size: 12px; color: #5F5B68;">paid this year</span>
                       </span>
-                    </li>
-                  </sc-for>
-                </ul>
-              </div>
-              <!-- Payments -->
-              <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
-                <span style="font-size: 15px; font-weight: 700;">Payments</span>
-                <ul style="margin: 0; padding: 0 14px; list-style: none; border-radius: 14px; background: #F7F6F9;">
-                  <sc-for list="{{p.pays}}" as="py" hint-placeholder-count="3">
-                    <li style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: {{py.border}}; font-size: 14px;">
-                      <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600;">{{py.date}}</span><span style="font-size: 12px; color: #5F5B68;">{{py.how}}</span></span>
-                      <sc-if value="{{py.isNew}}" hint-placeholder-val="{{false}}"><span style="padding: 1px 8px; border-radius: 9999px; background: #FDE6D6; font-size: 12px; font-weight: 700;">Just now</span></sc-if>
-                      <strong style="font-variant-numeric: tabular-nums;">{{py.amt}}</strong>
-                    </li>
-                  </sc-for>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Category -->
-            <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;">
-                <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 700;">Usually goes to</span><span style="font-size: 13px; color: #5F5B68;">New bills and charges from {{p.name}} land here unless you say otherwise.</span></span>
-                <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; background: #FDE6D6; font-size: 14px; font-weight: 700;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>{{p.cat}}</span>
-                <button type="button" aria-expanded="{{catOpen}}" onClick="{{toggleCat}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">{{catToggle}}</button>
-              </div>
-              <sc-if value="{{catOpen}}" hint-placeholder-val="{{false}}">
-                <div role="group" aria-label="Category" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                  <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
-                    <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{c.label}}</button>
-                  </sc-for>
-                </div>
-              </sc-if>
-            </div>
-
-            <!-- Contractor -->
-            <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 15px; font-weight: 700;">1099 contractor</span><span style="font-size: 13px; color: #5F5B68; line-height: 1.4;">Turn on for a person or one-person business you pay for work. We track the total for their 1099-NEC.</span></span>
-                <button type="button" role="switch" aria-checked="{{p.contractor}}" aria-label="1099 contractor" onClick="{{toggleContractor}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{p.swBg}}; cursor: pointer; padding: 0;">
-                  <span style="position: absolute; top: 3px; left: {{p.swLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span>
-                </button>
-              </div>
-              <sc-if value="{{p.contractor}}" hint-placeholder-val="{{false}}">
-                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-                  <sc-if value="{{p.hasW9}}" hint-placeholder-val="{{true}}">
-                    <div style="flex: 1 1 220px; min-width: 0; display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="m5 12 5 5 9-10"></path></svg>
-                      <span style="display: flex; flex-direction: column; gap: 2px; font-size: 14px;"><strong>W-9 on file</strong><span>{{p.w9Text}}</span></span>
-                    </div>
-                  </sc-if>
-                  <sc-if value="{{p.needsW9}}" hint-placeholder-val="{{false}}">
-                    <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 16px; background: #FFF0B8; color: #6B5000;">
-                      <span style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 2px; font-size: 14px;"><strong>{{p.w9Title}}</strong><span>{{p.w9Text}}</span></span>
-                      <sc-if value="{{p.canAskW9}}" hint-placeholder-val="{{true}}">
-                        <button type="button" onClick="{{askW9}}" style="min-height: 38px; padding: 0 16px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Ask for a W-9</button>
-                      </sc-if>
-                    </div>
-                  </sc-if>
-                  <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9; font-size: 14px;">
-                    <strong>{{p.nec}}</strong>
-                    <span style="color: #47444F; line-height: 1.4;">{{p.necText}}</span>
+                    </a>
+                    <button type="button" aria-expanded="{{v.editing}}" aria-label="{{v.editLabel}}" onClick="{{v.toggleEdit}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"></path></svg></button>
                   </div>
-                </div>
-              </sc-if>
-            </div>
-          </section>
-        </sc-if>
+                  <sc-if value="{{v.editing}}" hint-placeholder-val="{{false}}">
+                    <div style="margin: 0 8px 12px; padding: 14px; border-radius: 14px; background: #F7F6F9; display: flex; flex-direction: column; gap: 12px;">
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 10px;">
+                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Name
+                          <input class="be-field" type="text" value="{{e.name}}" onChange="{{setEName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email
+                          <input class="be-field" type="email" value="{{e.email}}" onChange="{{setEEmail}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Usually goes to
+                          <select class="be-field" value="{{e.cat}}" onChange="{{setECat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                            <sc-for list="{{catOpts}}" as="c" hint-placeholder-count="6"><option value="{{c}}">{{c}}</option></sc-for>
+                          </select>
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Payment terms
+                          <input class="be-field" type="text" value="{{e.terms}}" onChange="{{setETerms}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                        </label>
+                      </div>
+                      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                        <button type="button" onClick="{{v.saveEdit}}" style="min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save</button>
+                        <button type="button" onClick="{{v.toggleEdit}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Close</button>
+                        <a href="{{v.href}}" style="font-size: 14px; font-weight: 600;">All details</a>
+                      </div>
+                    </div>
+                  </sc-if>
+                </li>
+              </sc-for>
+            </ul>
+            <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px;">
+                <span style="flex: 1 1 200px; font-size: 14px; color: #47444F; line-height: 1.45;">{{noResultsText}}</span>
+                <button type="button" onClick="{{addFromSearch}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{addFromSearchLabel}}</button>
+              </div>
+            </sc-if>
+          </div>
+        </section>
 
         <!-- How it counts -->
-        <div style="display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; border-radius: 20px; background: #FDE6D6; font-size: 14px; line-height: 1.45;">
-          <span style="font-weight: 700; font-size: 15px;">How vendors count in Going out</span>
-          <span>Every payment to a vendor is part of Going out. Open bills sit in <strong>still to pay</strong> until you pay them, then move to <strong>paid</strong>. Your total doesn’t change, only which side it’s on.</span>
-          <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #FFFFFF; gap: 2px;">
-            <span style="width: {{g.paidPct}}%; background: #E0752D;"></span>
-            <span style="width: {{g.schPct}}%; background: #F4C3A1;"></span>
-          </span>
-          <span style="display: flex; flex-wrap: wrap; gap: 4px 20px; color: #47444F;"><span>Going out <strong style="color: #18161F;">{{n.out}}</strong></span><span><strong style="color: #18161F;">{{g.paid}}</strong> paid</span><span><strong style="color: #18161F;">{{g.sch}}</strong> still to pay</span></span>
-        </div>
+        <aside style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 20px; background: #FDE6D6; font-size: 14px; line-height: 1.45;">
+            <span style="font-weight: 700; font-size: 15px;">How vendors count in Going out</span>
+            <span>Every payment to a vendor is part of Going out. Open bills sit in <strong>still to pay</strong> until you pay them, then move to <strong>paid</strong>. Paying a bill doesn’t change the total, only which side it’s on.</span>
+            <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #FFFFFF; gap: 2px;">
+              <span style="width: {{g.paidPct}}%; background: #E0752D;"></span>
+              <span style="width: {{g.schPct}}%; background: #F4C3A1;"></span>
+            </span>
+            <span style="display: flex; flex-wrap: wrap; gap: 4px 20px; color: #47444F;"><span>Going out <strong style="color: #18161F;">{{g.out}}</strong></span><span><strong style="color: #18161F;">{{g.paid}}</strong> paid</span><span><strong style="color: #18161F;">{{g.sch}}</strong> still to pay</span></span>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+            <span style="font-weight: 700; font-size: 15px;">Open bills</span>
+            <span style="color: #47444F; line-height: 1.45;">{{billLine}}</span>
+            <a href="SpendBill.dc.html#new" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; text-decoration: none;">Enter a bill</a>
+          </div>
+        </aside>
       </div>
-    </div>
+    </sc-if>
 
-    <nav aria-label="Full detail" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+    <nav aria-label="More for Going out" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
       <span>More for Going out:</span>
       <a href="SpendBill.dc.html" style="font-weight: 600;">Bills</a>
       <a href="SpendEveryMonth.dc.html" style="font-weight: 600;">Every month</a>
@@ -320,7 +205,6 @@ a{color:#18161F}a:hover{color:#000000}
       <a href="SpendPayroll.dc.html" style="font-weight: 600;">Payroll</a>
       <a href="BooksReports.dc.html" style="font-weight: 600;">Who do I owe? report</a>
     </nav>
-
   </main>
 
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
@@ -331,210 +215,125 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1290}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
 class Component extends DCLogic {
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
-  money2(n) { return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  num(s) { const v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; }
-  base(outT) {
-    const st = this.state;
-    const inT = 24850, profit = inT - outT, keep = Math.round(profit - Math.round(profit * 0.25));
-    return {
-      n: { in: this.money(inT), out: this.money(outT), keep: this.money(keep) },
-      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
-      verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-      ],
-      acct: [
-        { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
-        { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
-        { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
-        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
-        { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
-        { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
-      ],
-      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
-      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
-      closeMenus: () => this.setState({ newOpen: false, acctOpen: false }),
-      toast: st.toast
-    };
-  }
-
   constructor(props) {
     super(props);
-    const V = (id, name, contact, cat, via, ytd, extra) => Object.assign({ id, name, contact, cat, via, ytd, bills: [], pays: [], monthly: false, contractor: false, w9: null, w9Asked: false }, extra || {});
-    this.state = {
-      newOpen: false, acctOpen: false, toast: null,
-      q: '', filter: 'all', sel: 'lps', view: 'profile', catOpen: false, paid: [], err: '',
-      f: { name: '', contact: '', cat: 'Printing', contractor: false },
-      vendors: [
-        V('lps', 'Local Print Shop', 'Dan Ruiz · (718) 555-0142', 'Printing', 'Amex ••1009', 4118, {
-          bills: [{ id: 'LPS-2291', desc: '500 tri-fold brochures for Lumen Dental', due: 'Oct 12', dueIn: 8, amt: 640, open: true }, { id: 'LPS-2264', desc: 'Business cards, four names', due: 'Oct 2', amt: 236, open: false }],
-          pays: [{ date: 'Oct 2', how: 'Amex ••1009 · business cards', amt: 236 }, { date: 'Sep 9', how: 'Amex ••1009 · menu boards', amt: 418 }, { date: 'Aug 21', how: 'Chase ••4417 · trade show banners', amt: 1120 }]
-        }),
-        V('cc', 'Comcast Business', 'Business account ••8830 · autopay', 'Internet & phone', 'Chase ••4417', 1290, {
-          monthly: true,
-          bills: [{ id: 'CB-88213', desc: 'Fiber upgrade, one-time install', due: 'Oct 15', dueIn: 11, amt: 190, open: true }],
-          pays: [{ date: 'Oct 3', how: 'Chase ••4417 · monthly service', amt: 129 }, { date: 'Sep 3', how: 'Chase ••4417 · monthly service', amt: 129 }, { date: 'Aug 3', how: 'Chase ••4417 · monthly service', amt: 129 }]
-        }),
-        V('st', 'Staples', 'Business account · orders online', 'Office supplies', 'Amex ••1009', 1146, {
-          bills: [{ id: '7731-0922', desc: 'Paper, ink and mailers', due: 'Oct 22', dueIn: 18, amt: 212, open: true }],
-          pays: [{ date: 'Oct 3', how: 'Amex ••1009 · printer paper', amt: 84 }, { date: 'Aug 30', how: 'Amex ••1009 · shipping boxes', amt: 146 }, { date: 'Jul 12', how: 'Amex ••1009 · desk lamps', amt: 238 }]
-        }),
-        V('ad', 'Adobe Creative Cloud', 'Teams plan, 3 seats', 'Software', 'Amex ••1009', 900, {
-          monthly: true,
-          bills: [{ id: 'ADB-559201', desc: 'Adobe Stock, annual add-on', due: 'Oct 28', dueIn: 24, amt: 360, open: true }],
-          pays: [{ date: 'Oct 1', how: 'Amex ••1009 · monthly plan', amt: 90 }, { date: 'Sep 1', how: 'Amex ••1009 · monthly plan', amt: 90 }, { date: 'Aug 1', how: 'Amex ••1009 · monthly plan', amt: 90 }]
-        }),
-        V('ww', 'WeWork', 'Private office, Dumbo · rent on the 1st', 'Rent', 'Chase ••4417', 12000, {
-          monthly: true,
-          pays: [{ date: 'Oct 1', how: 'Chase ••4417 · October rent', amt: 1200 }, { date: 'Sep 1', how: 'Chase ••4417 · September rent', amt: 1200 }, { date: 'Aug 1', how: 'Chase ••4417 · August rent', amt: 1200 }]
-        }),
-        V('er', 'Elena Rossi', 'Illustrator · paid by bank transfer', 'Contractors', 'Chase ••4417', 9860, {
-          contractor: true, w9: 'Feb 3, 2026',
-          bills: [{ id: 'ER-014', desc: 'Contract illustration, September', due: 'Oct 30', dueIn: 26, amt: 1045, open: true }, { id: 'ER-013', desc: 'Contract illustration, August', due: 'Oct 3', amt: 936, open: false }],
-          pays: [{ date: 'Oct 3', how: 'Bank transfer · invoice ER-013', amt: 936 }, { date: 'Sep 4', how: 'Bank transfer · invoice ER-012', amt: 1210 }, { date: 'Aug 5', how: 'Bank transfer · invoice ER-011', amt: 880 }]
-        }),
-        V('fg', 'Figma', 'Professional plan, 2 editors', 'Software', 'Amex ••1009', 450, {
-          monthly: true,
-          pays: [{ date: 'Oct 2', how: 'Amex ••1009 · monthly plan', amt: 45 }, { date: 'Sep 2', how: 'Amex ••1009 · monthly plan', amt: 45 }, { date: 'Aug 2', how: 'Amex ••1009 · monthly plan', amt: 45 }]
-        }),
-        V('dl', 'Delta Air Lines', 'Card charges only', 'Travel', 'Amex ••1009', 1486, {
-          pays: [{ date: 'Oct 2', how: 'Amex ••1009 · JFK to Chicago, client visit', amt: 412 }, { date: 'Jun 14', how: 'Amex ••1009 · JFK to Austin, conference', amt: 1074 }]
-        }),
-        V('sh', 'Shell', 'Card charges only', 'Fuel', 'Amex ••1009', 517, {
-          pays: [{ date: 'Oct 3', how: 'Amex ••1009', amt: 48 }, { date: 'Sep 18', how: 'Amex ••1009', amt: 52 }, { date: 'Sep 2', how: 'Amex ••1009', amt: 46 }]
-        })
-      ],
-      justPaid: []
-    };
+    this.state = { toast: null, q: '', filter: 'all', addOpen: false, err: '', editId: null, e: null, justAdded: null,
+      f: { name: '', contact: '', email: '', cat: 'Office supplies', terms: 'Net 30', contractor: false } };
   }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  componentWillUnmount() { clearTimeout(this._t); }
   setF(patch) { this.setState({ f: Object.assign({}, this.state.f, patch), err: '' }); }
-  updV(id, patch) { this.setState({ vendors: this.state.vendors.map((v) => (v.id === id ? Object.assign({}, v, patch) : v)) }); }
   renderVals() {
     const st = this.state;
-    const money = (n) => this.money(n);
-    const ini = (s) => s.replace(/&/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
-    const out = this.base(13640);
-    const isOpen = (b) => b.open && st.paid.indexOf(b.id) < 0;
-    const openOf = (v) => v.bills.filter(isOpen);
-    const openSum = (v) => openOf(v).reduce((a, b) => a + b.amt, 0);
-    const paidHere = st.vendors.reduce((a, v) => a + v.bills.filter((b) => b.open && st.paid.indexOf(b.id) >= 0).reduce((x, b) => x + b.amt, 0), 0);
-    const ytdOf = (v) => v.ytd + v.bills.filter((b) => b.open && st.paid.indexOf(b.id) >= 0).reduce((x, b) => x + b.amt, 0);
+    const money = (n) => BE.money(n, 'USD', { whole: n >= 1000 });
+    const vendors = BE.all('vendors');
+    const CATS = ['Printing', 'Office supplies', 'Software', 'Contractors', 'Rent', 'Internet & phone', 'Insurance', 'Travel', 'Fuel', 'Meals', 'Stock you sell', 'Other'];
+    const TERMS = ['Due on receipt', 'Net 10', 'Net 15', 'Net 30', 'Net 60', 'Card on file', 'Paid by card'];
+    const stats = {};
+    vendors.forEach((v) => { stats[v.id] = BE.vendorStats(v); });
 
-    // Going out split
-    const gPaid = 3180 + paidHere, gSch = 10460 - paidHere, gPct = Math.round(gPaid / 13640 * 100);
-    const g = { paid: money(gPaid), sch: money(gSch), paidPct: gPct, schPct: 100 - gPct };
+    // Totals
+    const t = BE.totals();
+    const gPct = t.out > 0 ? Math.round(t.outPaid / t.out * 100) : 0;
+    const g = { out: t.fmt.out, paid: t.fmt.outPaid, sch: t.fmt.outSch, paidPct: gPct, schPct: 100 - gPct };
+    const totalYtd = vendors.reduce((a, v) => a + stats[v.id].year, 0);
+    const openBills = BE.all('bills').filter((b) => b.status !== 'paid');
+    const openSum = openBills.reduce((a, b) => a + (BE.billLeft ? BE.billLeft(b) : b.amount - (b.paid || 0)), 0);
+    const has = vendors.length > 0;
+    const top = has ? { big: money(totalYtd), size: 'clamp(40px, 5.5vw, 58px)', line: 'Paid to ' + vendors.length + ' vendors in 2026 · ' + (openBills.length ? money(openSum) + ' in ' + openBills.length + (openBills.length === 1 ? ' open bill' : ' open bills') : 'no open bills') }
+      : { big: 'Nobody yet', size: 'clamp(30px, 4vw, 40px)', line: 'Your first bill or payment adds the first vendor.' };
 
-    // Top
-    const totalYtd = st.vendors.reduce((a, v) => a + ytdOf(v), 0);
-    const allOpen = st.vendors.reduce((a, v) => a.concat(openOf(v)), []);
-    const top = {
-      spent: money(totalYtd),
-      line: 'Paid to ' + st.vendors.length + ' vendors in 2026 · ' + (allOpen.length ? money(allOpen.reduce((a, b) => a + b.amt, 0)) + ' in ' + allOpen.length + ' open bills' : 'no open bills')
-    };
+    // Names you've paid that aren't vendors yet
+    const seen = {};
+    const sug = [];
+    BE.all('bills').concat(BE.all('expenses')).forEach((x) => {
+      const n = (x.who || '').trim();
+      if (!n || seen[n.toLowerCase()] || /^payroll$/i.test(n) || BE.vendorFor(n)) return;
+      if (x.kind === 'personal' || x.kind === 'transfer') return;
+      seen[n.toLowerCase()] = 1;
+      sug.push({ label: n, add: () => {
+        const cat = x.cat && CATS.indexOf(x.cat) >= 0 ? x.cat : 'Other';
+        const nv = BE.add('vendors', { id: BE.id('v'), name: n, cat, contact: '', email: '', phone: '', terms: x.num ? 'Net 30' : 'Paid by card', via: x.how || 'Chase ••4417', paidBefore: 0, past: [] }, { end: true });
+        this.setState({ justAdded: nv.id });
+        this.notify(n + ' added to your vendors');
+      } });
+    });
 
     // Filter + search
     const q = st.q.trim().toLowerCase();
     const FL = [['all', 'All'], ['open', 'Open bills'], ['contractors', 'Contractors']];
-    const passF = (v, k) => (k === 'open' ? openOf(v).length > 0 : k === 'contractors' ? v.contractor : true);
+    const passF = (v, k) => (k === 'open' ? stats[v.id].open.length > 0 : k === 'contractors' ? !!v.contractor : true);
     const filters = FL.map(([k, label]) => {
-      const n = st.vendors.filter((v) => passF(v, k)).length;
       const on = st.filter === k;
-      return { label: label + ' ' + n, on, bg: on ? '#FDE6D6' : '#FFFFFF', border: on ? '#E0752D' : '#CBC7D3', pick: () => this.setState({ filter: k }) };
+      return { label: label + ' ' + vendors.filter((v) => passF(v, k)).length, on, bg: on ? '#FDE6D6' : '#FFFFFF', border: on ? '#E0752D' : '#CBC7D3', pick: () => this.setState({ filter: k }) };
     });
-    const shown = st.vendors.filter((v) => passF(v, st.filter) && (!q || (v.name + ' ' + v.cat).toLowerCase().indexOf(q) >= 0));
-    const list = shown.map((v) => {
-      const on = st.view === 'profile' && st.sel === v.id;
-      const o = openOf(v), soon = o.some((b) => b.dueIn <= 8);
+    const shown = vendors.filter((v) => passF(v, st.filter) && (!q || (v.name + ' ' + v.cat + ' ' + (v.contact || '')).toLowerCase().indexOf(q) >= 0))
+      .sort((a, b) => stats[b.id].year - stats[a.id].year);
+    const e = st.e || {};
+    const list = shown.map((v, i) => {
+      const s = stats[v.id];
+      const soon = s.open.some((b) => b.dueIn <= 8);
+      const editing = st.editId === v.id;
       return {
-        name: v.name, cat: v.cat + (v.contractor ? ' · 1099' : ''), ytd: money(ytdOf(v)), ini: ini(v.name), on,
-        bg: on ? '#FDE6D6' : '#FFFFFF', iniBg: on ? '#FFFFFF' : '#FDE6D6',
-        hasOpen: o.length > 0, openShort: money(openSum(v)) + ' open', openFg: soon ? '#6B5000' : '#47444F',
-        pick: () => this.setState({ sel: v.id, view: 'profile', catOpen: false })
+        href: 'SpendVendor.dc.html#' + v.id, name: v.name, ini: BE.initials(v.name), cat: v.cat + (v.contractor ? ' · 1099' : ''),
+        ytd: money(s.year), border: i === 0 ? '0' : '1px solid #EFEDF3', bg: st.justAdded === v.id ? '#FDE6D6' : 'transparent',
+        hasOpen: s.open.length > 0, openShort: money(s.openSum) + ' open', openFg: soon ? '#6B5000' : '#47444F',
+        editing, editLabel: 'Edit ' + v.name,
+        toggleEdit: () => this.setState(editing ? { editId: null, e: null } : { editId: v.id, e: { name: v.name, email: v.email || '', cat: v.cat, terms: v.terms || '' } }),
+        saveEdit: () => {
+          const name = (e.name || '').trim();
+          if (!name) { this.notify('A vendor needs a name'); return; }
+          const clash = vendors.some((x) => x.id !== v.id && x.name.toLowerCase() === name.toLowerCase());
+          if (clash) { this.notify(name + ' is already one of your vendors'); return; }
+          const aka = (v.aka || []).slice();
+          if (name !== v.name && aka.indexOf(v.name) < 0) aka.push(v.name);
+          BE.update('vendors', v.id, { name, email: (e.email || '').trim(), cat: e.cat, terms: (e.terms || '').trim(), aka });
+          this.setState({ editId: null, e: null });
+          this.notify('Saved ' + name + (e.cat !== v.cat ? ' · new bills go to ' + e.cat : ''));
+        }
       };
     });
-    const noResults = shown.length === 0;
+    const setE = (k) => (ev) => this.setState({ e: Object.assign({}, e, { [k]: ev.target.value }) });
 
-    // Profile
-    const v = st.vendors.filter((x) => x.id === st.sel)[0] || st.vendors[0];
-    const o = openOf(v);
-    const tags = [{ label: v.cat, bg: '#FDE6D6', fg: '#18161F' }];
-    if (v.contractor) tags.push({ label: '1099 contractor', bg: '#E1EEF8', fg: '#1F5E91' });
-    if (v.monthly) tags.push({ label: 'Every month', bg: '#EFEDF3', fg: '#47444F' });
-    const bills = v.bills.map((b) => {
-      const open = isOpen(b), justPaid = b.open && !open;
-      const soon = open && b.dueIn <= 8;
-      return {
-        desc: b.desc + ' · ' + b.id, amt: money(b.amt), open,
-        status: open ? 'Due ' + b.due + (soon ? ' · in ' + b.dueIn + ' days' : '') : (justPaid ? 'Paid today' : 'Paid ' + b.due),
-        bg: open ? (soon ? '#FFF0B8' : '#EFEDF3') : '#E2F6D5', fg: open ? (soon ? '#6B5000' : '#47444F') : '#2F5711',
-        payLabel: 'Pay ' + v.name + ' ' + money(b.amt),
-        pay: () => { this.setState({ paid: st.paid.concat([b.id]), justPaid: st.justPaid.concat([{ vid: v.id, amt: b.amt, id: b.id }]) }); this.notify('Paid ' + v.name + ' ' + money(b.amt) + ' from ' + v.via); }
-      };
-    });
-    const newPays = st.justPaid.filter((x) => x.vid === v.id).reverse().map((x) => ({ date: 'Oct 4', how: v.via + ' · bill ' + x.id, amt: x.amt, isNew: true }));
-    const pays = newPays.concat(v.pays.map((x) => Object.assign({ isNew: false }, x))).map((x, i) => ({ date: x.date, how: x.how, amt: money(x.amt), isNew: x.isNew, border: i === 0 ? '0' : '1px solid #E2DFE8' }));
-    const ytdV = ytdOf(v);
-    const first = v.name.split(' ')[0];
-    const p = {
-      name: v.name, ini: ini(v.name), contact: v.contact || 'No contact details yet', tags, ytd: money(ytdV),
-      openText: o.length ? money(openSum(v)) + ' in ' + o.length + (o.length === 1 ? ' open bill' : ' open bills') : 'Nothing owed right now',
-      isMonthly: v.monthly, cat: v.cat,
-      bills, noBills: v.bills.length === 0,
-      noBillsText: v.monthly ? v.name + ' charges you automatically every month, so there are no bills to enter. Each charge shows under Payments.' : 'No bills from ' + v.name + '. Card charges show under Payments as they come in.',
-      pays: pays.length ? pays : [{ date: 'Nothing yet', how: 'Payments show here once you pay ' + v.name, amt: '', isNew: false, border: '0' }],
-      contractor: v.contractor, swBg: v.contractor ? '#18161F' : '#CBC7D3', swLeft: v.contractor ? '25px' : '3px',
-      hasW9: v.contractor && !!v.w9, needsW9: v.contractor && !v.w9, canAskW9: !v.w9Asked,
-      w9Title: v.w9Asked ? 'W-9 requested' : 'W-9 needed',
-      w9Text: v.w9 ? 'Received ' + v.w9 + '. Name, address and tax ID are saved for the 1099.' : (v.w9Asked ? 'We emailed ' + v.name + ' a secure link on Oct 4. We’ll tell you when it’s back.' : 'We need their name, address and tax ID before January.'),
-      nec: money(ytdV) + ' paid this year',
-      necText: ytdV >= 600 ? 'That’s over $600, so we’ll prepare ' + first + '’s 1099-NEC and send it by Jan 31, 2027.' : 'A 1099-NEC is needed once you pay ' + first + ' $600 or more in a year. We’ll keep count.'
-    };
-    const CATS = ['Printing', 'Office supplies', 'Software', 'Contractors', 'Rent', 'Internet & phone', 'Travel', 'Fuel', 'Meals', 'Other'];
-    const cats = CATS.map((c) => ({
-      label: c, on: v.cat === c, bg: v.cat === c ? '#FDE6D6' : '#FFFFFF', border: v.cat === c ? '#E0752D' : '#CBC7D3',
-      pick: () => { if (v.cat === c) { this.setState({ catOpen: false }); return; } this.updV(v.id, { cat: c }); this.setState({ catOpen: false }); this.notify('From now on, ' + v.name + ' goes to ' + c); }
-    }));
-
-    // Add form
+    // Add
     const f = st.f;
     const saveVendor = () => {
       const name = f.name.trim();
       if (!name) { this.setState({ err: 'Add the vendor’s name.' }); return; }
-      if (st.vendors.some((x) => x.name.toLowerCase() === name.toLowerCase())) { this.setState({ err: name + ' is already one of your vendors.' }); return; }
-      const id = 'v' + Date.now();
-      const nv = { id, name, contact: f.contact.trim(), cat: f.cat, via: 'Chase ••4417', ytd: 0, bills: [], pays: [], monthly: false, contractor: f.contractor, w9: null, w9Asked: false };
-      this.setState({ vendors: st.vendors.concat([nv]), sel: id, view: 'profile', q: '', filter: 'all', f: { name: '', contact: '', cat: 'Printing', contractor: false }, err: '' });
-      this.notify(name + ' added to your vendors');
+      if (BE.vendorFor(name)) { this.setState({ err: name + ' is already one of your vendors.' }); return; }
+      const nv = BE.add('vendors', { id: BE.id('v'), name, cat: f.cat, contact: f.contact.trim(), email: f.email.trim(), phone: '', terms: f.terms, via: 'Chase ••4417', contractor: f.contractor, paidBefore: 0, past: [] }, { end: true });
+      this.setState({ addOpen: false, q: '', filter: 'all', justAdded: nv.id, f: { name: '', contact: '', email: '', cat: 'Office supplies', terms: 'Net 30', contractor: false }, err: '' });
+      this.notify(name + ' added to your vendors' + (f.contractor ? ' · we’ll ask them for a W-9' : ''));
     };
 
-    return Object.assign(out, {
-      g, top, count: st.vendors.length, q: st.q,
-      setQ: (e) => this.setState({ q: e.target.value }),
-      filters, list, noResults,
-      noResultsText: q ? 'No one matches “' + st.q.trim() + '”.' : 'No vendors here yet.',
-      addFromSearchLabel: q ? 'Add “' + st.q.trim() + '” as a vendor' : 'Add a vendor',
-      addFromSearch: () => this.setState({ view: 'add', f: Object.assign({}, f, { name: st.q.trim() }), err: '' }),
-      isAdd: st.view === 'add', isProfile: st.view === 'profile',
-      openAdd: () => this.setState({ view: 'add', err: '' }),
-      cancelAdd: () => this.setState({ view: 'profile', err: '' }),
-      f: { name: f.name, contact: f.contact, cat: f.cat, contractor: f.contractor, swBg: f.contractor ? '#18161F' : '#CBC7D3', swLeft: f.contractor ? '25px' : '3px' },
-      setName: (e) => this.setF({ name: e.target.value }),
-      setContact: (e) => this.setF({ contact: e.target.value }),
-      setCat: (e) => this.setF({ cat: e.target.value, contractor: e.target.value === 'Contractors' ? true : f.contractor }),
+    return {
+      has, none: !has, top,
+      intro: has ? 'Everyone the business pays: suppliers, subscriptions, your landlord and contractors. We add them for you from bills, receipts and card charges.' : 'Everyone the business pays, in one place: what you owe them and what you’ve paid this year.',
+      g, billLine: openBills.length ? money(openSum) + ' across ' + openBills.length + (openBills.length === 1 ? ' bill' : ' bills') + ', counted in Going out as still to pay.' : 'Nothing owed right now. Bills you enter show up here until they’re paid.',
+      count: vendors.length, q: st.q, setQ: (ev) => this.setState({ q: ev.target.value }),
+      filters, list, noResults: shown.length === 0,
+      noResultsText: q ? 'No one matches “' + st.q.trim() + '”.' : 'No vendors match this filter.',
+      addFromSearchLabel: q ? 'Add “' + st.q.trim() + '”' : 'Show all',
+      addFromSearch: () => (q ? this.setState({ addOpen: true, f: Object.assign({}, f, { name: st.q.trim() }), err: '' }) : this.setState({ filter: 'all' })),
+      sug: sug.slice(0, 6).map((s) => ({ label: 'Add ' + s.label, add: s.add })), hasSug: sug.length > 0,
+      e: { name: e.name || '', email: e.email || '', cat: e.cat || 'Other', terms: e.terms || '' },
+      setEName: setE('name'), setEEmail: setE('email'), setECat: setE('cat'), setETerms: setE('terms'),
+      catOpts: CATS, termOpts: TERMS,
+      addOpen: st.addOpen,
+      openAdd: () => this.setState({ addOpen: !st.addOpen, err: '' }),
+      closeAdd: () => this.setState({ addOpen: false, err: '' }),
+      f: { name: f.name, contact: f.contact, email: f.email, cat: f.cat, terms: f.terms, contractor: f.contractor, swBg: f.contractor ? '#18161F' : '#CBC7D3', swLeft: f.contractor ? '25px' : '3px' },
+      setName: (ev) => this.setF({ name: ev.target.value }),
+      setContact: (ev) => this.setF({ contact: ev.target.value }),
+      setEmail: (ev) => this.setF({ email: ev.target.value }),
+      setCat: (ev) => this.setF({ cat: ev.target.value, contractor: ev.target.value === 'Contractors' ? true : f.contractor }),
+      setTerms: (ev) => this.setF({ terms: ev.target.value }),
       toggleFContractor: () => this.setF({ contractor: !f.contractor }),
-      saveVendor, hasErr: !!st.err, err: st.err,
-      p, cats, catOpen: st.catOpen, catToggle: st.catOpen ? 'Done' : 'Change',
-      toggleCat: () => this.setState({ catOpen: !st.catOpen }),
-      toggleContractor: () => { const on = !v.contractor; this.updV(v.id, { contractor: on }); this.notify(on ? v.name + ' marked as a 1099 contractor' : v.name + ' is no longer tracked for a 1099'); },
-      askW9: () => { this.updV(v.id, { w9Asked: true }); this.notify('W-9 request sent to ' + v.name); }
-    });
+      saveVendor, err: st.err,
+      toast: st.toast
+    };
   }
 }
 </script>

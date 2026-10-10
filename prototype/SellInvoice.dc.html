@@ -345,22 +345,10 @@ class Component extends DCLogic {
     };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
-  /** Catalog items: services and products from the store (or Northwind's defaults until that collection exists). */
+  /** Catalog items: services and products from the store. */
   catalogItems() {
-    const svc = BE.get('services'), prd = BE.get('products');
-    const FALLBACK_S = [
-      { name: 'Brand strategy workshop', unit: 'workshop', per: 'Flat', price: 1800 }, { name: 'Design hours', unit: 'hour', per: 'Hourly', price: 120 },
-      { name: 'Website page design', unit: 'page', per: 'Per page', price: 950 }, { name: 'Photo editing', unit: 'hour', per: 'Hourly', price: 85 },
-      { name: 'Monthly social retainer', unit: 'month', per: 'Monthly', price: 540 }
-    ];
-    const FALLBACK_P = [
-      { name: 'Printed brand kit', unit: 'kit', price: 65, stock: 48, reorder: 15 }, { name: 'Enamel logo pin', unit: 'pin', price: 8, stock: 310, reorder: 50 },
-      { name: 'Letterpress card set', unit: 'set', price: 24, stock: 9, reorder: 15 }, { name: 'Tote bag', unit: 'bag', price: 28, stock: 0, reorder: 10 }
-    ];
-    const useFallback = svc === undefined && prd === undefined && !BE.isEmpty();
-    const services = (useFallback ? FALLBACK_S : BE.all('services')).filter((x) => x.active !== false && x.archived !== true);
-    const products = (useFallback ? FALLBACK_P : BE.all('products')).filter((x) => x.active !== false && x.archived !== true);
-    return { services, products, fallback: useFallback };
+    const live = (x) => x.active !== false && x.archived !== true;
+    return { services: BE.all('services').filter(live), products: BE.all('products').filter(live) };
   }
   productOf(name) { return this.catalogItems().products.find((p) => p.name === name) || null; }
   blank() {
@@ -471,12 +459,13 @@ class Component extends DCLogic {
     const addItem = (c, kind) => {
       const seq = st.seq + 1;
       const unit = String(c.unit || (kind === 'product' ? 'item' : 'item')).replace(/^per\s+/i, '').replace(/s$/, '');
-      this.setState({ seq, catOpen: false, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: seq, name: c.name, kind, unit, rateType: kind === 'service' ? (c.per || c.billing || c.rateType || '') : '', qty: '1', rate: String(convTo(Number(c.price) || 0, f.cur)), base: Number(c.price) || 0, tax: kind === 'product' }]) }) });
+      this.setState({ seq, catOpen: false, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: seq, name: c.name, kind, unit, rateType: kind === 'service' ? rtName(c) : '', qty: '1', rate: String(convTo(Number(c.price) || 0, f.cur)), base: Number(c.price) || 0, tax: kind === 'product' }]) }) });
       this.notify(c.name + ' added');
     };
+    const rtName = (c) => ({ flat: 'Flat', hourly: 'Hourly', monthly: 'Monthly', daily: 'Daily' })[c.rt] || c.per || c.billing || c.rateType || '';
     const catalog = [];
     if (cat.services.length) catalog.push({ isHead: true, isItem: false, label: 'Services · ' + (taxRate ? 'not taxed' : 'what you do') });
-    cat.services.forEach((c) => catalog.push({ isHead: false, isItem: true, label: c.name, price: SYM(f.cur) + convTo(Number(c.price) || 0, f.cur).toLocaleString('en-US'), sub: c.per || c.billing || (c.unit ? 'Per ' + String(c.unit).replace(/^per\s+/i, '') : 'Flat price'), subFg: '#5F5B68', add: () => addItem(c, 'service') }));
+    cat.services.forEach((c) => catalog.push({ isHead: false, isItem: true, label: c.name, price: SYM(f.cur) + convTo(Number(c.price) || 0, f.cur).toLocaleString('en-US'), sub: rtName(c) === 'Flat' ? 'Flat price' + (c.unit ? ' per ' + c.unit : '') : (c.unit ? 'Per ' + String(c.unit).replace(/^per\s+/i, '') : rtName(c) || 'Service'), subFg: '#5F5B68', add: () => addItem(c, 'service') }));
     if (cat.products.length) catalog.push({ isHead: true, isItem: false, label: 'Products' + (taxRate ? ' · ' + taxName : '') });
     cat.products.forEach((c) => {
       const stock = c.stock == null ? null : Number(c.stock), low = stock != null && stock > 0 && stock < Number(c.reorder || c.reorderAt || 15);
@@ -621,7 +610,7 @@ class Component extends DCLogic {
       title: editInv.num + (editInv.void ? ' was voided' : ' is paid'),
       body: editInv.void ? 'A voided invoice stays in your records as it was. Copy it into a new invoice to bill the work again.' : editInv.who + ' paid it in full, so it stays as they saw it. To bill them again, copy it into a new invoice.'
     } : { on: false };
-    const time = BE.all('time').filter((x) => !x.billed);
+    const time = BE.all('time').filter((x) => !x.inv && !x.billed && (!f.who || x.who === f.who));
     const tHours = time.reduce((a, x) => a + (Number(x.hours) || 0), 0);
     const tWho = time.length ? (time[0].who || time[0].customer || '') : '';
     return {

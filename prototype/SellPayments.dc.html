@@ -20,83 +20,18 @@ a{color:#18161F}a:hover{color:#000000}
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
-  <header style="background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
-    <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 12px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-      <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
-      </a>
-      <label style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #EFEDF3; max-width: 480px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
-        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Find anything</span>
-        <input type="search" placeholder="Find a customer, invoice, expense or report" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-      </label>
-      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{newOpen}}" onClick="{{toggleNew}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-            New
-          </button>
-          <sc-if value="{{newOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 280px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <sc-for list="{{verbs}}" as="v" hint-placeholder-count="4">
-                <a href="{{v.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F;">
-                  <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 600; font-size: 15px;">{{v.label}}</span>
-                    <span style="font-size: 12px; color: #5F5B68;">{{v.hint}}</span>
-                  </span>
-                </a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-        <div style="position: relative;">
-          <button type="button" aria-haspopup="menu" aria-expanded="{{acctOpen}}" aria-label="Your business: Maya Chen, Northwind Studio" onClick="{{toggleAcct}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
-          <sc-if value="{{acctOpen}}" hint-placeholder-val="{{false}}">
-            <div role="menu" style="position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: 270px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-              <span style="display: flex; flex-direction: column; padding: 8px 12px 10px; border-bottom: 1px solid #EFEDF3; margin-bottom: 4px;"><span style="font-weight: 700; font-size: 15px;">Northwind Studio</span><span style="font-size: 13px; color: #5F5B68;">Maya Chen · Owner</span></span>
-              <sc-for list="{{acct}}" as="ac" hint-placeholder-count="4">
-                <a href="{{ac.href}}" role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; color: #18161F; font-weight: 600; font-size: 14px;">{{ac.label}}</a>
-              </sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </header>
+  <dc-import name="AppHeader"></dc-import>
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
 
-    <!-- Back + compact equation strip -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;">
-      <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 14px; font-weight: 600; color: #5F5B68;">
-        <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: none; color: #47444F;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-          Home
-        </a>
-        <span aria-hidden="true">/</span>
-        <a href="ThreeIn.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; color: #47444F;">Coming in</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page" style="color: #18161F;">Getting paid online</span>
-      </nav>
-      <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-        <a href="ThreeIn.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #EEE8FF; border: 2px solid #7A5AF8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
-        <a href="ThreeOut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
-        <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">=</span>
-        <a href="ThreeKeep.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: #18161F; border: 1px solid #18161F; color: #FFFFFF; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep <strong style="font-family: Sora, sans-serif; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{n.keep}}</strong></a></span>
-      </nav>
-    </div>
+    <dc-import name="AppCrumbs" area="in" here="Getting paid online"></dc-import>
 
     <!-- Title -->
     <section aria-labelledby="pp-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
       <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
         <h1 id="pp-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Getting paid online</h1>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5.5vw, 58px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$12,400</span>
-        <span style="font-size: 14px; color: #47444F;">paid online in October, from 5 customers</span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5.5vw, 58px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{hero.amount}}</span>
+        <span style="font-size: 14px; color: #47444F;">{{hero.sub}}</span>
         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
           <sc-for list="{{tiles}}" as="t" hint-placeholder-count="4">
             <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #F7F6F9; border: 1px solid #E2DFE8; font-size: 13px; color: #47444F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{t.dot}};"></span>{{t.label}} <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{t.value}}</strong></span>
@@ -104,7 +39,7 @@ a{color:#18161F}a:hover{color:#000000}
         </div>
       </div>
       <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">Customers pay straight from the invoice by card, bank transfer or Apple Pay. We match each payment to its invoice, take a small fee, and send the rest to <strong style="color: #18161F;">Chase Business Checking ••4417</strong>.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">Customers pay straight from the invoice by card, bank transfer or Apple Pay. We match each payment to its invoice, take a small fee, and send the rest to <strong style="color: #18161F;">{{bankName}}</strong>.</p>
         <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5F5B68;">Payments count in Coming in on the day the customer pays, before the money reaches your bank.</p>
       </div>
     </section>
@@ -136,13 +71,13 @@ a{color:#18161F}a:hover{color:#000000}
             </label>
             <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Send payouts to
               <select class="be-field" value="{{cn.bank}}" onChange="{{setBank}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-                <option value="Chase ••4417">Chase Business Checking ••4417</option>
+                <option value="{{cn.bank}}">{{cn.bankLabel}}</option>
               </select>
             </label>
           </div>
           <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45;">
             <input type="checkbox" checked="{{cn.agree}}" onChange="{{toggleAgree}}" style="width: 20px; height: 20px; margin: 1px 0 0; accent-color: #7A5AF8; flex: none;">
-            <span>I’m Maya Chen, an owner of this business, and I agree to the payment terms.</span>
+            <span>{{cn.consent}}</span>
           </label>
           <sc-if value="{{cnErrOn}}" hint-placeholder-val="{{false}}"><span role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{cnErr}}</span></sc-if>
           <div style="display: flex; flex-wrap: wrap; gap: 10px;">
@@ -154,6 +89,7 @@ a{color:#18161F}a:hover{color:#000000}
     </section>
 
     <!-- Dispute -->
+    <sc-if value="{{dsp.exists}}" hint-placeholder-val="{{true}}">
     <section aria-labelledby="dp-h" style="display: flex; flex-direction: column; gap: 12px;">
       <h2 id="dp-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Needs you <span style="color: #5F5B68; font-weight: 600;">{{dsp.count}}</span></h2>
       <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px;">
@@ -163,15 +99,15 @@ a{color:#18161F}a:hover{color:#000000}
           </span>
           <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
             <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
-              <span style="font-weight: 700; font-size: 16px;">Disputed card payment · Oak Street Bakery</span>
+              <span style="font-weight: 700; font-size: 16px;">Disputed card payment · <a href="{{dsp.custHref}}" style="text-decoration: none;">{{dsp.who}}</a></span>
               <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{dsp.pbg}}; color: {{dsp.pfg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{dsp.pfg}};"></span>{{dsp.status}}</span>
             </span>
             <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{dsp.body}}</span>
           </div>
-          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;">$720</span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;">{{dsp.amount}}</span>
           <sc-if value="{{dsp.open}}" hint-placeholder-val="{{true}}">
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button type="button" onClick="{{emailRosa}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Email Rosa first</button>
+              <button type="button" onClick="{{emailRosa}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{dsp.emailLabel}}</button>
               <button type="button" aria-expanded="{{dsp.flowOn}}" onClick="{{toggleRespond}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{dsp.respondLabel}}</button>
             </div>
           </sc-if>
@@ -211,9 +147,9 @@ a{color:#18161F}a:hover{color:#000000}
             </sc-if>
             <sc-if value="{{dsp.isAccept}}" hint-placeholder-val="{{false}}">
               <div style="display: flex; flex-direction: column; gap: 12px;">
-                <span style="font-size: 14px; line-height: 1.5;">The $720 goes back to Oak Street Bakery and INV-0160 is marked refunded. <strong>$720 comes off Coming in</strong>, and the $15 dispute fee isn’t returned.</span>
+                <span style="font-size: 14px; line-height: 1.5;">{{dsp.acceptText}}</span>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                  <button type="button" onClick="{{acceptDispute}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #A8200D; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Accept and refund $720</button>
+                  <button type="button" onClick="{{acceptDispute}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #A8200D; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Accept and refund {{dsp.amount}}</button>
                   <button type="button" onClick="{{toggleRespond}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
                 </div>
               </div>
@@ -231,6 +167,7 @@ a{color:#18161F}a:hover{color:#000000}
         <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">Card companies charge a $15 fee for each dispute. You get it back if the bank decides in your favor.</span>
       </article>
     </section>
+    </sc-if>
 
     <!-- Methods -->
     <section aria-labelledby="pm-h" style="display: flex; flex-direction: column; gap: 12px;">
@@ -294,9 +231,16 @@ a{color:#18161F}a:hover{color:#000000}
       <!-- Payouts -->
       <section aria-labelledby="po-h" style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
         <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-          <h2 id="po-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Money arriving in Chase ••4417</h2>
+          <h2 id="po-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Money arriving in {{bankShort}}</h2>
           <button type="button" onClick="{{exportPayouts}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Download all payouts</button>
         </div>
+        <sc-if value="{{noPayouts}}" hint-placeholder-val="{{false}}">
+          <div style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
+            <span style="font-size: 15px; line-height: 1.5; color: #47444F;">When a customer pays an invoice online, the money lands here a day later, fees already taken off.</span>
+            <a href="ThreeIn.dc.html#bill" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Bill someone</a>
+          </div>
+        </sc-if>
+        <sc-if value="{{hasPayouts}}" hint-placeholder-val="{{true}}">
         <ul style="margin: 0; padding: 4px 20px; list-style: none; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; display: flex; flex-direction: column;">
           <sc-for list="{{payouts}}" as="po" hint-placeholder-count="3">
             <li style="display: flex; flex-direction: column; border-top: {{po.border}};">
@@ -316,7 +260,8 @@ a{color:#18161F}a:hover{color:#000000}
                 <div style="display: flex; flex-direction: column; gap: 2px; margin: 0 0 14px; padding: 8px 14px; border-radius: 14px; background: #F7F6F9;">
                   <sc-for list="{{po.items}}" as="it" hint-placeholder-count="2">
                     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding: 6px 0; font-size: 14px;">
-                      <span style="min-width: 0; color: {{it.fg}};">{{it.label}}</span>
+                      <sc-if value="{{it.href}}" hint-placeholder-val="{{false}}"><a href="{{it.href}}" style="min-width: 0; color: {{it.fg}};">{{it.label}}</a></sc-if>
+                      <sc-if value="{{it.plain}}" hint-placeholder-val="{{true}}"><span style="min-width: 0; color: {{it.fg}};">{{it.label}}</span></sc-if>
                       <span style="font-variant-numeric: tabular-nums; white-space: nowrap; color: {{it.fg}}; font-weight: {{it.w}};">{{it.amount}}</span>
                     </div>
                   </sc-for>
@@ -325,6 +270,15 @@ a{color:#18161F}a:hover{color:#000000}
             </li>
           </sc-for>
         </ul>
+        </sc-if>
+        <sc-if value="{{hasManual}}" hint-placeholder-val="{{false}}">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px 20px;">
+            <span style="display: block; padding: 12px 0 6px; font-size: 13px; font-weight: 700; color: #47444F;">Recorded by you · paid another way, so no fee and no payout</span>
+            <sc-for list="{{manual}}" as="mp" hint-placeholder-count="1">
+              <a href="{{mp.href}}" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding: 10px 0; border-top: 1px solid #EFEDF3; font-size: 14px; text-decoration: none; color: #18161F;"><span style="min-width: 0;">{{mp.label}}</span><span style="font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600;">{{mp.amount}}</span></a>
+            </sc-for>
+          </div>
+        </sc-if>
         <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">Fees come off before the money lands. We record each one for you, so your books still match your bank statement.</span>
       </section>
 
@@ -347,7 +301,7 @@ a{color:#18161F}a:hover{color:#000000}
         <div style="display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 14px; background: #EEE8FF;">
           <span style="font-size: 12px; font-weight: 600; color: #47444F;">Next payout</span>
           <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;">{{next.amount}}</span>
-          <span style="font-size: 13px; color: #47444F;">{{next.when}} · Chase ••4417</span>
+          <span style="font-size: 13px; color: #47444F;">{{next.when}} · {{bankShort}}</span>
         </div>
         <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">Bank transfers land on their own, the day they clear, whichever schedule you pick.</span>
       </section>
@@ -370,211 +324,213 @@ a{color:#18161F}a:hover{color:#000000}
     </div>
   </sc-if>
 </div>
-</div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1740}}'>
 class Component extends DCLogic {
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  money(n) { const neg = n < 0; n = Math.abs(Math.round(n * 100) / 100); return (neg ? '−$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
-  money2(n) { return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  num(s) { const v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; }
-  base(inT) {
-    const st = this.state;
-    const outT = 13640, profit = inT - outT, keep = Math.round(profit - Math.round(profit * 0.25));
-    return {
-      n: { in: this.money(Math.round(inT)), out: this.money(outT), keep: this.money(keep) },
-      newOpen: !!st.newOpen, acctOpen: !!st.acctOpen,
-      verbs: [
-        { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-        { label: 'Send a quote', hint: 'A price they can accept online', href: 'SellQuotes.dc.html', tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' },
-        { label: 'Record an expense', hint: 'Cash or card, already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-        { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'SpendReceipts.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-        { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-      ],
-      acct: [
-        { label: 'Business profile', hint: 'Name, logo, country and tax', href: 'BizProfile.dc.html' },
-        { label: 'Team and access', hint: '5 people, including your accountant', href: 'BizTeam.dc.html' },
-        { label: 'Switch business', hint: 'Maya Chen Photography', href: 'BizTeam.dc.html#businesses' },
-        { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
-        { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
-        { label: 'Sign out', hint: 'maya@northwind.studio', href: 'AuthSignIn.dc.html' }
-      ],
-      toggleNew: () => this.setState({ newOpen: !st.newOpen, acctOpen: false }),
-      toggleAcct: () => this.setState({ acctOpen: !st.acctOpen, newOpen: false }),
-      closeMenus: () => this.setState({ newOpen: false, acctOpen: false }),
-      toast: st.toast
-    };
-  }
   constructor(props) {
     super(props);
+    const ps = BE.get('paySettings') || {};
+    const p = BE.get('profile') || {};
     this.state = {
-      newOpen: false, acctOpen: false, toast: null,
-      live: false, connectOpen: false, cn: { legal: 'Northwind Studio LLC', ein: '', bank: 'Chase ••4417', agree: false }, cnErr: '',
-      on: { card: true, bank: true, apple: true }, saveCards: true, passFee: false, moreOpen: false, calc: '1,000',
-      open: { pending: true }, sched: 'daily', day: 'Friday',
-      dsp: { state: 'open', flow: false, choice: 'fight', proof: { inv: true, view: true, pay: true, mail: true }, note: 'Rosa Medina at Oak Street Bakery approved and paid INV-0160 (menu photo layout) from the invoice link on Oct 1. They’ve been a customer since April 2025 and paid us again this month.', err: '' }
+      toast: null, connectOpen: false, cnErr: '', moreOpen: false, calc: '1,000', open: { pending: true },
+      cn: { legal: ps.legal || (p.business && p.business !== 'Your business' ? p.business : ''), ein: ps.ein || '', agree: false },
+      dsp: { flow: false, choice: 'fight', proof: { inv: true, view: true, pay: true, mail: true }, note: '', err: '' }
     };
   }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
   renderVals() {
     const st = this.state;
-    const m2 = (n) => this.money2(n);
-    const num = (s) => this.num(s);
-    const ds = st.dsp;
+    const ps = BE.get('paySettings') || {};
+    const profile = BE.get('profile') || {};
+    const setPS = (patch) => BE.patch('paySettings', patch);
+    const m2 = (n) => BE.money(n, 'USD', { cents: true });
+    const num = BE.num;
+    const on = Object.assign({ card: true, bank: true, apple: true }, ps.methods || {});
+    const bankShort = ps.payoutTo || 'your bank account';
+    const bankName = ps.payoutTo ? (/Chase/.test(ps.payoutTo) ? 'Chase Business Checking ' + ps.payoutTo.replace(/^Chase\s*/, '') : ps.payoutTo) : 'your business bank account';
+    const payments = BE.all('payments').filter((p) => p.inMonth);
+    const online = payments.filter((p) => BE.payIsOnline(p));
+    const manualPays = payments.filter((p) => !BE.payIsOnline(p));
+    const day = (d) => { const m = String(d || '').match(/(\d+)$/); return m ? +m[1] : 0; };
+    const d0 = ps.dispute;
+    const ds = d0 ? d0.state : null;
 
-    // three numbers: accepting the dispute refunds $720
-    const inT = 24850 - (ds.state === 'accepted' ? 720 : 0);
+    const mode = ps.live
+      ? { live: true, test: false, bg: '#E2F6D5', fg: '#2F5711', icon: 'm5 12 5 5 9-10', title: 'Live', text: 'New payments are real and land in ' + bankName + '.' }
+      : { live: false, test: true, bg: '#FFF0B8', fg: '#6B5000', icon: 'M12 8v5M12 16.5v.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z', title: 'Test mode until you connect', text: online.length ? 'Nothing here charges a real card or moves real money yet. The payments below show how it works once you’re connected.' : 'Nothing charges a real card or moves real money until you connect your business and bank.' };
 
-    const mode = st.live
-      ? { live: true, test: false, bg: '#E2F6D5', fg: '#2F5711', icon: 'm5 12 5 5 9-10', title: 'Live', text: 'New payments are real and land in Chase Business Checking ••4417.' }
-      : { live: false, test: true, bg: '#FFF0B8', fg: '#6B5000', icon: 'M12 8v5M12 16.5v.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z', title: 'Test mode until you connect', text: 'Nothing here charges a real card or moves real money yet. The payments below show how it works once you’re connected.' };
-
-    const tiles = [
-      { label: 'Fees', value: '$224.08', dot: '#5F5B68' },
-      { label: 'In your bank', value: '$8,331.06', dot: '#2F5711' },
-      { label: 'On its way', value: '$3,109.86', dot: '#7A5AF8' },
-      ds.state === 'accepted' ? { label: 'Refunded after a dispute', value: '$735', dot: '#A8200D' } : { label: 'Held for a dispute', value: '$735', dot: '#A8200D' }
-    ];
-
-    // methods
-    const M = [
-      { k: 'card', label: 'Card', tint: '#EEE8FF', icon: 'M3 6h18v12H3zM3 10h18M7 15h3', desc: 'Visa, Mastercard, American Express and Discover. Money lands the next business day.', pct: 0.029, fix: 0.30, feeText: '2.9% + 30¢ per payment' },
-      { k: 'bank', label: 'Bank transfer', tint: '#EEE8FF', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18', desc: 'Customers pay from their bank account. Cheapest for big invoices; takes 1 to 3 business days to clear.', pct: 0.01, fix: 0, feeText: '1% per payment' },
-      { k: 'apple', label: 'Apple Pay', tint: '#EEE8FF', icon: 'M8 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM11 18h2', desc: 'One tap on iPhone, iPad or Mac. Shows only to customers who have it set up.', pct: 0.029, fix: 0.30, feeText: '2.9% + 30¢, same as a card' }
-    ];
-    const keep = (m, amt) => Math.round((amt - (amt * m.pct + m.fix)) * 100) / 100;
-    const methods = M.map((m) => {
-      const on = !!st.on[m.k];
-      return {
-        label: m.label, tint: on ? '#EEE8FF' : '#EFEDF3', icon: m.icon, desc: m.desc, on, state: on ? 'On for new invoices' : 'Off',
-        switchLabel: 'Accept ' + m.label, swBg: on ? '#7A5AF8' : '#CBC7D3', swLeft: on ? '25px' : '3px',
-        fee: m.feeText, example: 'On a $1,000 invoice you keep ' + m2(keep(m, 1000)) + '.',
-        toggle: () => { this.setState({ on: Object.assign({}, st.on, { [m.k]: !on }) }); this.notify(m.label + (on ? ' turned off for new invoices' : ' turned on for new invoices')); }
-      };
-    });
-    const noneOn = !st.on.card && !st.on.bank && !st.on.apple;
-    const sw = (on) => ({ swBg: on ? '#7A5AF8' : '#CBC7D3', swLeft: on ? '25px' : '3px' });
-    const extras = [
-      Object.assign({ label: 'Let customers save a card', sub: 'For repeating invoices. Bluebird Yoga’s retainer is charged this way.', on: st.saveCards,
-        toggle: () => { this.setState({ saveCards: !st.saveCards }); this.notify(st.saveCards ? 'Saved cards turned off. Bluebird Yoga’s card stays until you remove it' : 'Customers can save a card again'); } }, sw(st.saveCards)),
-      Object.assign({ label: 'Ask customers to cover the card fee', sub: 'Adds a line to card payments saying so. Allowed in most US states; you keep the full invoice amount.', on: st.passFee,
-        toggle: () => { this.setState({ passFee: !st.passFee }); this.notify(st.passFee ? 'You’ll cover card fees again' : 'Customers paying by card will cover the fee'); } }, sw(st.passFee))
-    ];
-    const amt = num(st.calc);
-    const calcRows = M.map((m) => {
-      const fee = amt > 0 ? Math.round((amt * m.pct + m.fix) * 100) / 100 : 0;
-      return { label: m.label, keep: amt > 0 ? (st.passFee && m.k !== 'bank' ? m2(amt) : m2(amt - fee)) : '$0.00', fee: amt > 0 ? (st.passFee && m.k !== 'bank' ? 'Customer pays the ' + m2(fee) + ' fee' : m2(fee) + ' fee') : 'Type an amount' };
-    });
-
-    // payouts
-    const weekly = st.sched === 'weekly';
-    const nextWhen = weekly ? (st.day === 'Monday' ? 'Monday, Oct 5' : st.day === 'Tuesday' ? 'Tuesday, Oct 6' : st.day === 'Wednesday' ? 'Wednesday, Oct 7' : st.day === 'Thursday' ? 'Thursday, Oct 8' : 'Friday, Oct 9') : 'Monday, Oct 5';
-    const disputeReturned = ds.state === 'won';
-    const pendAmt = 3109.86 + (disputeReturned ? 735 : 0);
-    const P = [
-      { id: 'pending', title: 'On its way', sub: 'Arriving ' + nextWhen, status: 'Pending', pbg: '#EEE8FF', pfg: '#18161F', iconBg: '#EEE8FF', iconFg: '#18161F', icon: 'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', amount: pendAmt,
-        items: [
-          { label: 'Ridge Outdoor Supply · INV-0162 · card · Oct 3', amount: '$3,960.00' },
-          { label: 'Card fee (2.9% + 30¢)', amount: '−$115.14', fg: '#47444F' }
-        ].concat(disputeReturned ? [] : [{ label: 'Held for the Oak Street Bakery dispute ($720 + $15 fee)', amount: '−$735.00', fg: '#A8200D' }]) },
-      { id: 'o2b', title: 'Bank transfers', sub: 'Landed Friday, Oct 2 · 2 payments · $71.80 in fees', status: 'In your bank', pbg: '#E2F6D5', pfg: '#2F5711', iconBg: '#E2F6D5', iconFg: '#2F5711', icon: 'm5 12 5 5 9-10', amount: 7108.20,
-        items: [
-          { label: 'Atlas Freight Co. · INV-0153 · bank transfer · Oct 2', amount: '$6,300.00' },
-          { label: 'Greenline Architects · INV-0157 deposit · bank transfer · Oct 2', amount: '$880.00' },
-          { label: 'Bank transfer fees (1%)', amount: '−$71.80', fg: '#47444F' }
-        ] },
-      { id: 'o2c', title: 'Card and Apple Pay', sub: 'Landed Friday, Oct 2 · 2 payments · $37.14 in fees', status: 'In your bank', pbg: '#E2F6D5', pfg: '#2F5711', iconBg: '#E2F6D5', iconFg: '#2F5711', icon: 'm5 12 5 5 9-10', amount: 1222.86,
-        items: [
-          { label: 'Oak Street Bakery · INV-0160 · card · Oct 1', amount: '$720.00' },
-          { label: 'Bluebird Yoga · INV-0161 · Apple Pay · Oct 1', amount: '$540.00' },
-          { label: 'Fees (2.9% + 30¢ each)', amount: '−$37.14', fg: '#47444F' }
-        ] }
-    ];
+    // payouts, derived from online payments: up to Oct 2 they've landed; later ones are on their way
+    const FEE_NOTE = { 'Bank payment': 'Bank transfer fees (1%)', card: 'Fees (2.9% + 30¢ each)' };
+    const holdOn = ds === 'open' || ds === 'sent';
+    const hold = holdOn ? (d0.amount + d0.fee) : 0;
+    const pend = online.filter((p) => day(p.date) >= 3);
+    const landedBank = online.filter((p) => day(p.date) < 3 && p.how === 'Bank payment');
+    const landedCard = online.filter((p) => day(p.date) < 3 && p.how !== 'Bank payment');
+    const sumA = (l) => l.reduce((a, p) => a + p.amount, 0), sumF = (l) => l.reduce((a, p) => a + BE.payFee(p), 0);
+    const item = (p) => ({ label: p.who + ' · ' + p.inv + (p.deposit ? ' deposit' : '') + ' · ' + p.how.toLowerCase().replace('apple pay', 'Apple Pay') + ' · ' + p.date, amount: m2(p.amount), href: 'SellInvoices.dc.html#' + p.inv });
+    const weekly = ps.sched === 'weekly';
+    const wd = ps.day || 'Friday';
+    const WD = { Monday: 'Monday, Oct 5', Tuesday: 'Tuesday, Oct 6', Wednesday: 'Wednesday, Oct 7', Thursday: 'Thursday, Oct 8', Friday: 'Friday, Oct 9' };
+    const nextWhen = weekly ? WD[wd] : 'Monday, Oct 5';
+    const P = [];
+    if (pend.length || hold) {
+      const amount = Math.max(0, sumA(pend) - sumF(pend) - hold);
+      P.push({ id: 'pending', title: 'On its way', sub: 'Arriving ' + nextWhen, status: 'Pending', pbg: '#EEE8FF', pfg: '#18161F', iconBg: '#EEE8FF', iconFg: '#18161F', icon: 'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', amount,
+        items: pend.map(item).concat(pend.length ? [{ label: 'Fees', amount: '−' + m2(sumF(pend)), fg: '#47444F' }] : []).concat(hold ? [{ label: 'Held for the ' + d0.who + ' dispute (' + BE.money(d0.amount) + ' + ' + BE.money(d0.fee) + ' fee)', amount: '−' + m2(hold), fg: '#A8200D' }] : []) });
+    }
+    if (landedBank.length) P.push({ id: 'bank', title: 'Bank transfers', sub: 'Landed Friday, Oct 2 · ' + landedBank.length + (landedBank.length === 1 ? ' payment' : ' payments') + ' · ' + m2(sumF(landedBank)) + ' in fees', status: 'In your bank', pbg: '#E2F6D5', pfg: '#2F5711', iconBg: '#E2F6D5', iconFg: '#2F5711', icon: 'm5 12 5 5 9-10', amount: sumA(landedBank) - sumF(landedBank),
+      items: landedBank.map(item).concat([{ label: FEE_NOTE['Bank payment'], amount: '−' + m2(sumF(landedBank)), fg: '#47444F' }]) });
+    if (landedCard.length) P.push({ id: 'card', title: 'Card and Apple Pay', sub: 'Landed Friday, Oct 2 · ' + landedCard.length + (landedCard.length === 1 ? ' payment' : ' payments') + ' · ' + m2(sumF(landedCard)) + ' in fees', status: 'In your bank', pbg: '#E2F6D5', pfg: '#2F5711', iconBg: '#E2F6D5', iconFg: '#2F5711', icon: 'm5 12 5 5 9-10', amount: sumA(landedCard) - sumF(landedCard),
+      items: landedCard.map(item).concat([{ label: FEE_NOTE.card, amount: '−' + m2(sumF(landedCard)), fg: '#47444F' }]) });
     const payouts = P.map((p, i) => {
       const open = !!st.open[p.id];
       return Object.assign({}, p, {
         amount: m2(p.amount), open, border: i === 0 ? '0' : '1px solid #EFEDF3', chev: open ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
-        items: p.items.map((it) => ({ label: it.label, amount: it.amount, fg: it.fg || '#18161F', w: 400 })).concat([{ label: 'To Chase ••4417', amount: m2(p.amount), fg: '#18161F', w: 700 }]),
+        items: p.items.map((it) => ({ label: it.label, amount: it.amount, fg: it.fg || '#18161F', w: 400, href: it.href || false, plain: !it.href })).concat([{ label: 'To ' + bankShort, amount: m2(p.amount), fg: '#18161F', w: 700, href: false, plain: true }]),
         toggle: () => this.setState({ open: Object.assign({}, st.open, { [p.id]: !open }) })
       });
     });
+    const pendAmt = P[0] && P[0].id === 'pending' ? P[0].amount : 0;
+    const landed = P.filter((p) => p.id !== 'pending').reduce((a, p) => a + p.amount, 0);
+    const fees = sumF(online);
+    const onlineTotal = sumA(online);
+    const nCust = Object.keys(online.reduce((a, p) => { a[p.who] = 1; return a; }, {})).length;
+    const tiles = online.length ? [
+      { label: 'Fees', value: m2(fees), dot: '#5F5B68' },
+      { label: 'In your bank', value: m2(landed), dot: '#2F5711' },
+      { label: 'On its way', value: m2(pendAmt), dot: '#7A5AF8' }
+    ].concat(d0 && ds !== 'won' ? [ds === 'accepted' ? { label: 'Refunded after a dispute', value: BE.money(d0.amount), dot: '#A8200D' } : { label: 'Held for a dispute', value: BE.money(d0.amount + d0.fee), dot: '#A8200D' }] : []) : [];
+    const manual = manualPays.map((p) => ({ label: p.who + ' · ' + p.inv + ' · ' + p.how + ' · ' + p.date, amount: BE.money(p.amount), href: 'SellInvoices.dc.html#' + p.inv }));
+
+    // methods
+    const M = [
+      { k: 'card', label: 'Card', icon: 'M3 6h18v12H3zM3 10h18M7 15h3', desc: 'Visa, Mastercard, American Express and Discover. Money lands the next business day.', pct: 0.029, fix: 0.30, feeText: '2.9% + 30¢ per payment' },
+      { k: 'bank', label: 'Bank transfer', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18', desc: 'Customers pay from their bank account. Cheapest for big invoices; takes 1 to 3 business days to clear.', pct: 0.01, fix: 0, feeText: '1% per payment' },
+      { k: 'apple', label: 'Apple Pay', icon: 'M8 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM11 18h2', desc: 'One tap on iPhone, iPad or Mac. Shows only to customers who have it set up.', pct: 0.029, fix: 0.30, feeText: '2.9% + 30¢, same as a card' }
+    ];
+    const keep = (m, amt) => Math.round((amt - (amt * m.pct + m.fix)) * 100) / 100;
+    const methods = M.map((m) => {
+      const isOn = !!on[m.k];
+      return {
+        label: m.label, tint: isOn ? '#EEE8FF' : '#EFEDF3', icon: m.icon, desc: m.desc, on: isOn, state: isOn ? 'On for new invoices' : 'Off',
+        switchLabel: 'Accept ' + m.label, swBg: isOn ? '#7A5AF8' : '#CBC7D3', swLeft: isOn ? '25px' : '3px',
+        fee: m.feeText, example: 'On a $1,000 invoice you keep ' + m2(keep(m, 1000)) + '.',
+        toggle: () => { setPS({ methods: Object.assign({}, on, { [m.k]: !isOn }) }); BE.log((isOn ? 'Turned off ' : 'Turned on ') + m.label.toLowerCase().replace('apple pay', 'Apple Pay') + ' for new invoices'); this.notify(m.label + (isOn ? ' turned off for new invoices' : ' turned on for new invoices')); }
+      };
+    });
+    const noneOn = !on.card && !on.bank && !on.apple;
+    const sw = (x) => ({ swBg: x ? '#7A5AF8' : '#CBC7D3', swLeft: x ? '25px' : '3px' });
+    const card = BE.all('invoices').find((i) => i.repeat && /card/i.test(JSON.stringify(i.events || [])));
+    const extras = [
+      Object.assign({ label: 'Let customers save a card', sub: 'For repeating invoices.' + (card ? ' ' + card.who + '’s retainer is charged this way.' : ''), on: !!ps.saveCards,
+        toggle: () => { setPS({ saveCards: !ps.saveCards }); this.notify(ps.saveCards ? 'Saved cards turned off' + (card ? '. ' + card.who + '’s card stays until you remove it' : '') : 'Customers can save a card again'); } }, sw(ps.saveCards)),
+      Object.assign({ label: 'Ask customers to cover the card fee', sub: 'Adds a line to card payments saying so. Allowed in most US states; you keep the full invoice amount.', on: !!ps.passFee,
+        toggle: () => { setPS({ passFee: !ps.passFee }); this.notify(ps.passFee ? 'You’ll cover card fees again' : 'Customers paying by card will cover the fee'); } }, sw(ps.passFee))
+    ];
+    const amt = num(st.calc);
+    const calcRows = M.map((m) => {
+      const fee = amt > 0 ? Math.round((amt * m.pct + m.fix) * 100) / 100 : 0;
+      return { label: m.label, keep: amt > 0 ? (ps.passFee && m.k !== 'bank' ? m2(amt) : m2(amt - fee)) : '$0.00', fee: amt > 0 ? (ps.passFee && m.k !== 'bank' ? 'Customer pays the ' + m2(fee) + ' fee' : m2(fee) + ' fee') : 'Type an amount' };
+    });
     const sched = [['daily', 'Daily'], ['weekly', 'Weekly']].map(([k, label]) => ({
-      label, on: st.sched === k, bg: st.sched === k ? '#18161F' : 'transparent', fg: st.sched === k ? '#FFFFFF' : '#18161F',
-      pick: () => { if (st.sched === k) return; this.setState({ sched: k }); this.notify(k === 'daily' ? 'Payouts now daily · next one Monday, Oct 5' : 'Payouts now weekly, every ' + st.day + ' · next one ' + (st.day === 'Friday' ? 'Friday, Oct 9' : st.day)); }
+      label, on: (ps.sched || 'daily') === k, bg: (ps.sched || 'daily') === k ? '#18161F' : 'transparent', fg: (ps.sched || 'daily') === k ? '#FFFFFF' : '#18161F',
+      pick: () => { if ((ps.sched || 'daily') === k) return; setPS({ sched: k }); this.notify(k === 'daily' ? 'Payouts now daily · next one Monday, Oct 5' : 'Payouts now weekly, every ' + wd + ' · next one ' + WD[wd]); }
     }));
     const schedText = weekly
       ? 'Card and Apple Pay money from the week lands together, once a week. Handy if you like one deposit to check.'
       : 'Card and Apple Pay money lands the next business day after a customer pays. Weekend payments land on Monday.';
 
     // dispute
-    const PROOF = [
-      { k: 'inv', label: 'Invoice INV-0160', sub: 'Menu photo layout, 6 design hours, $720' },
-      { k: 'view', label: 'Rosa Medina opened the invoice', sub: 'Sep 18, from rosa@oakstreetbakery.com' },
-      { k: 'pay', label: 'Paid from the invoice link', sub: 'Oct 1 · Visa ••8812 · same card they used in June' },
-      { k: 'mail', label: 'Your emails with Rosa', sub: '3 emails approving the layout, Sep 10 to Sep 16' }
-    ];
+    const dsp = { exists: !!d0 };
+    if (d0) {
+      const inv = BE.find('invoices', d0.inv, 'num');
+      const c = BE.customerOf(d0.who);
+      const first = (d0.contact || '').split(' ')[0] || d0.who;
+      const PROOF = [
+        { k: 'inv', label: 'Invoice ' + d0.inv, sub: (inv ? inv.what + ', ' : '') + BE.money(d0.amount) },
+        { k: 'view', label: (d0.contact || d0.who) + ' opened the invoice', sub: inv && inv.events && inv.events[1] ? inv.events[1].date + (inv.email ? ', from ' + inv.email : '') : 'From the invoice link' },
+        { k: 'pay', label: 'Paid from the invoice link', sub: (inv && inv.paidOn ? inv.paidOn + ' · ' : '') + d0.card },
+        { k: 'mail', label: 'Your emails with ' + first, sub: 'Approving the work before you billed it' }
+      ];
+      const setD = (patch) => this.setState({ dsp: Object.assign({}, this.state.dsp, patch) });
+      const sd = st.dsp;
+      const note = sd.note || (d0.contact || d0.who) + ' at ' + d0.who + ' approved and paid ' + d0.inv + (inv ? ' (' + inv.what.toLowerCase() + ')' : '') + ' from the invoice link.' + (c && c.since ? ' ' + c.since.replace('Customer', 'They’ve been a customer') + '.' : '');
+      const DS = {
+        open: { status: 'Respond by ' + d0.by, pbg: '#FBE3DF', pfg: '#A8200D' },
+        sent: { status: 'Evidence sent', pbg: '#E1EEF8', pfg: '#1F5E91' },
+        won: { status: 'Won', pbg: '#E2F6D5', pfg: '#2F5711' },
+        accepted: { status: 'Refunded', pbg: '#EFEDF3', pfg: '#47444F' }
+      }[ds] || { status: '', pbg: '#EFEDF3', pfg: '#47444F' };
+      Object.assign(dsp, DS, {
+        who: d0.who, custHref: BE.customerHref(d0.who), amount: BE.money(d0.amount), emailLabel: 'Email ' + first + ' first',
+        count: ds === 'open' ? 1 : 0, open: ds === 'open', closed: ds !== 'open', flowOn: ds === 'open' && sd.flow,
+        iconBg: ds === 'open' ? '#FBE3DF' : '#EFEDF3', respondLabel: sd.flow ? 'Close' : 'Respond',
+        body: 'Their card company says they don’t recognize a payment for ' + d0.inv + ' (' + d0.card + '). Often someone in their office didn’t know the charge. ' + BE.money(d0.amount) + ' plus a ' + BE.money(d0.fee) + ' fee is held from your next payout until it’s settled.',
+        acceptText: 'The ' + BE.money(d0.amount) + ' goes back to ' + d0.who + '. ' + BE.money(d0.amount) + ' comes off Coming in, and the ' + BE.money(d0.fee) + ' dispute fee isn’t returned.',
+        choices: [
+          { k: 'fight', label: 'They did buy this', sub: 'Send proof to their bank. Most “don’t recognize it” disputes are won this way.' },
+          { k: 'accept', label: 'Accept and refund', sub: 'Give the ' + BE.money(d0.amount) + ' back and close it. The ' + BE.money(d0.fee) + ' fee isn’t returned.' }
+        ].map((x) => ({ label: x.label, sub: x.sub, on: sd.choice === x.k, bg: sd.choice === x.k ? '#EEE8FF' : '#FFFFFF', border: sd.choice === x.k ? '2px solid #7A5AF8' : '1px solid #E2DFE8', pick: () => setD({ choice: x.k, err: '' }) })),
+        isFight: sd.choice === 'fight', isAccept: sd.choice === 'accept',
+        proof: PROOF.map((p) => ({ label: p.label, sub: p.sub, on: !!sd.proof[p.k], toggle: () => setD({ proof: Object.assign({}, sd.proof, { [p.k]: !sd.proof[p.k] }), err: '' }) })),
+        note, err: sd.err, errOn: !!sd.err,
+        doneBg: ds === 'accepted' ? '#EFEDF3' : '#E2F6D5', doneFg: ds === 'accepted' ? '#47444F' : '#2F5711',
+        doneText: ds === 'sent' ? 'Proof sent ' + BE.today + '. Their bank usually decides within 60 days; we’ll tell you the moment it does.'
+          : ds === 'won' ? d0.who + '’s bank withdrew the dispute. ' + BE.money(d0.amount + d0.fee) + ' is back in your next payout.'
+          : 'Refunded ' + BE.money(d0.amount) + ' to ' + d0.who + '. It came off Coming in.'
+      });
+      dsp._note = note;
+    }
+    const sd = st.dsp;
     const setD = (patch) => this.setState({ dsp: Object.assign({}, this.state.dsp, patch) });
-    const proof = PROOF.map((p) => ({ label: p.label, sub: p.sub, on: !!ds.proof[p.k], toggle: () => setD({ proof: Object.assign({}, ds.proof, { [p.k]: !ds.proof[p.k] }), err: '' }) }));
-    const CH = [
-      { k: 'fight', label: 'They did buy this', sub: 'Send proof to their bank. Most “don’t recognize it” disputes are won this way.' },
-      { k: 'accept', label: 'Accept and refund', sub: 'Give the $720 back and close it. The $15 fee isn’t returned.' }
-    ];
-    const choices = CH.map((c) => ({ label: c.label, sub: c.sub, on: ds.choice === c.k, bg: ds.choice === c.k ? '#EEE8FF' : '#FFFFFF', border: ds.choice === c.k ? '2px solid #7A5AF8' : '1px solid #E2DFE8', pick: () => setD({ choice: c.k, err: '' }) }));
-    const DS = {
-      open: { status: 'Respond by Oct 17', pbg: '#FBE3DF', pfg: '#A8200D' },
-      sent: { status: 'Evidence sent', pbg: '#E1EEF8', pfg: '#1F5E91' },
-      won: { status: 'Won', pbg: '#E2F6D5', pfg: '#2F5711' },
-      accepted: { status: 'Refunded', pbg: '#EFEDF3', pfg: '#47444F' }
-    }[ds.state];
-    const dsp = Object.assign({}, DS, {
-      count: ds.state === 'open' ? 1 : 0, open: ds.state === 'open', closed: ds.state !== 'open', flowOn: ds.state === 'open' && ds.flow,
-      iconBg: ds.state === 'open' ? '#FBE3DF' : '#EFEDF3',
-      respondLabel: ds.flow ? 'Close' : 'Respond',
-      body: 'Their card company says they don’t recognize a payment from Oct 1 (INV-0160, Visa ••8812). Often someone in their office didn’t know the charge. $720 plus a $15 fee is held from your next payout until it’s settled.',
-      choices, isFight: ds.choice === 'fight', isAccept: ds.choice === 'accept', proof, note: ds.note, err: ds.err, errOn: !!ds.err,
-      doneBg: ds.state === 'accepted' ? '#EFEDF3' : '#E2F6D5', doneFg: ds.state === 'accepted' ? '#47444F' : '#2F5711',
-      doneText: ds.state === 'sent' ? 'Proof sent Oct 4. Their bank usually decides within 60 days; we’ll tell you the moment it does.'
-        : ds.state === 'won' ? 'Oak Street Bakery’s bank withdrew the dispute. $735 is back in your next payout.'
-        : 'Refunded $720 to Oak Street Bakery. It came off Coming in.'
-    });
 
-    return Object.assign(this.base(inT), {
+    return {
+      hero: online.length ? { amount: BE.money(onlineTotal, 'USD', { whole: true }), sub: 'paid online this month, from ' + nCust + (nCust === 1 ? ' customer' : ' customers') } : { amount: BE.money(0, 'USD'), sub: 'paid online so far. When customers pay from an invoice, it shows here.' },
+      bankName, bankShort,
       mode, tiles, methods, noneOn, extras, calc: st.calc, calcRows,
       setCalc: (e) => this.setState({ calc: e.target.value }),
       moreOpen: st.moreOpen, moreIcon: st.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
       toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
-      connectOpen: st.connectOpen && !st.live, connectLabel: st.connectOpen ? 'Close' : 'Connect and go live',
+      connectOpen: st.connectOpen && !ps.live, connectLabel: st.connectOpen ? 'Close' : 'Connect and go live',
       toggleConnect: () => this.setState({ connectOpen: !st.connectOpen, cnErr: '' }),
-      cn: st.cn, cnErr: st.cnErr, cnErrOn: !!st.cnErr,
+      cn: Object.assign({}, st.cn, { bank: ps.payoutTo || 'new', bankLabel: ps.payoutTo ? bankName : 'Connect a bank account first',
+        consent: 'I’m ' + (profile.owner && profile.owner !== 'You' ? profile.owner + ', ' : '') + 'an owner of this business, and I agree to the payment terms.' }),
+      cnErr: st.cnErr, cnErrOn: !!st.cnErr,
       setLegal: (e) => this.setState({ cn: Object.assign({}, this.state.cn, { legal: e.target.value }), cnErr: '' }),
       setEin: (e) => this.setState({ cn: Object.assign({}, this.state.cn, { ein: e.target.value }), cnErr: '' }),
-      setBank: (e) => this.setState({ cn: Object.assign({}, this.state.cn, { bank: e.target.value }) }),
+      setBank: () => {},
       toggleAgree: () => this.setState({ cn: Object.assign({}, st.cn, { agree: !st.cn.agree }), cnErr: '' }),
       goLive: () => {
         const c = st.cn;
         if (!c.legal.trim()) { this.setState({ cnErr: 'Add your legal business name.' }); return; }
         if (c.ein.replace(/[^0-9]/g, '').length !== 9) { this.setState({ cnErr: 'An EIN has 9 digits, like 12-3456789.' }); return; }
         if (!c.agree) { this.setState({ cnErr: 'Tick the box to confirm you’re an owner.' }); return; }
-        this.setState({ live: true, connectOpen: false, cnErr: '' });
-        this.notify('You’re live · payouts go to Chase ••4417');
+        this.setState({ connectOpen: false, cnErr: '' });
+        setPS({ live: true, legal: c.legal.trim(), ein: c.ein, payoutTo: ps.payoutTo || 'Your bank account' });
+        BE.log('Connected online payments for ' + c.legal.trim() + ' · payouts go to ' + (ps.payoutTo || 'your bank account'));
+        this.notify('You’re live · payouts go to ' + (ps.payoutTo || 'your bank account'));
       },
-      backToTest: () => { this.setState({ live: false }); this.notify('Back in test mode'); },
-      payouts, sched, schedText, weekly, day: st.day,
-      setDay: (e) => { this.setState({ day: e.target.value }); this.notify('Weekly payouts now land every ' + e.target.value); },
-      next: { amount: m2(pendAmt), when: nextWhen },
-      exportPayouts: () => this.notify('Downloaded payouts-2026.csv'),
+      backToTest: () => { setPS({ live: false }); this.notify('Back in test mode'); },
+      payouts, hasPayouts: payouts.length > 0, noPayouts: payouts.length === 0, manual, hasManual: manual.length > 0,
+      sched, schedText, weekly, day: wd,
+      setDay: (e) => { setPS({ day: e.target.value }); this.notify('Weekly payouts now land every ' + e.target.value); },
+      next: { amount: pendAmt > 0 ? m2(pendAmt) : 'Nothing yet', when: nextWhen },
+      exportPayouts: () => this.notify(payouts.length ? 'Payouts list is ready · ' + payouts.length + ' payouts listed above with every payment and fee' : 'No payouts yet'),
       dsp,
-      emailRosa: () => this.notify('Emailed Rosa Medina at Oak Street Bakery to ask about the dispute'),
-      toggleRespond: () => setD({ flow: !ds.flow, err: '' }),
+      emailRosa: () => { if (!d0) return; BE.log('Emailed ' + (d0.contact || d0.who) + ' about the card dispute on ' + d0.inv); this.notify('Emailed ' + (d0.contact || d0.who) + ' at ' + d0.who + ' to ask about the dispute'); },
+      toggleRespond: () => setD({ flow: !sd.flow, err: '' }),
       setDNote: (e) => setD({ note: e.target.value, err: '' }),
       sendEvidence: () => {
-        if (!Object.keys(ds.proof).some((k) => ds.proof[k])) { setD({ err: 'Pick at least one piece of proof to send.' }); return; }
-        if (!ds.note.trim()) { setD({ err: 'Add a sentence in your own words.' }); return; }
-        setD({ state: 'sent', flow: false, err: '' });
-        this.notify('Proof sent to Oak Street Bakery’s bank');
+        if (!Object.keys(sd.proof).some((k) => sd.proof[k])) { setD({ err: 'Pick at least one piece of proof to send.' }); return; }
+        if (!String(dsp._note || '').trim()) { setD({ err: 'Add a sentence in your own words.' }); return; }
+        setD({ flow: false, err: '' });
+        BE.settleDispute('sent');
+        this.notify('Proof sent to ' + d0.who + '’s bank');
       },
-      acceptDispute: () => { setD({ state: 'accepted', flow: false }); this.notify('Refunded $720 to Oak Street Bakery · off Coming in'); },
-      undoDispute: () => setD({ state: 'open', flow: false, choice: 'fight' })
-    });
+      acceptDispute: () => { setD({ flow: false }); BE.settleDispute('accepted'); this.notify('Refunded ' + BE.money(d0.amount) + ' to ' + d0.who + ' · ' + BE.money(d0.amount) + ' off Coming in'); },
+      undoDispute: () => { setD({ flow: false, choice: 'fight' }); BE.settleDispute('open'); this.notify('Dispute is open again' + (ds === 'accepted' ? ' · ' + BE.money(d0.amount) + ' back in Coming in' : '')); },
+      toast: st.toast
+    };
   }
 }
 </script>

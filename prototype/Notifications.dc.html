@@ -117,6 +117,10 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = { filter: 'all', toast: null };
+    // Order is fixed when the page opens, so a row doesn't jump while you click it.
+    this._wasUnread = {};
+    BE.all('notifications').forEach((n) => { if (!n.read) this._wasUnread[n.id] = true; });
+    this._opened = {};
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
@@ -124,8 +128,10 @@ class Component extends DCLogic {
     const all = BE.all('notifications');
     const unread = all.filter((n) => !n.read).length;
     // Unread first, then read; newest first within each (the list is stored newest first).
-    const sorted = all.filter((n) => !n.read).concat(all.filter((n) => n.read));
-    const shown = st.filter === 'unread' ? sorted.filter((n) => !n.read) : sorted;
+    all.forEach((n) => { if (!n.read) this._wasUnread[n.id] = true; });
+    const top = (n) => !!this._wasUnread[n.id];
+    const sorted = all.filter(top).concat(all.filter((n) => !top(n)));
+    const shown = st.filter === 'unread' ? sorted.filter((n) => !n.read || this._opened[n.id]) : sorted;
     const kind = (n) => {
       const h = n.href || '';
       if (/^Sell|^ThreeIn/.test(h)) return { tint: '#EEE8FF', icon: /Quote/.test(h) ? 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' : 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' };
@@ -139,7 +145,7 @@ class Component extends DCLogic {
       return {
         title: n.title, body: n.body, when: n.when, href: n.href || 'Notifications.dc.html', unread: !n.read,
         tint: k.tint, icon: k.icon, weight: n.read ? 500 : 700, bg: n.read ? '#FFFFFF' : '#F7F5FF',
-        open: () => { if (!n.read) BE.update('notifications', n.id, { read: true }); },
+        open: () => { this._opened[n.id] = true; if (!n.read) BE.update('notifications', n.id, { read: true }); },
         toggle: () => { BE.update('notifications', n.id, { read: !n.read }); this.notify(n.read ? 'Marked as unread' : 'Marked as read'); },
         toggleLabel: n.read ? 'Mark as unread: ' + n.title : 'Mark as read: ' + n.title,
         toggleIcon: n.read ? 'M4 6h16v12H4zM4 7l8 6 8-6' : 'm5 12 5 5 9-10'
