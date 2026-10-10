@@ -71,6 +71,13 @@ a{color:#18161F}a:hover{color:#000000}
             </div>
 
             <div class="bz-field">
+              <label class="bz-lbl" for="su-biz">Business name</label>
+              <input id="su-biz" class="bz-in" type="text" autocomplete="organization" value="{{f.biz}}" onChange="{{setBiz}}" aria-invalid="{{f.bizInv}}" aria-describedby="su-biz-err" style="border-color: {{f.bizB}};">
+              <sc-if value="{{f.bizErr}}" hint-placeholder-val="{{false}}"><span id="su-biz-err" class="bz-err">{{f.bizErr}}</span></sc-if>
+              <sc-if value="{{f.bizHint}}" hint-placeholder-val="{{true}}"><span class="bz-mut">It goes at the top of your invoices. Just your own name is fine too.</span></sc-if>
+            </div>
+
+            <div class="bz-field">
               <label class="bz-lbl" for="su-email">Work email</label>
               <input id="su-email" class="bz-in" type="email" autocomplete="email" value="{{f.email}}" onChange="{{setEmail}}" aria-invalid="{{f.emailInv}}" aria-describedby="su-email-err" style="border-color: {{f.emailB}};">
               <sc-if value="{{f.emailErr}}" hint-placeholder-val="{{false}}"><span id="su-email-err" class="bz-err">{{f.emailErr}}</span></sc-if>
@@ -129,7 +136,7 @@ a{color:#18161F}a:hover{color:#000000}
                 </span>
               </span>
             </div>
-            <a href="SetupProfile.dc.html" class="bz-btn">Continue to setup</a>
+            <a href="SetupProfile.dc.html" class="bz-btn" onClick="{{saveSignup}}">Set up {{biz}}</a>
           </div>
         </sc-if>
 
@@ -139,9 +146,15 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <h1 class="bz-h1">Signed in with Google.</h1>
-              <p class="bz-sub">Welcome, Maya. Your account uses <strong style="color: #18161F;">maya@northwind.studio</strong>, already verified by Google, so there&#39;s no email to check.</p>
+              <p class="bz-sub">Welcome, {{g.first}}. Your account uses <strong style="color: #18161F; overflow-wrap: anywhere;">{{g.email}}</strong>, already verified by Google, so there&#39;s no email to check.</p>
             </div>
-            <a href="SetupProfile.dc.html" class="bz-btn">Continue to setup</a>
+            <div class="bz-field">
+              <label class="bz-lbl" for="su-gbiz">What&#39;s your business called?</label>
+              <input id="su-gbiz" class="bz-in" type="text" autocomplete="organization" value="{{f.biz}}" onChange="{{setBiz}}" aria-invalid="{{g.inv}}" style="border-color: {{g.border}};">
+              <sc-if value="{{g.err}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{g.err}}</span></sc-if>
+              <span class="bz-mut">It goes at the top of your invoices. Just your own name is fine too.</span>
+            </div>
+            <a href="SetupProfile.dc.html" class="bz-btn" onClick="{{saveGoogle}}">Continue to setup</a>
             <button type="button" class="bz-link" style="align-self: center;" onClick="{{backToForm}}">Use a different account</button>
           </div>
         </sc-if>
@@ -188,7 +201,7 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { stage: 'form', name: '', email: '', pass: '', show: false, terms: false, tried: false, legal: null, toast: null };
+    this.state = { stage: 'form', name: '', biz: '', email: '', gTried: false, pass: '', show: false, terms: false, tried: false, legal: null, toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   strength(p) {
@@ -210,14 +223,16 @@ class Component extends DCLogic {
     const tip = !s.pass ? 'at least 8 characters' : (s.pass.length < 8 ? (8 - s.pass.length) + ' more character' + (8 - s.pass.length === 1 ? '' : 's') : (sc < 3 ? 'add length, a capital, a number or a symbol' : 'good to go'));
 
     const nameErr = s.tried && !s.name.trim() ? 'Enter your name.' : null;
+    const bizErr = s.tried && !s.biz.trim() ? 'Enter your business name. Your own name works if you trade as yourself.' : null;
     const emailErr = s.tried ? (!s.email.trim() ? 'Enter your work email.' : (!valid(s.email) ? 'That doesn’t look like an email address. Check for typos.' : null)) : null;
     const passErr = s.tried ? (!s.pass ? 'Choose a password.' : (s.pass.length < 8 ? 'Use at least 8 characters.' : (sc < 2 ? 'A bit stronger, please: make it longer or add numbers and symbols.' : null))) : null;
     const termsErr = s.tried && !s.terms ? 'Please agree to the Terms to create an account.' : null;
-    const nErr = [nameErr, emailErr, passErr, termsErr].filter(Boolean).length;
+    const nErr = [nameErr, bizErr, emailErr, passErr, termsErr].filter(Boolean).length;
     const red = '#A8200D', base = '#CBC7D3';
 
     const f = {
-      name: s.name, email: s.email, pass: s.pass, terms: s.terms,
+      name: s.name, biz: s.biz, email: s.email,
+      bizErr, bizInv: bizErr ? 'true' : 'false', bizB: bizErr ? red : base, bizHint: !bizErr, pass: s.pass, terms: s.terms,
       type: s.show ? 'text' : 'password', showLabel: s.show ? 'Hide' : 'Show', shown: s.show ? 'true' : 'false', showAria: s.show ? 'Hide password' : 'Show password',
       bars, strength: s.pass ? LBL[sc] : '—', tip,
       nameErr, emailErr, passErr, termsErr,
@@ -231,7 +246,19 @@ class Component extends DCLogic {
       privacy: { title: 'Privacy, in short', body: 'We use your details to run your account and never sell them. Bank connections are read-only.' }
     };
     const set = (o) => this.setState(o);
+    // What the person typed travels to setup and becomes their business profile.
+    const GOOGLE = { name: s.name.trim() || 'Alex Morgan', email: valid(s.email) ? s.email.trim() : 'alex.morgan@gmail.com' };
+    const keep = (o) => { try { sessionStorage.setItem('be.signup', JSON.stringify(o)); } catch (e) { /* private window: setup asks again */ } };
+    const gErr = s.gTried && !s.biz.trim() ? 'Add your business name to continue.' : null;
+    const g = { first: GOOGLE.name.split(' ')[0], email: GOOGLE.email, err: gErr, inv: gErr ? 'true' : 'false', border: gErr ? red : base };
     return {
+      g, biz: s.biz.trim() || 'your business',
+      setBiz: (e) => set({ biz: e.target.value, gTried: false }),
+      saveSignup: () => keep({ name: s.name.trim(), business: s.biz.trim(), email: s.email.trim(), via: 'email' }),
+      saveGoogle: (e) => {
+        if (!s.biz.trim()) { if (e && e.preventDefault) e.preventDefault(); set({ gTried: true }); return; }
+        keep({ name: GOOGLE.name, business: s.biz.trim(), email: GOOGLE.email, via: 'google' });
+      },
       toast: s.toast, f, legal: s.legal ? LEGAL[s.legal] : null,
       isForm: s.stage === 'form', isDone: s.stage === 'done', isGoogle: s.stage === 'google',
       first: (s.name.trim() || 'there').split(' ')[0], email: s.email.trim(),
@@ -244,11 +271,12 @@ class Component extends DCLogic {
       showPrivacy: () => { set({ legal: s.legal === 'privacy' ? null : 'privacy' }); },
       closeLegal: () => set({ legal: null }),
       create: () => {
-        if (!s.name.trim() || !valid(s.email) || s.pass.length < 8 || sc < 2 || !s.terms) { set({ tried: true }); return; }
+        if (!s.name.trim() || !s.biz.trim() || !valid(s.email) || s.pass.length < 8 || sc < 2 || !s.terms) { set({ tried: true }); return; }
+        keep({ name: s.name.trim(), business: s.biz.trim(), email: s.email.trim(), via: 'email' });
         set({ stage: 'done', tried: false });
       },
       google: () => { set({ stage: 'google' }); this.notify('Signed in with Google'); },
-      backToForm: () => set({ stage: 'form' }),
+      backToForm: () => set({ stage: 'form', gTried: false }),
       resend: () => this.notify('Sent the link again to ' + s.email.trim()),
       fixEmail: () => set({ stage: 'form', tried: false })
     };

@@ -67,6 +67,12 @@ a{color:#18161F}a:hover{color:#000000}
               <h1 class="bz-h1">Welcome back.</h1>
               <p class="bz-sub">Sign in to see where your three numbers stand today.</p>
             </div>
+            <sc-if value="{{signedOut}}" hint-placeholder-val="{{false}}">
+              <div role="status" class="bz-note">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H4"></path></svg>
+                <span><strong>You&#39;re signed out.</strong> Everything in {{biz}} is saved just as you left it. Sign in again whenever you&#39;re ready.</span>
+              </div>
+            </sc-if>
 
             <div class="bz-field">
               <label class="bz-lbl" for="si-email">Email</label>
@@ -135,7 +141,16 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <h1 class="bz-h1">Signed in.</h1>
-              <p class="bz-sub">Welcome back, Maya. {{doneNote}}</p>
+              <p class="bz-sub">Welcome back, {{first}}. {{doneNote}}</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border-radius: 18px; background: #F7F6F9;">
+              <span style="font-size: 13px; font-weight: 700; color: #47444F; overflow-wrap: anywhere;">{{biz}} · {{month}}</span>
+              <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 14px; color: #47444F; font-variant-numeric: tabular-nums;">
+                <span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8; margin-right: 6px;"></span>In {{t.in}}</span>
+                <span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #E0752D; margin-right: 6px;"></span>Out {{t.out}}</span>
+                <span>Yours to keep <strong style="font: 700 18px Sora, sans-serif; letter-spacing: -0.02em; color: #18161F;">{{t.keep}}</strong></span>
+              </span>
+              <span style="font-size: 13px; color: #5F5B68;">{{waiting}}</span>
             </div>
             <a href="ThreeHome.dc.html" class="bz-btn">Go to Home</a>
             <button type="button" class="bz-link" style="align-self: center;" onClick="{{signOut}}">Not you? Sign out</button>
@@ -179,11 +194,15 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { stage: 'form', two: false, email: 'maya@northwind.studio', pass: 'northwind-2026', show: false, keep: true, tried: false, attempts: 0, code: '', backup: false, trust: true, codeTried: false, via: 'password', toast: null };
+    const p = (window.BE && BE.get('profile')) || {};
+    this.state = { stage: 'form', two: false, email: p.email || '', pass: 'my-books-2026', show: false, keep: true, tried: false, attempts: 0, code: '', backup: false, trust: true, codeTried: false, via: 'password', toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
     const s = this.state;
+    const P = BE.get('profile') || {};
+    const T = BE.totals();
+    const unread = BE.unread();
     const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
     const red = '#A8200D', base = '#CBC7D3';
     const emailErr = s.tried ? (!s.email.trim() ? 'Enter your email.' : (!valid(s.email) ? 'Enter a valid email address.' : null)) : null;
@@ -202,16 +221,19 @@ class Component extends DCLogic {
     const c = {
       code: s.code, trust: s.trust, err: codeErr, inv: codeErr ? 'true' : 'false', border: codeErr ? red : base,
       title: s.backup ? 'Use a backup code.' : 'Enter your code.',
-      sub: s.backup ? 'One of the 10 codes you saved when you turned on two-step sign-in. Each works once.' : 'Open your authenticator app and type the code for BillingEase (maya@northwind.studio). It changes every 30 seconds.',
+      sub: s.backup ? 'One of the 10 codes you saved when you turned on two-step sign-in. Each works once.' : 'Open your authenticator app and type the code for BillingEase (' + (s.email.trim() || P.email) + '). It changes every 30 seconds.',
       label: s.backup ? 'Backup code' : '6-digit code', mode: s.backup ? 'text' : 'numeric', max: s.backup ? '8' : '6',
       any: s.backup ? '8 letters or numbers' : '6 digits',
       altLabel: s.backup ? 'Use my authenticator app' : 'Use a backup code'
     };
     const finish = (via) => this.setState({ stage: 'done', via, tried: false, codeTried: false });
     const set = (o) => this.setState(o);
-    const doneNote = s.via === 'google' ? 'You signed in with Google as maya@northwind.studio.' : (s.via === 'code' ? 'Code accepted' + (s.trust ? ', and we won’t ask on this device for 30 days.' : '.') : (s.keep ? 'You’ll stay signed in on this device.' : 'We’ll sign you out when you close the browser.'));
+    const doneNote = s.via === 'google' ? 'You signed in with Google as ' + (P.email || s.email.trim()) + '.' : (s.via === 'code' ? 'Code accepted' + (s.trust ? ', and we won’t ask on this device for 30 days.' : '.') : (s.keep ? 'You’ll stay signed in on this device.' : 'We’ll sign you out when you close the browser.'));
     return {
       toast: s.toast, f, c, doneNote,
+      signedOut: BE.hash() === 'signedout' && s.stage === 'form', biz: P.business && P.business !== 'Your business' ? P.business : 'your business', first: P.first || 'there',
+      month: 'October so far', t: { in: T.fmt.in, out: T.fmt.out, keep: T.fmt.keep },
+      waiting: BE.isEmpty() && !unread ? 'Nothing waiting yet. Your home shows what to do first.' : (unread ? unread + ' new update' + (unread === 1 ? '' : 's') + ' since you were last here.' : 'All caught up since your last visit.'),
       tw: { on: s.two ? 'true' : 'false', track: s.two ? '#7A5AF8' : '#CBC7D3', justify: s.two ? 'flex-end' : 'flex-start' },
       isForm: s.stage === 'form', isCode: s.stage === 'code', isDone: s.stage === 'done',
       safe: ['Your data is encrypted, and bank connections are read-only.', 'Two-step sign-in adds a code from your phone. Turn it on in Security.', 'Team members sign in with their own accounts, never yours.'],

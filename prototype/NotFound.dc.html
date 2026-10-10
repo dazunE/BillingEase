@@ -1,11 +1,100 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · NotFound</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Page not found</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
-<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.nf-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 15px 'DM Sans',sans-serif;text-decoration:none;box-sizing:border-box}
+.nf-btn2{background:rgba(24,22,31,0.07)}
+.nf-row{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px;border-radius:16px;text-decoration:none;color:#18161F;box-sizing:border-box}
+.nf-row:hover{background:#F7F6F9}
+</style>
+</helmet>
+
+<div style="min-height: 100vh; box-sizing: border-box; background: #F7F6F9; font-family: DM Sans, system-ui, sans-serif; color: #18161F; display: flex; flex-direction: column;">
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 24px; padding: 24px clamp(16px, 4vw, 32px) 40px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+      <a href="ThreeLanding.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+        <span style="font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; color: #18161F;">BillingEase</span>
+      </a>
+      <a href="ThreeHome.dc.html" style="font-size: 14px; font-weight: 600;">Go to Home</a>
+    </header>
+
+    <main style="flex: 1; display: flex; align-items: center; justify-content: center;">
+      <div style="width: 100%; max-width: 560px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 5vw, 40px); display: flex; flex-direction: column; gap: 22px;">
+        <svg width="120" height="72" viewBox="0 0 120 72" fill="none" aria-hidden="true">
+          <rect x="6" y="10" width="64" height="52" rx="10" fill="#EEE8FF"></rect>
+          <path d="M18 26h40M18 36h28M18 46h20" stroke="#7A5AF8" stroke-width="3" stroke-linecap="round"></path>
+          <circle cx="82" cy="40" r="17" fill="#FFFFFF" stroke="#18161F" stroke-width="3"></circle>
+          <path d="m94 52 14 14" stroke="#18161F" stroke-width="4" stroke-linecap="round"></path>
+          <path d="M78 36a4.5 4.5 0 1 1 6 4.2c-1.3.5-2 1.4-2 2.8M82 47v.01" stroke="#E0752D" stroke-width="3" stroke-linecap="round"></path>
+        </svg>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(30px, 6vw, 40px); line-height: 1.08; letter-spacing: -0.03em;">That page isn&#39;t here.</h1>
+          <sc-if value="{{missing}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">We looked for <strong style="color: #18161F; overflow-wrap: anywhere;">{{missing}}</strong> and couldn&#39;t find it. The link may be old, or it may have a typo.</p>
+          </sc-if>
+          <sc-if value="{{noMissing}}" hint-placeholder-val="{{true}}">
+            <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">The link may be old, or it may have a typo. Nothing in your books has changed.</p>
+          </sc-if>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <a href="ThreeHome.dc.html" class="nf-btn">Go to Home
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a href="Help.dc.html" class="nf-btn nf-btn2">Get help</a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
+          <span style="font-size: 13px; font-weight: 700; color: #47444F; padding: 0 12px 4px;">Or pick up from one of your three numbers</span>
+          <sc-for list="{{places}}" as="pl" hint-placeholder-count="4">
+            <a href="{{pl.href}}" class="nf-row">
+              <span style="width: 10px; height: 10px; border-radius: 9999px; background: {{pl.dot}}; border: {{pl.ring}}; box-sizing: border-box; flex: none;"></span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
+                <span style="font-weight: 600; font-size: 15px;">{{pl.name}}</span>
+                <span style="font-size: 13px; color: #5F5B68;">{{pl.sub}}</span>
+              </span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m9 6 6 6-6 6"></path></svg>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </main>
+
+    <footer style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; font-size: 13px;">
+      <a href="ThreeLanding.dc.html" style="color: #47444F;">What is BillingEase?</a>
+      <a href="Everything.dc.html" style="color: #47444F;">Everything it does</a>
+      <a href="AuthSignIn.dc.html" style="color: #47444F;">Sign in</a>
+    </footer>
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const raw = String(BE.hash() || '').trim();
+    const missing = raw ? raw.replace(/^.*\//, '').slice(0, 80) : '';
+    const T = BE.totals();
+    return {
+      missing: missing || false, noMissing: !missing,
+      places: [
+        { name: 'Coming in', sub: T.fmt.in + ' this October · invoices, quotes, customers', href: 'ThreeIn.dc.html', dot: '#7A5AF8', ring: '0' },
+        { name: 'Going out', sub: T.fmt.out + ' this October · bills, receipts, payroll', href: 'ThreeOut.dc.html', dot: '#E0752D', ring: '0' },
+        { name: 'Yours to keep', sub: T.fmt.keep + ' after tax set-aside · tax and reports', href: 'ThreeKeep.dc.html', dot: '#18161F', ring: '2px solid #B9A3FF' },
+        { name: 'Everything BillingEase does', sub: 'A plain-language map of every feature', href: 'Everything.dc.html', dot: '#FFFFFF', ring: '2px solid #18161F' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

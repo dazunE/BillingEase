@@ -309,14 +309,15 @@
       var rate = (s.profile && s.profile.setAside != null) ? s.profile.setAside : 0.25;
       var tax = Math.round(Math.max(profit, 0) * rate);
       var keep = Math.round(profit - tax);
+      var home = (s.profile && s.profile.currency) || 'USD';
       var pct = function (a, b) { return b > 0 ? Math.max(a > 0 ? 2 : 0, Math.min(100, Math.round(a / b * 100))) : 0; };
       return {
-        period: period, inPaid: r2(inPaid), inExp: r2(inExp), in: tIn, outPaid: r2(outPaid), outSch: r2(outSch), out: tOut,
+        period: period, currency: home, inPaid: r2(inPaid), inExp: r2(inExp), in: tIn, outPaid: r2(outPaid), outSch: r2(outSch), out: tOut,
         outBills: r2(bills), outPayroll: r2(pay), outMonthly: r2(monthly),
         profit: profit, tax: tax, keep: keep, rate: rate,
         inPaidPct: pct(inPaid, tIn), outPaidPct: pct(outPaid, tOut), keepPct: pct(keep, profit),
-        fmt: { in: money(tIn, 'USD', { whole: true }), out: money(tOut, 'USD', { whole: true }), keep: money(keep, 'USD', { whole: true }), tax: money(tax, 'USD', { whole: true }),
-          inPaid: money(inPaid, 'USD', { whole: true }), inExp: money(inExp, 'USD', { whole: true }), outPaid: money(outPaid, 'USD', { whole: true }), outSch: money(outSch, 'USD', { whole: true }), profit: money(profit, 'USD', { whole: true }) }
+        fmt: { in: money(tIn, home, { whole: true }), out: money(tOut, home, { whole: true }), keep: money(keep, home, { whole: true }), tax: money(tax, home, { whole: true }),
+          inPaid: money(inPaid, home, { whole: true }), inExp: money(inExp, home, { whole: true }), outPaid: money(outPaid, home, { whole: true }), outSch: money(outSch, home, { whole: true }), profit: money(profit, home, { whole: true }) }
       };
     },
 

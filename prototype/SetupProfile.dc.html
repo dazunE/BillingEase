@@ -29,7 +29,7 @@ a{color:#18161F}a:hover{color:#000000}
       <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
     </a>
     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 14px; color: #47444F;">
-      <span class="be-signedin">Signed in as <strong style="color: #18161F; font-weight: 600;">maya@northwind.studio</strong></span>
+      <sc-if value="{{signedInAs}}" hint-placeholder-val="{{true}}"><span class="be-signedin">Signed in as <strong style="color: #18161F; font-weight: 600;">{{signedInAs}}</strong></span></sc-if>
       <button type="button" onClick="{{later}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Finish later</button>
     </div>
   </div>
@@ -79,6 +79,31 @@ a{color:#18161F}a:hover{color:#000000}
               <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{nameError}}</span>
             </sc-if>
             <span style="font-size: 13px; color: #5F5B68;">It goes at the top of your invoices and quotes.</span>
+          </div>
+          <sc-if value="{{askYou}}" hint-placeholder-val="{{false}}">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="biz-owner" style="font-size: 14px; font-weight: 600;">Your name</label>
+            <input id="biz-owner" class="be-field" type="text" value="{{owner}}" onChange="{{setOwner}}" autocomplete="name" style="min-height: 52px; box-sizing: border-box; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 17px DM Sans, sans-serif; color: #18161F;">
+            <sc-if value="{{ownerError}}" hint-placeholder-val="{{false}}">
+              <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{ownerError}}</span>
+            </sc-if>
+            <span style="font-size: 13px; color: #5F5B68;">Shown as the owner and on your sign-in.</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="biz-email" style="font-size: 14px; font-weight: 600;">Your email</label>
+            <input id="biz-email" class="be-field" type="email" value="{{email}}" onChange="{{setEmail}}" autocomplete="email" style="min-height: 52px; box-sizing: border-box; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 17px DM Sans, sans-serif; color: #18161F;">
+            <sc-if value="{{emailError}}" hint-placeholder-val="{{false}}">
+              <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{emailError}}</span>
+            </sc-if>
+            <span style="font-size: 13px; color: #5F5B68;">Customers reply to this address.</span>
+          </div>
+            </div>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="biz-city" style="font-size: 14px; font-weight: 600;">Town or city <span style="font-weight: 400; color: #5F5B68;">(optional)</span></label>
+            <input id="biz-city" class="be-field" type="text" value="{{city}}" onChange="{{setCity}}" autocomplete="address-level2" style="min-height: 52px; box-sizing: border-box; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 17px DM Sans, sans-serif; color: #18161F;">
+            <span style="font-size: 13px; color: #5F5B68;">Shown under your business name on invoices.</span>
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label for="biz-country" style="font-size: 14px; font-weight: 600;">Country</label>
@@ -183,13 +208,31 @@ a{color:#18161F}a:hover{color:#000000}
               </div>
             </sc-for>
           </dl>
-          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <a href="ThreeHome.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 26px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 16px; text-decoration: none;">
-              Go to my home
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-            </a>
-            <a href="Everything.dc.html" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 22px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">See everything BillingEase does</a>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">How do you want to start?</h2>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">Pick one. You can come back to setup and choose the other any time.</p>
           </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 20px; background: #18161F; color: #FFFFFF;">
+              <span style="width: 44px; height: 44px; border-radius: 14px; background: rgba(185,163,255,0.18); display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5zM9 9h6M9 13h4"></path></svg></span>
+              <span style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; overflow-wrap: anywhere;">{{emptyTitle}}</span>
+                <span style="font-size: 14px; line-height: 1.5; color: #EEE8FF;">Your three numbers start at {{zero}}. They fill in as you bill customers, add costs and connect your bank.</span>
+              </span>
+              <a href="ThreeHome.dc.html" onClick="{{startEmpty}}" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">Start empty
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+              </a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E2DFE8;">
+              <span style="width: 44px; height: 44px; border-radius: 14px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg></span>
+              <span style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Start with a sample month</span>
+                <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Click around <strong style="color: #18161F;">Northwind Studio</strong>, a sample design studio in Brooklyn, with October already filled in: $24,850 coming in, $8,407 to keep. Nothing you do there is real.</span>
+              </span>
+              <a href="ThreeHome.dc.html" onClick="{{startSample}}" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">Start with a sample month</a>
+            </div>
+          </div>
+          <a href="Everything.dc.html" style="align-self: flex-start; font-size: 14px; font-weight: 600;">See everything BillingEase does</a>
           <div style="display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; border-radius: 20px; border: 1px solid #E2DFE8; background: #FFFFFF;">
             <span style="width: 36px; height: 36px; border-radius: 12px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; flex: none;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8M16 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM10 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path></svg>
@@ -276,11 +319,18 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
+    // Sign up hands over what the person typed (sessionStorage 'be.signup').
+    let su = null, saved = null;
+    try { su = JSON.parse(sessionStorage.getItem('be.signup') || 'null'); } catch (e) { su = null; }
+    try { saved = JSON.parse(sessionStorage.getItem('be.setup') || 'null'); } catch (e) { saved = null; }
+    su = su && typeof su === 'object' ? su : null;
+    const a = { name: (su && su.business) || '', owner: (su && su.name) || '', email: (su && su.email) || '', city: '', country: 'us', sell: null, team: null, acct: false, abroad: null, curs: [] };
     this.state = {
-      step: 1, reached: 1, toast: null, nameError: '',
-      a: { name: 'Northwind Studio', country: 'us', sell: null, team: null, acct: false, abroad: null, curs: [], start: null },
+      step: 1, reached: 1, toast: null, nameError: '', fromSignup: !!(su && su.email),
+      a: saved && saved.a ? Object.assign(a, saved.a, su ? { name: saved.a.name || a.name, owner: a.owner || saved.a.owner, email: a.email || saved.a.email } : {}) : a,
       prev: null, note: ''
     };
+    if (saved && saved.step) { this.state.step = Math.min(saved.step, 4); this.state.reached = Math.min(saved.reached || saved.step, 4); }
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
 
@@ -357,15 +407,15 @@ class Component extends DCLogic {
     const st = this.state, a = st.a;
     const CS = this.countries(), C = CS[a.country];
     const fmt = (n) => new Intl.NumberFormat(C.loc, { style: 'currency', currency: C.cur, maximumFractionDigits: 0 }).format(n);
-    const STEP_NAMES = ['Your business', 'What you sell', 'Who works in it', 'Customers abroad', 'How to start'];
+    const STEP_NAMES = ['Your business', 'What you sell', 'Who works in it', 'Customers abroad'];
     const step = st.step;
 
     const steps = STEP_NAMES.map((label, i) => {
-      const n = i + 1, done = n < step || step === 6, cur = n === step;
+      const n = i + 1, done = n < step || step === 5, cur = n === step;
       const reachable = n <= st.reached && !cur;
       return {
         label, isBtn: reachable, isSpan: !reachable, current: cur ? 'step' : false,
-        aria: 'Step ' + n + ' of 5: ' + label + (done ? ', done' : cur ? ', current' : ''),
+        aria: 'Step ' + n + ' of 4: ' + label + (done ? ', done' : cur ? ', current' : ''),
         bar: done ? '#18161F' : cur ? '#7A5AF8' : '#E2DFE8',
         color: cur ? '#18161F' : '#5F5B68',
         go: () => this.go(n)
@@ -386,9 +436,7 @@ class Component extends DCLogic {
       team: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M15 4.2a3.5 3.5 0 0 1 0 6.6',
       acct: 'M9 3h6l1 3H8zM6 6h12v15H6zM9 11h6M9 15h6M9 18h3',
       home: 'M4 11 12 4l8 7M6 9.5V20h12V9.5',
-      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z',
-      sample: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
-      empty: 'M5 4h14v16H5zM9 9h6M9 13h4'
+      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z'
     };
     const T = { us: '#EEE8FF', o: '#FDE6D6', ink: '#EFEDF3' };
     let q = { title: '', help: '', choices: [] };
@@ -418,14 +466,6 @@ class Component extends DCLogic {
         card(a.abroad === 'yes', false, { title: 'Yes, some are abroad', ex: 'Invoice in euros, pounds or dollars and see it all in ' + C.cur + '.', icon: ICON.globe, tint: T.o, pick: () => this.answer({ abroad: 'yes' }) })
       ]
     };
-    if (step === 5) q = {
-      title: 'Start with a sample month, or start empty?',
-      help: 'A sample month lets you click around before your own numbers arrive. Either way, connecting your bank comes next.',
-      choices: [
-        card(a.start === 'sample', false, { title: 'Start with a sample month', ex: 'Pretend invoices, expenses and receipts to try things on. Clear it all with one button.', icon: ICON.sample, tint: T.us, pick: () => this.answer({ start: 'sample' }) }),
-        card(a.start === 'empty', false, { title: 'Start empty', ex: 'Your three numbers start at ' + fmt(0) + ' and fill in as you bill and connect your bank.', icon: ICON.empty, tint: T.ink, pick: () => this.answer({ start: 'empty' }) })
-      ]
-    };
 
     // Currency chips (step 4, yes)
     const ALLC = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'INR'].filter((x) => x !== C.cur);
@@ -435,8 +475,8 @@ class Component extends DCLogic {
         toggle: () => this.answer({ curs: on ? a.curs.filter((x) => x !== cc) : a.curs.concat([cc]) }) };
     });
 
-    const answered = { 1: true, 2: !!a.sell, 3: !!a.team, 4: !!a.abroad, 5: !!a.start }[step];
-    const cantNext = step >= 2 && step <= 5 && !answered;
+    const answered = { 1: true, 2: !!a.sell, 3: !!a.team, 4: !!a.abroad }[step];
+    const cantNext = step >= 2 && step <= 4 && !answered;
 
     // Preview
     const feats = this.features(a);
@@ -455,30 +495,56 @@ class Component extends DCLogic {
       return Object.assign({}, G, { items, count: items.length });
     });
     const hidden = feats.filter((f) => !f.on).length;
-    const sample = a.start !== 'empty';
-    const pv = sample
-      ? { in: fmt(24850), out: fmt(13640), keep: fmt(8407), note: a.start === 'sample' ? 'Sample month. Clear it any time from your home.' : 'Example numbers until you choose how to start.' }
-      : { in: fmt(0), out: fmt(0), keep: fmt(0), note: 'Empty for now. Fills in as you bill and connect your bank.' };
+    const pv = { in: fmt(0), out: fmt(0), keep: fmt(0), note: 'Starts at ' + fmt(0) + ' and fills in as you bill and connect your bank.' };
 
     const bizName = (a.name || '').trim() || 'Your business';
+    const ownerName = (a.owner || '').trim() || 'You';
+    const email = (a.email || '').trim();
+    const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
+    const P = a.sell === 'products' || a.sell === 'both';
+    const profile = {
+      business: bizName, owner: ownerName, first: ownerName.split(' ')[0], email: email,
+      initials: BE.initials(ownerName === 'You' ? bizName : ownerName) || 'YB', role: 'Owner',
+      sells: a.sell || 'services', country: C.name, countryCode: a.country === 'uk' ? 'GB' : a.country.toUpperCase(), currency: C.cur, team: a.team || 'solo', accountant: !!a.acct,
+      overseas: a.abroad === 'yes', currencies: a.curs.slice(), city: (a.city || '').trim(), setAside: 0.25,
+      taxLabel: C.tax === 'Sales tax' ? (P ? 'Sales tax on products' : '') : C.tax
+    };
+    const stash = (extra) => { try { sessionStorage.setItem('be.setup', JSON.stringify(Object.assign({ a: a, step: step, reached: st.reached }, extra || {}))); } catch (e) { /* private window */ } };
     const sellText = { services: 'Services', products: 'Products', both: 'Services and products' }[a.sell] || 'Not answered';
     const whoText = (a.team === 'team' ? 'A small team' : a.team === 'solo' ? 'Just me' : 'Not answered') + (a.acct ? ', plus an accountant' : '');
     const abroadText = a.abroad === 'yes' ? 'Yes' + (a.curs.length ? ', in ' + a.curs.join(', ') : ', currencies picked per invoice') : a.abroad === 'no' ? 'No, all in ' + C.name : 'Not answered';
     const summaryRows = [
-      { k: 'Business', v: bizName + ' · ' + C.name, s: 1 },
+      { k: 'Business', v: bizName + ' · ' + ((a.city || '').trim() ? a.city.trim() + ', ' : '') + C.name, s: 1 },
+      { k: 'You', v: ownerName + (email ? ' · ' + email : ''), s: 1 },
       { k: 'Money and tax', v: C.cur + ' · dates like ' + C.date + ' · ' + C.tax, s: 1 },
       { k: 'You sell', v: sellText, s: 2 },
       { k: 'Who works in it', v: whoText, s: 3 },
-      { k: 'Customers abroad', v: abroadText, s: 4 },
-      { k: 'Starting with', v: a.start === 'empty' ? 'An empty month' : 'A sample month', s: 5 }
+      { k: 'Customers abroad', v: abroadText, s: 4 }
     ];
     const summary = summaryRows.map((r, i) => ({ k: r.k, v: r.v, aria: 'Change ' + r.k.toLowerCase(), rule: i === summaryRows.length - 1 ? 'transparent' : '#EFEDF3', change: () => this.go(r.s) }));
 
     const shown = feats.filter((f) => f.on).length;
 
     return {
-      steps, progressLabel: step === 6 ? 'All 5 steps done' : 'Step ' + step + ' of 5 · ' + STEP_NAMES[step - 1],
-      s1: step === 1, choiceStep: step >= 2 && step <= 5, s6: step === 6, inSteps: step <= 5,
+      steps, progressLabel: step === 5 ? 'All 4 steps done' : 'Step ' + step + ' of 4 · ' + STEP_NAMES[step - 1],
+      s1: step === 1, choiceStep: step >= 2 && step <= 4, s6: step === 5, inSteps: step <= 4,
+      askYou: !st.fromSignup, signedInAs: st.fromSignup ? email : false, owner: a.owner, email: a.email, city: a.city,
+      ownerError: st.ownerError || false, emailError: st.emailError || false,
+      setOwner: (e) => this.setState({ a: Object.assign({}, a, { owner: e.target.value }), ownerError: '' }),
+      setEmail: (e) => this.setState({ a: Object.assign({}, a, { email: e.target.value }), emailError: '' }),
+      setCity: (e) => this.setState({ a: Object.assign({}, a, { city: e.target.value }) }),
+      startEmpty: () => {
+        BE.startEmpty(profile);
+        BE.log('Set up ' + bizName + ' · ' + C.name + ', ' + C.cur);
+        try { sessionStorage.removeItem('be.setup'); sessionStorage.setItem('be.flash', 'Welcome to BillingEase, ' + profile.first + '. ' + bizName + ' is ready.'); } catch (e) { /* ignore */ }
+      },
+      startSample: () => {
+        stash({ step: 4 });
+        BE.startSample();
+        try { sessionStorage.setItem('be.flash', 'You’re looking at Northwind Studio, a sample design studio. Your own answers are saved in setup.'); } catch (e) { /* ignore */ }
+      },
+      emptyTitle: 'Start empty as ' + bizName,
+      zero: fmt(0),
       name: a.name, nameError: st.nameError || false,
       setName: (e) => this.setState({ a: Object.assign({}, a, { name: e.target.value }), nameError: '' }),
       country: a.country,
@@ -488,20 +554,27 @@ class Component extends DCLogic {
       q, showCurs: step === 4 && a.abroad === 'yes', curChips,
       curNote: a.curs.length ? 'Invoices can go out in ' + a.curs.join(', ') + '. We use the day’s exchange rate and show what each is worth in ' + C.cur + '.' : 'Skip this and pick a currency when you write the invoice.',
       changeNote: st.note || false,
-      canBack: step > 1 && step <= 5,
+      canBack: step > 1 && step <= 4,
       back: () => this.go(step - 1),
       cantNext, nextBg: cantNext ? '#EFEDF3' : '#B9A3FF', nextColor: cantNext ? '#5F5B68' : '#18161F', nextCursor: cantNext ? 'not-allowed' : 'pointer',
-      nextLabel: step === 5 ? 'See my BillingEase' : 'Continue',
+      nextLabel: step === 4 ? 'See my BillingEase' : 'Continue',
       next: () => {
-        if (step === 1 && !(a.name || '').trim()) { this.setState({ nameError: 'Add your business name. It goes on your invoices.' }); return; }
+        if (step === 1) {
+          const errs = {
+            nameError: !(a.name || '').trim() ? 'Add your business name. It goes on your invoices.' : '',
+            ownerError: !st.fromSignup && !(a.owner || '').trim() ? 'Add your name.' : '',
+            emailError: !st.fromSignup && !valid(a.email) ? 'Add an email address customers can reply to.' : ''
+          };
+          if (errs.nameError || errs.ownerError || errs.emailError) { this.setState(errs); return; }
+        }
         this.go(step + 1);
       },
       bizName, hiddenSentence: hidden ? hidden + ' more features stay out of sight until you need them.' : 'Every feature is switched on for you.',
       summary,
-      pvTitle: step === 6 ? 'Your home' : 'Your home, as you answer',
+      pvTitle: step === 5 ? 'Your home' : 'Your home, as you answer',
       pvDate: C.date, pv, groups,
       hiddenLine: hidden ? shown + ' features shown · ' + hidden + ' hidden until you need them' : 'All ' + shown + ' features shown',
-      later: () => this.notify('Saved. We’ll pick up at step ' + Math.min(step, 5) + ' next time you sign in.'),
+      later: () => { stash(); this.notify('Saved. We’ll pick up at step ' + Math.min(step, 4) + ' next time you open setup.'); },
       toast: st.toast
     };
   }

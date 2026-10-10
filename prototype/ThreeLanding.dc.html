@@ -579,7 +579,9 @@ a{color:#18161F}a:hover{color:#000000}
     <nav aria-label="Footer" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;">
       <a href="#how" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">How it works</a>
       <a href="#pricing" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">Pricing</a>
-      <sc-for list="{{footLinks}}" as="fl" hint-placeholder-count="4">
+      <a href="Help.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">Help center</a>
+      <a href="Everything.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; color: #47444F; text-decoration: none; font-weight: 600;">Everything it does</a>
+      <sc-for list="{{footLinks}}" as="fl" hint-placeholder-count="3">
         <button type="button" onClick="{{fl.go}}" style="min-height: 36px; padding: 0 8px; border: 0; background: transparent; color: #47444F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{fl.label}}</button>
       </sc-for>
     </nav>
@@ -748,13 +750,18 @@ class Component extends DCLogic {
       { q: 'Do I need to know accounting?', a: 'No. You work with three numbers and plain words. Proper double-entry books are kept underneath, and they’re there for your accountant (or for you) whenever you want to look.' },
       { q: 'Is the free plan really free?', a: 'Yes, with no time limit and no card needed. We make money from Pro subscriptions and from the small fee on payments your customers make online.' },
       { q: 'Is it safe to connect my bank?', a: 'The connection is read-only, through a trusted bank connection provider. We never see or store your bank password, and we can’t move money out of your account.' },
-      { q: 'What doesn’t BillingEase do?', a: 'It isn’t built for inventory tracking or for businesses billing in several currencies. If those are central to your work, a different tool will serve you better today.' }
+      { q: 'What doesn’t BillingEase do?', a: 'It isn’t built for large warehouses, manufacturing or businesses with hundreds of staff. Stock for a small shop, overseas customers and a small team are covered.' }
     ];
     const faqs = FAQ.map((f, i) => {
       const on = st.faq === i;
       return Object.assign({}, f, { open: on, iconBg: on ? '#B9A3FF' : 'rgba(24,22,31,0.07)', icon: on ? 'M5 12h14' : 'M12 5v14M5 12h14', toggle: () => this.setState({ faq: on ? -1 : i }) });
     });
-    const footLinks = ['Help center', 'Privacy', 'Terms', 'Contact us'].map((l) => ({ label: l, go: () => this.notify(l + ' isn’t part of this prototype yet') }));
+    const FOOT = {
+      Privacy: 'Privacy, in short: we use your details to run your account and never sell them.',
+      Terms: 'Terms, in short: you own your data and can export or delete it any time.',
+      'Contact us': 'Write to help@billingease.com. A person answers within one working day.'
+    };
+    const footLinks = Object.keys(FOOT).map((l) => ({ label: l, go: () => this.notify(FOOT[l]) }));
 
     const SCENE = {
       studio: { ins: [['AF', 'Atlas Freight', '$6,300'], ['RO', 'Ridge Outdoor', '$3,960'], ['BY', 'Bluebird Yoga', '$540']], outs: [['Payroll', '$7,231'], ['Rent', '$1,200'], ['Software', '$135']],

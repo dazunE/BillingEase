@@ -255,8 +255,11 @@ select.bz-in{cursor:pointer;padding-right:8px}
               <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(32px, 6vw, 42px); line-height: 1.05; letter-spacing: -0.03em;">Welcome to Northwind Studio.</h1>
               <p class="bz-sub" style="font-size: 15px;">You&#39;re in as Staff, {{iv.first}}. We let Jordan know. Start with a quote or log some time.</p>
             </div>
-            <a href="ThreeIn.dc.html" class="bz-btn" style="min-height: 48px; font-size: 15px;">Open Coming in</a>
-            <a href="SellQuotes.dc.html" style="align-self: center; font-size: 14px; font-weight: 600;">Start a quote</a>
+            <a href="ThreeHome.dc.html" class="bz-btn" style="min-height: 48px; font-size: 15px;">Go to Home</a>
+            <span style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 20px;">
+              <a href="SellQuotes.dc.html#new" style="font-size: 14px; font-weight: 600;">Start a quote</a>
+              <a href="ThreeIn.dc.html" style="font-size: 14px; font-weight: 600;">Open Coming in</a>
+            </span>
           </div>
         </sc-if>
         <sc-if value="{{iDeclined}}" hint-placeholder-val="{{false}}">
@@ -277,10 +280,10 @@ select.bz-in{cursor:pointer;padding-right:8px}
         <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; color: #FFFFFF;">{{panel.title}}</h2>
         <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #EEE8FF;">{{panel.body}}</p>
         <sc-if value="{{panel.eq}}" hint-placeholder-val="{{true}}">
-          <div aria-label="Northwind Studio this October" style="display: flex; flex-direction: column; gap: 8px;">
-            <span style="display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 14px; background: rgba(238,232,255,0.08); font-size: 14px;"><span style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #C9BCFB;"></span>Coming in</span><strong style="font-variant-numeric: tabular-nums;">$24,850</strong></span>
-            <span style="display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 14px; background: rgba(238,232,255,0.08); font-size: 14px;"><span style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #F4C3A1;"></span>− Going out</span><strong style="font-variant-numeric: tabular-nums;">$13,640</strong></span>
-            <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 12px 14px; border-radius: 14px; background: rgba(185,163,255,0.16); font-size: 14px;"><span>= Yours to keep</span><strong style="font: 700 24px Sora, sans-serif; letter-spacing: -0.02em; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407</strong></span>
+          <div aria-label="{{panel.eqLabel}}" style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 14px; background: rgba(238,232,255,0.08); font-size: 14px;"><span style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #C9BCFB;"></span>Coming in</span><strong style="font-variant-numeric: tabular-nums;">{{t.in}}</strong></span>
+            <span style="display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 14px; background: rgba(238,232,255,0.08); font-size: 14px;"><span style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #F4C3A1;"></span>− Going out</span><strong style="font-variant-numeric: tabular-nums;">{{t.out}}</strong></span>
+            <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 12px 14px; border-radius: 14px; background: rgba(185,163,255,0.16); font-size: 14px;"><span>= Yours to keep</span><strong style="font: 700 24px Sora, sans-serif; letter-spacing: -0.02em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{t.keep}}</strong></span>
           </div>
         </sc-if>
         <sc-if value="{{panel.list}}" hint-placeholder-val="{{false}}">
@@ -298,7 +301,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
     </main>
 
     <footer style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; font-size: 13px;">
-      <button type="button" class="bz-link" style="font: 400 13px DM Sans, sans-serif; color: #47444F; min-height: 24px;" onClick="{{showHelp}}">Help center</button>
+      <a href="Help.dc.html" style="display: inline-flex; align-items: center; min-height: 24px; font-size: 13px; color: #47444F;">Help center</a>
       <button type="button" class="bz-link" style="font: 400 13px DM Sans, sans-serif; color: #47444F; min-height: 24px;" onClick="{{showPrivacy}}">Privacy</button>
     </footer>
   </div>
@@ -316,11 +319,12 @@ select.bz-in{cursor:pointer;padding-right:8px}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
+    const me = ((window.BE && BE.get('profile')) || {}).email || '';
     this.state = {
       flow: (() => { try { const h = (window.location.hash || '').slice(1); return ['forgot', 'verify', 'invite'].includes(h) ? h : 'forgot'; } catch (e) { return 'forgot'; } })(), step: 1,
-      fp: { email: 'maya@northwind.studio', tried: false },
+      fp: { email: me, tried: false },
       np: { pass: '', again: '', show: false, others: true, tried: false },
-      v: { email: 'maya@northwind.studio', done: false, editing: false, draft: '', tried: false },
+      v: { email: me, done: false, editing: false, draft: '', tried: false },
       iv: { tab: 'new', name: 'Sam Ortiz', pass: '', show: false, email: 'sam@northwind.studio', pass2: '', tried: false, stage: 'form' },
       cool: { fp: 0, v: 0 }, toast: null
     };
@@ -353,6 +357,11 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state;
+    const P = BE.get('profile') || {};
+    const TT = BE.totals();
+    const t = { in: TT.fmt.in, out: TT.fmt.out, keep: TT.fmt.keep };
+    const hashFlow = ['forgot', 'verify', 'invite'].indexOf(BE.hash()) >= 0 ? BE.hash() : null;
+    const flow = hashFlow || s.flow;
     const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
     const mmss = (n) => '0:' + (n < 10 ? '0' : '') + n;
     const set = (k, o) => this.setState({ [k]: Object.assign({}, s[k], o) });
@@ -364,7 +373,7 @@ class Component extends DCLogic {
     const rules = [
       ['At least 8 characters', s.np.pass.length >= 8],
       ['A number or a symbol', /[\d\W_]/.test(s.np.pass)],
-      ['Not your email', !!s.np.pass && s.np.pass.toLowerCase().indexOf('maya') < 0 && s.np.pass.toLowerCase().indexOf('northwind') < 0]
+      ['Not your name or business', !!s.np.pass && [P.first, String(P.business || '').split(' ')[0]].every((w) => !w || w.length < 3 || s.np.pass.toLowerCase().indexOf(String(w).toLowerCase()) < 0)]
     ].map(([label, ok]) => ({ label, fg: ok ? '#2F5711' : '#5F5B68', icon: ok ? 'm5 12 5 5 9-10' : 'M6 12h12' }));
     const mismatch = s.np.again && s.np.again !== s.np.pass;
     const npErr = s.np.tried ? (s.np.pass.length < 8 ? 'Use at least 8 characters.' : (m.sc < 2 ? 'A bit stronger, please: add length, numbers or symbols.' : (s.np.again !== s.np.pass ? 'The two passwords don’t match.' : null))) : (mismatch && s.np.again.length >= s.np.pass.length ? 'The two passwords don’t match yet.' : null);
@@ -387,21 +396,21 @@ class Component extends DCLogic {
     };
 
     const FLOWS = [['forgot', 'Forgot password'], ['verify', 'Verify email'], ['invite', 'Team invite']];
-    const flows = FLOWS.map(([k, label]) => ({ label, on: s.flow === k, pick: () => this.setState({ flow: k }) }));
+    const flows = FLOWS.map(([k, label]) => ({ label, on: flow === k, pick: () => { try { if (hashFlow) history.replaceState(null, '', '#' + k); } catch (e) { /* ignore */ } this.setState({ flow: k }); } }));
     const STEPS = ['Email', 'Inbox', 'New password', 'Done'];
     const steps = STEPS.map((label, i) => ({ label, aria: 'Step ' + (i + 1) + ': ' + label, on: s.step === i + 1, fg: s.step >= i + 1 ? '#18161F' : '#5F5B68', bar: s.step > i ? (s.step === i + 1 ? '#7A5AF8' : '#18161F') : '#E2DFE8', pick: () => this.setState({ step: i + 1 }) }));
 
-    const isF = s.flow === 'forgot', isV = s.flow === 'verify', isI = s.flow === 'invite';
+    const isF = flow === 'forgot', isV = flow === 'verify', isI = flow === 'invite';
     const CHK = 'm5 12 5 5 9-10', NO = 'M6 6l12 12M18 6 6 18';
     const yes = (t) => ({ t, icon: CHK, bg: '#B9A3FF', stroke: '#18161F', fg: '#FFFFFF' });
     const no = (t) => ({ t, icon: NO, bg: 'rgba(238,232,255,0.16)', stroke: '#EEE8FF', fg: '#EEE8FF' });
     let panel;
-    if (isF) panel = { eyebrow: 'Northwind Studio', title: 'Your books are safe.', body: 'A new password doesn’t touch anything in your business. Invoices still go out, payments still come in, and October still adds up.', eq: true, list: false, foot: 'We never ask for your password by email or phone.' };
+    if (isF) panel = { eyebrow: P.business || 'Your business', eqLabel: (P.business || 'Your business') + ' this October', title: 'Your books are safe.', body: 'A new password doesn’t touch anything in your business. Invoices still go out, payments still come in, and October still adds up.', eq: true, list: false, foot: 'We never ask for your password by email or phone.' };
     else if (isV) panel = { eyebrow: 'Why we ask', title: s.v.done ? 'All set.' : 'Two things wait for a verified email.', body: 'Customers reply to the address on your invoices, and we need a way to reach you about money moving.', eq: false, list: [s.v.done ? yes('Sending invoices') : no('Sending invoices'), s.v.done ? yes('Getting paid online') : no('Getting paid online'), yes('Setting up your business'), yes('Adding expenses and receipts')], foot: 'The link in the email works for 24 hours.' };
     else panel = { eyebrow: 'Staff at Northwind Studio', title: 'What you’ll be able to do', body: 'Jordan picked the Staff role for you. An Owner or Admin can change it later.', eq: false, list: [yes('Create quotes and invoices'), yes('Log time you can bill'), yes('See invoices you made'), no('See the bank or payroll'), no('Pay bills or change settings')], foot: 'Your pay stays private: Staff can’t see anyone’s payroll.' };
 
     return {
-      toast: s.toast, flows, steps, panel, fp, np, v, iv,
+      toast: s.toast, flows, steps, panel, fp, np, v, iv, t,
       topHint: isI ? 'Already joined?' : (isV ? 'Wrong account?' : 'Remembered it?'),
       isForgot: isF, f1: isF && s.step === 1, f2: isF && s.step === 2, f3: isF && s.step === 3, f4: isF && s.step === 4,
       banner: isV && !s.v.done, vPending: isV && !s.v.done, vDone: isV && s.v.done,
@@ -429,11 +438,18 @@ class Component extends DCLogic {
       setIvEmail: (e) => set('iv', { email: e.target.value }),
       setIvPass2: (e) => set('iv', { pass2: e.target.value }),
       toggleIv: () => set('iv', { show: !s.iv.show }),
-      acceptInvite: () => { if (ivErr || (s.iv.tab === 'new' ? (!s.iv.name.trim() || s.iv.pass.length < 8) : (!valid(s.iv.email) || !s.iv.pass2))) { set('iv', { tried: true }); return; } set('iv', { stage: 'joined', tried: false }); },
+      acceptInvite: () => { if (ivErr || (s.iv.tab === 'new' ? (!s.iv.name.trim() || s.iv.pass.length < 8) : (!valid(s.iv.email) || !s.iv.pass2))) { set('iv', { tried: true }); return; } set('iv', { stage: 'joined', tried: false });
+        // Joining as a team member opens the business that invited you (the sample, Northwind Studio).
+        if (BE.isEmpty() || (BE.get('profile') || {}).business !== 'Northwind Studio') BE.startSample();
+        const who = s.iv.tab === 'new' ? s.iv.name.trim() : 'Sam Ortiz';
+        BE.update('team', 'sam', { pending: false, status: 'Joined today', name: who || 'Sam Ortiz', email: s.iv.tab === 'new' ? 'sam@northwind.studio' : s.iv.email.trim() });
+        BE.log((who || 'Sam Ortiz') + ' accepted the invite and joined as Staff');
+        BE.notify((who || 'Sam Ortiz') + ' joined Northwind Studio', 'Accepted Jordan Lee’s invite as Staff', 'BizTeam.dc.html');
+        this.notify('You joined Northwind Studio as Staff');
+      },
       declineInvite: () => set('iv', { stage: 'declined' }),
       undoDecline: () => set('iv', { stage: 'form' }),
-      showHelp: () => this.notify('The help center isn’t part of this prototype yet'),
-      showPrivacy: () => this.notify('The privacy policy isn’t part of this prototype yet')
+      showPrivacy: () => this.notify('Privacy, in short: we use your details to run your account and never sell them.')
     };
   }
 }
