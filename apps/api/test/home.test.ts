@@ -100,10 +100,13 @@ describe("Home: the three numbers", () => {
     const m = await api.get("/home");
     expect(m.body.period).toMatchObject({ key: "month", from: "2026-10-01", to: "2026-10-31" });
     expect(m.body.periods.map((p: { label: string }) => p.label)).toEqual(["This month", "This year of assessment"]);
-    expect(m.body.comingIn).toMatchObject({ received: 50000_00, onTheWay: 70950_00, total: 120950_00 });
-    expect(m.body.goingOut).toMatchObject({ paid: 5900_00, toPay: 11800_00, total: 17700_00 });
-    const ytd = 50000_00 + 70950_00 + 236000_00 - 17700_00;
-    const e = expectedKeep("lk", 120950_00, 17700_00, ytd, "2026-10-01");
+    // The numbers leave out SSCL and VAT: payments are split in the invoice's proportions.
+    const exTax = (amount: number) => Math.round((amount * 100000_00) / 120950_00);
+    expect(m.body.comingIn).toMatchObject({ received: exTax(50000_00), onTheWay: exTax(70950_00), total: exTax(50000_00) + exTax(70950_00) });
+    expect(m.body.goingOut).toMatchObject({ paid: 5000_00, toPay: 10000_00, total: 15000_00 });
+    const inOct = exTax(50000_00) + exTax(70950_00);
+    const ytd = inOct + 200000_00 - 15000_00;
+    const e = expectedKeep("lk", inOct, 15000_00, ytd, "2026-10-01");
     expect(m.body.tax.share).toBe(e.share);
     expect(m.body.keep).toBe(e.keep);
     expect(m.body.tax.label).toBe("Income tax");

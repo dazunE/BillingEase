@@ -206,7 +206,8 @@ describe("bills", () => {
     expect(d.body.payments[0]).toMatchObject({ chequeNumber: "000731", chequeBank: "Sampath Bank" });
     expect(d.body.history.map((h: { text: string }) => h.text).join(" | ")).toMatch(/by cheque 000731/);
     const sum = await api.get("/out/summary?period=month");
-    expect(sum.body.paid).toBe(241900_00);
+    // Paid leaves out the input VAT, which comes back from the IRD.
+    expect(Math.abs(sum.body.paid - 205000_00)).toBeLessThanOrEqual(1);
   });
 
   it("voids an unpaid bill with a reversal; lists due soon and overdue", async () => {

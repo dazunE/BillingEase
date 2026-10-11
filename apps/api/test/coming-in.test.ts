@@ -286,7 +286,9 @@ describe("Sri Lanka Tax Invoices", () => {
     expect(await balances(business.id)).toMatchObject({ "1100": 0, "1000": 28290500 });
 
     const s = (await api.get("/in/summary")).body;
-    expect(s).toMatchObject({ received: 28290500, period: { key: "month" } });
+    // Received leaves out SSCL and VAT: the full amount came in, the business keeps the net.
+    expect(s).toMatchObject({ period: { key: "month" } });
+    expect(Math.abs(s.received - inv.net)).toBeLessThanOrEqual(1);
     expect(s.periods.map((p: { key: string }) => p.key)).toEqual(["month", "year"]);
     expect((await api.get("/in/summary?period=year")).body.period.label).toBe("Year of assessment 2026/27");
   });

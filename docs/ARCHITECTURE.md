@@ -30,8 +30,8 @@ The browser only talks to Next.js. Next.js server components and server actions 
 
 Coming in − Going out = Yours to keep, for the period on screen (UK: this quarter or tax year; Sri Lanka: this month or year of assessment; `periodsFor` in core).
 
-- **Coming in** = money received in the period (receipts) + what's still owed on invoices issued in the period. Late = owed and past due, from any period.
-- **Going out** = money paid in the period (the business share of expenses, and bill payments) + what's still owed on bills dated in the period.
+- **Coming in** = money received in the period (receipts) + what's still owed on invoices issued in the period, both **without VAT and SSCL** (each payment is split in its invoice's proportions): that money belongs to the tax office. Late = the full amount owed and past due, from any period.
+- **Going out** = money paid in the period (the business share of expenses, and bill payments) + what's still owed on bills dated in the period, both **without reclaimable VAT**.
 - **Yours to keep** = Coming in − Going out − the share of the year's tax estimate (`rules.estimate`) for the period.
 
 `apps/api/src/services/summary.ts` computes these; Home, Coming in and Going out all use it so the numbers agree.
