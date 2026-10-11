@@ -1,0 +1,641 @@
+import { sql } from "drizzle-orm";
+import {
+  bigint,
+  boolean,
+  check,
+  date,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
+
+// Money is always whole minor units (pence, cents) in a bigint, never a float.
+const money = (name: string) => bigint(name, { mode: "number" });
+const id = () => uuid("id").primaryKey().defaultRandom();
+const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
+const updatedAt = () => timestamp("updated_at", { withTimezone: true }).notNull().defaultNow();
+const businessId = () => uuid("business_id").notNull().references(() => businesses.id, { onDelete: "cascade" });
+/** Cheque details, kept for Sri Lanka (and UK cheques). */
+const cheque = {
+  chequeNumber: text("cheque_number"),
+  chequeDate: date("cheque_date"),
+  chequeBank: text("cheque_bank"),
+};
+
+// ---------------------------------------------------------------------------
+// People and businesses
+
+export const users = pgTable("users", {
+  id: id(),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
+  passwordHash: text("password_hash").notNull(),
+  emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
+  createdAt: createdAt(),
+});
+
+export const sessions = pgTable(
+  "sessions",
+  {
+    // sha256 of the token; the raw token never touches the database
+    id: text("id").primaryKey(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    userAgent: text("user_agent"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("sessions_user").on(t.userId)],
+);
+
+export const passwordResets = pgTable("password_resets", {
+  id: text("id").primaryKey(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+});
+
+export const COUNTRIES = ["uk", "lk"] as const;
+export const BUSINESS_KINDS = ["sole_trader", "landlord", "both", "sole_proprietor", "partnership"] as const;
+
+export const businesses = pgTable(
+  "businesses",
+  {
+    id: id(),
+    // Fixed at sign-up: a business in another country is a new business.
+    country: text("country").$type<(typeof COUNTRIES)[number]>().notNull(),
+    currency: text("currency").$type<"GBP" | "LKR">().notNull(),
+    name: text("name").notNull(),
+    legalName: text("legal_name"),
+    kind: text("kind").$type<(typeof BUSINESS_KINDS)[number]>().notNull(),
+    ownerName: text("owner_name").notNull(),
+    email: text("email"),
+    phone: text("phone"),
+    addressLine1: text("address_line1"),
+    addressLine2: text("address_line2"),
+    town: text("town"),
+    region: text("region"),
+    postcode: text("postcode"),
+    // UTR in the UK, TIN in Sri Lanka
+    taxId: text("tax_id"),
+    vatRegistered: boolean("vat_registered").notNull().default(false),
+    vatNumber: text("vat_number"),
+    ssclRegistered: boolean("sscl_registered").notNull().default(false),
+    basis: text("basis").$type<"cash" | "accrual">().notNull(),
+    quarterType: text("quarter_type").$type<"standard" | "calendar">().notNull().default("standard"),
+    invoicePrefix: text("invoice_prefix").notNull().default("INV-"),
+    nextInvoiceNo: integer("next_invoice_no").notNull().default(1),
+    nextQuoteNo: integer("next_quote_no").notNull().default(1),
+    nextCreditNo: integer("next_credit_no").notNull().default(1),
+    termsDays: integer("terms_days").notNull(),
+    invoiceNote: text("invoice_note"),
+    // Bank details printed on invoices so customers can pay by transfer.
+    paymentDetails: text("payment_details"),
+    accent: text("accent").notNull().default("#7A5AF8"),
+    // Optional settings that don't need their own column (WhatsApp reminders, invoice language, ...).
+    settings: jsonb("settings").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    check("businesses_country", sql`${t.country} in ('uk','lk')`),
+    check("businesses_currency", sql`(${t.country} = 'uk' and ${t.currency} = 'GBP') or (${t.country} = 'lk' and ${t.currency} = 'LKR')`),
+    check("businesses_basis", sql`${t.basis} in ('cash','accrual')`),
+    check("businesses_terms", sql`${t.termsDays} between 0 and 365`),
+  ],
+);
+
+export const ROLES = ["owner", "accountant", "admin"] as const;
+export type Role = (typeof ROLES)[number];
+
+export const memberships = pgTable(
+  "memberships",
+  {
+    businessId: businessId(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    role: text("role").$type<Role>().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.businessId, t.userId] }),
+    index("memberships_user").on(t.userId),
+    check("memberships_role", sql`${t.role} in ('owner','accountant','admin')`),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Chart of accounts and the ledger
+
+export const accounts = pgTable(
+  "accounts",
+  {
+    id: id(),
+    businessId: businessId(),
+    code: text("code").notNull(),
+    name: text("name").notNull(),
+    type: text("type").$type<"asset" | "liability" | "equity" | "income" | "expense">().notNull(),
+    // bank | cash | receivable | payable | vat_input | vat_output | sscl | sales | ... (see core/ledger.ts)
+    role: text("role"),
+    // The country category this expense account is for.
+    categoryId: text("category_id"),
+    official: text("official"),
+    allowable: boolean("allowable"),
+    scope: text("scope").$type<"business" | "property">(),
+    archived: boolean("archived").notNull().default(false),
+  },
+  (t) => [
+    uniqueIndex("accounts_business_code").on(t.businessId, t.code),
+    check("accounts_type", sql`${t.type} in ('asset','liability','equity','income','expense')`),
+  ],
+);
+
+export const journalEntries = pgTable(
+  "journal_entries",
+  {
+    id: id(),
+    businessId: businessId(),
+    entryDate: date("entry_date").notNull(),
+    memo: text("memo").notNull(),
+    // invoice | credit_note | receipt | expense | bill | bill_payment | journal | opening
+    sourceType: text("source_type").notNull(),
+    sourceId: uuid("source_id"),
+    // Corrections never edit an entry: they post its reversal and a new entry.
+    reversesEntryId: uuid("reverses_entry_id"),
+    reversedAt: timestamp("reversed_at", { withTimezone: true }),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("journal_entries_business_date").on(t.businessId, t.entryDate), index("journal_entries_source").on(t.sourceType, t.sourceId)],
+);
+
+export const journalLines = pgTable(
+  "journal_lines",
+  {
+    id: id(),
+    entryId: uuid("entry_id").notNull().references(() => journalEntries.id, { onDelete: "cascade" }),
+    businessId: businessId(),
+    accountId: uuid("account_id").notNull().references(() => accounts.id),
+    debit: money("debit").notNull().default(0),
+    credit: money("credit").notNull().default(0),
+  },
+  (t) => [
+    index("journal_lines_entry").on(t.entryId),
+    index("journal_lines_account").on(t.accountId),
+    check("journal_lines_one_side", sql`${t.debit} >= 0 and ${t.credit} >= 0 and ((${t.debit} = 0) <> (${t.credit} = 0))`),
+  ],
+);
+
+/** A filed period: the database refuses ledger entries dated inside it. */
+export const lockedPeriods = pgTable(
+  "locked_periods",
+  {
+    id: id(),
+    businessId: businessId(),
+    fromDate: date("from_date").notNull(),
+    toDate: date("to_date").notNull(),
+    label: text("label").notNull(),
+    reference: text("reference"),
+    lockedBy: uuid("locked_by").references(() => users.id, { onDelete: "set null" }),
+    lockedAt: timestamp("locked_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("locked_periods_business").on(t.businessId), check("locked_periods_range", sql`${t.fromDate} <= ${t.toDate}`)],
+);
+
+// ---------------------------------------------------------------------------
+// Coming in
+
+export const customers = pgTable(
+  "customers",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    contactName: text("contact_name"),
+    email: text("email"),
+    phone: text("phone"),
+    address: text("address"),
+    taxId: text("tax_id"),
+    vatNumber: text("vat_number"),
+    notes: text("notes"),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("customers_business").on(t.businessId)],
+);
+
+/** The price list: products and services. */
+export const items = pgTable(
+  "items",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    description: text("description"),
+    unit: text("unit"),
+    unitPrice: money("unit_price").notNull(),
+    vatRateId: text("vat_rate_id"),
+    sscl: boolean("sscl").notNull().default(true),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("items_business").on(t.businessId), check("items_price", sql`${t.unitPrice} >= 0`)],
+);
+
+export const INVOICE_STATUSES = ["draft", "sent", "part_paid", "paid", "void"] as const;
+export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
+
+/** What the seller and buyer looked like when the invoice was issued, so later edits don't change it. */
+export type InvoiceSnapshot = {
+  title: string;
+  seller: { name: string; legalName?: string | null; address: string; taxId?: string | null; vatNumber?: string | null; email?: string | null; phone?: string | null };
+  buyer: { name: string; address?: string | null; taxId?: string | null; vatNumber?: string | null; email?: string | null };
+  paymentDetails?: string | null;
+  note?: string | null;
+};
+
+export const invoices = pgTable(
+  "invoices",
+  {
+    id: id(),
+    businessId: businessId(),
+    kind: text("kind").$type<"invoice" | "credit_note">().notNull().default("invoice"),
+    number: text("number"),
+    customerId: uuid("customer_id").notNull().references(() => customers.id),
+    status: text("status").$type<InvoiceStatus>().notNull().default("draft"),
+    issueDate: date("issue_date").notNull(),
+    // Time of supply / date of delivery, when it differs from the issue date.
+    supplyDate: date("supply_date"),
+    dueDate: date("due_date").notNull(),
+    reference: text("reference"),
+    notes: text("notes"),
+    net: money("net").notNull().default(0),
+    vat: money("vat").notNull().default(0),
+    sscl: money("sscl").notNull().default(0),
+    total: money("total").notNull().default(0),
+    paid: money("paid").notNull().default(0),
+    credited: money("credited").notNull().default(0),
+    vatRegistered: boolean("vat_registered").notNull().default(false),
+    // For a credit note: the invoice it reduces.
+    creditForId: uuid("credit_for_id"),
+    quoteId: uuid("quote_id"),
+    recurringId: uuid("recurring_id"),
+    snapshot: jsonb("snapshot").$type<InvoiceSnapshot>(),
+    publicToken: text("public_token").notNull().unique(),
+    journalEntryId: uuid("journal_entry_id"),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    remindersSent: integer("reminders_sent").notNull().default(0),
+    lastReminderAt: timestamp("last_reminder_at", { withTimezone: true }),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("invoices_business_number").on(t.businessId, t.number),
+    index("invoices_business_status").on(t.businessId, t.status),
+    index("invoices_customer").on(t.customerId),
+    check("invoices_status", sql`${t.status} in ('draft','sent','part_paid','paid','void')`),
+    check("invoices_kind", sql`${t.kind} in ('invoice','credit_note')`),
+    check("invoices_amounts", sql`${t.total} >= 0 and ${t.paid} >= 0 and ${t.credited} >= 0 and ${t.paid} + ${t.credited} <= ${t.total}`),
+    check("invoices_numbered", sql`${t.status} = 'draft' or ${t.number} is not null`),
+  ],
+);
+
+const lineColumns = () => ({
+  id: id(),
+  businessId: businessId(),
+  position: integer("position").notNull().default(0),
+  itemId: uuid("item_id").references(() => items.id, { onDelete: "set null" }),
+  description: text("description").notNull(),
+  quantityMilli: integer("quantity_milli").notNull(),
+  unitPrice: money("unit_price").notNull(),
+  discount: money("discount").notNull().default(0),
+  vatRateId: text("vat_rate_id"),
+  vatBps: integer("vat_bps").notNull().default(0),
+  ssclApplies: boolean("sscl_applies").notNull().default(true),
+  net: money("net").notNull(),
+  sscl: money("sscl").notNull().default(0),
+  vat: money("vat").notNull().default(0),
+  total: money("total").notNull(),
+});
+
+export const invoiceLines = pgTable("invoice_lines", {
+  ...lineColumns(),
+  invoiceId: uuid("invoice_id").notNull().references(() => invoices.id, { onDelete: "cascade" }),
+}, (t) => [index("invoice_lines_invoice").on(t.invoiceId)]);
+
+export const QUOTE_STATUSES = ["draft", "sent", "accepted", "declined", "invoiced"] as const;
+
+export const quotes = pgTable(
+  "quotes",
+  {
+    id: id(),
+    businessId: businessId(),
+    number: text("number"),
+    customerId: uuid("customer_id").notNull().references(() => customers.id),
+    status: text("status").$type<(typeof QUOTE_STATUSES)[number]>().notNull().default("draft"),
+    issueDate: date("issue_date").notNull(),
+    expiryDate: date("expiry_date").notNull(),
+    notes: text("notes"),
+    net: money("net").notNull().default(0),
+    vat: money("vat").notNull().default(0),
+    sscl: money("sscl").notNull().default(0),
+    total: money("total").notNull().default(0),
+    vatRegistered: boolean("vat_registered").notNull().default(false),
+    invoiceId: uuid("invoice_id"),
+    snapshot: jsonb("snapshot").$type<InvoiceSnapshot>(),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("quotes_business_number").on(t.businessId, t.number),
+    index("quotes_business_status").on(t.businessId, t.status),
+    check("quotes_status", sql`${t.status} in ('draft','sent','accepted','declined','invoiced')`),
+  ],
+);
+
+export const quoteLines = pgTable("quote_lines", {
+  ...lineColumns(),
+  quoteId: uuid("quote_id").notNull().references(() => quotes.id, { onDelete: "cascade" }),
+}, (t) => [index("quote_lines_quote").on(t.quoteId)]);
+
+export type RecurringTemplate = {
+  lines: { itemId?: string | null; description: string; quantityMilli: number; unitPrice: number; discount?: number; vatRateId?: string | null; sscl?: boolean }[];
+  notes?: string | null;
+  reference?: string | null;
+  termsDays: number;
+};
+
+export const recurringInvoices = pgTable(
+  "recurring_invoices",
+  {
+    id: id(),
+    businessId: businessId(),
+    customerId: uuid("customer_id").notNull().references(() => customers.id),
+    name: text("name").notNull(),
+    frequency: text("frequency").$type<"weekly" | "monthly" | "quarterly" | "yearly">().notNull(),
+    nextRun: date("next_run").notNull(),
+    endDate: date("end_date"),
+    // draft: each run makes a draft for you to check and send. send: emailed on the day.
+    mode: text("mode").$type<"draft" | "send">().notNull().default("draft"),
+    template: jsonb("template").$type<RecurringTemplate>().notNull(),
+    active: boolean("active").notNull().default(true),
+    lastRunAt: timestamp("last_run_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("recurring_business").on(t.businessId),
+    check("recurring_frequency", sql`${t.frequency} in ('weekly','monthly','quarterly','yearly')`),
+    check("recurring_mode", sql`${t.mode} in ('draft','send')`),
+  ],
+);
+
+/** Money received against an invoice, recorded by hand. */
+export const receipts = pgTable(
+  "receipts",
+  {
+    id: id(),
+    businessId: businessId(),
+    invoiceId: uuid("invoice_id").notNull().references(() => invoices.id),
+    amount: money("amount").notNull(),
+    method: text("method").notNull(),
+    receivedOn: date("received_on").notNull(),
+    reference: text("reference"),
+    ...cheque,
+    journalEntryId: uuid("journal_entry_id"),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("receipts_business_date").on(t.businessId, t.receivedOn), index("receipts_invoice").on(t.invoiceId), check("receipts_positive", sql`${t.amount} > 0`)],
+);
+
+// ---------------------------------------------------------------------------
+// Going out
+
+export const suppliers = pgTable(
+  "suppliers",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    contactName: text("contact_name"),
+    email: text("email"),
+    phone: text("phone"),
+    address: text("address"),
+    vatNumber: text("vat_number"),
+    defaultCategoryId: text("default_category_id"),
+    notes: text("notes"),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("suppliers_business").on(t.businessId)],
+);
+
+export const expenses = pgTable(
+  "expenses",
+  {
+    id: id(),
+    businessId: businessId(),
+    spentOn: date("spent_on").notNull(),
+    supplierId: uuid("supplier_id").references(() => suppliers.id, { onDelete: "set null" }),
+    // Who was paid, when there's no supplier record.
+    payee: text("payee").notNull(),
+    // Null until sorted: it then posts to "Spending to sort".
+    categoryId: text("category_id"),
+    // What left the account, including VAT.
+    gross: money("gross").notNull(),
+    // Input VAT on the receipt (VAT-registered businesses only).
+    vat: money("vat").notNull().default(0),
+    // Share used for the business, 1–100.
+    bizPct: integer("biz_pct").notNull().default(100),
+    method: text("method").notNull(),
+    ...cheque,
+    note: text("note"),
+    monthlyCostId: uuid("monthly_cost_id"),
+    journalEntryId: uuid("journal_entry_id"),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index("expenses_business_date").on(t.businessId, t.spentOn),
+    check("expenses_amounts", sql`${t.gross} > 0 and ${t.vat} >= 0 and ${t.vat} < ${t.gross}`),
+    check("expenses_biz_pct", sql`${t.bizPct} between 1 and 100`),
+  ],
+);
+
+export const BILL_STATUSES = ["unpaid", "part_paid", "paid", "void"] as const;
+
+export const bills = pgTable(
+  "bills",
+  {
+    id: id(),
+    businessId: businessId(),
+    supplierId: uuid("supplier_id").notNull().references(() => suppliers.id),
+    reference: text("reference"),
+    billDate: date("bill_date").notNull(),
+    dueDate: date("due_date").notNull(),
+    description: text("description").notNull(),
+    net: money("net").notNull(),
+    vat: money("vat").notNull().default(0),
+    total: money("total").notNull(),
+    paid: money("paid").notNull().default(0),
+    status: text("status").$type<(typeof BILL_STATUSES)[number]>().notNull().default("unpaid"),
+    journalEntryId: uuid("journal_entry_id"),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index("bills_business_status").on(t.businessId, t.status),
+    check("bills_status", sql`${t.status} in ('unpaid','part_paid','paid','void')`),
+    check("bills_amounts", sql`${t.total} > 0 and ${t.paid} >= 0 and ${t.paid} <= ${t.total} and ${t.total} = ${t.net} + ${t.vat}`),
+  ],
+);
+
+export const billLines = pgTable("bill_lines", {
+  id: id(),
+  businessId: businessId(),
+  billId: uuid("bill_id").notNull().references(() => bills.id, { onDelete: "cascade" }),
+  position: integer("position").notNull().default(0),
+  description: text("description").notNull(),
+  categoryId: text("category_id").notNull(),
+  net: money("net").notNull(),
+  vat: money("vat").notNull().default(0),
+}, (t) => [index("bill_lines_bill").on(t.billId)]);
+
+export const billPayments = pgTable(
+  "bill_payments",
+  {
+    id: id(),
+    businessId: businessId(),
+    billId: uuid("bill_id").notNull().references(() => bills.id),
+    amount: money("amount").notNull(),
+    paidOn: date("paid_on").notNull(),
+    method: text("method").notNull(),
+    ...cheque,
+    reference: text("reference"),
+    journalEntryId: uuid("journal_entry_id"),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("bill_payments_bill").on(t.billId), check("bill_payments_positive", sql`${t.amount} > 0`)],
+);
+
+/** Costs that come round every month: you record each one with a tap. */
+export const monthlyCosts = pgTable(
+  "monthly_costs",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    supplierId: uuid("supplier_id").references(() => suppliers.id, { onDelete: "set null" }),
+    categoryId: text("category_id").notNull(),
+    amount: money("amount").notNull(),
+    vat: money("vat").notNull().default(0),
+    method: text("method").notNull(),
+    dayOfMonth: integer("day_of_month").notNull(),
+    active: boolean("active").notNull().default(true),
+    createdAt: createdAt(),
+  },
+  (t) => [index("monthly_costs_business").on(t.businessId), check("monthly_costs_day", sql`${t.dayOfMonth} between 1 and 28`), check("monthly_costs_amount", sql`${t.amount} > 0`)],
+);
+
+/** A photo or PDF kept with an expense, a bill or the business (no reading or matching). */
+export const attachments = pgTable(
+  "attachments",
+  {
+    id: id(),
+    businessId: businessId(),
+    ownerType: text("owner_type").$type<"expense" | "bill" | "invoice" | "business">().notNull(),
+    ownerId: uuid("owner_id").notNull(),
+    storageKey: text("storage_key").notNull(),
+    filename: text("filename").notNull(),
+    mime: text("mime").notNull(),
+    size: integer("size").notNull(),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("attachments_owner").on(t.ownerType, t.ownerId)],
+);
+
+// ---------------------------------------------------------------------------
+// Activity, notifications, email, Ask
+
+export const activity = pgTable(
+  "activity",
+  {
+    id: id(),
+    businessId: businessId(),
+    actorId: uuid("actor_id").references(() => users.id, { onDelete: "set null" }),
+    message: text("message").notNull(),
+    link: text("link"),
+    // clock_timestamp (not now()) so several entries in one transaction keep their order
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`clock_timestamp()`),
+  },
+  (t) => [index("activity_business_created").on(t.businessId, t.createdAt)],
+);
+
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: id(),
+    businessId: businessId(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    body: text("body"),
+    link: text("link"),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("notifications_business").on(t.businessId, t.createdAt)],
+);
+
+export type OutboxStatus = "kept" | "queued" | "sending" | "sent" | "failed";
+
+export const outboxEmails = pgTable(
+  "outbox_emails",
+  {
+    id: id(),
+    businessId: uuid("business_id").references(() => businesses.id, { onDelete: "cascade" }),
+    toEmail: text("to_email").notNull(),
+    replyTo: text("reply_to"),
+    subject: text("subject").notNull(),
+    bodyText: text("body_text").notNull(),
+    link: text("link"),
+    // The invoice or quote attached as a PDF, if any.
+    attachInvoiceId: uuid("attach_invoice_id").references(() => invoices.id, { onDelete: "set null" }),
+    attachQuoteId: uuid("attach_quote_id").references(() => quotes.id, { onDelete: "set null" }),
+    // kept = stored only (no email provider set up); queued → sending → sent | failed
+    status: text("status").$type<OutboxStatus>().notNull().default("queued"),
+    error: text("error"),
+    attempts: integer("attempts").notNull().default(0),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("outbox_status").on(t.status), check("outbox_status_valid", sql`${t.status} in ('kept','queued','sending','sent','failed')`)],
+);
+
+export type AskSource = { n: number; title: string; url?: string; kind: "books" | "official" };
+
+export const askMessages = pgTable(
+  "ask_messages",
+  {
+    id: id(),
+    businessId: businessId(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    threadId: uuid("thread_id").notNull(),
+    role: text("role").$type<"user" | "assistant">().notNull(),
+    content: text("content").notNull(),
+    sources: jsonb("sources").$type<AskSource[]>().notNull().default([]),
+    model: text("model"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`clock_timestamp()`),
+  },
+  (t) => [index("ask_messages_thread").on(t.threadId, t.createdAt), index("ask_messages_business").on(t.businessId, t.createdAt)],
+);
