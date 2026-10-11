@@ -39,7 +39,7 @@ a{color:#18161F}a:hover{color:#000000}
         </sc-if>
       </div>
       <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">What customers owe for October is the money on the way in Coming in. Overseas customers are shown in dollars at today’s rate.</p>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">{{introSide}}</p>
         <button type="button" aria-expanded="{{f.addOpen}}" onClick="{{openAdd}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Add a customer
@@ -69,21 +69,16 @@ a{color:#18161F}a:hover{color:#000000}
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px;">
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Business or person
-            <input class="be-field" type="text" placeholder="e.g. Pine Street Dental" value="{{f.name}}" onChange="{{f.setName}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+            <input class="be-field" type="text" placeholder="{{f.namePh}}" value="{{f.name}}" onChange="{{f.setName}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
           </label>
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email for invoices
             <input class="be-field" type="email" placeholder="name@company.com" value="{{f.email}}" onChange="{{f.setEmail}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
           </label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Country
-            <select class="be-field" value="{{f.country}}" onChange="{{f.setCountry}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-              <sc-for list="{{countries}}" as="co" hint-placeholder-count="7"><option value="{{co.name}}">{{co.name}}</option></sc-for>
-            </select>
-          </label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Bill them in
-            <select class="be-field" value="{{f.cur}}" onChange="{{f.setCur}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-              <option value="USD">US dollars (USD)</option><option value="EUR">Euros (EUR)</option><option value="GBP">Pounds (GBP)</option><option value="CAD">Canadian dollars (CAD)</option><option value="AUD">Australian dollars (AUD)</option>
-            </select>
-          </label>
+          <sc-if value="{{f.lk}}" hint-placeholder-val="{{false}}">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Their TIN (optional)
+              <input class="be-field" type="text" placeholder="e.g. 114 728 365" value="{{f.tin}}" onChange="{{f.setTin}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+            </label>
+          </sc-if>
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">{{f.taxLabel}}
             <input class="be-field" type="text" placeholder="{{f.taxPh}}" value="{{f.tax}}" onChange="{{f.setTax}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
           </label>
@@ -131,7 +126,7 @@ a{color:#18161F}a:hover{color:#000000}
         <h2 id="cl-h" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Customer list</h2>
         <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; gap: 2px;">
           <div aria-hidden="true" class="be-hide-sm" style="display: flex; gap: 12px; padding: 8px 64px 4px 62px; font-size: 12px; font-weight: 600; color: #5F5B68;">
-            <span style="flex: 1;">Customer</span><span style="width: 110px; text-align: right; white-space: nowrap;">Owes you</span><span style="width: 110px; text-align: right; white-space: nowrap;">Paid this year</span>
+            <span style="flex: 1;">Customer</span><span style="width: 110px; text-align: right; white-space: nowrap;">Owes you</span><span style="width: 110px; text-align: right; white-space: nowrap;">Paid so far</span>
           </div>
           <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
             <div style="display: flex; flex-direction: column; gap: 6px; border-radius: 14px; background: {{r.bg}};">
@@ -147,7 +142,7 @@ a{color:#18161F}a:hover{color:#000000}
                   </span>
                   <span style="display: flex; gap: 12px; margin-left: auto;">
                     <span style="width: 110px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span class="be-show-sm" style="font-size: 11px; font-weight: 600; color: #5F5B68;">Owes you</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: {{r.owesFg}};">{{r.owes}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.owesSub}}</span></span>
-                    <span style="width: 110px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span class="be-show-sm" style="font-size: 11px; font-weight: 600; color: #5F5B68;">Paid this year</span><span style="font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; color: #47444F;">{{r.paid}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.paidSub}}</span></span>
+                    <span style="width: 110px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span class="be-show-sm" style="font-size: 11px; font-weight: 600; color: #5F5B68;">Paid so far</span><span style="font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; color: #47444F;">{{r.paid}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.paidSub}}</span></span>
                   </span>
                 </a>
                 <div style="position: relative; flex: none; margin-right: 8px;">
@@ -186,16 +181,6 @@ a{color:#18161F}a:hover{color:#000000}
                         <input class="be-field" type="text" value="{{ef.value}}" onChange="{{ef.set}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
                       </label>
                     </sc-for>
-                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Country
-                      <select class="be-field" value="{{f.country}}" onChange="{{f.setCountry}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-                        <sc-for list="{{countries}}" as="co" hint-placeholder-count="7"><option value="{{co.name}}">{{co.name}}</option></sc-for>
-                      </select>
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Bill them in
-                      <select class="be-field" value="{{f.cur}}" onChange="{{f.setCur}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-                        <option value="USD">US dollars (USD)</option><option value="EUR">Euros (EUR)</option><option value="GBP">Pounds (GBP)</option><option value="CAD">Canadian dollars (CAD)</option><option value="AUD">Australian dollars (AUD)</option>
-                      </select>
-                    </label>
                   </div>
                   <sc-if value="{{f.nameLocked}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #5F5B68;">The name is on invoices you’ve already sent, so it stays as it is.</span></sc-if>
                   <sc-if value="{{f.errOn}}" hint-placeholder-val="{{false}}">
@@ -220,7 +205,7 @@ a{color:#18161F}a:hover{color:#000000}
         </div>
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 4px 6px 0; font-size: 13px; color: #5F5B68;">
           <span>{{countNote}}</span>
-          <span>Owe you <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{sumOwes}}</strong> · paid this year <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{sumPaid}}</strong></span>
+          <span>Owe you <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{sumOwes}}</strong> · paid so far <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{sumPaid}}</strong></span>
         </div>
       </section>
     </sc-if>
@@ -230,7 +215,7 @@ a{color:#18161F}a:hover{color:#000000}
       <a href="SellInvoices.dc.html" style="font-weight: 600;">All invoices</a>
       <a href="SellQuotes.dc.html" style="font-weight: 600;">Quotes</a>
       <a href="SellRecurring.dc.html" style="font-weight: 600;">Repeating invoices and money back</a>
-      <a href="SellPayments.dc.html" style="font-weight: 600;">Getting paid online</a>
+      <a href="SellCatalog.dc.html" style="font-weight: 600;">Products and services</a>
     </nav>
   </main>
 
@@ -249,7 +234,7 @@ class Component extends DCLogic {
     this.state = { toast: null, filter: 'all', q: '', form: null, errs: [], menu: null, del: null, added: null, dismissed: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-  blankForm() { return { mode: 'add', id: null, name: '', email: '', country: 'United States', cur: 'USD', tax: '', contact: '', phone: '', address: '' }; }
+  blankForm() { return { mode: 'add', id: null, name: '', email: '', tin: '', tax: '', contact: '', phone: '', address: '' }; }
   // The form is open from state, or from the address (#add).
   form() {
     const st = this.state;
@@ -260,25 +245,24 @@ class Component extends DCLogic {
   renderVals() {
     const st = this.state;
     const money = BE.money;
-    const usd = (n) => BE.money(n, 'USD', { whole: true });
-    const CURN = { USD: 'US dollars', EUR: 'Euros', GBP: 'Pounds', CAD: 'Canadian dollars', AUD: 'Australian dollars' };
+    const usd = (n) => BE.money(n, null, { whole: true });
+    const lk = BE.is('lk');
+    const pack = BE.pack();
     const custs = BE.all('customers');
     const invoices = BE.all('invoices').filter((i) => !i.draft && !i.void);
     const pays = BE.all('payments');
     const stats = (c) => {
       const mine = invoices.filter((i) => i.who === c.name);
       const open = mine.filter((i) => BE.invOpen(i) > 0);
-      const owesUsd = open.reduce((a, i) => a + BE.usd(BE.invOpen(i), i.cur), 0);
-      const sameCur = open.every((i) => (i.cur || 'USD') === (c.cur || 'USD'));
-      const owes = sameCur ? open.reduce((a, i) => a + BE.invOpen(i), 0) : owesUsd;
+      const owes = open.reduce((a, i) => a + BE.invOpen(i), 0);
       const late = open.filter((i) => BE.invStatus(i) === 'late');
       const lateAmt = late.reduce((a, i) => a + BE.invOpen(i), 0);
-      const lateUsd = late.reduce((a, i) => a + BE.usd(BE.invOpen(i), i.cur), 0);
-      const newPaid = pays.filter((p) => p.who === c.name && !/^pay-[1-5]$/.test(p.id)).reduce((a, p) => a + (Number(p.amount) || 0), 0);
-      return { owes, owesCur: sameCur ? (c.cur || 'USD') : 'USD', owesUsd, lateAmt, lateUsd, lateCur: late.every((i) => (i.cur || 'USD') === (c.cur || 'USD')) ? (c.cur || 'USD') : 'USD', paid: (Number(c.paid) || 0) + newPaid, invCount: mine.length };
+      // Payments recorded in this browser (ids above the sample's) add to what they've paid so far.
+      const newPaid = pays.filter((p) => p.who === c.name && +(String(p.id).split('-')[1]) >= 100).reduce((a, p) => a + (Number(p.amount) || 0), 0);
+      return { owes, owesUsd: owes, lateAmt, lateUsd: lateAmt, paid: (Number(c.paid) || 0) + newPaid, invCount: mine.length };
     };
-    const FILT = { all: () => true, owe: (c) => stats(c).owesUsd > 0, late: (c) => stats(c).lateUsd > 0, overseas: (c) => (c.country || 'United States') !== 'United States' };
-    const CH = [['all', 'Everyone'], ['owe', 'Owe you'], ['late', 'Late'], ['overseas', 'Overseas']];
+    const FILT = { all: () => true, owe: (c) => stats(c).owes > 0, late: (c) => stats(c).lateAmt > 0, vat: (c) => !!(c.tax || c.tin) };
+    const CH = [['all', 'Everyone'], ['owe', 'Owe you'], ['late', 'Late'], ['vat', lk ? 'Have a TIN or VAT no.' : 'VAT registered']];
     const chips = CH.map(([k, label]) => {
       const on = st.filter === k;
       return { label, count: custs.filter(FILT[k]).length, on, bg: on ? '#18161F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#18161F', border: on ? '#18161F' : '#E2DFE8', countBg: on ? 'rgba(255,255,255,0.18)' : '#EFEDF3',
@@ -290,21 +274,18 @@ class Component extends DCLogic {
 
     // form (add or edit)
     const F = this.form();
-    const COUNTRY_CUR = { 'United States': 'USD', 'Germany': 'EUR', 'France': 'EUR', 'Ireland': 'EUR', 'United Kingdom': 'GBP', 'Canada': 'CAD', 'Australia': 'AUD' };
     const setF = (patch) => this.setState({ form: Object.assign({}, this.form() || this.blankForm(), patch), errs: [] });
-    const fForeign = F && F.country !== 'United States';
     const editC = F && F.mode === 'edit' ? custs.find((c) => c.id === F.id) : null;
     const nameLocked = !!editC && (stats(editC).invCount > 0 || BE.all('quotes').some((x) => x.who === editC.name));
     const fVals = F ? {
-      addOpen: F.mode === 'add', name: F.name, email: F.email, country: F.country, cur: F.cur, tax: F.tax, nameLocked, nameBg: nameLocked ? '#F7F6F9' : '#FFFFFF',
-      taxLabel: fForeign ? 'VAT or tax ID (optional)' : 'Tax ID (optional)',
-      taxPh: F.country === 'Germany' ? 'e.g. DE 123 456 789' : F.country === 'United Kingdom' ? 'e.g. GB 123 456 789' : fForeign ? 'Their business number' : 'e.g. 12-3456789',
-      hint: !fForeign ? 'US customers are billed in dollars. Sales tax is added to products automatically; services aren’t taxed in New York.'
-        : ['Germany', 'France', 'Ireland'].indexOf(F.country) >= 0 ? 'Invoices go out in ' + CURN[F.cur].toLowerCase() + '. Add their VAT ID and we’ll mark invoices “VAT reverse charged to the customer”.'
-        : 'Invoices go out in ' + CURN[F.cur].toLowerCase() + '. We show what each one is worth in dollars at today’s rate (1 ' + F.cur + ' = ' + BE.FX[F.cur] + ' USD).',
-      setName: (e) => setF({ name: e.target.value }), setEmail: (e) => setF({ email: e.target.value }), setTax: (e) => setF({ tax: e.target.value }),
-      setCountry: (e) => setF({ country: e.target.value, cur: COUNTRY_CUR[e.target.value] || 'USD' }), setCur: (e) => setF({ cur: e.target.value }),
-      fields: [['contact', 'Contact person'], ['email', 'Email for invoices'], ['phone', 'Phone'], ['address', 'Address'], ['tax', fForeign ? 'VAT number' : 'Tax ID']].map(([k, label]) => ({
+      addOpen: F.mode === 'add', name: F.name, email: F.email, tin: F.tin, tax: F.tax, lk, nameLocked, nameBg: nameLocked ? '#F7F6F9' : '#FFFFFF',
+      namePh: lk ? 'e.g. Ceylon Crafts (Pvt) Ltd' : 'e.g. Headingley Florist',
+      taxLabel: (lk ? 'Their VAT registration number' : 'Their VAT number') + ' (optional)',
+      taxPh: lk ? 'e.g. 114728365-7000' : 'e.g. GB 123 4567 89',
+      hint: lk ? 'If they’re VAT registered, add their TIN and VAT number: a Tax Invoice to a registered business shows the purchaser’s details. Everything is billed in rupees.'
+        : 'Everything is billed in pounds. Their VAT number is optional; it prints on invoices if you’re VAT registered.',
+      setName: (e) => setF({ name: e.target.value }), setEmail: (e) => setF({ email: e.target.value }), setTax: (e) => setF({ tax: e.target.value }), setTin: (e) => setF({ tin: e.target.value }),
+      fields: [['contact', 'Contact person'], ['email', 'Email for invoices'], ['phone', 'Phone'], ['address', 'Address']].concat(lk ? [['tin', 'TIN']] : []).concat([['tax', lk ? 'VAT registration number' : 'VAT number']]).map(([k, label]) => ({
         label, value: F[k] || '', set: (e) => setF({ [k]: e.target.value })
       })),
       errs: st.errs, errOn: st.errs.length > 0
@@ -319,30 +300,29 @@ class Component extends DCLogic {
       if (custs.some((x) => x.id !== f.id && x.name.toLowerCase() === name.toLowerCase())) errs.push(name + ' is already a customer.');
       if (errs.length) { this.setState({ errs }); return; }
       if (f.mode === 'add') {
-        const nc = BE.add('customers', { id: BE.id('cust'), name, contact: '', email, phone: '', address: '', country: f.country, cur: f.cur, tax: String(f.tax || '').trim(), since: 'Added ' + BE.today + ', 2026', paid: 0, note: '' }, { end: true });
-        BE.log('Added ' + name + ' as a customer');
+        const nc = BE.addCustomer({ name, email, tin: String(f.tin || '').trim(), tax: String(f.tax || '').trim() });
         this.setState({ form: null, errs: [], dismissed: BE.hash() === 'add' ? 'add' : st.dismissed, filter: 'all', q: '', added: { id: nc.id, name } });
-        this.notify('Added ' + name + ' · billed in ' + f.cur);
+        this.notify('Added ' + name + ' to your customers');
       } else {
-        BE.update('customers', f.id, { name: nameLocked ? editC.name : name, contact: f.contact || '', email, phone: f.phone || '', address: f.address || '', country: f.country, cur: f.cur, tax: String(f.tax || '').trim() });
+        BE.update('customers', f.id, { name: nameLocked ? editC.name : name, contact: f.contact || '', email, phone: f.phone || '', address: f.address || '', tin: String(f.tin || '').trim(), tax: String(f.tax || '').trim() });
         this.setState({ form: null, errs: [] });
         this.notify('Saved details for ' + (nameLocked ? editC.name : name));
       }
     };
 
     const rows = list.map((x) => {
-      const s = stats(x), foreign = (x.cur || 'USD') !== 'USD';
+      const s = stats(x);
       const editing = !!F && F.mode === 'edit' && F.id === x.id, deleting = st.del === x.id;
       return {
         name: x.name, ini: BE.initials(x.name), href: 'SellCustomer.dc.html#' + x.id, billHref: 'ThreeIn.dc.html#bill=' + x.id,
         bg: editing || deleting || (st.added && st.added.id === x.id) ? '#EEE8FF' : 'transparent',
-        meta: [x.contact].concat(foreign || (x.country && x.country !== 'United States') ? [x.country, x.cur] : []).filter(Boolean).join(' · ') || x.email || 'No contact yet',
-        late: s.lateUsd > 0, lateText: money(s.lateAmt, s.lateCur) + ' late',
-        owes: s.owesUsd > 0 ? money(s.owes, s.owesCur) : 'Nothing', owesFg: s.owesUsd > 0 ? '#18161F' : '#5F5B68', owesSub: s.owesUsd > 0 && s.owesCur !== 'USD' ? '≈ ' + usd(s.owesUsd) : '',
-        paid: usd(s.paid), paidSub: x.paidCur ? money(x.paidCur, x.cur) : '',
+        meta: [x.contact, (x.address || '').split(',').slice(-1)[0].trim()].filter(Boolean).join(' · ') || x.email || 'No contact yet',
+        late: s.lateAmt > 0, lateText: money(s.lateAmt) + ' late',
+        owes: s.owes > 0 ? money(s.owes) : 'Nothing', owesFg: s.owes > 0 ? '#18161F' : '#5F5B68', owesSub: '',
+        paid: usd(s.paid), paidSub: x.tax ? (lk ? 'VAT registered' : 'VAT no. ' + x.tax) : '',
         moreLabel: 'More for ' + x.name, menuOpen: st.menu === x.id,
         toggleMenu: () => this.setState({ menu: st.menu === x.id ? null : x.id }),
-        edit: () => this.setState({ menu: null, del: null, errs: [], form: { mode: 'edit', id: x.id, name: x.name, email: x.email || '', country: x.country || 'United States', cur: x.cur || 'USD', tax: x.tax || '', contact: x.contact || '', phone: x.phone || '', address: x.address || '' } }),
+        edit: () => this.setState({ menu: null, del: null, errs: [], form: { mode: 'edit', id: x.id, name: x.name, email: x.email || '', tin: x.tin || '', tax: x.tax || '', contact: x.contact || '', phone: x.phone || '', address: x.address || '' } }),
         askDelete: () => this.setState({ menu: null, form: null, del: x.id }),
         editing, deleting, delLabel: 'Delete ' + x.name,
         delText: 'Delete ' + x.name + '? ' + (s.invCount ? 'Their ' + s.invCount + (s.invCount === 1 ? ' invoice stays' : ' invoices stay') + ' in All invoices and in your numbers.' : 'They have no invoices, so nothing else changes.'),
@@ -356,9 +336,9 @@ class Component extends DCLogic {
     });
     const all = custs.map(stats);
     const tiles = [
-      { label: 'Owe you', value: '≈ ' + usd(all.reduce((a, s) => a + s.owesUsd, 0)), dot: '#7A5AF8' },
-      { label: 'Late', value: usd(all.reduce((a, s) => a + s.lateUsd, 0)), dot: '#A8200D' },
-      { label: 'Paid this year', value: usd(all.reduce((a, s) => a + s.paid, 0)), dot: '#2F5711' }
+      { label: 'Owe you', value: usd(all.reduce((a, s) => a + s.owes, 0)), dot: '#7A5AF8' },
+      { label: 'Late', value: usd(all.reduce((a, s) => a + s.lateAmt, 0)), dot: '#A8200D' },
+      { label: 'Paid so far', value: usd(all.reduce((a, s) => a + s.paid, 0)), dot: '#2F5711' }
     ];
     const ad = st.added && custs.find((c) => c.id === st.added.id);
     return {
@@ -369,9 +349,9 @@ class Component extends DCLogic {
       clearQ: () => this.setState({ q: '', filter: 'all' }),
       q: st.q, setQ: (e) => this.setState({ q: e.target.value }),
       countNote: list.length + (list.length === 1 ? ' customer' : ' customers'),
-      sumOwes: '≈ ' + usd(list.reduce((a, x) => a + stats(x).owesUsd, 0)), sumPaid: usd(list.reduce((a, x) => a + stats(x).paid, 0)),
+      introSide: 'What customers owe for ' + 'October is the money on the way in Coming in. Late invoices from earlier months are shown on each customer.',
+      sumOwes: usd(list.reduce((a, x) => a + stats(x).owes, 0)), sumPaid: usd(list.reduce((a, x) => a + stats(x).paid, 0)),
       f: fVals, saveForm,
-      countries: ['United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Ireland', 'Australia'].map((name) => ({ name })),
       openAdd: () => { if (F && F.mode === 'add') { this.notify('The new customer form is open below'); return; } this.setState({ form: this.blankForm(), errs: [], del: null, menu: null, added: null }); },
       closeForm: () => this.setState({ form: null, errs: [], dismissed: BE.hash() === 'add' ? 'add' : st.dismissed }),
       cancelRow: () => this.setState({ del: null }),

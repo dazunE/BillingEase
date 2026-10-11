@@ -1,11 +1,355 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · TaxPeriods</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Tax periods</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.k-main{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:24px clamp(16px,4vw,40px) 64px;display:flex;flex-direction:column;gap:24px}
+.k-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0;box-sizing:border-box}
+.k-soft{background:#F7F6F9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.k-dark{background:#18161F;color:#FFFFFF;border-radius:24px;padding:clamp(22px,3vw,34px);display:flex;flex-wrap:wrap;gap:18px 32px;align-items:flex-end;justify-content:space-between;box-sizing:border-box}
+.k-eyebrow{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:700 15px DM Sans,sans-serif;color:#EEE8FF}
+.k-dot{width:10px;height:10px;border-radius:9999px;background:#B9A3FF;flex:none}
+.k-big{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.03em;color:#B9A3FF;font-variant-numeric:tabular-nums}
+.k-lead{margin:0;font-size:16px;line-height:1.5;color:#EEE8FF;max-width:620px}
+.k-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.k-h3{margin:0;font-size:15px;font-weight:700}
+.k-sub{font-size:13px;color:#5F5B68;line-height:1.45}
+.k-p{margin:0;font-size:14px;line-height:1.55;color:#47444F}
+.k-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;max-width:100%}
+.k-btn-dark{background:#18161F;color:#FFFFFF}.k-btn-dark:hover{color:#FFFFFF;background:#2E2B38}
+.k-btn-soft{background:rgba(24,22,31,0.07);color:#18161F}
+.k-btn-violet{background:#B9A3FF;color:#18161F}
+.k-btn-ghost{background:rgba(238,232,255,0.14);color:#FFFFFF}.k-btn-ghost:hover{color:#FFFFFF}
+.k-btn-sm{min-height:36px;padding:0 14px;font-size:13px}
+.k-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.k-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.4}
+.k-good{background:#E2F6D5;color:#2F5711}.k-attn{background:#FFF0B8;color:#6B5000}.k-late{background:#FBE3DF;color:#A8200D}.k-plain{background:#EFEDF3;color:#47444F}.k-violet{background:#EEE8FF;color:#18161F}.k-darktag{background:#18161F;color:#B9A3FF}
+.k-num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.k-tabs{display:flex;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;max-width:100%;overflow-x:auto;box-sizing:border-box;scrollbar-width:none}
+.k-tab{min-height:38px;padding:0 14px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.k-tab[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.k-input{min-height:44px;padding:0 12px;border:1px solid #CBC7D3;border-radius:12px;font:500 14px DM Sans,sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box;max-width:100%;min-width:0}
+.k-pre{margin:0;max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:#FFFFFF;border:1px solid #E2DFE8;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre}
+.k-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.k-li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:11px 0;border-top:1px solid #EFEDF3}
+.k-li:first-child{border-top:0}
+.k-cols{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.k-cols>*{flex:1 1 380px}
+.k-rowbtn{width:100%;display:flex;align-items:center;gap:10px 14px;padding:12px 4px;border:0;border-top:1px solid #EFEDF3;background:transparent;color:#18161F;text-align:left;font:500 14px DM Sans,sans-serif;cursor:pointer;box-sizing:border-box}
+.k-rowbtn:hover{background:#FBFAFC}
+.k-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px;border-top:2px solid #18161F;font-weight:700}
+.k-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F6F9}
+.k-icon{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none}
+.k-drill{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:6px 12px;border-radius:14px;background:#F7F6F9}
+.k-drill a,.k-drill span.k-dw{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:7px 0;font-size:13px;text-decoration:none;color:#18161F;border-top:1px solid #EAE7EF}
+.k-drill a:first-child,.k-drill span.k-dw:first-child{border-top:0}
+@media (max-width: 600px){.k-hide-sm{display:none!important}}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+  <dc-import name="AppHeader"></dc-import>
+  <main class="k-main">
+    <dc-import name="AppCrumbs" area="keep" here="{{crumb}}"></dc-import>
+
+    <!-- Not registered: turnover against the threshold -->
+    <sc-if value="{{notReg}}" hint-placeholder-val="{{false}}">
+      <section class="k-dark" aria-labelledby="nr-h">
+        <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+          <h1 id="nr-h" class="k-eyebrow"><span class="k-dot"></span>{{nr.eyebrow}}</h1>
+          <span class="k-big">{{nr.total}}</span>
+          <p class="k-lead">{{nr.lead}}</p>
+        </div>
+        <div style="flex: 0 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+          <span style="display: flex; height: 14px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16);"><span style="width: {{nr.pct}}%; background: {{nr.bar}}; border-radius: 9999px;"></span></span>
+          <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #EEE8FF;"><span><strong style="color: #FFFFFF;">{{nr.pct}}%</strong> of the threshold</span><span>Threshold {{nr.limit}}</span></span>
+        </div>
+      </section>
+      <div class="k-cols">
+        <section class="k-card" aria-labelledby="nr2-h">
+          <div class="k-head"><h2 id="nr2-h" class="k-h2">{{nr.title}}</h2><span class="k-tag k-{{nr.tone}}">{{nr.tag}}</span></div>
+          <p class="k-p">{{nr.body}}</p>
+          <sc-if value="{{nr.hasMonths}}" hint-placeholder-val="{{true}}">
+            <div role="img" aria-label="{{nr.chartLabel}}" style="display: flex; align-items: flex-end; gap: 6px; height: 120px; padding-top: 8px;">
+              <sc-for list="{{nr.months}}" as="m" hint-placeholder-count="12">
+                <div style="flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px;">
+                  <div title="{{m.title}}" style="width: 100%; max-width: 34px; height: {{m.h}}px; border-radius: 5px 5px 0 0; background: {{m.color}};"></div>
+                  <span style="font-size: 11px; color: #5F5B68;">{{m.label}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{nr.noMonths}}" hint-placeholder-val="{{false}}">
+            <div class="k-btns"><a class="k-btn k-btn-dark" href="ThreeIn.dc.html#bill">Bill someone</a></div>
+          </sc-if>
+        </section>
+        <section class="k-card" aria-labelledby="nr3-h">
+          <h2 id="nr3-h" class="k-h2">{{nr.whatTitle}}</h2>
+          <ul class="k-list">
+            <sc-for list="{{nr.points}}" as="pt" hint-placeholder-count="3">
+              <li class="k-li" style="justify-content: flex-start; flex-wrap: nowrap; align-items: flex-start;"><span class="k-icon" style="width: 22px; height: 22px; background: #EEE8FF;" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></span><span class="k-p">{{pt}}</span></li>
+            </sc-for>
+          </ul>
+          <div class="k-btns" style="margin-top: auto;">
+            <a class="k-btn k-btn-soft" href="BizProfile.dc.html">{{nr.profileCta}}</a>
+            <a class="k-btn k-btn-soft" href="Ask.dc.html">Ask a question</a>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+    <!-- Registered: periods -->
+    <sc-if value="{{reg}}" hint-placeholder-val="{{true}}">
+      <section class="k-dark" aria-labelledby="tp-h">
+        <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+          <h1 id="tp-h" class="k-eyebrow"><span class="k-dot"></span>{{p.eyebrow}}</h1>
+          <span class="k-big">{{p.totalFmt}}</span>
+          <p class="k-lead">{{p.lead}}</p>
+          <div class="k-btns" style="margin-top: 4px;"><span class="k-tag k-{{p.tone}}">{{p.statusLabel}}</span><span style="font-size: 13px; color: #EEE8FF;">{{p.dueNote}}</span></div>
+        </div>
+        <dl style="flex: 0 1 420px; min-width: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px;">
+          <sc-for list="{{p.nums}}" as="n" hint-placeholder-count="3">
+            <div style="flex: 1 1 110px; min-width: 0; padding: 12px 14px; border-radius: 16px; background: rgba(238,232,255,0.1); display: flex; flex-direction: column; gap: 2px;">
+              <dt style="font-size: 12px; color: #EEE8FF;">{{n.label}}</dt>
+              <dd style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: {{n.color}}; font-variant-numeric: tabular-nums; white-space: nowrap;">{{n.value}}</dd>
+            </div>
+          </sc-for>
+        </dl>
+      </section>
+
+      <nav aria-label="Periods" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px;">
+        <sc-for list="{{tiles}}" as="t" hint-placeholder-count="3">
+          <a id="{{t.id}}" href="{{t.href}}" aria-current="{{t.cur}}" style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 20px; background: #FFFFFF; border: {{t.border}}; text-decoration: none; color: #18161F; min-width: 0;">
+            <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 17px;">{{t.label}}</span><span class="k-tag k-{{t.tone}}">{{t.status}}</span></span>
+            <span style="font-size: 13px; color: #47444F;">{{t.amount}}</span>
+            <span style="font-size: 12px; color: #5F5B68;">{{t.note}}</span>
+          </a>
+        </sc-for>
+      </nav>
+
+      <div class="k-cols">
+        <!-- The return -->
+        <section class="k-card" aria-labelledby="ret-h" style="flex-grow: 3;">
+          <div class="k-head" style="align-items: center;">
+            <h2 id="ret-h" class="k-h2">{{p.returnTitle}}</h2>
+            <span class="k-tag k-attn">{{p.layoutTag}}</span>
+          </div>
+          <span class="k-sub">{{p.returnNote}}</span>
+          <sc-for list="{{p.sections}}" as="sec" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column;">
+              <span style="padding: 10px 4px 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5F5B68;">{{sec.title}}</span>
+              <sc-for list="{{sec.boxes}}" as="b" hint-placeholder-count="5">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 4px; border-top: {{b.border}}; background: {{b.bg}}; border-radius: {{b.radius}};">
+                  <span style="flex: none; min-width: 30px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 8px; background: {{b.numBg}}; color: {{b.numFg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">{{b.n}}</span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: {{b.weight}}; font-size: 14px;">{{b.label}}</span><sc-if value="{{b.sub}}" hint-placeholder-val="{{false}}"><span class="k-sub" style="font-size: 12px;">{{b.sub}}</span></sc-if></span>
+                  <span class="k-num" style="font-size: {{b.size}};">{{b.amount}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </section>
+
+        <!-- File it -->
+        <section class="k-card" aria-labelledby="file-h" style="flex-grow: 2;">
+          <div class="k-head"><h2 id="file-h" class="k-h2">{{f.title}}</h2><span class="k-tag k-{{p.tone}}">{{p.statusLabel}}</span></div>
+          <p class="k-p">{{f.body}}</p>
+          <sc-if value="{{p.locked}}" hint-placeholder-val="{{false}}">
+            <p class="k-p" style="padding: 12px 14px; border-radius: 14px; background: #EEE8FF; color: #18161F;"><strong>Locked.</strong> {{f.lockText}}</p>
+          </sc-if>
+          <sc-for list="{{f.requests}}" as="r" hint-placeholder-count="0">
+            <a href="Accountant.dc.html" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #FFF0B8; color: #6B5000; text-decoration: none;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="M4 5h16v11H8l-4 4zM8 9h8M8 12h5"></path></svg>
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><strong style="font-size: 14px;">{{r.title}}</strong><span style="font-size: 13px;">From {{r.from}} · open</span></span>
+            </a>
+          </sc-for>
+          <sc-if value="{{f.canFile}}" hint-placeholder-val="{{true}}">
+            <label style="display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">{{f.refLabel}} (optional)</span><input class="k-input" value="{{ref}}" onChange="{{typeRef}}" placeholder="{{f.refHint}}"></label>
+          </sc-if>
+          <div class="k-btns">
+            <sc-if value="{{f.canFile}}" hint-placeholder-val="{{true}}">
+              <button type="button" class="k-btn k-btn-dark" onClick="{{doFile}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>{{f.cta}}</button>
+            </sc-if>
+            <button type="button" class="k-btn k-btn-soft" onClick="{{toggleCsv}}" aria-expanded="{{csvOpen}}">{{csvLabel}}</button>
+            <sc-if value="{{f.canReopen}}" hint-placeholder-val="{{false}}">
+              <button type="button" class="k-btn k-btn-soft" onClick="{{doReopen}}">Reopen, as {{prShort}}</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{csvOpen}}" hint-placeholder-val="{{false}}">
+            <div class="k-soft" style="border: 1px solid #E2DFE8;">
+              <div class="k-head" style="align-items: center;">
+                <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{csvName}}</span><span class="k-sub">Boxes in return order, then each invoice and bill.</span></span>
+                <div class="k-btns"><button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{copyCsv}}">Copy CSV</button><button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{toggleCsv}}">Close</button></div>
+              </div>
+              <pre class="k-pre">{{csv}}</pre>
+            </div>
+          </sc-if>
+          <p class="k-sub" style="margin: 0; margin-top: auto;">{{f.foot}}</p>
+        </section>
+      </div>
+
+      <!-- Where the numbers come from -->
+      <div class="k-cols">
+        <section class="k-card" aria-labelledby="out-h">
+          <div class="k-head"><h2 id="out-h" class="k-h2">{{outTitle}}</h2><span class="k-sub">{{outNote}}</span></div>
+          <sc-if value="{{hasOut}}" hint-placeholder-val="{{true}}">
+            <ul class="k-list">
+              <sc-for list="{{outLines}}" as="l" hint-placeholder-count="4">
+                <li class="k-li">
+                  <a href="{{l.href}}" style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; text-decoration: none;"><span style="font-weight: 700; font-size: 14px;">{{l.who}}</span><span class="k-sub">{{l.id}} · {{l.date}}{{l.credit}}</span></a>
+                  <span style="display: flex; flex-direction: column; align-items: flex-end;"><span class="k-num">{{l.vat}}</span><span class="k-sub" style="white-space: nowrap;">{{l.detail}}</span></span>
+                </li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <sc-if value="{{noOut}}" hint-placeholder-val="{{false}}"><p class="k-p">{{noOutText}}</p></sc-if>
+        </section>
+        <section class="k-card" aria-labelledby="in-h">
+          <div class="k-head"><h2 id="in-h" class="k-h2">{{inTitle}}</h2><span class="k-sub">{{inNote}}</span></div>
+          <sc-if value="{{hasIn}}" hint-placeholder-val="{{true}}">
+            <ul class="k-list">
+              <sc-for list="{{inLines}}" as="l" hint-placeholder-count="4">
+                <li class="k-li">
+                  <sc-if value="{{l.href}}" hint-placeholder-val="{{true}}"><a href="{{l.href}}" style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; text-decoration: none;"><span style="font-weight: 700; font-size: 14px;">{{l.who}}</span><span class="k-sub">{{l.ref}} · {{l.date}}</span></a></sc-if>
+                  <sc-if value="{{l.nohref}}" hint-placeholder-val="{{false}}"><span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{l.who}}</span><span class="k-sub">{{l.ref}} · {{l.date}}</span></span></sc-if>
+                  <span style="display: flex; flex-direction: column; align-items: flex-end;"><span class="k-num">{{l.vat}}</span><span class="k-sub" style="white-space: nowrap;">{{l.detail}}</span></span>
+                </li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <sc-if value="{{noIn}}" hint-placeholder-val="{{false}}"><p class="k-p">{{noInText}}</p></sc-if>
+        </section>
+      </div>
+    </sc-if>
+  </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { csvOpen: false, ref: '', toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  renderVals() {
+    const st = this.state;
+    const P = BE.pack();
+    const prof = BE.get('profile') || {};
+    const lk = BE.is('lk');
+    const books = BE.books;
+    const W = (n) => BE.money(n, null, { whole: true });
+    const M = (n) => BE.money(n, null, { cents: true });
+    const pr = BE.practice ? BE.practice() : { has: false, short: 'your accountant' };
+    const prShort = pr.has ? pr.short : (lk ? 'your tax practitioner' : 'your accountant');
+    const crumb = lk ? 'Tax periods' : 'VAT';
+    if (!prof.vatRegistered) {
+      const t = books.turnover();
+      const maxM = Math.max(1, ...t.months.map((m) => m.amount));
+      const months = t.months.map((m, i) => ({ label: m.label, h: Math.max(2, Math.round(m.amount / maxM * 96)), color: i === t.months.length - 1 ? '#C9BCFB' : '#7A5AF8', title: m.label + ' ' + m.year + ': ' + W(m.amount) }));
+      const near = t.pct >= 80;
+      const nr = lk ? {
+        eyebrow: 'VAT and SSCL · not registered', total: W(t.total),
+        lead: t.total ? 'Your turnover so far this year of assessment (from 1 April). BillingEase warns you as it gets close to the VAT registration threshold.' : 'Nothing billed yet this year of assessment. As you invoice, your turnover is tracked here against the VAT registration threshold.',
+        pct: t.pct, bar: near ? '#E0752D' : '#B9A3FF', limit: W(t.limit),
+        title: 'You’re not registered for VAT or SSCL', tag: near ? 'Getting close' : 'Well below', tone: near ? 'attn' : 'good',
+        body: 'Your invoices go out as ordinary invoices, without VAT or SSCL lines. The threshold here is ' + W(t.limit) + ' a year; sources differ (Rs 60 million or Rs 36 million), so confirm it with ' + prShort + ' or the IRD.',
+        whatTitle: 'If you register', points: ['Invoices become Tax Invoices with your TIN and VAT registration number, VAT at 18% and SSCL at 2.5% on its own line.', 'Each month gets a VAT and SSCL summary here, in the order of the IRD return, ready to enter.', 'Input VAT on your suppliers’ tax invoices is counted from the bills and expenses you record.'],
+        profileCta: 'Add your VAT registration'
+      } : {
+        eyebrow: 'VAT · not registered', total: W(t.total),
+        lead: t.total ? 'Your turnover in the last 12 months (' + (t.months[0] ? t.months[0].label + ' ' + t.months[0].year : '') + ' to today). Rent from letting a home doesn’t count: it’s exempt.' : 'Nothing billed yet. As you get paid, your turnover over the last 12 months is tracked here against the VAT threshold.',
+        pct: t.pct, bar: near ? '#E0752D' : '#B9A3FF', limit: W(t.limit),
+        title: 'You’re not VAT registered', tag: near ? 'Getting close' : W(t.left) + ' below', tone: near ? 'attn' : 'good',
+        body: t.total ? 'You’re ' + W(t.left) + ' below the ' + W(t.limit) + ' threshold over the last 12 months. Most months bring in about ' + W(t.total / Math.max(1, t.months.length)) + ', so there’s room. We’ll tell you, and ' + prShort + ', if it starts to get close.' : 'Once you’re paid, each month shows here. We’ll tell you if your turnover gets close to ' + W(t.limit) + '.',
+        whatTitle: 'What counts', points: ['Your sales over any 12 months in a row, not the tax year. If they go over ' + W(t.limit) + ', you register within 30 days.', 'You also register if you expect to go over ' + W(t.limit) + ' in the next 30 days alone.', 'Once registered, your VAT summary per VAT quarter appears here for ' + prShort + ' to file through their MTD VAT software.'],
+        profileCta: 'VAT details in your profile'
+      };
+      Object.assign(nr, { months, hasMonths: t.months.length > 0 && t.total > 0, noMonths: !(t.months.length > 0 && t.total > 0), chartLabel: 'Turnover by month: ' + months.map((m) => m.title).join(', ') });
+      return { notReg: true, reg: false, crumb, nr, toast: st.toast };
+    }
+
+    const list = books.periods();
+    const hash = BE.hash();
+    const due = list.filter((x) => books.period(x.id).status === 'due')[0];
+    const sel = list.some((x) => x.id === hash) ? hash : (due ? due.id : (list[list.length - 1] || {}).id);
+    const p = books.period(sel);
+    const STAT = { filed: ['Filed', 'good'], due: ['Ready to file', 'attn'], open: ['Open', 'plain'], upcoming: ['Not started', 'plain'] };
+    const tiles = list.map((x) => {
+      const i = books.period(x.id);
+      const s = STAT[i.status];
+      const on = x.id === sel;
+      const dd = String(x.due).replace(/ 20\d\d$/, '');
+      return { id: x.id, label: lk ? x.short : x.short, status: i.status === 'due' ? 'Due ' + dd : s[0], tone: i.status === 'due' && i.dueDays <= 10 ? 'attn' : s[1], href: '#' + x.id, cur: on ? 'page' : false, border: on ? '2px solid #18161F' : '1px solid #E2DFE8',
+        amount: (i.status === 'open' ? 'So far ' : '') + W(i.total) + ' to pay',
+        note: i.status === 'filed' ? 'Filed by ' + (i.filed.by || prShort) + ' on ' + i.filed.on : i.status === 'due' ? 'Return due ' + x.due : i.status === 'open' ? 'Closes ' + books.lbl(x.toD) + ' · due ' + dd : 'Due ' + dd };
+    });
+    const s = STAT[p.status];
+    const nameShort = lk ? p.short : p.label;
+    const what = lk ? 'VAT and SSCL' : 'VAT';
+    let lead = '';
+    if (p.status === 'filed') lead = nameShort + '’s ' + what + ' return was filed by ' + (p.filed.by || prShort) + ' on ' + p.filed.on + '. The period is locked in your books.';
+    else if (p.status === 'due') lead = nameShort + ' has closed. ' + (lk ? 'VAT payable ' + W(Math.max(p.net, 0)) + ' and SSCL ' + W(p.sscl) + ', laid out in the order of the IRD return' : 'VAT to pay ' + W(Math.max(p.net, 0)) + ', box by box') + ' for ' + prShort + ' to enter by ' + p.due + '.';
+    else if (p.status === 'open') lead = nameShort + ' so far. It fills in as you send ' + (lk ? 'tax invoices' : 'invoices') + ' and enter bills, and closes on ' + books.lbl(p.toD) + '.';
+    else lead = nameShort + ' hasn’t started.';
+    const pv = {
+      eyebrow: (lk ? 'VAT and SSCL · ' : 'VAT · ') + p.label, totalFmt: W(p.total), lead, statusLabel: s[0], tone: p.status === 'due' && p.dueDays <= 10 ? 'attn' : s[1], locked: p.locked,
+      dueNote: p.status === 'filed' ? (p.ref ? 'Ref ' + p.ref : 'Return was due ' + p.due) : 'Return due ' + p.due + (p.dueDays != null && p.dueDays >= 0 ? ' · ' + p.dueDays + ' days' : ''),
+      nums: [{ label: 'Output VAT', value: W(p.output), color: '#FFFFFF' }, { label: 'Input VAT', value: '−' + W(p.input), color: '#FFFFFF' }].concat(p.ssclOn ? [{ label: 'SSCL', value: W(p.sscl), color: '#FFFFFF' }] : []).concat([{ label: 'To pay', value: W(p.total), color: '#B9A3FF' }]),
+      returnTitle: lk ? 'The return, line by line' : 'Your VAT return, box by box',
+      layoutTag: lk ? 'Layout to confirm with IRD' : 'For the practice’s MTD software',
+      returnNote: lk ? 'In the order of the IRD VAT and SSCL return. How SSCL sits in the VAT base is to confirm with IRD. BillingEase doesn’t connect to RAMIS yet: you or ' + prShort + ' enter these figures.' : 'The nine boxes of the VAT return. ' + prShort + ' file it through their MTD VAT software.',
+      sections: []
+    };
+    const secs = lk ? [['vat', 'Value Added Tax'], ['sscl', 'Social Security Contribution Levy']] : [['vat', 'VAT return']];
+    pv.sections = secs.map(([k, t]) => ({ title: t, boxes: p.boxes.filter((b) => b.sec === k).map((b) => ({
+      n: b.n, label: b.label, sub: b.sub || '', amount: M(b.amount), weight: b.total ? 700 : 500, size: b.key ? '17px' : '14px',
+      border: b.total ? '1px solid #CBC7D3' : '1px solid #EFEDF3', bg: b.key ? '#EEE8FF' : 'transparent', radius: b.key ? '12px' : '0',
+      numBg: b.key ? '#18161F' : '#EFEDF3', numFg: b.key ? '#B9A3FF' : '#47444F'
+    })) })).filter((x) => x.boxes.length);
+    const f = { title: 'File it', body: '', canFile: false, canReopen: false, requests: p.requests.map((r) => ({ title: r.title, from: r.from || prShort })), refLabel: lk ? 'IRD acknowledgement or reference' : 'HMRC receipt reference', refHint: lk ? 'e.g. 2609-55130' : 'e.g. 1A2B3C', cta: 'Mark ' + nameShort + ' filed', lockText: '', foot: '' };
+    if (p.status === 'filed') { f.title = 'Filed'; f.body = 'Filed by ' + (p.filed.by || prShort) + ' on ' + p.filed.on + (p.ref ? ' · ' + p.ref : '') + '. Paid ' + W(p.total) + ' to the ' + (lk ? 'IRD' : 'HMRC') + '.'; f.lockText = 'Invoices and bills dated in ' + nameShort + ' can’t change. If something was missed, ' + prShort + ' can reopen the period.'; f.canReopen = true; }
+    else if (p.status === 'due') { f.body = (pr.has ? prShort + ' enter' + (/^your/.test(prShort) ? '' : 's') + ' these figures on the return' : 'Enter these figures on the return') + ' and ' + (lk ? 'pay the IRD' : 'HMRC') + ' ' + W(p.total) + ' by ' + p.due + '. Once it’s filed, mark it here: that locks the period so nothing in it changes by mistake.'; f.canFile = true; }
+    else if (p.status === 'open') f.body = nameShort + ' is still running. File it after ' + books.lbl(p.toD) + '; the return is due ' + p.due + '.';
+    f.foot = lk ? 'Payment goes to the IRD (VAT and SSCL) by the 20th of the following month (to confirm). Figures come from your Tax Invoices and the input VAT on suppliers’ tax invoices you record.' : 'Figures come from your invoices and the VAT on the bills and expenses you record.';
+    const csv = books.periodCsv(p);
+    const csvName = (prof.business || 'Business').replace(/[^A-Za-z0-9]+/g, '-') + '-' + (lk ? 'VAT-SSCL-' : 'VAT-') + p.id + '.csv';
+    const outLines = p.outLines.map((l) => ({ id: l.id, who: l.who, date: l.date, href: l.href, vat: W(l.vat), credit: l.credit ? ' · after credit note' : '', detail: 'on ' + W(l.value) + (p.ssclOn ? ' + SSCL ' + W(l.sscl) : '') }));
+    const inLines = p.inLines.map((l) => ({ who: l.who, ref: l.ref || 'Bill', date: l.date, href: l.href || false, nohref: !l.href, vat: W(l.vat), detail: 'on ' + W(l.value) + (l.capital ? ' · capital' : '') }));
+    return {
+      notReg: false, reg: true, crumb, p: pv, tiles, f, prShort, ref: st.ref,
+      typeRef: (e) => this.setState({ ref: e.target.value }),
+      doFile: () => {
+        books.filePeriod(p.id, String(st.ref || '').trim());
+        this.setState({ ref: '' });
+        this.notify(nameShort + ' marked filed · ' + W(p.total) + ' to ' + (lk ? 'the IRD' : 'HMRC') + ' · the period is locked');
+      },
+      doReopen: () => { if (BE.reopenPeriod) BE.reopenPeriod(p.id, p.label); this.notify(nameShort + ' reopened by ' + prShort + ' · you can change it again'); },
+      csvOpen: st.csvOpen, csvLabel: st.csvOpen ? 'Hide the CSV' : 'Show the CSV', csv, csvName,
+      toggleCsv: () => this.setState({ csvOpen: !st.csvOpen }),
+      copyCsv: () => { books.copy(csv); this.notify('CSV copied · paste it into a spreadsheet or send it to ' + prShort); },
+      outTitle: 'Output VAT · ' + W(p.output), outNote: p.outLines.length + ' ' + (lk ? 'tax invoice' : 'invoice') + (p.outLines.length === 1 ? '' : 's') + ' issued in ' + nameShort,
+      outLines, hasOut: outLines.length > 0, noOut: !outLines.length, noOutText: 'No ' + (lk ? 'tax invoices' : 'invoices') + ' issued in ' + nameShort + ' yet.',
+      inTitle: 'Input VAT · ' + W(p.input), inNote: 'From suppliers’ ' + (lk ? 'tax invoices' : 'VAT invoices') + ' you recorded',
+      inLines, hasIn: inLines.length > 0, noIn: !inLines.length, noInText: 'No bills or expenses with VAT in ' + nameShort + ' yet. Add the VAT when you record a bill from a VAT-registered supplier.',
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

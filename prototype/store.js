@@ -340,9 +340,11 @@
     reset: function (country) { state = fresh('sample', country || (state && state._country) || 'uk'); save(); },
     /** A brand new, empty business in a country (from sign up → "Start empty"). */
     startEmpty: function (profile) {
-      var country = (profile && profile.country) || (state && state._country) || 'uk';
+      // profile.country may be an id ('uk', 'lk') or a name ('Sri Lanka'); the stored profile keeps the name.
+      var given = profile && (profile.countryId || profile.country);
+      var country = given === 'lk' || given === 'Sri Lanka' ? 'lk' : given === 'uk' || given === 'United Kingdom' ? 'uk' : (state && state._country) || 'uk';
       state = fresh('empty', country);
-      if (profile) state.profile = Object.assign({}, state.profile, clone(profile), { country: country });
+      if (profile) state.profile = Object.assign({}, state.profile, clone(profile), { country: state.profile.country, countryId: country });
       save();
     },
     /** The sample business for a country: 'uk' (Harper Studio, Leeds) or 'lk' (Serendib Design Studio, Colombo). */

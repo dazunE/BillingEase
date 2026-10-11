@@ -233,7 +233,7 @@ a{color:#18161F}a:hover{color:#000000}
           <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
             <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>All set up</span>
             <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">Here&#39;s your BillingEase</h1>
-            <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Three numbers on your home, with the {{c.name}} rules behind them and only the features that fit how {{bizName}} works. {{hiddenSentence}}</p>
+            <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Three numbers on your home, with {{c.rules}} behind them and only the features that fit how {{bizName}} works. {{hiddenSentence}}</p>
           </div>
           <dc-import name="AuthArt" part="step" variant="setup" pic="{{art.pic}}" country="{{art.country}}" hint-size="168px,140px"></dc-import>
           </div>
@@ -739,7 +739,7 @@ class Component extends DCLogic {
       sample: SAMPLE, today: BE.today,
       name: a.name, nameError: st.nameError || false,
       setName: (e) => this.setState({ a: Object.assign({}, a, { name: e.target.value }), nameError: '' }),
-      c: { name: K.name, cur: cur, sample: fmt(1250), yearLabel: lk ? 'Year of assessment' : 'Tax year', year: fmtYear, tax: lk ? 'VAT and SSCL' : 'VAT',
+      c: { name: K.name, rules: lk ? 'Sri Lankan tax rules' : 'UK tax rules', cur: cur, sample: fmt(1250), yearLabel: lk ? 'Year of assessment' : 'Tax year', year: fmtYear, tax: lk ? 'VAT and SSCL' : 'VAT',
         taxNote: lk ? 'Registered businesses issue ' + K.vatInvoiceTitle + 's with VAT at ' + K.vatRates[0].label + ' and SSCL as its own line. Employees are paid with EPF, ETF and APIT worked out for you.'
           : 'Expenses go into HMRC’s categories and add up by quarter for Making Tax Digital. VAT applies only if you’re registered.' },
       q, changeNote: st.note || false, stepError: st.stepError || false,

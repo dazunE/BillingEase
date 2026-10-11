@@ -311,7 +311,7 @@ class Component extends DCLogic {
     const setPct = (p) => {
       p = Math.max(1, Math.min(100, Math.round(Number(p) || 0)));
       if (!(p >= 1)) { this.notify('Pick a share from 1% to 100%'); return; }
-      if (p === pct) { this.setState({ pctDraft: null }); return; }
+      if (p === pct) { this.setState({ pctDraft: null }); this.notify('Already ' + p + '% business'); return; }
       BE.setBizPct(id, p);
       this.setState({ pctDraft: null });
       this.notify(p + '% business · ' + BE.money(Math.round(gross * p) / 100, null, { cents: true }) + ' counts · Going out now ' + outNow());
