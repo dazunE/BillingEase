@@ -43,13 +43,13 @@ export async function AppHeader({ userName, businessName, country }: { userName:
   const menu = "absolute right-0 top-[calc(100%+8px)] z-30 flex flex-col gap-0.5 rounded-[18px] border border-line bg-white p-2 shadow-[0_16px_40px_rgba(24,22,31,0.16)]";
   return (
     <header className="border-b border-line bg-white">
-      <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-5 gap-y-3 px-[clamp(16px,4vw,40px)] py-3">
+      <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-4 gap-y-2 xl:flex-nowrap px-[clamp(16px,4vw,40px)] py-3">
         <Link href="/app" aria-label="Home"><Logo /></Link>
-        <span className="flex items-center gap-2 text-sm font-semibold">
-          <span className="max-w-[200px] truncate">{businessName}</span>
-          <span className="rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-ink2">{country === "uk" ? "UK" : "Sri Lanka"}</span>
+        <span className="flex min-w-0 items-center gap-2 text-sm font-semibold">
+          <span className="max-w-[180px] truncate">{businessName}</span>
+          <span className="whitespace-nowrap rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-ink2">{country === "uk" ? "UK" : "Sri Lanka"}</span>
         </span>
-        <nav aria-label="Areas" className="order-last flex w-full gap-1 overflow-x-auto md:order-none md:w-auto">
+        <nav aria-label="Areas" className="order-last flex w-full gap-1 overflow-x-auto xl:order-none xl:w-auto">
           {AREAS.map((a) => (
             <Link key={a.href} href={a.href} className="flex min-h-10 items-center whitespace-nowrap rounded-full px-3.5 text-sm font-semibold text-ink2 hover:bg-surface hover:text-ink">{a.label}</Link>
           ))}
