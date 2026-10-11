@@ -30,11 +30,18 @@
     try { window.localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* private window: keep it in memory */ }
   }
 
-  function fresh(mode) {
-    var s = { _mode: mode, _seq: 100 };
+  // A sample written as BE.perCountry({ uk: ..., lk: ... }) gives each country its own seed.
+  function pick(v, country) {
+    if (v && v.__perCountry) return clone(v[country] !== undefined ? v[country] : v.uk);
+    return clone(v);
+  }
+
+  function fresh(mode, country) {
+    country = country || 'uk';
+    var s = { _mode: mode, _seq: 100, _country: country };
     order.forEach(function (k) {
       var d = defs[k];
-      s[k] = mode === 'empty' ? clone(d.empty) : clone(d.sample);
+      s[k] = pick(mode === 'empty' ? d.empty : d.sample, country);
     });
     return s;
   }
@@ -42,10 +49,10 @@
   function load() {
     if (state) return state;
     var s = readStorage();
-    if (!s || typeof s !== 'object' || !s._mode) s = fresh('sample');
+    if (!s || typeof s !== 'object' || !s._mode || !s._country) s = fresh('sample', 'uk');
     // Collections added since this browser last saved come in from the seed.
     order.forEach(function (k) {
-      if (!(k in s)) s[k] = s._mode === 'empty' ? clone(defs[k].empty) : clone(defs[k].sample);
+      if (!(k in s)) s[k] = pick(s._mode === 'empty' ? defs[k].empty : defs[k].sample, s._country);
     });
     state = s;
     return state;
@@ -57,11 +64,11 @@
 
   function save() { writeStorage(state); emit(); }
 
-  // ---- dates: "today" in the sample month is Sunday, Oct 4, 2026 ----------
+  // ---- dates: "today" in the sample is Sunday, 11 October 2026. UK and Sri Lanka write the day first.
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var TODAY = new Date(2026, 9, 4);
-  function dayLabel(d) { return MON[d.getMonth()] + ' ' + d.getDate(); }
-  function inDays(n) { return dayLabel(new Date(2026, 9, 4 + (Number(n) || 0))); }
+  var TODAY = new Date(2026, 9, 11);
+  function dayLabel(d) { return d.getDate() + ' ' + MON[d.getMonth()]; }
+  function inDays(n) { return dayLabel(new Date(2026, 9, 11 + (Number(n) || 0))); }
 
   // ---- money -------------------------------------------------------------
   var SYM = { USD: '$', EUR: '€', GBP: '£', CAD: 'CA$', AUD: 'A$', INR: '₹', LKR: 'Rs ', JPY: '¥' };
@@ -72,10 +79,17 @@
     n = Math.abs(Math.round(n * 100) / 100);
     var cents = opts && opts.cents ? 2 : (n % 1 ? 2 : 0);
     if (opts && opts.whole) { n = Math.round(n); cents = 0; }
-    return (neg ? '−' : '') + (SYM[cur || 'USD'] || ((cur || '') + ' ')) + n.toLocaleString('en-US', { minimumFractionDigits: cents, maximumFractionDigits: cents });
+    cur = cur || homeCurrency();
+    return (neg ? '−' : '') + (SYM[cur] || (cur + ' ')) + n.toLocaleString('en-US', { minimumFractionDigits: cents, maximumFractionDigits: cents });
   }
   function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.\-]/g, '')); return isFinite(v) ? v : 0; }
-  function usd(amount, cur) { return (Number(amount) || 0) * (FX[cur || 'USD'] || 1); }
+  // The MVP keeps books in the home currency only; foreign invoices are recorded in it.
+  function usd(amount) { return Number(amount) || 0; }
+  function homeCurrency() {
+    var s = state || null;
+    var c = s && s._country;
+    return (s && s.profile && s.profile.currency) || (c === 'lk' ? 'LKR' : 'GBP');
+  }
 
   // ---- invoices ------------------------------------------------------------
   function invSubtotal(inv) { return (inv.lines || []).reduce(function (a, l) { return a + (Number(l.qty) || 0) * (Number(l.rate) || 0); }, 0) - (Number(inv.discount) || 0); }
@@ -94,7 +108,6 @@
 
   var BE = {
     KEY: KEY,
-    today: dayLabel(TODAY),
     MON: MON,
     FX: FX,
     SYM: SYM,
@@ -102,8 +115,9 @@
     /** Data files call this to describe a collection's sample and empty values. */
     define: function (name, sample, empty) {
       if (!defs[name]) order.push(name);
-      defs[name] = { sample: sample, empty: empty !== undefined ? empty : (Array.isArray(sample) ? [] : clone(sample)) };
-      if (state && !(name in state)) state[name] = clone(state._mode === 'empty' ? defs[name].empty : defs[name].sample);
+      var isList = Array.isArray(sample) || (sample && sample.__perCountry && Array.isArray(sample.uk));
+      defs[name] = { sample: sample, empty: empty !== undefined ? empty : (isList ? [] : sample) };
+      if (state && !(name in state)) state[name] = pick(state._mode === 'empty' ? defs[name].empty : defs[name].sample, state._country);
     },
 
     /** 'sample' (Northwind Studio's October) or 'empty' (a brand new business). */
@@ -186,7 +200,7 @@
       var draft = !!o.draft;
       var cust = BE.find('customers', o.who, 'name');
       var inv = {
-        num: num, who: o.who, what: o.what || '', cur: o.cur || (cust && cust.cur) || BE.get('profile').currency || 'USD',
+        num: num, who: o.who, what: o.what || '', cur: o.cur || (cust && cust.cur) || BE.get('profile').currency || homeCurrency(),
         lines: o.lines && o.lines.length ? o.lines : [{ name: o.what || 'Work', qty: 1, unit: 'job', rate: Number(o.amount) || 0 }],
         tax: Number(o.tax) || 0, discount: Number(o.discount) || 0, credit: 0, paid: 0, deposit: Number(o.deposit) || 0,
         issued: BE.today, due: draft ? '' : inDays(terms), dueIn: draft ? 99 : terms, inMonth: !draft, viewed: false,
@@ -309,7 +323,7 @@
       var rate = (s.profile && s.profile.setAside != null) ? s.profile.setAside : 0.25;
       var tax = Math.round(Math.max(profit, 0) * rate);
       var keep = Math.round(profit - tax);
-      var home = (s.profile && s.profile.currency) || 'USD';
+      var home = (s.profile && s.profile.currency) || homeCurrency();
       var pct = function (a, b) { return b > 0 ? Math.max(a > 0 ? 2 : 0, Math.min(100, Math.round(a / b * 100))) : 0; };
       return {
         period: period, currency: home, inPaid: r2(inPaid), inExp: r2(inExp), in: tIn, outPaid: r2(outPaid), outSch: r2(outSch), out: tOut,
@@ -322,15 +336,27 @@
     },
 
     // ---- starting over ----
-    /** Back to Northwind Studio's sample October. */
-    reset: function () { state = fresh('sample'); save(); },
-    /** A brand new, empty business (from sign up → "Start empty"). */
+    /** Back to the sample business for the current country (or the one given). */
+    reset: function (country) { state = fresh('sample', country || (state && state._country) || 'uk'); save(); },
+    /** A brand new, empty business in a country (from sign up → "Start empty"). */
     startEmpty: function (profile) {
-      state = fresh('empty');
-      if (profile) state.profile = Object.assign({}, state.profile, clone(profile));
+      var country = (profile && profile.country) || (state && state._country) || 'uk';
+      state = fresh('empty', country);
+      if (profile) state.profile = Object.assign({}, state.profile, clone(profile), { country: country });
       save();
     },
-    startSample: function () { state = fresh('sample'); save(); },
+    /** The sample business for a country: 'uk' (Harper Studio, Leeds) or 'lk' (Serendib Design Studio, Colombo). */
+    startSample: function (country) { state = fresh('sample', country || (state && state._country) || 'uk'); save(); },
+
+    /** Data files wrap a seed in this to give each country its own sample. */
+    perCountry: function (o) { return Object.assign({ __perCountry: true }, o); },
+    /** 'uk' or 'lk'. Fixed for a business once it is created. */
+    country: function () { return ensure()._country || 'uk'; },
+    /** The country pack (data-country.js): currency, tax year, categories, rates, payroll rules, deadlines. */
+    pack: function () { return (window.COUNTRY || {})[BE.country()] || {}; },
+    is: function (c) { return BE.country() === c; },
+    today: dayLabel(TODAY),
+    todayDate: TODAY,
     /**
      * Open another business you own. Each business keeps its own books: the
      * current one is put aside and the other comes back as you left it (a

@@ -4,22 +4,33 @@
     US: 'United States', DE: 'Germany', GB: 'United Kingdom', NL: 'Netherlands', FR: 'France', CA: 'Canada', AU: 'Australia'
   };
 
-  BE.define('profile', {
-    business: 'Northwind Studio', owner: 'Maya Chen', first: 'Maya', email: 'maya@northwind.studio', initials: 'MC', role: 'Owner',
-    city: 'Brooklyn, NY', country: 'United States', currency: 'USD', sells: 'both', team: 'team', overseas: true, setAside: 0.25,
-    taxLabel: 'NY sales tax 8.875% on products',
-    // Invoice branding and formats (BizProfile)
-    legal: 'Northwind Studio LLC', countryCode: 'US', phone: '(718) 555-0142', street: '145 Front Street, Suite 4', town: 'Brooklyn', region: 'NY', postal: '11201',
-    logo: 1, accent: '#7A5AF8', prefix: 'INV-', terms: '14',
-    note: 'Thank you for working with Northwind Studio. Pay by card or bank transfer from the link in this email.',
-    fy: '1', lang: 'en', datef: 'mdy', numf: 'comma', ein: '47-2918364', vat: ''
-  }, {
-    business: 'Your business', owner: 'You', first: 'there', email: '', initials: 'YB', role: 'Owner',
-    city: '', country: 'United States', currency: 'USD', sells: 'services', team: 'solo', overseas: false, setAside: 0.25, taxLabel: '',
-    legal: '', countryCode: 'US', phone: '', street: '', town: '', region: '', postal: '',
-    logo: 0, accent: '#7A5AF8', prefix: 'INV-', terms: '30', note: '',
-    fy: '1', lang: 'en', datef: 'mdy', numf: 'comma', ein: '', vat: ''
-  });
+  // The two sample businesses. UK: a sole trader designer who also lets one flat. Sri Lanka: a VAT-registered design studio with staff.
+  BE.define('profile', BE.perCountry({
+    uk: {
+      business: 'Harper Studio', owner: 'Ellie Harper', first: 'Ellie', email: 'ellie@harperstudio.co.uk', initials: 'EH', role: 'Owner',
+      city: 'Leeds', country: 'United Kingdom', countryId: 'uk', currency: 'GBP', kind: 'both', // sole trader + landlord
+      vatRegistered: false, utr: '12345 67890', vatNo: '', basis: 'cash', quarterType: 'standard', scottish: false,
+      practice: { name: 'Dale & Shaw Accountants', contact: 'Priya Shaw', email: 'priya@daleandshaw.co.uk' },
+      legal: 'Ellie Harper trading as Harper Studio', countryCode: 'GB', phone: '0113 496 0182', street: '14 Call Lane', town: 'Leeds', region: 'West Yorkshire', postal: 'LS1 6DT',
+      logo: 1, accent: '#7A5AF8', prefix: 'HS-', terms: '14', setAside: 0.25,
+      note: 'Thank you for your business. Please pay by bank transfer to Harper Studio, sort code 20-45-77, account 41930268.',
+      lang: 'en', datef: 'dmy', numf: 'comma'
+    },
+    lk: {
+      business: 'Serendib Design Studio', owner: 'Ayesha Fernando', first: 'Ayesha', email: 'ayesha@serendibstudio.lk', initials: 'AF', role: 'Owner',
+      city: 'Colombo 03', country: 'Sri Lanka', countryId: 'lk', currency: 'LKR', kind: 'sole-proprietor',
+      vatRegistered: true, ssclRegistered: true, tin: '104 563 218', vatNo: '104563218-7000', basis: 'accrual',
+      practice: { name: 'Jayasinghe & Co, Chartered Accountants', contact: 'Ruwan Jayasinghe', email: 'ruwan@jayasinghe.lk' },
+      taxwiseLinked: true,
+      legal: 'Ayesha Fernando trading as Serendib Design Studio', countryCode: 'LK', phone: '011 257 4410', street: '42 Galle Road', town: 'Colombo 03', region: 'Western Province', postal: '00300',
+      logo: 1, accent: '#7A5AF8', prefix: 'SDS-', terms: '30', setAside: 0.2,
+      note: 'Thank you. Please pay by bank transfer to Serendib Design Studio, Commercial Bank, Kollupitiya, A/C 1004 5521 8830, or by cheque.',
+      lang: 'en', datef: 'dmy', numf: 'comma'
+    }
+  }), BE.perCountry({
+    uk: { business: 'Your business', owner: 'You', first: 'there', email: '', initials: 'YB', role: 'Owner', city: '', country: 'United Kingdom', countryId: 'uk', currency: 'GBP', kind: 'sole-trader', vatRegistered: false, utr: '', vatNo: '', basis: 'cash', quarterType: 'standard', scottish: false, practice: null, legal: '', countryCode: 'GB', phone: '', street: '', town: '', region: '', postal: '', logo: 0, accent: '#7A5AF8', prefix: 'INV-', terms: '14', setAside: 0.25, note: '', lang: 'en', datef: 'dmy', numf: 'comma' },
+    lk: { business: 'Your business', owner: 'You', first: 'there', email: '', initials: 'YB', role: 'Owner', city: '', country: 'Sri Lanka', countryId: 'lk', currency: 'LKR', kind: 'sole-proprietor', vatRegistered: false, ssclRegistered: false, tin: '', vatNo: '', basis: 'accrual', practice: null, taxwiseLinked: false, legal: '', countryCode: 'LK', phone: '', street: '', town: '', region: '', postal: '', logo: 0, accent: '#7A5AF8', prefix: 'INV-', terms: '30', setAside: 0.2, note: '', lang: 'en', datef: 'dmy', numf: 'comma' }
+  }));
 
   BE.define('team', [
     { id: 'maya', name: 'Maya Chen', email: 'maya@northwind.studio', role: 'Owner', status: 'You', you: true },

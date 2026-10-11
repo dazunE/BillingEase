@@ -451,7 +451,7 @@
   }
 
   // The shared data store and the sample month load before any screen renders.
-  var DATA_FILES = ['store.js', 'site.js', 'site-content.js', 'data-home.js', 'data-in.js', 'data-sell.js', 'data-out.js', 'data-spend.js', 'data-books.js', 'data-biz.js'];
+  var DATA_FILES = ['store.js', 'data-country.js', 'site.js', 'site-content.js', 'data-home.js', 'data-in.js', 'data-sell.js', 'data-out.js', 'data-spend.js', 'data-books.js', 'data-biz.js'];
 
   function loadScript(src) {
     return new Promise(function (resolve) {
@@ -474,16 +474,23 @@
       // ?reset=1 puts the sample month back; ?start=empty starts a brand new business.
       if (window.BE && (/[?&]reset=1\b/.test(location.search) || location.hash === '#reset')) {
         window.BE.reset();
-        try { sessionStorage.setItem('be.flash', 'Sample data reset. You’re back at Oct 4 with Northwind Studio’s October.'); } catch (e) { /* ignore */ }
+        try { sessionStorage.setItem('be.flash', 'Sample data reset to 11 October 2026.'); } catch (e) { /* ignore */ }
         history.replaceState(null, '', location.pathname + (location.hash === '#reset' ? '' : location.hash));
-      } else if (window.BE && (/[?&]start=empty\b/.test(location.search) || location.hash === '#start-empty')) {
-        window.BE.startEmpty();
-        history.replaceState(null, '', location.pathname + (location.hash === '#start-empty' ? '' : location.hash));
+      } else if (window.BE && /^#sample-(uk|lk)$/.test(location.hash)) {
+        // #sample-uk / #sample-lk open that country's sample business.
+        var c = location.hash.slice(8);
+        window.BE.startSample(c);
+        try { sessionStorage.setItem('be.flash', c === 'lk' ? 'Showing Serendib Design Studio, Colombo (Sri Lanka sample).' : 'Showing Harper Studio, Leeds (UK sample).'); } catch (e) { /* ignore */ }
+        history.replaceState(null, '', location.pathname);
+      } else if (window.BE && (/[?&]start=empty\b/.test(location.search) || location.hash === '#start-empty' || /^#start-empty-(uk|lk)$/.test(location.hash))) {
+        var ec = (location.hash.match(/^#start-empty-(uk|lk)$/) || [])[1];
+        window.BE.startEmpty(ec ? { country: ec } : undefined);
+        history.replaceState(null, '', location.pathname + (/^#start-empty/.test(location.hash) ? '' : location.hash));
       }
       window.addEventListener('be:change', rerender);
       window.addEventListener('hashchange', function () {
         // A reset link clicked while already on that screen only changes the hash.
-        if (location.hash === '#reset' || location.hash === '#start-empty') { location.reload(); return; }
+        if (/^#(reset|start-empty(-uk|-lk)?|sample-(uk|lk))$/.test(location.hash)) { location.reload(); return; }
         rerender();
       });
       boot();
