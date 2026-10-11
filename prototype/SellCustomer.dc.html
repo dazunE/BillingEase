@@ -198,12 +198,13 @@ class Component extends DCLogic {
     let st = this.state;
     if (st.forId !== h) { this.state = Object.assign({}, st, { forId: h, editOpen: false, editErr: false, noteDraft: null, stmtOpen: false }); st = this.state; }
     const money = BE.money;
-    const usd = (n) => BE.money(n, 'USD', { whole: true });
-    const CURN = { USD: 'US dollars', EUR: 'Euros', GBP: 'Pounds', CAD: 'Canadian dollars', AUD: 'Australian dollars' };
+    const usd = (n) => BE.money(n, null, { whole: true });
+    const lk = BE.is('lk');
+    const pack = BE.pack();
     const custs = BE.all('customers');
     const c = BE.find('customers', h);
     if (!c) {
-      const items = custs.slice().sort((a, b) => a.name.localeCompare(b.name)).map((x) => ({ name: x.name, ini: BE.initials(x.name), sub: [x.contact, x.country !== 'United States' ? x.country : ''].filter(Boolean).join(' · ') || x.email || '', href: 'SellCustomer.dc.html#' + x.id }));
+      const items = custs.slice().sort((a, b) => a.name.localeCompare(b.name)).map((x) => ({ name: x.name, ini: BE.initials(x.name), sub: [x.contact, (x.address || '').split(',').slice(-1)[0].trim()].filter(Boolean).join(' · ') || x.email || '', href: 'SellCustomer.dc.html#' + x.id }));
       return {
         toast: st.toast, here: 'Pick a customer', has: false,
         pick: { on: true, items,
@@ -211,33 +212,33 @@ class Component extends DCLogic {
           text: custs.length ? (h ? 'We couldn’t find that customer. They may have been deleted; their invoices are still in All invoices.' : 'Choose one to see what they owe, what they’ve paid and everything you’ve sent them.') : 'The people and businesses you bill will show here, with what each one owes you.' }
       };
     }
-    const cur = c.cur || 'USD', foreign = cur !== 'USD';
+    const cur = (BE.get('profile') || {}).currency;
     const all = BE.all('invoices').filter((i) => i.who === c.name);
     const sent = all.filter((i) => !i.draft && !i.void);
     const open = sent.filter((i) => BE.invOpen(i) > 0);
     const late = open.filter((i) => BE.invStatus(i) === 'late');
-    const owesUsd = open.reduce((a, i) => a + BE.usd(BE.invOpen(i), i.cur), 0);
-    const same = open.every((i) => (i.cur || 'USD') === cur);
-    const owes = same ? open.reduce((a, i) => a + BE.invOpen(i), 0) : owesUsd;
-    const owesCur = same ? cur : 'USD';
-    const lateUsd = late.reduce((a, i) => a + BE.usd(BE.invOpen(i), i.cur), 0);
+    const owesUsd = open.reduce((a, i) => a + BE.invOpen(i), 0);
+    const owes = owesUsd;
+    const owesCur = null;
+    const lateUsd = late.reduce((a, i) => a + BE.invOpen(i), 0);
     const pays = BE.all('payments').filter((p) => p.who === c.name);
-    const newPaid = pays.filter((p) => !/^pay-[1-5]$/.test(p.id)).reduce((a, p) => a + (Number(p.amount) || 0), 0);
+    // Payments recorded in this browser (ids above the sample's) add to what they've paid so far.
+    const newPaid = pays.filter((p) => +(String(p.id).split('-')[1]) >= 100).reduce((a, p) => a + (Number(p.amount) || 0), 0);
     const paid = (Number(c.paid) || 0) + newPaid;
     const quotes = BE.all('quotes').filter((q) => q.who === c.name);
     const reps = BE.all('recurring').filter((r) => r.who === c.name);
     const cns = BE.all('creditNotes').filter((x) => x.who === c.name);
-    const counted = open.filter((i) => i.inMonth && i.dueIn >= 0).reduce((a, i) => a + BE.usd(BE.invOpen(i), i.cur), 0);
+    const counted = open.filter((i) => i.inMonth && i.dueIn >= 0).reduce((a, i) => a + BE.invOpen(i), 0);
     const drafts = all.filter((i) => i.draft);
 
     const badges = [];
     if (late.length) badges.push({ label: usd(lateUsd) + ' late', bg: '#FBE3DF', fg: '#A8200D' });
-    if (foreign) badges.push({ label: 'Billed in ' + cur, bg: '#E1EEF8', fg: '#1F5E91' });
+    if (c.tax) badges.push({ label: lk ? 'VAT registered' : 'VAT registered', bg: '#E1EEF8', fg: '#1F5E91' });
     if (reps.some((r) => !r.paused)) badges.push({ label: 'Repeats monthly', bg: '#EEE8FF', fg: '#18161F' });
     const stats = [
-      { label: 'Owes you', value: owesUsd > 0 ? money(owes, owesCur) : 'Nothing', fg: '#18161F', sub: owesUsd > 0 ? (owesCur !== 'USD' ? '≈ ' + usd(owesUsd) + ' today · ' : '') + open.length + (open.length === 1 ? ' open invoice' : ' open invoices') : 'All paid up' },
+      { label: 'Owes you', value: owesUsd > 0 ? money(owes, owesCur) : 'Nothing', fg: '#18161F', sub: owesUsd > 0 ? open.length + (open.length === 1 ? ' open invoice' : ' open invoices') : 'All paid up' },
       { label: 'Late', value: late.length ? usd(lateUsd) : 'Nothing', fg: late.length ? '#A8200D' : '#18161F', sub: late.length ? late.map((i) => i.num).join(', ') : 'Pays on time' },
-      { label: 'Paid you this year', value: usd(paid), fg: '#18161F', sub: c.paidCur ? money(c.paidCur, cur) + ' in ' + cur : (paid ? 'Since Jan 1, 2026' : 'Nothing yet') }
+      { label: 'Paid you so far', value: usd(paid), fg: '#18161F', sub: paid ? (c.since || 'Since they became a customer') : 'Nothing yet' }
     ];
     let feed;
     if (owesUsd === 0) feed = drafts.length ? 'Nothing owed right now. A draft (' + drafts.map((d) => d.what).join(', ') + ') is waiting in All invoices.' : sent.length ? 'Nothing owed right now, so they add nothing to what’s on the way.' : 'New customer. Bill them and the invoice shows up in Coming in as money on the way.';
@@ -246,47 +247,47 @@ class Component extends DCLogic {
     const STATUS = { paid: ['Paid', '#E2F6D5', '#2F5711'], late: ['Late', '#FBE3DF', '#A8200D'], part: ['Part paid', '#E1EEF8', '#1F5E91'], open: ['On the way', '#E1EEF8', '#1F5E91'], draft: ['Draft', '#EFEDF3', '#47444F'], void: ['Voided', '#EFEDF3', '#47444F'] };
     const QST = { waiting: ['Waiting', '#E1EEF8', '#1F5E91'], changes: ['Changes asked', '#FFF0B8', '#6B5000'], draft: ['Draft', '#EFEDF3', '#47444F'], accepted: ['Accepted', '#E2F6D5', '#2F5711'], declined: ['Declined', '#FBE3DF', '#A8200D'] };
     const ord = (n) => n + (n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th');
-    const usdNote = (amt, cu) => (cu && cu !== 'USD') ? '≈ ' + usd(BE.usd(amt, cu)) : '';
+    const usdNote = () => '';
     const invOrder = (i) => (i.draft ? 0 : BE.invOpen(i) > 0 ? 1 : 2);
     const invItems = all.slice().sort((a, b) => invOrder(a) - invOrder(b)).map((i) => {
       const s = STATUS[BE.invStatus(i)] || STATUS.open;
       const amt = BE.invOpen(i) > 0 ? BE.invOpen(i) : BE.invTotal(i);
-      return { title: (i.draft ? 'Draft' : i.num) + ' · ' + i.what, sub: i.draft ? 'Not sent yet' : BE.invOpen(i) > 0 ? (i.dueIn < 0 ? 'Was due ' + i.due : 'Due ' + i.due) + (i.credit ? ' · ' + money(i.credit, i.cur) + ' taken off' : '') : 'Sent ' + i.issued + (i.paidOn ? ' · paid ' + i.paidOn : ''),
-        status: s[0], bg: s[1], fg: s[2], amount: money(amt, i.cur), usd: usdNote(amt, i.cur), href: 'SellInvoices.dc.html#' + i.num };
+      return { title: (i.draft ? 'Draft' : i.num) + ' · ' + i.what, sub: i.draft ? 'Not sent yet' : BE.invOpen(i) > 0 ? (i.dueIn < 0 ? 'Was due ' + i.due : 'Due ' + i.due) + (i.credit ? ' · ' + money(i.credit) + ' taken off' : '') : 'Sent ' + i.issued + (i.paidOn ? ' · paid ' + i.paidOn + (i.paidHow ? ' by ' + String(i.paidHow).toLowerCase().replace('lankaqr', 'LankaQR') : '') : ''),
+        status: s[0], bg: s[1], fg: s[2], amount: money(amt), usd: usdNote(amt, i.cur), href: 'SellInvoices.dc.html#' + i.num };
     });
     const groups = [
       { label: 'Invoices', items: invItems, link: 'Bill them', href: 'ThreeIn.dc.html#bill=' + c.id, emptyText: 'No invoices yet. Invoices you send them show up here until they’re paid.' },
-      { label: 'Quotes', items: quotes.map((q) => { const s = QST[q.state] || QST.draft; const tt = BE.quoteTotals(q).total; return { title: q.num + ' · ' + q.title, sub: q.state === 'declined' ? 'Declined ' + q.declined + (q.reason ? ': “' + q.reason + '”' : '') : q.invoice ? 'Accepted ' + q.accepted + ' · became ' + q.invoice : q.state === 'draft' ? 'Not sent yet' : 'Sent ' + q.sent + (q.expires ? ' · expires ' + q.expires : ''), status: s[0], bg: s[1], fg: s[2], amount: money(tt, q.cur), usd: usdNote(tt, q.cur), href: 'SellQuote.dc.html#' + q.num }; }),
-        link: 'Send a quote', href: 'SellQuotes.dc.html#new=' + c.id, emptyText: 'No quotes yet. Send one before the work starts and they can accept it online.' },
-      { label: 'Repeating invoices', items: reps.map((r) => ({ title: r.what, sub: 'Every month on the ' + ord(r.day) + ' · ' + (r.count || 0) + ' sent so far', status: r.paused ? 'Paused' : 'Active', bg: r.paused ? '#FFF0B8' : '#E2F6D5', fg: r.paused ? '#6B5000' : '#2F5711', amount: money(r.amount, r.cur), usd: usdNote(r.amount, r.cur), href: 'SellRecurring.dc.html' })),
+      { label: 'Quotes', items: quotes.map((q) => { const s = QST[q.state] || QST.draft; const tt = BE.quoteTotals(q).total; return { title: q.num + ' · ' + q.title, sub: q.state === 'declined' ? 'Declined ' + q.declined + (q.reason ? ': “' + q.reason + '”' : '') : q.invoice ? 'Accepted ' + q.accepted + ' · became ' + q.invoice : q.state === 'draft' ? 'Not sent yet' : 'Sent ' + q.sent + (q.expires ? ' · expires ' + q.expires : ''), status: s[0], bg: s[1], fg: s[2], amount: money(tt), usd: '', href: 'SellQuote.dc.html#' + q.num }; }),
+        link: 'Send a quote', href: 'SellQuotes.dc.html#new=' + c.id, emptyText: 'No quotes yet. Send one before the work starts; when they say yes, mark it accepted.' },
+      { label: 'Repeating invoices', items: reps.map((r) => ({ title: r.what, sub: 'Every month on the ' + ord(r.day) + ' · ' + (r.count || 0) + ' sent so far', status: r.paused ? 'Paused' : 'Active', bg: r.paused ? '#FFF0B8' : '#E2F6D5', fg: r.paused ? '#6B5000' : '#2F5711', amount: money(BE.calcTax([{ qty: 1, rate: Number(r.amount) || 0 }], 0).total), usd: '', href: 'SellRecurring.dc.html' })),
         link: 'Repeating invoices', href: 'SellRecurring.dc.html', emptyText: 'Nothing repeats. Set up a retainer and we’ll bill them on the same day each month.' },
-      { label: 'Money back', items: cns.map((x) => ({ title: x.num + ' · ' + x.reason, sub: x.date + ' · ' + x.how, status: x.kind === 'refund' ? 'Refunded' : x.kind === 'credit' ? 'Credit held' : 'Applied', bg: x.kind === 'refund' ? '#E1EEF8' : x.kind === 'credit' ? '#FFF0B8' : '#E2F6D5', fg: x.kind === 'refund' ? '#1F5E91' : x.kind === 'credit' ? '#6B5000' : '#2F5711', amount: '−' + money(x.amount, x.cur), usd: '', href: 'SellInvoices.dc.html#' + x.inv })),
-        link: 'Give money back', href: 'SellRecurring.dc.html', emptyText: 'No refunds or credits. Anything you give back shows here.' }
+      { label: lk ? 'Credit notes' : 'Money back', items: cns.map((x) => ({ title: x.num + ' · ' + x.reason, sub: x.date + ' · ' + x.how, status: x.kind === 'refund' ? 'Refunded' : x.kind === 'credit' ? 'Credit held' : 'Applied', bg: x.kind === 'refund' ? '#E1EEF8' : x.kind === 'credit' ? '#FFF0B8' : '#E2F6D5', fg: x.kind === 'refund' ? '#1F5E91' : x.kind === 'credit' ? '#6B5000' : '#2F5711', amount: '−' + money(x.amount), usd: '', href: 'SellInvoices.dc.html#' + x.inv })),
+        link: lk ? 'Issue a credit note' : 'Give money back', href: 'SellRecurring.dc.html', emptyText: 'No refunds or credits. Anything you give back shows here.' }
     ].map((g) => Object.assign(g, { count: g.items.length, empty: g.items.length === 0 }));
 
     const contact = [
       { label: 'Contact', value: c.contact || 'Not added yet' }, { label: 'Email for invoices', value: c.email || 'Not added yet' },
       { label: 'Phone', value: c.phone || 'Not added yet' }, { label: 'Address', value: c.address || 'Not added yet' },
-      { label: 'Country and currency', value: (c.country || 'United States') + ' · ' + (CURN[cur] || cur) }, { label: (c.country || 'United States') === 'United States' ? 'Tax ID' : 'VAT number', value: c.tax || 'None needed' }
-    ].map((x) => Object.assign(x, { fg: /Not added|None needed/.test(x.value) ? '#5F5B68' : '#18161F' }));
+    ].concat(lk ? [{ label: 'TIN', value: c.tin || 'Not added yet' }] : []).concat([{ label: lk ? 'VAT registration number' : 'VAT number', value: c.tax || (lk ? 'Not VAT registered' : 'Not VAT registered') }])
+      .map((x) => Object.assign(x, { fg: /Not added|Not VAT/.test(x.value) ? '#5F5B68' : '#18161F' }));
     const E = st.edit;
-    const editFields = [['contact', 'Contact person'], ['email', 'Email for invoices'], ['phone', 'Phone'], ['address', 'Address'], ['tax', (c.country || 'United States') !== 'United States' ? 'VAT number' : 'Tax ID']].map(([k, label]) => ({
+    const editFields = [['contact', 'Contact person'], ['email', 'Email for invoices'], ['phone', 'Phone'], ['address', 'Address']].concat(lk ? [['tin', 'TIN']] : []).concat([['tax', lk ? 'VAT registration number' : 'VAT number']]).map(([k, label]) => ({
       label, value: E[k] == null ? '' : E[k], set: (e) => this.setState({ edit: Object.assign({}, this.state.edit, { [k]: e.target.value }), editErr: false })
     }));
 
     // statement
     const rows = [];
     sent.slice().reverse().forEach((i) => {
-      rows.push({ date: i.issued, what: i.num + ' · ' + i.what, billed: money(BE.invTotal(i) + (Number(i.credit) || 0), i.cur), paid: '' });
-      if (i.credit) rows.push({ date: '', what: 'Taken off ' + i.num, billed: '', paid: '−' + money(i.credit, i.cur) });
-      if (i.paid) rows.push({ date: i.paidOn || '', what: 'Payment on ' + i.num, billed: '', paid: '−' + money(i.paid, i.cur) });
+      rows.push({ date: i.issued, what: i.num + ' · ' + i.what, billed: money(BE.invTotal(i) + (Number(i.credit) || 0)), paid: '' });
+      if (i.credit) rows.push({ date: '', what: 'Taken off ' + i.num, billed: '', paid: '−' + money(i.credit) });
+      if (i.paid) rows.push({ date: i.paidOn || '', what: 'Payment on ' + i.num + (i.cheque && i.cheque.no ? ' (cheque ' + i.cheque.no + ')' : ''), billed: '', paid: '−' + money(i.paid) });
     });
     const stmt = {
       open: st.stmtOpen, rows,
-      sub: 'Everything since Jan 1, 2026 · goes to ' + (c.email || 'their email'),
-      balance: owesUsd > 0 ? money(owes, owesCur) : money(0, cur),
+      sub: 'Everything since ' + (pack.taxYear ? pack.taxYear.start : '1 Apr 2026') + ' · goes to ' + (c.email || 'their email'),
+      balance: money(owes),
       btn: st.stmtSent === c.id ? 'Send it again' : 'Email it to ' + (c.contact ? c.contact.split(' ')[0] : c.name),
-      note: st.stmtSent === c.id ? 'Sent today. It’s in Handled for you on Home.' : rows.length ? 'They get it as a PDF with a pay link for anything still open.' : 'Nothing billed yet, so the statement is empty.'
+      note: st.stmtSent === c.id ? 'Sent today. It’s in the activity list on Home.' : rows.length ? 'They get it as a PDF with your payment details for anything still open.' : 'Nothing billed yet, so the statement is empty.'
     };
     const noteOf = c.note || '';
     const draft = st.noteDraft != null ? st.noteDraft : noteOf;
@@ -296,17 +297,17 @@ class Component extends DCLogic {
       groups, stmt,
       toggleStmt: () => this.setState({ stmtOpen: !st.stmtOpen }),
       sendStmt: () => {
-        if (!c.email) { this.notify('Add an email for ' + c.name + ' first'); this.setState({ editOpen: true, edit: { contact: c.contact, email: '', phone: c.phone, address: c.address, tax: c.tax } }); return; }
+        if (!c.email) { this.notify('Add an email for ' + c.name + ' first'); this.setState({ editOpen: true, edit: { contact: c.contact, email: '', phone: c.phone, address: c.address, tin: c.tin || '', tax: c.tax } }); return; }
         BE.log('Emailed a statement to ' + c.name + ' (' + c.email + ')');
         this.setState({ stmtSent: c.id });
         this.notify('Statement emailed to ' + c.email);
       },
       editOpen: st.editOpen, editOff: !st.editOpen, editLabel: st.editOpen ? 'Close' : 'Edit', editErr: st.editErr,
-      toggleEdit: () => this.setState({ editOpen: !st.editOpen, editErr: false, edit: { contact: c.contact || '', email: c.email || '', phone: c.phone || '', address: c.address || '', tax: c.tax || '' } }),
+      toggleEdit: () => this.setState({ editOpen: !st.editOpen, editErr: false, edit: { contact: c.contact || '', email: c.email || '', phone: c.phone || '', address: c.address || '', tin: c.tin || '', tax: c.tax || '' } }),
       editFields,
       saveEdit: () => {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(E.email || '').trim())) { this.setState({ editErr: true }); return; }
-        BE.update('customers', c.id, { contact: E.contact || '', email: String(E.email).trim(), phone: E.phone || '', address: E.address || '', tax: E.tax || '' });
+        BE.update('customers', c.id, { contact: E.contact || '', email: String(E.email).trim(), phone: E.phone || '', address: E.address || '', tin: E.tin || '', tax: E.tax || '' });
         this.setState({ editOpen: false });
         this.notify('Saved details for ' + c.name);
       },

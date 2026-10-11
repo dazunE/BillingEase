@@ -36,8 +36,8 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="width: {{t.duePct}}%; background: #F4C3A1;"></span>
           </span>
           <span style="display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 14px; color: #47444F;">
-            <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D;"></span><strong style="color: #18161F;">{{t.paid}}</strong> already paid in October</span>
-            <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1;"></span><strong style="color: #18161F;">{{t.due}}</strong> still to pay by Oct 31</span>
+            <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D;"></span><strong style="color: #18161F;">{{t.paid}}</strong> recorded as paid in October</span>
+            <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1;"></span><strong style="color: #18161F;">{{t.due}}</strong> still to pay by 31 Oct</span>
           </span>
         </sc-if>
         <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
@@ -48,7 +48,7 @@ a{color:#18161F}a:hover{color:#000000}
         <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">{{intro}}</p>
         <button type="button" onClick="{{openAdd}}" aria-expanded="{{addOpen}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-          Add a recurring cost
+          Set up a cost
         </button>
       </div>
     </section>
@@ -57,15 +57,15 @@ a{color:#18161F}a:hover{color:#000000}
     <sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}">
       <section aria-labelledby="add-h" style="background: #FFFFFF; border: 2px solid #E0752D; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 16px;">
         <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-          <h2 id="add-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Add a recurring cost</h2>
-          <span style="font-size: 13px; color: #5F5B68;">For anything we haven’t spotted yet, like a cash cleaner or a new lease.</span>
+          <h2 id="add-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Set up a cost you pay every month</h2>
+          <span style="font-size: 13px; color: #5F5B68;">Like rent, a phone contract or a cleaner. Nothing is paid from here.</span>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px;">
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What is it
-            <input class="be-field" type="text" placeholder="e.g. Office cleaning" value="{{f.name}}" onChange="{{setName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+            <input class="be-field" type="text" placeholder="{{f.namePh}}" value="{{f.name}}" onChange="{{setName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
           </label>
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount each month
-            <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.amount}}" onChange="{{setAmount}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+            <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">{{sym}}<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.amount}}" onChange="{{setAmount}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
           </label>
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Day of the month
             <select class="be-field" value="{{f.day}}" onChange="{{setDay}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
@@ -74,15 +74,21 @@ a{color:#18161F}a:hover{color:#000000}
           </label>
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
             <select class="be-field" value="{{f.cat}}" onChange="{{setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-              <option value="Rent">Rent</option><option value="Software">Software</option><option value="Internet &amp; phone">Internet &amp; phone</option><option value="Insurance">Insurance</option><option value="Cleaning &amp; upkeep">Cleaning &amp; upkeep</option><option value="Other">Other</option>
+              <sc-for list="{{catOpts}}" as="co" hint-placeholder-count="10"><option value="{{co.id}}">{{co.name}}</option></sc-for>
             </select>
           </label>
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid with
             <select class="be-field" value="{{f.card}}" onChange="{{setCard}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-              <option value="Amex ••1009">Amex Business ••1009</option><option value="Chase ••4417">Chase Business Checking ••4417</option><option value="Cash">Cash</option>
+              <sc-for list="{{methods}}" as="m" hint-placeholder-count="3"><option value="{{m.id}}">{{m.label}}</option></sc-for>
             </select>
           </label>
         </div>
+        <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: -6px; font-size: 12px; color: #5F5B68;"><span>{{f.official}}</span><sc-if value="{{f.badge}}" hint-placeholder-val="{{false}}"><span style="padding: 1px 8px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 11px; font-weight: 700;">{{f.badge}}</span></sc-if></span>
+        <sc-if value="{{f.vatOn}}" hint-placeholder-val="{{false}}">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; max-width: 320px;">{{f.vatLabel}}
+            <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">{{sym}}<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.vat}}" onChange="{{setVat}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F;"></span>
+          </label>
+        </sc-if>
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; border-radius: 14px; background: #FDE6D6; font-size: 14px; color: #18161F;">
           <span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1; border: 1px solid #E0752D; box-sizing: border-box; flex: none;"></span>
           <span style="flex: 1 1 240px;">{{f.effect}}</span>
@@ -101,7 +107,7 @@ a{color:#18161F}a:hover{color:#000000}
 
     <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
       <div style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 20px; padding: 24px; font-size: 15px; color: #47444F; line-height: 1.5;">
-        Rent, software and insurance show up here once we see them on your card or bank two months running, or as soon as you add one. Each one not charged yet counts in Going out as still to pay.
+        {{noneText}}
       </div>
     </sc-if>
 
@@ -119,11 +125,11 @@ a{color:#18161F}a:hover{color:#000000}
                 <span style="flex: 1 1 0; min-width: 0; height: 34px; border-radius: 6px; background: {{dy.bg}}; box-shadow: {{dy.ring}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: {{dy.fg}};"><span class="be-hide-sm">{{dy.n}}</span></span>
               </sc-for>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5F5B68;"><span>Oct 1</span><span>Oct 31</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5F5B68;"><span>1 Oct</span><span>31 Oct</span></div>
             <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: #47444F;">
               <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D;"></span>Paid</span>
               <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1;"></span>Still to pay</span>
-              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 0 0 2px #18161F;"></span>Today, Sun Oct 4</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 0 0 2px #18161F;"></span>Today, Sun 11 Oct</span>
             </div>
           </div>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px;">
@@ -131,55 +137,15 @@ a{color:#18161F}a:hover{color:#000000}
               <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: {{u.bg}};">
                 <span style="width: 44px; flex: none; display: flex; flex-direction: column; align-items: center; line-height: 1.1;"><span style="font-size: 11px; font-weight: 700; color: #47444F; text-transform: uppercase;">{{u.dow}}</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{u.day}}</span></span>
                 <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 600; font-size: 14px;">{{u.who}}</span><span style="font-size: 13px; color: #47444F;">{{u.amount}} · {{u.card}}</span></span>
+                <button type="button" onClick="{{u.record}}" aria-label="{{u.recordLabel}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">Record</button>
               </div>
             </sc-for>
           </div>
           <sc-if value="{{noUpcoming}}" hint-placeholder-val="{{false}}">
-            <p style="margin: 0; font-size: 14px; color: #47444F;">Nothing else repeats before Oct 31. November’s costs show up here on Nov 1.</p>
+            <p style="margin: 0; font-size: 14px; color: #47444F;">Everything for October is recorded. November’s costs show up here on 1 Nov.</p>
           </sc-if>
         </div>
       </section>
-
-      <!-- Nudges -->
-      <sc-if value="{{hasNudges}}" hint-placeholder-val="{{true}}">
-        <section aria-labelledby="nudge-h" style="display: flex; flex-direction: column; gap: 12px;">
-          <h2 id="nudge-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Worth a look</h2>
-          <sc-if value="{{db.ask}}" hint-placeholder-val="{{true}}">
-            <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px;">
-              <span style="width: 44px; height: 44px; border-radius: 14px; background: #FFF0B8; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18"></path></svg></span>
-              <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-                <span style="font-weight: 700; font-size: 16px;">{{db.title}}</span>
-                <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{db.text}}</span>
-              </div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button type="button" onClick="{{db.keep}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep it</button>
-                <button type="button" onClick="{{db.remind}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Remind me</button>
-                <button type="button" onClick="{{db.cancel}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{db.cancelLabel}}</button>
-              </div>
-            </article>
-          </sc-if>
-          <sc-if value="{{db.done}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 18px; border-radius: 20px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
-              <span style="flex: 1 1 240px; min-width: 0;">{{db.doneText}}</span>
-              <button type="button" onClick="{{db.undo}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
-            </div>
-          </sc-if>
-          <sc-if value="{{cvAsk}}" hint-placeholder-val="{{true}}">
-            <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px;">
-              <span style="width: 44px; height: 44px; border-radius: 14px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"></path></svg></span>
-              <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-                <span style="font-weight: 700; font-size: 16px;">Canva Pro looks like it repeats</span>
-                <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{cvText}}</span>
-              </div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button type="button" onClick="{{cvNo}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">It’s not monthly</button>
-                <button type="button" onClick="{{cvYes}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Track it</button>
-              </div>
-            </article>
-          </sc-if>
-        </section>
-      </sc-if>
 
       <!-- The list -->
       <section aria-labelledby="list-h" style="display: flex; flex-direction: column; gap: 12px;">
@@ -199,7 +165,7 @@ a{color:#18161F}a:hover{color:#000000}
                       <sc-if value="{{r.noHref}}" hint-placeholder-val="{{false}}"><span style="font-weight: 700; font-size: 15px;">{{r.who}}</span></sc-if>
                       <sc-if value="{{r.flag}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #6B5000;"></span>{{r.flag}}</span></sc-if>
                     </span>
-                    <span style="font-size: 13px; color: #5F5B68;">{{r.cat}} · every month on the {{r.dayText}} · {{r.card}}</span>
+                    <span style="font-size: 13px; color: #5F5B68;">{{r.cat}} · every month on the {{r.dayText}} · {{r.card}}{{r.prop}}</span>
                   </span>
                   <span style="display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end;">
                     <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{r.bg}}; color: {{r.fg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.fg}};"></span>{{r.status}}</span>
@@ -209,12 +175,12 @@ a{color:#18161F}a:hover{color:#000000}
                       <button type="button" aria-haspopup="menu" aria-expanded="{{r.menuOpen}}" aria-label="{{r.menuLabel}}" onClick="{{r.toggleMenu}}" style="width: 40px; height: 40px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#18161F" aria-hidden="true"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg></button>
                       <sc-if value="{{r.menuOpen}}" hint-placeholder-val="{{false}}">
                         <span role="menu" style="position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 230px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; padding: 6px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column;">
-                          <button type="button" role="menuitem" onClick="{{r.edit}}" style="text-align: left; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Edit amount or day</button>
+                          <button type="button" role="menuitem" onClick="{{r.edit}}" style="text-align: left; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Edit amount, day or category</button>
                           <sc-if value="{{r.canPay}}" hint-placeholder-val="{{true}}">
-                            <button type="button" role="menuitem" onClick="{{r.payEarly}}" style="text-align: left; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Paid it early</button>
+                            <button type="button" role="menuitem" onClick="{{r.payEarly}}" style="text-align: left; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Record October’s payment</button>
                           </sc-if>
                           <button type="button" role="menuitem" onClick="{{r.pause}}" style="text-align: left; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Pause it</button>
-                          <button type="button" role="menuitem" onClick="{{r.cancel}}" style="text-align: left; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #A8200D; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel it</button>
+                          <button type="button" role="menuitem" onClick="{{r.cancel}}" style="text-align: left; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #A8200D; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Stop it</button>
                         </span>
                       </sc-if>
                     </span>
@@ -223,14 +189,19 @@ a{color:#18161F}a:hover{color:#000000}
                 <sc-if value="{{r.editing}}" hint-placeholder-val="{{false}}">
                   <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; padding: 14px; border-radius: 14px; background: #F7F6F9;">
                     <label style="flex: 1 1 120px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
-                      <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{r.eAmount}}" onChange="{{r.setEAmount}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F;"></span>
+                      <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">{{sym}}<input class="be-field" type="text" inputmode="decimal" value="{{r.eAmount}}" onChange="{{r.setEAmount}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F;"></span>
                     </label>
                     <label style="flex: 1 1 110px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Day
                       <input class="be-field" type="number" min="1" max="31" value="{{r.eDay}}" onChange="{{r.setEDay}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
                     </label>
                     <label style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid with
                       <select class="be-field" value="{{r.eCard}}" onChange="{{r.setECard}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                        <option value="Amex ••1009">Amex ••1009</option><option value="Chase ••4417">Chase ••4417</option><option value="Cash">Cash</option>
+                        <sc-for list="{{methods}}" as="m" hint-placeholder-count="3"><option value="{{m.id}}">{{m.label}}</option></sc-for>
+                      </select>
+                    </label>
+                    <label style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
+                      <select class="be-field" value="{{r.eCat}}" onChange="{{r.setECat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                        <sc-for list="{{r.catOpts}}" as="co" hint-placeholder-count="10"><option value="{{co.id}}">{{co.name}}</option></sc-for>
                       </select>
                     </label>
                     <button type="button" onClick="{{r.saveEdit}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save</button>
@@ -241,7 +212,7 @@ a{color:#18161F}a:hover{color:#000000}
             </sc-for>
           </ul>
           <sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
-            <p style="margin: 0; padding: 16px 0; font-size: 14px; color: #47444F;">Everything is paused or cancelled. Nothing repeats in Going out right now.</p>
+            <p style="margin: 0; padding: 16px 0; font-size: 14px; color: #47444F;">Everything is paused or stopped. Nothing repeats in Going out right now.</p>
           </sc-if>
           <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 12px 0 14px; border-top: 1px solid #E2DFE8; font-size: 14px;">
             <span style="color: #47444F;"><strong style="color: #18161F;">{{t.paid}}</strong> paid · <strong style="color: #18161F;">{{t.due}}</strong> still to pay this month</span>
@@ -253,7 +224,7 @@ a{color:#18161F}a:hover{color:#000000}
       <!-- Paused or cancelled -->
       <sc-if value="{{hasStopped}}" hint-placeholder-val="{{false}}">
         <section aria-labelledby="stop-h" style="display: flex; flex-direction: column; gap: 12px;">
-          <h2 id="stop-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Paused or cancelled</h2>
+          <h2 id="stop-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Paused or stopped</h2>
           <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 4px 20px;">
             <ul style="margin: 0; padding: 0; list-style: none;">
               <sc-for list="{{stopped}}" as="s" hint-placeholder-count="1">
@@ -276,7 +247,7 @@ a{color:#18161F}a:hover{color:#000000}
       <section aria-labelledby="hc-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(20px, 3vw, 28px); display: flex; flex-wrap: wrap; gap: 18px 32px; align-items: center;">
         <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
           <h2 id="hc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: #B9A3FF;">How these count in your numbers</h2>
-          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #EEE8FF;">Before a cost is charged, it sits in Going out as still to pay. When the charge lands (or you say you paid early), it moves to paid. Pause or cancel one and it comes off Going out.</p>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #EEE8FF;">Until you record October’s payment, a cost sits in Going out as still to pay. Record it and it moves to paid, in its category. Pause or stop one and it comes off Going out. BillingEase never pays anything for you.</p>
         </div>
         <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px;">
           <span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 9999px; background: rgba(238,232,255,0.12);"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F4C3A1;"></span>Still to pay {{t.due}}</span>
@@ -296,191 +267,6 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
-class Component extends DCLogic {
-  constructor(props) {
-    super(props);
-    this.state = {
-      toast: null, menuId: null, editId: null, eAmount: '', eDay: '', eCard: '',
-      addOpen: BE.hash() === 'add', f: { name: '', amount: '', day: '15', cat: 'Cleaning & upkeep', card: 'Amex ••1009' }, errors: []
-    };
-  }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
-  componentWillUnmount() { clearTimeout(this._t); }
-  renderVals() {
-    const st = this.state;
-    const money = (n) => BE.money(n);
-    const out = () => BE.totals().fmt.out;
-    const DOW = ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'];
-    const dow = (d) => DOW[(d - 1) % 7];
-    const suf = (d) => (d === 31 ? '' : ((d % 10 === 1 && d !== 11) ? 'st' : (d % 10 === 2 && d !== 12) ? 'nd' : (d % 10 === 3 && d !== 13) ? 'rd' : 'th'));
-    const dayText = (d) => (d === 31 ? 'last day' : d + suf(d));
-    const TODAY = 4;
-
-    const allItems = BE.all('monthly').slice().sort((a, b) => a.day - b.day);
-    const items = allItems.filter((it) => it.active !== false);
-    const stoppedItems = allItems.filter((it) => it.active === false);
-    // Same rule as BE.totals(): active, not paid yet, day still ahead this month.
-    const counts = (it) => it.active !== false && !it.paidDay && it.day > TODAY;
-    const monthTotal = items.reduce((a, it) => a + it.amount, 0);
-    const paidT = allItems.filter((it) => it.paidDay).reduce((a, it) => a + it.amount, 0);
-    const dueT = BE.totals().outMonthly;
-    const paidPct = Math.round(paidT / Math.max(1, paidT + dueT) * 100);
-    const t = { month: money(monthTotal), year: money(Math.round(monthTotal * 12 * 100) / 100), paid: money(paidT), due: money(dueT), paidPct, duePct: 100 - paidPct };
-    const vendorHref = (it) => { const v = (it.vendor && BE.find('vendors', it.vendor)) || BE.vendorFor(it.who); return v ? 'SpendVendor.dc.html#' + v.id : ''; };
-
-    const stop = (it, kind) => {
-      const was = counts(it);
-      BE.update('monthly', it.id, { active: false, ended: kind, endedOn: BE.today });
-      this.setState({ menuId: null, editId: null });
-      BE.log((kind === 'cancelled' ? 'Cancelled ' : 'Paused ') + it.who + ' · ' + money(it.amount) + ' a month');
-      this.notify((kind === 'cancelled' ? 'Cancelled ' : 'Paused ') + it.who + (was ? ' · −' + money(it.amount) + ' off Going out (now ' + out() + ')' : ' · it won’t count from ' + (it.paidDay ? 'November' : 'now on')));
-    };
-
-    const rows = items.map((it, i) => {
-      let status, bg, fg, next;
-      if (it.paidDay) { status = 'Paid Oct ' + it.paidDay; bg = '#E2F6D5'; fg = '#2F5711'; next = 'Nov ' + it.day; }
-      else if (it.day <= TODAY) { status = 'Starts Nov ' + it.day; bg = '#E1EEF8'; fg = '#1F5E91'; next = 'Nov ' + it.day; }
-      else if (it.day === TODAY + 1) { status = 'Due tomorrow'; bg = '#FFF0B8'; fg = '#6B5000'; next = 'Oct ' + it.day; }
-      else { status = 'Due Oct ' + it.day; bg = '#EFEDF3'; fg = '#47444F'; next = 'Oct ' + it.day; }
-      const flag = it.unused && !it.unusedSeen ? 'Looks unused' : (it.unusedSeen === 'remind' ? 'Reminder Oct 18' : '');
-      const href = vendorHref(it);
-      return {
-        who: it.who, href, noHref: !href, cat: it.cat, dayText: dayText(it.day), dayNum: it.day === 31 ? 'Last' : it.day, daySuf: it.day === 31 ? 'day' : suf(it.day), card: it.card,
-        amount: money(it.amount), status, bg, fg, next, flag, border: i === 0 ? '0' : '1px solid #EFEDF3',
-        menuOpen: st.menuId === it.id, menuLabel: 'More for ' + it.who,
-        toggleMenu: () => this.setState({ menuId: st.menuId === it.id ? null : it.id }),
-        editing: st.editId === it.id, eAmount: st.eAmount, eDay: st.eDay, eCard: st.eCard,
-        edit: () => this.setState({ menuId: null, editId: it.id, eAmount: String(it.amount), eDay: String(it.day), eCard: it.card }),
-        setEAmount: (e) => this.setState({ eAmount: e.target.value }),
-        setEDay: (e) => this.setState({ eDay: e.target.value }),
-        setECard: (e) => this.setState({ eCard: e.target.value }),
-        cancelEdit: () => this.setState({ editId: null }),
-        saveEdit: () => {
-          const v = BE.num(st.eAmount), d = Math.round(BE.num(st.eDay));
-          if (!(v > 0)) { this.notify('Add an amount above $0'); return; }
-          if (!(d >= 1 && d <= 31)) { this.notify('Pick a day from 1 to 31'); return; }
-          const before = BE.totals().out;
-          BE.update('monthly', it.id, { amount: Math.round(v * 100) / 100, day: d, card: st.eCard });
-          this.setState({ editId: null });
-          const diff = Math.round((BE.totals().out - before) * 100) / 100;
-          this.notify(it.who + ' is now ' + money(v) + ' on the ' + dayText(d) + (diff ? ' · Going out ' + (diff > 0 ? '+' : '−') + money(Math.abs(diff)) + ' (now ' + out() + ')' : ''));
-        },
-        canPay: counts(it),
-        payEarly: () => {
-          BE.addExpense({ who: it.who, cat: it.cat, how: it.card, amount: it.amount, note: 'Every month · paid early' });
-          BE.update('monthly', it.id, { paidDay: TODAY });
-          this.setState({ menuId: null });
-          this.notify(it.who + ' paid early · ' + money(it.amount) + ' moved from still to pay to paid. Going out stays ' + out());
-        },
-        pause: () => stop(it, 'paused'),
-        cancel: () => stop(it, 'cancelled')
-      };
-    });
-
-    const stopped = stoppedItems.map((it, i) => ({
-      who: it.who, amount: money(it.amount), status: it.ended === 'paused' ? 'Paused' : 'Cancelled',
-      meta: it.cat + ' · was on the ' + dayText(it.day) + (it.endedOn ? ' · since ' + it.endedOn : ''),
-      border: i === 0 ? '0' : '1px solid #EFEDF3',
-      resumeLabel: it.ended === 'paused' ? 'Resume' : 'Start again',
-      resume: () => {
-        BE.update('monthly', it.id, { active: true, ended: null, endedOn: null });
-        this.notify(it.who + ' is back' + (counts(Object.assign({}, it, { active: true })) ? ' · +' + money(it.amount) + ' to Going out (now ' + out() + ')' : ''));
-      }
-    }));
-
-    // Calendar strip
-    const days = [];
-    for (let d = 1; d <= 31; d++) {
-      const paid = allItems.some((it) => it.paidDay === d);
-      const due = items.some((it) => counts(it) && it.day === d);
-      days.push({ n: d, bg: paid ? '#E0752D' : (due ? '#F4C3A1' : (d < TODAY ? '#F7F6F9' : '#EFEDF3')), fg: paid ? '#FFFFFF' : (due ? '#18161F' : '#5F5B68'), ring: d === TODAY ? 'inset 0 0 0 2px #18161F' : 'none' });
-    }
-    const upItems = items.filter(counts);
-    const upcoming = upItems.map((it) => ({ dow: dow(it.day), day: it.day, who: it.who, amount: money(it.amount), card: it.card, bg: it.day === TODAY + 1 ? '#FFF0B8' : '#FDE6D6' }));
-
-    // Add form
-    const f = st.f;
-    const amt = BE.num(f.amount), day = parseInt(f.day, 10);
-    const thisMonth = day > TODAY;
-    const effect = !(amt > 0) ? 'Add an amount and a day to see how it counts.' : (thisMonth ? money(amt) + ' joins Going out as still to pay for Oct ' + day + ', then every month after. Going out becomes ' + money(BE.totals().out + amt, 'USD', { whole: true }) + '.' : 'The ' + dayText(day) + ' has passed this month, so the first one is Nov ' + day + '. October’s numbers stay the same.');
-    const setF = (k) => (e) => this.setState({ f: Object.assign({}, f, { [k]: e.target.value }), errors: [] });
-    const saveAdd = () => {
-      const errs = [];
-      if (!f.name.trim()) errs.push('Give it a name, like “Office cleaning”.');
-      if (!(amt > 0)) errs.push('Add an amount above $0.');
-      if (errs.length) { this.setState({ errors: errs }); return; }
-      const v = BE.vendorFor(f.name.trim());
-      BE.add('monthly', { id: BE.id('mo'), who: f.name.trim(), vendor: v ? v.id : '', cat: f.cat, day: day, card: f.card, amount: Math.round(amt * 100) / 100, paidDay: 0, start: thisMonth ? 'Oct' : 'Nov', active: true }, { end: true });
-      this.setState({ addOpen: false, f: { name: '', amount: '', day: '15', cat: 'Cleaning & upkeep', card: 'Amex ••1009' }, errors: [] });
-      this.notify(f.name.trim() + ' added · ' + money(amt) + ' every month on the ' + dayText(day) + (thisMonth ? ' · +' + money(amt) + ' to Going out (now ' + out() + ')' : ''));
-    };
-    const DAYS = [1, 5, 10, 15, 20, 25, 28, 31];
-
-    // Nudges
-    const dbx = items.filter((it) => it.unused)[0] || allItems.filter((it) => it.unused && it.unusedSeen)[0];
-    const db = dbx ? {
-      ask: dbx.active !== false && !dbx.unusedSeen,
-      done: !!dbx.unusedSeen,
-      title: dbx.who + ' looks unused',
-      text: dbx.unused + '. It costs ' + money(dbx.amount) + ' a month (' + money(dbx.amount * 12) + ' a year) and renews Oct ' + dbx.day + '.',
-      cancelLabel: 'Cancel it · −' + money(dbx.amount),
-      doneText: dbx.unusedSeen === 'keep' ? 'Kept ' + dbx.who + '. We won’t ask about it again for six months.' : (dbx.unusedSeen === 'remind' ? 'We’ll remind you on Oct 18, two days before ' + dbx.who + ' renews.' : 'Cancelled ' + dbx.who + '. ' + money(dbx.amount) + ' a month off Going out. Cancel it with ' + dbx.who + ' too, so the charge stops.'),
-      keep: () => { BE.update('monthly', dbx.id, { unusedSeen: 'keep' }); this.notify('Keeping ' + dbx.who); },
-      remind: () => { BE.update('monthly', dbx.id, { unusedSeen: 'remind' }); this.notify('Reminder set for Oct 18'); },
-      cancel: () => {
-        const was = counts(dbx);
-        BE.update('monthly', dbx.id, { active: false, ended: 'cancelled', endedOn: BE.today, unusedSeen: 'cancelled' });
-        BE.log('Cancelled ' + dbx.who + ' · ' + money(dbx.amount) + ' a month');
-        this.notify('Cancelled ' + dbx.who + (was ? ' · −' + money(dbx.amount) + ' off Going out (now ' + out() + ')' : ''));
-      },
-      undo: () => {
-        const back = dbx.unusedSeen === 'cancelled';
-        BE.update('monthly', dbx.id, { unusedSeen: null, active: true, ended: null, endedOn: null });
-        this.notify(back ? dbx.who + ' is back · Going out is ' + out() : 'Undone');
-      }
-    } : { ask: false, done: false };
-    const flags = BE.get('spendFlags') || {};
-    const ch = BE.find('charges', 'ch-4');
-    const cvAsk = flags.canva === 'ask' && !allItems.some((it) => /canva/i.test(it.who));
-    const cvYes = () => {
-      BE.add('monthly', { id: 'canva', who: 'Canva Pro', vendor: '', cat: 'Software', day: 1, card: 'Amex ••1009', amount: 14.99, paidDay: 1, start: 'Oct', active: true }, { end: true });
-      let sorted = false;
-      if (BE.find('charges', 'ch-4')) {
-        BE.change((s) => {
-          const c = s.charges.filter((x) => x.id === 'ch-4')[0];
-          s.charges = s.charges.filter((x) => x.id !== 'ch-4');
-          s.expenses = [{ id: BE.id('exp'), who: 'Canva', cat: 'Software', how: c.how, date: c.date, amount: c.amount, inMonth: true, receipt: false, note: 'Every month · Canva Pro', split: null, kind: 'business', raw: c.raw, isNew: true }].concat(s.expenses || []);
-          BE._log(s, 'Sorted CANVA PRO as Software and started tracking it every month');
-        });
-        sorted = true;
-      }
-      BE.patch('spendFlags', { canva: 'yes' });
-      this.notify('Canva Pro added · $14.99 every month on the 1st' + (sorted ? ' · its Oct 1 charge sorted as Software, +$14.99 to Going out (now ' + out() + ')' : ''));
-    };
-
-    const has = allItems.length > 0;
-    return {
-      has, none: !has,
-      intro: has ? 'Rent, software, insurance: the costs that come back every month. We spot them on your card and bank, and count the ones not charged yet in Going out as still to pay, so Yours to keep already allows for them.' : 'Costs that come back every month, like rent or software. Add one and it counts in Going out before it’s charged, so Yours to keep already allows for it.',
-      t, rows, rowCount: rows.length, noRows: rows.length === 0, days, upcoming, noUpcoming: upcoming.length === 0,
-      upCountText: upItems.length ? upItems.length + (upItems.length === 1 ? ' more charge · ' : ' more charges · ') + t.due + ' still to pay' : 'All paid for October',
-      stopped, hasStopped: stopped.length > 0,
-      addOpen: st.addOpen,
-      openAdd: () => this.setState({ addOpen: !st.addOpen, errors: [] }),
-      closeAdd: () => this.setState({ addOpen: false, errors: [] }),
-      dayOpts: DAYS.map((d) => ({ v: String(d), label: d === 31 ? 'Last day' : dayText(d) })),
-      f: { name: f.name, amount: f.amount, day: f.day, cat: f.cat, card: f.card, effect, saveLabel: amt > 0 ? 'Add ' + money(amt) + ' a month' : 'Add it' },
-      setName: setF('name'), setAmount: setF('amount'), setDay: setF('day'), setCat: setF('cat'), setCard: setF('card'),
-      saveAdd, errors: st.errors, hasErrors: st.errors.length > 0,
-      db, hasNudges: !!(db.ask || db.done || cvAsk),
-      cvAsk, cvText: '$14.99 on Amex ••1009 on Sep 1 and Oct 1. Track it here so next month’s is expected?' + (ch ? ' Its Oct 1 charge isn’t sorted yet; tracking sorts it as Software.' : ''),
-      cvYes,
-      cvNo: () => { BE.patch('spendFlags', { canva: 'no' }); this.notify('Got it. We won’t treat Canva as monthly'); },
-      toast: st.toast
-    };
-  }
-}
-</script>
+@@SCRIPT@@
 </body>
 </html>
