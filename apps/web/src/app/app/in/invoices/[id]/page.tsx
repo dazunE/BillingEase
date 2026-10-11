@@ -35,7 +35,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
   const paidReceipts = inv.receipts.filter((r) => !r.voided);
   const pdf = `/app/in/invoices/${inv.id}/pdf`;
   const reminderDefault = [
-    `Hello ${inv.customer.name.split(/\s+/)[0]},`, "",
+    "Hello,", "",
     `A friendly reminder that invoice ${inv.number} ${inv.dueDate < now ? "was" : "is"} due on ${formatDate(inv.dueDate, { year: true })}, and ${fmt2(inv.open, cur)} is still to pay.`,
     ...(b.paymentDetails ? ["", `How to pay: ${b.paymentDetails}`] : []), "",
     "If you've already paid, thank you, and please ignore this.", "", b.name,

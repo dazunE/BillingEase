@@ -80,7 +80,7 @@ export async function quoteRoutes(app: FastifyInstance) {
       let emailId: string | null = null;
       if (body.email && c.email) {
         const text = [
-          `Hello ${(c.contactName ?? c.name).split(/\s+/)[0]},`, "",
+          c.contactName ? `Hello ${c.contactName.split(/\s+/)[0]},` : "Hello,", "",
           body.message?.trim() || `Here is quote ${number} for ${money(b, q.total)}. It's valid until ${formatDate(q.expiryDate, { year: true })}. The PDF is attached; just reply to say yes.`,
           "", "Thank you,", b.name,
         ].join("\n");

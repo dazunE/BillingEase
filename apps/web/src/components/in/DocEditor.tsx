@@ -7,13 +7,15 @@ import { useActionState, useMemo, useState } from "react";
 import { Button, Field, ICONS, Icon, Input, Select, Textarea, cx } from "@/components/ui";
 import type { FormState } from "@/lib/form";
 import { DocPreview, type PreviewData } from "./DocPreview";
+import { blankLine, lineFromItem, qtyMilli, type LineState } from "./lines";
+
+export type { LineState };
 
 export type EditorBusiness = {
   country: CountryCode; currency: Currency; name: string; vatRegistered: boolean; ssclRegistered: boolean; termsDays: number;
   address: string; email: string | null; phone: string | null; taxId: string | null; vatNumber: string | null; paymentDetails: string | null; invoiceNote: string | null;
 };
 export type EditorCustomer = { id: string; name: string; email: string | null; address: string | null; taxId: string | null; vatNumber: string | null };
-export type LineState = { key: string; itemId: string | null; description: string; qty: string; price: string; discount: string; vatRateId: string | null; sscl: boolean };
 export type EditorInitial = {
   id?: string;
   customerId?: string;
@@ -51,25 +53,6 @@ export type EditorPayload = {
   endDate: string;
   recurMode: string;
 };
-
-let k = 0;
-const key = () => `l${Date.now().toString(36)}${k++}`;
-const decimal = (minor: number) => (minor / 100).toFixed(2);
-
-export function lineFromItem(i: Item): LineState {
-  return { key: key(), itemId: i.id, description: i.name, qty: "1", price: decimal(i.unitPrice), discount: "", vatRateId: i.vatRateId, sscl: i.sscl };
-}
-export function blankLine(defaultVat: string | null): LineState {
-  return { key: key(), itemId: null, description: "", qty: "1", price: "", discount: "", vatRateId: defaultVat, sscl: true };
-}
-export function lineFromStored(l: { itemId?: string | null; description: string; quantityMilli: number; unitPrice: number; discount?: number; vatRateId?: string | null; sscl?: boolean }): LineState {
-  return { key: key(), itemId: l.itemId ?? null, description: l.description, qty: String(l.quantityMilli / 1000), price: decimal(l.unitPrice), discount: l.discount ? decimal(l.discount) : "", vatRateId: l.vatRateId ?? null, sscl: l.sscl !== false };
-}
-
-export function qtyMilli(s: string) {
-  const n = Number(s.replace(/,/g, "").trim());
-  return Number.isFinite(n) && n > 0 ? Math.round(n * 1000) : 0;
-}
 
 const TERMS = [0, 7, 14, 30, 60];
 
@@ -179,7 +162,7 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
           )}
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Customer" error={e.customerId}>
-              <Select value={customerId} onChange={(ev) => setCustomerId(ev.target.value)}>
+              <Select aria-label="Customer" value={customerId} onChange={(ev) => setCustomerId(ev.target.value)}>
                 <option value="">Choose a customer</option>
                 {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 <option value="__new">+ Add a new customer</option>

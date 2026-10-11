@@ -204,7 +204,7 @@ export function storedLines(lines: Pick<LineDb, "itemId" | "description" | "quan
 }
 
 function greeting(c: CustomerDb) {
-  return `Hello ${(c.contactName ?? c.name).split(/\s+/)[0]},`;
+  return c.contactName ? `Hello ${c.contactName.split(/\s+/)[0]},` : "Hello,";
 }
 
 export function invoiceEmail(b: BusinessRow, c: CustomerDb, inv: { number: string; total: number; dueDate: string; title: string }, message?: string | null) {
