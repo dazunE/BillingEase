@@ -188,7 +188,7 @@ class Component extends DCLogic {
         const payLive = hm && hm.hasPayroll ? (hm.run ? ['October · run by ' + hm.payDue, 'attn'] : hm.paidRun ? ['October paid', 'good'] : [plural(hm.people, 'person', 'people'), 'plain']) : null;
         tools = [
           tool('TaxPeriods.dc.html', 'Tax periods', 'VAT and SSCL, month by month', I.percent, taxLive, prof.vatRegistered ? 'Your first period shows here' : 'If you register for VAT'),
-          tool('SpendPayroll.dc.html', 'Payroll', 'Payslips, EPF, ETF and APIT', I.team, payLive, 'Add employees when you hire'),
+          tool('SpendPayroll.dc.html', 'Payroll', 'Payroll, EPF, ETF and APIT', I.team, payLive, 'Add employees when you hire'),
           reports, cats, bankT
         ];
       } else {
@@ -196,6 +196,11 @@ class Component extends DCLogic {
         const qLive = hq && !hq.empty ? (hq.filed ? [hq.last.label + ' sent', 'good'] : hq.left ? [hq.last.label + ' · ' + plural(hq.left, 'check') + ' left', 'attn'] : [hq.last.label + ' ready to send', 'good']) : null;
         tools = [tool('Quarters.dc.html', 'Quarters', 'Making Tax Digital updates', I.cal, qLive, 'Q3 runs 6 Oct – 5 Jan')];
         if (prof.vatRegistered) tools.push(tool('TaxPeriods.dc.html', 'VAT summary', 'Per VAT quarter, for your accountant', I.percent, null, 'Totals for each VAT quarter'));
+        const ukRuns = BE.all('payroll').filter((r) => r.kind !== 'due');
+        const ukDue = BE.all('payroll').filter((r) => r.kind === 'due' && r.status !== 'paid');
+        if (BE.all('employees').length || ukRuns.length) tools.push(tool('SpendPayroll.dc.html', 'Payroll records', 'Pay runs from your payroll software', I.team,
+          ukDue.length ? [W(ukDue.reduce((a, d) => a + (Number(d.amount) || 0), 0)) + ' to pay by ' + ukDue[0].due, 'attn'] : (ukRuns.length ? [plural(ukRuns.length, 'pay run') + ' recorded', 'plain'] : null),
+          'Enter runs from your software'));
         tools = tools.concat([reports, cats, bankT]);
       }
     }
