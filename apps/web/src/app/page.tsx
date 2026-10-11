@@ -8,7 +8,7 @@ import { BankScene, BillScene, KeepScene, MayaAtDesk, PriceTag, ThinkingPerson }
 import { NeedsYouDemo } from "@/components/landing/NeedsYouDemo";
 import { SampleProvider } from "@/components/landing/SampleProvider";
 import { Logo, BrandMark } from "@/components/ui";
-import { currentUser } from "@/lib/auth";
+import { currentMe } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: { absolute: "BillingEase · Your whole business in three numbers" },
@@ -37,7 +37,7 @@ function Tick() {
 }
 
 export default async function Landing() {
-  const user = await currentUser();
+  const user = await currentMe();
 
   return (
     <div className="min-h-screen overflow-x-clip bg-bg text-ink [scroll-behavior:smooth]">
@@ -61,10 +61,10 @@ export default async function Landing() {
               </Link>
             ) : (
               <>
-                <Link href="/login" className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-[clamp(8px,1vw,14px)] text-[15px] font-semibold hover:bg-ink/[0.05]">
+                <Link href="/sign-in" className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-[clamp(8px,1vw,14px)] text-[15px] font-semibold hover:bg-ink/[0.05]">
                   Sign in
                 </Link>
-                <Link href="/signup" className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full bg-ink px-[clamp(14px,1.6vw,20px)] text-[15px] font-semibold text-white hover:bg-black">
+                <Link href="/sign-up" className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full bg-ink px-[clamp(14px,1.6vw,20px)] text-[15px] font-semibold text-white hover:bg-black">
                   Try it free
                 </Link>
               </>
@@ -89,7 +89,7 @@ export default async function Landing() {
             <div className="flex flex-col gap-[18px]">
               <HeroEquation />
               <div className="flex flex-wrap items-center justify-center gap-x-[18px] gap-y-2.5 pt-2.5">
-                <Link href="/signup" className="inline-flex min-h-14 items-center gap-2.5 rounded-full bg-violet px-[30px] text-[17px] font-bold hover:bg-[#a98ffb]">
+                <Link href="/sign-up" className="inline-flex min-h-14 items-center gap-2.5 rounded-full bg-violet px-[30px] text-[17px] font-bold hover:bg-[#a98ffb]">
                   See your three numbers
                   <Arrow />
                 </Link>
@@ -159,7 +159,7 @@ export default async function Landing() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/signup" className="mt-auto inline-flex min-h-12 items-center justify-center rounded-full bg-ink/[0.07] px-[22px] text-[15px] font-semibold hover:bg-ink/[0.11]">
+                  <Link href="/sign-up" className="mt-auto inline-flex min-h-12 items-center justify-center rounded-full bg-ink/[0.07] px-[22px] text-[15px] font-semibold hover:bg-ink/[0.11]">
                     Start free
                   </Link>
                 </div>
@@ -181,7 +181,7 @@ export default async function Landing() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/signup" className="mt-auto inline-flex min-h-12 items-center justify-center rounded-full bg-violet px-[22px] text-[15px] font-semibold hover:bg-[#a98ffb]">
+                  <Link href="/sign-up" className="mt-auto inline-flex min-h-12 items-center justify-center rounded-full bg-violet px-[22px] text-[15px] font-semibold hover:bg-[#a98ffb]">
                     Start with Pro
                   </Link>
                 </div>
@@ -230,10 +230,10 @@ export default async function Landing() {
             </Link>
           ) : (
             <>
-              <Link href="/login" className="inline-flex min-h-9 items-center px-2 font-semibold hover:text-ink">
+              <Link href="/sign-in" className="inline-flex min-h-9 items-center px-2 font-semibold hover:text-ink">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex min-h-9 items-center px-2 font-semibold hover:text-ink">
+              <Link href="/sign-up" className="inline-flex min-h-9 items-center px-2 font-semibold hover:text-ink">
                 Create an account
               </Link>
             </>

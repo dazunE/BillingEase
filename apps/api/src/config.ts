@@ -33,7 +33,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       postmarkToken: env.POSTMARK_TOKEN ?? null,
     },
     storage: { dir: env.STORAGE_DIR ?? ".data/files" },
-    ask: { apiKey: env.ANTHROPIC_API_KEY ?? null, model: env.ASK_MODEL ?? "claude-sonnet-5-5" },
+    ask: { apiKey: env.ANTHROPIC_API_KEY ?? null, model: env.ASK_MODEL ?? "claude-opus-5-5" },
     sessionDays: Number(env.SESSION_DAYS ?? 30),
   };
 }

@@ -1,0 +1,66 @@
+# BillingEase architecture
+
+Manual-entry bookkeeping, invoicing and payroll for two countries: the **United Kingdom** (sole traders and landlords, MTD quarters, VAT) and **Sri Lanka** (Tax Invoices with VAT and SSCL, full payroll). A business has one country, fixed at sign-up.
+
+## Shape
+
+```
+apps/web            Next.js 16 – pages and server actions only. Never touches the database.
+apps/api            Fastify 5 – every read and write, auth, PDFs, email, files, Ask, background jobs.
+packages/core       Pure TypeScript: money, dates, the country rules, invoice tax, ledger postings.
+packages/db         Drizzle schema, migrations, database client, ledger posting.
+packages/contracts  zod schemas for every endpoint: Fastify validates with them, the web gets types.
+prototype/          The clickable prototype (the design reference for every screen).
+```
+
+The browser only talks to Next.js. Next.js server components and server actions call the API with the user's session token (`Authorization: Bearer`) and business (`X-Business-Id`), plus `X-Internal-Key` in production. The API can therefore stay on a private network.
+
+## Rules that hold everywhere
+
+- **Money** is an integer number of minor units (pence, cents) in TypeScript and `bigint` in Postgres. Rates are basis points. Never floats.
+- **Dates** are ISO `YYYY-MM-DD` strings. `today()` from core reads `BILLINGEASE_TODAY` when set (tests, demos).
+- **Country rules** live only in `packages/core/src/countries`. Screens and routes ask `rulesFor(country)`; nothing hard-codes a rate. Every figure is marked `verified: false` until checked against gov.uk / ird.gov.lk.
+- **The ledger** is double entry and append-only. Every money movement is a `postEntry` with lines built by `posting.*` in core. Corrections post a reversal (`reverseEntry`) and a new entry. The database enforces: entries balance, lines can't be edited or deleted, accounts belong to the business, and nothing is posted into a filed (locked) period.
+- **Tenancy**: every table has `business_id`. Every query in a handler filters by `ctx.business.id`. Fetching a row by id without that filter is a bug.
+- **Contracts first**: add the endpoint to `packages/contracts`, then `route(app, endpoint, handler)` in the API. Responses are parsed through the contract, so extra columns never leak.
+- **Errors** come back as `{ error: { code, message, fields? } }` in plain words a user can act on.
+- **Activity**: anything a person would want to see later ("Invoice SDS-0220 sent to Kandyan Spice Co") is logged with `logActivity`.
+
+## The three numbers
+
+Coming in − Going out = Yours to keep, for the period on screen (UK: this quarter or tax year; Sri Lanka: this month or year of assessment; `periodsFor` in core).
+
+- **Coming in** = money received in the period (receipts) + what's still owed on invoices issued in the period. Late = owed and past due, from any period.
+- **Going out** = money paid in the period (the business share of expenses, and bill payments) + what's still owed on bills dated in the period.
+- **Yours to keep** = Coming in − Going out − the share of the year's tax estimate (`rules.estimate`) for the period.
+
+`apps/api/src/services/summary.ts` computes these; Home, Coming in and Going out all use it so the numbers agree.
+
+## Ledger accounts
+
+Fixed codes from `chartOfAccounts` in core: 1000 bank, 1010 cash, 1100 receivable, 1200 VAT to reclaim, 2000 bills owed, 2050 card, 2200 VAT owed, 2210 SSCL owed (Sri Lanka), 3000 money put in, 3100 drawings, 4000 sales, 4100 other income, 4500 rent (UK), 4900 / 6990 to sort, and one expense account per country category (6xxx business, 7xxx UK property).
+
+| Event | Posting (core `posting.*`) |
+|---|---|
+| Invoice sent | Dr 1100 total · Cr 4000 net · Cr 2200 VAT · Cr 2210 SSCL |
+| Credit note | the reverse of an invoice |
+| Money received | Dr bank/cash · Cr 1100 |
+| Expense paid | Dr category (business share, net of reclaimable VAT) · Dr 1200 VAT · Dr 3100 personal share · Cr bank/cash/card |
+| Bill received | Dr categories · Dr 1200 VAT · Cr 2000 |
+| Bill paid | Dr 2000 · Cr bank/cash/card |
+
+A draft invoice posts nothing. Voiding a sent invoice reverses its entry.
+
+## Background jobs
+
+`apps/api/src/jobs.ts` runs jobs on timers in the API process: email delivery, repeating invoices. Each job claims rows in the database, so it is safe to run on more than one instance.
+
+## Email, files, Ask
+
+- **Email** is queued in `outbox_emails` inside the transaction that caused it and delivered after commit. Without `POSTMARK_TOKEN` it is kept, never sent.
+- **Files** (attachments) go through the `Storage` interface: local disk now, S3-compatible later.
+- **Ask** calls the Claude API (`@anthropic-ai/sdk`) from the API with tools that read this business's books and a fixed list of official sources per country. Answers are labelled as AI and say to check with the accountant.
+
+## Running it
+
+See the root README. `npm install`, then `npm run dev` starts the API on :4000 and the web app on :3000 with an embedded database.

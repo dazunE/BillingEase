@@ -1,71 +1,68 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { auth } from "@billingease/contracts";
 import { redirect } from "next/navigation";
-import { z } from "zod";
-import { getDb } from "@/db/client";
-import { users } from "@/db/schema";
-import { endSession, hashPassword, startSession, verifyPassword } from "@/lib/auth";
+import { call } from "@/lib/api";
+import { failed, formValues, type FormState } from "@/lib/form";
+import { clearSession, setSession } from "@/lib/session";
 
-export type AuthState = { errors?: Record<string, string>; values?: Record<string, string> } | undefined;
+/** Only same-site paths, so a crafted link can't send people elsewhere after sign-in. */
+function safeNext(next: string | undefined, fallback: string) {
+  return next && next.startsWith("/") && !next.startsWith("//") ? next : fallback;
+}
 
-const signupSchema = z.object({
-  name: z.string().trim().min(1, "Tell us your name."),
-  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
-  password: z.string().min(12, "Use at least 12 characters."),
-  terms: z.literal("on", { message: "Please agree to the terms to continue." }),
-});
-
-function fieldErrors(error: z.ZodError) {
-  const out: Record<string, string> = {};
-  for (const issue of error.issues) {
-    const key = String(issue.path[0] ?? "form");
-    out[key] ??= issue.message;
+export async function signUp(_: FormState, fd: FormData): Promise<FormState> {
+  const v = formValues(fd);
+  if (v.country !== "uk" && v.country !== "lk") return { errors: { country: "Pick where your business is" }, values: v };
+  if (v.terms !== "on") return { errors: { terms: "Please agree to the terms to continue" }, values: v };
+  try {
+    const s = await call(auth.signUp, { body: { name: v.name ?? "", email: v.email ?? "", password: v.password ?? "" }, token: null });
+    await setSession(s.token, s.expiresAt);
+  } catch (err) {
+    return failed(err, { ...v, password: "" });
   }
-  return out;
+  redirect(`/setup?country=${v.country}`);
 }
 
-export async function signup(_prev: AuthState, formData: FormData): Promise<AuthState> {
-  const raw = Object.fromEntries(formData) as Record<string, string>;
-  const parsed = signupSchema.safeParse(raw);
-  const values = { name: raw.name ?? "", email: raw.email ?? "" };
-  if (!parsed.success) return { errors: fieldErrors(parsed.error), values };
-
-  const db = await getDb();
-  const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, parsed.data.email));
-  if (existing) return { errors: { email: "There's already an account with this email. Sign in instead." }, values };
-
-  const [user] = await db
-    .insert(users)
-    .values({ name: parsed.data.name, email: parsed.data.email, passwordHash: await hashPassword(parsed.data.password) })
-    .returning({ id: users.id });
-  await startSession(user.id);
-  redirect("/onboarding");
-}
-
-const loginSchema = z.object({
-  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
-  password: z.string().min(1, "Enter your password."),
-});
-
-export async function login(_prev: AuthState, formData: FormData): Promise<AuthState> {
-  const raw = Object.fromEntries(formData) as Record<string, string>;
-  const parsed = loginSchema.safeParse(raw);
-  const values = { email: raw.email ?? "" };
-  if (!parsed.success) return { errors: fieldErrors(parsed.error), values };
-
-  const db = await getDb();
-  const [user] = await db.select().from(users).where(eq(users.email, parsed.data.email));
-  // Same message either way, so the form doesn't reveal which emails have accounts.
-  if (!user || !(await verifyPassword(parsed.data.password, user.passwordHash))) {
-    return { errors: { form: "That email and password don't match." }, values };
+export async function signIn(_: FormState, fd: FormData): Promise<FormState> {
+  const v = formValues(fd);
+  try {
+    const s = await call(auth.signIn, { body: { email: v.email ?? "", password: v.password ?? "" }, token: null });
+    await setSession(s.token, s.expiresAt);
+  } catch (err) {
+    return failed(err, { email: v.email ?? "" });
   }
-  await startSession(user.id);
-  const next = raw.next && raw.next.startsWith("/app") ? raw.next : "/app";
-  redirect(next);
+  redirect(safeNext(v.next, "/app"));
 }
 
-export async function logout() {
-  await endSession();
-  redirect("/login");
+export async function forgotPassword(_: FormState, fd: FormData): Promise<FormState> {
+  const v = formValues(fd);
+  try {
+    await call(auth.forgotPassword, { body: { email: v.email ?? "" }, token: null });
+  } catch (err) {
+    return failed(err, v);
+  }
+  return { ok: true, message: "If there's an account with that email, a link to reset the password is on its way. It works for one hour.", values: v };
+}
+
+export async function resetPassword(_: FormState, fd: FormData): Promise<FormState> {
+  const v = formValues(fd);
+  if ((v.password ?? "") !== (v.confirm ?? "")) return { errors: { confirm: "The two passwords don't match" }, values: { token: v.token ?? "" } };
+  try {
+    const s = await call(auth.resetPassword, { body: { token: v.token ?? "", password: v.password ?? "" }, token: null });
+    await setSession(s.token, s.expiresAt);
+  } catch (err) {
+    return failed(err, { token: v.token ?? "" });
+  }
+  redirect("/app");
+}
+
+export async function signOut() {
+  try {
+    await call(auth.signOut);
+  } catch {
+    // Signed out already; clear the cookie anyway.
+  }
+  await clearSession();
+  redirect("/sign-in");
 }
