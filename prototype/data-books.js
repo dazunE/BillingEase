@@ -385,7 +385,8 @@
   function gapsIn(list, from, to) {
     var end = to.getTime() > BE.todayDate.getTime() ? BE.todayDate : to;
     var days = {};
-    list.forEach(function (e) { if (!e.summary && e.biz !== 'prop') days[e.iso] = true; });
+    // Spending is the steady signal (most weeks have some); a fortnight with none usually means missing records.
+    list.forEach(function (e) { if (!e.summary && e.biz !== 'prop' && e.kind === 'out' && /expense|mileage|bill/.test(e.src)) days[e.iso] = true; });
     var keys = Object.keys(days).sort();
     if (!keys.length) return [];
     var out = [];
@@ -439,7 +440,7 @@
     if (!BE.is('uk')) return null;
     var q = quarterInfo(id);
     if (!q) return null;
-    return { id: id, label: q.label, income: q.income, expenses: q.expenses, profit: q.profit, uncategorised: q.sum.se.unsorted.length, gaps: q.gaps.filter(function (g) { return !g.ok; }).length, left: q.left, status: q.status, sent: q.sent, filed: q.filed, property: q.sum.prop };
+    return { id: id, label: q.label, income: q.income, expenses: q.sum.se.allowable, recorded: q.expenses, notAllowable: q.sum.se.notAllowable, profit: q.profit, checks: q.checks.map(function (c) { return { id: c.id, label: c.text, ok: c.ok, link: 'Quarters.dc.html#' + id }; }), uncategorised: q.sum.se.unsorted.length, gaps: q.gaps.filter(function (g) { return !g.ok; }).length, left: q.left, status: q.status, sent: q.sent, filed: q.filed, property: q.sum.prop };
   };
   BE.quarterTotals = BE.quarterSummary;
 
@@ -778,7 +779,7 @@
         var ps = Object.assign({}, s.periodState || {});
         ps[id] = Object.assign({}, ps[id] || {}, { sent: BE.today, by: (s.profile || {}).owner || '' });
         s.periodState = ps;
-        BE._log(s, 'Sent ' + q.label + ' (' + q.range + ') to ' + pr.short + ' · income ' + BE.money(q.income, null, { whole: true }) + ', expenses ' + BE.money(q.expenses, null, { whole: true }));
+        BE._log(s, 'Sent ' + q.label + ' (' + q.range + ') to ' + pr.short + ' · income ' + BE.money(q.income, null, { whole: true }) + ', allowable expenses ' + BE.money(q.sum.se.allowable, null, { whole: true }));
         BE._notify(s, q.label + ' sent to ' + pr.short, 'They file it by ' + q.due + '. It locks in your books once they mark it filed.', 'Quarters.dc.html#' + id);
       });
       return q;

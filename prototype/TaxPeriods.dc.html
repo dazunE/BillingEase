@@ -287,7 +287,7 @@ class Component extends DCLogic {
     const list = books.periods();
     const hash = BE.hash();
     const due = list.filter((x) => books.period(x.id).status === 'due')[0];
-    const sel = list.some((x) => x.id === hash) ? hash : (due ? due.id : (list[list.length - 1] || {}).id);
+    const sel = list.some((x) => x.id === hash) ? hash : list.some((x) => x.id === st.sel) ? st.sel : (due ? due.id : (list[list.length - 1] || {}).id);
     const p = books.period(sel);
     const STAT = { filed: ['Filed', 'good'], due: ['Ready to file', 'attn'], open: ['Open', 'plain'], upcoming: ['Not started', 'plain'] };
     const tiles = list.map((x) => {
@@ -336,7 +336,7 @@ class Component extends DCLogic {
       typeRef: (e) => this.setState({ ref: e.target.value }),
       doFile: () => {
         books.filePeriod(p.id, String(st.ref || '').trim());
-        this.setState({ ref: '' });
+        this.setState({ ref: '', sel: p.id });
         this.notify(nameShort + ' marked filed · ' + W(p.total) + ' to ' + (lk ? 'the IRD' : 'HMRC') + ' · the period is locked');
       },
       doReopen: () => { if (BE.reopenPeriod) BE.reopenPeriod(p.id, p.label); this.notify(nameShort + ' reopened by ' + prShort + ' · you can change it again'); },
