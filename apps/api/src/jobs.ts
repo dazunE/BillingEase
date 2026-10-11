@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { runDueRecurring } from "./services/recurring-run";
 
 /**
  * Background work, run in the API process on a timer. Each job is safe to run twice
@@ -9,6 +10,7 @@ export type Job = { name: string; everyMs: number; run: (app: FastifyInstance) =
 
 export const JOBS: Job[] = [
   { name: "deliver-email", everyMs: 30_000, run: (app) => app.be.services.email.deliver(app.be.db) },
+  { name: "repeating-invoices", everyMs: 10 * 60_000, run: (app) => runDueRecurring(app.be.db, app.be.services) },
 ];
 
 export function startJobs(app: FastifyInstance) {

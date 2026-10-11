@@ -1,4 +1,4 @@
-import { goingOut } from "@billingease/contracts";
+import { ExpenseBody, goingOut } from "@billingease/contracts";
 import { formatDate } from "@billingease/core";
 import type { Exec } from "@billingease/db";
 import { attachments, expenses } from "@billingease/db/schema";
@@ -14,7 +14,7 @@ import {
   supplierByName, supplierOf, type ExpenseRow,
 } from "./shared";
 
-type Body = z.output<typeof goingOut.createExpense.body>;
+type Body = z.output<typeof ExpenseBody>;
 
 /** Checks an expense against the business's country and settings, and works out its row. */
 export async function expenseValues(db: Exec, ctx: BizCtx, body: Body) {

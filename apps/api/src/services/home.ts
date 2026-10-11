@@ -47,7 +47,7 @@ export async function threeNumbers(db: Exec, b: BusinessRow, key: PeriodKey | un
 
   return {
     key: chosen.key,
-    period: { key: chosen.key, from: period.from, to: period.to, label: period.label, soFar },
+    period: { key: chosen.key, from: period.from, to: period.to, label: chosen.key === "year" && b.country === "lk" ? period.label.replace("Tax year", "Year of assessment") : period.label, soFar },
     options,
     comingIn: inn,
     goingOut: out,
