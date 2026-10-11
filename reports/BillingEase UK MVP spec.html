@@ -1,0 +1,353 @@
+<title>BillingEase UK MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a product spec. Contents rail beside one reading column; scope and screen tables run full column width and scroll on phones. */
+:root{
+  --ground:#F7F6F9;--paper:#FFFFFF;--ink:#18161F;--ink2:#47444F;--muted:#5F5B68;--line:#E2DFE8;--soft:#EFEDF3;
+  --violet:#B9A3FF;--accent:#6B4EE6;--wash:#EEE8FF;--orange:#B95618;--owash:#FDE6D6;--green:#2F5711;--gwash:#E2F6D5;--red:#A8200D;--rwash:#FBE3DF;
+  --display:Sora,"DM Sans",system-ui,sans-serif;--body:"DM Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#121017;--paper:#1B1922;--ink:#F3F1F7;--ink2:#CFCAD9;--muted:#A8A3B4;--line:#2E2B37;--soft:#24212C;--accent:#B9A3FF;--wash:#2A2440;--orange:#F0A06A;--owash:#3A2618;--green:#A6DB7E;--gwash:#1F2E16;--red:#F49A8B;--rwash:#3A1A15;color-scheme:dark}}
+:root[data-theme="dark"]{--ground:#121017;--paper:#1B1922;--ink:#F3F1F7;--ink2:#CFCAD9;--muted:#A8A3B4;--line:#2E2B37;--soft:#24212C;--accent:#B9A3FF;--wash:#2A2440;--orange:#F0A06A;--owash:#3A2618;--green:#A6DB7E;--gwash:#1F2E16;--red:#F49A8B;--rwash:#3A1A15;color-scheme:dark}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);margin:0}
+.page{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:40px 96px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;box-sizing:border-box}
+.rail{position:sticky;top:24px;align-self:start;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font:700 16px var(--display);letter-spacing:-.02em}
+.brand svg{width:28px;height:28px;flex:none}
+.rail ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.rail a{display:block;padding:7px 10px;border-radius:10px;color:var(--ink2);text-decoration:none;font-size:13.5px;line-height:1.35}
+.rail a:hover{background:var(--soft);color:var(--ink)}
+main{min-width:0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,4.6vw,50px)/1.04 var(--display);letter-spacing:-.035em;margin:10px 0 16px;text-wrap:balance;max-width:22ch}
+h2{font:700 clamp(22px,2.6vw,28px)/1.2 var(--display);letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance}
+h3{font:700 17px/1.3 var(--display);letter-spacing:-.01em;margin:22px 0 8px}
+p,li{font-size:16px;line-height:1.62;color:var(--ink2);max-width:72ch}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+strong{color:var(--ink)}
+section{padding-top:40px;margin-top:40px;border-top:1px solid var(--line);scroll-margin-top:16px}
+.lead{font-size:18px;color:var(--ink2);max-width:66ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.chip{display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border-radius:9999px;background:var(--paper);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink2)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.flow div{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.flow b{font:700 15px var(--display)}
+.flow span{font-size:14px;line-height:1.5;color:var(--ink2)}
+.tbl{overflow-x:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:16px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.45;min-width:620px}
+th{text-align:left;font:600 11.5px var(--body);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--soft);padding:10px 12px}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top;color:var(--ink2);font-variant-numeric:tabular-nums}
+td:first-child{color:var(--ink);font-weight:600}
+.tag{display:inline-block;padding:1px 9px;border-radius:9999px;font-size:12px;font-weight:700;white-space:nowrap}
+.keep{background:var(--gwash);color:var(--green)}
+.change{background:var(--wash);color:var(--accent)}
+.new{background:var(--owash);color:var(--orange)}
+.cut{background:var(--rwash);color:var(--red)}
+.note{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--violet);border-radius:12px;padding:14px 18px;margin:16px 0;max-width:72ch}
+.note p{margin:0}
+.warn{border-left-color:var(--orange)}
+.mock{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:18px;margin:16px 0;max-width:640px;display:flex;flex-direction:column;gap:10px}
+.mock .row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:14px}
+.mock .row b{font-weight:700;color:var(--ink)}
+.mock .cap{font:600 11.5px var(--body);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.timeline{display:flex;flex-direction:column;gap:0;margin:14px 0;max-width:760px}
+.timeline div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.timeline b{font:700 14px var(--display);color:var(--ink)}
+.timeline span{font-size:15px;line-height:1.55;color:var(--ink2)}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:900px){.page{grid-template-columns:1fr;gap:20px}.rail{position:static}.rail ol{display:none}.timeline div{grid-template-columns:1fr;gap:4px}}
+</style>
+
+<div class="page">
+<aside class="rail" aria-label="Contents">
+  <span class="brand"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#18161F"/><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"/><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"/><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"/></svg>BillingEase · UK</span>
+  <ol>
+    <li><a href="#role">1. Role in the TaxWise plan</a></li>
+    <li><a href="#scope">2. Scope at a glance</a></li>
+    <li><a href="#records">3. Records and HMRC categories</a></li>
+    <li><a href="#quarters">4. MTD quarters</a></li>
+    <li><a href="#landlords">5. Landlord mode</a></li>
+    <li><a href="#invoices">6. Invoices and VAT</a></li>
+    <li><a href="#estimate">7. Tax estimate</a></li>
+    <li><a href="#practice">8. Accountant link</a></li>
+    <li><a href="#payroll">9. Payroll records</a></li>
+    <li><a href="#ask">10. Ask (AI answers)</a></li>
+    <li><a href="#cut">11. What comes out</a></li>
+    <li><a href="#screens">12. Screen by screen</a></li>
+    <li><a href="#site">13. Marketing site</a></li>
+    <li><a href="#compliance">14. Data and compliance</a></li>
+    <li><a href="#timeline">15. Timeline</a></li>
+    <li><a href="#decisions">16. Open decisions</a></li>
+    <li><a href="#verify">17. Facts to verify</a></li>
+  </ol>
+</aside>
+
+<main>
+  <span class="eyebrow">Product spec · draft 1 · 11 Oct 2026</span>
+  <h1>BillingEase UK: the client app for MTD-ready practices</h1>
+  <p class="lead">A manual-entry bookkeeping, invoicing and payroll-records app for UK sole traders and landlords, sold mainly through accountants who use the TaxWise practitioner tool. Clients keep tidy, HMRC-categorised records every quarter. Practices see who is ready, chase what is missing, and file through their existing software. BillingEase never talks to HMRC in this version.</p>
+  <div class="chips"><span class="chip">Sole traders and landlords</span><span class="chip">Sold via practices</span><span class="chip">Manual entry</span><span class="chip">No HMRC connection</span><span class="chip">Payroll as records only</span><span class="chip">Launch with the April 2027 wave</span></div>
+
+  <section id="role">
+    <h2>1. Role in the TaxWise plan</h2>
+    <p>The UK research ranks a practice workbench first and an "AI plus accountant" full return third. Both need the same thing from the client: clean records, split into HMRC's categories, arriving every quarter instead of once a year. BillingEase is that client side.</p>
+    <div class="flow">
+      <div><b>Client · BillingEase</b><span>Records income and expenses, sends invoices, logs mileage, sees each quarter fill up and an estimate of the tax bill.</span></div>
+      <div><b>Practice · TaxWise workbench</b><span>Sees every client's quarter status, gaps and odd figures, asks for missing records, locks a quarter once it is filed.</span></div>
+      <div><b>Practice's filing software</b><span>IRIS, CCH, TaxCalc, BTC or similar submits the quarterly update and final declaration. BillingEase supplies the figures.</span></div>
+      <div><b>From April 2028</b><span>BillingEase files MTD updates itself if HMRC access is granted, and grows into the director-company bundle.</span></div>
+    </div>
+    <div class="note"><p><strong>Why no filing now:</strong> HMRC has paused new production access for MTD Income Tax software until at least early 2027, and filing for individuals is heading to free. Staying light-touch keeps the product out of tax-adviser registration (software acting as software is exempt) and lets it launch in months, not quarters.</p></div>
+  </section>
+
+  <section id="scope">
+    <h2>2. Scope at a glance</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Area</th><th>In the UK MVP</th><th>Later</th></tr></thead>
+      <tbody>
+        <tr><td>Income and expenses</td><td>Manual entry, HMRC categories, attachments (no automatic reading), mileage log, every-month templates</td><td>Bank feeds via an aggregator (TrueLayer, Yapily), receipt reading</td></tr>
+        <tr><td>MTD quarters</td><td>Quarter status, summary in MTD categories, export for the practice, lock after filing</td><td>Direct MTD submission (2028), obligations pulled from HMRC via the workbench</td></tr>
+        <tr><td>Landlords</td><td>Properties, per-property income and costs, joint ownership share, finance costs kept separate</td><td>Furnished holiday lets history, property CGT helper (your rank 7)</td></tr>
+        <tr><td>Invoices and quotes</td><td>GBP invoices and quotes, PDF and email, record payments yourself, repeat drafts, VAT fields for registered clients</td><td>Online card payments (Stripe), Peppol e-invoicing for April 2029</td></tr>
+        <tr><td>Bills</td><td>Enter bills, mark paid in full or part, supplier list</td><td>Paying bills from the app</td></tr>
+        <tr><td>Tax estimate</td><td>Income Tax and Class 4 NI estimate, payments on account dates, set-aside amount</td><td>Full return preparation with partner accountant (your rank 3)</td></tr>
+        <tr><td>Accountant link</td><td>Invite practice, practice view, requests and comments, period lock</td><td>Two-way sync with filing software</td></tr>
+        <tr><td>Payroll</td><td>Records only: employees, pay runs entered from payroll software, payroll costs posted to the books</td><td>RTI-recognised payroll in the 2028 company bundle, if pursued</td></tr>
+        <tr><td>Ask</td><td>Grounded answers from the TaxWise AI engine, citing HMRC manuals and legislation</td><td>Answers that read the user's own figures</td></tr>
+        <tr><td>Companies</td><td>Not in scope</td><td>Accounts, CT600, iXBRL, director's loan tracker for April 2028</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="records">
+    <h2>3. Records and HMRC categories</h2>
+    <p>Every expense goes into a category that maps one-to-one to a box on the self-employment pages (SA103F) and the MTD quarterly update, so the quarter totals need no reworking. People see plain names; the HMRC box name sits underneath.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>What the user sees</th><th>HMRC category</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Stock and materials you resell</td><td>Cost of goods bought for resale or goods used</td><td></td></tr>
+        <tr><td>Subcontractors (CIS)</td><td>Construction industry: payments to subcontractors</td><td>Shown only for construction trades</td></tr>
+        <tr><td>Staff costs</td><td>Wages, salaries and other staff costs</td><td>Fed by payroll records</td></tr>
+        <tr><td>Car, van and travel</td><td>Car, van and travel expenses</td><td>Mileage log feeds this at the simplified rates</td></tr>
+        <tr><td>Premises</td><td>Rent, rates, power and insurance costs</td><td>Plus a working-from-home flat rate option</td></tr>
+        <tr><td>Repairs</td><td>Repairs and maintenance of property and equipment</td><td></td></tr>
+        <tr><td>Phone, internet and office</td><td>Phone, fax, stationery and other office costs</td><td></td></tr>
+        <tr><td>Advertising</td><td>Advertising and business entertainment costs</td><td>Entertaining is flagged as not allowable</td></tr>
+        <tr><td>Loan interest</td><td>Interest on bank and other loans</td><td></td></tr>
+        <tr><td>Bank and card charges</td><td>Bank, credit card and other financial charges</td><td></td></tr>
+        <tr><td>Bad debts</td><td>Irrecoverable debts written off</td><td>Writing off an invoice posts here</td></tr>
+        <tr><td>Accountant and legal fees</td><td>Accountancy, legal and other professional fees</td><td></td></tr>
+        <tr><td>Equipment (capital)</td><td>Depreciation and loss or profit on sale (not allowable)</td><td>Capital items listed for the practice to claim allowances</td></tr>
+        <tr><td>Other</td><td>Other business expenses</td><td></td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li><strong>Cash basis by default</strong> for sole traders (the default since 2024/25), with accruals available. The choice is shown on Home and in every export.</li>
+      <li><strong>Private use split:</strong> any expense can carry a business percentage (for example 60% of a phone bill); only the business part reaches the quarter.</li>
+      <li><strong>Allowable or not:</strong> a small badge marks costs HMRC does not allow (entertaining, fines, the capital item itself), so the estimate stays honest.</li>
+      <li><strong>Consolidated expenses:</strong> users under the VAT registration threshold can send one expenses total; BillingEase still keeps the detail.</li>
+      <li><strong>Mileage log:</strong> trips with date, purpose and miles, valued at the simplified rates (45p for the first 10,000 business miles, then 25p for cars and vans).</li>
+    </ul>
+  </section>
+
+  <section id="quarters">
+    <h2>4. MTD quarters</h2>
+    <p>The quarter becomes the product's rhythm. Home shows the current quarter as a card the way it now shows "Coming in − Going out = Yours to keep".</p>
+    <div class="mock" aria-label="Example quarter card">
+      <span class="cap">Example · Q2 2026/27 · 6 Jul to 5 Oct</span>
+      <div class="row"><span>Income recorded</span><b>£18,420</b></div>
+      <div class="row"><span>Expenses recorded</span><b>£4,915</b></div>
+      <div class="row"><span>Needs attention</span><b>3 expenses without a category · no records for 12–25 Sep</b></div>
+      <div class="row"><span>Your accountant files by</span><b>7 Nov 2026</b></div>
+    </div>
+    <ul>
+      <li>Standard periods (6 Apr–5 Jul, 6 Jul–5 Oct, 6 Oct–5 Jan, 6 Jan–5 Apr) or calendar quarters, chosen in setup. Updates are due by the 7th of the month after each quarter; the final declaration by 31 January after the tax year.</li>
+      <li><strong>Readiness checks:</strong> uncategorised items, weeks with no records, income without an invoice or note, numbers far from the same quarter last year.</li>
+      <li><strong>Quarter summary:</strong> totals by MTD category for self-employment and property, with drill-down to each entry.</li>
+      <li><strong>Send to accountant:</strong> marks the quarter ready, notifies the practice and produces a CSV in the category layout. Agree the exact columns with two or three partner practices so it pastes into their filing software.</li>
+      <li><strong>Lock:</strong> once the practice records the quarter as filed, entries in it lock. Later corrections go into the next quarter or the final declaration, which is how MTD treats them.</li>
+    </ul>
+  </section>
+
+  <section id="landlords">
+    <h2>5. Landlord mode</h2>
+    <p>A large share of the April 2027 and 2028 waves are landlords. Setup asks "self-employed, landlord, or both"; landlords get Properties in place of Customers as their main list.</p>
+    <ul>
+      <li><strong>Properties:</strong> address, ownership share, start date. Rent and costs are recorded against a property.</li>
+      <li><strong>Joint ownership:</strong> each owner reports their share; BillingEase applies the share to every figure in the quarter.</li>
+      <li><strong>Finance costs kept apart:</strong> residential mortgage interest is not deducted from profit but gives a basic-rate tax reduction, so it is collected separately and shown that way in the estimate.</li>
+      <li><strong>Property categories:</strong> premises running costs; repairs and maintenance; residential finance costs; other finance costs; legal and professional fees; services provided; travel; other allowable costs.</li>
+      <li><strong>Allowances:</strong> the £1,000 property allowance as an alternative to actual costs, offered when it is better.</li>
+      <li><strong>Rent roll:</strong> expected rent per month with a simple "received / not yet" tick, so missing rent shows up before the quarter closes.</li>
+    </ul>
+  </section>
+
+  <section id="invoices">
+    <h2>6. Invoices, quotes and VAT</h2>
+    <ul>
+      <li>Everything the current design has for invoices and quotes stays, in pounds: one-sentence composer, full editor, PDF, email, repeating drafts, money back (credit notes).</li>
+      <li><strong>Getting paid is recorded by hand:</strong> bank transfer, cash or card machine, full or part. No pay button in the MVP.</li>
+      <li><strong>VAT-registered clients:</strong> VAT number on the profile, rates per line (20%, 5%, 0%, exempt, outside scope), VAT shown on invoices as UK rules require, and a VAT summary per VAT quarter. Filing stays with the practice's MTD VAT software for now.</li>
+      <li>Income recorded through invoices flows into the MTD quarter on the date it is paid (cash basis) or issued (accruals).</li>
+    </ul>
+  </section>
+
+  <section id="estimate">
+    <h2>7. Tax estimate ("Yours to keep")</h2>
+    <p>The third number becomes "after tax and NI". It is labelled as an estimate and always shows its working.</p>
+    <ul>
+      <li>Profit so far this tax year, and projected to 5 April from the run rate.</li>
+      <li>Income Tax using the personal allowance and bands (with a Scottish taxpayer switch), plus Class 4 National Insurance.</li>
+      <li>Residential finance-cost reduction for landlords; other income the user chooses to add (employment, dividends, pension) for a fuller picture.</li>
+      <li>Payments on account: when they apply, the amounts due on 31 January and 31 July, and a suggested monthly set-aside.</li>
+      <li>Wording: "Estimate based on what you have recorded. Your accountant confirms the final figure."</li>
+    </ul>
+  </section>
+
+  <section id="practice">
+    <h2>8. Accountant link (the bridge to the TaxWise workbench)</h2>
+    <p>This is the feature that makes BillingEase sell through practices.</p>
+    <ul>
+      <li><strong>Two ways in:</strong> the practice invites a client (the client signs up already linked and on the practice's plan), or a client invites their accountant by email.</li>
+      <li><strong>What the practice sees:</strong> every linked client, quarter status, readiness checks, totals by category, and all entries. They can recategorise, add notes and post adjustments that are marked as theirs.</li>
+      <li><strong>Requests:</strong> "Please add records for 12–25 September" appears on the client's Home as a Needs-you item and clears when done. This replaces the email chase.</li>
+      <li><strong>Lock and history:</strong> the practice marks a quarter filed (with the filing date and the software used); edits after that are logged.</li>
+      <li><strong>Interface to the workbench:</strong> a small internal API (clients, quarters, totals, requests) that the TaxWise workbench reads. The same contract later carries HMRC obligation and agent-authorisation data from the workbench back into the client's Home.</li>
+      <li><strong>Practice branding:</strong> the client sees "Kept with Smith &amp; Co Accountants" and the practice logo. It helps practices sell it as their own service.</li>
+    </ul>
+  </section>
+
+  <section id="payroll">
+    <h2>9. Payroll as records only</h2>
+    <div class="note warn"><p><strong>Why records only:</strong> every UK pay run must be reported to HMRC in real time (RTI) through recognised payroll software. BillingEase is not that software in this version, and every payroll screen says so.</p></div>
+    <ul>
+      <li><strong>Employees:</strong> name, start date, pay basis; no RTI identifiers needed.</li>
+      <li><strong>Pay runs:</strong> entered from the payroll software's summary (gross pay, PAYE, employee and employer NI, pensions, net pay), or imported from a CSV. A simple calculator helps check the figures but is labelled as a check, not a payslip.</li>
+      <li><strong>Into the books:</strong> each pay run posts staff costs to the right category and records the HMRC liability and when it was paid.</li>
+      <li><strong>Reminders:</strong> pay dates and the 22nd-of-month PAYE payment date as Needs-you items.</li>
+      <li><strong>Banner on every payroll screen:</strong> "BillingEase keeps your payroll records. Run payroll and report to HMRC through your payroll software."</li>
+    </ul>
+  </section>
+
+  <section id="ask">
+    <h2>10. Ask (AI answers)</h2>
+    <p>The TaxWise AI engine appears as "Ask" in the client app and in Help. It follows HMRC's January 2026 guidance on generative AI in tax software.</p>
+    <ul>
+      <li>Answers cite HMRC manuals, gov.uk guidance and legislation, with links.</li>
+      <li>It is clearly marked as AI, never files or claims anything, and suggests "Ask your accountant" with one tap when the question needs judgement.</li>
+      <li>Good first topics: what counts as allowable, mileage and use of home, MTD dates, landlord finance costs, payments on account.</li>
+      <li>Answers stay general in the MVP; reading the user's own figures comes later.</li>
+    </ul>
+  </section>
+
+  <section id="cut">
+    <h2>11. What comes out of the current design</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Remove</th><th>Where it is now</th><th>Replaced by</th></tr></thead>
+      <tbody>
+        <tr><td>Bank and card feeds, sorting imported charges</td><td>Going out "Sort these", Home "Imported 23 transactions"</td><td>Manual entry and CSV statement import</td></tr>
+        <tr><td>Online payments, payouts, fees, disputes, card on file</td><td>Getting paid online, invoice pay link, Repeating invoices</td><td>Record a payment yourself</td></tr>
+        <tr><td>Paying bills from the app</td><td>Bills, Vendors, Going out</td><td>Mark a bill paid</td></tr>
+        <tr><td>Receipt reading and auto-matching, email-in address</td><td>Receipts, A receipt, Bills</td><td>Attach a photo or PDF to an entry</td></tr>
+        <tr><td>US sales tax, US payroll, 1099s and W-9s</td><td>Sales tax, Payroll, Vendors</td><td>VAT fields and payroll records</td></tr>
+        <tr><td>Multi-currency, exchange rates, gains and losses</td><td>Currencies</td><td>A foreign invoice is recorded in pounds with a note</td></tr>
+        <tr><td>Stock and cost of goods, billable time</td><td>Products, stock and time</td><td>A simple list of products and services with prices</td></tr>
+        <tr><td>"Handled for you" automation and auto-matching</td><td>Home</td><td>A plain activity list</td></tr>
+        <tr><td>"Viewed by customer" tracking, online quote acceptance</td><td>Invoice and quote timelines</td><td>Mark sent, mark accepted</td></tr>
+        <tr><td>Subscription detection, "Unused?" flags</td><td>Every month</td><td>Templates the user sets up</td></tr>
+        <tr><td>Several businesses under one sign-in</td><td>Team, Switch business</td><td>One business per account (landlord and self-employed live in one account)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="screens">
+    <h2>12. Screen by screen</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Screen</th><th>Status</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>Sign up, setup</td><td><span class="tag change">Change</span></td><td>Self-employed / landlord / both, VAT registered, quarter type, cash or accruals, "Do you have an accountant?" (invite now or later)</td></tr>
+        <tr><td>Home</td><td><span class="tag change">Change</span></td><td>Quarter card, three numbers in £ with "after tax and NI", Needs you includes practice requests and deadlines</td></tr>
+        <tr><td>Coming in, invoices, invoice editor, quotes, customers</td><td><span class="tag keep">Keep</span></td><td>£, VAT fields, manual payments; quote acceptance is a button</td></tr>
+        <tr><td>Repeating invoices and money back</td><td><span class="tag change">Change</span></td><td>Repeats make drafts or emails; no card charging</td></tr>
+        <tr><td>Going out, an entry, bills, suppliers, every month</td><td><span class="tag change">Change</span></td><td>HMRC categories, business-use %, attachments; bills marked paid</td></tr>
+        <tr><td>Properties</td><td><span class="tag new">New</span></td><td>Landlord list, rent roll, per-property costs</td></tr>
+        <tr><td>Mileage</td><td><span class="tag new">New</span></td><td>Trip log at simplified rates</td></tr>
+        <tr><td>Quarters</td><td><span class="tag new">New</span></td><td>Status, readiness checks, category summary, send to accountant, lock</td></tr>
+        <tr><td>Yours to keep, reports</td><td><span class="tag change">Change</span></td><td>Tax estimate; P&amp;L, quarter summary, VAT summary, property summary, payroll summary, CSV export</td></tr>
+        <tr><td>Sales tax and year-end</td><td><span class="tag change">Change</span></td><td>Becomes VAT summary (registered clients) and tax-year end checklist</td></tr>
+        <tr><td>Check against your bank</td><td><span class="tag keep">Keep</span></td><td>Manual: type the statement balance and tick entries</td></tr>
+        <tr><td>Categories</td><td><span class="tag change">Change</span></td><td>HMRC category list; manual journal entries for the practice</td></tr>
+        <tr><td>Payroll</td><td><span class="tag change">Change</span></td><td>Records only, as in section 9</td></tr>
+        <tr><td>Your accountant</td><td><span class="tag new">New</span></td><td>Replaces Team: practice link, requests, who can see what</td></tr>
+        <tr><td>Ask</td><td><span class="tag new">New</span></td><td>Grounded answers inside Help and as a header button</td></tr>
+        <tr><td>Getting paid online, receipts reading, currencies, products stock and time</td><td><span class="tag cut">Remove</span></td><td>See section 11</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="site">
+    <h2>13. Marketing site</h2>
+    <ul>
+      <li><strong>Two audiences:</strong> practices (main buyer: "Get your MTD clients' records in on time, every quarter") and their clients (free or included in the practice's fee).</li>
+      <li><strong>New pages:</strong> MTD for Income Tax explained (dates, who is in, what changes), For landlords, For accountants (becomes the lead page), Ask.</li>
+      <li><strong>Rewrite:</strong> Features and the three number pages for UK wording and £; pricing in pounds with a per-client practice price; Security with UK/EU hosting and no unverified certification claims.</li>
+      <li><strong>Drop or hide:</strong> Outside the US, Shops and makers (stock), Teams (payroll pitch), Switch to BillingEase until import exists, partner discount tiers until set.</li>
+    </ul>
+  </section>
+
+  <section id="compliance">
+    <h2>14. Data and compliance</h2>
+    <ul>
+      <li>UK or EU hosting; Sri Lankan team access kept narrow under an IDTA or UK Addendum with a transfer risk assessment.</li>
+      <li>ICO registration, UK GDPR privacy notice, cookie consent, Cyber Essentials before launch.</li>
+      <li>Retention: keep records at least as long as HMRC requires for the self-employed and landlords, with export at any time.</li>
+      <li>No contact with HMRC on users' behalf, so no tax-adviser registration; partner practices remain agents of record.</li>
+      <li>Clear terms on estimates and AI answers, and professional indemnity cover.</li>
+      <li>Pay HMRC's fraud-prevention and security requirements into the 2027 sandbox work so the 2028 filing launch is not a rewrite.</li>
+    </ul>
+  </section>
+
+  <section id="timeline">
+    <h2>15. Timeline against the TaxWise UK roadmap</h2>
+    <div class="timeline">
+      <div><b>Oct–Dec 2026</b><span>Clear the name. UK hosting. Build records, HMRC categories, quarters, invoices in £, accountant link and the workbench API. Register on the HMRC Developer Hub and start sandbox work.</span></div>
+      <div><b>Jan–Mar 2027</b><span>Private beta with two or three partner practices, launched alongside the workbench. Agree the quarter export format with them. Landlord mode and mileage.</span></div>
+      <div><b>Apr 2027</b><span>Public launch for the £30k wave and the start of MTD penalties for everyone. Payroll records. Ask in the app.</span></div>
+      <div><b>Apr–Dec 2027</b><span>Support full-return preparation for 2026/27 with partner accountants. Pull HMRC obligations through the workbench. Bank feeds via an aggregator if practices ask for them.</span></div>
+      <div><b>Jan 2028</b><span>First MTD final declarations (31 January): year-end checklist and final-declaration pack for practices.</span></div>
+      <div><b>Apr 2028</b><span>£20k wave. Direct MTD filing if HMRC access is granted. Director-company bundle, with an RTI payroll decision.</span></div>
+    </div>
+  </section>
+
+  <section id="decisions">
+    <h2>16. Open decisions</h2>
+    <ol>
+      <li><strong>Name.</strong> Run UKIPO and EUIPO searches on "BillingEase" as well, and decide whether the workbench and client app share one UK brand.</li>
+      <li><strong>Pricing.</strong> Free for clients of partner practices with the practice paying per client, a direct price for people without an accountant, or both.</li>
+      <li><strong>Direct sign-ups.</strong> When someone joins without an accountant, offer a partner practice, or let them keep records alone until the full-return product exists.</li>
+      <li><strong>Export format.</strong> Which filing products the first partner practices use, so the quarter export matches them.</li>
+      <li><strong>Ask scope.</strong> Client app and practice both, or practice only at first.</li>
+      <li><strong>Scotland and Wales.</strong> Scottish bands in the first estimate, or a later release.</li>
+    </ol>
+  </section>
+
+  <section id="verify">
+    <h2>17. Facts to verify before build</h2>
+    <p>These come from general knowledge of UK tax rules, not from the October 2026 research. Check each on gov.uk before it goes into the product.</p>
+    <ul>
+      <li>MTD quarterly update deadlines (7th of the following month) and the calendar-quarter election.</li>
+      <li>SA103F and MTD self-employment category names, and the MTD property categories, for 2026/27.</li>
+      <li>Consolidated-expenses rule and the current VAT registration threshold.</li>
+      <li>2026/27 Income Tax bands, personal allowance taper, Scottish bands, and Class 4 NI rates and limits.</li>
+      <li>Payments on account conditions (the £1,000 and 80% tests).</li>
+      <li>Simplified expenses rates for mileage and use of home; the £1,000 trading and property allowances.</li>
+      <li>Cash basis rules for landlords and the receipts limit.</li>
+      <li>Record-keeping periods for sole traders and landlords.</li>
+      <li>RTI and payslip rules that payroll records must not appear to replace.</li>
+    </ul>
+  </section>
+</main>
+</div>
