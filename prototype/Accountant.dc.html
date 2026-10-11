@@ -345,7 +345,7 @@ class Component extends DCLogic {
     const prof = BE.get('profile') || {};
     const pd = BE.get('practice') || {};
     const pp = prof.practice || null;
-    const invited = !!pp && pd.status === 'invited';
+    const invited = !!pp && (pd.status === 'invited' || pp.status === 'invited');
     const linked = !!pp && !invited;
     const none = !pp;
     const noun = pr.noun;
@@ -372,7 +372,7 @@ class Component extends DCLogic {
       const pick = (BE.LK_PRACTITIONERS || []).filter((x) => x.email === email)[0];
       const old = pp ? pp.name : '';
       BE.change((s) => {
-        s.profile = Object.assign({}, s.profile, { practice: { name, contact: pick ? pick.contact : '', email } });
+        s.profile = Object.assign({}, s.profile, { practice: { name, contact: pick ? pick.contact : '', email, status: 'invited', invited: BE.today } });
         s.practice = Object.assign({}, s.practice, { status: 'invited', invitedOn: BE.today, since: '', phone: '', city: pick ? pick.city : '' });
         BE._log(s, (old ? 'Removed ' + old + ' and invited ' : 'Invited ') + name + ' (' + email + ') as your ' + noun);
       });
@@ -390,8 +390,8 @@ class Component extends DCLogic {
       }
     }));
 
-    const tw = pd.taxwise || null;
-    const twLinked = !!prof.taxwiseLinked && !!tw;
+    const twLinked = !!prof.taxwiseLinked;
+    const tw = pd.taxwise || (twLinked ? { account: prof.email || '', since: 'when you signed up', lastHandoff: 'Nothing sent yet', yearHandoff: 'The 2026/27 year goes to your TaxWise.lk return after 31 Mar 2027' } : null);
     const intro = lk
       ? 'The firm that files your VAT, SSCL and income tax. They work from your books in TaxWise.lk, send you requests here, and lock each period once it is filed.'
       : 'The practice that sends your quarterly updates to HMRC. They work from your books in the ' + pr.tool + ', send you requests here, and lock each quarter once it is filed.';
@@ -405,7 +405,7 @@ class Component extends DCLogic {
         contactLine: contact ? contact + (pd.role ? ', ' + pd.role : '') + (pd.city ? ' · ' + pd.city : '') : (pd.city || ''),
         since: pd.since ? 'Linked since ' + pd.since + ' through the ' + pr.tool : 'Linked through the ' + pr.tool,
         phone: pd.phone || '', tel: String(pd.phone || '').replace(/\s+/g, ''), hasPhone: !!pd.phone,
-        invitedOn: pd.invitedOn || BE.today, contactFirst
+        invitedOn: pd.invitedOn || (pp && typeof pp.invited === 'string' ? pp.invited : '') || BE.today, contactFirst
       },
       modeNone: !mode, modeRemove: mode === 'remove', modeChange: mode === 'change', modeConfirmChange: mode === 'confirmChange', modeConfirmInvite: mode === 'confirmInvite',
       removeText: firmName + ' stops seeing your books straight away and can’t send requests. Periods they already filed stay locked, and your records stay with you.',
@@ -437,13 +437,16 @@ class Component extends DCLogic {
       acceptAsThem: () => {
         BE.change((s) => {
           s.practice = Object.assign({}, s.practice, { status: 'linked', since: BE.today });
+          s.profile = Object.assign({}, s.profile, { practice: Object.assign({}, s.profile.practice, { status: 'linked' }) });
           BE._log(s, firmName + ' accepted your invite');
           BE._notify(s, firmName + ' accepted your invite', 'They can now see your books and send you requests.', 'Accountant.dc.html');
         });
         this.notify(firmName + ' accepted · they can see your books now');
       },
       inviteTitle: lk ? 'Invite your tax practitioner' : 'Invite your accountant',
-      inviteText: lk
+      inviteText: prof.practitioner === 'own'
+        ? 'You chose to do your own tax with TaxWise.lk. That’s fine: your books feed your return directly. If you want a practitioner later, invite one here or pick one below.'
+        : lk
         ? 'Working with a practitioner? Invite them and they’ll see your books in TaxWise.lk. Or keep going on your own and hand the year to your TaxWise.lk return yourself.'
         : 'If your practice uses the ' + pr.tool + ', invite them here and they’ll see your quarters, send requests and file for you.',
       emailHint: lk ? 'name@firm.lk' : 'name@practice.co.uk',

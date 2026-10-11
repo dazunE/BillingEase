@@ -417,7 +417,7 @@ class Component extends DCLogic {
     return {
       tool: pr.tool || 'TaxWise', firmName, firmShort, signedIn: contact,
       midLabel: lk ? 'Your tax practitioner' : 'Your accountant', midLabelLower: lk ? 'your tax practitioner' : 'your accountant',
-      intro: (pp ? '' : 'You haven’t linked a ' + pr.noun + ' yet; this is what they would see. ') + (lk
+      intro: (!pp ? 'You haven’t linked a ' + pr.noun + ' yet; this is what they would see. ' : (pp.status === 'invited' || pd.status === 'invited') ? 'Your invite to ' + firmShort + ' is waiting; this is what they’ll see once they accept. ' : '') + (lk
         ? 'A practitioner sees each client’s monthly VAT and SSCL position and payroll, sends requests that land on the client’s Home, and locks a month once the return is filed.'
         : 'A practice sees each client’s quarter, readiness checks and totals by HMRC category, sends requests that land on the client’s Home, and locks a quarter once it is filed.'),
       periodCol: lk ? 'VAT and SSCL period' : 'Quarter', dueCol: lk ? 'Return due' : 'Update due',

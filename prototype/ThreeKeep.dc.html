@@ -191,7 +191,7 @@ a{color:#18161F}a:hover{color:#000000}
           </div>
         </div>
         <div style="display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: #47444F;">
-          <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #7A5AF8;"></span>After the estimated {{k.taxWord}}</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #7A5AF8;"></span>After the estimated {{k.taxWord}}, before equipment</span>
           <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #C9BCFB;"></span>October so far</span>
         </div>
       </section>
@@ -272,7 +272,7 @@ class Component extends DCLogic {
     const L = (label, amount, note, o) => Object.assign({ label, amount, note: note || '', border: '1px solid #EFEDF3', weight: 500, bg: 'transparent', radius: '0', size: '14px' }, o || {});
     const lines = [
       L('Profit so far', W(e.soFar), yr.start + ' to today · ' + e.months.toFixed(1) + ' months', { border: '0' }),
-      L('At this pace, for the whole year', W(e.annual), 'What we estimate on: profit so far × 12 ÷ ' + e.months.toFixed(1), { weight: 700 })
+      L('At this pace, for the whole year', W(e.annual), e.byMonth ? 'This month is running ahead of the year so far, so we use it: ' + W(e.monthProfit) + ' × 12' : 'What we estimate on: profit so far × 12 ÷ ' + e.months.toFixed(1), { weight: 700 })
     ].concat((e.est.lines || []).map((l) => L(l.label, (/allowance|relief/i.test(l.label) ? '' : '') + W(l.amount), l.note || '')));
     if (finRelief) lines.push(L('Mortgage interest on the flat', W(e.finance), 'Kept out of costs; it reduces Income Tax by 20% (' + W(finRelief) + '), already in the line above'));
     lines.push(L('Estimated ' + taxWord + ' for ' + yr.label, W(e.total), (e.annual > 0 ? Math.round(e.rate * 100) + '% of your profit for the year' : 'Nothing while there’s no profit'), { border: '2px solid #18161F', weight: 700, size: '18px', bg: '#EEE8FF', radius: '12px' }));

@@ -33,10 +33,12 @@
   // Sri Lanka: April to July sales and April to August running costs (payroll and invoices are entries).
   var S = function (iso, cat, amount, kind) { return { iso: iso, cat: cat, amount: amount, kind: kind || 'out' }; };
   BE.define('booksBefore', BE.perCountry({
-    uk: { note: 'Q1 self-employment totals from your spreadsheet, before you moved your records into BillingEase in July', lines: [
-      S('2026-07-05', 'turnover', 14200, 'in'),
-      S('2026-07-05', 'premises', 540), S('2026-07-05', 'office', 322), S('2026-07-05', 'travel', 186.4),
-      S('2026-07-05', 'advertising', 90), S('2026-07-05', 'bank', 15), S('2026-07-05', 'other', 48)
+    uk: { note: 'Q1 self-employment totals by month from your spreadsheet, before you moved your records into BillingEase in July', lines: [
+      S('2026-04-30', 'turnover', 5050, 'in'), S('2026-05-31', 'turnover', 4380, 'in'), S('2026-06-30', 'turnover', 4770, 'in'),
+      S('2026-04-30', 'premises', 180), S('2026-05-31', 'premises', 180), S('2026-06-30', 'premises', 180),
+      S('2026-04-30', 'office', 110), S('2026-05-31', 'office', 106), S('2026-06-30', 'office', 106),
+      S('2026-04-30', 'travel', 62.4), S('2026-05-31', 'travel', 62), S('2026-06-30', 'travel', 62),
+      S('2026-06-30', 'advertising', 90), S('2026-04-30', 'bank', 5), S('2026-05-31', 'bank', 5), S('2026-06-30', 'bank', 5), S('2026-04-30', 'other', 48)
     ] },
     lk: { note: 'Monthly totals from your previous books, before you moved them into BillingEase in September', lines: [].concat(
       [['2026-04-30', 2350000], ['2026-05-31', 2600000], ['2026-06-30', 2200000], ['2026-07-31', 2750000]].map(function (m) { return S(m[0], 'sales', m[1], 'in'); }),
@@ -609,11 +611,13 @@
     var P = pack();
     var y = BE.totals('year');
     var m = monthsIntoYear();
-    var annual = Math.round(Math.max(0, y.profit) * 12 / m);
+    // Same rule as Home (BE.keepTotals): the year so far scaled up, or this month's pace if that's higher.
+    var pace = Math.max(0, y.profit) * 12 / m, monthPace = Math.max(0, BE.totals('month').profit) * 12;
+    var annual = Math.round(Math.max(pace, monthPace));
     var finance = Math.round(financeSoFar() * 12 / m);
     var est = typeof P.estimate === 'function' ? P.estimate(annual, { financeCosts: finance }) : { total: Math.round(annual * 0.25), lines: [], paymentsOnAccount: [], label: 'Tax' };
     var rate = annual > 0 ? est.total / annual : 0;
-    return { soFar: y.profit, annual: annual, months: r2(m), finance: finance, est: est, total: est.total, rate: rate, monthly: Math.round(est.total / 12), label: est.label || 'Tax' };
+    return { soFar: y.profit, annual: annual, byMonth: monthPace > pace, monthProfit: r2(monthPace / 12), months: r2(m), finance: finance, est: est, total: est.total, rate: rate, monthly: Math.round(est.total / 12), label: est.label || 'Tax' };
   }
   // Yours to keep on Home and here: after the estimate (with UK mortgage interest relief), or the share
   // you chose on Yours to keep (profile.setAsideMode 'own', profile.setAside 0.25).
@@ -727,7 +731,7 @@
     /** Year by month: { id 'YYYY-MM', label, income, costs, profit } from the start of the tax year to today. */
     months: function () {
       var y = yearRange(), out = [];
-      var all = ledger().filter(function (e) { return within(e, y.from, BE.todayDate) && !(e.biz === 'prop' && e.cat === 'p-finance'); });
+      var all = ledger().filter(function (e) { return within(e, y.from, BE.todayDate) && !(e.biz === 'prop' && e.cat === 'p-finance') && e.cat !== 'capital'; });
       for (var d = new Date(y.from.getFullYear(), y.from.getMonth(), 1); d <= BE.todayDate; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
         var k = isoOf(d).slice(0, 7);
         var inc = 0, cost = 0;

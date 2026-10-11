@@ -13,550 +13,145 @@
 <style>
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
-.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
-.be-show-sm{display:none}
-@media (max-width: 640px){.be-hide-sm{display:none!important}.be-show-sm{display:inline}}
+.k-main{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:24px clamp(16px,4vw,40px) 64px;display:flex;flex-direction:column;gap:24px}
+.k-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0;box-sizing:border-box}
+.k-soft{background:#F7F6F9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.k-dark{background:#18161F;color:#FFFFFF;border-radius:24px;padding:clamp(22px,3vw,34px);display:flex;flex-wrap:wrap;gap:18px 32px;align-items:flex-end;justify-content:space-between;box-sizing:border-box}
+.k-eyebrow{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:700 15px DM Sans,sans-serif;color:#EEE8FF}
+.k-dot{width:10px;height:10px;border-radius:9999px;background:#B9A3FF;flex:none}
+.k-big{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.03em;color:#B9A3FF;font-variant-numeric:tabular-nums}
+.k-lead{margin:0;font-size:16px;line-height:1.5;color:#EEE8FF;max-width:620px}
+.k-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.k-h3{margin:0;font-size:15px;font-weight:700}
+.k-sub{font-size:13px;color:#5F5B68;line-height:1.45}
+.k-p{margin:0;font-size:14px;line-height:1.55;color:#47444F}
+.k-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;max-width:100%}
+.k-btn-dark{background:#18161F;color:#FFFFFF}.k-btn-dark:hover{color:#FFFFFF;background:#2E2B38}
+.k-btn-soft{background:rgba(24,22,31,0.07);color:#18161F}
+.k-btn-violet{background:#B9A3FF;color:#18161F}
+.k-btn-ghost{background:rgba(238,232,255,0.14);color:#FFFFFF}.k-btn-ghost:hover{color:#FFFFFF}
+.k-btn-sm{min-height:36px;padding:0 14px;font-size:13px}
+.k-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.k-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.4}
+.k-good{background:#E2F6D5;color:#2F5711}.k-attn{background:#FFF0B8;color:#6B5000}.k-late{background:#FBE3DF;color:#A8200D}.k-plain{background:#EFEDF3;color:#47444F}.k-violet{background:#EEE8FF;color:#18161F}.k-darktag{background:#18161F;color:#B9A3FF}
+.k-wrap{white-space:normal}
+.k-num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.k-tabs{display:flex;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;max-width:100%;overflow-x:auto;box-sizing:border-box;scrollbar-width:none}
+.k-tab{min-height:38px;padding:0 14px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.k-tab[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.k-input{min-height:44px;padding:0 12px;border:1px solid #CBC7D3;border-radius:12px;font:500 14px DM Sans,sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box;max-width:100%;min-width:0}
+.k-pre{margin:0;max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:#FFFFFF;border:1px solid #E2DFE8;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre}
+.k-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.k-li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:11px 0;border-top:1px solid #EFEDF3}
+.k-li:first-child{border-top:0}
+.k-cols{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.k-cols>*{flex:1 1 380px}
+.k-rowbtn{width:100%;display:flex;align-items:center;gap:10px 14px;padding:12px 4px;border:0;border-top:1px solid #EFEDF3;background:transparent;color:#18161F;text-align:left;font:500 14px DM Sans,sans-serif;cursor:pointer;box-sizing:border-box}
+.k-rowbtn:hover{background:#FBFAFC}
+.k-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px;border-top:2px solid #18161F;font-weight:700}
+.k-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F6F9}
+.k-icon{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none}
+.k-drill{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:6px 12px;border-radius:14px;background:#F7F6F9}
+.k-drill a,.k-drill span.k-dw{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:7px 0;font-size:13px;text-decoration:none;color:#18161F;border-top:1px solid #EAE7EF}
+.k-drill a:first-child,.k-drill span.k-dw:first-child{border-top:0}
+@media (max-width: 600px){.k-hide-sm{display:none!important}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
   <dc-import name="AppHeader"></dc-import>
-
-  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+  <main class="k-main">
     <dc-import name="AppCrumbs" area="keep" here="Reports"></dc-import>
 
-    <section aria-labelledby="rp-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(22px, 3vw, 34px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 32px;">
-      <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-        <h1 id="rp-h" style="margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font: 700 15px DM Sans, sans-serif; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Ask your books <span style="font-size: 12px; font-weight: 600; color: #C9BCFB;">Reports</span></h1>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">Plain questions, <span style="color: #B9A3FF;">straight answers.</span></span>
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #EEE8FF; max-width: 560px;">{{heroText}}</p>
+    <section class="k-dark" aria-labelledby="rp-h">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="rp-h" class="k-eyebrow"><span class="k-dot"></span>Reports · {{biz}}</h1>
+        <span class="k-big">{{hero.big}}</span>
+        <p class="k-lead">{{hero.lead}}</p>
       </div>
-      <div style="flex: 0 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
-        <span style="font-size: 13px; color: #EEE8FF; line-height: 1.45;">{{methodNote}} <a href="BooksTax.dc.html#method" style="color: #FFFFFF; font-weight: 600;">How we count</a></span>
-        <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}"><a href="#profit" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none;">See Profit &amp; Loss</a></sc-if>
-      </div>
+      <dl style="flex: 0 1 420px; min-width: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px;">
+        <sc-for list="{{hero.nums}}" as="n" hint-placeholder-count="3">
+          <div style="flex: 1 1 110px; min-width: 0; padding: 12px 14px; border-radius: 16px; background: rgba(238,232,255,0.1); display: flex; flex-direction: column; gap: 2px;">
+            <dt style="font-size: 12px; color: #EEE8FF;">{{n.label}}</dt>
+            <dd style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: {{n.color}}; font-variant-numeric: tabular-nums; white-space: nowrap;">{{n.value}}</dd>
+          </div>
+        </sc-for>
+      </dl>
     </section>
 
     <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
-      <section aria-labelledby="empty-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 3vw, 36px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px;">
-        <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-          <h2 id="empty-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Your reports fill in as you work</h2>
-          <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 640px;">Once you bill someone or record what you spend, you’ll see how much you made, what you own and owe, and where the cash went. Every number will match your three numbers.</p>
-        </div>
-        <a href="ThreeIn.dc.html#bill" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; text-decoration: none;">Bill someone</a>
+      <section class="k-card" aria-labelledby="em-h">
+        <h2 id="em-h" class="k-h2">Your reports fill in as you work</h2>
+        <p class="k-p">{{emptyText}}</p>
+        <div class="k-btns"><a class="k-btn k-btn-dark" href="ThreeIn.dc.html#bill">Bill someone</a><a class="k-btn k-btn-soft" href="ThreeOut.dc.html#expense">Add an expense</a></div>
       </section>
-    </sc-if>
-    <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}">
-    <div style="display: flex; flex-direction: column; gap: 14px;">
-
-      <!-- ============ PROFIT & LOSS ============ -->
-      <section id="profit" aria-labelledby="pl-q" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; scroll-margin-top: 16px;">
-        <button type="button" aria-expanded="{{o.pl}}" aria-controls="pl-body" onClick="{{tog.pl}}" style="width: 100%; text-align: left; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px); border: 0; border-radius: 24px; background: transparent; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
-          <span style="width: 44px; height: 44px; border-radius: 14px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M7 15l4-4 3 3 5-6"></path></svg></span>
-          <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span id="pl-q" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">How much did I make?</span><span style="font-size: 12.5px; color: #5F5B68;">Profit &amp; Loss</span></span>
-          <span style="font-size: 14px; color: #47444F;">{{sum.pl}}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{chev.pl}}"></path></svg>
-        </button>
-        <sc-if value="{{o.pl}}" hint-placeholder-val="{{true}}">
-          <div id="pl-body" style="padding: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
-              <div role="group" aria-label="Period" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px; max-width: 100%; box-sizing: border-box;">
-                <sc-for list="{{periods}}" as="pd" hint-placeholder-count="3">
-                  <button type="button" aria-pressed="{{pd.on}}" onClick="{{pd.pick}}" style="min-height: 38px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{pd.bg}}; color: {{pd.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">{{pd.label}}</button>
-                </sc-for>
-              </div>
-              <div role="group" aria-label="Count money" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px; max-width: 100%; box-sizing: border-box;">
-                <sc-for list="{{methods}}" as="me" hint-placeholder-count="2">
-                  <button type="button" aria-pressed="{{me.on}}" onClick="{{me.pick}}" style="min-height: 38px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{me.bg}}; color: {{me.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">{{me.label}}</button>
-                </sc-for>
-              </div>
-              <sc-if value="{{canCmp}}" hint-placeholder-val="{{true}}">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <span id="cmp-l" style="font-size: 14px; font-weight: 600;">Compare with {{pl.prevName}}</span>
-                <button type="button" role="switch" aria-checked="{{cmp}}" aria-labelledby="cmp-l" onClick="{{togCmp}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{cmpBg}}; cursor: pointer; padding: 0;">
-                  <span style="position: absolute; top: 3px; left: {{cmpLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span>
-                </button>
-              </div>
-              </sc-if>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
-              <sc-for list="{{pl.tiles}}" as="t" hint-placeholder-count="3">
-                <div style="border-radius: 18px; padding: 16px 18px; background: {{t.bg}}; color: {{t.fg}}; display: flex; flex-direction: column; gap: 4px;">
-                  <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{t.dot}};"></span>{{t.label}}</span>
-                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: {{t.numFg}};">{{t.value}}</span>
-                  <sc-if value="{{cmpOn}}" hint-placeholder-val="{{true}}"><span style="font-size: 13px;">{{t.vs}}</span></sc-if>
-                </div>
-              </sc-for>
-            </div>
-            <sc-if value="{{pl.hasNote}}" hint-placeholder-val="{{false}}">
-              <span style="font-size: 13px; color: #47444F;">{{pl.note}}</span>
-            </sc-if>
-
-            <!-- Statement -->
-            <div role="table" aria-label="{{pl.tableLabel}}" style="display: flex; flex-direction: column; font-size: 14px;">
-              <div role="row" style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 2px 16px; padding: 0 12px 8px; color: #5F5B68; font-size: 12.5px; font-weight: 600;">
-                <span role="columnheader" style="flex: 1 1 200px; min-width: 0;">Category</span>
-                <span style="flex: 1 1 {{colsBasis}}; min-width: 0; display: grid; grid-template-columns: {{cols}}; gap: 8px; text-align: right;">
-                  <span role="columnheader" style="color: #18161F;">{{pl.curName}}</span>
-                  <sc-if value="{{cmpOn}}" hint-placeholder-val="{{true}}"><span role="columnheader">{{pl.prevName}}</span><span role="columnheader">Change</span></sc-if>
-                </span>
-              </div>
-              <sc-for list="{{pl.rows}}" as="r" hint-placeholder-count="12">
-                <div role="row" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 16px; padding: {{r.pad}}; border-top: {{r.border}}; background: {{r.bg}}; border-radius: {{r.radius}}; font-weight: {{r.weight}};">
-                  <span role="rowheader" style="flex: 1 1 200px; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px;"><span style="font-size: {{r.size}};">{{r.label}}</span><span style="font-size: 12px; font-weight: 500; color: #5F5B68;">{{r.formal}}</span></span>
-                  <span style="flex: 1 1 {{colsBasis}}; min-width: 0; display: grid; grid-template-columns: {{cols}}; gap: 8px; text-align: right; font-variant-numeric: tabular-nums;">
-                    <span role="cell" style="font-family: {{r.font}}; font-size: {{r.size}};">{{r.cur}}</span>
-                    <sc-if value="{{cmpOn}}" hint-placeholder-val="{{true}}"><span role="cell" style="color: {{r.muted}};">{{r.prev}}</span><span role="cell" style="color: {{r.muted}};">{{r.chg}}</span></sc-if>
-                  </span>
-                </div>
-              </sc-for>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 16px; border-radius: 16px; background: #EEE8FF; font-size: 14px; line-height: 1.45;">
-              <span style="flex: 1 1 260px;">{{pl.keepLine}}</span>
-              <a href="ThreeKeep.dc.html" style="font-weight: 600;">See Yours to keep</a>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button type="button" onClick="{{out.pl.print}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"></path></svg>Printable view (PDF)</button>
-              <button type="button" onClick="{{out.pl.dl}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Download CSV</button>
-            </div>
-            <sc-if value="{{out.pl.csvOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8; background: #F7F6F9;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{out.pl.file}}</span><span style="font-size: 12px; color: #5F5B68;">If the download didn&#39;t start, copy this into a spreadsheet.</span></span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{out.pl.copy}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Copy CSV</button>
-                    <button type="button" onClick="{{out.pl.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close</button>
-                  </div>
-                </div>
-                <pre style="margin: 0; max-height: 220px; overflow: auto; padding: 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre;">{{out.pl.csv}}</pre>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.pl.printOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="font-size: 13px; color: #47444F;">Ready to print. Use your browser&#39;s Print or Share to save it as a PDF.</span>
-                  <button type="button" onClick="{{out.pl.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close printable view</button>
-                </div>
-                <article style="background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 10px rgba(24,22,31,0.06);">
-                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid #18161F; padding-bottom: 12px;">
-                    <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{out.pl.title}}</span><span style="font-size: 13px; color: #47444F;">{{biz}}</span></span>
-                    <span style="font-size: 13px; color: #47444F; text-align: right;">{{out.pl.period}}</span>
-                  </div>
-                  <div style="display: flex; flex-direction: column; font-size: 14px; font-variant-numeric: tabular-nums;">
-                    <sc-for list="{{out.pl.rows}}" as="pr" hint-placeholder-count="6">
-                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: {{pr.border}}; font-weight: {{pr.weight}};"><span style="min-width: 0; padding-left: {{pr.indent}};">{{pr.label}}</span><span style="white-space: nowrap;">{{pr.amount}}</span></div>
-                    </sc-for>
-                  </div>
-                  <span style="font-size: 12px; color: #5F5B68;">Prepared in BillingEase on {{today}}, 2026.</span>
-                </article>
-              </div>
-            </sc-if>
-          </div>
-        </sc-if>
-      </section>
-
-      <!-- ============ BALANCE SHEET ============ -->
-      <section id="balance" aria-labelledby="bs-q" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; scroll-margin-top: 16px;">
-        <button type="button" aria-expanded="{{o.bs}}" aria-controls="bs-body" onClick="{{tog.bs}}" style="width: 100%; text-align: left; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px); border: 0; border-radius: 24px; background: transparent; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
-          <span style="width: 44px; height: 44px; border-radius: 14px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M5 8h14M5 8l-2 6h4zM19 8l-2 6h4zM8 20h8"></path></svg></span>
-          <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span id="bs-q" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">What do I own and owe?</span><span style="font-size: 12.5px; color: #5F5B68;">Balance sheet</span></span>
-          <span style="font-size: 14px; color: #47444F;">{{sum.bs}}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{chev.bs}}"></path></svg>
-        </button>
-        <sc-if value="{{o.bs}}" hint-placeholder-val="{{false}}">
-          <div id="bs-body" style="padding: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
-              <span style="font-size: 13px; color: #5F5B68;">As of today, Sunday, Oct 4, 2026 · cash and what customers owe update as money moves</span>
-              <span style="display: flex; height: 14px; border-radius: 9999px; overflow: hidden; gap: 2px;" title="{{bsBar.title}}">
-                <span style="width: {{bsBar.owe}}%; background: #E0752D;"></span>
-                <span style="width: {{bsBar.yours}}%; background: #7A5AF8;"></span>
-              </span>
-              <span style="display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 13px; color: #47444F;">
-                <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #E0752D;"></span>Owed to others {{bsBar.oweAmt}}</span>
-                <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7A5AF8;"></span>Yours {{bsBar.yoursAmt}}</span>
-              </span>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
-              <sc-for list="{{bs}}" as="grp" hint-placeholder-count="3">
-                <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 18px; border: 1px solid #E2DFE8;">
-                  <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; padding-bottom: 6px;"><span style="font-weight: 700; font-size: 16px;">{{grp.title}}</span><span style="font-size: 12px; color: #5F5B68;">{{grp.formal}}</span></span>
-                  <sc-for list="{{grp.rows}}" as="r" hint-placeholder-count="4">
-                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid #EFEDF3;">
-                      <span style="min-width: 0; display: flex; flex-direction: column; gap: 1px;"><span style="font-size: 14px;">{{r.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{r.formal}}</span></span>
-                      <strong style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{r.amt}}</strong>
-                    </div>
-                  </sc-for>
-                  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 12px; margin-top: 4px; border-radius: 12px; background: {{grp.totBg}}; color: {{grp.totFg}};">
-                    <span style="font-weight: 700; font-size: 14px;">{{grp.totLabel}}</span>
-                    <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; color: {{grp.numFg}};">{{grp.total}}</span>
-                  </div>
-                </div>
-              </sc-for>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 14px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
-              <span>{{bsCheck}}</span>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button type="button" onClick="{{out.bs.print}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"></path></svg>Printable view (PDF)</button>
-              <button type="button" onClick="{{out.bs.dl}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Download CSV</button>
-            </div>
-            <sc-if value="{{out.bs.csvOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8; background: #F7F6F9;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{out.bs.file}}</span><span style="font-size: 12px; color: #5F5B68;">If the download didn&#39;t start, copy this into a spreadsheet.</span></span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{out.bs.copy}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Copy CSV</button>
-                    <button type="button" onClick="{{out.bs.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close</button>
-                  </div>
-                </div>
-                <pre style="margin: 0; max-height: 220px; overflow: auto; padding: 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre;">{{out.bs.csv}}</pre>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.bs.printOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="font-size: 13px; color: #47444F;">Ready to print. Use your browser&#39;s Print or Share to save it as a PDF.</span>
-                  <button type="button" onClick="{{out.bs.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close printable view</button>
-                </div>
-                <article style="background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 10px rgba(24,22,31,0.06);">
-                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid #18161F; padding-bottom: 12px;">
-                    <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{out.bs.title}}</span><span style="font-size: 13px; color: #47444F;">{{biz}}</span></span>
-                    <span style="font-size: 13px; color: #47444F; text-align: right;">{{out.bs.period}}</span>
-                  </div>
-                  <div style="display: flex; flex-direction: column; font-size: 14px; font-variant-numeric: tabular-nums;">
-                    <sc-for list="{{out.bs.rows}}" as="pr" hint-placeholder-count="6">
-                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: {{pr.border}}; font-weight: {{pr.weight}};"><span style="min-width: 0; padding-left: {{pr.indent}};">{{pr.label}}</span><span style="white-space: nowrap;">{{pr.amount}}</span></div>
-                    </sc-for>
-                  </div>
-                  <span style="font-size: 12px; color: #5F5B68;">Prepared in BillingEase on {{today}}, 2026.</span>
-                </article>
-              </div>
-            </sc-if>
-          </div>
-        </sc-if>
-      </section>
-
-      <!-- ============ CASH FLOW ============ -->
-      <section id="cash" aria-labelledby="cf-q" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; scroll-margin-top: 16px;">
-        <button type="button" aria-expanded="{{o.cf}}" aria-controls="cf-body" onClick="{{tog.cf}}" style="width: 100%; text-align: left; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px); border: 0; border-radius: 24px; background: transparent; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
-          <span style="width: 44px; height: 44px; border-radius: 14px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h13l-3-3M20 17H7l3 3"></path></svg></span>
-          <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span id="cf-q" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Where did the cash go?</span><span style="font-size: 12.5px; color: #5F5B68;">Cash flow</span></span>
-          <span style="font-size: 14px; color: #47444F;">{{sum.cf}}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{chev.cf}}"></path></svg>
-        </button>
-        <sc-if value="{{o.cf}}" hint-placeholder-val="{{false}}">
-          <div id="cf-body" style="padding: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-            <div role="table" aria-label="Cash flow, October 2026" style="display: flex; flex-direction: column; font-size: 14px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
-              <div role="row" style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 2px 16px; padding: 0 12px 8px; color: #5F5B68; font-size: 12.5px; font-weight: 600;">
-                <span role="columnheader" style="flex: 1 1 220px; min-width: 0;">October 2026</span>
-                <span style="flex: 1 1 240px; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: right;"><span role="columnheader" style="color: #18161F;">So far (Oct 1 – 4)</span><span role="columnheader">Expected by Oct 31</span></span>
-              </div>
-              <sc-for list="{{cf}}" as="r" hint-placeholder-count="7">
-                <div role="row" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 16px; padding: {{r.pad}}; border-top: {{r.border}}; background: {{r.bg}}; border-radius: {{r.radius}}; font-weight: {{r.weight}};">
-                  <span role="rowheader" style="flex: 1 1 220px; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px;"><span>{{r.label}}</span><span style="font-size: 12px; font-weight: 500; color: #5F5B68;">{{r.formal}}</span></span>
-                  <span style="flex: 1 1 240px; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: right; font-variant-numeric: tabular-nums;"><span role="cell" style="font-family: {{r.font}};">{{r.now}}</span><span role="cell" style="color: {{r.muted}}; font-family: {{r.font}};">{{r.exp}}</span></span>
-                </div>
-              </sc-for>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <span style="font-size: 15px; font-weight: 700;">{{cfSpendTitle}}</span>
-              <sc-for list="{{spend}}" as="s" hint-placeholder-count="8">
-                <div style="display: flex; align-items: center; gap: 12px; font-size: 14px;">
-                  <span style="flex: 0 0 120px; min-width: 0;">{{s.label}}</span>
-                  <span style="flex: 1; min-width: 0; height: 18px; border-radius: 6px; background: #F7F6F9;"><span title="{{s.title}}" style="display: block; height: 100%; width: {{s.pct}}%; border-radius: 6px; background: #E0752D;"></span></span>
-                  <strong style="flex: 0 0 64px; text-align: right; font-variant-numeric: tabular-nums;">{{s.amt}}</strong>
-                </div>
-              </sc-for>
-            </div>
-            <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{cfNote}}</span>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button type="button" onClick="{{out.cf.print}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"></path></svg>Printable view (PDF)</button>
-              <button type="button" onClick="{{out.cf.dl}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Download CSV</button>
-            </div>
-            <sc-if value="{{out.cf.csvOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8; background: #F7F6F9;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{out.cf.file}}</span><span style="font-size: 12px; color: #5F5B68;">If the download didn&#39;t start, copy this into a spreadsheet.</span></span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{out.cf.copy}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Copy CSV</button>
-                    <button type="button" onClick="{{out.cf.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close</button>
-                  </div>
-                </div>
-                <pre style="margin: 0; max-height: 220px; overflow: auto; padding: 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre;">{{out.cf.csv}}</pre>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.cf.printOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="font-size: 13px; color: #47444F;">Ready to print. Use your browser&#39;s Print or Share to save it as a PDF.</span>
-                  <button type="button" onClick="{{out.cf.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close printable view</button>
-                </div>
-                <article style="background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 10px rgba(24,22,31,0.06);">
-                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid #18161F; padding-bottom: 12px;">
-                    <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{out.cf.title}}</span><span style="font-size: 13px; color: #47444F;">{{biz}}</span></span>
-                    <span style="font-size: 13px; color: #47444F; text-align: right;">{{out.cf.period}}</span>
-                  </div>
-                  <div style="display: flex; flex-direction: column; font-size: 14px; font-variant-numeric: tabular-nums;">
-                    <sc-for list="{{out.cf.rows}}" as="pr" hint-placeholder-count="6">
-                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: {{pr.border}}; font-weight: {{pr.weight}};"><span style="min-width: 0; padding-left: {{pr.indent}};">{{pr.label}}</span><span style="white-space: nowrap;">{{pr.amount}}</span></div>
-                    </sc-for>
-                  </div>
-                  <span style="font-size: 12px; color: #5F5B68;">Prepared in BillingEase on {{today}}, 2026.</span>
-                </article>
-              </div>
-            </sc-if>
-          </div>
-        </sc-if>
-      </section>
-
-      <!-- ============ WHO OWES ME ============ -->
-      <section id="owed" aria-labelledby="ar-q" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; scroll-margin-top: 16px;">
-        <button type="button" aria-expanded="{{o.ar}}" aria-controls="ar-body" onClick="{{tog.ar}}" style="width: 100%; text-align: left; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px); border: 0; border-radius: 24px; background: transparent; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
-          <span style="width: 44px; height: 44px; border-radius: 14px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M19 8v6M16 11h6"></path></svg></span>
-          <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span id="ar-q" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Who owes me?</span><span style="font-size: 12.5px; color: #5F5B68;">Aged receivables</span></span>
-          <span style="font-size: 14px; color: #47444F;">{{sum.ar}}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{chev.ar}}"></path></svg>
-        </button>
-        <sc-if value="{{o.ar}}" hint-placeholder-val="{{false}}">
-          <div id="ar-body" style="padding: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-            <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #EFEDF3;">
-              <span style="display: flex; height: 14px; border-radius: 9999px; overflow: hidden; gap: 2px;">
-                <sc-for list="{{arBuckets}}" as="bk" hint-placeholder-count="3"><span title="{{bk.title}}" style="width: {{bk.pct}}%; background: {{bk.color}};"></span></sc-for>
-              </span>
-              <span style="display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 13px; color: #47444F;">
-                <sc-for list="{{arBuckets}}" as="bk" hint-placeholder-count="3"><span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{bk.color}};"></span>{{bk.label}} <strong style="color: #18161F;">{{bk.amt}}</strong></span></sc-for>
-              </span>
-            </div>
-            <sc-if value="{{hasAr}}" hint-placeholder-val="{{true}}"><ul style="margin: 0; padding: 0 16px; list-style: none; border: 1px solid #E2DFE8; border-radius: 18px;">
-              <sc-for list="{{ar}}" as="r" hint-placeholder-count="6">
-                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 0; border-top: {{r.border}};">
-                  <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><a href="{{r.href}}" style="font-weight: 700; font-size: 15px; text-decoration: none;">{{r.who}}</a><span style="font-size: 13px; color: #5F5B68;">{{r.inv}}</span></span>
-                  <span style="display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto;">
-                    <sc-for list="{{r.tags}}" as="tg" hint-placeholder-count="1"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{tg.bg}}; color: {{tg.fg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{tg.fg}};"></span>{{tg.label}}</span></sc-for>
-                  </span>
-                  <strong style="flex: 0 0 72px; text-align: right; font-family: Sora, sans-serif; font-size: 15px; font-variant-numeric: tabular-nums;">{{r.amt}}</strong>
-                </li>
-              </sc-for>
-            </ul></sc-if>
-            <sc-if value="{{noAr}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; color: #47444F;">Nobody owes you anything right now.</span></sc-if>
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
-              <sc-if value="{{canRemind}}" hint-placeholder-val="{{true}}">
-                <button type="button" onClick="{{remind}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{remindLabel}}</button>
-              </sc-if>
-              <sc-if value="{{arSent}}" hint-placeholder-val="{{false}}">
-                <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Reminders sent today</span>
-              </sc-if>
-              <a href="SellInvoices.dc.html" style="margin-left: 6px; font-size: 14px; font-weight: 600;">See every invoice</a>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button type="button" onClick="{{out.ar.print}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"></path></svg>Printable view (PDF)</button>
-              <button type="button" onClick="{{out.ar.dl}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Download CSV</button>
-            </div>
-            <sc-if value="{{out.ar.csvOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8; background: #F7F6F9;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{out.ar.file}}</span><span style="font-size: 12px; color: #5F5B68;">If the download didn&#39;t start, copy this into a spreadsheet.</span></span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{out.ar.copy}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Copy CSV</button>
-                    <button type="button" onClick="{{out.ar.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close</button>
-                  </div>
-                </div>
-                <pre style="margin: 0; max-height: 220px; overflow: auto; padding: 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre;">{{out.ar.csv}}</pre>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.ar.printOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="font-size: 13px; color: #47444F;">Ready to print. Use your browser&#39;s Print or Share to save it as a PDF.</span>
-                  <button type="button" onClick="{{out.ar.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close printable view</button>
-                </div>
-                <article style="background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 10px rgba(24,22,31,0.06);">
-                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid #18161F; padding-bottom: 12px;">
-                    <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{out.ar.title}}</span><span style="font-size: 13px; color: #47444F;">{{biz}}</span></span>
-                    <span style="font-size: 13px; color: #47444F; text-align: right;">{{out.ar.period}}</span>
-                  </div>
-                  <div style="display: flex; flex-direction: column; font-size: 14px; font-variant-numeric: tabular-nums;">
-                    <sc-for list="{{out.ar.rows}}" as="pr" hint-placeholder-count="6">
-                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: {{pr.border}}; font-weight: {{pr.weight}};"><span style="min-width: 0; padding-left: {{pr.indent}};">{{pr.label}}</span><span style="white-space: nowrap;">{{pr.amount}}</span></div>
-                    </sc-for>
-                  </div>
-                  <span style="font-size: 12px; color: #5F5B68;">Prepared in BillingEase on {{today}}, 2026.</span>
-                </article>
-              </div>
-            </sc-if>
-          </div>
-        </sc-if>
-      </section>
-
-      <!-- ============ WHO DO I OWE ============ -->
-      <section id="owe" aria-labelledby="ap-q" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; scroll-margin-top: 16px;">
-        <button type="button" aria-expanded="{{o.ap}}" aria-controls="ap-body" onClick="{{tog.ap}}" style="width: 100%; text-align: left; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px); border: 0; border-radius: 24px; background: transparent; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
-          <span style="width: 44px; height: 44px; border-radius: 14px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h3"></path></svg></span>
-          <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span id="ap-q" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Who do I owe?</span><span style="font-size: 12.5px; color: #5F5B68;">Aged payables</span></span>
-          <span style="font-size: 14px; color: #47444F;">{{sum.ap}}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{chev.ap}}"></path></svg>
-        </button>
-        <sc-if value="{{o.ap}}" hint-placeholder-val="{{false}}">
-          <div id="ap-body" style="padding: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-            <ul style="margin: 16px 0 0; padding: 0 16px; list-style: none; border: 1px solid #E2DFE8; border-radius: 18px;">
-              <sc-for list="{{ap}}" as="r" hint-placeholder-count="5">
-                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 0; border-top: {{r.border}};">
-                  <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><a href="{{r.href}}" style="font-weight: 700; font-size: 15px; text-decoration: none;">{{r.who}}</a><span style="font-size: 13px; color: #5F5B68;">{{r.what}}</span></span>
-                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{r.bg}}; color: {{r.fg}}; font-size: 12px; font-weight: 600; white-space: nowrap; margin-left: auto;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.fg}};"></span>{{r.due}}</span>
-                  <strong style="flex: 0 0 72px; text-align: right; font-family: Sora, sans-serif; font-size: 15px; font-variant-numeric: tabular-nums;">{{r.amt}}</strong>
-                </li>
-              </sc-for>
-              <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 0; border-top: 2px solid #E2DFE8;">
-                <span style="flex: 1 1 200px; font-weight: 700;">{{apTotalLabel}}</span>
-                <strong style="flex: 0 0 72px; margin-left: auto; text-align: right; font-family: Sora, sans-serif; font-size: 16px; font-variant-numeric: tabular-nums;">{{apTotal}}</strong>
-              </li>
-            </ul>
-            <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{apNote}}</span>
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
-              <a href="SpendVendors.dc.html" style="margin-left: 6px; font-size: 14px; font-weight: 600;">Who you pay</a>
-              <a href="SpendPayroll.dc.html" style="margin-left: 6px; font-size: 14px; font-weight: 600;">Payroll</a>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button type="button" onClick="{{out.ap.print}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"></path></svg>Printable view (PDF)</button>
-              <button type="button" onClick="{{out.ap.dl}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Download CSV</button>
-            </div>
-            <sc-if value="{{out.ap.csvOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8; background: #F7F6F9;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{out.ap.file}}</span><span style="font-size: 12px; color: #5F5B68;">If the download didn&#39;t start, copy this into a spreadsheet.</span></span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{out.ap.copy}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Copy CSV</button>
-                    <button type="button" onClick="{{out.ap.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close</button>
-                  </div>
-                </div>
-                <pre style="margin: 0; max-height: 220px; overflow: auto; padding: 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre;">{{out.ap.csv}}</pre>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.ap.printOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="font-size: 13px; color: #47444F;">Ready to print. Use your browser&#39;s Print or Share to save it as a PDF.</span>
-                  <button type="button" onClick="{{out.ap.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close printable view</button>
-                </div>
-                <article style="background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 10px rgba(24,22,31,0.06);">
-                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid #18161F; padding-bottom: 12px;">
-                    <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{out.ap.title}}</span><span style="font-size: 13px; color: #47444F;">{{biz}}</span></span>
-                    <span style="font-size: 13px; color: #47444F; text-align: right;">{{out.ap.period}}</span>
-                  </div>
-                  <div style="display: flex; flex-direction: column; font-size: 14px; font-variant-numeric: tabular-nums;">
-                    <sc-for list="{{out.ap.rows}}" as="pr" hint-placeholder-count="6">
-                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: {{pr.border}}; font-weight: {{pr.weight}};"><span style="min-width: 0; padding-left: {{pr.indent}};">{{pr.label}}</span><span style="white-space: nowrap;">{{pr.amount}}</span></div>
-                    </sc-for>
-                  </div>
-                  <span style="font-size: 12px; color: #5F5B68;">Prepared in BillingEase on {{today}}, 2026.</span>
-                </article>
-              </div>
-            </sc-if>
-          </div>
-        </sc-if>
-      </section>
-
-      <!-- ============ SALES TAX (links out) ============ -->
-      <a id="tax" href="BooksTax.dc.html" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px); text-decoration: none; color: #18161F;">
-        <span style="width: 44px; height: 44px; border-radius: 14px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path></svg></span>
-        <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Sales tax</span><span style="font-size: 12.5px; color: #5F5B68;">Sales tax collected and owed</span></span>
-        <span style="font-size: 14px; color: #47444F;">{{sum.tax}}</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-      </a>
-    </div>
-
     </sc-if>
 
     <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}">
-    <section aria-labelledby="acc-h" style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; border-radius: 20px; background: #EFEDF3;">
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-        <span style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span id="acc-h" style="font-weight: 700; font-size: 15px;">For your accountant</span><span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{acctText}}</span></span>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-          <button type="button" onClick="{{out.gl.dl}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Every transaction <span style="font-weight: 500; color: #5F5B68;">(general ledger)</span></button>
-          <button type="button" onClick="{{out.tb.dl}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Category totals <span style="font-weight: 500; color: #5F5B68;">(trial balance)</span></button>
-        </div>
-      </div>
-            <sc-if value="{{out.gl.csvOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8; background: #F7F6F9;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{out.gl.file}}</span><span style="font-size: 12px; color: #5F5B68;">If the download didn&#39;t start, copy this into a spreadsheet.</span></span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{out.gl.copy}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Copy CSV</button>
-                    <button type="button" onClick="{{out.gl.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close</button>
-                  </div>
-                </div>
-                <pre style="margin: 0; max-height: 220px; overflow: auto; padding: 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre;">{{out.gl.csv}}</pre>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.gl.printOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="font-size: 13px; color: #47444F;">Ready to print. Use your browser&#39;s Print or Share to save it as a PDF.</span>
-                  <button type="button" onClick="{{out.gl.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close printable view</button>
-                </div>
-                <article style="background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 10px rgba(24,22,31,0.06);">
-                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid #18161F; padding-bottom: 12px;">
-                    <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{out.gl.title}}</span><span style="font-size: 13px; color: #47444F;">{{biz}}</span></span>
-                    <span style="font-size: 13px; color: #47444F; text-align: right;">{{out.gl.period}}</span>
-                  </div>
-                  <div style="display: flex; flex-direction: column; font-size: 14px; font-variant-numeric: tabular-nums;">
-                    <sc-for list="{{out.gl.rows}}" as="pr" hint-placeholder-count="6">
-                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: {{pr.border}}; font-weight: {{pr.weight}};"><span style="min-width: 0; padding-left: {{pr.indent}};">{{pr.label}}</span><span style="white-space: nowrap;">{{pr.amount}}</span></div>
-                    </sc-for>
-                  </div>
-                  <span style="font-size: 12px; color: #5F5B68;">Prepared in BillingEase on {{today}}, 2026.</span>
-                </article>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.tb.csvOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; border: 1px solid #E2DFE8; background: #F7F6F9;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{out.tb.file}}</span><span style="font-size: 12px; color: #5F5B68;">If the download didn&#39;t start, copy this into a spreadsheet.</span></span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{out.tb.copy}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Copy CSV</button>
-                    <button type="button" onClick="{{out.tb.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close</button>
-                  </div>
-                </div>
-                <pre style="margin: 0; max-height: 220px; overflow: auto; padding: 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre;">{{out.tb.csv}}</pre>
-              </div>
-            </sc-if>
-            <sc-if value="{{out.tb.printOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
-                  <span style="font-size: 13px; color: #47444F;">Ready to print. Use your browser&#39;s Print or Share to save it as a PDF.</span>
-                  <button type="button" onClick="{{out.tb.close}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Close printable view</button>
-                </div>
-                <article style="background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 10px rgba(24,22,31,0.06);">
-                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid #18161F; padding-bottom: 12px;">
-                    <span style="display: flex; flex-direction: column;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{out.tb.title}}</span><span style="font-size: 13px; color: #47444F;">{{biz}}</span></span>
-                    <span style="font-size: 13px; color: #47444F; text-align: right;">{{out.tb.period}}</span>
-                  </div>
-                  <div style="display: flex; flex-direction: column; font-size: 14px; font-variant-numeric: tabular-nums;">
-                    <sc-for list="{{out.tb.rows}}" as="pr" hint-placeholder-count="6">
-                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: {{pr.border}}; font-weight: {{pr.weight}};"><span style="min-width: 0; padding-left: {{pr.indent}};">{{pr.label}}</span><span style="white-space: nowrap;">{{pr.amount}}</span></div>
-                    </sc-for>
-                  </div>
-                  <span style="font-size: 12px; color: #5F5B68;">Prepared in BillingEase on {{today}}, 2026.</span>
-                </article>
-              </div>
-            </sc-if>
-    </section>
-    </sc-if>
-
-    <nav aria-label="More in your books" style="display: flex; flex-direction: column; gap: 10px;">
-      <span style="font-size: 13px; font-weight: 600; color: #47444F;">More in your books</span>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px;">
-        <sc-for list="{{more}}" as="mo" hint-placeholder-count="4">
-          <a href="{{mo.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; color: #18161F;">
-            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{mo.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{mo.formal}}</span></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-          </a>
+      <div role="group" aria-label="Reports" class="k-tabs" style="align-self: flex-start;">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="6">
+          <button type="button" class="k-tab" aria-pressed="{{t.on}}" onClick="{{t.pick}}">{{t.label}}</button>
         </sc-for>
       </div>
-    </nav>
-  </main>
 
+      <section id="{{r.id}}" class="k-card" aria-labelledby="r-h">
+        <div class="k-head" style="align-items: center;">
+          <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <h2 id="r-h" class="k-h2">{{r.title}}</h2>
+            <span class="k-sub">{{r.sub}}</span>
+          </div>
+          <sc-if value="{{r.hasPeriods}}" hint-placeholder-val="{{true}}">
+            <div role="group" aria-label="Period" class="k-tabs">
+              <sc-for list="{{r.periods}}" as="pp" hint-placeholder-count="3"><button type="button" class="k-tab" aria-pressed="{{pp.on}}" onClick="{{pp.pick}}" style="min-height: 34px; font-size: 13px;">{{pp.label}}</button></sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-for list="{{r.blocks}}" as="b" hint-placeholder-count="2">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <sc-if value="{{b.title}}" hint-placeholder-val="{{true}}">
+              <div class="k-head" style="padding: 8px 0 2px;"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5F5B68;">{{b.title}}</span><sc-if value="{{b.link}}" hint-placeholder-val="{{false}}"><a href="{{b.link}}" style="font-size: 13px; font-weight: 600; color: #47444F;">{{b.linkText}}</a></sc-if></div>
+            </sc-if>
+            <div style="overflow-x: auto; max-width: 100%;">
+              <table style="width: 100%; min-width: {{b.minW}}; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums;">
+                <thead><tr>
+                  <sc-for list="{{b.cols}}" as="c" hint-placeholder-count="2"><th scope="col" style="text-align: {{c.align}}; padding: 6px 8px; font-size: 12px; font-weight: 600; color: #5F5B68; border-bottom: 1px solid #E2DFE8; white-space: nowrap;">{{c.label}}</th></sc-for>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{b.rows}}" as="row" hint-placeholder-count="5">
+                    <tr style="background: {{row.bg}};">
+                      <th scope="row" style="text-align: left; padding: 9px 8px; border-top: {{row.border}}; font-weight: {{row.weight}}; vertical-align: top;">
+                        <sc-if value="{{row.href}}" hint-placeholder-val="{{false}}"><a href="{{row.href}}" style="text-decoration: none;">{{row.label}}</a></sc-if>
+                        <sc-if value="{{row.nohref}}" hint-placeholder-val="{{true}}"><span>{{row.label}}</span></sc-if>
+                        <sc-if value="{{row.sub}}" hint-placeholder-val="{{true}}"><span style="display: block; font-size: 12px; font-weight: 400; color: #5F5B68;">{{row.sub}}</span></sc-if>
+                      </th>
+                      <sc-for list="{{row.cells}}" as="cell" hint-placeholder-count="1"><td style="text-align: right; padding: 9px 8px; border-top: {{row.border}}; font-weight: {{row.weight}}; white-space: nowrap; vertical-align: top; color: {{row.color}};">{{cell}}</td></sc-for>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <sc-if value="{{b.note}}" hint-placeholder-val="{{false}}"><span class="k-sub">{{b.note}}</span></sc-if>
+          </div>
+        </sc-for>
+
+        <div class="k-btns" style="padding-top: 4px;">
+          <button type="button" class="k-btn k-btn-soft" onClick="{{toggleCsv}}" aria-expanded="{{csvOpen}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>{{csvLabel}}</button>
+          <sc-for list="{{r.links}}" as="l" hint-placeholder-count="1"><a class="k-btn k-btn-soft" href="{{l.href}}">{{l.label}}</a></sc-for>
+        </div>
+        <sc-if value="{{csvOpen}}" hint-placeholder-val="{{false}}">
+          <div class="k-soft" style="border: 1px solid #E2DFE8;">
+            <div class="k-head" style="align-items: center;">
+              <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{csvName}}</span><span class="k-sub">Copy it into a spreadsheet, or send it to {{prShort}}.</span></span>
+              <div class="k-btns"><button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{copyCsv}}">Copy CSV</button><button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{toggleCsv}}">Close</button></div>
+            </div>
+            <pre class="k-pre">{{csv}}</pre>
+          </div>
+        </sc-if>
+      </section>
+      <p class="k-sub" style="margin: 0;">{{foot}}</p>
+    </sc-if>
+  </main>
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
     <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
       <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
@@ -565,217 +160,179 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { open: {}, period: 'month', method: null, cmp: true, reminded: false, csvFor: null, printFor: null, toast: null };
-  }
-
-  moreLinks(cur) {
-    return [
-      { key: 'keep', label: 'Yours to keep', formal: 'Profit after tax, month by month', href: 'ThreeKeep.dc.html' },
-      { key: 'rep', label: 'Reports', formal: 'Profit & loss, balance sheet, cash flow', href: 'BooksReports.dc.html' },
-      { key: 'tax', label: 'Tax and year-end', formal: 'Sales tax, accounting method, year-end close', href: 'BooksTax.dc.html' },
-      { key: 'rec', label: 'Check against your bank statement', formal: 'Bank reconciliation', href: 'BooksReconcile.dc.html' },
-      { key: 'cat', label: 'Categories', formal: 'Chart of accounts and journal entries', href: 'BooksCategories.dc.html' },
-      { key: 'fx', label: 'Currencies', formal: 'Exchange rates, gains and losses', href: 'BooksCurrencies.dc.html' }
-    ].filter((l) => l.key !== cur);
+    this.state = { tab: null, per: 'year', csvOpen: false, toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
-  outFor(key, file, title, period, rows) {
-    // rows: [[label, amount (number or ''), level]] level: 'head' | 'line' | 'total'
-    const st = this.state;
-    const money = (n) => (typeof n === 'number' ? BE.money(n, 'USD', { cents: true }) : n);
-    const csv = BE.books.csv([['Line', 'Amount (USD)']].concat(rows.map((r) => [r[0], typeof r[1] === 'number' ? r[1].toFixed(2) : r[1]])));
-    return {
-      file, csv, title, period,
-      csvOpen: st.csvFor === key, printOpen: st.printFor === key,
-      rows: rows.map((r) => ({ label: r[0], amount: money(r[1]), weight: r[2] === 'line' ? '400' : '700', border: r[2] === 'total' ? '1px solid #18161F' : (r[2] === 'head' ? '0' : '1px solid #EFEDF3'), indent: r[2] === 'line' ? '14px' : '0' })),
-      dl: () => { const ok = BE.books.download(file, csv); this.setState({ csvFor: key, printFor: null }); this.notify((ok ? 'Downloaded ' : 'Here’s ') + file); },
-      print: () => { this.setState({ printFor: key, csvFor: null }); this.notify('Printable ' + title + ' is open below'); },
-      copy: () => { const ok = BE.books.copy(csv); this.notify(ok ? 'Copied ' + file + ' · paste it into a spreadsheet' : 'Select the text and copy it'); },
-      close: () => this.setState({ csvFor: null, printFor: null })
-    };
-  }
   renderVals() {
     const st = this.state;
-    const M = (n) => BE.money(n, 'USD', { whole: true });
-    const C2 = (n) => BE.money(n, 'USD', { cents: true });
-    const signed = (n) => (n > 0 ? '+' : '') + M(n);
+    const P = BE.pack();
+    const lk = BE.is('lk');
+    const books = BE.books;
     const prof = BE.get('profile') || {};
-    const biz = prof.business || 'Your business';
-    const fileBase = biz.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    const settings = BE.get('bookSettings') || {};
-    const method = st.method || settings.method || 'accrual';
-    const tm = BE.totals('month');
-    const hasData = !!(tm.in || tm.out || BE.all('invoices').length || BE.all('expenses').length);
+    const W = (n) => BE.money(n, null, { whole: true });
+    const M = (n) => BE.money(n, null, { cents: true });
+    const pr = BE.practice ? BE.practice() : { has: false, short: 'your accountant' };
+    const prShort = pr.has ? pr.short : (lk ? 'your tax practitioner' : 'your accountant');
+    const yr = books.yearRange();
+    const hasData = books.ledger().length > 0 || BE.all('invoices').length > 0;
+    const t = BE.keepTotals ? BE.keepTotals('year') : BE.totals('year');
+    const bal = books.balance();
+    const TABS = [['profit', 'Profit and loss'], ['balance', 'Balance sheet'], ['owed', 'Owed to you'], ['owe', 'Bills to pay']]
+      .concat(lk ? [['vat', 'VAT and SSCL'], ['payroll', 'Payroll']] : [['quarters', 'Quarters'], ['property', 'Property']]);
+    const hash = BE.hash();
+    const tab = st.tab || (TABS.some((x) => x[0] === hash) ? hash : 'profit');
+    const col = (label, align) => ({ label, align: align || 'right' });
+    const R = (label, cells, o) => Object.assign({ label, cells, sub: '', href: false, nohref: true, weight: 400, border: '1px solid #EFEDF3', bg: 'transparent', color: '#18161F' }, o || {});
+    const link = (o, href) => Object.assign(o, { href: href || false, nohref: !href });
+    const total = (label, cells, o) => R(label, cells, Object.assign({ weight: 700, border: '2px solid #18161F' }, o || {}));
+    let r = { id: tab, title: '', sub: '', blocks: [], links: [], hasPeriods: false, periods: [] };
+    let csvRows = [];
+    const catLabel = (row) => ({ label: row.name, sub: row.official });
 
-    // ---- Profit & Loss ----
-    const P = BE.books.pl(st.period, method);
-    const sep = BE.get('plSep') || { income: {}, costs: {} };
-    const canCmp = st.period === 'month' && method === 'accrual' && Object.keys(sep.income || {}).length > 0;
-    const cmpOn = canCmp && st.cmp;
-    const names = { month: ['October', 'This month', 'Oct-2026', 'October 1 – 31, 2026'], quarter: ['Q4 so far', 'This quarter', 'Q4-2026', 'October 1 – December 31, 2026, so far'], year: ['2026 so far', 'This year', '2026', 'January 1 – October 31, 2026'] }[st.period];
-    const sum = (o) => Object.keys(o || {}).reduce((a, k) => a + o[k], 0);
-    const pi = sum(sep.income), pe = sum(sep.costs), ppf = pi - pe;
-    const formalOf = (r) => r.cat ? r.cat.formal : (r.earlier ? 'Before October' : (r.label === 'Sales tax on product invoices' ? 'Held for the state, not yours' : 'Other'));
-    const rows = [];
-    const head = (label, formal) => rows.push({ label, formal, cur: '', prev: '', chg: '', pad: '14px 12px 6px', border: '0', bg: 'transparent', radius: '0', weight: '700', size: '15px', font: 'DM Sans, sans-serif' });
-    const line = (label, formal, c, p) => rows.push({ label, formal, cur: c ? M(c) : '—', prev: p ? M(p) : '—', chg: (c || p) ? signed(c - p) : '', pad: '9px 12px', border: '1px solid #EFEDF3', bg: 'transparent', radius: '0', weight: '400', size: '14px', font: 'DM Sans, sans-serif' });
-    const tot = (label, c, p, bg) => rows.push({ label, formal: '', cur: M(c), prev: M(p), chg: signed(c - p), pad: '11px 12px', border: '0', bg, radius: '12px', weight: '700', size: '15px', font: 'Sora, sans-serif' });
-    head('Coming in', 'Income');
-    const seenIn = {}, seenOut = {};
-    P.income.forEach((r) => { seenIn[r.label] = 1; line(r.label, formalOf(r), r.amount, (sep.income || {})[r.label] || 0); });
-    if (cmpOn) Object.keys(sep.income).forEach((k) => { if (!seenIn[k]) line(k, '', 0, sep.income[k]); });
-    if (!P.income.length) rows.push({ label: 'Nothing yet', formal: '', cur: '—', prev: '', chg: '', pad: '9px 12px', border: '1px solid #EFEDF3', bg: 'transparent', radius: '0', weight: '400', size: '14px', font: 'DM Sans, sans-serif' });
-    tot('Total coming in', P.tIn, pi, '#EEE8FF');
-    head('Going out', 'Expenses');
-    P.costs.forEach((r) => { seenOut[r.label] = 1; line(r.label, formalOf(r), r.amount, (sep.costs || {})[r.label] || 0); });
-    if (cmpOn) Object.keys(sep.costs).forEach((k) => { if (!seenOut[k]) line(k, '', 0, sep.costs[k]); });
-    tot('Total going out', P.tOut, pe, '#FDE6D6');
-    rows.push({ label: 'Profit', formal: 'Net income', cur: M(P.profit), prev: M(ppf), chg: signed(P.profit - ppf), pad: '14px 12px', border: '0', bg: '#18161F; color: #FFFFFF', radius: '12px', weight: '700', size: '17px', font: 'Sora, sans-serif' });
-    rows.forEach((r) => { r.muted = r.bg.indexOf('#18161F') === 0 ? '#C9BCFB' : '#47444F'; });
-    rows.forEach((r, i) => { if (rows[i - 1] && rows[i - 1].radius === '12px' && r.border !== '0') r.border = '0'; });
-    const pct = (a, b) => (b ? (a >= b ? '+' : '−') + Math.abs(Math.round((a - b) / b * 100)) + '%' : '');
-    const ratePct = Math.round(P.rate * 100) + '%';
-    const pl = {
-      curName: names[0], prevName: 'September', rows, hasNote: true,
-      note: (method === 'cash' ? 'Counting only money that has moved: paid invoices and paid costs. ' : 'Counting money on the way and bills still to pay, like your three numbers. ') + (st.period === 'quarter' ? 'Q4 started Oct 1, so it’s just October so far.' : (st.period === 'year' ? 'January to September comes from your earlier months.' : '')),
-      tableLabel: 'Profit and loss, ' + names[0],
-      tiles: [
-        { label: 'Coming in', value: M(P.tIn), vs: pct(P.tIn, pi) + ' vs September (' + M(pi) + ')', bg: '#EEE8FF', fg: '#18161F', numFg: '#18161F', dot: '#7A5AF8' },
-        { label: 'Going out', value: M(P.tOut), vs: pct(P.tOut, pe) + ' vs September (' + M(pe) + ')', bg: '#FDE6D6', fg: '#18161F', numFg: '#18161F', dot: '#E0752D' },
-        { label: 'Profit', value: M(P.profit), vs: pct(P.profit, ppf) + ' vs September (' + M(ppf) + ')', bg: '#18161F', fg: '#EEE8FF', numFg: '#B9A3FF', dot: '#B9A3FF' }
-      ],
-      keepLine: P.profit > 0 ? 'After ' + ratePct + ' set aside for tax (' + M(P.tax) + '), ' + M(P.keep) + ' of this profit is yours to keep.' : 'No profit yet, so nothing is set aside for tax.'
+    if (tab === 'profit') {
+      const q2 = lk ? { from: new Date(2026, 6, 1), to: new Date(2026, 8, 30), label: 'Jul – Sep' } : (() => { const q = books.quarters().find((x) => x.id === P.lastQuarter); return { from: q.fromD, to: q.toD, label: q.label + ' (' + q.range + ')' }; })();
+      const PER = { month: { from: new Date(2026, 9, 1), to: BE.todayDate, label: 'October so far' }, last: q2, year: { from: yr.from, to: BE.todayDate, label: yr.label + ' so far' } };
+      const per = PER[st.per] ? st.per : 'year';
+      const pp = PER[per];
+      const sm = books.pl(pp.from, pp.to);
+      const basis = books.basis();
+      r.title = 'Profit and loss';
+      r.sub = pp.label + ' · ' + (basis === 'cash' ? 'cash basis: money in and out when it moves' : 'accruals: invoices and bills when they’re dated') + ' · in ' + (lk ? 'the lines of the income tax return' : 'HMRC’s categories');
+      r.hasPeriods = true;
+      r.periods = [['month', 'October'], ['last', lk ? 'Jul – Sep' : P.lastQuarter.toUpperCase()], ['year', yr.label]].map(([k, l]) => ({ label: l, on: per === k, pick: () => { if (per !== k) this.setState({ per: k, csvOpen: false }); } }));
+      const allowRows = sm.se.rows.filter((x) => x.allowable);
+      const notRows = sm.se.rows.filter((x) => !x.allowable);
+      const seRows = [R(lk ? 'Sales and services' : 'Your sales', [M(sm.se.income)], { sub: lk ? 'Gains and profits from business' : 'Turnover', weight: 600 })]
+        .concat(sm.se.other ? [R('Other business income', [M(sm.se.other)])] : [])
+        .concat(allowRows.map((x) => R(x.name, ['−' + M(x.amount)], { sub: x.official, color: x.id === 'unsorted' ? '#A8200D' : '#18161F' })))
+        .concat([total('Profit', [M(sm.se.profit)], { sub: (lk ? 'Business income' : 'Income') + ' less allowable costs' })]);
+      r.blocks.push({ title: lk ? 'Business income' : 'Self-employment', cols: [col('', 'left'), col('Amount')], rows: seRows, minW: '320px', note: '' });
+      if (notRows.length) r.blocks.push({ title: 'Not counted against profit', cols: [col('', 'left'), col('Amount')], rows: notRows.map((x) => R(x.name, [M(x.amount)], { sub: x.official })), minW: '320px', note: lk ? 'Equipment is claimed as capital allowances in the return; entertainment is restricted.' : 'Equipment goes to ' + prShort + ' for capital allowances; client entertaining isn’t allowable.' });
+      let propProfit = 0;
+      if (!lk && BE.all('properties').length) {
+        propProfit = sm.prop.profit;
+        r.blocks.push({ title: 'UK property', link: 'Properties.dc.html', linkText: 'Open the flat', cols: [col('', 'left'), col('Amount')], minW: '320px',
+          rows: [R('Rent', [M(sm.prop.income)], { sub: 'Total rents and other income from property', weight: 600 })].concat(sm.prop.rows.map((x) => R(x.name, ['−' + M(x.amount)], { sub: x.official }))).concat([total('Property profit', [M(sm.prop.profit)])]),
+          note: 'Mortgage interest of ' + M(sm.prop.finance) + ' is kept separate: it earns a 20% tax credit instead of being deducted.' });
+      }
+      r.blocks.push({ title: '', cols: [col('', 'left'), col('')], minW: '320px', rows: [total('Total profit for ' + pp.label, [M(sm.se.profit + propProfit)], { bg: '#EEE8FF', border: '0' })], note: sm.se.unsorted.length ? sm.se.unsorted.length + ' item' + (sm.se.unsorted.length === 1 ? ' isn’t' : 's aren’t') + ' sorted yet; they’re counted as costs until they are.' : '' });
+      r.links = [{ label: 'See the ' + taxWord(lk) + ' estimate', href: 'ThreeKeep.dc.html#estimate' }];
+      csvRows = [['Profit and loss', prof.business || '', pp.label, basis], [], ['Section', 'Line', 'Official name', 'Amount']];
+      csvRows.push([lk ? 'Business income' : 'Self-employment', lk ? 'Sales and services' : 'Your sales', lk ? 'Gains and profits from business' : 'Turnover', sm.se.income.toFixed(2)]);
+      sm.se.rows.forEach((x) => csvRows.push([x.allowable ? 'Costs' : 'Not allowable', x.name, x.official, (-x.amount).toFixed(2)]));
+      csvRows.push(['', 'Profit', '', sm.se.profit.toFixed(2)]);
+      if (!lk && BE.all('properties').length) { csvRows.push(['UK property', 'Rent', 'Total rents and other income from property', sm.prop.income.toFixed(2)]); sm.prop.rows.forEach((x) => csvRows.push(['UK property', x.name, x.official, (-x.amount).toFixed(2)])); csvRows.push(['UK property', 'Mortgage interest (separate)', 'Residential property finance costs', sm.prop.finance.toFixed(2)]); }
+    } else if (tab === 'balance') {
+      r.title = 'Balance sheet';
+      r.sub = 'What ' + (prof.business || 'the business') + ' owns and owes today, ' + BE.today + ' 2026';
+      const blk = (title, list, tot, totLabel) => ({ title, cols: [col('', 'left'), col('Amount')], minW: '320px', rows: list.map((x) => R(x.label, [M(x.amount)], { sub: x.formal })).concat([total(totLabel, [M(tot)])]) });
+      r.blocks = [blk('What you own', bal.own, bal.tOwn, 'Total you own'), blk('What you owe', bal.owe, bal.tOwe, 'Total you owe'),
+        blk('What’s yours', bal.eq, bal.tEq, 'Yours (own less owe)')];
+      r.blocks[2].note = 'Always balances: what you own, less what you owe, is yours. Cash starts from your bank balance on 1 Oct plus what’s been recorded since.';
+      csvRows = [['Balance sheet', prof.business || '', BE.today + ' 2026'], [], ['Section', 'Line', 'Official name', 'Amount']];
+      [['Own', bal.own], ['Owe', bal.owe], ['Equity', bal.eq]].forEach(([s, l]) => l.forEach((x) => csvRows.push([s, x.label, x.formal, x.amount.toFixed(2)])));
+    } else if (tab === 'owed' || tab === 'owe') {
+      const a = books.aged(tab === 'owed' ? 'in' : 'out');
+      r.title = tab === 'owed' ? 'Money owed to you' : 'Bills you owe';
+      r.sub = (tab === 'owed' ? 'Aged receivables' : 'Aged payables') + ' · by how late, today';
+      r.blocks.push({ title: 'By age', cols: [col('', 'left'), col('Count'), col('Amount')], minW: '320px', rows: a.buckets.map((b) => R(b.label, [String(b.items.length), M(b.amount)], { color: b.id === 'cur' ? '#18161F' : b.amount ? '#A8200D' : '#18161F' })).concat([total('Total', [String(a.buckets.reduce((x, b) => x + b.items.length, 0)), M(a.total)])]) });
+      const items = [].concat(...a.buckets.map((b) => b.items.map((i) => Object.assign({ bucket: b.label }, i))));
+      r.blocks.push({ title: tab === 'owed' ? 'Invoices' : 'Bills', cols: [col(tab === 'owed' ? 'Customer' : 'Supplier', 'left'), col('Due'), col('Open')], minW: '420px',
+        rows: items.length ? items.map((i) => link(R(i.who, [i.due + (i.dueIn < 0 ? ' · ' + (-i.dueIn) + 'd late' : ''), M(i.amount)], { sub: i.what, color: i.dueIn < 0 ? '#A8200D' : '#18161F' }), i.href)) : [R(tab === 'owed' ? 'Nobody owes you anything right now' : 'No bills to pay', ['', ''])] });
+      r.links = [{ label: tab === 'owed' ? 'All invoices' : 'All bills', href: tab === 'owed' ? 'SellInvoices.dc.html' : 'ThreeOut.dc.html' }];
+      csvRows = [[r.title, prof.business || '', BE.today + ' 2026'], [], ['Who', 'What', 'Due', 'Age', 'Open']];
+      items.forEach((i) => csvRows.push([i.who, i.what, i.due, i.bucket, i.amount.toFixed(2)]));
+    } else if (tab === 'quarters') {
+      const qs = books.quarters().map((q) => books.quarter(q.id));
+      r.title = 'Quarter summary';
+      r.sub = 'Making Tax Digital quarters for ' + yr.label + ' · self-employment in HMRC’s categories';
+      const cats = {};
+      qs.forEach((q) => q.sum.se.rows.forEach((x) => { cats[x.id] = cats[x.id] || x; }));
+      const STAT = { filed: 'Filed', sent: 'Sent', ready: 'To send', open: 'Open', upcoming: '—' };
+      const cell = (q, f) => q.hasData ? f(q) : '—';
+      const rows = [R('Status', qs.map((q) => STAT[q.status]), { weight: 600 }), R('Your sales', qs.map((q) => cell(q, (x) => W(x.sum.se.income))), { sub: 'Turnover', weight: 600 })]
+        .concat(Object.keys(cats).map((k) => R(cats[k].name, qs.map((q) => { const x = q.sum.se.rows.find((y) => y.id === k); return x ? W(x.amount) : '—'; }), { sub: cats[k].official + (cats[k].allowable ? '' : ' · not allowable') })))
+        .concat([total('Profit', qs.map((q) => cell(q, (x) => W(x.sum.se.profit))))]);
+      r.blocks.push({ title: '', cols: [col('', 'left')].concat(qs.map((q) => col(q.label))), rows, minW: '560px', note: 'Staff costs come from your payroll records; Car, van and travel includes mileage.' });
+      r.links = [{ label: 'Open Quarters', href: 'Quarters.dc.html' }];
+      csvRows = [['Quarter summary', prof.business || '', yr.label], [], ['Line', 'Official name'].concat(qs.map((q) => q.label))];
+      csvRows.push(['Your sales', 'Turnover'].concat(qs.map((q) => q.sum.se.income.toFixed(2))));
+      Object.keys(cats).forEach((k) => csvRows.push([cats[k].name, cats[k].official].concat(qs.map((q) => { const x = q.sum.se.rows.find((y) => y.id === k); return x ? x.amount.toFixed(2) : '0.00'; }))));
+      csvRows.push(['Profit', ''].concat(qs.map((q) => q.sum.se.profit.toFixed(2))));
+    } else if (tab === 'property') {
+      const qs = books.quarters().map((q) => books.quarter(q.id));
+      const yt = BE.propertyTotals ? BE.propertyTotals() : { income: 0, costs: 0, finance: 0, allowance: 1000, allowanceBetter: false };
+      r.title = 'Property summary';
+      r.sub = (BE.all('properties')[0] || {}).name ? (BE.all('properties')[0].name + ', ' + BE.all('properties')[0].area + ' · your share') : 'Your let property';
+      const cats = {};
+      qs.forEach((q) => q.sum.prop.rows.forEach((x) => { cats[x.id] = cats[x.id] || x; }));
+      const rows = [R('Rent', qs.map((q) => q.sum.prop.income ? W(q.sum.prop.income) : '—'), { sub: 'Total rents and other income from property', weight: 600 })]
+        .concat(Object.keys(cats).map((k) => R(cats[k].name, qs.map((q) => { const x = q.sum.prop.rows.find((y) => y.id === k); return x ? W(x.amount) : '—'; }), { sub: cats[k].official })))
+        .concat([total('Property profit', qs.map((q) => q.sum.prop.income || q.sum.prop.costs ? W(q.sum.prop.profit) : '—')), R('Mortgage interest (kept separate)', qs.map((q) => q.sum.prop.finance ? W(q.sum.prop.finance) : '—'), { sub: 'Residential property finance costs: 20% tax credit' })]);
+      r.blocks.push({ title: 'By quarter', cols: [col('', 'left')].concat(qs.map((q) => col(q.label))), rows, minW: '560px' });
+      r.blocks.push({ title: 'Costs or the £' + (yt.allowance || 1000).toLocaleString('en-GB') + ' property allowance', cols: [col('', 'left'), col(yr.label + ' so far')], minW: '320px',
+        rows: [R('Your allowable costs', [M(yt.costs)]), R('The property allowance instead', [M(Math.min(yt.allowance || 1000, yt.income))]), total(yt.allowanceBetter ? 'The allowance is better' : 'Your actual costs are better', [''])],
+        note: yt.allowanceBetter ? 'Claiming the allowance means you can’t also claim costs or the mortgage interest credit. Ask ' + prShort + '.' : 'Keep claiming your actual costs (and the mortgage interest credit).' });
+      r.links = [{ label: 'Open the flat', href: 'Properties.dc.html' }];
+      csvRows = [['Property summary', prof.business || '', yr.label], [], ['Line', 'Official name'].concat(qs.map((q) => q.label))];
+      csvRows.push(['Rent', 'Total rents and other income from property'].concat(qs.map((q) => q.sum.prop.income.toFixed(2))));
+      Object.keys(cats).forEach((k) => csvRows.push([cats[k].name, cats[k].official].concat(qs.map((q) => { const x = q.sum.prop.rows.find((y) => y.id === k); return x ? x.amount.toFixed(2) : '0.00'; }))));
+      csvRows.push(['Mortgage interest', 'Residential property finance costs'].concat(qs.map((q) => q.sum.prop.finance.toFixed(2))));
+    } else if (tab === 'vat') {
+      const ps = books.periods().map((p) => books.period(p.id));
+      r.title = 'VAT and SSCL summary';
+      r.sub = prof.vatRegistered ? 'Month by month · output from tax invoices, input from suppliers’ tax invoices' : 'You’re not registered for VAT or SSCL';
+      const STAT = { filed: 'Filed', due: 'Due', open: 'Open', upcoming: '—' };
+      if (prof.vatRegistered) {
+        r.blocks.push({ title: '', cols: [col('', 'left')].concat(ps.map((p) => col(p.short))), minW: '520px', rows: [
+          R('Status', ps.map((p) => STAT[p.status] + (p.status === 'due' ? ' ' + String(p.due).replace(/ 20\d\d$/, '') : '')), { weight: 600 }),
+          R('Taxable supplies', ps.map((p) => W(p.value)), { sub: 'Value before SSCL and VAT' }),
+          R('Output VAT', ps.map((p) => W(p.output))), R('Input VAT', ps.map((p) => '−' + W(p.input))),
+          R('VAT payable', ps.map((p) => W(p.net)), { weight: 600 }), R('SSCL', ps.map((p) => p.ssclOn ? W(p.sscl) : '—'), { sub: '2.5%, no input credit' }),
+          total('To pay the IRD', ps.map((p) => W(p.total)))
+        ], note: 'How SSCL sits in the VAT base is to confirm with IRD.' });
+        csvRows = [['VAT and SSCL summary', prof.business || '', 'TIN ' + (prof.tin || '')], [], ['Period', 'Status', 'Taxable supplies', 'Output VAT', 'Input VAT', 'VAT payable', 'SSCL', 'Total']];
+        ps.forEach((p) => csvRows.push([p.label, STAT[p.status], p.value.toFixed(2), p.output.toFixed(2), p.input.toFixed(2), p.net.toFixed(2), p.sscl.toFixed(2), p.total.toFixed(2)]));
+      } else {
+        r.blocks.push({ title: '', cols: [col('', 'left'), col('Amount')], minW: '320px', rows: [R('Turnover so far this year of assessment', [W(books.turnover().total)])], note: 'Tax periods tracks it against the VAT threshold.' });
+        csvRows = [['Turnover', books.turnover().total]];
+      }
+      r.links = [{ label: 'Open Tax periods', href: 'TaxPeriods.dc.html' }];
+    } else if (tab === 'payroll') {
+      const ytd = BE.payrollYtd ? BE.payrollYtd() : [];
+      const sum = (k) => ytd.reduce((a, x) => a + (x[k] || 0), 0);
+      r.title = 'Payroll summary';
+      r.sub = yr.label + ' so far · runs approved or paid · EPF 8% and 12%, ETF 3%, APIT from the tables';
+      r.blocks.push({ title: '', cols: [col('Employee', 'left'), col('Months'), col('Gross pay'), col('EPF 8%'), col('APIT'), col('Net pay'), col('EPF 12%'), col('ETF 3%')], minW: '760px',
+        rows: ytd.length ? ytd.map((x) => link(R(x.name, [String(x.months), W(x.gross), W(x.epfEe), W(x.apit), W(x.net), W(x.epfEr), W(x.etf)]), 'SpendPayroll.dc.html'))
+          .concat([total('Total', ['', W(sum('gross')), W(sum('epfEe')), W(sum('apit')), W(sum('net')), W(sum('epfEr')), W(sum('etf'))])]) : [R('No pay runs yet', ['', '', '', '', '', '', ''])],
+        note: 'These totals go to TaxWise.lk at the year end, with each employee’s APIT for their certificate.' });
+      r.links = [{ label: 'Open Payroll', href: 'SpendPayroll.dc.html' }];
+      csvRows = [['Payroll summary', prof.business || '', yr.label + ' so far'], [], ['Employee', 'Months', 'Gross', 'EPF 8%', 'APIT', 'Net', 'EPF 12%', 'ETF 3%']];
+      ytd.forEach((x) => csvRows.push([x.name, x.months, x.gross, x.epfEe, x.apit, x.net, x.epfEr, x.etf]));
+    }
+    const csv = books.csv(csvRows);
+    const csvName = (prof.business || 'Business').replace(/[^A-Za-z0-9]+/g, '-') + '-' + r.title.replace(/[^A-Za-z0-9]+/g, '-') + '.csv';
+    function taxWord(l) { return l ? 'income tax' : 'Income Tax and NI'; }
+    const hero = {
+      big: W(t.profit), lead: hasData ? 'Profit for ' + yr.label + ' so far (' + yr.from.getDate() + ' ' + books.MON[yr.from.getMonth()] + ' to today). Every report below reads the same entries as Home and Yours to keep.' : 'Nothing recorded yet. Profit and loss, the balance sheet and your ' + (lk ? 'VAT, SSCL and payroll' : 'quarter') + ' summaries build themselves as you work.',
+      nums: [{ label: 'Coming in', value: W(t.in), color: '#FFFFFF' }, { label: 'Going out', value: W(t.out), color: '#FFFFFF' }, { label: 'Yours to keep', value: W(t.keep), color: '#B9A3FF' }]
     };
-    const periods = ['month', 'quarter', 'year'].map((k) => ({ label: { month: 'This month', quarter: 'This quarter', year: 'This year' }[k], on: st.period === k, bg: st.period === k ? '#18161F' : 'transparent', fg: st.period === k ? '#FFFFFF' : '#18161F', pick: () => this.setState({ period: k }) }));
-    const methods = [['accrual', 'When billed'], ['cash', 'When paid']].map(([k, label]) => ({ label, on: method === k, bg: method === k ? '#18161F' : 'transparent', fg: method === k ? '#FFFFFF' : '#18161F', pick: () => { if (method !== k) { this.setState({ method: k }); this.notify(k === 'cash' ? 'Showing cash basis: only money that has moved' : 'Showing accrual basis: money on the way and bills to pay count too'); } } }));
-
-    // ---- Balance sheet ----
-    const B = BE.books.balance();
-    const grp = (title, formal, totLabel, total, totBg, totFg, numFg, list) => ({ title, formal, totLabel, total: M(total), totBg, totFg, numFg, rows: list.map((r) => ({ label: r.label, formal: r.formal, amt: M(r.amount) })) });
-    const bs = [
-      grp('What you own', 'Assets', 'You own', B.tOwn, '#EEE8FF', '#18161F', '#18161F', B.own),
-      grp('What you owe', 'Liabilities', 'You owe', B.tOwe, '#FDE6D6', '#18161F', '#18161F', B.owe),
-      grp('What’s yours', 'Owner’s equity', 'Yours', B.tEq, '#18161F', '#FFFFFF', '#B9A3FF', B.eq)
-    ];
-    const owePct = B.tOwn > 0 ? Math.round(B.tOwe / B.tOwn * 1000) / 10 : 0;
-    const bsBar = { owe: owePct, yours: Math.round((100 - owePct) * 10) / 10, oweAmt: M(B.tOwe), yoursAmt: M(B.tEq), title: 'Of ' + M(B.tOwn) + ' you own: ' + M(B.tOwe) + ' is owed to others, ' + M(B.tEq) + ' is yours' };
-
-    // ---- Cash flow ----
-    const CF = BE.books.cash();
-    const cfRow = (label, formal, now, exp, kind) => ({ label, formal, now, exp,
-      pad: kind === 'line' ? '10px 12px' : '12px 12px', border: kind === 'line' ? '1px solid #EFEDF3' : '0',
-      bg: kind === 'end' ? '#18161F; color: #FFFFFF' : (kind === 'tot' ? '#F7F6F9' : 'transparent'), radius: kind === 'line' ? '0' : '12px',
-      muted: kind === 'end' ? '#C9BCFB' : '#47444F', weight: kind === 'line' ? '400' : '700', font: kind === 'line' ? 'DM Sans, sans-serif' : 'Sora, sans-serif' });
-    const sg = (n) => (n > 0 ? '+' : n < 0 ? '−' : '') + M(Math.abs(n));
-    const cf = [
-      cfRow('Cash on Oct 1', 'Opening balance', M(CF.open), M(CF.open), 'tot'),
-      cfRow('Money in from customers', 'Operating', sg(CF.payIn), sg(CF.expIn), 'line'),
-      cfRow('Paid to run the business', 'Operating', sg(-CF.run), sg(-CF.expOut), 'line'),
-      cfRow('Sales tax passed on to the state', 'Customers’ money, not a cost', sg(-CF.passOn), sg(-CF.passOn), 'line'),
-      cfRow('Money you put in or took out', 'Financing', '$0', '$0', 'line'),
-      cfRow('Change in cash', 'Net cash flow', sg(CF.change), sg(CF.expEnd - CF.open), 'tot'),
-      cfRow('Cash at the end', 'Closing balance', M(CF.now), M(CF.expEnd), 'end')
-    ];
-    const top = CF.spend.length ? CF.spend[0].amount : 1;
-    const spend = CF.spend.map((r) => ({ label: r.label, amt: M(r.amount), pct: Math.max(2, Math.round(r.amount / top * 100)), title: r.label + ': ' + M(r.amount) }));
-
-    // ---- Who owes me ----
-    const custs = BE.all('customers');
-    const openInv = BE.all('invoices').filter((i) => !i.draft && !i.void && BE.invOpen(i) > 0);
-    const byWho = {};
-    openInv.forEach((i) => { const w = byWho[i.who] = byWho[i.who] || { who: i.who, list: [], amt: 0, late: 0, due: 99, dueLabel: '' }; const v = BE.usd(BE.invOpen(i), i.cur); w.list.push(i.num + ' ' + BE.money(BE.invOpen(i), i.cur)); w.amt += v; if (i.dueIn < 0) w.late = Math.max(w.late, -i.dueIn); else if (i.dueIn < w.due) { w.due = i.dueIn; w.dueLabel = i.due; } w.num = i.num; });
-    const lateWho = Object.keys(byWho).filter((k) => byWho[k].late > 0);
-    const arList = Object.keys(byWho).map((k) => byWho[k]).sort((a, b) => b.amt - a.amt);
-    const ar = arList.map((w, i) => {
-      const c = custs.filter((x) => x.name === w.who)[0];
-      const tags = [];
-      if (w.dueLabel) tags.push({ label: 'Due ' + w.dueLabel, bg: '#EFEDF3', fg: '#47444F' });
-      if (w.late) tags.push({ label: w.late + ' days late', bg: '#FBE3DF', fg: '#A8200D' });
-      if (w.late && st.reminded) tags.push({ label: 'Reminded today', bg: '#E2F6D5', fg: '#2F5711' });
-      return { who: w.who, href: c ? 'SellCustomer.dc.html#' + c.id : 'SellInvoices.dc.html#' + w.num, inv: w.list.join(' · '), amt: M(w.amt), tags, border: i === 0 ? '0' : '1px solid #EFEDF3' };
-    });
-    const arTotal = arList.reduce((a, w) => a + w.amt, 0);
-    const bucket = { a: 0, b: 0, c: 0, d: 0 };
-    openInv.forEach((i) => { const v = BE.usd(BE.invOpen(i), i.cur); if (i.dueIn >= 0) bucket.a += v; else if (i.dueIn >= -30) bucket.b += v; else if (i.dueIn >= -60) bucket.c += v; else bucket.d += v; });
-    const lateAmt = bucket.b + bucket.c + bucket.d;
-    const bp = (v) => arTotal ? Math.round(v / arTotal * 1000) / 10 : 0;
-    const arBuckets = [['Not due yet', bucket.a, '#7A5AF8'], ['1–30 days late', bucket.b, '#E0752D'], ['31–60 days late', bucket.c, '#A8200D'], ['Over 60 days late', bucket.d, '#18161F']]
-      .filter((x) => x[1] > 0).map(([label, v, color]) => ({ label, amt: M(v), pct: bp(v), color, title: label + ': ' + M(v) }));
-
-    // ---- Who do I owe ----
-    const openBills = BE.all('bills').filter((b) => b.status !== 'paid' && b.amount - (b.paid || 0) > 0);
-    const apSum = openBills.reduce((a, b) => a + b.amount - (b.paid || 0), 0);
-    const anyLate = openBills.some((b) => b.dueIn < 0);
-    const ap = openBills.map((b, i) => ({ who: b.who, href: 'SpendBill.dc.html#' + b.id, what: (b.num ? b.num + ' · ' : '') + (b.what || ''), due: b.dueIn < 0 ? 'Was due ' + b.due : 'Due ' + b.due + (b.dueIn <= 8 ? ' · in ' + b.dueIn + ' days' : ''), amt: M(b.amount - (b.paid || 0)), bg: b.dueIn < 0 ? '#FBE3DF' : (b.dueIn <= 8 ? '#FFF0B8' : '#EFEDF3'), fg: b.dueIn < 0 ? '#A8200D' : (b.dueIn <= 8 ? '#6B5000' : '#47444F'), border: i === 0 ? '0' : '1px solid #EFEDF3' }));
-
-    // ---- Sales tax ----
-    const ST = BE.books.salesTax();
-
-    // ---- open / close ----
-    const h = BE.hash();
-    const def = { pl: !h || h === 'profit' || ['balance', 'cash', 'owed', 'owe', 'tax'].indexOf(h) < 0, bs: h === 'balance', cf: h === 'cash', ar: h === 'owed', ap: h === 'owe' };
-    const o = Object.assign({}, def, st.open);
-    const tog = {}, chev = {};
-    ['pl', 'bs', 'cf', 'ar', 'ap'].forEach((k) => { tog[k] = () => this.setState({ open: Object.assign({}, st.open, { [k]: !o[k] }) }); chev[k] = o[k] ? 'm6 15 6-6 6 6' : 'm6 9 6 6 6-6'; });
-
-    // ---- CSV + printable ----
-    const plRows = [['Coming in', '', 'head']].concat(P.income.map((r) => [r.label, r.amount, 'line'])).concat([['Total coming in', P.tIn, 'total'], ['Going out', '', 'head']])
-      .concat(P.costs.map((r) => [r.label, r.amount, 'line'])).concat([['Total going out', P.tOut, 'total'], ['Profit', P.profit, 'total'], ['Set aside for tax (' + ratePct + ')', P.tax, 'line'], ['Yours to keep', P.keep, 'total']]);
-    const bsRows = [['What you own', '', 'head']].concat(B.own.map((r) => [r.label, r.amount, 'line'])).concat([['You own', B.tOwn, 'total'], ['What you owe', '', 'head']])
-      .concat(B.owe.map((r) => [r.label, r.amount, 'line'])).concat([['You owe', B.tOwe, 'total'], ['What’s yours', '', 'head']]).concat(B.eq.map((r) => [r.label, r.amount, 'line'])).concat([['Yours', B.tEq, 'total']]);
-    const cfRows = [['Cash on Oct 1', CF.open, 'total'], ['Money in from customers', CF.payIn, 'line'], ['Paid to run the business', -CF.run, 'line'], ['Sales tax passed on to the state', -CF.passOn, 'line'], ['Change in cash', CF.change, 'total'], ['Cash today', CF.now, 'total']];
-    const arRows = arList.map((w) => [w.who + ' (' + w.list.join(', ') + ')' + (w.late ? ', ' + w.late + ' days late' : ''), Math.round(w.amt * 100) / 100, 'line']).concat([['Total customers owe you', arTotal, 'total']]);
-    const apRows = openBills.map((b) => [b.who + (b.num ? ' (' + b.num + ')' : '') + ', due ' + b.due, b.amount - (b.paid || 0), 'line']).concat([['Total bills to pay', apSum, 'total']]);
-    const glRows = BE.all('payments').filter((p) => p.inMonth).map((p) => [p.date + ' · ' + p.who + ' · paid ' + p.inv, p.amount, 'line'])
-      .concat(BE.all('expenses').filter((x) => x.inMonth).map((x) => [x.date + ' · ' + x.who + ' · ' + BE.books.label(x.cat) + (x.kind === 'transfer' ? ' (passed on)' : ''), -x.amount, 'line']));
-    const tbRows = P.income.map((r) => [r.label + ' (income)', r.amount, 'line']).concat(P.costs.map((r) => [r.label + ' (expense)', r.amount, 'line']))
-      .concat(B.own.map((r) => [r.label + ' (asset)', r.amount, 'line'])).concat(B.owe.map((r) => [r.label + ' (liability)', r.amount, 'line'])).concat(B.eq.map((r) => [r.label + ' (equity)', r.amount, 'line']));
-    const today = BE.today;
-    const out = {
-      pl: this.outFor('pl', fileBase + '-Profit-and-Loss-' + names[2] + (method === 'cash' ? '-cash' : '') + '.csv', 'Profit & Loss', names[3] + (method === 'cash' ? ' · cash basis' : ' · accrual basis'), plRows),
-      bs: this.outFor('bs', fileBase + '-Balance-Sheet-2026-10-04.csv', 'Balance sheet', 'As of Oct 4, 2026', bsRows),
-      cf: this.outFor('cf', fileBase + '-Cash-Flow-Oct-2026.csv', 'Cash flow', 'October 1 – 4, 2026', cfRows),
-      ar: this.outFor('ar', fileBase + '-Who-Owes-Me-2026-10-04.csv', 'Who owes me', 'As of Oct 4, 2026', arRows),
-      ap: this.outFor('ap', fileBase + '-Who-I-Owe-2026-10-04.csv', 'Who I owe', 'As of Oct 4, 2026', apRows),
-      gl: this.outFor('gl', fileBase + '-General-Ledger-Oct-2026.csv', 'Every transaction', 'October 2026', glRows),
-      tb: this.outFor('tb', fileBase + '-Trial-Balance-2026-10-04.csv', 'Category totals', names[3], tbRows)
-    };
-    const team = BE.all('team').filter((p) => p.role === 'Accountant')[0];
     return {
-      biz, today, hasData, isEmpty: !hasData, more: this.moreLinks('rep'),
-      heroText: 'Every report uses the same books as your three numbers, so October always adds up: ' + tm.fmt.in + ' in, ' + tm.fmt.out + ' out, ' + tm.fmt.profit + ' profit.',
-      methodNote: method === 'cash' ? 'Counting only money that has moved (cash basis).' : 'Counting money on the way and bills still to pay (accrual).',
-      sum: {
-        pl: M(P.profit) + ' profit · ' + names[1].toLowerCase(),
-        bs: 'Own ' + M(B.tOwn) + ' · owe ' + M(B.tOwe) + ' · yours ' + M(B.tEq),
-        cf: (CF.change >= 0 ? 'Up ' : 'Down ') + M(Math.abs(CF.change)) + ' since Oct 1',
-        ar: arTotal ? M(arTotal) + (lateAmt ? ' · ' + M(lateAmt) + ' of it late' : ' · nothing late') : 'Nobody owes you anything',
-        ap: openBills.length ? M(apSum) + ' in ' + openBills.length + (openBills.length === 1 ? ' bill' : ' bills') + (anyLate ? '' : ' · nothing late') : 'No bills waiting',
-        tax: ST.owed ? C2(ST.owed) + ' owed' + (ST.open && !ST.filed ? ' · file by ' + ST.open.due : '') : (ST.filed ? 'Q3 filed and paid' : 'Nothing collected yet')
-      },
-      periods, methods, canCmp, cmp: st.cmp, cmpOn, cmpBg: st.cmp ? '#18161F' : '#CBC7D3', cmpLeft: st.cmp ? '25px' : '3px',
-      cols: cmpOn ? '1fr 1fr 1fr' : '1fr', colsBasis: cmpOn ? '330px' : '120px',
-      togCmp: () => this.setState({ cmp: !st.cmp }),
-      pl, bs, bsBar, bsCheck: 'It balances: ' + M(B.tOwn) + ' you own = ' + M(B.tOwe) + ' you owe + ' + M(B.tEq) + ' that’s yours.',
-      cf, spend, cfSpendTitle: spend.length ? 'Where the ' + M(CF.paidOut) + ' went so far' : 'Nothing paid out yet this month',
-      cfNote: 'Cash only counts money that has actually moved. That’s why it’s different from profit: ' + M(tm.inExp) + ' from customers and ' + M(tm.outSch) + ' of bills and payroll haven’t moved yet.',
-      ar, arBuckets, hasAr: ar.length > 0, noAr: ar.length === 0,
-      canRemind: lateWho.length > 0 && !st.reminded, arSent: st.reminded && lateWho.length > 0,
-      remindLabel: 'Remind the ' + (lateWho.length === 1 ? 'late customer' : lateWho.length + ' late customers'),
-      remind: () => { BE.log('Sent reminders to ' + lateWho.join(' and ')); this.setState({ reminded: true }); this.notify('Reminders sent to ' + lateWho.join(' and ')); },
-      ap, apTotal: M(apSum), apTotalLabel: openBills.length ? 'Total' + (anyLate ? '' : ' · none late') : 'Nothing to pay',
-      apNote: 'Payroll (' + M(tm.outPayroll) + ') and automatic subscriptions (' + M(tm.outMonthly) + ') aren’t bills, so they’re not listed here. Both are already in Going out as still to pay.',
-      o, tog, chev, out,
-      acctText: team ? 'The full books in the formats they expect. ' + team.name + ' can also download these.' : 'The full books in the formats accountants expect.',
+      biz: prof.business || 'Your business', hero, hasData, isEmpty: !hasData, emptyText: 'When you bill customers and record what you spend, profit and loss, the balance sheet and money owed fill in here, in ' + (lk ? 'the lines of the income tax return' : 'HMRC’s categories') + '.',
+      tabs: TABS.map(([k, l]) => ({ label: l, on: tab === k, pick: () => { if (tab !== k) { this.setState({ tab: k, csvOpen: false }); } } })),
+      r, prShort, csv, csvName, csvOpen: st.csvOpen, csvLabel: st.csvOpen ? 'Hide the CSV' : 'Export CSV',
+      toggleCsv: () => this.setState({ csvOpen: !st.csvOpen }),
+      copyCsv: () => { books.copy(csv); this.notify(r.title + ' CSV copied'); },
+      foot: 'Figures are what you’ve recorded, on ' + (books.basis() === 'cash' ? 'the cash basis' : 'accruals') + '. ' + (pr.has ? prShort + ' can see the same reports.' : ''),
       toast: st.toast
     };
   }
 }
-
 </script>
 </body>
 </html>

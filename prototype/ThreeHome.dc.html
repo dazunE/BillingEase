@@ -441,15 +441,16 @@ class Component extends DCLogic {
       strike: c.done ? 'line-through' : 'none', color: c.done ? '#5F5B68' : '#18161F', sub: c.done ? 'Done' : c.hint
     }));
 
+    const shows = (w) => (typeof BE.shows === 'function' ? BE.shows(w) : true);
     const recent = BE.all('activity');
     const unread = BE.unread();
     const more = (lk ? [
       ['Tax periods', 'TaxPeriods.dc.html'], ['Payroll', 'SpendPayroll.dc.html'], ['Your tax practitioner', 'Accountant.dc.html'], ['Ask', 'Ask.dc.html'],
       ['Check against your bank', 'BooksReconcile.dc.html'], ['Customers', 'SellCustomers.dc.html'], ['Suppliers', 'SpendVendors.dc.html']
     ] : [
-      ['Quarters', 'Quarters.dc.html'], ['Properties', 'Properties.dc.html'], ['Mileage', 'Mileage.dc.html'], ['Your accountant', 'Accountant.dc.html'], ['Ask', 'Ask.dc.html'],
+      ['Quarters', 'Quarters.dc.html']].concat(shows('landlord') ? [['Properties', 'Properties.dc.html']] : []).concat(shows('mileage') ? [['Mileage', 'Mileage.dc.html']] : []).concat([['Your accountant', 'Accountant.dc.html'], ['Ask', 'Ask.dc.html'],
       ['Check against your bank', 'BooksReconcile.dc.html'], ['Customers', 'SellCustomers.dc.html'], ['Suppliers', 'SpendVendors.dc.html']
-    ]).concat([['Everything BillingEase does', 'Everything.dc.html'], [unread ? 'Notifications (' + unread + ' new)' : 'Notifications', 'Notifications.dc.html'], ['Help', 'Help.dc.html']])
+    ])).concat([['Everything BillingEase does', 'Everything.dc.html'], [unread ? 'Notifications (' + unread + ' new)' : 'Notifications', 'Notifications.dc.html'], ['Help', 'Help.dc.html']])
       .map(([label, href]) => ({ label, href }));
     return {
       biz: prof.business || 'Your business',
