@@ -37,7 +37,7 @@ async function billDetail(db: Exec, b: BusinessRow, row: BillRow) {
   const files = await db.select().from(attachments).where(and(eq(attachments.businessId, b.id), eq(attachments.ownerType, "bill"), eq(attachments.ownerId, row.id))).orderBy(asc(attachments.createdAt));
   const history = [
     { date: row.createdAt.toISOString().slice(0, 10), text: "Entered" },
-    ...pays.map((p) => ({ date: p.paidOn, text: `${money(b, p.amount)} paid by ${p.method.toLowerCase()}${p.chequeNumber ? ` (cheque ${p.chequeNumber})` : ""}` })),
+    ...pays.map((p) => ({ date: p.paidOn, text: `${money(b, p.amount)} paid by ${p.chequeNumber ? `cheque ${p.chequeNumber}` : p.method.toLowerCase()}` })),
     ...(row.voidedAt ? [{ date: row.voidedAt.toISOString().slice(0, 10), text: "Voided" }] : []),
   ];
   return {

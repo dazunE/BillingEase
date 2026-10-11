@@ -204,7 +204,7 @@ describe("bills", () => {
     expect(d.body.lines).toHaveLength(2);
     expect(d.body.payments).toHaveLength(2);
     expect(d.body.payments[0]).toMatchObject({ chequeNumber: "000731", chequeBank: "Sampath Bank" });
-    expect(d.body.history.map((h: { text: string }) => h.text).join(" | ")).toMatch(/cheque 000731/);
+    expect(d.body.history.map((h: { text: string }) => h.text).join(" | ")).toMatch(/by cheque 000731/);
     const sum = await api.get("/out/summary?period=month");
     expect(sum.body.paid).toBe(241900_00);
   });

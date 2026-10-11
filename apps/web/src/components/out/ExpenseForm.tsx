@@ -111,7 +111,7 @@ export function ExpenseForm({ setup, suppliers, expense, onSaved, autoFocus }: {
                   ))}
                   <label className="flex items-center gap-1.5 text-sm font-semibold">
                     <span className="sr-only">Business use percentage</span>
-                    <Input name="bizPct" value={pct} onChange={(x) => setPct(x.target.value.replace(/\D/g, "").slice(0, 3))} inputMode="numeric" className="w-20" aria-invalid={!!e.bizPct} />%
+                    <span className="w-20"><Input name="bizPct" value={pct} onChange={(x) => setPct(x.target.value.replace(/\D/g, "").slice(0, 3))} inputMode="numeric" aria-invalid={!!e.bizPct} /></span>%
                   </label>
                 </div>
                 {e.bizPct ? <span className="text-xs font-semibold text-late">{e.bizPct}</span> : (

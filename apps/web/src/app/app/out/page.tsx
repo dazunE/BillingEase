@@ -96,7 +96,7 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
             {summary.periods.map((p) => (
               <Link key={p.key} href={link({ period: p.key })} aria-current={p.key === summary.period.key ? "page" : undefined}
                 className={cx("flex min-h-10 items-center rounded-full px-3.5 text-sm font-semibold", p.key === summary.period.key ? "bg-white text-ink shadow-sm" : "text-ink2 hover:text-ink")}>
-                {p.key === "month" ? "This month" : p.key === "quarter" ? "This quarter" : p.label.replace("Tax year", setup.country === "lk" ? "Year" : "Tax year")}
+                {p.key === "month" ? "This month" : p.key === "quarter" ? "This quarter" : setup.country === "lk" ? "This year" : "Tax year"}
               </Link>
             ))}
           </nav>
@@ -168,7 +168,7 @@ function MoneyRow({ item: i, currency, methods, today }: { item: MoneyOutItem; c
   return (
     <li className="flex flex-wrap items-center gap-x-3.5 gap-y-2 py-3">
       <Avatar name={i.name} className={i.kind === "monthly" ? "bg-tint" : undefined} />
-      <Link href={i.href} className="flex min-w-0 flex-[1_1_220px] flex-col hover:underline">
+      <Link href={i.href} className="flex min-w-0 flex-[1_1_150px] flex-col hover:underline">
         <span className="truncate font-bold">{i.name}</span>
         <span className="truncate text-[13px] text-muted">{i.kind === "expense" || i.kind === "bill_payment" ? `${formatDate(i.date)} · ` : ""}{i.detail}</span>
       </Link>

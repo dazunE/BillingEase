@@ -32,7 +32,7 @@ export default async function BillPage({ params }: { params: Promise<{ id: strin
         <article className="flex flex-col gap-6 rounded-3xl border border-line bg-white p-[clamp(18px,3vw,28px)]">
           <header className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex min-w-0 flex-col gap-1.5">
-              <DueBadge bill={b} />
+              <DueBadge bill={b} className="self-start" />
               <h1 className="font-display text-[clamp(26px,3.5vw,34px)] font-bold leading-tight tracking-[-0.03em]">
                 <Link href={`/app/out/suppliers/${b.supplierId}`} className="hover:underline">{b.supplierName}</Link>
               </h1>

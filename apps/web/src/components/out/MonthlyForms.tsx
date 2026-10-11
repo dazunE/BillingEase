@@ -16,7 +16,6 @@ export function MonthlyForm({ setup, suppliers, cost, onCancel }: { setup: OutSe
   const [method, setMethod] = useState(v.method ?? cost?.method ?? setup.payMethods[0]);
   const groups = [...new Set(setup.categories.map((c) => c.scope))];
   const amt = (m?: number) => (m ? (m / 100).toFixed(2) : "");
-  if (state?.ok && !cost) return <div className="flex flex-col gap-3"><Alert state={state} /><Button type="button" variant="secondary" className="self-start" onClick={() => location.reload()}>Set up another</Button></div>;
   return (
     <form action={action} noValidate className="flex flex-col gap-4">
       {cost && <input type="hidden" name="id" value={cost.id} />}

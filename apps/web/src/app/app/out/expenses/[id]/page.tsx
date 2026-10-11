@@ -32,7 +32,7 @@ export default async function ExpensePage({ params }: { params: Promise<{ id: st
         <div className="flex min-w-0 flex-[1_1_260px] flex-col gap-1.5">
           <h1 className="font-display text-[clamp(26px,3.5vw,36px)] font-bold leading-tight tracking-[-0.03em]">{e.payee}</h1>
           <span className="text-[15px] text-ink2">
-            {formatDate(e.spentOn, { year: true })} · {e.method}{e.chequeNumber ? ` · cheque ${e.chequeNumber}${e.chequeBank ? `, ${e.chequeBank}` : ""}` : ""}{e.note ? ` · ${e.note}` : ""}
+            {formatDate(e.spentOn, { year: true })} · {e.chequeNumber ? `Cheque ${e.chequeNumber}${e.chequeBank ? `, ${e.chequeBank}` : ""}` : e.method}{e.note ? ` · ${e.note}` : ""}
           </span>
           <span className="flex flex-wrap gap-2">
             {e.categoryName ? <Badge tone="violet">{e.categoryName}</Badge> : <Badge tone="due">Needs a category</Badge>}

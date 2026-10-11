@@ -204,3 +204,11 @@ export function Panel({ title, aside, children, id, className }: { title: ReactN
     </section>
   );
 }
+
+/** The message after an action: what happened, or why it didn't. */
+export function Notice({ done, error, messages }: { done?: string; error?: string; messages?: Record<string, string> }) {
+  if (error) return <p role="alert" className="rounded-2xl bg-late-bg px-4 py-3 text-[15px] font-semibold text-late">{error}</p>;
+  const text = done ? (messages?.[done] ?? null) : null;
+  if (!text) return null;
+  return <p role="status" className="flex items-center gap-2 rounded-2xl bg-pos-bg px-4 py-3 text-[15px] font-semibold text-pos"><Icon d={ICONS.check} size={18} />{text}</p>;
+}

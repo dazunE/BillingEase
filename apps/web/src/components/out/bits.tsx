@@ -84,8 +84,8 @@ export function dueText(b: { due: string; dueDate: string; daysToDue: number; la
   return `${part}Due ${formatDate(b.dueDate)}`;
 }
 
-export function DueBadge({ bill }: { bill: { due: string; dueDate: string; daysToDue: number; lastPaidOn?: string | null; status?: string } }) {
-  return <Badge tone={DUE_TONE[bill.due] ?? "neutral"}>{dueText(bill)}</Badge>;
+export function DueBadge({ bill, className }: { bill: { due: string; dueDate: string; daysToDue: number; lastPaidOn?: string | null; status?: string }; className?: string }) {
+  return <Badge tone={DUE_TONE[bill.due] ?? "neutral"} className={className}>{dueText(bill)}</Badge>;
 }
 
 export function StateBadge({ state, children }: { state: string; children: ReactNode }) {

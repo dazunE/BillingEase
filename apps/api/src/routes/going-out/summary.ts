@@ -60,12 +60,12 @@ export async function summaryRoutes(app: FastifyInstance) {
     const paid = [
       ...ex.map((e) => ({
         ...base, kind: "expense" as const, id: e.id, date: e.spentOn, name: e.payee,
-        detail: [categoryName(b, e.categoryId).name ?? "To sort", e.method, e.bizPct < 100 ? `${e.bizPct}% business` : null].filter(Boolean).join(" · "),
+        detail: [categoryName(b, e.categoryId).name ?? "To sort", e.chequeNumber ? `Cheque ${e.chequeNumber}` : e.method, e.bizPct < 100 ? `${e.bizPct}% business` : null].filter(Boolean).join(" · "),
         amount: businessShare(e.gross, e.bizPct), href: `/app/out/expenses/${e.id}`, uncategorised: !e.categoryId,
       })),
       ...pays.map(({ p, bill, supplier }) => ({
         ...base, kind: "bill_payment" as const, id: p.id, date: p.paidOn, name: supplier,
-        detail: [`Bill${bill.reference ? ` ${bill.reference}` : ""}`, p.method, p.chequeNumber ? `cheque ${p.chequeNumber}` : null].filter(Boolean).join(" · "),
+        detail: [`Bill${bill.reference ? ` ${bill.reference}` : ""}`, p.chequeNumber ? `Cheque ${p.chequeNumber}` : p.method].join(" · "),
         amount: p.amount, href: `/app/out/bills/${bill.id}`, billId: bill.id,
       })),
     ].sort((x, y) => y.date.localeCompare(x.date));

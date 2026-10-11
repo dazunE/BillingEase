@@ -2,6 +2,8 @@ import { home } from "@billingease/contracts";
 import Link from "next/link";
 import { signOut } from "@/app/(auth)/actions";
 import { call } from "@/lib/api";
+import { Suspense } from "react";
+import { MenuCloser } from "./MenuCloser";
 import { ICONS, Icon, Logo } from "./ui";
 
 const BELL = "M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0";
@@ -66,7 +68,7 @@ export async function AppHeader({ userName, businessName, country }: { userName:
             <Icon d={BELL} />
             {count > 0 && <span data-testid="bell-count" className="absolute right-1 top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-late px-1 text-[11px] font-bold leading-none text-white">{count > 99 ? "99+" : count}</span>}
           </Link>
-          <details className="relative">
+          <details data-menu className="relative">
             <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full bg-violet px-5 text-[15px] font-semibold [&::-webkit-details-marker]:hidden">
               <Icon d={ICONS.plus} size={18} strokeWidth={2.4} />
               New
@@ -80,7 +82,7 @@ export async function AppHeader({ userName, businessName, country }: { userName:
               ))}
             </div>
           </details>
-          <details className="relative">
+          <details data-menu className="relative">
             <summary aria-label={`Account: ${userName}, ${businessName}`} className="flex size-11 cursor-pointer list-none items-center justify-center rounded-full bg-ink text-sm font-bold text-violet [&::-webkit-details-marker]:hidden">
               {initials}
             </summary>
@@ -92,6 +94,7 @@ export async function AppHeader({ userName, businessName, country }: { userName:
           </details>
         </div>
       </div>
+    <Suspense><MenuCloser /></Suspense>
     </header>
   );
 }
