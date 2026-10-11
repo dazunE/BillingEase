@@ -420,3 +420,13 @@ describe("customers and prices", () => {
     expect((await api.get("/items")).body.items).toHaveLength(0);
   });
 });
+
+describe("repeating invoice dates", () => {
+  it("keeps billing on the 31st after a short month", async () => {
+    const { advance } = await import("../src/services/recurring-run");
+    expect(advance("2027-01-31", "monthly", 31)).toBe("2027-02-28");
+    expect(advance("2027-02-28", "monthly", 31)).toBe("2027-03-31");
+    expect(advance("2026-11-30", "quarterly", 30)).toBe("2027-02-28");
+    expect(advance("2027-02-28", "monthly")).toBe("2027-03-28");
+  });
+});

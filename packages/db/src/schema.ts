@@ -370,6 +370,8 @@ export type RecurringTemplate = {
   notes?: string | null;
   reference?: string | null;
   termsDays: number;
+  /** The day of the month to bill on (1–31), so the 31st doesn't drift to the 28th after February. */
+  billDay?: number;
 };
 
 export const recurringInvoices = pgTable(

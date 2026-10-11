@@ -1,5 +1,5 @@
 import type { Recurring } from "@billingease/contracts";
-import { addDays, addMonths, computeInvoice, formatDate, today } from "@billingease/core";
+import { addDays, addMonths, computeInvoice, formatDate, monthEnd, today } from "@billingease/core";
 import type { Db, Exec } from "@billingease/db";
 import { businesses, customers, recurringInvoices, type RecurringTemplate } from "@billingease/db/schema";
 import { and, eq, isNull, lte, or, sql } from "drizzle-orm";
@@ -11,19 +11,21 @@ import { invoiceLink, issueDraft, taxContext, writeDraft } from "./invoice-core"
 export type RecurringDb = typeof recurringInvoices.$inferSelect;
 type Frequency = RecurringDb["frequency"];
 
-export function advance(date: string, f: Frequency): string {
+/** The next run. Monthly, quarterly and yearly keep to the bill day where the month has it. */
+export function advance(date: string, f: Frequency, billDay?: number): string {
   if (f === "weekly") return addDays(date, 7);
-  if (f === "monthly") return addMonths(date, 1);
-  if (f === "quarterly") return addMonths(date, 3);
-  return addMonths(date, 12);
+  const next = addMonths(date, f === "monthly" ? 1 : f === "quarterly" ? 3 : 12);
+  if (!billDay) return next;
+  const last = Number(monthEnd(next).slice(8, 10));
+  return next.slice(0, 8) + String(Math.min(billDay, last)).padStart(2, "0");
 }
 
-export function upcoming(r: { nextRun: string; frequency: Frequency; endDate: string | null }, n = 3) {
+export function upcoming(r: { nextRun: string; frequency: Frequency; endDate: string | null; template?: { billDay?: number } }, n = 3) {
   const out: string[] = [];
   let d = r.nextRun;
   while (out.length < n && (!r.endDate || d <= r.endDate)) {
     out.push(d);
-    d = advance(d, r.frequency);
+    d = advance(d, r.frequency, r.template?.billDay);
   }
   return out;
 }
@@ -53,7 +55,7 @@ export async function runOnce(
   tx: Exec, services: Services, b: BusinessRow, r: RecurringDb,
   opts: { userId: string | null; issueDate: string },
 ): Promise<{ invoiceId: string; emailId: string | null } | null> {
-  const next = advance(r.nextRun, r.frequency);
+  const next = advance(r.nextRun, r.frequency, r.template.billDay);
   const stillActive = !r.endDate || next <= r.endDate;
   const claimed = await tx.update(recurringInvoices)
     .set({ nextRun: next, lastRunAt: new Date(), active: stillActive })

@@ -40,7 +40,7 @@ async function values(db: Exec, b: BusinessRow, body: z.output<typeof RecurringB
   if (body.endDate && body.endDate < body.nextRun) throw badRequest("The end date is before the next invoice.", { endDate: "After the next invoice" });
   return {
     customerId: body.customerId, name: body.name, frequency: body.frequency, nextRun: body.nextRun, endDate: body.endDate ?? null, mode: body.mode,
-    template: { lines, notes: body.notes ?? null, reference: body.reference ?? null, termsDays: body.termsDays },
+    template: { lines, notes: body.notes ?? null, reference: body.reference ?? null, termsDays: body.termsDays, billDay: Number(body.nextRun.slice(8, 10)) },
   };
 }
 
