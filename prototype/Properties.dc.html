@@ -353,7 +353,7 @@ class Component extends DCLogic {
     const INCOME = [{ id: 'rent', name: 'Rent', official: 'Rents and other income from property' }, { id: 'other-income', name: 'Other property income', official: 'Other income from property (e.g. deposits kept)' }];
     INCOME.forEach((c) => { catById[c.id] = c; });
     const props = BE.all('properties');
-    const entries = BE.all('propertyEntries');
+    const entries = BE.propertyLedger();
     const prof = BE.get('profile') || {};
     const practice = prof.practice;
     const today = BE.todayDate.getTime();
@@ -390,7 +390,7 @@ class Component extends DCLogic {
             else if (state === 'due') {
               BE.markRent(p.id, mo.key);
               const d2 = due.getTime() > today ? BE.todayDate : due;
-              this.notify(label + ' rent received · ' + m(p.rent) + ' added to ' + qLabel(BE.ukQuarterOf(d2)) + (Number(p.agentPct) ? ', agent fee ' + m(Math.round(p.rent * p.agentPct) / 100) + ' added' : ''));
+              this.notify(label + ' rent received · ' + m(p.rent) + ' added to ' + qLabel(BE.ukQuarterOf(d2)) + (Number(p.agentPct) ? ' · record the agent fee in Going out' : ''));
             }
           }
         };
@@ -490,8 +490,8 @@ class Component extends DCLogic {
         locked: !!lq, canRemove: !lq && !e.auto, spacer: !lq && !!e.auto, lockNote: lq ? 'Locked: ' + qLabel(lq) + ' is filed' : '',
         removeLabel: 'Remove ' + e.what,
         remove: () => {
-          if (e.rentMonth && isIncome) BE.unmarkRent(e.prop, e.rentMonth); else BE.remove('propertyEntries', e.id);
-          this.notify('Removed ' + e.what + ' · ' + m(e.amount) + (e.rentMonth && isIncome ? ' and its agent fee' : ''));
+          if (e.rentMonth && isIncome) BE.unmarkRent(e.prop, e.rentMonth); else if (e.expenseId) BE.remove('expenses', e.expenseId); else BE.remove('propertyEntries', e.id);
+          this.notify('Removed ' + e.what + ' · ' + m(e.amount) + '');
         }
       };
     });
@@ -546,7 +546,13 @@ class Component extends DCLogic {
         const c = catById[ne.cat] || { name: 'Other' };
         const what = (ne.what || '').trim() || c.name;
         BE.change((s) => {
-          s.propertyEntries = [{ id: BE.id('pe'), prop: ne.prop, kind: ne.kind, cat: ne.cat, what, amount: amt, iso: ne.date, date: BE.dayLabel(d), isNew: true }].concat(s.propertyEntries || []).sort((a, b) => a.iso < b.iso ? 1 : -1);
+          if (ne.kind === 'cost') {
+            // Costs are expenses, so they show in Going out too.
+            s.expenses = [{ id: BE.id('exp'), who: what, catId: ne.cat, cat: c.name, how: 'Bank transfer', date: BE.dayLabel(d), iso: ne.date, inMonth: ne.date.indexOf('2026-10') === 0,
+              gross: amt, bizPct: 100, amount: amt, vat: 0, attachment: null, receipt: false, note: '', kind: 'business', events: [], property: ne.prop, isNew: true }].concat(s.expenses || []);
+          } else {
+            s.propertyEntries = [{ id: BE.id('pe'), prop: ne.prop, kind: ne.kind, cat: ne.cat, what, amount: amt, iso: ne.date, date: BE.dayLabel(d), isNew: true }].concat(s.propertyEntries || []).sort((a, b) => a.iso < b.iso ? 1 : -1);
+          }
           BE._log(s, 'Added ' + what + ' · ' + m(amt) + ' under ' + c.name + ' (' + (propName[ne.prop] || 'property') + ')');
         });
         this.setState({ addOpen: false, ne: null, filter: 'year' });

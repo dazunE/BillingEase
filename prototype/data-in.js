@@ -40,7 +40,7 @@
     var pack = PACKS[country] || {};
     var vatOn = country === 'lk', ssclOn = country === 'lk';
     var t = calc(pack, inv.lines, inv.discount, vatOn, ssclOn);
-    return Object.assign({ cur: country === 'lk' ? 'LKR' : 'GBP', tax: t.tax, vatAmt: t.vat, ssclAmt: t.sscl, vatOn: vatOn, ssclOn: ssclOn, credit: 0, paid: 0, viewed: false }, inv);
+    return Object.assign({ cur: country === 'lk' ? 'LKR' : 'GBP', tax: t.tax, vatAmt: t.vat, ssclAmt: t.sscl, vatOn: vatOn, ssclOn: ssclOn, credit: 0, paid: 0 }, inv);
   }
   var L = function (name, qty, unit, rate, vat) { var l = { name: name, qty: qty, unit: unit, rate: rate }; if (vat) l.vat = vat; return l; };
 

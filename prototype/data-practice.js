@@ -18,7 +18,7 @@
 
   // ---- UK property: Flat 2, 18 Ash Grove, Headingley ----------------------
   var ASH = { id: 'ash', name: 'Flat 2, 18 Ash Grove', area: 'Headingley, Leeds LS6', share: 100, rent: 1050, rentDay: 7,
-    agent: 'Headingley Lettings', agentPct: 10, mortgage: 410, lender: 'Aire Building Society', since: 'Let since Aug 2023',
+    agent: 'Headingley Lettings', agentPct: 10, mortgage: 410, lender: 'Leeds Building Society', since: 'Let since Aug 2023',
     statements: ['2026-04', '2026-05', '2026-06', '2026-07', '2026-08'] };
 
   var entries = [];
@@ -27,16 +27,18 @@
     n++;
     entries.push(Object.assign({ id: 'pe-' + n, prop: 'ash', kind: kind, cat: cat, what: what, amount: amount, iso: iso(y, m, d), date: d + ' ' + MON[m - 1] }, extra || {}));
   }
-  // Rent arrives on the 7th through the letting agent, who keeps 10%. April to September are ticked; October isn't yet.
+  // Rent arrives on the 7th through the letting agent. April to September are ticked; October isn't yet.
+  // Property costs from 6 July on are ordinary expenses in Going out (with property: 'ash'), so they are
+  // entered once; the costs below are from before Harper Studio started using BillingEase (Q1).
   [4, 5, 6, 7, 8, 9].forEach(function (m) {
     var month = iso(2026, m, 1).slice(0, 7);
     E('income', 'rent', 'Rent for ' + MON[m - 1] + ' 2026', 1050, 2026, m, 7, { rentMonth: month });
-    E('cost', 'p-professional', 'Headingley Lettings · 10% management fee', 105, 2026, m, 7, { rentMonth: month, auto: true });
-    E('cost', 'p-finance', 'Mortgage interest · Aire Building Society', 410, 2026, m, 15);
+  });
+  [5, 6, 7].forEach(function (m) {
+    E('cost', 'p-finance', 'Mortgage interest · Leeds Building Society', 410, 2026, m, 1);
+    E('cost', 'p-professional', 'Headingley Lettings · 10% management fee', 105, 2026, m, 1);
   });
   E('cost', 'p-running', 'Landlord insurance (annual)', 186, 2026, 5, 2);
-  E('cost', 'p-running', 'Gas safety certificate', 70, 2026, 6, 12);
-  E('cost', 'p-repairs', 'Kirkstall Heating · boiler repair', 340, 2026, 8, 22);
   entries.sort(function (a, b) { return a.iso < b.iso ? 1 : -1; });
 
   BE.define('properties', BE.perCountry({ uk: [ASH], lk: [] }), BE.perCountry({ uk: [], lk: [] }));
@@ -210,13 +212,25 @@
    * Amounts are your share. finance = residential mortgage interest, kept out of costs:
    * it earns a 20% tax reduction instead of being deducted.
    */
+  /**
+   * Every property line in one list: rent and income from propertyEntries, plus costs entered in
+   * Going out (expenses with a property) shown in the same shape, with expenseId set.
+   */
+  BE.propertyLedger = function () {
+    var fromOut = BE.all('expenses').filter(function (x) { return x.property; }).map(function (x) {
+      return { id: 'exp-' + x.id, expenseId: x.id, prop: x.property, kind: 'cost', cat: x.catId || 'p-other', what: x.who + (x.note ? ' · ' + x.note : ''),
+        amount: Number(x.amount) || 0, iso: x.iso, date: x.date, isNew: x.isNew };
+    });
+    return BE.all('propertyEntries').concat(fromOut).sort(function (a, b) { return a.iso < b.iso ? 1 : a.iso > b.iso ? -1 : 0; });
+  };
+
   BE.propertyTotals = function (quarterId) {
     var props = BE.all('properties');
     var share = {};
     props.forEach(function (p) { share[p.id] = (Number(p.share) || 100) / 100; });
     var byCat = {};
     var income = 0, costs = 0, finance = 0, count = 0;
-    BE.all('propertyEntries').forEach(function (e) {
+    BE.propertyLedger().forEach(function (e) {
       if (!(e.prop in share) || !inPeriod(e.iso || e.date, quarterId)) return;
       var a = (Number(e.amount) || 0) * share[e.prop];
       count++;
@@ -237,7 +251,7 @@
     };
   };
 
-  /** Tick a month's rent as received ('2026-10'). Adds the rent and, if there's an agent, their fee. */
+  /** Tick a month's rent as received ('2026-10'). */
   BE.markRent = function (propId, month) {
     var p = BE.find('properties', propId);
     if (!p) return null;
@@ -248,7 +262,7 @@
     BE.change(function (s) {
       var list = (s.propertyEntries || []).slice();
       list.unshift({ id: BE.id('pe'), prop: p.id, kind: 'income', cat: 'rent', what: 'Rent for ' + MON[m - 1] + ' ' + y, amount: Number(p.rent) || 0, iso: dIso, date: BE.dayLabel(d), rentMonth: month, isNew: true });
-      if (Number(p.agentPct)) list.unshift({ id: BE.id('pe'), prop: p.id, kind: 'cost', cat: 'p-professional', what: (p.agent || 'Letting agent') + ' · ' + p.agentPct + '% management fee', amount: Math.round((Number(p.rent) || 0) * p.agentPct) / 100, iso: dIso, date: BE.dayLabel(d), rentMonth: month, auto: true, isNew: true });
+      // The agent's fee is a monthly cost recorded in Going out, so it isn't added here.
       s.propertyEntries = list.sort(function (a, b) { return a.iso < b.iso ? 1 : -1; });
       BE._log(s, 'Rent for ' + MON[m - 1] + ' received · ' + p.name);
     });

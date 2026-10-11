@@ -147,7 +147,7 @@ a{color:#18161F}a:hover{color:#000000}
         <h2 id="l-h" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Your prices</h2>
         <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; gap: 2px;">
           <div aria-hidden="true" class="be-hide-sm" style="display: flex; gap: 12px; padding: 8px 14px 4px 64px; font-size: 12px; font-weight: 600; color: #5F5B68;">
-            <span style="flex: 1;">Name</span><span style="width: 150px; text-align: right;">{{colTax}}</span><span style="width: 130px; text-align: right;">Price</span><span style="width: 128px;"></span>
+            <span style="flex: 1;">Name</span><sc-if value="{{showTax}}" hint-placeholder-val="{{true}}"><span style="width: 150px; text-align: right;">{{colTax}}</span></sc-if><span style="width: 84px; text-align: right;">Price</span><span style="width: 128px;"></span>
           </div>
           <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
             <div style="display: flex; flex-direction: column; gap: 6px; border-radius: 14px; background: {{r.bg}};">
@@ -157,11 +157,13 @@ a{color:#18161F}a:hover{color:#000000}
                   <span style="font-weight: 700; font-size: 15px;">{{r.name}}</span>
                   <span style="font-size: 13px; color: #5F5B68;">{{r.meta}}</span>
                 </span>
-                <span style="width: 150px; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 13px; color: #47444F; text-align: right;">{{r.tax}}<span style="font-size: 11px; color: #5F5B68;">{{r.taxSub}}</span></span>
-                <span style="width: 130px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{r.price}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.per}}</span></span>
-                <span style="width: 128px; display: flex; justify-content: flex-end; gap: 6px; margin-left: auto;">
+                <span style="flex: 0 1 420px; min-width: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 12px; margin-left: auto;">
+                <sc-if value="{{showTax}}" hint-placeholder-val="{{true}}"><span style="flex: 0 1 150px; min-width: 140px; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 13px; color: #47444F; text-align: right;">{{r.tax}}<span style="font-size: 11px; color: #5F5B68;">{{r.taxSub}}</span></span></sc-if>
+                <span style="flex: 0 0 auto; min-width: 84px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{r.price}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.per}}</span></span>
+                <span style="flex: none; display: flex; justify-content: flex-end; gap: 6px;">
                   <button type="button" aria-label="{{r.editLabel}}" onClick="{{r.edit}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Edit</button>
                   <button type="button" aria-label="{{r.delLabel}}" aria-expanded="{{r.deleting}}" onClick="{{r.askDelete}}" style="min-height: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #A8200D; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+                </span>
                 </span>
               </div>
               <sc-if value="{{r.deleting}}" hint-placeholder-val="{{false}}">
@@ -328,6 +330,7 @@ class Component extends DCLogic {
       taxIntro: vatOn ? (ssclOn ? ', SSCL and VAT' : ' and VAT rate') : (ssclOn ? ' and SSCL' : ''),
       taxHint: lk ? (vatOn ? 'You’re VAT and SSCL registered, so each price shows its VAT rate and whether SSCL applies.' : 'Prices are in rupees. Tax is added on invoices if you register for VAT or SSCL.')
         : (vatOn ? 'You’re VAT registered, so each price has a VAT rate: standard 20%, reduced 5%, zero-rated or exempt.' : 'Prices are in pounds. You’re not VAT registered, so no VAT is added.'),
+      showTax: vatOn || ssclOn,
       colTax: vatOn ? 'VAT' + (ssclOn ? ' and SSCL' : '') : (ssclOn ? 'SSCL' : 'Tax'),
       hasItems: items.length > 0, noItems: items.length === 0 && !(F && F.mode === 'add'),
       tiles, chips, rows, noRows: rows.length === 0,

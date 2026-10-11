@@ -316,10 +316,10 @@ class Component extends DCLogic {
       return {
         name: x.name, ini: BE.initials(x.name), href: 'SellCustomer.dc.html#' + x.id, billHref: 'ThreeIn.dc.html#bill=' + x.id,
         bg: editing || deleting || (st.added && st.added.id === x.id) ? '#EEE8FF' : 'transparent',
-        meta: [x.contact, (x.address || '').split(',').slice(-1)[0].trim()].filter(Boolean).join(' · ') || x.email || 'No contact yet',
+        meta: [x.contact, (x.address || '').split(',').slice(-1)[0].trim(), x.tax ? 'VAT registered' : ''].filter(Boolean).join(' · ') || x.email || 'No contact yet',
         late: s.lateAmt > 0, lateText: money(s.lateAmt) + ' late',
         owes: s.owes > 0 ? money(s.owes) : 'Nothing', owesFg: s.owes > 0 ? '#18161F' : '#5F5B68', owesSub: '',
-        paid: usd(s.paid), paidSub: x.tax ? (lk ? 'VAT registered' : 'VAT no. ' + x.tax) : '',
+        paid: usd(s.paid), paidSub: '',
         moreLabel: 'More for ' + x.name, menuOpen: st.menu === x.id,
         toggleMenu: () => this.setState({ menu: st.menu === x.id ? null : x.id }),
         edit: () => this.setState({ menu: null, del: null, errs: [], form: { mode: 'edit', id: x.id, name: x.name, email: x.email || '', tin: x.tin || '', tax: x.tax || '', contact: x.contact || '', phone: x.phone || '', address: x.address || '' } }),

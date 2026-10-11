@@ -37,7 +37,7 @@
     };
   };
   var U = X('uk'), L = X('lk');
-  var FLAT = 'ash-grove';
+  var FLAT = 'ash';
 
   BE.define('expenses', BE.perCountry({
     // Harper Studio. October so far (paid £949.80), then Q2 (6 Jul – 5 Oct): about £3,940 of

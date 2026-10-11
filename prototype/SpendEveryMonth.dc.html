@@ -402,7 +402,7 @@ class Component extends DCLogic {
       const v = BE.vendorFor(f.name.trim());
       const isP = !!fc.property;
       BE.add('monthly', { id: BE.id('mo'), who: f.name.trim(), vendor: v ? v.id : '', catId: fc.id, cat: String(fc.name || 'Other').replace(/^Property: /, ''), day: day, how: f.card, amount: Math.round(amt * 100) / 100, vat: Math.round(vat * 100) / 100,
-        paidDay: 0, start: thisMonth ? 'Oct' : 'Nov', active: true, property: isP ? ((BE.all('properties')[0] || {}).id || 'ash-grove') : undefined }, { end: true });
+        paidDay: 0, start: thisMonth ? 'Oct' : 'Nov', active: true, property: isP ? ((BE.all('properties')[0] || {}).id || 'ash') : undefined }, { end: true });
       BE.log('Set up ' + f.name.trim() + ' · ' + money(amt) + ' every month');
       this.setState({ addOpen: false, f: this.fresh(), errors: [] });
       this.notify(f.name.trim() + ' set up · ' + money(amt) + ' every month on the ' + dayText(day) + (thisMonth ? ' · +' + money(amt) + ' to Going out (now ' + out() + ')' : ''));

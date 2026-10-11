@@ -446,7 +446,7 @@ class Component extends DCLogic {
     const selV = !isNewVendor ? BE.vendorFor(vendorSel) : null;
     const landlord = !!(pack.features && pack.features.landlord) && (prof.kind === 'both' || prof.kind === 'landlord');
     const props = BE.all('properties');
-    const propList = props.length ? props.map((p) => ({ id: p.id, name: p.short || p.name })) : (landlord ? [{ id: BE.isEmpty() ? 'property' : 'ash-grove', name: BE.isEmpty() ? 'Your rental property' : 'Flat 2, 18 Ash Grove' }] : []);
+    const propList = props.length ? props.map((p) => ({ id: p.id, name: p.short || p.name })) : (landlord ? [{ id: BE.isEmpty() ? 'property' : 'ash', name: BE.isEmpty() ? 'Your rental property' : 'Flat 2, 18 Ash Grove' }] : []);
     const scopeNow = f.scope !== 'business' ? f.scope : (selV && selV.property && landlord ? selV.property : 'business');
     const isProp = landlord && scopeNow !== 'business';
     const CATS = BE.expenseCats(isProp ? 'property' : 'business');

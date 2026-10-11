@@ -276,6 +276,7 @@ class Component extends DCLogic {
     ].concat((e.est.lines || []).map((l) => L(l.label, (/allowance|relief/i.test(l.label) ? '' : '') + W(l.amount), l.note || '')));
     if (finRelief) lines.push(L('Mortgage interest on the flat', W(e.finance), 'Kept out of costs; it reduces Income Tax by 20% (' + W(finRelief) + '), already in the line above'));
     lines.push(L('Estimated ' + taxWord + ' for ' + yr.label, W(e.total), (e.annual > 0 ? Math.round(e.rate * 100) + '% of your profit for the year' : 'Nothing while there’s no profit'), { border: '2px solid #18161F', weight: 700, size: '18px', bg: '#EEE8FF', radius: '12px' }));
+    if (!hasData) lines.splice(0, lines.length, ...(e.est.lines || []).filter((l) => /allowance|relief/i.test(l.label)).map((l) => L(l.label, W(l.amount), l.note, { border: '0' })), L('Estimated ' + taxWord + ' for ' + yr.label, 'Nothing yet', 'Appears once you make a profit, with its working', { border: '2px solid #18161F', weight: 700, bg: '#EEE8FF', radius: '12px' }));
     const est = { intro: lk ? 'Income tax on business profit for the year of assessment (1 April to 31 March), using this year’s rates and the personal relief. Rates are illustrative until confirmed for ' + yr.label + '.' : 'Income Tax plus Class 4 National Insurance on your self-employment and property profit, using England, Wales and Northern Ireland bands. Rates are illustrative until confirmed for ' + yr.label + '.', lines };
 
     const estPct = Math.round(e.rate * 100);

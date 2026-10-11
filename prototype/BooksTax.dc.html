@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · Tax and year-end</title>
+<title>BillingEase · Tax year end</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -13,355 +13,135 @@
 <style>
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
-.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
-.be-show-sm{display:none}
-@media (max-width: 640px){.be-hide-sm{display:none!important}.be-show-sm{display:inline}}
+.k-main{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:24px clamp(16px,4vw,40px) 64px;display:flex;flex-direction:column;gap:24px}
+.k-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0;box-sizing:border-box}
+.k-soft{background:#F7F6F9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.k-dark{background:#18161F;color:#FFFFFF;border-radius:24px;padding:clamp(22px,3vw,34px);display:flex;flex-wrap:wrap;gap:18px 32px;align-items:flex-end;justify-content:space-between;box-sizing:border-box}
+.k-eyebrow{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:700 15px DM Sans,sans-serif;color:#EEE8FF}
+.k-dot{width:10px;height:10px;border-radius:9999px;background:#B9A3FF;flex:none}
+.k-big{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.03em;color:#B9A3FF;font-variant-numeric:tabular-nums}
+.k-lead{margin:0;font-size:16px;line-height:1.5;color:#EEE8FF;max-width:620px}
+.k-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.k-h3{margin:0;font-size:15px;font-weight:700}
+.k-sub{font-size:13px;color:#5F5B68;line-height:1.45}
+.k-p{margin:0;font-size:14px;line-height:1.55;color:#47444F}
+.k-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;max-width:100%}
+.k-btn-dark{background:#18161F;color:#FFFFFF}.k-btn-dark:hover{color:#FFFFFF;background:#2E2B38}
+.k-btn-soft{background:rgba(24,22,31,0.07);color:#18161F}
+.k-btn-violet{background:#B9A3FF;color:#18161F}
+.k-btn-ghost{background:rgba(238,232,255,0.14);color:#FFFFFF}.k-btn-ghost:hover{color:#FFFFFF}
+.k-btn-sm{min-height:36px;padding:0 14px;font-size:13px}
+.k-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.k-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.4}
+.k-good{background:#E2F6D5;color:#2F5711}.k-attn{background:#FFF0B8;color:#6B5000}.k-late{background:#FBE3DF;color:#A8200D}.k-plain{background:#EFEDF3;color:#47444F}.k-violet{background:#EEE8FF;color:#18161F}.k-darktag{background:#18161F;color:#B9A3FF}
+.k-wrap{white-space:normal}
+.k-num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.k-tabs{display:flex;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;max-width:100%;overflow-x:auto;box-sizing:border-box;scrollbar-width:none}
+.k-tab{min-height:38px;padding:0 14px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.k-tab[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.k-input{min-height:44px;padding:0 12px;border:1px solid #CBC7D3;border-radius:12px;font:500 14px DM Sans,sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box;max-width:100%;min-width:0}
+.k-pre{margin:0;max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:#FFFFFF;border:1px solid #E2DFE8;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre}
+.k-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.k-li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:11px 0;border-top:1px solid #EFEDF3}
+.k-li:first-child{border-top:0}
+.k-cols{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.k-cols>*{flex:1 1 380px}
+.k-rowbtn{width:100%;display:flex;align-items:center;gap:10px 14px;padding:12px 4px;border:0;border-top:1px solid #EFEDF3;background:transparent;color:#18161F;text-align:left;font:500 14px DM Sans,sans-serif;cursor:pointer;box-sizing:border-box}
+.k-rowbtn:hover{background:#FBFAFC}
+.k-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px;border-top:2px solid #18161F;font-weight:700}
+.k-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F6F9}
+.k-icon{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none}
+.k-drill{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:6px 12px;border-radius:14px;background:#F7F6F9}
+.k-drill a,.k-drill span.k-dw{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:7px 0;font-size:13px;text-decoration:none;color:#18161F;border-top:1px solid #EAE7EF}
+.k-drill a:first-child,.k-drill span.k-dw:first-child{border-top:0}
+@media (max-width: 600px){.k-hide-sm{display:none!important}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
   <dc-import name="AppHeader"></dc-import>
+  <main class="k-main">
+    <dc-import name="AppCrumbs" area="keep" here="Tax year end"></dc-import>
 
-  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
-    <dc-import name="AppCrumbs" area="keep" here="Sales tax and year-end"></dc-import>
-
-    <section aria-labelledby="pg-h" style="display: flex; flex-direction: column; gap: 10px;">
-      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF; box-shadow: 0 0 0 2px #18161F;"></span>Yours to keep · Your books</span>
-      <h1 id="pg-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Tax and year-end</h1>
-      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 700px;">Sales tax you hold for the state, how your three numbers are counted, and putting a finished year away for good.</p>
+    <section class="k-dark" aria-labelledby="ye-h">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="ye-h" class="k-eyebrow"><span class="k-dot"></span>Tax year end · {{hero.eyebrow}}</h1>
+        <span class="k-big">{{hero.big}}</span>
+        <p class="k-lead">{{hero.lead}}</p>
+        <div class="k-btns" style="margin-top: 4px;"><span class="k-tag k-{{hero.tone}}">{{hero.tag}}</span><span style="font-size: 13px; color: #EEE8FF;">{{hero.note}}</span></div>
+      </div>
+      <div style="flex: 0 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <span style="display: flex; height: 12px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16);"><span style="width: {{hero.pct}}%; background: #B9A3FF; border-radius: 9999px;"></span></span>
+        <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #EEE8FF;"><span><strong style="color: #FFFFFF;">{{hero.done}}</strong> of {{hero.all}} steps done</span><span>{{hero.right}}</span></span>
+      </div>
     </section>
-    <!-- 1. Sales tax you collected -->
-    <section id="salestax" aria-labelledby="st-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 20px;">
-      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 20px;">
-        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
-          <h2 id="st-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{tx.title}}</h2>
-          <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
-            <span style="padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">{{tx.jargon}}</span>
-            <span style="font-size: 12px; color: #5F5B68;">{{tx.note}} · <a href="BizProfile.dc.html" style="color: #47444F; font-weight: 600;">change</a></span>
-          </span>
-        </div>
-        <div role="group" aria-label="Show tax as" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-          <sc-for list="{{views}}" as="vw" hint-placeholder-count="2">
-            <button type="button" aria-pressed="{{vw.on}}" onClick="{{vw.pick}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{vw.bg}}; color: {{vw.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{vw.label}}</button>
+
+    <div class="k-cols">
+      <!-- Checklist -->
+      <section class="k-card" aria-labelledby="cl-h">
+        <div class="k-head"><h2 id="cl-h" class="k-h2">{{cl.title}}</h2><span class="k-sub">{{cl.note}}</span></div>
+        <ul class="k-list" style="gap: 8px;">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="8">
+            <li style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; background: {{s.bg}};">
+              <span class="k-icon" style="background: {{s.iconBg}};" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{s.iconFg}}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{s.icon}}"></path></svg></span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 700; font-size: 14px;">{{s.label}}</span>
+                <span class="k-sub">{{s.sub}}</span>
+              </span>
+              <span style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; align-items: center;">
+                <sc-if value="{{s.href}}" hint-placeholder-val="{{false}}"><a class="k-btn k-btn-soft k-btn-sm" href="{{s.href}}">{{s.cta}}</a></sc-if>
+                <sc-if value="{{s.tickable}}" hint-placeholder-val="{{false}}"><button type="button" class="k-btn {{s.tickCls}} k-btn-sm" aria-pressed="{{s.done}}" onClick="{{s.tick}}">{{s.tickLabel}}</button></sc-if>
+              </span>
+            </li>
           </sc-for>
-        </div>
-      </div>
+        </ul>
+      </section>
 
-      <!-- US sales tax -->
-      <sc-if value="{{usEmpty}}" hint-placeholder-val="{{false}}">
-        <p style="margin: 0; padding: 16px; border-radius: 16px; background: #F7F6F9; font-size: 15px; line-height: 1.5; color: #47444F;">{{usEmptyText}}</p>
-      </sc-if>
-      <sc-if value="{{usOn}}" hint-placeholder-val="{{true}}">
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-          <div style="display: flex; flex-wrap: wrap; gap: 20px 32px; align-items: flex-end;">
-            <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 14px; font-weight: 600; color: #47444F;">{{q.title}}</span>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5vw, 56px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{q.tax}}</span>
-              <span style="font-size: 15px; color: #47444F; line-height: 1.5;">{{q.rate}} on <strong style="color: #18161F;">{{q.sales}}</strong> of product sales. Design work isn&#39;t taxed in New York, so it&#39;s left out.</span>
-            </div>
-            <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-              <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background: {{f.badgeBg}}; color: {{f.badgeFg}}; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{f.badgeFg}};"></span>{{f.badge}}</span>
-              <sc-if value="{{f.idle}}" hint-placeholder-val="{{true}}">
-                <button type="button" aria-expanded="false" onClick="{{f.start}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
-                  Mark as filed and paid
-                </button>
-              </sc-if>
-              <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">This money was never yours. Paying it comes out of the tax you collected, so it doesn&#39;t change Going out.</span>
-            </div>
-          </div>
-
-          <!-- Filing flow -->
-          <sc-if value="{{f.filing}}" hint-placeholder-val="{{false}}">
-            <div style="border: 1px solid #E2DFE8; border-radius: 20px; padding: clamp(16px, 2.5vw, 24px); display: flex; flex-direction: column; gap: 18px;">
-              <div style="display: flex; gap: 14px; align-items: flex-start;">
-                <span style="width: 28px; height: 28px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 14px;">1</span>
-                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-                  <span style="font-weight: 700; font-size: 16px;">File with New York State</span>
-                  <span style="font-size: 14px; color: #47444F; line-height: 1.5;">Sign in to NY Tax Online Services and fill in the quarterly return ({{q.form}}). These are the three numbers it asks for:</span>
-                  <dl style="margin: 0; display: flex; flex-wrap: wrap; gap: 8px;">
-                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Taxable sales</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{q.sales}}</dd></div>
-                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Rate · {{q.county}}</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{q.rate}}</dd></div>
-                    <div style="flex: 1 1 150px; padding: 10px 14px; border-radius: 14px; background: #F7F6F9;"><dt style="font-size: 12px; color: #5F5B68;">Sales tax due</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{q.tax}}</dd></div>
-                  </dl>
-                  <button type="button" onClick="{{f.copy}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h11v11H9zM5 15H4V4h11v1"></path></svg>
-                    Copy the numbers
-                  </button>
-                </div>
+      <!-- Hand-off -->
+      <section id="handoff" class="k-card" aria-labelledby="ho-h">
+        <div class="k-head"><h2 id="ho-h" class="k-h2">{{ho.title}}</h2><span class="k-tag k-{{ho.tone}}">{{ho.tag}}</span></div>
+        <p class="k-p">{{ho.body}}</p>
+        <sc-for list="{{ho.blocks}}" as="b" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column;">
+            <span style="padding: 8px 0 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5F5B68;">{{b.title}}</span>
+            <sc-for list="{{b.rows}}" as="r" hint-placeholder-count="3">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 2px; border-top: {{r.border}}; font-weight: {{r.weight}}; font-size: 14px;">
+                <span style="min-width: 0; display: flex; flex-direction: column;"><span>{{r.label}}</span><sc-if value="{{r.sub}}" hint-placeholder-val="{{false}}"><span class="k-sub" style="font-size: 12px; font-weight: 400;">{{r.sub}}</span></sc-if></span>
+                <span class="k-num" style="font-weight: {{r.weight}};">{{r.amount}}</span>
               </div>
-              <div style="display: flex; gap: 14px; align-items: flex-start; border-top: 1px solid #EFEDF3; padding-top: 18px;">
-                <span style="width: 28px; height: 28px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; font-size: 14px;">2</span>
-                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
-                  <span style="font-weight: 700; font-size: 16px;">Tell us what you paid</span>
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
-                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount paid
-                      <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{f.amt}}" onChange="{{f.setAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Date paid
-                      <input class="be-field" type="date" value="{{f.date}}" onChange="{{f.setDate}}" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Paid from
-                      <select class="be-field" value="{{f.from}}" onChange="{{f.setFrom}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                        <option value="Chase ••4417">Chase Business Checking ••4417</option>
-                        <option value="Amex ••1009">Amex Business ••1009</option>
-                      </select>
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;"><span>Confirmation number <span style="font-weight: 400; color: #5F5B68;">· optional</span></span>
-                      <input class="be-field" type="text" value="{{f.conf}}" onChange="{{f.setConf}}" placeholder="e.g. 2026-ST-88412" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-                    </label>
-                  </div>
-                  <sc-if value="{{f.err}}" hint-placeholder-val="{{false}}">
-                    <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{f.err}}</span>
-                  </sc-if>
-                  <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">We record it as paid out of the sales tax you collected (a transfer), not as a cost. Going out stays the same, because it was your customers&#39; money all along.</span>
-                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button type="button" onClick="{{f.record}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Record payment</button>
-                    <button type="button" onClick="{{f.cancel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </sc-if>
-
-          <sc-if value="{{f.done}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711;">
-              <span style="font-size: 14px; line-height: 1.45;"><strong>{{f.doneText}}</strong> Going out didn&#39;t change. Next quarter ({{q.nextLabel}}) is due {{q.nextDue}}. We&#39;ll remind you.</span>
-              <button type="button" onClick="{{f.undo}}" style="min-height: 36px; padding: 0 14px; border: 1px solid #2F5711; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Undo</button>
-            </div>
-          </sc-if>
-
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 16px; border-radius: 16px; background: #EEE8FF;">
-            <span style="flex: 1 1 300px; min-width: 0; font-size: 14px; line-height: 1.5;"><strong>{{q4.title}}</strong> {{q4.text}}</span>
-            <sc-for list="{{q4.links}}" as="ql" hint-placeholder-count="1">
-              <a href="{{ql.href}}" style="font-size: 14px; font-weight: 600;">{{ql.num}}</a>
             </sc-for>
-            <sc-if value="{{q4.none}}" hint-placeholder-val="{{true}}"><a href="SellInvoice.dc.html" style="font-size: 14px; font-weight: 600;">Invoice a product</a></sc-if>
           </div>
-
-          <!-- By month -->
-          <div style="display: flex; flex-wrap: wrap; gap: 24px;">
-            <div style="flex: 3 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-              <h3 style="margin: 0; font-size: 15px; font-weight: 700;">By month</h3>
-              <div style="overflow-x: auto;">
-                <table style="width: 100%; min-width: 280px; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums;">
-                  <thead>
-                    <tr style="text-align: left; color: #5F5B68; font-size: 12px;">
-                      <th scope="col" style="padding: 8px 0; font-weight: 600;">Month</th>
-                      <th scope="col" style="padding: 8px 0; font-weight: 600;">Product sales</th>
-                      <th scope="col" class="be-hide-sm" style="padding: 8px 0; font-weight: 600; width: 34%;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Share</span></th>
-                      <th scope="col" style="padding: 8px 0; font-weight: 600; text-align: right;">Tax collected</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <sc-for list="{{months}}" as="m" hint-placeholder-count="3">
-                      <tr style="border-top: 1px solid #EFEDF3;">
-                        <td style="padding: 12px 0; font-weight: 600;">{{m.label}}</td>
-                        <td style="padding: 12px 0; color: #47444F;">{{m.sales}}</td>
-                        <td class="be-hide-sm" style="padding: 12px 12px 12px 0;"><div title="{{m.title}}" style="height: 10px; width: {{m.pct}}%; border-radius: 9999px; background: #C9BCFB;"></div></td>
-                        <td style="padding: 12px 0; text-align: right; font-weight: 700;">{{m.tax}}</td>
-                      </tr>
-                    </sc-for>
-                    <tr style="border-top: 2px solid #E2DFE8;">
-                      <td style="padding: 12px 0; font-weight: 700;">Quarter</td>
-                      <td style="padding: 12px 0; font-weight: 700;">{{q.sales}}</td>
-                      <td class="be-hide-sm"></td>
-                      <td style="padding: 12px 0; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 16px;">{{q.tax}}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div style="flex: 2 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-              <h3 style="margin: 0; font-size: 15px; font-weight: 700;">Past quarters</h3>
-              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
-                <sc-for list="{{filings}}" as="fl" hint-placeholder-count="2">
-                  <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #EFEDF3;">
-                    <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">{{fl.q}}</span><span style="font-size: 12px; color: #5F5B68;">{{fl.when}}</span></span>
-                    <span style="font-weight: 700; font-variant-numeric: tabular-nums;">{{fl.amt}}</span>
-                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Paid</span>
-                  </li>
-                </sc-for>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </sc-if>
-
-      <!-- VAT example -->
-      <sc-if value="{{isVAT}}" hint-placeholder-val="{{false}}">
-        <div style="display: flex; flex-direction: column; gap: 18px;">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; border-radius: 16px; background: #E1EEF8; color: #1F5E91; font-size: 14px; line-height: 1.45;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5E91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5M12 8h.01"></path></svg>
-            <span style="flex: 1 1 240px;">An example. This is what this section looks like for a business in the UK, with UK VAT at 20%. Northwind is in New York, so it files sales tax instead.</span>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px;">
-            <div style="flex: 1 1 200px; min-width: 0; padding: 16px 18px; border-radius: 18px; background: #F7F6F9; display: flex; flex-direction: column; gap: 4px;">
-              <span style="font-size: 13px; font-weight: 600; color: #47444F;">VAT on your sales</span>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">£2,140.00</span>
-              <span style="font-size: 13px; color: #47444F;">20% on £10,700.00 you billed</span>
-              <span style="font-size: 12px; color: #5F5B68;">Output VAT</span>
-            </div>
-            <span aria-hidden="true" style="align-self: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; color: #5F5B68; padding: 0 2px;">−</span>
-            <div style="flex: 1 1 200px; min-width: 0; padding: 16px 18px; border-radius: 18px; background: #F7F6F9; display: flex; flex-direction: column; gap: 4px;">
-              <span style="font-size: 13px; font-weight: 600; color: #47444F;">VAT on your purchases</span>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">£612.40</span>
-              <span style="font-size: 13px; color: #47444F;">20% on £3,062.00 you spent</span>
-              <span style="font-size: 12px; color: #5F5B68;">Input VAT</span>
-            </div>
-            <span aria-hidden="true" style="align-self: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; color: #5F5B68; padding: 0 2px;">=</span>
-            <div style="flex: 1 1 200px; min-width: 0; padding: 16px 18px; border-radius: 18px; background: #18161F; color: #FFFFFF; display: flex; flex-direction: column; gap: 4px;">
-              <span style="font-size: 13px; font-weight: 600; color: #EEE8FF;">VAT you owe</span>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">£1,527.60</span>
-              <span style="font-size: 13px; color: #EEE8FF;">Jul – Sep 2026 · submit to HMRC by Nov 7</span>
-              <span style="font-size: 12px; color: #EEE8FF;">VAT payable</span>
-            </div>
-          </div>
-          <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.5; color: #47444F;">
-            <li>If you paid more VAT than you charged, the government owes you the difference and it shows as a refund.</li>
-            <li>In the EU, sales to a business in another EU country with a VAT ID (like Kaffeehaus Berlin GmbH) say &#8220;VAT reverse charged to the customer&#8221; and add nothing here.</li>
-            <li>Just like sales tax, VAT never counts in Coming in or Going out. Your three numbers are always before VAT.</li>
-          </ul>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <h3 style="margin: 0; font-size: 15px; font-weight: 700;">Your overseas customers</h3>
-            <sc-if value="{{noOverseas}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; color: #47444F;">When you bill a customer abroad, what we put on the invoice about VAT shows here.</span></sc-if>
-            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
-              <sc-for list="{{overseas}}" as="ov" hint-placeholder-count="2">
-                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 0; border-top: 1px solid #EFEDF3;">
-                  <span style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><a href="{{ov.href}}" style="font-weight: 700; font-size: 15px; text-decoration: none;">{{ov.who}}</a><span style="font-size: 13px; color: #47444F;">{{ov.vat}}</span></span>
-                  <a href="{{ov.invHref}}" style="font-size: 13px; font-weight: 600;">{{ov.num}} · {{ov.amt}}</a>
-                </li>
-              </sc-for>
-            </ul>
-          </div>
-          <a href="BizProfile.dc.html" style="align-self: flex-start; font-size: 14px; font-weight: 600;">Change your country and tax settings</a>
-        </div>
-      </sc-if>
-    </section>
-
-    <!-- 2. How we count -->
-    <section id="method" aria-labelledby="hc-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <h2 id="hc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">How we count</h2>
-        <span style="align-self: flex-start; padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Accounting method: accrual or cash basis</span>
-      </div>
-      <div role="group" aria-label="Count money" style="display: flex; flex-wrap: wrap; gap: 8px;">
-        <sc-for list="{{methods}}" as="me" hint-placeholder-count="2">
-          <button type="button" aria-pressed="{{me.on}}" onClick="{{me.pick}}" style="flex: 1 1 260px; display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; border: {{me.border}}; border-radius: 18px; background: {{me.bg}}; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
-            <span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 9999px; border: 2px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center; flex: none;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: {{me.dot}};"></span></span>
-            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{me.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{me.sub}}</span></span>
-          </button>
         </sc-for>
-      </div>
-      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 820px;">{{hc.para}}</p>
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        <span style="font-size: 13px; font-weight: 600; color: #47444F;">{{hc.caption}}</span>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px;">
-          <sc-for list="{{hc.nums}}" as="nm" hint-placeholder-count="3">
-            <div style="padding: 14px 16px; border-radius: 18px; background: {{nm.bg}}; color: {{nm.fg}}; display: flex; flex-direction: column; gap: 4px;">
-              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{nm.dot}};"></span>{{nm.label}}</span>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.03em; color: {{nm.numFg}}; font-variant-numeric: tabular-nums;">{{nm.value}}</span>
-              <span style="font-size: 13px; color: {{nm.subFg}};">{{nm.sub}}</span>
+
+        <sc-if value="{{confirming}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; border: 2px solid #18161F; background: #FFFFFF;">
+            <span class="k-h3">{{ho.confirmTitle}}</span>
+            <span class="k-p">{{ho.confirmBody}}</span>
+            <label style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; cursor: pointer;"><input type="checkbox" checked="{{checked}}" onChange="{{toggleCheck}}" style="width: 20px; height: 20px; margin: 0; flex: none; accent-color: #18161F;"><span>{{ho.checkText}}</span></label>
+            <div class="k-btns"><button type="button" class="k-btn k-btn-dark" onClick="{{doSend}}">{{ho.sendNow}}</button><button type="button" class="k-btn k-btn-soft" onClick="{{cancel}}">Cancel</button></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ho.sentBox}}" hint-placeholder-val="{{false}}">
+          <p class="k-p" style="padding: 12px 14px; border-radius: 14px; background: #E2F6D5; color: #2F5711;">{{ho.sentText}}</p>
+        </sc-if>
+        <div class="k-btns" style="margin-top: auto;">
+          <sc-if value="{{ho.canStart}}" hint-placeholder-val="{{true}}"><button type="button" class="k-btn k-btn-dark" onClick="{{startSend}}">{{ho.cta}}</button></sc-if>
+          <sc-if value="{{ho.link}}" hint-placeholder-val="{{false}}"><a class="k-btn k-btn-dark" href="Accountant.dc.html">{{ho.linkText}}</a></sc-if>
+          <button type="button" class="k-btn k-btn-soft" onClick="{{toggleCsv}}" aria-expanded="{{csvOpen}}">{{csvLabel}}</button>
+        </div>
+        <sc-if value="{{csvOpen}}" hint-placeholder-val="{{false}}">
+          <div class="k-soft" style="border: 1px solid #E2DFE8;">
+            <div class="k-head" style="align-items: center;">
+              <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{csvName}}</span><span class="k-sub">The same figures as a spreadsheet.</span></span>
+              <div class="k-btns"><button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{copyCsv}}">Copy CSV</button><button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{toggleCsv}}">Close</button></div>
             </div>
-          </sc-for>
-        </div>
-      </div>
-      <sc-if value="{{hc.changed}}" hint-placeholder-val="{{false}}">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
-          <span style="flex: 1 1 280px; font-size: 14px; color: #47444F; line-height: 1.45;">{{hc.changeNote}}</span>
-          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-            <button type="button" onClick="{{hc.apply}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Count this way</button>
-            <button type="button" onClick="{{hc.keep}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep it as is</button>
+            <pre class="k-pre">{{csv}}</pre>
           </div>
-        </div>
-      </sc-if>
-    </section>
-
-    <!-- 3. Year-end -->
-    <section id="yearend" aria-labelledby="ye-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 20px;">
-      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 20px;">
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <h2 id="ye-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Put 2025 away</h2>
-          <span style="align-self: flex-start; padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Year-end close · lock date</span>
-        </div>
-        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background: {{ye.badgeBg}}; color: {{ye.badgeFg}}; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{ye.badgeFg}};"></span>{{ye.badge}}</span>
-      </div>
-      <sc-if value="{{yeFresh}}" hint-placeholder-val="{{false}}">
-        <p style="margin: 0; padding: 16px; border-radius: 16px; background: #F7F6F9; font-size: 15px; line-height: 1.5; color: #47444F;">Nothing to put away yet. Your first year ends Dec 31, 2026; when it does, a short checklist shows up here so you can hand the year to your accountant and lock it.</p>
-      </sc-if>
-      <sc-if value="{{yeOn}}" hint-placeholder-val="{{true}}">
-      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 820px;">Once your accountant has filed for 2025, lock it. Nothing dated on or before <strong style="color: #18161F;">December 31, 2025</strong> can be added, changed or deleted, so the numbers on your tax return always match your books. Only you or your accountant can unlock it, and we note who did and when.</p>
-
-      <div style="display: flex; flex-wrap: wrap; gap: 24px;">
-        <div style="flex: 3 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-          <h3 style="margin: 0; font-size: 15px; font-weight: 700;">Before you lock it</h3>
-          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
-            <sc-for list="{{checks}}" as="c" hint-placeholder-count="4">
-              <li style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 14px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
-                <span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 9999px; background: {{c.iconBg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{c.iconFg}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="{{c.icon}}"></path></svg></span>
-                <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;"><span style="font-weight: 700; font-size: 15px;">{{c.label}}</span><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{c.badgeBg}}; color: {{c.badgeFg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{c.badgeFg}};"></span>{{c.badge}}</span></span>
-                  <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{c.sub}}</span>
-                  <a href="{{c.href}}" style="align-self: flex-start; font-size: 13px; font-weight: 600; margin-top: 2px;">{{c.link}}</a>
-                </span>
-                <sc-if value="{{c.fixable}}" hint-placeholder-val="{{false}}">
-                  <button type="button" onClick="{{c.fix}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">They&#39;re fine without</button>
-                </sc-if>
-              </li>
-            </sc-for>
-          </ul>
-        </div>
-        <div style="flex: 2 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-          <h3 style="margin: 0; font-size: 15px; font-weight: 700;">What {{ye.first}} gets</h3>
-          <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{ye.who}} already has read-only access. Closing the year also puts these in one package:</span>
-          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
-            <sc-for list="{{pkg}}" as="pk" hint-placeholder-count="6">
-              <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFEDF3;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5"></path></svg>
-                <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 600; font-size: 14px;">{{pk.plain}}</span><span style="font-size: 12px; color: #5F5B68;">{{pk.formal}}</span></span>
-              </li>
-            </sc-for>
-          </ul>
-        </div>
-      </div>
-
-      <sc-if value="{{ye.open}}" hint-placeholder-val="{{true}}">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; border-top: 1px solid #EFEDF3; padding-top: 18px;">
-          <button type="button" disabled="{{ye.blocked}}" onClick="{{ye.close}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: {{ye.btnBg}}; color: {{ye.btnFg}}; font: 600 15px DM Sans, sans-serif; cursor: {{ye.cursor}};">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8.5 11V7.5a3.5 3.5 0 0 1 7 0V11"></path></svg>
-            Close 2025 and lock it
-          </button>
-          <span style="font-size: 13px; color: #5F5B68;">{{ye.hint}}</span>
-        </div>
-      </sc-if>
-      <sc-if value="{{ye.closed}}" hint-placeholder-val="{{false}}">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 20px; padding: 18px 20px; border-radius: 20px; background: #18161F; color: #FFFFFF;">
-          <span style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #B9A3FF;">2025 is closed</span>
-            <span style="font-size: 14px; color: #EEE8FF; line-height: 1.45;">{{ye.closedText}}{{ye.sentText}}</span>
-          </span>
-          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-            <button type="button" onClick="{{ye.send}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{ye.sendLabel}}</button>
-            <button type="button" onClick="{{ye.unlock}}" style="min-height: 44px; padding: 0 16px; border: 1px solid rgba(238,232,255,0.4); border-radius: 9999px; background: transparent; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Unlock 2025</button>
-          </div>
-        </div>
-      </sc-if>
-      </sc-if>
-    </section>
-
-
-    <nav aria-label="More in your books" style="display: flex; flex-direction: column; gap: 10px;">
-      <span style="font-size: 13px; font-weight: 600; color: #47444F;">More in your books</span>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px;">
-        <sc-for list="{{more}}" as="mo" hint-placeholder-count="4">
-          <a href="{{mo.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; color: #18161F;">
-            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{mo.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{mo.formal}}</span></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-          </a>
-        </sc-for>
-      </div>
-    </nav>
+        </sc-if>
+      </section>
+    </div>
+    <p class="k-sub" style="margin: 0;">{{foot}}</p>
   </main>
-
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
     <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
       <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
@@ -370,175 +150,159 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { view: 'us', fileStep: 'idle', amt: '', date: '2026-10-04', from: 'Chase ••4417', conf: '', err: '', preview: null, toast: null };
-  }
-
-  moreLinks(cur) {
-    return [
-      { key: 'keep', label: 'Yours to keep', formal: 'Profit after tax, month by month', href: 'ThreeKeep.dc.html' },
-      { key: 'rep', label: 'Reports', formal: 'Profit & loss, balance sheet, cash flow', href: 'BooksReports.dc.html' },
-      { key: 'tax', label: 'Tax and year-end', formal: 'Sales tax, accounting method, year-end close', href: 'BooksTax.dc.html' },
-      { key: 'rec', label: 'Check against your bank statement', formal: 'Bank reconciliation', href: 'BooksReconcile.dc.html' },
-      { key: 'cat', label: 'Categories', formal: 'Chart of accounts and journal entries', href: 'BooksCategories.dc.html' },
-      { key: 'fx', label: 'Currencies', formal: 'Exchange rates, gains and losses', href: 'BooksCurrencies.dc.html' }
-    ].filter((l) => l.key !== cur);
+    this.state = { confirming: false, checked: false, csvOpen: false, toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
   renderVals() {
     const st = this.state;
-    const M = (n) => BE.money(n, 'USD', { whole: true });
-    const C2 = (n) => BE.money(n, 'USD', { cents: true });
-    const fmtDate = (iso) => { const p = (iso || '').split('-'); return p.length === 3 ? BE.MON[+p[1] - 1] + ' ' + (+p[2]) : BE.today; };
-    const ST = BE.books.salesTax();
-    const S = ST.s || {}, open = ST.open, filed = ST.filed;
-    const team = BE.all('team').filter((p) => p.role === 'Accountant')[0];
-    const acctName = team ? team.name : 'Your accountant';
+    const P = BE.pack();
+    const lk = BE.is('lk');
+    const books = BE.books;
+    const prof = BE.get('profile') || {};
+    const W = (n) => BE.money(n, null, { whole: true });
+    const M = (n) => BE.money(n, null, { cents: true });
+    const pr = BE.practice ? BE.practice() : { has: false, short: '' };
+    const prShort = pr.has ? pr.short : (lk ? 'your tax practitioner' : 'your accountant');
+    const yr = books.yearRange();
+    const ye = BE.get('yearEnd') || { ticks: {} };
+    const ticks = ye.ticks || {};
+    const empty = BE.isEmpty();
+    const sm = books.pl(yr.from, BE.todayDate);
+    const e = books.estimate();
+    const capital = books.ledger().filter((x) => x.cat === 'capital' && x.d >= yr.from);
+    const ended = BE.todayDate > yr.to;
+    const ok = { iconBg: '#E2F6D5', iconFg: '#2F5711', icon: 'm5 12 5 5 9-10', bg: '#F7F6F9' };
+    const todo = { iconBg: '#FFFFFF', iconFg: '#5F5B68', icon: 'M12 8v4l3 2', bg: '#F7F6F9' };
+    const later = { iconBg: '#EFEDF3', iconFg: '#5F5B68', icon: 'M8 12h8', bg: '#F7F6F9' };
+    const tick = (id, label) => () => {
+      const now = !ticks[id];
+      BE.change((s) => { const y = Object.assign({}, s.yearEnd || {}); y.ticks = Object.assign({}, y.ticks || {}, { [id]: now }); s.yearEnd = y; BE._log(s, (now ? 'Ticked ' : 'Unticked ') + '“' + label + '” for ' + yr.label); });
+      this.notify(now ? 'Done: ' + label : 'Back on the list: ' + label);
+    };
+    const S = (o) => Object.assign({ href: false, cta: '', tickable: false }, o.done ? ok : o.later ? later : todo, o);
+    const T = (id, label, sub, extra) => { const d = !!ticks[id]; return S(Object.assign({ label, sub, done: d, tickable: true, tick: tick(id, label), tickLabel: d ? 'Done' : 'Mark done', tickCls: d ? 'k-btn-soft' : 'k-btn-dark' }, extra || {})); };
+    const steps = [];
+    if (!lk) {
+      books.quarters().forEach((q) => {
+        const i = books.quarter(q.id);
+        const done = i.status === 'filed';
+        const sub = done ? 'Filed by ' + (i.filed.by || prShort) + ' on ' + i.filed.on : i.status === 'sent' ? 'With ' + prShort + ' · they file by ' + q.due : i.status === 'ready' ? (i.hasData ? 'Closed · send it by ' + q.due : 'Nothing recorded here; ' + prShort + ' file from your old records') : i.status === 'open' ? 'Under way · closes ' + q.to : 'Starts ' + q.from;
+        steps.push(S({ label: q.label + ' update (' + q.range + ')', sub, done, later: i.status === 'upcoming', href: 'Quarters.dc.html#' + q.id, cta: done ? 'See' : 'Open' }));
+      });
+      steps.push(T('bank', 'Bank checked up to 5 April', 'Tick your statement against the books for the last month of the year.', { href: 'BooksReconcile.dc.html', cta: 'Bank check' }));
+      steps.push(T('capital', 'Equipment you bought is listed', capital.length ? capital.map((c) => c.who + ' ' + W(c.amount)).join(', ') + ' · ' + prShort + ' claim capital allowances' : 'Nothing bought as equipment yet this year'));
+      steps.push(T('private', 'Private use agreed', 'Phone, car or home costs that are partly personal. ' + prShort + ' make the adjustments.'));
+      if (BE.all('properties').length) steps.push(T('property', 'Property costs and mortgage interest checked', 'Including whether the £' + (P.propertyAllowance || 1000).toLocaleString('en-GB') + ' property allowance is better.', { href: 'Properties.dc.html', cta: 'The flat' }));
+      steps.push(T('other', 'Other income told to ' + prShort, 'A job, pensions, savings interest or dividends go on the final declaration too.'));
+      steps.push(S({ label: 'Final-declaration pack sent', sub: ye.sent ? 'Sent ' + ye.sent.on + (ye.sent.draft ? ' as a draft' : '') : 'Send it once Q4 is in. You can send a draft now.', done: !!(ye.sent && !ye.sent.draft), href: '#handoff', cta: 'See the pack' }));
+    } else {
+      const ps = books.periods().map((p) => books.period(p.id));
+      const filedN = ps.filter((p) => p.status === 'filed').length, dueN = ps.filter((p) => p.status === 'due').length;
+      if (prof.vatRegistered) steps.push(S({ label: 'VAT and SSCL returns filed', sub: filedN + ' filed' + (dueN ? ' · ' + dueN + ' due now' : '') + ' · twelve monthly returns for the year', done: false, href: 'TaxPeriods.dc.html', cta: 'Tax periods' }));
+      const runs = (BE.payRuns ? BE.payRuns() : []).filter((r) => r.country === 'lk');
+      const paidRuns = runs.filter((r) => r.status === 'paid').length;
+      if (BE.all('employees').length) steps.push(S({ label: 'Payroll run every month', sub: paidRuns + ' of 12 months paid · ' + (runs.some((r) => r.status === 'needs') ? 'October still to run' : 'up to date'), done: false, href: 'SpendPayroll.dc.html', cta: 'Payroll' }));
+      const inst = (e.est.paymentsOnAccount || []);
+      const paidInst = BE.all('taxPayments').filter((p) => p.year === yr.label).length;
+      steps.push(S({ label: 'Income tax instalments paid', sub: paidInst + ' of ' + (inst.length || 4) + ' paid' + (inst[paidInst] ? ' · next ' + inst[paidInst].due + ', about ' + W(inst[paidInst].amount) : ''), done: false, href: 'ThreeKeep.dc.html#payments', cta: 'Instalments' }));
+      steps.push(T('bank', 'Bank checked up to 31 March', 'Tick your statement against the books for the last month of the year.', { href: 'BooksReconcile.dc.html', cta: 'Bank check' }));
+      steps.push(T('capital', 'Capital items listed', capital.length ? capital.map((c) => c.who + ' ' + W(c.amount)).join(', ') + ' · for capital allowances in the return' : 'Nothing bought as equipment yet this year'));
+      if (BE.all('employees').length) steps.push(T('apit', 'APIT certificates for employees', 'After 31 March, each employee gets a certificate of the APIT deducted. Totals are on Payroll.', { later: !ended }));
+      steps.push(S({ label: 'Year sent to TaxWise.lk', sub: ye.sent ? 'Sent ' + ye.sent.on + (ye.sent.draft ? ' (year to date)' : '') : 'After 31 March. You can send the year to date now to check it.', done: !!(ye.sent && !ye.sent.draft), href: '#handoff', cta: 'See it' }));
+    }
+    const doneN = steps.filter((s) => s.done).length;
 
-    // 1. Sales tax / VAT
-    const isUS = st.view === 'us';
-    const views = [['us', 'Sales tax (US)'], ['vat', 'VAT (UK / EU)']].map(([k, label]) => ({
-      label, on: st.view === k, bg: st.view === k ? '#18161F' : 'transparent', fg: st.view === k ? '#FFFFFF' : '#18161F',
-      pick: () => { if (st.view !== k) this.setState({ view: k }); }
-    }));
-    const tx = isUS
-      ? { title: 'Sales tax you collected', jargon: 'Sales tax payable', note: open ? 'Shown because you sell products in New York' : 'Shown for businesses that sell products' }
-      : { title: 'VAT for overseas customers', jargon: 'VAT · reverse charge', note: 'Shown because you bill customers abroad' };
-    const q = open ? {
-      title: (S.state || 'Your state') + ' · ' + open.label.replace('Jul – Sep', 'July – September'),
-      tax: C2(open.tax), sales: C2(open.sales), rate: (Math.round((S.rate || 0) * 100000) / 1000) + '%', county: S.county || '', form: S.form || 'the quarterly return',
-      nextLabel: (S.next && S.next.label) || 'next quarter', nextDue: (S.next && S.next.due) || ''
-    } : { title: '', tax: '', sales: '', rate: '', county: '', form: '', nextLabel: '', nextDue: '' };
-    const amtStr = st.amt === '' && open ? String(open.tax.toFixed(2)) : st.amt;
-    const f = {
-      idle: !filed && st.fileStep !== 'filing', filing: !filed && st.fileStep === 'filing', done: !!filed,
-      badge: filed ? 'Filed and paid ' + filed.when : (open ? 'Due ' + open.due + ' · in ' + open.dueIn + ' days' : ''),
-      badgeBg: filed ? '#E2F6D5' : '#FFF0B8', badgeFg: filed ? '#2F5711' : '#6B5000',
-      amt: amtStr, date: st.date, from: st.from, conf: st.conf, err: st.err,
-      start: () => this.setState({ fileStep: 'filing', err: '' }),
-      cancel: () => this.setState({ fileStep: 'idle', err: '' }),
-      copy: () => { const ok = BE.books.copy('Taxable sales ' + q.sales + ', rate ' + q.rate + ', sales tax due ' + q.tax); this.notify(ok ? 'Copied: taxable sales ' + q.sales + ', rate ' + q.rate + ', tax ' + q.tax : 'Taxable sales ' + q.sales + ' · rate ' + q.rate + ' · tax ' + q.tax); },
-      setAmt: (e) => this.setState({ amt: e.target.value, err: '' }),
-      setDate: (e) => this.setState({ date: e.target.value }),
-      setFrom: (e) => this.setState({ from: e.target.value }),
-      setConf: (e) => this.setState({ conf: e.target.value }),
-      record: () => {
-        const n = Math.round(parseFloat(String(amtStr).replace(/[$,\s]/g, '')) * 100) / 100;
-        if (!(n > 0)) { this.setState({ err: 'Add the amount you paid, like ' + (open ? open.tax.toFixed(2) : '412.63') }); return; }
-        const when = fmtDate(st.date);
-        const x = BE.addExpense({ who: (S.state || 'State') + ' Dept. of Taxation', cat: 'Sales tax', amount: n, how: st.from, date: when, kind: 'transfer', note: open.label + ' sales tax, paid from the tax you collected' });
-        BE.add('taxFilings', { q: open.label, amount: n, when, from: st.from, conf: st.conf, expId: x.id });
-        BE.log('Filed and paid ' + open.label + ' sales tax to ' + (S.state || 'the state') + ' · ' + C2(n) + ', out of the tax you collected');
-        this.setState({ fileStep: 'idle', amt: '', conf: '' });
-        this.notify(C2(n) + ' paid to ' + (S.state || 'the state') + '. Going out doesn’t change: it was your customers’ money.');
-      },
-      doneText: filed ? open.label + ' filed and paid, ' + C2(filed.amount) + ' on ' + filed.when + ' from ' + filed.from + '.' : '',
-      undo: () => {
-        if (!filed) return;
-        if (filed.expId) BE.remove('expenses', filed.expId);
-        BE.remove('taxFilings', filed.id);
-        BE.log('Removed the ' + open.label + ' sales tax payment record');
-        this.notify('Payment record removed. ' + open.label + ' is due again.');
+    // The hand-off contents
+    const R = (label, amount, sub, o) => Object.assign({ label, amount, sub: sub || '', border: '1px solid #EFEDF3', weight: 400 }, o || {});
+    const tot = (label, amount) => R(label, amount, '', { border: '2px solid #18161F', weight: 700 });
+    const blocks = [];
+    const csvRows = [[lk ? 'TaxWise.lk hand-off' : 'Final-declaration pack', prof.business || '', yr.label, (lk ? 'TIN ' + (prof.tin || '') : 'UTR ' + (prof.utr || '')), 'Year to ' + BE.today + ' 2026']];
+    const allow = sm.se.rows.filter((x) => x.allowable);
+    blocks.push({ title: lk ? 'Business income' : 'Self-employment', rows: [R(lk ? 'Sales and services' : 'Turnover', M(sm.se.income), '', { weight: 600 })].concat(allow.map((x) => R(x.name, '−' + M(x.amount), x.official))).concat([tot('Profit', M(sm.se.profit))]) });
+    csvRows.push([], ['Section', 'Line', 'Official name', 'Amount'], [lk ? 'Business income' : 'Self-employment', lk ? 'Sales and services' : 'Turnover', '', sm.se.income.toFixed(2)]);
+    allow.forEach((x) => csvRows.push(['Expenses', x.name, x.official, x.amount.toFixed(2)]));
+    blocks.push({ title: 'Capital items', rows: capital.length ? capital.map((c) => R(c.who, M(c.amount), c.what + ' · ' + books.lbl(c.d))) : [R('None this year', '')] });
+    capital.forEach((c) => csvRows.push(['Capital items', c.who, c.what, c.amount.toFixed(2)]));
+    if (!lk && BE.all('properties').length) {
+      blocks.push({ title: 'UK property', rows: [R('Rent', M(sm.prop.income), 'Total rents and other income from property')].concat(sm.prop.rows.map((x) => R(x.name, '−' + M(x.amount), x.official))).concat([tot('Property profit', M(sm.prop.profit)), R('Mortgage interest', M(sm.prop.finance), 'Residential property finance costs, for the 20% tax credit')]) });
+      csvRows.push(['UK property', 'Rent', '', sm.prop.income.toFixed(2)], ['UK property', 'Mortgage interest', 'Residential property finance costs', sm.prop.finance.toFixed(2)]);
+    }
+    if (lk) {
+      const ps = books.periods().map((p) => books.period(p.id));
+      const s = (k) => ps.reduce((a, p) => a + (p[k] || 0), 0);
+      if (prof.vatRegistered) {
+        blocks.push({ title: 'VAT and SSCL (' + ps.map((p) => p.short.slice(0, 3)).join(', ') + ')', rows: [R('Output VAT', M(s('output'))), R('Input VAT', '−' + M(s('input'))), R('SSCL', M(s('sscl'))), tot('Paid or due to the IRD', M(s('total')))] });
+        csvRows.push(['VAT and SSCL', 'Output VAT', '', s('output').toFixed(2)], ['VAT and SSCL', 'Input VAT', '', s('input').toFixed(2)], ['VAT and SSCL', 'SSCL', '', s('sscl').toFixed(2)]);
       }
+      const ytd = BE.payrollYtd ? BE.payrollYtd() : [];
+      if (ytd.length) {
+        const q = (k) => ytd.reduce((a, x) => a + (x[k] || 0), 0);
+        blocks.push({ title: 'Payroll (' + ytd.length + ' people)', rows: [R('Gross pay', M(q('gross'))), R('EPF 8% (employees)', M(q('epfEe'))), R('EPF 12% and ETF 3% (you)', M(q('epfEr') + q('etf'))), R('APIT deducted', M(q('apit')), 'Per employee for their certificates')] });
+        ytd.forEach((x) => csvRows.push(['Payroll', x.name, 'Gross / APIT', x.gross.toFixed(2) + ' / ' + x.apit.toFixed(2)]));
+      }
+    } else {
+      blocks.push({ title: 'Tax so far', rows: [R('Estimated Income Tax and NI for ' + yr.label, M(e.total), 'Estimate · ' + prShort + ' confirm the final figure'), R('Paid toward it', M(BE.all('taxPayments').filter((p) => p.year === yr.label).reduce((a, p) => a + p.amount, 0)))] });
+      csvRows.push(['Estimate', 'Income Tax and NI', '', e.total]);
+    }
+    if (empty) blocks.splice(0, blocks.length, { title: 'What goes in', rows: [R('The year by ' + (lk ? 'schedule line' : 'HMRC category') + ', equipment for capital allowances' + (lk ? ', VAT, SSCL and payroll totals' : ', your property and the tax you’ve paid'), '', 'It fills in as you record income and expenses.', { border: '0' })] });
+    const sent = ye.sent;
+    const linked = lk ? !!(prof.taxwiseLinked || (BE.get('practice') || {}).taxwise) : pr.has;
+    const ho = lk ? {
+      title: 'Send to TaxWise.lk', tag: sent ? 'Sent ' + sent.on : ended ? 'Ready' : 'Year to date', tone: sent ? 'good' : 'plain',
+      body: 'Moves business income, expenses by schedule line, capital items, VAT and SSCL totals and payroll totals into ' + (prof.owner || 'your') + '’s ' + yr.label + ' income tax return in TaxWise.lk' + (pr.has ? ', and into ' + pr.short + '’s file for you' : '') + '. You can send again if something changes.',
+      cta: sent ? 'Send again' : ended ? 'Send to TaxWise.lk' : 'Send the year to date', canStart: linked && !empty && !st.confirming, link: !linked, linkText: 'Link your TaxWise.lk account',
+      confirmTitle: 'Send ' + yr.label + (ended ? '' : ' so far') + ' to TaxWise.lk?', confirmBody: 'Profit ' + W(sm.se.profit) + ', ' + capital.length + ' capital item' + (capital.length === 1 ? '' : 's') + (prof.vatRegistered ? ', VAT and SSCL totals' : '') + (BE.all('employees').length ? ' and payroll for ' + BE.all('employees').length + ' people' : '') + '. ' + (ended ? 'The year locks in your books once it’s sent.' : 'The year isn’t over, so this goes as a draft; the final hand-off opens after 31 March.'),
+      checkText: 'I’ve checked these figures with ' + (pr.has ? pr.short : 'my records'), sendNow: 'Send now',
+      sentBox: !!sent, sentText: sent ? 'Sent to TaxWise.lk on ' + sent.on + (sent.draft ? ' as the year to date' : '') + '. ' + (pr.has ? pr.short + ' can see it in your file.' : 'It’s in your return.') : ''
+    } : {
+      title: 'Final-declaration pack', tag: sent ? 'Sent ' + sent.on : 'Draft', tone: sent ? 'good' : 'plain',
+      body: 'Everything ' + prShort + ' need for your ' + yr.label + ' final declaration, due ' + P.finalDeclarationDue + ': the year by HMRC category, your property, equipment for capital allowances and the tax you’ve paid so far.',
+      cta: sent ? 'Send an updated draft' : 'Send the draft pack to ' + prShort, canStart: linked && !empty && !st.confirming, link: !linked, linkText: 'Link your accountant',
+      confirmTitle: 'Send the ' + yr.label + ' pack to ' + prShort + '?', confirmBody: 'Year so far: profit ' + W(sm.se.profit) + (BE.all('properties').length ? ', property profit ' + W(sm.prop.profit) : '') + ', ' + capital.length + ' equipment item' + (capital.length === 1 ? '' : 's') + '. The year ends 5 April, so this goes as a draft they can start on.',
+      checkText: 'I’ve checked these figures', sendNow: 'Send now',
+      sentBox: !!sent, sentText: sent ? 'Sent to ' + prShort + ' on ' + sent.on + (sent.draft ? ' as a draft' : '') + '. They’ll ask if anything’s missing.' : ''
     };
-    const monthsRaw = open ? open.months : [];
-    const maxM = Math.max.apply(null, monthsRaw.map((m) => m.sales).concat([1]));
-    const months = monthsRaw.map((m) => ({ label: m.label, sales: C2(m.sales), tax: C2(m.tax), pct: Math.round(m.sales / maxM * 100), title: m.label + ': ' + C2(m.tax) + ' collected on ' + C2(m.sales) }));
-    const filings = ST.filings.map((x) => ({ q: x.q, amt: C2(x.amount), when: 'Filed and paid ' + x.when + ' · ' + x.from + (x.conf ? ' · #' + x.conf : '') }));
-    const q4i = ST.q4.invoices;
-    const q4 = {
-      title: ((S.next && S.next.label) || 'This quarter') + ' so far:',
-      text: ST.q4.tax ? C2(ST.q4.tax) + ' collected on ' + C2(ST.q4.sales) + ' of product sales. It’s due ' + ((S.next && S.next.due) || 'after the quarter ends') + '.' : 'nothing collected yet. Tax on product invoices you send this quarter adds up here.',
-      links: q4i.map((i) => ({ num: i.num, href: 'SellInvoices.dc.html#' + i.num })), none: !q4i.length
+    const csv = books.csv(csvRows);
+    const hero = lk ? {
+      eyebrow: 'year of assessment ' + yr.label, big: 'TaxWise.lk', lead: 'At the end of the year of assessment (' + P.taxYear.start + ' to ' + P.taxYear.end + '), your figures go straight into your TaxWise.lk income tax return' + (pr.has ? ', where ' + pr.short + ' prepare and file it' : '') + '.',
+      tag: ended ? 'Year ended' : 'Year in progress', tone: ended ? 'attn' : 'plain', note: 'Return due ' + (P.returnDue || '30 Nov 2027') + ' (to confirm)', right: 'Year ends ' + P.taxYear.end
+    } : {
+      eyebrow: yr.label, big: P.finalDeclarationDue, lead: 'Your first Making Tax Digital final declaration. After the four quarterly updates, ' + prShort + ' add the year-end adjustments and file it with HMRC by ' + P.finalDeclarationDue + '.',
+      tag: ended ? 'Year ended' : 'Year in progress', tone: ended ? 'attn' : 'plain', note: 'Final declaration due ' + P.finalDeclarationDue, right: 'Year ends ' + P.taxYear.end
     };
-    const overseas = BE.all('invoices').filter((i) => i.cur && i.cur !== 'USD' && !i.draft && !i.void).map((i) => {
-      const c = BE.all('customers').filter((x) => x.name === i.who)[0];
-      return { who: i.who, href: c ? 'SellCustomer.dc.html#' + c.id : 'SellInvoices.dc.html#' + i.num, vat: i.vat || 'No VAT added', num: i.num, amt: BE.money(BE.invTotal(i), i.cur), invHref: 'SellInvoices.dc.html#' + i.num };
-    });
-
-    // 2. How we count
-    const settings = BE.get('bookSettings') || {};
-    const method = settings.method || 'accrual';
-    const preview = st.preview || method;
-    const tA = BE.totals('month'), pc = BE.books.pl('month', 'cash');
-    const NUM = { accrual: { in: tA.in, out: tA.out, keep: tA.keep }, cash: { in: pc.tIn, out: pc.tOut, keep: pc.keep } };
-    const pv = NUM[preview], other = NUM[preview === 'accrual' ? 'cash' : 'accrual'];
-    const methods = [
-      { k: 'accrual', label: 'When you bill or get billed', formal: 'Accrual basis' },
-      { k: 'cash', label: 'When money actually moves', formal: 'Cash basis' }
-    ].map((m) => ({
-      label: m.label, sub: m.formal + (method === m.k ? ' · what your reports use now' : ''),
-      on: preview === m.k, bg: preview === m.k ? '#EEE8FF' : '#FFFFFF', border: preview === m.k ? '2px solid #7A5AF8' : '1px solid #E2DFE8',
-      dot: preview === m.k ? '#18161F' : 'transparent',
-      pick: () => { if (preview !== m.k) this.setState({ preview: m.k }); }
-    }));
-    const diff = (a, b) => (a === b ? 'Same either way' : (a > b ? '+' : '−') + M(Math.abs(a - b)) + ' vs the other way');
-    const ratePct = Math.round(tA.rate * 100) + '%';
-    const hc = {
-      para: preview === 'accrual'
-        ? 'A sale counts the day you send the invoice, and a bill counts the day it arrives, even if nobody has paid yet. October already includes the ' + tA.fmt.inExp + ' on the way to you and the ' + tA.fmt.outSch + ' you still have to pay. It shows how the month really went, which is why we start here.'
-        : 'Money counts only when it lands in or leaves your bank. Invoices on the way and bills you haven’t paid wait until they’re paid. It matches your bank balance, but a month can look great just because a big bill hasn’t gone out yet.',
-      caption: 'October with this way of counting',
-      nums: [
-        { label: 'Coming in', value: M(pv.in), sub: diff(pv.in, other.in), dot: '#7A5AF8', bg: '#F7F6F9', fg: '#18161F', numFg: '#18161F', subFg: '#47444F' },
-        { label: 'Going out', value: M(pv.out), sub: diff(pv.out, other.out), dot: '#E0752D', bg: '#F7F6F9', fg: '#18161F', numFg: '#18161F', subFg: '#47444F' },
-        { label: 'Yours to keep', value: M(pv.keep), sub: diff(pv.keep, other.keep) + ' · after ' + ratePct + ' tax', dot: '#B9A3FF', bg: '#18161F', fg: '#EEE8FF', numFg: '#B9A3FF', subFg: '#EEE8FF' }
-      ],
-      changed: preview !== method,
-      changeNote: 'Your reports will open this way. The three numbers at the top of every screen keep counting money on the way and bills still to pay, so you always see what’s coming. Your tax return keeps the method ' + acctName + ' uses for it.',
-      apply: () => { BE.patch('bookSettings', { method: preview }); BE.log(preview === 'cash' ? 'Reports now count when money moves (cash basis)' : 'Reports now count when you bill or get billed (accrual basis)'); this.setState({ preview: null }); this.notify(preview === 'cash' ? 'Reports now count when money moves' : 'Reports now count when you bill or get billed'); },
-      keep: () => this.setState({ preview: null })
-    };
-
-    // 3. Year-end
-    const Y = BE.get('yearEnd') || {};
-    const OKI = 'm5 12 5 5 9-10', WARN = 'M12 7v6M12 17h.01';
-    const okC = { iconBg: '#E2F6D5', iconFg: '#2F5711', icon: OKI, badge: 'Done', badgeBg: '#E2F6D5', badgeFg: '#2F5711', fixable: false };
-    const checks = [
-      Object.assign({ label: 'Every charge sorted', sub: 'Every 2025 charge has a category. Nothing is waiting in “Sort these”.', link: 'See categories', href: 'BooksCategories.dc.html' }, okC),
-      Object.assign({ label: 'Bank checked', sub: 'Chase ••4417 and Amex ••1009 match your statements through Dec 31, 2025.', link: 'See past checks', href: 'BooksReconcile.dc.html' }, okC),
-      Y.receiptsOk
-        ? Object.assign({ label: 'Receipts matched', sub: 'All matched. 2 marked fine without a receipt (Delta Air Lines $386.00, Local Print Shop $142.00).', link: 'Open receipts', href: 'SpendReceipts.dc.html' }, okC)
-        : { label: 'Receipts matched', sub: 'Delta Air Lines $386.00 (Mar 3) and Local Print Shop $142.00 (Nov 18) have no receipt. Find them, or tell us they’re fine without.', link: 'Find them in Receipts', href: 'SpendReceipts.dc.html', iconBg: '#FFF0B8', iconFg: '#6B5000', icon: WARN, badge: '2 missing', badgeBg: '#FFF0B8', badgeFg: '#6B5000', fixable: true, fix: () => { BE.patch('yearEnd', { receiptsOk: true }); BE.log('Marked 2 charges from 2025 fine without a receipt'); this.notify('2 charges marked fine without a receipt'); } },
-      Object.assign({ label: 'Accountant’s changes in', sub: acctName + ' added the year-end entries on Mar 12, including $1,000 of equipment wear (depreciation).', link: 'See entries by hand', href: 'BooksCategories.dc.html#entries' }, okC)
-    ];
-    const pkg = [
-      { plain: 'What you earned in 2025', formal: 'Profit & Loss' },
-      { plain: 'What you owned and owed on Dec 31', formal: 'Balance sheet' },
-      { plain: 'Every transaction, by category', formal: 'General ledger' },
-      { plain: 'Category totals that balance', formal: 'Trial balance' },
-      { plain: 'Sales tax for all four quarters', formal: 'Sales tax summary' },
-      { plain: 'Contractors paid $600 or more', formal: '1099-NEC list' },
-      { plain: 'All receipts, in one folder', formal: 'Receipts archive (.zip)' }
-    ];
-    const blocked = !Y.receiptsOk;
-    const owner = (BE.get('profile') || {}).owner || 'You';
-    const ye = {
-      open: !Y.closed, closed: !!Y.closed, blocked, who: acctName, first: team ? acctName.split(' ')[0] : 'Your accountant',
-      badge: Y.closed ? 'Closed · locked through Dec 31, 2025' : (blocked ? '1 thing left' : 'Ready to close'),
-      badgeBg: Y.closed ? '#E2F6D5' : (blocked ? '#FFF0B8' : '#E1EEF8'), badgeFg: Y.closed ? '#2F5711' : (blocked ? '#6B5000' : '#1F5E91'),
-      btnBg: blocked ? '#EFEDF3' : '#B9A3FF', btnFg: blocked ? '#5F5B68' : '#18161F', cursor: blocked ? 'not-allowed' : 'pointer',
-      hint: blocked ? 'Sort out the receipts first.' : 'You can unlock it later if your accountant needs a change.',
-      close: () => { if (blocked) return; BE.patch('yearEnd', { closed: true, closedOn: BE.today }); BE.log('Closed 2025 and locked it'); this.notify('2025 closed. Nothing on or before Dec 31, 2025 can change.'); },
-      unlock: () => { BE.patch('yearEnd', { closed: false, sent: false }); BE.log('Unlocked 2025'); this.notify('2025 unlocked. We noted that you did it today.'); },
-      send: () => { BE.patch('yearEnd', { sent: true }); BE.log('Sent the 2025 year-end package to ' + acctName); this.notify(Y.sent ? 'Sent again to ' + acctName : 'Year-end package sent to ' + acctName); },
-      sendLabel: Y.sent ? 'Send again' : 'Send package to ' + (team ? acctName.split(' ')[0] : 'your accountant'),
-      closedText: 'Locked through Dec 31, 2025 by ' + owner + ' on ' + (Y.closedOn || BE.today) + ', 2026.',
-      sentText: Y.sent ? ' Package sent to ' + acctName + '.' : ''
-    };
-
+    Object.assign(hero, { done: doneN, all: steps.length, pct: steps.length ? Math.round(doneN / steps.length * 100) : 0 });
+    const cl = { title: lk ? 'Before the hand-off' : 'Toward the final declaration', note: doneN + ' of ' + steps.length + ' done' };
+    const csvName = (prof.business || 'Business').replace(/[^A-Za-z0-9]+/g, '-') + (lk ? '-TaxWise-handoff-' : '-final-declaration-') + yr.label.replace('/', '-') + '.csv';
     return {
-      isUS, isVAT: !isUS, usOn: isUS && !!open, usEmpty: isUS && !open,
-      usEmptyText: ST.q4.tax ? 'You’ve collected ' + C2(ST.q4.tax) + ' of sales tax on product invoices this quarter. It’s due ' + ((S.next && S.next.due) || 'after the quarter ends') + '. It’s your customers’ money, so it never counts in your three numbers.' : 'No sales tax yet. When you invoice products somewhere that taxes them, what you collect shows here with the date it’s due. It’s your customers’ money, so it never counts in your three numbers.',
-      views, tx, q, f, months, filings, q4, overseas, noOverseas: !overseas.length,
-      methods, hc, checks, pkg, ye, yeFresh: !!Y.fresh, yeOn: !Y.fresh, more: this.moreLinks('tax'), toast: st.toast
+      hero, cl, steps, ho: Object.assign(ho, { blocks }), confirming: st.confirming, checked: st.checked,
+      startSend: () => this.setState({ confirming: true, checked: false }),
+      cancel: () => this.setState({ confirming: false, checked: false }),
+      toggleCheck: (ev) => this.setState({ checked: !!(ev && ev.target && ev.target.checked) }),
+      doSend: () => {
+        if (!st.checked) { this.notify('Tick the box to say you’ve checked the figures'); return; }
+        const who = lk ? 'TaxWise.lk' : prShort;
+        BE.change((s) => {
+          const y = Object.assign({}, s.yearEnd || {});
+          y.sent = { on: BE.today, by: (s.profile || {}).owner || '', draft: !ended };
+          s.yearEnd = y;
+          BE._log(s, (lk ? 'Sent ' + yr.label + (ended ? '' : ' so far') + ' to TaxWise.lk' : 'Sent the ' + yr.label + ' final-declaration pack' + (ended ? '' : ' (draft)') + ' to ' + prShort) + ' · profit ' + W(sm.se.profit));
+          BE._notify(s, lk ? yr.label + ' sent to TaxWise.lk' : 'Final-declaration pack sent', (lk ? 'Business income, expenses, capital items, VAT, SSCL and payroll totals' : 'The year by HMRC category, property, equipment and tax paid') + (pr.has ? ' · ' + pr.short + ' can see it' : ''), 'BooksTax.dc.html');
+        });
+        this.setState({ confirming: false, checked: false });
+        this.notify('Sent to ' + who + ' · profit ' + W(sm.se.profit) + (ended ? '' : ' (year to date)'));
+      },
+      csvOpen: st.csvOpen, csvLabel: st.csvOpen ? 'Hide the CSV' : 'Show as CSV', csv, csvName,
+      toggleCsv: () => this.setState({ csvOpen: !st.csvOpen }),
+      copyCsv: () => { books.copy(csv); this.notify('CSV copied'); },
+      foot: lk ? 'BillingEase doesn’t file with the IRD. TaxWise.lk prepares the return; ' + prShort + ' or you file it. Dates and schedule lines to confirm with the IRD.' : 'BillingEase doesn’t file with HMRC. ' + (pr.has ? pr.short : 'Your accountant') + ' file the quarterly updates and the final declaration through their MTD software.',
+      toast: st.toast
     };
   }
 }
-
 </script>
 </body>
 </html>

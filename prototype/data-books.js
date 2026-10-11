@@ -24,8 +24,8 @@
   // ---- Money in and out before October, for BE.totals('year') (the tax year / year of assessment so far).
   // Worked out from the ledger below for 6 Apr (UK) / 1 Apr (Sri Lanka) to 30 Sep; October comes from the entries.
   BE.define('history', BE.perCountry({
-    uk: { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 34350, outPaid: 13684.55 } },
-    lk: { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 14000000, outPaid: 11136877.97 } }
+    uk: { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 34350, outPaid: 13539.55 } },
+    lk: { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 14000000, outPaid: 11227377.97 } }
   }), { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 0, outPaid: 0 } });
 
   // ---- Figures from before the records moved into BillingEase, by category (one line per period).
@@ -81,8 +81,8 @@
 
   // ---- Balances that don't come from entries (as of 1 Oct).
   BE.define('balances', BE.perCountry({
-    uk: { cashOct1: 18420.55, bankName: 'Business current account ••6402', fixedAssets: 2950, card: 0, cardName: '', draws: -21000 },
-    lk: { cashOct1: 4862500, bankName: 'Commercial Bank current account ••8830', fixedAssets: 3480000, card: 0, cardName: '', draws: -2400000 }
+    uk: { cashOct1: 17738.39, bankName: 'Business current account ••6402', fixedAssets: 2950, card: 0, cardName: '', draws: -21000 },
+    lk: { cashOct1: 4861775.6, bankName: 'Commercial Bank current account ••8830', fixedAssets: 3480000, card: 0, cardName: '', draws: -2400000 }
   }), BE.perCountry({
     uk: { cashOct1: 0, bankName: 'Business bank account', fixedAssets: 0, card: 0, cardName: '', draws: 0 },
     lk: { cashOct1: 0, bankName: 'Business bank account', fixedAssets: 0, card: 0, cardName: '', draws: 0 }
@@ -103,7 +103,7 @@
       .concat(uk ? [A('paye', 'owe', 'PAYE, NI and pension to pay', 'PAYE, NIC and pension payable'), A('vat', 'owe', 'VAT to pay', 'VAT payable (if registered)')]
         : [A('vat', 'owe', 'VAT and SSCL to pay', 'VAT and SSCL payable'), A('stat', 'owe', 'EPF, ETF and APIT to pay', 'Statutory payroll liabilities')])
       .concat([A('accrued', 'owe', 'Costs owed but not billed yet', 'Accruals')]);
-    var eq = [A('capital', 'eq', 'Your money in the business', 'Capital account'), A('draw', 'eq', 'Money you took out', 'Drawings')];
+    var eq = [A('owner-capital', 'eq', 'Your money in the business', 'Capital account'), A('draw', 'eq', 'Money you took out', 'Drawings')];
     return income.concat((P.categories || []).map(g('out')), prop, own, owe, eq);
   }
   BE.define('categories', BE.perCountry({ uk: catsFor('uk'), lk: catsFor('lk') }));
@@ -113,11 +113,11 @@
   BE.define('journal', BE.perCountry({
     uk: [
       { id: 'je-2', date: '5 Oct', note: 'Q2: 30% of the EE phone bill is personal', who: 'Priya Shaw', practice: true, lines: [J('to', 'draw', 28.8), J('from', 'office', 28.8)] },
-      { id: 'je-1', date: '5 Jul', note: 'Q1: working from home, flat rate £10 a month', who: 'Priya Shaw', practice: true, lines: [J('to', 'other', 30), J('from', 'capital', 30)] }
+      { id: 'je-1', date: '5 Jul', note: 'Q1: working from home, flat rate £10 a month', who: 'Priya Shaw', practice: true, lines: [J('to', 'other', 30), J('from', 'owner-capital', 30)] }
     ],
     lk: [
       { id: 'je-2', date: '30 Sep', note: 'Accrue the September electricity bill (CEB bill arrived in October)', who: 'Ruwan Jayasinghe', practice: true, lines: [J('to', 'utilities', 48000), J('from', 'accrued', 48000)] },
-      { id: 'je-1', date: '31 Aug', note: 'Owner paid the studio insurance from a personal account', who: 'Ayesha Fernando', practice: false, lines: [J('to', 'other', 42500), J('from', 'capital', 42500)] }
+      { id: 'je-1', date: '31 Aug', note: 'Owner paid the studio insurance from a personal account', who: 'Ayesha Fernando', practice: false, lines: [J('to', 'other', 42500), J('from', 'owner-capital', 42500)] }
     ]
   }), BE.perCountry({ uk: [], lk: [] }));
 
@@ -126,7 +126,7 @@
   var T = function (id, date, name, sub, amount, cleared, extra) { return Object.assign({ id: id, date: date, name: name, sub: sub, amount: amount, cleared: cleared }, extra || {}); };
   BE.define('bank', BE.perCountry({
     uk: {
-      acct: 'Business current account ••6402', month: 'September 2026', short: 'September', opening: 17642.85, ending: 18420.55,
+      acct: 'Business current account ••6402', month: 'September 2026', short: 'September', opening: 17642.85, ending: 17738.39,
       done: false, doneOn: '', imported: null, extra: [],
       lines: [
         T('t1', '1 Sep', 'Northern Desk Co-working', 'Premises', -180, true),
@@ -147,7 +147,7 @@
       ]
     },
     lk: {
-      acct: 'Commercial Bank current account ••8830', month: 'September 2026', short: 'September', opening: 4618742.14, ending: 4862500,
+      acct: 'Commercial Bank current account ••8830', month: 'September 2026', short: 'September', opening: 4618742.14, ending: 4861775.6,
       done: false, doneOn: '', imported: null, extra: [],
       lines: [
         T('t1', '1 Sep', 'Kandyan Spice Co (Pvt) Ltd', 'Paid SDS-0210', 544275, true),
@@ -197,8 +197,8 @@
     ]
   };
   var SAMPLE_CSV = {
-    uk: 'Date,Description,Amount,Balance\n26/09/2026,FONTSHOP,-118.00,19094.69\n27/09/2026,LEEDS PRINT ROOM,-64.00,19030.69\n28/09/2026,KRYSTAL HOSTING,-12.00,19018.69\n30/09/2026,TOM WHITAKER SALARY,-945.26,18073.43\n30/09/2026,TRANSFER E HARPER,-1500.00,16573.43\n30/09/2026,MOOR & DALE OUTDOOR,1847.12,18420.55',
-    lk: 'Txn Date,Description,Withdrawals,Deposits,Balance\n29/09/2026,HILL COUNTRY TEA ESTATES,,1451400.00,6083496.17\n30/09/2026,SALARY TRANSFER LIST SEP,808803.57,,5274692.60\n30/09/2026,EPF ETF AUG,192450.00,,5082242.60\n30/09/2026,TRANSFER A FERNANDO,400000.00,,4682242.60\n30/09/2026,CASH DEPOSIT - KANDYAN SPICE,,180257.40,4862500.00'
+    uk: 'Date,Description,Amount,Balance\n26/09/2026,FONTSHOP,-118.00,20009.65\n27/09/2026,LEEDS PRINT ROOM,-64.00,19945.65\n28/09/2026,KRYSTAL HOSTING,-12.00,19933.65\n30/09/2026,TOM WHITAKER SALARY,-945.26,18988.39\n30/09/2026,TRANSFER E HARPER,-1500.00,17488.39\n30/09/2026,MOOR & DALE OUTDOOR DEPOSIT,250.00,17738.39',
+    lk: 'Txn Date,Description,Withdrawals,Deposits,Balance\n29/09/2026,HILL COUNTRY TEA ESTATES,,1451400.00,6138029.17\n30/09/2026,SALARY TRANSFER LIST SEP,808803.57,,5329225.60\n30/09/2026,EPF ETF AUG,192450.00,,5136775.60\n30/09/2026,TRANSFER A FERNANDO,400000.00,,4736775.60\n30/09/2026,CASH DEPOSIT KANDYAN SPICE,,125000.00,4861775.60'
   };
 
   // ---------------------------------------------------------------------------
@@ -250,7 +250,7 @@
   function ledger() {
     var uk = BE.is('uk'), acc = basis() === 'accrual', vatOn = !!prof().vatRegistered;
     var out = [];
-    var push = function (o) { if (!o.d || !(Number(o.amount))) return; o.iso = isoOf(o.d); o.amount = r2(o.amount); out.push(o); };
+    var push = function (o) { if (!o.d || !Number(o.amount)) return; o.iso = isoOf(o.d); o.amount = r2(o.amount); out.push(o); };
     var incomeCat = uk ? 'turnover' : 'sales';
     // Income
     if (acc) {
@@ -294,11 +294,21 @@
       // The let property (your share)
       var share = {};
       BE.all('properties').forEach(function (p) { share[p.id] = (Number(p.share) || 100) / 100; });
-      BE.all('propertyEntries').forEach(function (e) {
+      (typeof BE.propertyLedger === 'function' ? BE.propertyLedger() : BE.all('propertyEntries')).forEach(function (e) {
         if (!(e.prop in share)) return;
-        push({ id: e.id, d: dOf(e.iso || e.date), kind: e.kind === 'income' ? 'in' : 'out', biz: 'prop', cat: e.kind === 'income' ? 'rent' : e.cat, amount: (Number(e.amount) || 0) * share[e.prop], who: 'Flat', what: e.what, href: 'Properties.dc.html', src: 'property' });
+        push({ id: e.id, d: dOf(e.iso || e.date), kind: e.kind === 'income' ? 'in' : 'out', biz: 'prop', cat: e.kind === 'income' ? 'rent' : e.cat, amount: (Number(e.amount) || 0) * share[e.prop], who: (BE.find('properties', e.prop) || {}).name || 'Property', what: e.what, href: e.expenseId ? 'SpendTransaction.dc.html#' + e.expenseId : 'Properties.dc.html', src: 'property' });
       });
     }
+    // Entries made by hand (journal): lines on income and cost categories move profit
+    BE.all('journal').forEach(function (j) {
+      (j.lines || []).forEach(function (l, i) {
+        var c = catById(l.cat);
+        if (!c || ['in', 'out', 'prop', 'prop-in'].indexOf(c.group) < 0) return;
+        var amt = (l.side === 'to' ? 1 : -1) * (Number(l.amt) || 0);
+        var isIn = c.group === 'in' || c.group === 'prop-in';
+        push({ id: j.id + '-' + i, d: dOf(j.date), kind: isIn ? 'in' : 'out', biz: /^prop/.test(c.group) ? 'prop' : 'se', cat: l.cat, amount: isIn ? -amt : amt, who: j.who || 'Entry by hand', what: j.note || 'Entry by hand', href: 'BooksCategories.dc.html#journal', src: 'journal' });
+      });
+    });
     // Before BillingEase
     var before = BE.get('booksBefore') || {};
     (before.lines || []).forEach(function (l, i) {
@@ -743,8 +753,7 @@
     /** Amounts per category for the tax year so far. */
     yearByCat: function () {
       var y = yearRange(), out = {};
-      ledger().forEach(function (e) { if (!within(e, y.from, BE.todayDate)) return; var k = e.cat || 'unsorted'; out[k] = r2((out[k] || 0) + e.amount); });
-      BE.all('journal').forEach(function (j) { (j.lines || []).forEach(function (l) { out[l.cat] = r2((out[l.cat] || 0) + (l.side === 'to' ? 1 : -1) * l.amt); }); });
+      ledger().forEach(function (e) { if (!within(e, y.from, BE.todayDate)) return; var k = e.cat || 'unsorted'; out[k] = r2((out[k] || 0) + e.amount); out['#' + k] = (out['#' + k] || 0) + 1; });
       return out;
     },
     /** Old callers (AppTools before the country rework) asked for sales tax: there is none now. */

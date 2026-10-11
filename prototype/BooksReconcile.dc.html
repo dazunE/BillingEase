@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · Check against your bank</title>
+<title>BillingEase · Bank check</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -13,265 +13,215 @@
 <style>
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
-.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
-.be-show-sm{display:none}
-@media (max-width: 640px){.be-hide-sm{display:none!important}.be-show-sm{display:inline}}
+.k-main{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:24px clamp(16px,4vw,40px) 64px;display:flex;flex-direction:column;gap:24px}
+.k-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0;box-sizing:border-box}
+.k-soft{background:#F7F6F9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.k-dark{background:#18161F;color:#FFFFFF;border-radius:24px;padding:clamp(22px,3vw,34px);display:flex;flex-wrap:wrap;gap:18px 32px;align-items:flex-end;justify-content:space-between;box-sizing:border-box}
+.k-eyebrow{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:700 15px DM Sans,sans-serif;color:#EEE8FF}
+.k-dot{width:10px;height:10px;border-radius:9999px;background:#B9A3FF;flex:none}
+.k-big{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.03em;color:#B9A3FF;font-variant-numeric:tabular-nums}
+.k-lead{margin:0;font-size:16px;line-height:1.5;color:#EEE8FF;max-width:620px}
+.k-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.k-h3{margin:0;font-size:15px;font-weight:700}
+.k-sub{font-size:13px;color:#5F5B68;line-height:1.45}
+.k-p{margin:0;font-size:14px;line-height:1.55;color:#47444F}
+.k-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;max-width:100%}
+.k-btn-dark{background:#18161F;color:#FFFFFF}.k-btn-dark:hover{color:#FFFFFF;background:#2E2B38}
+.k-btn-soft{background:rgba(24,22,31,0.07);color:#18161F}
+.k-btn-violet{background:#B9A3FF;color:#18161F}
+.k-btn-ghost{background:rgba(238,232,255,0.14);color:#FFFFFF}.k-btn-ghost:hover{color:#FFFFFF}
+.k-btn-sm{min-height:36px;padding:0 14px;font-size:13px}
+.k-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.k-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.4}
+.k-good{background:#E2F6D5;color:#2F5711}.k-attn{background:#FFF0B8;color:#6B5000}.k-late{background:#FBE3DF;color:#A8200D}.k-plain{background:#EFEDF3;color:#47444F}.k-violet{background:#EEE8FF;color:#18161F}.k-darktag{background:#18161F;color:#B9A3FF}
+.k-wrap{white-space:normal}
+.k-num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.k-tabs{display:flex;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;max-width:100%;overflow-x:auto;box-sizing:border-box;scrollbar-width:none}
+.k-tab{min-height:38px;padding:0 14px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.k-tab[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.k-input{min-height:44px;padding:0 12px;border:1px solid #CBC7D3;border-radius:12px;font:500 14px DM Sans,sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box;max-width:100%;min-width:0}
+.k-pre{margin:0;max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:#FFFFFF;border:1px solid #E2DFE8;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre}
+.k-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.k-li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:11px 0;border-top:1px solid #EFEDF3}
+.k-li:first-child{border-top:0}
+.k-cols{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.k-cols>*{flex:1 1 380px}
+.k-rowbtn{width:100%;display:flex;align-items:center;gap:10px 14px;padding:12px 4px;border:0;border-top:1px solid #EFEDF3;background:transparent;color:#18161F;text-align:left;font:500 14px DM Sans,sans-serif;cursor:pointer;box-sizing:border-box}
+.k-rowbtn:hover{background:#FBFAFC}
+.k-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px;border-top:2px solid #18161F;font-weight:700}
+.k-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F6F9}
+.k-icon{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none}
+.k-drill{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:6px 12px;border-radius:14px;background:#F7F6F9}
+.k-drill a,.k-drill span.k-dw{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:7px 0;font-size:13px;text-decoration:none;color:#18161F;border-top:1px solid #EAE7EF}
+.k-drill a:first-child,.k-drill span.k-dw:first-child{border-top:0}
+@media (max-width: 600px){.k-hide-sm{display:none!important}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
   <dc-import name="AppHeader"></dc-import>
+  <main class="k-main">
+    <dc-import name="AppCrumbs" area="keep" here="Bank check"></dc-import>
 
-  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
-    <dc-import name="AppCrumbs" area="keep" here="Check against your bank"></dc-import>
-
-    <section aria-labelledby="pg-h" style="display: flex; flex-direction: column; gap: 10px;">
-      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF; box-shadow: 0 0 0 2px #18161F;"></span>Yours to keep · Your books</span>
-      <h1 id="pg-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Check against your bank statement</h1>
-      <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;">
-        <span style="padding: 2px 10px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">Bank reconciliation</span>
-        <span style="font-size: 12px; color: #5F5B68;">Most people do this once a month, when the statement arrives.</span>
-      </span>
-      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 700px;">Tick off everything that&#39;s on your statement. When the difference reaches $0.00, your books and your bank agree, and that month is done.</p>
+    <section class="k-dark" aria-labelledby="bc-h">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="bc-h" class="k-eyebrow"><span class="k-dot"></span>Bank check · {{hero.eyebrow}}</h1>
+        <span class="k-big">{{hero.big}}</span>
+        <p class="k-lead">{{hero.lead}}</p>
+      </div>
+      <sc-if value="{{hasAcct}}" hint-placeholder-val="{{true}}">
+        <dl style="flex: 0 1 440px; min-width: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px;">
+          <sc-for list="{{hero.nums}}" as="n" hint-placeholder-count="3">
+            <div style="flex: 1 1 120px; min-width: 0; padding: 12px 14px; border-radius: 16px; background: rgba(238,232,255,0.1); display: flex; flex-direction: column; gap: 2px;">
+              <dt style="font-size: 12px; color: #EEE8FF;">{{n.label}}</dt>
+              <dd style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; color: {{n.color}}; font-variant-numeric: tabular-nums; white-space: nowrap;">{{n.value}}</dd>
+            </div>
+          </sc-for>
+        </dl>
+      </sc-if>
     </section>
 
-    <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
-      <section aria-labelledby="empty-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 3vw, 36px); display: flex; flex-direction: column; gap: 16px;">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px;">
-          <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-            <h2 id="empty-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{cn.title}}</h2>
-            <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F; max-width: 640px;">{{cn.text}}</p>
-          </div>
-          <sc-if value="{{cn.canOpen}}" hint-placeholder-val="{{true}}">
-            <button type="button" onClick="{{cn.open}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Connect your bank</button>
-          </sc-if>
-          <sc-if value="{{cn.connected}}" hint-placeholder-val="{{false}}">
-            <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Connected</span>
-          </sc-if>
+    <!-- New business: name the account -->
+    <sc-if value="{{noAcct}}" hint-placeholder-val="{{false}}">
+      <section class="k-card" aria-labelledby="na-h" style="max-width: 720px;">
+        <h2 id="na-h" class="k-h2">Check your books against a bank statement</h2>
+        <p class="k-p">There are no bank feeds: once a month you tick what’s on your statement against what you’ve recorded, or import the statement as a CSV. Start with the account you use for the business.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+          <label style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Account name</span><input class="k-input" value="{{acctDraft}}" onChange="{{typeAcct}}" placeholder="{{acctHint}}"></label>
+          <label style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Balance at the start of September</span><input class="k-input" value="{{openDraft}}" onChange="{{typeOpen}}" inputmode="decimal" placeholder="0.00"></label>
+          <button type="button" class="k-btn k-btn-dark" onClick="{{startAcct}}">Start with September</button>
         </div>
-        <sc-if value="{{cn.formOpen}}" hint-placeholder-val="{{false}}">
-          <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 18px; border: 1px solid #E2DFE8;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px;">
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Your bank
-                <select class="be-field" value="{{cn.bank}}" onChange="{{cn.setBank}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <sc-for list="{{cn.banks}}" as="bk" hint-placeholder-count="4"><option value="{{bk}}">{{bk}}</option></sc-for>
-                </select>
-              </label>
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Last 4 digits of the account
-                <input class="be-field" type="text" inputmode="numeric" maxlength="4" value="{{cn.last4}}" onChange="{{cn.setLast4}}" placeholder="e.g. 4417" style="min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-              </label>
-            </div>
-            <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">We only read transactions. Nobody at BillingEase can move money from your account.</span>
-            <sc-if value="{{cn.err}}" hint-placeholder-val="{{false}}"><span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{cn.err}}</span></sc-if>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button type="button" onClick="{{cn.connect}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Connect</button>
-              <button type="button" onClick="{{cn.cancel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
-            </div>
-          </div>
-        </sc-if>
       </section>
     </sc-if>
-    <sc-if value="{{hasBank}}" hint-placeholder-val="{{true}}">
-    <!-- Which statement -->
-    <section aria-labelledby="pick-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
-      <h2 id="pick-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Which statement?</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px;">
-        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Account
-          <select class="be-field" value="{{acct}}" onChange="{{setAcct}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-            <option value="chase">Chase Business Checking ••4417</option>
-            <option value="amex">Amex Business ••1009</option>
-          </select>
-        </label>
-        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Statement
-          <select class="be-field" value="{{stmt}}" onChange="{{setStmt}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-            <option value="sep">September 2026 (Sep 1 – 30)</option>
-            <option value="aug">August 2026 (checked)</option>
-          </select>
-        </label>
-        <sc-if value="{{active}}" hint-placeholder-val="{{true}}">
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;"><span>Ending balance <span style="font-weight: 400; color: #5F5B68;">· last line of the statement</span></span>
-            <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{endInput}}" onChange="{{setEnd}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 600 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-          </label>
-        </sc-if>
-      </div>
-      <sc-if value="{{active}}" hint-placeholder-val="{{true}}">
-        <span style="font-size: 13px; color: #5F5B68;">Starting balance <strong style="color: #18161F;">{{opening}}</strong>, carried over from August, which you checked on Sep 6.</span>
-      </sc-if>
-      <sc-if value="{{doneNote}}" hint-placeholder-val="{{false}}">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711; font-size: 14px; line-height: 1.45;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
-          <span style="flex: 1 1 240px;">{{doneNote}}</span>
-        </div>
-      </sc-if>
-    </section>
 
-    <!-- Working area -->
-    <sc-if value="{{working}}" hint-placeholder-val="{{true}}">
-      <div style="display: flex; flex-wrap: wrap-reverse; gap: 24px; align-items: flex-end;">
-        <!-- Transactions -->
-        <section aria-labelledby="tx-h" style="flex: 3 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 14px;">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;">
-            <div style="display: flex; flex-direction: column; gap: 2px;">
-              <h2 id="tx-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{monthShort}} in BillingEase</h2>
-              <span style="font-size: 13px; color: #5F5B68;">{{tickedCount}} · we ticked the ones we matched to your bank feed</span>
-            </div>
-            <div role="group" aria-label="Show" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-              <sc-for list="{{filters}}" as="fi" hint-placeholder-count="3">
-                <button type="button" aria-pressed="{{fi.on}}" onClick="{{fi.pick}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{fi.bg}}; color: {{fi.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{fi.label}}</button>
-              </sc-for>
-            </div>
+    <sc-if value="{{hasAcct}}" hint-placeholder-val="{{true}}">
+      <div class="k-cols">
+        <!-- Statement balance + finish -->
+        <section class="k-card" aria-labelledby="st-h" style="flex-grow: 2;">
+          <div class="k-head"><h2 id="st-h" class="k-h2">Your {{b.short}} statement</h2><span class="k-tag k-{{status.tone}}">{{status.label}}</span></div>
+          <span class="k-sub">{{b.acct}} · {{b.month}}</span>
+          <div style="display: flex; flex-direction: column;">
+            <div class="k-li"><span>Balance at the start</span><span class="k-num">{{nums.opening}}</span></div>
+            <div class="k-li"><span>Ticked money in and out</span><span class="k-num">{{nums.cleared}}</span></div>
+            <div class="k-li"><span><strong>Your books say</strong></span><span class="k-num">{{nums.books}}</span></div>
           </div>
-          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
-            <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
-              <li style="display: flex; align-items: center; gap: 12px; padding: 10px 8px; border-top: 1px solid #EFEDF3; border-radius: 12px; background: {{r.bg}};">
-                <button type="button" role="checkbox" aria-checked="{{r.on}}" aria-label="{{r.aria}}" onClick="{{r.toggle}}" style="width: 44px; height: 44px; margin: -6px -4px -6px -6px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; flex: none; cursor: pointer;">
-                  <span style="width: 24px; height: 24px; border-radius: 8px; box-sizing: border-box; border: 2px solid {{r.boxBorder}}; background: {{r.boxBg}}; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{r.tickFg}}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
-                </button>
-                <span class="be-hide-sm" style="flex: none; width: 48px; font-size: 13px; color: #5F5B68; font-variant-numeric: tabular-nums;">{{r.date}}</span>
-                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
-                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 600; font-size: 15px;">{{r.name}}</span><sc-if value="{{r.tag}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border-radius: 9999px; background: {{r.tagBg}}; color: {{r.tagFg}}; font-size: 11px; font-weight: 600;"><span style="width: 5px; height: 5px; border-radius: 9999px; background: {{r.tagFg}};"></span>{{r.tag}}</span></sc-if></span>
-                  <span style="font-size: 12px; color: #5F5B68; display: inline-flex; align-items: center; gap: 6px;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.dot}}; flex: none;"></span><span><span class="be-show-sm">{{r.date}} · </span>{{r.sub}}</span></span>
+          <label style="display: flex; flex-direction: column; gap: 4px;">
+            <span class="k-sub" style="font-weight: 600; color: #47444F;">Closing balance on your statement</span>
+            <span style="display: flex; gap: 8px; flex-wrap: wrap;"><input class="k-input" style="flex: 1 1 140px;" value="{{endDraft}}" onChange="{{typeEnd}}" inputmode="decimal" disabled="{{b.done}}" aria-label="Closing balance on your statement"><button type="button" class="k-btn k-btn-soft" onClick="{{saveEnd}}" disabled="{{b.done}}">Update</button></span>
+          </label>
+          <div style="padding: 14px 16px; border-radius: 16px; background: {{status.bg}}; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; align-items: baseline;">
+            <span style="font-weight: 700;">{{status.diffLabel}}</span>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; font-variant-numeric: tabular-nums;">{{nums.diff}}</span>
+          </div>
+          <span class="k-sub">{{status.help}}</span>
+          <div class="k-btns" style="margin-top: auto;">
+            <sc-if value="{{canFinish}}" hint-placeholder-val="{{false}}"><button type="button" class="k-btn k-btn-dark" onClick="{{finish}}">Finish {{b.short}}</button></sc-if>
+            <sc-if value="{{b.done}}" hint-placeholder-val="{{false}}"><button type="button" class="k-btn k-btn-dark" onClick="{{nextMonth}}">Start {{nextName}}</button></sc-if>
+          </div>
+        </section>
+
+        <!-- Import -->
+        <section id="import" class="k-card" aria-labelledby="im-h" style="flex-grow: 3;">
+          <div class="k-head"><h2 id="im-h" class="k-h2">Import a statement</h2><span class="k-sub">CSV from your online banking</span></div>
+          <p class="k-p">{{imp.intro}}</p>
+          <label style="display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Saved layout</span>
+            <select class="k-input" value="{{tplId}}" onChange="{{pickTpl}}">
+              <sc-for list="{{tpls}}" as="t" hint-placeholder-count="3"><option value="{{t.id}}">{{t.label}}</option></sc-for>
+            </select>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Paste the CSV</span>
+            <textarea class="k-input" style="min-height: 110px; padding: 10px 12px; font: 12px/1.5 ui-monospace, Menlo, monospace; resize: vertical;" value="{{csvText}}" onChange="{{typeCsv}}" placeholder="Date,Description,Amount,Balance"></textarea>
+          </label>
+          <div class="k-btns">
+            <label class="k-btn k-btn-soft" style="cursor: pointer;"><input type="file" accept=".csv,text/csv,text/plain" onChange="{{pickFile}}" style="position: absolute; width: 1px; height: 1px; opacity: 0;">Choose a CSV file</label>
+            <button type="button" class="k-btn k-btn-soft" onClick="{{useSample}}">Use a sample statement</button>
+            <button type="button" class="k-btn k-btn-dark" onClick="{{readCsv}}">Read it</button>
+          </div>
+          <sc-if value="{{imp.ready}}" hint-placeholder-val="{{false}}">
+            <div class="k-soft" style="border: 1px solid #E2DFE8; gap: 12px;">
+              <span class="k-h3">Match the columns · {{imp.count}} rows</span>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 8px;">
+                <sc-for list="{{imp.maps}}" as="m" hint-placeholder-count="5">
+                  <label style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="k-sub" style="font-size: 12px;">{{m.label}}</span>
+                    <select class="k-input" value="{{m.value}}" onChange="{{m.pick}}" style="width: 100%;">
+                      <option value="">Not in this file</option>
+                      <sc-for list="{{imp.headers}}" as="h" hint-placeholder-count="4"><option value="{{h}}">{{h}}</option></sc-for>
+                    </select>
+                  </label>
+                </sc-for>
+              </div>
+              <div style="overflow-x: auto;">
+                <table style="width: 100%; min-width: 420px; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums;">
+                  <thead><tr><th style="text-align: left; padding: 6px; color: #5F5B68; font-size: 12px;">Date</th><th style="text-align: left; padding: 6px; color: #5F5B68; font-size: 12px;">Description</th><th style="text-align: right; padding: 6px; color: #5F5B68; font-size: 12px;">Amount</th></tr></thead>
+                  <tbody><sc-for list="{{imp.preview}}" as="p" hint-placeholder-count="4"><tr><td style="padding: 6px; border-top: 1px solid #EAE7EF; white-space: nowrap;">{{p.date}}</td><td style="padding: 6px; border-top: 1px solid #EAE7EF;">{{p.desc}}</td><td style="padding: 6px; border-top: 1px solid #EAE7EF; text-align: right; white-space: nowrap; color: {{p.color}};">{{p.amount}}</td></tr></sc-for></tbody>
+                </table>
+              </div>
+              <span class="k-sub">{{imp.warn}}</span>
+              <div class="k-btns"><button type="button" class="k-btn k-btn-dark" onClick="{{doImport}}">Import {{imp.count}} lines</button><button type="button" class="k-btn k-btn-soft" onClick="{{clearImport}}">Start again</button></div>
+            </div>
+          </sc-if>
+        </section>
+      </div>
+
+      <!-- Statement lines not in the books -->
+      <sc-if value="{{hasExtra}}" hint-placeholder-val="{{false}}">
+        <section class="k-card" aria-labelledby="ex-h">
+          <div class="k-head"><h2 id="ex-h" class="k-h2">On the statement, not in your books</h2><span class="k-sub">{{extraNote}}</span></div>
+          <ul class="k-list">
+            <sc-for list="{{extra}}" as="x" hint-placeholder-count="2">
+              <li class="k-li">
+                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{x.name}}</span><span class="k-sub">{{x.date}} · {{x.sub}}</span></span>
+                <span style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end;">
+                  <span class="k-num" style="color: {{x.color}};">{{x.amount}}</span>
+                  <sc-if value="{{x.open}}" hint-placeholder-val="{{true}}"><button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{x.add}}">{{x.addLabel}}</button><button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{x.ignore}}">Not for the books</button></sc-if>
+                  <sc-if value="{{x.closed}}" hint-placeholder-val="{{false}}"><span class="k-tag k-{{x.tone}}">{{x.state}}</span></sc-if>
                 </span>
-                <span style="flex: none; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">{{r.amount}}</span>
               </li>
             </sc-for>
           </ul>
-          <sc-if value="{{emptyFilter}}" hint-placeholder-val="{{false}}">
-            <span style="padding: 12px 8px; font-size: 14px; color: #5F5B68;">Everything is ticked. Nothing left that isn&#39;t on your statement.</span>
-          </sc-if>
         </section>
+      </sc-if>
 
-        <!-- Difference + help -->
-        <section aria-labelledby="diff-h" style="flex: 2 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
-          <div style="background: {{d.cardBg}}; color: {{d.cardFg}}; border: 1px solid {{d.cardBorder}}; border-radius: 24px; padding: clamp(18px, 2.5vw, 26px); display: flex; flex-direction: column; gap: 14px;">
-            <dl style="margin: 0; display: flex; flex-direction: column;">
-              <div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0;">
-                <dt style="font-size: 14px;">Your statement says</dt>
-                <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{d.stmt}}</dd>
-              </div>
-              <div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid {{d.rule}};">
-                <dt style="font-size: 14px;">Ticked in BillingEase</dt>
-                <dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">{{d.cleared}}</dd>
-              </div>
-            </dl>
-            <div style="display: flex; flex-direction: column; gap: 4px;" aria-live="polite">
-              <h2 id="diff-h" style="margin: 0; font-size: 14px; font-weight: 700; color: {{d.labelFg}};">Difference</h2>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(40px, 5vw, 52px); line-height: 1; letter-spacing: -0.03em; color: {{d.numFg}}; font-variant-numeric: tabular-nums;">{{d.diff}}</span>
-              <span style="font-size: 14px; line-height: 1.45; color: {{d.labelFg}};">{{d.text}}</span>
-            </div>
-            <button type="button" disabled="{{d.blocked}}" onClick="{{finish}}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 9999px; background: {{d.btnBg}}; color: {{d.btnFg}}; font: 600 15px DM Sans, sans-serif; cursor: {{d.cursor}};">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
-              Finish {{monthShort}}
-            </button>
+      <!-- Tick list -->
+      <section class="k-card" aria-labelledby="tk-h">
+        <div class="k-head"><h2 id="tk-h" class="k-h2">Tick what’s on your statement</h2><span class="k-sub">{{tickNote}}</span></div>
+        <sc-if value="{{hasLines}}" hint-placeholder-val="{{true}}">
+          <ul class="k-list">
+            <sc-for list="{{lines}}" as="l" hint-placeholder-count="8">
+              <li class="k-li" style="flex-wrap: nowrap;">
+                <label style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <input type="checkbox" checked="{{l.cleared}}" onChange="{{l.toggle}}" disabled="{{b.done}}" style="width: 20px; height: 20px; margin: 0; flex: none; accent-color: #18161F;" aria-label="Ticked: {{l.name}}">
+                  <span style="min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">{{l.name}}</span><span class="k-sub">{{l.date}} · {{l.sub}}</span></span>
+                </label>
+                <span class="k-num" style="color: {{l.color}};">{{l.amount}}</span>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-if>
+        <sc-if value="{{noLines}}" hint-placeholder-val="{{false}}"><p class="k-p">Nothing recorded in this account for {{b.month}} yet. Import the statement above, or record what came in and went out first.</p></sc-if>
+        <details style="border-top: 1px solid #EFEDF3; padding-top: 12px;">
+          <summary style="cursor: pointer; font-weight: 600; font-size: 14px;">Add a line from the statement by hand</summary>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin-top: 10px;">
+            <label style="flex: 0 1 110px; display: flex; flex-direction: column; gap: 2px;"><span class="k-sub" style="font-size: 12px;">Date</span><input class="k-input" value="{{man.date}}" onChange="{{man.typeDate}}" placeholder="30 Sep"></label>
+            <label style="flex: 2 1 180px; display: flex; flex-direction: column; gap: 2px;"><span class="k-sub" style="font-size: 12px;">Description</span><input class="k-input" value="{{man.desc}}" onChange="{{man.typeDesc}}" placeholder="As on the statement"></label>
+            <label style="flex: 1 1 110px; display: flex; flex-direction: column; gap: 2px;"><span class="k-sub" style="font-size: 12px;">Amount (− for money out)</span><input class="k-input" value="{{man.amount}}" onChange="{{man.typeAmt}}" inputmode="decimal" placeholder="-64.00"></label>
+            <button type="button" class="k-btn k-btn-dark" onClick="{{man.add}}">Add line</button>
           </div>
-
-          <sc-if value="{{hasHints}}" hint-placeholder-val="{{true}}">
-            <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 24px); display: flex; flex-direction: column; gap: 12px;">
-              <h3 style="margin: 0; font-size: 16px; font-weight: 700;">What we think it is</h3>
-              <sc-if value="{{h.check}}" hint-placeholder-val="{{true}}">
-                <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 16px; background: #F7F6F9;">
-                  <span style="font-weight: 700; font-size: 15px;">Check #1042 · $73.00</span>
-                  <span style="font-size: 13px; color: #47444F; line-height: 1.45;">You wrote it to Local Print Shop on Sep 22. Your statement shows it cleared on Sep 29. Checks arrive without a name, so we couldn&#39;t tick it for you.</span>
-                  <button type="button" onClick="{{h.tickCheck}}" style="align-self: flex-start; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Mark it cleared</button>
-                </div>
-              </sc-if>
-              <sc-if value="{{h.fee}}" hint-placeholder-val="{{true}}">
-                <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 16px; background: #F7F6F9;">
-                  <span style="font-weight: 700; font-size: 15px;">A $15.00 bank fee from Chase</span>
-                  <span style="font-size: 13px; color: #47444F; line-height: 1.45;">Chase takes a monthly service fee on the last day of the month. It&#39;s on your statement but not in BillingEase yet.</span>
-                  <sc-if value="{{h.feeIdle}}" hint-placeholder-val="{{true}}">
-                    <button type="button" aria-expanded="false" onClick="{{h.openFee}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-                      Add the bank fee
-                    </button>
-                  </sc-if>
-                  <sc-if value="{{h.feeOpen}}" hint-placeholder-val="{{false}}">
-                    <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 6px;">
-                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 10px;">
-                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
-                          <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{h.feeAmt}}" onChange="{{h.setFeeAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Date
-                          <select class="be-field" value="{{h.feeDate}}" onChange="{{h.setFeeDate}}" style="min-height: 44px; max-width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                            <option value="Sep 30">Sep 30</option>
-                            <option value="Sep 29">Sep 29</option>
-                            <option value="Sep 1">Sep 1</option>
-                          </select>
-                        </label>
-                      </div>
-                      <span style="font-size: 13px; color: #47444F; line-height: 1.45;">Goes in <strong style="color: #18161F;">Bank fees</strong>, and adds {{h.feeMoney}} to Going out for September. October&#39;s numbers stay the same.</span>
-                      <sc-if value="{{h.feeErr}}" hint-placeholder-val="{{false}}">
-                        <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{h.feeErr}}</span>
-                      </sc-if>
-                      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        <button type="button" onClick="{{h.addFee}}" style="min-height: 40px; padding: 0 18px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Add and tick it</button>
-                        <button type="button" onClick="{{h.closeFee}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
-                      </div>
-                    </div>
-                  </sc-if>
-                </div>
-              </sc-if>
-              <sc-if value="{{h.other}}" hint-placeholder-val="{{false}}">
-                <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{h.otherText}}</span>
-              </sc-if>
-            </div>
-          </sc-if>
-          <span style="font-size: 13px; color: #5F5B68; line-height: 1.45; padding: 0 4px;">Checking doesn&#39;t change your three numbers, unless it turns up something missing, like a fee. Then that goes in Going out.</span>
-        </section>
-      </div>
-    </sc-if>
-
-    <!-- Finished -->
-    <sc-if value="{{finished}}" hint-placeholder-val="{{false}}">
-      <section aria-labelledby="fin-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px;">
-        <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-          <h2 id="fin-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: #B9A3FF;">{{monthShort}} matches your bank</h2>
-          <span style="font-size: 15px; color: #EEE8FF; line-height: 1.5;">{{finText}} October starts from {{ending}}. We&#39;ll nudge you when the next statement is ready, around Nov 2.</span>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-          <button type="button" onClick="{{download}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Download the report</button>
-          <button type="button" onClick="{{reopen}}" style="min-height: 44px; padding: 0 16px; border: 1px solid rgba(238,232,255,0.4); border-radius: 9999px; background: transparent; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Reopen {{monthShort}}</button>
-        </div>
+        </details>
       </section>
-    </sc-if>
 
+      <sc-if value="{{hasPast}}" hint-placeholder-val="{{true}}">
+        <section class="k-card" aria-labelledby="hi-h">
+          <h2 id="hi-h" class="k-h2">Checked before</h2>
+          <ul class="k-list">
+            <sc-for list="{{past}}" as="p" hint-placeholder-count="2">
+              <li class="k-li"><span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{p.month}}</span><span class="k-sub">{{p.acct}} · by {{p.who}} on {{p.when}}</span></span><span class="k-num">{{p.bal}}</span></li>
+            </sc-for>
+          </ul>
+        </section>
+      </sc-if>
     </sc-if>
-
-    <!-- Past checks -->
-    <sc-if value="{{hasPast}}" hint-placeholder-val="{{true}}">
-    <section aria-labelledby="past-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 12px;">
-      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-        <h2 id="past-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Past checks</h2>
-        <span style="font-size: 13px; color: #5F5B68;">Each one is locked once it matches. Reopen it if something changes.</span>
-      </div>
-      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
-        <sc-for list="{{past}}" as="pc" hint-placeholder-count="4">
-          <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 12px 0; border-top: 1px solid #EFEDF3;">
-            <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{pc.month}}</span><span style="font-size: 12px; color: #5F5B68;">{{pc.acct}}</span></span>
-            <span style="flex: 1 1 160px; font-size: 13px; color: #47444F;">Checked {{pc.when}} by {{pc.who}}</span>
-            <span style="flex: none; min-width: 110px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums;">{{pc.bal}}</span>
-            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Matches</span>
-            <button type="button" aria-label="{{pc.dl}}" onClick="{{pc.download}}" style="width: 40px; height: 40px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
-            </button>
-          </li>
-        </sc-for>
-      </ul>
-    </section>
-    </sc-if>
-
-    <nav aria-label="More in your books" style="display: flex; flex-direction: column; gap: 10px;">
-      <span style="font-size: 13px; font-weight: 600; color: #47444F;">More in your books</span>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px;">
-        <sc-for list="{{more}}" as="mo" hint-placeholder-count="4">
-          <a href="{{mo.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E2DFE8; text-decoration: none; color: #18161F;">
-            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 15px;">{{mo.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{mo.formal}}</span></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-          </a>
-        </sc-for>
-      </div>
-    </nav>
   </main>
-
   <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
     <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
       <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
@@ -280,163 +230,172 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { connectOpen: false, cBank: '', cLast4: '', cErr: '', acct: 'chase', stmt: 'sep', endInput: null, filter: 'all', feeOpen: false, feeAmt: '15.00', feeDate: 'Sep 30', feeErr: '', toast: null };
+    this.state = { endDraft: null, csvText: '', tplId: null, parsed: null, map: null, acctDraft: '', openDraft: '', man: { date: '', desc: '', amount: '' }, toast: null };
   }
-
-  moreLinks(cur) {
-    return [
-      { key: 'keep', label: 'Yours to keep', formal: 'Profit after tax, month by month', href: 'ThreeKeep.dc.html' },
-      { key: 'rep', label: 'Reports', formal: 'Profit & loss, balance sheet, cash flow', href: 'BooksReports.dc.html' },
-      { key: 'tax', label: 'Tax and year-end', formal: 'Sales tax, accounting method, year-end close', href: 'BooksTax.dc.html' },
-      { key: 'rec', label: 'Check against your bank statement', formal: 'Bank reconciliation', href: 'BooksReconcile.dc.html' },
-      { key: 'cat', label: 'Categories', formal: 'Chart of accounts and journal entries', href: 'BooksCategories.dc.html' },
-      { key: 'fx', label: 'Currencies', formal: 'Exchange rates, gains and losses', href: 'BooksCurrencies.dc.html' }
-    ].filter((l) => l.key !== cur);
-  }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3000); }
   renderVals() {
     const st = this.state;
-    const bank = BE.get('bank');
-    const fmt = (n) => BE.money(Math.abs(n), 'USD', { cents: true });
-    const signed = (n) => (n < 0 ? '−' : '+') + fmt(n);
-    const owner = (BE.get('profile') || {}).owner || 'You';
-    const past = BE.all('reconciles').map((p) => Object.assign({}, p, {
-      dl: 'Report for ' + p.month + ', ' + p.acct,
-      download: () => this.notify(p.month + ' · ' + p.acct + ' matched at ' + p.bal + ', checked ' + p.when + ' by ' + p.who)
-    }));
-    const hasStmt = !!(bank && bank.lines && bank.lines.length);
-    const banks = ['Chase', 'Bank of America', 'Wells Fargo', 'Citi', 'Capital One', 'Another bank'];
-    const cn = {
-      connected: !!(bank && bank.connected), canOpen: !bank && !st.connectOpen, formOpen: !bank && !!st.connectOpen,
-      title: bank ? 'Connected to ' + bank.acct : 'Connect your bank first',
-      text: bank ? 'Your first monthly statement arrives around Nov 2. When it does, you’ll tick off each line here until BillingEase and the bank agree to the cent.' : 'Once your bank is connected, we bring in its transactions every morning. When the monthly statement arrives, you’ll tick off each line here until BillingEase and the bank agree to the cent.',
-      banks, bank: st.cBank || banks[0], last4: st.cLast4 || '', err: st.cErr || '',
-      open: () => this.setState({ connectOpen: true, cErr: '' }),
-      cancel: () => this.setState({ connectOpen: false, cErr: '' }),
-      setBank: (e) => this.setState({ cBank: e.target.value }),
-      setLast4: (e) => this.setState({ cLast4: e.target.value, cErr: '' }),
-      connect: () => {
-        const l4 = String(st.cLast4 || '').trim();
-        if (!/^\d{4}$/.test(l4)) { this.setState({ cErr: 'Type the last 4 digits of the account number' }); return; }
-        const name = (st.cBank || banks[0]) + ' ••' + l4;
-        BE.set('bank', { connected: true, acct: name, month: '', short: '', opening: 0, ending: 0, feeAdded: true, feeExp: '', done: false, doneOn: '', lines: [] });
-        BE.log('Connected ' + name + '. Transactions come in every morning.');
-        this.setState({ connectOpen: false });
-        this.notify('Connected ' + name);
-      }
-    };
-    const base = { hasBank: hasStmt, isEmpty: !hasStmt, cn, hasPast: past.length > 0, past, more: this.moreLinks('rec'), toast: st.toast };
-    if (!hasStmt) return base;
-
+    const lk = BE.is('lk');
+    const books = BE.books;
+    const prof = BE.get('profile') || {};
+    const M = (n) => BE.money(n, null, { cents: true });
+    const sign = (n) => (n > 0 ? '+' : '') + M(n);
     const r2 = (n) => Math.round(n * 100) / 100;
-    const endStr = st.endInput == null ? bank.ending.toLocaleString('en-US', { minimumFractionDigits: 2 }) : st.endInput;
-    const endN = parseFloat(String(endStr).replace(/[$,\s]/g, ''));
-    const endOk = isFinite(endN);
-    const lines = bank.lines || [];
-    const cleared = r2(bank.opening + lines.filter((t) => t.cleared).reduce((a, t) => a + t.amount, 0));
-    const diff = endOk ? r2(cleared - endN) : null;
-    const zero = diff === 0;
-    const setLines = (fn) => BE.change((s) => { s.bank = Object.assign({}, s.bank, { lines: s.bank.lines.map(fn) }); });
-
-    const active = st.acct === 'chase' && st.stmt === 'sep' && !bank.done;
-    const doneNote = st.acct === 'amex'
-      ? 'Amex Business ••1009 is checked through September (Jordan Lee, Oct 2). The October statement closes Oct 27.'
-      : (st.stmt === 'aug' ? 'August 2026 already matches. Checked by Maya Chen on Sep 6, ending at $38,267.40.' : (bank.done ? bank.month + ' matches. Checked by ' + owner + ' on ' + bank.doneOn + '.' : false));
-
-    const fl = st.filter;
-    const filters = [['all', 'All'], ['in', 'Money in'], ['out', 'Money out'], ['open', 'Not ticked']].map(([k, label]) => ({
-      label, on: fl === k, bg: fl === k ? '#18161F' : 'transparent', fg: fl === k ? '#FFFFFF' : '#18161F',
-      pick: () => { if (fl !== k) this.setState({ filter: k }); }
-    }));
-    const shown = lines.filter((t) => fl === 'all' || (fl === 'in' && t.amount > 0) || (fl === 'out' && t.amount < 0) || (fl === 'open' && !t.cleared));
-    const rows = shown.map((t) => ({
-      date: t.date, name: t.name, sub: t.sub, amount: signed(t.amount), on: t.cleared,
-      dot: t.amount > 0 ? '#7A5AF8' : '#E0752D',
-      aria: (t.cleared ? 'Untick ' : 'Tick ') + t.name + ' ' + signed(t.amount),
-      bg: t.cleared ? 'transparent' : '#FFF8DB',
-      boxBorder: t.cleared ? '#18161F' : '#8A8594', boxBg: t.cleared ? '#18161F' : '#FFFFFF', tickFg: t.cleared ? '#B9A3FF' : 'transparent',
-      tag: t.added ? 'Just added' : (t.cleared ? false : 'Not ticked'),
-      tagBg: t.added ? '#E1EEF8' : '#FFF0B8', tagFg: t.added ? '#1F5E91' : '#6B5000',
-      toggle: () => setLines((x) => (x.id === t.id ? Object.assign({}, x, { cleared: !x.cleared }) : x))
-    }));
-    const nTicked = lines.filter((t) => t.cleared).length;
-    const d = {
-      stmt: endOk ? fmt(endN) : '—', cleared: fmt(cleared),
-      diff: endOk ? fmt(diff) : '—',
-      text: !endOk ? 'Type the ending balance from your statement.' : (zero ? 'They match. You can finish ' + bank.short + '.' : 'BillingEase shows ' + fmt(diff) + (diff > 0 ? ' more' : ' less') + ' than your statement.'),
-      blocked: !zero,
-      cardBg: zero ? '#18161F' : '#FFFFFF', cardFg: zero ? '#FFFFFF' : '#18161F', cardBorder: zero ? '#18161F' : '#E2DFE8',
-      rule: zero ? 'rgba(238,232,255,0.2)' : '#EFEDF3', labelFg: zero ? '#EEE8FF' : '#47444F', numFg: zero ? '#B9A3FF' : '#18161F',
-      btnBg: zero ? '#B9A3FF' : '#EFEDF3', btnFg: zero ? '#18161F' : '#5F5B68', cursor: zero ? 'pointer' : 'not-allowed'
+    const b = Object.assign({ lines: [], extra: [], opening: 0, ending: null }, BE.get('bank') || {});
+    const hasAcct = !!b.acct;
+    const cleared = r2(b.lines.filter((l) => l.cleared).reduce((a, l) => a + l.amount, 0));
+    const booksBal = r2((Number(b.opening) || 0) + cleared);
+    const hasEnd = b.ending != null && b.ending !== '';
+    const diff = hasEnd ? r2(Number(b.ending) - booksBal) : null;
+    const save = (fn) => BE.change((s) => { const nb = JSON.parse(JSON.stringify(s.bank || b)); nb.lines = nb.lines || []; nb.extra = nb.extra || []; fn(nb, s); s.bank = nb; });
+    const status = b.done ? { label: 'Checked', tone: 'good', bg: '#E2F6D5', diffLabel: 'Matched on ' + b.doneOn, help: 'All done for ' + b.month + '. Start the next month when its statement arrives.' }
+      : !hasEnd ? { label: 'Needs the statement', tone: 'attn', bg: '#FFF0B8', diffLabel: 'Type the closing balance', help: 'Copy the closing balance from your statement, then tick each line that’s on it.' }
+      : diff === 0 ? { label: 'Balanced', tone: 'good', bg: '#E2F6D5', diffLabel: 'Difference', help: 'Your books and the statement agree. Finish to record the check.' }
+      : { label: 'To check', tone: 'attn', bg: '#FFF0B8', diffLabel: 'Difference to find', help: diff < 0 ? 'The statement has less than your books: something you ticked isn’t on it, or a payment out is missing from your books.' : 'The statement has more than your books: a line on the statement isn’t ticked, or money in is missing from your books.' };
+    const tpls = books.templates();
+    const tplId = st.tplId || (tpls[0] || {}).id;
+    const tpl = tpls.find((t) => t.id === tplId) || tpls[0] || { map: {} };
+    // Import preview
+    const imp = { intro: lk ? 'Choose your bank’s saved layout (templates for Commercial Bank, Sampath, HNB, BOC and People’s Bank are being confirmed), paste or choose the CSV, then check the columns.' : 'Download September as a CSV from your online banking, paste it or choose the file, then check the columns.', ready: false };
+    let rowsOut = [];
+    if (st.parsed && st.parsed.length > 1) {
+      const headers = st.parsed[0];
+      const map = st.map || {};
+      const ix = (k) => headers.indexOf(map[k]);
+      rowsOut = st.parsed.slice(1).map((r) => {
+        const amt = ix('amount') >= 0 ? books.csvNum(r[ix('amount')]) : r2((ix('in') >= 0 ? books.csvNum(r[ix('in')]) : 0) - (ix('out') >= 0 ? books.csvNum(r[ix('out')]) : 0));
+        const d = ix('date') >= 0 ? books.csvDate(r[ix('date')]) : null;
+        return { d, date: d ? books.lbl(d) : (r[ix('date')] || ''), desc: ix('desc') >= 0 ? r[ix('desc')] : '', amount: amt, balance: ix('balance') >= 0 && r[ix('balance')] !== '' ? books.csvNum(r[ix('balance')]) : null };
+      }).filter((r) => r.amount);
+      const maps = [['date', 'Date'], ['desc', 'Description'], ['amount', 'Amount (+/−)'], ['in', 'Money in'], ['out', 'Money out'], ['balance', 'Balance']].map(([k, l]) => ({ label: l, value: map[k] || '', pick: (ev) => { const v = ev.target.value; this.setState((s) => ({ map: Object.assign({}, s.map || {}, { [k]: v }) })); } }));
+      Object.assign(imp, { ready: true, headers, maps, count: rowsOut.length, preview: rowsOut.slice(0, 6).map((r) => ({ date: r.date, desc: r.desc, amount: sign(r.amount), color: r.amount < 0 ? '#18161F' : '#2F5711' })),
+        warn: !rowsOut.length ? 'No amounts found: check the Amount, or Money in and Money out, columns.' : (map.balance ? 'The last balance becomes your statement’s closing balance. ' : '') + 'Lines that match an entry by amount get ticked; the rest are listed for you to add or leave out.' });
+    }
+    const readCsv = () => {
+      const p = books.parseCsv(st.csvText);
+      if (p.length < 2) { this.notify('Paste a CSV with a header row and at least one line'); return; }
+      const headers = p[0];
+      const map = {};
+      Object.keys(tpl.map || {}).forEach((k) => { const want = String(tpl.map[k]).toLowerCase(); const h = headers.find((x) => x.toLowerCase() === want); if (h) map[k] = h; });
+      // Fall back to guessing from the header names
+      const guess = (k, re) => { if (!map[k]) { const h = headers.find((x) => re.test(x)); if (h) map[k] = h; } };
+      guess('date', /date/i); guess('desc', /desc|narr|partic|detail|payee/i); guess('balance', /bal/i);
+      if (!map.amount && !map.in && !map.out) { guess('in', /deposit|credit|paid in|money in/i); guess('out', /withdraw|debit|paid out|money out/i); guess('amount', /amount|value/i); }
+      this.setState({ parsed: p, map });
+      this.notify('Read ' + (p.length - 1) + ' lines · check the columns, then import');
     };
-    const check = lines.filter((t) => t.check)[0];
-    const checkOpen = !!(check && !check.cleared);
-    const feeN = parseFloat(String(st.feeAmt).replace(/[$,\s]/g, ''));
-    const h = {
-      check: checkOpen, fee: !bank.feeAdded, feeIdle: !st.feeOpen, feeOpen: st.feeOpen,
-      tickCheck: () => { setLines((x) => (x.check ? Object.assign({}, x, { cleared: true }) : x)); BE.log('Marked check #1042 to Local Print Shop ($73.00) as cleared'); this.notify('Check #1042 marked cleared · $73.00'); },
-      openFee: () => this.setState({ feeOpen: true, feeErr: '' }),
-      closeFee: () => this.setState({ feeOpen: false, feeErr: '' }),
-      feeAmt: st.feeAmt, feeDate: st.feeDate, feeErr: st.feeErr,
-      feeMoney: feeN > 0 ? fmt(feeN) : 'it',
-      setFeeAmt: (e) => this.setState({ feeAmt: e.target.value, feeErr: '' }),
-      setFeeDate: (e) => this.setState({ feeDate: e.target.value }),
-      addFee: () => {
-        if (!(feeN > 0)) { this.setState({ feeErr: 'Add the fee amount, like 15.00' }); return; }
-        const amt = r2(feeN);
-        const x = BE.addExpense({ who: 'Chase', cat: 'Bank fees', amount: amt, inMonth: false, date: st.feeDate, how: 'Chase ••4417', note: 'Monthly service fee, from the September statement' });
-        BE.change((s) => {
-          const row = { id: 'fee', date: st.feeDate, name: 'Chase service fee', sub: 'Bank fees', amount: -amt, cleared: true, added: true, expId: x.id };
-          const ls = s.bank.lines.concat([row]).sort((a, b) => parseInt(a.date.slice(4), 10) - parseInt(b.date.slice(4), 10));
-          s.bank = Object.assign({}, s.bank, { lines: ls, feeAdded: true, feeExp: x.id });
+    const doImport = () => {
+      if (!rowsOut.length) { this.notify('Nothing to import yet'); return; }
+      let ticked = 0, already = 0, added = 0, endBal = null;
+      save((nb) => {
+        const used = {};
+        rowsOut.forEach((r) => {
+          const cand = nb.lines.filter((l) => !used[l.id] && Math.abs(l.amount - r.amount) < 0.005).sort((a, c) => (a.cleared === c.cleared ? 0 : a.cleared ? 1 : -1))[0];
+          if (cand) { used[cand.id] = true; if (cand.cleared) already++; else { cand.cleared = true; ticked++; } }
+          else { nb.extra.push({ id: BE.id('st'), date: r.date, iso: r.d ? books.isoOf(r.d) : '', name: r.desc || 'Statement line', amount: r.amount, state: 'open', from: 'import' }); added++; }
+          if (r.balance != null) endBal = r.balance;
         });
-        this.setState({ feeOpen: false });
-        this.notify('Added the ' + fmt(amt) + ' Chase fee to Bank fees for September');
-      },
-      other: endOk && !zero && !checkOpen && bank.feeAdded,
-      otherText: 'Still off? Compare each line with your statement and untick anything that isn’t on it. A typo in the ending balance is the most common cause.'
+        if (endBal != null) nb.ending = endBal;
+        nb.imported = { on: BE.today, rows: rowsOut.length, layout: tpl.name || 'CSV' };
+      });
+      BE.log('Imported ' + rowsOut.length + ' statement lines for ' + (b.month || 'the statement') + ' · ' + ticked + ' ticked, ' + added + ' not in the books');
+      this.setState({ parsed: null, csvText: '', endDraft: null });
+      this.notify(rowsOut.length + ' lines read · ' + ticked + ' ticked' + (already ? ', ' + already + ' already ticked' : '') + (added ? ', ' + added + ' not in your books' : ''));
     };
-    const added = lines.filter((t) => t.added).length;
-    return Object.assign(base, {
-      acct: st.acct, stmt: st.stmt, endInput: endStr, active, doneNote, working: active, finished: bank.done && st.acct === 'chase' && st.stmt === 'sep',
-      opening: fmt(bank.opening), ending: fmt(bank.ending), monthShort: bank.short,
-      setAcct: (e) => this.setState({ acct: e.target.value }),
-      setStmt: (e) => this.setState({ stmt: e.target.value }),
-      setEnd: (e) => this.setState({ endInput: e.target.value }),
-      filters, rows, emptyFilter: rows.length === 0, tickedCount: nTicked + ' of ' + lines.length + ' ticked',
-      d, h, hasHints: endOk && !zero,
-      finish: () => {
-        if (!zero) return;
-        BE.change((s) => {
-          s.bank = Object.assign({}, s.bank, { done: true, doneOn: BE.today });
-          s.reconciles = [{ id: 'rc-now', month: bank.month, acct: bank.acct, when: BE.today, who: owner, bal: fmt(endN) }].concat((s.reconciles || []).filter((r) => r.id !== 'rc-now'));
-          BE._log(s, 'Checked ' + bank.acct + ' against the ' + bank.short + ' statement · it matches to the cent');
-        });
-        this.notify(bank.short + ' checked. Your books match Chase.');
-      },
-      finText: nTicked + ' transactions ticked' + (added ? ', ' + added + ' added' : '') + '.',
-      download: () => {
-        const csv = BE.books.csv([['Date', 'Description', 'Category', 'Amount', 'Ticked']].concat(lines.map((t) => [t.date, t.name, t.sub, t.amount.toFixed(2), t.cleared ? 'yes' : 'no'])));
-        const ok = BE.books.download(bank.month.replace(' ', '-') + '-bank-check.csv', csv);
-        BE.books.copy(csv);
-        this.notify(ok ? 'Downloaded ' + bank.month.replace(' ', '-') + '-bank-check.csv' : 'Report copied, ready to paste');
-      },
-      reopen: () => {
-        BE.change((s) => {
-          s.bank = Object.assign({}, s.bank, { done: false, doneOn: '' });
-          s.reconciles = (s.reconciles || []).filter((r) => r.id !== 'rc-now');
-          BE._log(s, 'Reopened the ' + bank.short + ' bank check');
-        });
-        this.notify(bank.short + ' reopened');
+    const extra = (b.extra || []).map((x) => {
+      const isIn = x.amount > 0;
+      return { name: x.name, date: x.date, sub: x.from === 'import' ? 'From the imported statement' : 'Added by hand', amount: sign(x.amount), color: isIn ? '#2F5711' : '#18161F',
+        open: x.state === 'open', closed: x.state !== 'open', state: x.state === 'added' ? 'Added to your books' : 'Left out', tone: x.state === 'added' ? 'good' : 'plain',
+        addLabel: isIn ? 'Add as money in' : 'Add as an expense',
+        add: () => {
+          const d = books.dOf(x.iso || x.date);
+          const off = d ? Math.round((d - BE.todayDate) / 86400000) : 0;
+          if (isIn) {
+            BE.add('payments', { id: BE.id('pay'), inv: '', who: x.name, amount: x.amount, orig: x.amount, how: 'Bank transfer', date: d ? books.lbl(d) : BE.today, iso: d ? books.isoOf(d) : '', inMonth: !!(d && d.getMonth() === 9), manual: true, note: '', cur: prof.currency });
+          } else if (BE.recordExpense) {
+            BE.recordExpense({ who: x.name, amount: -x.amount, catId: null, how: 'Bank transfer', dayOffset: off, note: 'From the ' + (b.month || '') + ' bank statement' });
+          } else {
+            BE.addExpense({ who: x.name, amount: -x.amount, cat: '', date: x.date });
+          }
+          save((nb) => { nb.extra = nb.extra.map((y) => y.id === x.id ? Object.assign(y, { state: 'added' }) : y); nb.lines.push({ id: BE.id('bl'), date: x.date, name: x.name, sub: isIn ? 'Money in, added from the statement' : 'Not sorted yet', amount: x.amount, cleared: true }); });
+          this.notify(x.name + ' ' + M(Math.abs(x.amount)) + ' added to your books' + (isIn ? ' · add a note on Quarters if it has no invoice' : ' · give it a category on Going out'));
+        },
+        ignore: () => { save((nb) => { nb.extra = nb.extra.map((y) => y.id === x.id ? Object.assign(y, { state: 'ignored' }) : y); }); this.notify(x.name + ' left out of the books'); }
+      };
+    });
+    const lines = b.lines.slice().map((l) => ({ name: l.name, sub: l.sub || '', date: l.date, cleared: !!l.cleared, amount: sign(l.amount), color: l.amount > 0 ? '#2F5711' : '#18161F',
+      toggle: () => { save((nb) => { nb.lines = nb.lines.map((y) => y.id === l.id ? Object.assign(y, { cleared: !y.cleared }) : y); }); this.notify((l.cleared ? 'Unticked ' : 'Ticked ') + l.name + ' ' + M(Math.abs(l.amount))); } }));
+    const tickedN = b.lines.filter((l) => l.cleared).length;
+    const endDraft = st.endDraft != null ? st.endDraft : (hasEnd ? String(Number(b.ending).toFixed(2)) : '');
+    const nextIdx = BE.MON.indexOf(String(b.month).split(' ')[0].slice(0, 3));
+    const FULL = books.FULL;
+    const nextName = nextIdx >= 0 ? FULL[(nextIdx + 1) % 12] : 'next month';
+    const man = Object.assign({}, st.man, {
+      typeDate: (e) => this.setState((s) => ({ man: Object.assign({}, s.man, { date: e.target.value }) })),
+      typeDesc: (e) => this.setState((s) => ({ man: Object.assign({}, s.man, { desc: e.target.value }) })),
+      typeAmt: (e) => this.setState((s) => ({ man: Object.assign({}, s.man, { amount: e.target.value }) })),
+      add: () => {
+        const amt = books.csvNum(st.man.amount);
+        if (!amt || !String(st.man.desc).trim()) { this.notify('Add a description and an amount (− for money out)'); return; }
+        save((nb) => { nb.extra.push({ id: BE.id('st'), date: st.man.date || BE.today, iso: '', name: st.man.desc.trim(), amount: amt, state: 'open', from: 'hand' }); });
+        this.setState({ man: { date: '', desc: '', amount: '' } });
+        this.notify('Added ' + st.man.desc.trim() + ' · add it to your books or leave it out');
       }
     });
+    const hero = !hasAcct ? { eyebrow: 'no account yet', big: 'Start here', lead: 'Tick your bank statement against your books once a month, so ' + (lk ? 'your practitioner' : 'your accountant') + ' knows nothing is missing.', nums: [] }
+      : { eyebrow: b.month + ' · ' + b.acct, big: b.done ? 'Checked' : !hasEnd ? 'Add the balance' : diff === 0 ? 'Balanced' : M(Math.abs(diff)) + ' to find',
+        lead: b.done ? b.month + ' matched your statement on ' + b.doneOn + '.' : tickedN + ' of ' + b.lines.length + ' entries ticked. ' + (diff === 0 ? 'Everything adds up: finish to record it.' : 'Tick what’s on the statement, or import it, until the difference is zero.'),
+        nums: [{ label: 'Statement says', value: hasEnd ? M(b.ending) : '—', color: '#FFFFFF' }, { label: 'Your books say', value: M(booksBal), color: '#FFFFFF' }, { label: 'Difference', value: diff == null ? '—' : M(diff), color: diff === 0 ? '#B9A3FF' : '#FDE6D6' }] };
+    return {
+      hero, hasAcct, noAcct: !hasAcct, b, status, nums: { opening: M(b.opening || 0), cleared: sign(cleared), books: M(booksBal), diff: diff == null ? '—' : M(diff) },
+      acctDraft: st.acctDraft, openDraft: st.openDraft, acctHint: lk ? 'e.g. Commercial Bank current account' : 'e.g. Business current account',
+      typeAcct: (e) => this.setState({ acctDraft: e.target.value }), typeOpen: (e) => this.setState({ openDraft: e.target.value }),
+      startAcct: () => {
+        const name = String(st.acctDraft || '').trim() || (lk ? 'Business current account' : 'Business current account');
+        save((nb) => Object.assign(nb, { acct: name, month: 'September 2026', short: 'September', opening: books.csvNum(st.openDraft), ending: null, done: false, lines: [], extra: [] }));
+        BE.log('Set up the bank check for ' + name);
+        this.notify(name + ' ready · import September’s statement or add lines by hand');
+      },
+      endDraft, typeEnd: (e) => this.setState({ endDraft: e.target.value }),
+      saveEnd: () => { const v = String(st.endDraft == null ? endDraft : st.endDraft).trim(); if (!v) { this.notify('Type the closing balance from your statement'); return; } const n = books.csvNum(v); save((nb) => { nb.ending = n; }); this.setState({ endDraft: null }); this.notify('Statement closing balance set to ' + M(n)); },
+      canFinish: !b.done && diff === 0,
+      finish: () => {
+        save((nb, s) => { nb.done = true; nb.doneOn = BE.today; s.reconciles = [{ id: BE.id('rc'), month: nb.month, acct: nb.acct, when: BE.today, who: (s.profile || {}).owner || '', bal: Number(nb.ending) }].concat(s.reconciles || []); });
+        BE.log('Checked ' + b.month + ' against the ' + b.acct + ' statement · ' + M(b.ending));
+        this.notify(b.month + ' checked · books match the statement at ' + M(b.ending));
+      },
+      nextName, nextMonth: () => {
+        const entries = [];
+        BE.all('payments').forEach((p) => { if (p.inMonth) entries.push({ id: BE.id('bl'), date: p.date, name: p.who, sub: p.inv ? 'Paid ' + p.inv : 'Money in', amount: p.amount, cleared: false }); });
+        BE.all('expenses').forEach((x) => { if (x.inMonth && x.how !== 'Cash' && x.kind !== 'personal') entries.push({ id: BE.id('bl'), date: x.date, name: x.who, sub: x.cat || '', amount: -x.amount, cleared: false }); });
+        save((nb) => Object.assign(nb, { month: nextName + ' 2026', short: nextName, opening: Number(nb.ending) || 0, ending: null, done: false, doneOn: '', extra: [], imported: null, lines: entries }));
+        this.setState({ endDraft: null });
+        this.notify(nextName + ' started · ' + entries.length + ' entries from your books to tick');
+      },
+      tpls: tpls.map((t) => ({ id: t.id, label: t.name + ' · ' + t.cols })), tplId,
+      pickTpl: (e) => this.setState({ tplId: e.target.value, parsed: null }),
+      csvText: st.csvText, typeCsv: (e) => this.setState({ csvText: e.target.value }),
+      pickFile: (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        const rd = new FileReader();
+        rd.onload = () => { this.setState({ csvText: String(rd.result || ''), parsed: null }); this.notify(f.name + ' loaded · press Read it'); };
+        rd.readAsText(f);
+      },
+      useSample: () => { this.setState({ csvText: books.sampleCsv(), parsed: null, tplId: tpls[0] ? tpls[0].id : null }); this.notify('Sample ' + (b.short || '') + ' statement pasted · press Read it'); },
+      readCsv, imp, doImport, clearImport: () => this.setState({ parsed: null, map: null }),
+      extra, hasExtra: extra.length > 0, extraNote: extra.filter((x) => x.open).length + ' to decide',
+      lines, hasLines: lines.length > 0, noLines: !lines.length, tickNote: tickedN + ' of ' + lines.length + ' ticked · from your books for ' + b.month,
+      man,
+      past: BE.all('reconciles').map((r) => ({ month: r.month, acct: r.acct, who: r.who, when: r.when, bal: typeof r.bal === 'number' ? M(r.bal) : r.bal })), hasPast: BE.all('reconciles').length > 0,
+      toast: st.toast
+    };
   }
 }
-
 </script>
 </body>
 </html>

@@ -360,7 +360,7 @@ class Component extends DCLogic {
     else if (q.status === 'ready') lead = 'Nothing is recorded for ' + q.label + ' here. If you traded then, your accountant has those figures from your old records.';
     else if (q.status === 'open') lead = q.label + ' is under way. Keep adding what comes in and goes out; it closes on ' + q.to + ' and ' + prShort + ' file it by ' + q.due + '.';
     else lead = q.label + ' starts on ' + q.from + '. Nothing to do yet.';
-    const hero = { lead, nums, due: q.status === 'filed' ? 'HMRC deadline was ' + q.due : 'HMRC deadline ' + q.due + (q.dueDays != null && q.dueDays >= 0 && q.status !== 'upcoming' ? ' · ' + q.dueDays + ' days' : '') };
+    const hero = { lead, nums: q.hasData ? nums : [], due: q.status === 'filed' ? 'HMRC deadline was ' + q.due : 'HMRC deadline ' + q.due + (q.dueDays != null && q.dueDays >= 0 && q.status !== 'upcoming' ? ' · ' + q.dueDays + ' days' : '') };
 
     // Checks
     const locked = q.locked;
