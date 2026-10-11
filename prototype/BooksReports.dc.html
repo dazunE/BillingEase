@@ -319,7 +319,7 @@ class Component extends DCLogic {
     const csvName = (prof.business || 'Business').replace(/[^A-Za-z0-9]+/g, '-') + '-' + r.title.replace(/[^A-Za-z0-9]+/g, '-') + '.csv';
     function taxWord(l) { return l ? 'income tax' : 'Income Tax and NI'; }
     const hero = {
-      big: W(t.profit), lead: hasData ? 'Profit for ' + yr.label + ' so far (' + yr.from.getDate() + ' ' + books.MON[yr.from.getMonth()] + ' to today). Every report below reads the same entries as Home and Yours to keep.' : 'Nothing recorded yet. Profit and loss, the balance sheet and your ' + (lk ? 'VAT, SSCL and payroll' : 'quarter') + ' summaries build themselves as you work.',
+      big: W(t.profit), lead: hasData ? 'Profit for ' + yr.label + ' so far (' + yr.from.getDate() + ' ' + books.MON[yr.from.getMonth()] + ' to today), counting money on the way as on Home. The reports below read the same entries' + (books.basis() === 'cash' ? ', on the cash basis.' : '.') : 'Nothing recorded yet. Profit and loss, the balance sheet and your ' + (lk ? 'VAT, SSCL and payroll' : 'quarter') + ' summaries build themselves as you work.',
       nums: [{ label: 'Coming in', value: W(t.in), color: '#FFFFFF' }, { label: 'Going out', value: W(t.out), color: '#FFFFFF' }, { label: 'Yours to keep', value: W(t.keep), color: '#B9A3FF' }]
     };
     return {
