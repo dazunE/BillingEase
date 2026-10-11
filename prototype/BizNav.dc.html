@@ -57,7 +57,6 @@
     </div>
   </nav>
   <div class="bn-foot" style="display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 1px solid #EFEDF3;">
-    <a class="bn-more" href="BizTeam.dc.html#businesses"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"></path></svg>Switch business</a>
     <a class="bn-more" href="SetupProfile.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"></path></svg>Run setup again</a>
     <a class="bn-more" href="Everything.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>Everything BillingEase does</a>
   </div>
@@ -67,13 +66,15 @@
 class Component extends DCLogic {
   renderVals() {
     const p = BE.get('profile') || {};
+    const pack = BE.pack();
     const cur = this.props.current || 'profile';
-    const n = BE.all('team').length;
-    const others = BE.all('businesses').filter((b) => !b.current).length;
-    const where = [p.role || 'Owner', p.currency || 'USD', p.city].filter(Boolean).join(' · ');
+    const team = BE.all('team').filter((m) => !(m.you || m.status === 'You'));
+    const acct = team.find((m) => m.role === 'Accountant');
+    const where = [p.role || 'Owner', pack.currency || p.currency, p.city || pack.name].filter(Boolean).join(' · ');
+    const peopleSub = !team.length ? 'Just you so far' : (acct ? 'You, ' + (acct.org || acct.name).split(',')[0] + (team.length > 1 ? ' +' + (team.length - 1) : '') : 'You and ' + team.length + (team.length === 1 ? ' other' : ' others'));
     const items = [
-      { k: 'profile', href: 'BizProfile.dc.html', label: 'Business profile', short: 'Profile', sub: 'Name, branding, country', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
-      { k: 'team', href: 'BizTeam.dc.html', label: 'Team and access', short: 'Team', sub: (n > 1 ? n + ' people' : 'Just you') + (others ? ' · ' + (others + 1) + ' businesses' : ''), icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M16 4.2a3.5 3.5 0 0 1 0 6.6' },
+      { k: 'profile', href: 'BizProfile.dc.html', label: 'Business profile', short: 'Profile', sub: 'Name, ' + (pack.taxIdLabel || 'tax details') + ', invoices', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
+      { k: 'team', href: 'BizTeam.dc.html', label: 'People and access', short: 'People', sub: peopleSub, icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M16 4.2a3.5 3.5 0 0 1 0 6.6' },
       { k: 'security', href: 'BizSecurity.dc.html', label: 'Security and data', short: 'Security', sub: 'Sign-in, import, export', icon: 'M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6zM9 12l2 2 4-4' }
     ].map((it) => Object.assign({}, it, { cur: it.k === cur ? 'page' : false }));
     return {

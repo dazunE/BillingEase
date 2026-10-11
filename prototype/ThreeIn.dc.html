@@ -36,7 +36,7 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="width: {{n.expPct}}%; background: #C9BCFB;"></span>
           </span>
           <span style="display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 14px; color: #47444F;">
-            <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7A5AF8;"></span><strong style="color: #18161F;">{{n.paid}}</strong> already in your bank</span>
+            <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7A5AF8;"></span><strong style="color: #18161F;">{{n.paid}}</strong> received</span>
             <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #C9BCFB;"></span><strong style="color: #18161F;">{{n.exp}}</strong> on the way</span>
           </span>
         </sc-if>
@@ -76,8 +76,12 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums;">{{l.amount}}</span>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <a href="{{l.href}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">See {{l.num}}</a>
+              <a href="{{l.payHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Record a payment</a>
               <sc-if value="{{l.open}}" hint-placeholder-val="{{true}}">
-                <button type="button" onClick="{{l.nudge}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Send a friendly nudge</button>
+                <button type="button" onClick="{{l.nudge}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Email a reminder</button>
+                <sc-if value="{{l.wa}}" hint-placeholder-val="{{false}}">
+                  <button type="button" onClick="{{l.nudgeWa}}" style="min-height: 44px; padding: 0 18px; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">WhatsApp reminder</button>
+                </sc-if>
               </sc-if>
             </div>
           </div>
@@ -98,7 +102,7 @@ a{color:#18161F}a:hover{color:#000000}
     <section aria-labelledby="way-h" style="display: flex; flex-direction: column; gap: 12px;">
       <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
         <h2 id="way-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">On the way <span style="color: #5F5B68; font-weight: 600;">{{wayCount}}</span></h2>
-        <span style="font-size: 13px; color: #5F5B68;">{{n.exp}} · we send reminders for you 3 days before each due date</span>
+        <span style="font-size: 13px; color: #5F5B68;">{{waySub}}</span>
       </div>
       <ul style="margin: 0; padding: 4px 8px; list-style: none; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; display: flex; flex-direction: column;">
         <sc-for list="{{way}}" as="w" hint-placeholder-count="5">
@@ -156,7 +160,7 @@ a{color:#18161F}a:hover{color:#000000}
       <div style="flex: 999 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <h2 id="bill-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">Bill someone</h2>
-          <span style="font-size: 14px; color: #47444F;">Fill in the sentence. We take care of the invoice number, the email and the reminders.</span>
+          <span style="font-size: 14px; color: #47444F;">{{billSub}}</span>
         </div>
 
         <sc-if value="{{justSent.on}}" hint-placeholder-val="{{false}}">
@@ -182,7 +186,7 @@ a{color:#18161F}a:hover{color:#000000}
             <option value="7">7 days</option>
             <option value="14">14 days</option>
             <option value="30">30 days</option>
-            <option value="45">45 days</option>
+            <option value="60">60 days</option>
           </select>
           <span>.</span></span>
         </div>
@@ -193,7 +197,7 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">New customer</strong><span style="font-size: 13px; color: #5F5B68;">Just a name and where to send it. You can add the rest later on their page.</span></span>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px;">
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Business or person
-                <input class="be-field" type="text" value="{{newCust.name}}" onChange="{{setNcName}}" placeholder="e.g. Maple Street Florist" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                <input class="be-field" type="text" value="{{newCust.name}}" onChange="{{setNcName}}" placeholder="{{ncPlaceholder}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
               </label>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email for invoices
                 <input class="be-field" type="email" value="{{newCust.email}}" onChange="{{setNcEmail}}" placeholder="name@company.com" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
@@ -215,17 +219,16 @@ a{color:#18161F}a:hover{color:#000000}
           </button>
           <sc-if value="{{moreOpen}}" hint-placeholder-val="{{false}}">
             <div style="display: flex; flex-direction: column; gap: 18px;">
+              <sc-if value="{{taxPick.on}}" hint-placeholder-val="{{false}}">
               <div style="display: flex; flex-direction: column; gap: 8px;">
-                <span style="font-size: 13px; font-weight: 600;">Let them pay by</span>
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">VAT rate</span><span style="font-size: 13px; color: #5F5B68;">{{taxPick.sub}}</span></span>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                  <sc-for list="{{methods}}" as="m" hint-placeholder-count="3">
-                    <button type="button" aria-pressed="{{m.on}}" onClick="{{m.toggle}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{m.border}}; background: {{m.bg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.icon}}"></path></svg>
-                      {{m.label}}
-                    </button>
+                  <sc-for list="{{taxPick.rates}}" as="m" hint-placeholder-count="3">
+                    <button type="button" aria-pressed="{{m.on}}" onClick="{{m.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{m.border}}; background: {{m.bg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{m.label}}</button>
                   </sc-for>
                 </div>
               </div>
+              </sc-if>
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
                 <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Repeat monthly</span><span style="font-size: 13px; color: #5F5B68;">We send it again on the same day each month.</span></span>
                 <button type="button" role="switch" aria-checked="{{f.repeat}}" aria-label="Repeat monthly" onClick="{{toggleRepeat}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{repeatBg}}; cursor: pointer; padding: 0;">
@@ -272,16 +275,20 @@ a{color:#18161F}a:hover{color:#000000}
       <aside aria-label="Invoice preview" style="flex: 1 1 300px; min-width: 0; background: #F7F6F9; border-radius: 20px; padding: 16px;">
         <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 1px 2px rgba(24,22,31,0.06);">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+            <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
             <span style="display: flex; align-items: center; gap: 8px; min-width: 0;">
               <svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true" style="flex: none; display: block;"><rect width="48" height="48" rx="13" fill="#18161F"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg>
               <span style="font-weight: 700; font-size: 14px;">{{pv.biz}}</span>
             </span>
-            <span style="font-size: 12px; color: #5F5B68; text-align: right;">Invoice<br><strong style="color: #18161F; font-size: 13px;">{{pv.num}}</strong></span>
+            <sc-for list="{{pv.seller}}" as="sf" hint-placeholder-count="0"><span style="font-size: 11px; color: #5F5B68;">{{sf.label}} {{sf.value}}</span></sc-for>
+            </span>
+            <span style="font-size: 12px; color: #5F5B68; text-align: right; flex: none;">{{pv.title}}<br><strong style="color: #18161F; font-size: 13px;">{{pv.num}}</strong></span>
           </div>
           <div style="display: flex; flex-direction: column; gap: 2px;">
             <span style="font-size: 12px; color: #5F5B68;">Bill to</span>
             <span style="font-weight: 700; font-size: 15px; color: {{pv.custColor}};">{{pv.cust}}</span>
             <sc-if value="{{pv.hasEmail}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F;">{{pv.email}}</span></sc-if>
+            <sc-for list="{{pv.buyer}}" as="bf" hint-placeholder-count="0"><span style="font-size: 11px; color: #5F5B68;">{{bf.label}} {{bf.value}}</span></sc-for>
           </div>
           <div style="display: flex; flex-direction: column; border-top: 1px solid #EFEDF3;">
             <sc-for list="{{pv.rows}}" as="pr" hint-placeholder-count="1">
@@ -291,17 +298,24 @@ a{color:#18161F}a:hover{color:#000000}
               </div>
             </sc-for>
           </div>
+          <sc-if value="{{pv.hasTax}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #47444F;">
+              <div style="display: flex; justify-content: space-between; gap: 12px;"><span>Value of supply</span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{pv.net}}</span></div>
+              <sc-for list="{{pv.taxRows}}" as="tr" hint-placeholder-count="2">
+                <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="display: flex; flex-direction: column;"><span>{{tr.label}}</span><span style="font-size: 11px; color: #5F5B68;">{{tr.sub}}</span></span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{tr.amount}}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
           <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
             <span style="font-size: 13px; color: #47444F;">Total due {{pv.dueDate}}</span>
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{pv.total}}</span>
           </div>
-          <span style="display: flex; align-items: center; justify-content: center; min-height: 40px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-weight: 600; font-size: 14px;">Pay {{pv.total}}</span>
-          <span style="font-size: 12px; color: #5F5B68; text-align: center;">{{pv.methods}}</span>
+          <span style="padding: 10px 12px; border-radius: 12px; background: #F7F6F9; font-size: 12px; line-height: 1.45; color: #47444F;">{{pv.payNote}}</span>
           <sc-if value="{{f.repeat}}" hint-placeholder-val="{{false}}">
             <span style="align-self: center; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #1F5E91;"></span>Repeats monthly</span>
           </sc-if>
         </div>
-        <span style="display: block; margin-top: 10px; font-size: 12px; color: #5F5B68; text-align: center;">This is what your customer sees</span>
+        <span style="display: block; margin-top: 10px; font-size: 12px; color: #5F5B68; text-align: center;">{{pv.foot}}</span>
       </aside>
     </section>
 
@@ -319,12 +333,9 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    const ps = BE.get('paySettings') || {};
-    const m = ps.methods || { card: true, bank: true, apple: true };
     this.state = {
       toast: null, recOpen: false, moreOpen: false,
-      f: { customer: '', amount: '', what: '', due: '30', repeat: false }, custHash: null,
-      pay: { card: !!m.card, bank: !!m.bank, apple: !!m.apple },
+      f: { customer: '', amount: '', what: '', due: '', repeat: false, vat: 'std' }, custHash: null,
       lines: [], lineSeq: 0, errors: [],
       nc: { open: false, name: '', email: '', err: '' }, justSent: null
     };
@@ -336,128 +347,131 @@ class Component extends DCLogic {
     this._scroll();
     window.addEventListener('hashchange', this._scroll);
   }
+  componentWillUnmount() { window.removeEventListener('hashchange', this._scroll); }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
   renderVals() {
     const st = this.state;
     const t = BE.totals('month');
-    const usd0 = (n) => BE.money(n, 'USD', { whole: true });
+    const m0 = (n) => BE.money(n, null, { whole: true });
     const ini = (s) => BE.initials(s);
     const profile = BE.get('profile') || {};
+    const pack = BE.pack();
+    const lk = BE.is('lk');
     const invoices = BE.all('invoices');
     const payments = BE.all('payments').filter((p) => p.inMonth);
     const customers = BE.all('customers').slice().sort((a, b) => a.name.localeCompare(b.name));
     const hash = BE.hash();
+    const terms = BE.terms();
 
     const hasMoney = t.in > 0;
     const n = { in: t.fmt.in, paid: t.fmt.inPaid, exp: t.fmt.inExp, paidPct: hasMoney ? t.inPaidPct : 0, expPct: hasMoney ? 100 - t.inPaidPct : 0 };
     const empty = !invoices.length && !payments.length;
 
-    // Late: open invoices past their due date
+    // Late: open invoices past their due date. Reminders are sent by you (email; WhatsApp too in Sri Lanka).
+    const EMAIL = 'Reminder emailed by you', WA = 'Reminder sent on WhatsApp by you';
     const lateInv = invoices.filter((i) => BE.invStatus(i) === 'late').sort((a, b) => a.dueIn - b.dueIn);
-    const NUDGE = 'Friendly nudge sent by you';
     const late = lateInv.map((i) => {
-      const done = (i.events || []).some((e) => e.mine && e.label === NUDGE);
+      const today = (i.events || []).filter((e) => e.mine && e.date === BE.today && (e.label === EMAIL || e.label === WA));
+      const done = today.length > 0;
+      const lastLabel = done ? today[today.length - 1].label : '';
       const c = BE.customerOf(i.who);
       const reminders = (i.events || []).filter((e) => /reminder/i.test(e.label)).length;
-      const first = c && c.contact ? c.contact.split(' ')[0] : i.who;
+      const first = c && c.contact ? c.contact.split(' ').filter((w) => !/^(Dr|Mr|Mrs|Ms)$/.test(w))[0] : i.who;
       return {
-        who: i.who, num: i.num, days: (-i.dueIn) + ' days late', amount: BE.money(BE.invOpen(i), i.cur),
-        custHref: BE.customerHref(i.who), href: 'SellInvoices.dc.html#' + i.num,
-        body: i.num + ' · ' + i.what + '. ' + (reminders ? (reminders === 1 ? 'One automatic reminder already went out' : reminders + ' automatic reminders went out') + ', so a personal note from you may help.' : 'A personal note from you usually gets a reply.'),
-        open: !done, done, doneText: 'Nudge sent to ' + first + (c && c.contact ? ' at ' + i.who : '') + '. We’ll tell you when they open it.',
-        nudge: () => { BE.remindInvoice(i.num, NUDGE, 'Sent a friendly nudge to ' + i.who + ' about ' + i.num); this.notify('Friendly nudge sent to ' + i.who + ' for ' + i.num); },
-        undo: () => { BE.undoReminder(i.num, NUDGE); this.notify('Nudge to ' + i.who + ' taken back'); }
+        who: i.who, num: i.num, days: (-i.dueIn) + (i.dueIn === -1 ? ' day late' : ' days late'), amount: BE.money(BE.invOpen(i)),
+        custHref: BE.customerHref(i.who), href: 'SellInvoices.dc.html#' + i.num, payHref: 'SellInvoices.dc.html#pay=' + i.num,
+        body: i.num + ' · ' + i.what + ', due ' + i.due + '. ' + (reminders ? (reminders === 1 ? 'You sent one reminder' : 'You sent ' + reminders + ' reminders') + ', so a call or a personal note may help.' : 'A short reminder from you usually gets a reply.'),
+        open: !done, done, wa: !!(pack.features && pack.features.whatsapp),
+        doneText: (lastLabel === WA ? 'WhatsApp reminder sent to ' : 'Reminder emailed to ') + first + (c && c.contact ? ' at ' + i.who : '') + '. It’s in the invoice’s history.',
+        nudge: () => { BE.remindInvoice(i.num, EMAIL, 'Emailed a reminder to ' + i.who + ' about ' + i.num); this.notify('Reminder emailed to ' + i.who + ' for ' + i.num); },
+        nudgeWa: () => { BE.remindInvoice(i.num, WA, 'Sent a WhatsApp reminder to ' + i.who + ' about ' + i.num); this.notify('WhatsApp reminder sent to ' + i.who + ' for ' + i.num); },
+        undo: () => { BE.undoReminder(i.num, lastLabel); this.notify('Reminder to ' + i.who + ' taken back'); }
       };
     });
-    const lateTotal = lateInv.reduce((a, i) => a + BE.usd(BE.invOpen(i), i.cur), 0);
+    const lateTotal = lateInv.reduce((a, i) => a + BE.invOpen(i), 0);
 
     // On the way: sent, unpaid invoices counted this month
-    const S = {
-      viewed: { bg: '#E1EEF8', fg: '#1F5E91' }, sent: { bg: '#EFEDF3', fg: '#47444F' },
-      soon: { bg: '#FFF0B8', fg: '#6B5000' }, part: { bg: '#E2F6D5', fg: '#2F5711' }
-    };
+    const S = { sent: { bg: '#EFEDF3', fg: '#47444F' }, soon: { bg: '#FFF0B8', fg: '#6B5000' }, part: { bg: '#E2F6D5', fg: '#2F5711' } };
     const wayInv = invoices.filter((i) => i.inMonth && !i.draft && !i.void && i.dueIn >= 0 && BE.invOpen(i) > 0)
       .sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0) || a.dueIn - b.dueIn);
     const way = wayInv.map((i, k) => {
       let s = 'sent', label = 'Sent ' + i.issued;
       if (i.isNew && i.issued === BE.today) label = 'Sent just now';
-      if (i.paid > 0) { s = 'part'; label = i.deposit || /deposit/i.test(JSON.stringify(i.events || [])) ? 'Deposit paid' : 'Part paid'; }
-      else if (i.dueIn <= 7) { s = 'soon'; label = i.viewed ? 'Viewed · due soon' : 'Due soon'; }
-      else if (i.viewed) { s = 'viewed'; label = 'Viewed'; }
+      if (i.paid > 0) { s = 'part'; label = 'Part paid'; }
+      else if (i.dueIn <= 7) { s = 'soon'; label = 'Due soon'; }
       else if (i.repeat) label = 'Repeats monthly';
-      const open = BE.invOpen(i);
       return {
         who: i.who, what: i.what + (i.paid > 0 ? ', balance' : ''), num: i.num, isNew: !!(i.isNew && i.issued === BE.today),
-        amount: BE.money(open, i.cur) + (i.cur !== 'USD' ? ' (≈ ' + usd0(BE.usd(open, i.cur)) + ')' : ''), due: 'Due ' + i.due, status: label,
+        amount: BE.money(BE.invOpen(i)), due: 'Due ' + i.due, status: label,
         bg: S[s].bg, fg: S[s].fg, ini: ini(i.who), border: k === 0 ? '0' : '1px solid #EFEDF3', href: 'SellInvoices.dc.html#' + i.num
       };
     });
 
-    // Received this month
+    // Received this month, recorded by hand
     const received = payments.map((p) => ({
-      who: p.who, num: p.inv + (p.deposit ? ' deposit' : ''), how: p.how + (p.manual && !p.refund ? ', recorded by you' : ''), when: p.date,
-      amount: BE.money(p.amount, 'USD'), href: 'SellInvoices.dc.html#' + p.inv
+      who: p.who, num: p.inv, when: p.date, amount: BE.money(p.amount), href: 'SellInvoices.dc.html#' + p.inv,
+      how: p.how + (p.chequeNo ? ' no. ' + p.chequeNo + (p.chequeDate ? ', dated ' + p.chequeDate : '') : '') + (p.toConfirm ? ' · your ' + ((pack.practitioner || {}).noun || 'accountant') + ' is checking it' : '')
     }));
     const payers = {}; payments.forEach((p) => { if (p.amount > 0) payers[p.who] = 1; });
     const nPayers = Object.keys(payers).length;
 
     // Composer
     const f = st.f;
+    const due = f.due || String(terms);
     const hashCust = /^bill=/.test(hash) ? hash.slice(5) : '';
     const custId = st.custHash === hash ? f.customer : (hashCust && BE.find('customers', hashCust) ? hashCust : f.customer);
     const cust = custId && custId !== '__new' ? BE.find('customers', custId) : null;
-    const cur = cust ? (cust.cur || 'USD') : (profile.currency || 'USD');
-    const sym = BE.SYM[cur] || '$';
+    const sym = pack.symbol ? pack.symbol + (lk ? ' ' : '') : '£';
     const ncOpen = st.nc.open || custId === '__new' || !customers.length;
     const amt = BE.num(f.amount);
-    const lineTotal = st.lines.reduce((a, l) => a + BE.num(l.amt), 0);
-    const total = Math.round((amt + lineTotal) * 100) / 100;
+    const vatOn = BE.vatOn(), ssclOn = BE.ssclOn();
+    const extraLines = st.lines.filter((l) => BE.num(l.amt) > 0).map((l) => ({ name: l.desc.trim() || 'Extra', qty: 1, unit: 'item', rate: BE.num(l.amt), vat: f.vat }));
+    const allLines = [{ name: f.what.trim() || 'Work', qty: 1, unit: 'job', rate: amt, vat: f.vat }].filter((l) => l.rate > 0).concat(extraLines);
+    const tx = BE.calcTax(allLines, 0);
+    const total = tx.total;
     const nextNum = BE.nextNumber('INV');
-    const M = [
-      { k: 'card', label: 'Card', icon: 'M3 6h18v12H3zM3 10h18' },
-      { k: 'bank', label: 'Bank transfer', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18' },
-      { k: 'apple', label: 'Apple Pay', icon: 'M5 12h14M12 5v14' }
-    ];
-    const methods = M.map((m) => ({
-      label: m.label, on: !!st.pay[m.k], icon: st.pay[m.k] ? 'm5 12 5 5 9-10' : m.icon,
-      bg: st.pay[m.k] ? '#EEE8FF' : '#FFFFFF', border: st.pay[m.k] ? '#7A5AF8' : '#CBC7D3',
-      toggle: () => this.setState({ pay: Object.assign({}, this.state.pay, { [m.k]: !this.state.pay[m.k] }) })
-    }));
-    const methodNames = M.filter((m) => st.pay[m.k]).map((m) => m.k === 'apple' ? 'Apple Pay' : m.label.toLowerCase());
     const lines = st.lines.map((l) => ({
       desc: l.desc, amt: l.amt,
       setDesc: (e) => this.setState({ lines: this.state.lines.map((x) => x.id === l.id ? Object.assign({}, x, { desc: e.target.value }) : x) }),
       setAmt: (e) => this.setState({ lines: this.state.lines.map((x) => x.id === l.id ? Object.assign({}, x, { amt: e.target.value }) : x) }),
       remove: () => this.setState({ lines: this.state.lines.filter((x) => x.id !== l.id) })
     }));
-    const rows = [{ desc: f.what || 'What it’s for', color: f.what ? '#18161F' : '#5F5B68', amt: BE.money(amt, cur) }]
-      .concat(st.lines.filter((l) => l.desc || BE.num(l.amt)).map((l) => ({ desc: l.desc || 'Line item', color: '#18161F', amt: BE.money(BE.num(l.amt), cur) })));
+    const rows = [{ desc: f.what || 'What it’s for', color: f.what ? '#18161F' : '#5F5B68', amt: BE.money(amt) }]
+      .concat(st.lines.filter((l) => l.desc || BE.num(l.amt)).map((l) => ({ desc: l.desc || 'Line item', color: '#18161F', amt: BE.money(BE.num(l.amt)) })));
+    const setF = (patch) => this.setState({ f: Object.assign({}, this.state.f, { customer: custId }, patch), custHash: hash, errors: [] });
+    const rates = (pack.vatRates || []).filter((r) => r.id !== 'outside');
+    const taxPick = {
+      on: vatOn,
+      sub: lk ? 'SSCL ' + ((pack.sscl || 0) * 100) + '% is added first, then VAT on the value plus SSCL.' : 'Most of your work is standard rated. Change it for zero-rated or exempt work.',
+      rates: rates.map((r) => ({ label: r.label, on: f.vat === r.id, bg: f.vat === r.id ? '#EEE8FF' : '#FFFFFF', border: f.vat === r.id ? '#7A5AF8' : '#CBC7D3', pick: () => setF({ vat: r.id }) }))
+    };
+    const payNote = profile.note || (lk ? 'Pay by bank transfer, cheque or LankaQR. Quote ' + nextNum + ' with your payment.' : 'Pay by bank transfer. Quote ' + nextNum + ' as the reference.');
     const pv = {
-      biz: profile.business || 'Your business', num: nextNum,
+      biz: profile.business || 'Your business', num: nextNum, title: BE.invTitle(),
+      seller: BE.sellerFields(), buyer: BE.buyerFields(cust),
       cust: cust ? cust.name : 'Choose a customer', custColor: cust ? '#18161F' : '#5F5B68',
       hasEmail: !!(cust && cust.email), email: cust ? cust.email : '',
-      rows, total: BE.money(total, cur), dueDate: BE.inDays(+f.due),
-      methods: methodNames.length ? 'They can pay by ' + methodNames.join(', ') : 'No online payment; they pay you directly'
+      rows, total: BE.money(total), dueDate: BE.inDays(+due),
+      hasTax: tx.tax > 0 || vatOn || ssclOn, net: BE.money(tx.net), taxRows: BE.taxRows(tx),
+      payNote,
+      foot: lk && vatOn ? 'Tax Invoice layout: your TIN and VAT number, the purchaser’s, SSCL and VAT on their own lines' : (vatOn ? 'VAT invoice with your VAT number and the VAT on each rate' : 'You record the payment when it reaches your bank')
     };
-    const setF = (patch) => this.setState({ f: Object.assign({}, this.state.f, { customer: custId }, patch), custHash: hash, errors: [] });
-    const blank = { customer: '', amount: '', what: '', due: '30', repeat: false };
-    const usdTotal = BE.usd(total, cur);
+    const blank = { customer: '', amount: '', what: '', due: '', repeat: false, vat: 'std' };
     const send = () => {
       const errs = [];
       if (!cust) errs.push('Choose who you’re billing, or add a new customer.');
-      if (!(total > 0)) errs.push('Add an amount above ' + sym + '0.');
+      if (!(amt + extraLines.reduce((a, l) => a + l.rate, 0) > 0)) errs.push('Add an amount above ' + sym.trim() + ' 0.');
       if (!f.what.trim()) errs.push('Say what it’s for, in a few words.');
       if (errs.length) { this.setState({ errors: errs }); return; }
-      const extra = st.lines.filter((l) => BE.num(l.amt) > 0).map((l) => ({ name: l.desc.trim() || 'Extra', qty: 1, unit: 'item', rate: BE.num(l.amt) }));
-      const inv = BE.createInvoice({
-        who: cust.name, what: f.what.trim(), cur, terms: +f.due, repeat: f.repeat, email: cust.email,
-        lines: [{ name: f.what.trim(), qty: 1, unit: 'job', rate: amt }].filter((l) => l.rate > 0).concat(extra)
+      const inv = BE.makeInvoice({
+        who: cust.name, what: f.what.trim(), terms: +due, repeat: f.repeat, email: cust.email,
+        lines: [{ name: f.what.trim(), qty: 1, unit: 'job', rate: amt, vat: f.vat }].filter((l) => l.rate > 0).concat(extraLines)
       });
       this.setState({ f: blank, custHash: hash, lines: [], errors: [], moreOpen: false, nc: { open: false, name: '', email: '', err: '' },
         justSent: { num: inv.num, text: inv.num + ' went to ' + cust.name + (cust.email ? ' at ' + cust.email : '') + '. It’s in On the way above, and in All invoices.' } });
-      this.notify(inv.num + ' sent to ' + cust.name + ' · ' + (cur === 'USD' ? BE.money(total) : BE.money(total, cur) + ' (≈ ' + usd0(usdTotal) + ')') + ' added to Coming in');
+      this.notify(inv.num + ' sent to ' + cust.name + ' · ' + BE.money(BE.invTotal(inv)) + ' added to Coming in');
     };
-    const custOptions = customers.map((c) => ({ id: c.id, label: c.name + (c.cur && c.cur !== (profile.currency || 'USD') ? ' · ' + c.cur : '') }));
+    const custOptions = customers.map((c) => ({ id: c.id, label: c.name }));
     const nc = st.nc;
     const saveCustomer = () => {
       const name = nc.name.trim(), email = nc.email.trim();
@@ -472,18 +486,21 @@ class Component extends DCLogic {
     return {
       n, hasMoney,
       heroText: empty
-        ? 'Nothing is coming in yet. When you bill a customer, what they owe shows up here as money on the way, and moves to your bank when they pay.'
-        : 'This is everything customers pay you this month. We match payments to invoices as they land, so you only see what still needs a push.',
-      late, hasLate: late.length > 0, lateCount: late.length, lateTotal: usd0(lateTotal),
+        ? 'Nothing is coming in yet. When you bill a customer, what they owe shows up here as money on the way. When they pay, record it and it moves to received.'
+        : 'Everything customers owe you this month and what they’ve paid. Record a payment when it reaches your bank' + (lk ? ' or a cheque clears' : '') + ', and it moves across.',
+      late, hasLate: late.length > 0, lateCount: late.length, lateTotal: m0(lateTotal),
       way, hasWay: way.length > 0, wayCount: way.length,
+      waySub: t.fmt.inExp + ' · ' + terms + '-day terms unless you chose otherwise',
       received, hasRec: received.length > 0, recCount: received.length,
-      recSummary: 'from ' + nPayers + (nPayers === 1 ? ' customer' : ' customers') + ', matched to their invoices.',
+      recSummary: 'from ' + nPayers + (nPayers === 1 ? ' customer' : ' customers') + ', recorded against their invoices.',
       recOpen: st.recOpen, recToggle: st.recOpen ? 'Hide' : 'Show all ' + received.length,
       toggleRec: () => this.setState({ recOpen: !st.recOpen }),
       justSent: st.justSent ? { on: true, num: st.justSent.num, text: st.justSent.text, href: 'SellInvoices.dc.html#' + st.justSent.num } : { on: false },
-      f: Object.assign({}, f, { customer: ncOpen && !cust ? '__new' : (custId || '') }), pv, methods, lines, sym,
+      billSub: 'Fill in the sentence. We number it ' + nextNum + (vatOn ? ', add ' + (ssclOn ? 'SSCL and VAT' : 'VAT') + ' as a ' + BE.invTitle() : '') + ' and email it.',
+      f: Object.assign({}, f, { due, customer: ncOpen && !cust ? '__new' : (custId || '') }), pv, lines, sym, taxPick,
       custPrompt: customers.length ? 'Choose a customer' : 'No customers yet',
-      custOptions, amountLabel: 'Amount in ' + cur,
+      custOptions, amountLabel: 'Amount in ' + (pack.currency || 'GBP') + (vatOn ? ', before tax' : ''),
+      ncPlaceholder: lk ? 'e.g. Ceylon Crafts (Pvt) Ltd' : 'e.g. Headingley Florist',
       newCust: { on: ncOpen, name: nc.name, email: nc.email, err: nc.err, errOn: !!nc.err, canCancel: customers.length > 0 },
       setNcName: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { name: e.target.value, err: '' }) }),
       setNcEmail: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { email: e.target.value, err: '' }) }),
@@ -502,8 +519,8 @@ class Component extends DCLogic {
       moreOpen: st.moreOpen, moreIcon: st.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
       toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
       addLine: () => this.setState({ lines: st.lines.concat([{ id: st.lineSeq + 1, desc: '', amt: '' }]), lineSeq: st.lineSeq + 1 }),
-      sendLabel: total > 0 ? 'Send invoice · ' + BE.money(total, cur) : 'Send invoice',
-      feed: total > 0 ? 'Sending adds ' + (cur === 'USD' ? BE.money(total) : '≈ ' + usd0(usdTotal)) + ' to Coming in as money on the way.' : 'Sending it adds the amount to Coming in as money on the way.',
+      sendLabel: total > 0 ? 'Send ' + nextNum + ' · ' + BE.money(total) : 'Send invoice',
+      feed: total > 0 ? 'Sending adds ' + BE.money(total) + ' to Coming in as money on the way.' : 'Sending it adds the amount to Coming in as money on the way.',
       send,
       clearForm: () => this.setState({ f: blank, custHash: hash, lines: [], errors: [], nc: { open: false, name: '', email: '', err: '' } }),
       dirty: !!(custId || f.amount || f.what || st.lines.length || st.errors.length),

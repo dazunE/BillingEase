@@ -1,11 +1,477 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · PracticeView</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Accountant&#39;s view</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-in{min-height:44px;box-sizing:border-box;padding:0 12px;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;font:400 15px DM Sans,sans-serif;color:#18161F;width:100%}
+.be-p{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.be-s{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;background:rgba(24,22,31,0.07);color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.be-crow:hover{background:#F7F6F9}
+.be-h3{margin:0;font-size:16px;font-weight:700}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 20px;">
+    <dc-import name="AppCrumbs" area="biz" mid="{{midLabel}}" mid-href="Accountant.dc.html" here="Their view"></dc-import>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px;">
+      <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1 1 480px;">
+        <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 12px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 13px; font-weight: 700;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path></svg>Prototype preview of the accountant&#39;s view</span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 4vw, 38px); line-height: 1.1; letter-spacing: -0.03em;">What {{firmShort}} sees in {{tool}}</h1>
+        <p style="margin: 0; font-size: 15px; color: #47444F; line-height: 1.5; max-width: 760px;">{{intro}}</p>
+      </div>
+      <a href="Accountant.dc.html" class="be-s">Back to {{midLabelLower}}</a>
+    </div>
+
+    <!-- The practitioner tool, framed -->
+    <section aria-label="{{tool}}" style="min-width: 0; background: #FFFFFF; border: 1px solid #CBC7D3; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 14px clamp(16px, 3vw, 24px); background: #18161F; color: #FFFFFF;">
+        <span style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+          <span style="width: 30px; height: 30px; border-radius: 8px; background: #B9A3FF; color: #18161F; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 800; font-size: 12px; flex: none;">TW</span>
+          <strong style="font-size: 15px;">{{tool}}</strong>
+          <span style="font-size: 14px; color: #C9C5D1;">· {{firmName}}</span>
+        </span>
+        <span style="font-size: 13px; color: #C9C5D1;">Signed in as {{signedIn}}</span>
+      </div>
+
+      <div style="min-width: 0; padding: clamp(16px, 3vw, 24px); display: flex; flex-direction: column; gap: 20px;">
+        <!-- Client list -->
+        <div style="min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px;">
+            <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Clients</h2>
+            <span style="font-size: 14px; color: #47444F;">{{listSummary}}</span>
+          </div>
+          <div style="min-width: 0; overflow-x: auto; border: 1px solid #E2DFE8; border-radius: 16px;">
+            <table style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 14px;">
+              <thead>
+                <tr style="background: #F7F6F9; text-align: left; color: #47444F;">
+                  <th scope="col" style="padding: 10px 14px; font-weight: 600;">Client</th>
+                  <th scope="col" style="padding: 10px 14px; font-weight: 600;">Status</th>
+                  <th scope="col" style="padding: 10px 14px; font-weight: 600;">{{periodCol}}</th>
+                  <th scope="col" style="padding: 10px 14px; font-weight: 600;">{{dueCol}}</th>
+                  <th scope="col" style="padding: 10px 14px; font-weight: 600;">Requests</th>
+                  <th scope="col" style="position: relative; padding: 10px 14px; font-weight: 600;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Open</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{clients}}" as="c" hint-placeholder-count="5">
+                  <tr class="be-crow" style="border-top: 1px solid #EFEDF3; background: {{c.rowBg}};">
+                    <td style="padding: 12px 14px;">
+                      <span style="display: flex; flex-direction: column; gap: 2px;">
+                        <strong style="font-size: 15px;">{{c.name}}</strong>
+                        <span style="font-size: 13px; color: #5F5B68;">{{c.owner}} · {{c.kind}}</span>
+                      </span>
+                    </td>
+                    <td style="padding: 12px 14px;"><span style="display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 9999px; background: {{c.pillBg}}; color: {{c.pillFg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{c.pillFg}};"></span>{{c.status}}</span></td>
+                    <td style="padding: 12px 14px; white-space: nowrap;">{{c.period}}</td>
+                    <td style="padding: 12px 14px; white-space: nowrap;">{{c.due}}</td>
+                    <td style="padding: 12px 14px; white-space: nowrap;">{{c.reqs}}</td>
+                    <td style="padding: 8px 14px; text-align: right;"><button type="button" onClick="{{c.open}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{c.btnBg}}; color: {{c.btnFg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">{{c.btn}}</button></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Opened client -->
+        <section aria-labelledby="cl-h" style="min-width: 0; border: 2px solid #18161F; border-radius: 20px; padding: clamp(16px, 3vw, 24px); display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 20px;">
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 320px;">
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
+                <h2 id="cl-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{sel.name}}</h2>
+                <sc-if value="{{sel.live}}" hint-placeholder-val="{{true}}"><span style="display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 9999px; background: #EEE8FF; font-size: 12px; font-weight: 600;">Your business, live</span></sc-if>
+              </span>
+              <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{sel.meta}}</span>
+            </div>
+            <sc-if value="{{sel.hasPeriods}}" hint-placeholder-val="{{true}}">
+              <div role="group" aria-label="{{periodCol}}" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 22px;">
+                <sc-for list="{{sel.periods}}" as="p" hint-placeholder-count="3">
+                  <button type="button" aria-pressed="{{p.pressed}}" onClick="{{p.pick}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{p.bg}}; color: {{p.color}}; font: 600 13px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">{{p.label}}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 12px 16px; border-radius: 14px; background: {{sel.stBg}};">
+            <strong style="font-size: 15px; color: {{sel.stFg}};">{{sel.stTitle}}</strong>
+            <span style="font-size: 14px; color: #18161F;">{{sel.stLine}}</span>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+            <!-- Totals -->
+            <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+              <h3 class="be-h3">{{sel.totalsTitle}}</h3>
+              <sc-if value="{{sel.hasTotals}}" hint-placeholder-val="{{true}}">
+                <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border: 1px solid #E2DFE8; border-radius: 14px; overflow: hidden;">
+                  <sc-for list="{{sel.totals}}" as="t" hint-placeholder-count="6">
+                    <li style="display: flex; justify-content: space-between; align-items: center; gap: 4px 12px; padding: 10px 14px; border-top: 1px solid #EFEDF3; background: {{t.bg}};">
+                      <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto;">
+                        <span style="font-size: 14px; font-weight: {{t.weight}};">{{t.name}}</span>
+                        <sc-if value="{{t.official}}" hint-placeholder-val="{{true}}"><span style="font-size: 12px; color: #5F5B68;">{{t.official}}</span></sc-if>
+                      </span>
+                      <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap;">{{t.amount}}</span>
+                    </li>
+                  </sc-for>
+                </ul>
+              </sc-if>
+              <sc-if value="{{sel.noTotals}}" hint-placeholder-val="{{false}}">
+                <p style="margin: 0; padding: 16px; border-radius: 14px; background: #F7F6F9; font-size: 14px; color: #47444F;">Nothing recorded for this period yet. Totals fill in as the client adds income and costs.</p>
+              </sc-if>
+              <sc-if value="{{sel.hasProperty}}" hint-placeholder-val="{{false}}">
+                <h3 class="be-h3" style="margin-top: 8px;">Property</h3>
+                <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border: 1px solid #E2DFE8; border-radius: 14px; overflow: hidden;">
+                  <sc-for list="{{sel.property}}" as="t" hint-placeholder-count="3">
+                    <li style="display: flex; justify-content: space-between; align-items: center; gap: 4px 12px; padding: 10px 14px; border-top: 1px solid #EFEDF3;">
+                      <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto;"><span style="font-size: 14px;">{{t.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{t.official}}</span></span>
+                      <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap;">{{t.amount}}</span>
+                    </li>
+                  </sc-for>
+                </ul>
+              </sc-if>
+              <sc-if value="{{sel.hasPayroll}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 12px; padding: 12px 14px; border-radius: 14px; background: #F7F6F9; margin-top: 4px;">
+                  <span style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 14px;">Payroll</strong><span style="font-size: 13px; color: #47444F;">{{sel.payroll}}</span></span>
+                  <a href="SpendPayroll.dc.html" style="font-size: 14px; font-weight: 600;">Pay runs</a>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- Checks, requests, actions -->
+            <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+              <sc-if value="{{sel.hasChecks}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <h3 class="be-h3">Readiness</h3>
+                  <sc-for list="{{sel.checks}}" as="k" hint-placeholder-count="3">
+                    <span style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.4;">
+                      <span style="width: 20px; height: 20px; border-radius: 9999px; background: {{k.bg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="{{k.fg}}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{k.icon}}"></path></svg></span>
+                      <span>{{k.text}}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <h3 class="be-h3">Requests to the client</h3>
+                <sc-if value="{{sel.hasReqs}}" hint-placeholder-val="{{true}}">
+                  <sc-for list="{{sel.reqs}}" as="r" hint-placeholder-count="2">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 10px 12px; border-radius: 12px; background: #F7F6F9; font-size: 14px;">
+                      <span style="flex: 1 1 160px; min-width: 0; line-height: 1.4;">{{r.title}}</span>
+                      <span style="display: inline-flex; align-items: center; min-height: 22px; padding: 0 9px; border-radius: 9999px; background: {{r.pillBg}}; color: {{r.pillFg}}; font-size: 12px; font-weight: 600; white-space: nowrap;">{{r.status}}</span>
+                    </span>
+                  </sc-for>
+                </sc-if>
+                <sc-if value="{{sel.noReqs}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; color: #47444F;">No requests for this client.</span></sc-if>
+              </div>
+
+              <!-- Send a request -->
+              <sc-if value="{{reqClosed}}" hint-placeholder-val="{{true}}">
+                <button type="button" class="be-s" onClick="{{openReq}}" style="align-self: flex-start;">Send a request</button>
+              </sc-if>
+              <sc-if value="{{reqOpen}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: #EEE8FF;">
+                  <strong style="font-size: 14px;">Send a request to {{sel.ownerFirst}}</strong>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <sc-for list="{{presets}}" as="p" hint-placeholder-count="3">
+                      <button type="button" onClick="{{p.pick}}" style="min-height: 32px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 500 13px DM Sans, sans-serif; cursor: pointer;">{{p.label}}</button>
+                    </sc-for>
+                  </div>
+                  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What you need<input class="be-in be-field" type="text" value="{{reqDraft}}" onChange="{{setReq}}" placeholder="e.g. Upload the October bank statement"></label>
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button type="button" class="be-p" onClick="{{sendReq}}">Send</button>
+                    <button type="button" class="be-s" onClick="{{closeReq}}" style="background: #FFFFFF;">Cancel</button>
+                  </span>
+                </div>
+              </sc-if>
+
+              <!-- Mark filed -->
+              <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid #E2DFE8;">
+                <sc-if value="{{sel.canFile}}" hint-placeholder-val="{{true}}">
+                  <sc-if value="{{fileClosed}}" hint-placeholder-val="{{true}}">
+                    <button type="button" class="be-p" onClick="{{askFile}}" style="align-self: flex-start; background: #18161F; color: #FFFFFF;">{{sel.fileLabel}}</button>
+                    <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">{{sel.fileHint}}</span>
+                  </sc-if>
+                  <sc-if value="{{fileOpen}}" hint-placeholder-val="{{false}}">
+                    <div role="group" aria-label="Confirm filed" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: #FFF0B8;">
+                      <strong style="font-size: 14px;">{{sel.fileConfirm}}</strong>
+                      <span style="font-size: 14px; line-height: 1.45;">{{sel.fileWarn}}</span>
+                      <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" class="be-p" onClick="{{confirmFile}}" style="background: #18161F; color: #FFFFFF;">Mark filed and lock</button>
+                        <button type="button" class="be-s" onClick="{{cancelFile}}" style="background: #FFFFFF;">Not yet</button>
+                      </span>
+                    </div>
+                  </sc-if>
+                </sc-if>
+                <sc-if value="{{sel.isFiled}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.45;">
+                    <span style="width: 28px; height: 28px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4"></path></svg></span>
+                    <span>{{sel.filedLine}}</span>
+                  </span>
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button type="button" class="be-s" onClick="{{reopen}}">Reopen</button>
+                    <sc-if value="{{sel.live}}" hint-placeholder-val="{{true}}"><a href="{{sel.lockHref}}" class="be-s">See it locked in their books</a></sc-if>
+                  </span>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 'me', period: null, fileAsk: false, reqOpen: false, reqDraft: '', toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const st = this.state;
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const pr = pack.practitioner || {};
+    const prof = BE.get('profile') || {};
+    const pd = BE.get('practice') || {};
+    const pp = prof.practice || null;
+    const firmName = pp && pp.name ? pp.name : (lk ? 'Your practitioner’s firm' : 'Your accountant’s practice');
+    const firmShort = pp && pp.name ? pp.name.replace(/,?\s*(Chartered\s+)?Accountants?$/i, '') : 'your ' + pr.noun;
+    const contact = pp && pp.contact ? pp.contact : (pp && pp.email) || 'your ' + pr.noun;
+    const m = (n) => BE.money(n, null, { whole: true });
+    const empty = BE.isEmpty();
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    // ---- periods for the live client
+    const periods = lk
+      ? (pack.periods || []).map((p) => ({ id: p.id, label: p.label.replace(/ \d{4}$/, ''), long: p.label, due: p.due, def: p.status === 'due' }))
+      : (pack.quarters || []).filter((q) => q.id !== 'q4').map((q) => ({ id: q.id, label: q.label, long: q.label + ' (' + q.from + '–' + q.to + ')', due: q.due, def: q.id === pack.lastQuarter }));
+    const defPeriod = (periods.filter((p) => p.def)[0] || periods[0] || {}).id;
+    const pid = st.period || defPeriod;
+    const per = periods.filter((p) => p.id === pid)[0] || {};
+    const reqsAll = BE.all('requests').filter((r) => (r.dir || 'in') === 'in');
+    const openReqs = reqsAll.filter((r) => r.status !== 'done' && !r.done);
+    const liveStatus = (id) => {
+      if (BE.isFiled(id)) return 'filed';
+      if (empty) return 'started';
+      const s = BE.clientSummary(id);
+      const blocking = openReqs.filter((r) => !r.period || r.period === id).length;
+      return blocking || s.unsorted ? 'waiting' : 'ready';
+    };
+    const ST = {
+      filed: { label: 'Filed', bg: '#E2F6D5', fg: '#2F5711' },
+      ready: { label: 'Ready to file', bg: '#E1EEF8', fg: '#1F5E91' },
+      waiting: { label: 'Waiting on client', bg: '#FFF0B8', fg: '#6B5000' },
+      started: { label: 'In progress', bg: '#EFEDF3', fg: '#47444F' }
+    };
+
+    // ---- client list (the live business first, then the practice's other clients)
+    const lsKey = liveStatus(defPeriod);
+    const defPer = periods.filter((p) => p.id === defPeriod)[0] || {};
+    const liveFiled = BE.filedInfo(defPeriod);
+    const kindWord = lk ? 'Sole proprietor' : (prof.kind === 'both' ? 'Sole trader and landlord' : prof.kind === 'landlord' ? 'Landlord' : 'Sole trader');
+    const live = {
+      id: 'me', name: prof.business || 'Your business', owner: prof.owner || 'You', kind: kindWord, statusKey: lsKey,
+      period: lk ? defPer.long : (defPer.label ? defPer.label + ' ' + (pack.quarters || []).filter((q) => q.id === defPeriod).map((q) => q.from + '–' + q.to)[0] : ''),
+      due: liveFiled ? 'Filed ' + liveFiled.on : defPer.due || '',
+      reqCount: openReqs.length
+    };
+    const others = (pd.clients || []).map((c) => ({
+      id: c.id, name: c.name, owner: c.owner, kind: c.kind, statusKey: c.status, statusLabel: c.statusLabel, period: c.period, due: c.due,
+      reqCount: (c.requests || []).filter((r) => r.status !== 'done').length, raw: c
+    }));
+    const all = [live].concat(others);
+    const clients = all.map((c) => {
+      const s = ST[c.statusKey] || ST.started;
+      const on = st.sel === c.id;
+      return {
+        name: c.name, owner: c.owner, kind: c.kind, status: c.statusLabel || s.label, pillBg: s.bg, pillFg: s.fg,
+        period: c.period, due: c.due, reqs: c.reqCount ? c.reqCount + ' open' : 'None',
+        rowBg: on ? '#F7F5FF' : '#FFFFFF', pressed: on ? 'true' : 'false', btn: on ? 'Open' : 'Open', aria: 'Open ' + c.name,
+        btnBg: on ? '#18161F' : 'rgba(24,22,31,0.07)', btnFg: on ? '#FFFFFF' : '#18161F',
+        open: () => this.setState({ sel: c.id, period: null, fileAsk: false, reqOpen: false, reqDraft: '' })
+      };
+    });
+    const counts = { waiting: all.filter((c) => c.statusKey === 'waiting').length, ready: all.filter((c) => c.statusKey === 'ready').length };
+
+    // ---- the opened client
+    let sel;
+    const okIcon = 'm5 12 5 5 9-10', noIcon = 'M12 7v6M12 17h.01';
+    if (st.sel === 'me') {
+      const s = BE.clientSummary(pid);
+      const filed = BE.filedInfo(pid);
+      const stKey = liveStatus(pid);
+      const sv = ST[stKey];
+      const periodReqs = reqsAll.filter((r) => !r.period || r.period === pid);
+      const totals = [];
+      if (lk) {
+        const v = s.vat || {};
+        totals.push({ name: 'Sales', official: 'Value of supplies (before VAT)', amount: m(v.sales || s.income || 0), weight: 600, bg: '#FFFFFF' });
+        if (v.registered !== false) {
+          totals.push({ name: 'SSCL ' + Math.round((pack.sscl || 0) * 1000) / 10 + '%', official: 'Social Security Contribution Levy (to confirm with IRD how it sits in the VAT base)', amount: m(v.sscl || 0), weight: 500, bg: '#FFFFFF' });
+          totals.push({ name: 'VAT on sales', official: 'Output tax', amount: m(v.output || 0), weight: 500, bg: '#FFFFFF' });
+          totals.push({ name: 'VAT on purchases', official: 'Input tax from recorded bills', amount: '−' + m(v.input || 0), weight: 500, bg: '#FFFFFF' });
+          totals.push({ name: 'VAT to pay', official: 'Net payable', amount: m(v.net != null ? v.net : (v.output || 0) - (v.input || 0)), weight: 700, bg: '#F7F6F9' });
+        }
+        if (s.expenses.length) totals.push({ name: 'Costs', official: 'All costs this month, by schedule line', amount: m(s.totalExpenses), weight: 700, bg: '#F7F6F9' });
+        s.expenses.forEach((c) => totals.push({ name: c.name, official: c.official, amount: m(c.amount), weight: 500, bg: '#FFFFFF' }));
+      } else {
+        totals.push({ name: 'Income', official: 'Turnover', amount: m(s.income || 0), weight: 600, bg: '#FFFFFF' });
+        s.expenses.forEach((c) => totals.push({ name: c.name + (c.note ? ' (' + c.note + ')' : ''), official: c.official, amount: m(c.amount), weight: 500, bg: '#FFFFFF' }));
+        if (s.expenses.length) totals.push({ name: 'Expenses', official: 'Total allowable and other expenses', amount: m(s.officialExpenses != null ? s.officialExpenses : s.totalExpenses), weight: 700, bg: '#F7F6F9' });
+      }
+      const pt = s.property;
+      const property = pt && pt.count ? [
+        { name: 'Rent', official: 'Property income (client’s share)', amount: m(pt.income) },
+        { name: 'Costs', official: pt.useAllowance ? 'Property allowance used instead' : 'Allowable property expenses', amount: m(pt.useAllowance ? Math.min(pt.allowance, pt.income) : pt.costs) },
+        { name: 'Mortgage interest', official: 'Residential finance costs, for the 20% reduction', amount: m(pt.finance) }
+      ] : [];
+      const checks = [];
+      if (!empty) {
+        checks.push(s.unsorted ? { ok: false, text: s.unsorted + ' item' + (s.unsorted === 1 ? '' : 's') + ' without a category' } : { ok: true, text: 'Everything has a category' });
+        const gap = periodReqs.filter((r) => r.kind === 'gap' && r.status !== 'done')[0];
+        if (!lk) checks.push(gap ? { ok: false, text: 'No records for ' + (gap.gap || 'part of the quarter') } : { ok: true, text: 'No gaps in the records' });
+        const openHere = periodReqs.filter((r) => r.status !== 'done' && !r.done).length;
+        checks.push(openHere ? { ok: false, text: openHere + ' request' + (openHere === 1 ? '' : 's') + ' still open' } : { ok: true, text: 'No open requests' });
+      }
+      let payroll = '';
+      if (lk && typeof BE.homeMonth === 'function') {
+        const hm = BE.homeMonth();
+        payroll = hm.hasPayroll ? (hm.paidRun ? 'October pay run done for ' + hm.people + ' people' : hm.people + ' employees · October pay run due by ' + hm.payDue + ' · EPF, ETF and APIT schedules after') : '';
+      }
+      const lockHref = lk ? 'TaxPeriods.dc.html' : 'Quarters.dc.html';
+      sel = {
+        live: true, name: live.name, ownerFirst: (prof.first || prof.owner || 'the client').split(' ')[0],
+        meta: [prof.owner, kindWord, (lk ? pack.taxIdLabel + ' ' + (prof.tin || '–') : pack.taxIdLabel + ' ' + (prof.utr || '–')), (prof.basis === 'accrual' ? 'Accrual basis' : 'Cash basis'), prof.city].filter(Boolean).join(' · '),
+        hasPeriods: true,
+        periods: periods.map((p) => ({ label: p.label + (BE.isFiled(p.id) ? ' · filed' : ''), pressed: p.id === pid ? 'true' : 'false', bg: p.id === pid ? '#18161F' : 'transparent', color: p.id === pid ? '#FFFFFF' : '#18161F', pick: () => this.setState({ period: p.id, fileAsk: false }) })),
+        stTitle: per.long + ' · ' + sv.label, stBg: sv.bg, stFg: sv.fg,
+        stLine: filed ? 'Filed ' + filed.on + ' by ' + filed.by + '. Locked in the client’s books.' : (lk ? 'VAT and SSCL return due ' : 'Quarterly update due ') + per.due + (BE.daysUntil ? ' · ' + BE.inWords(BE.daysUntil(per.due)) : ''),
+        totalsTitle: lk ? 'VAT, SSCL and costs for ' + per.long : 'Totals by HMRC category, ' + per.label,
+        totals, hasTotals: totals.length > 1 || (s.count > 0), noTotals: !(totals.length > 1 || s.count > 0),
+        property, hasProperty: property.length > 0,
+        payroll, hasPayroll: !!payroll,
+        checks: checks.map((k) => ({ text: k.text, bg: k.ok ? '#E2F6D5' : '#FFF0B8', fg: k.ok ? '#2F5711' : '#6B5000', icon: k.ok ? okIcon : noIcon })), hasChecks: checks.length > 0,
+        reqs: periodReqs.slice(0, 6).map((r) => ({ title: r.title, status: r.status === 'done' || r.done ? 'Done' : 'Open', pillBg: r.status === 'done' || r.done ? '#E2F6D5' : '#FFF0B8', pillFg: r.status === 'done' || r.done ? '#2F5711' : '#6B5000' })),
+        canFile: !filed, isFiled: !!filed,
+        fileLabel: lk ? 'Mark ' + per.long + ' VAT and SSCL filed' : 'Mark ' + per.label + ' filed',
+        fileHint: lk ? 'After you file the return on the IRD system. This locks the month in the client’s books.' : 'After you send the quarterly update from your MTD software. This locks the quarter in the client’s books.',
+        fileConfirm: lk ? 'Mark ' + per.long + ' filed?' : 'Mark ' + per.label + ' (' + (pack.quarters || []).filter((q) => q.id === pid).map((q) => q.from + '–' + q.to)[0] + ') filed?',
+        fileWarn: (stKey === 'waiting' ? 'There are still open items. ' : '') + live.name + ' won’t be able to change entries in ' + (lk ? per.long : per.label) + ' after this. You can reopen it if you need to.',
+        filedLine: filed ? 'Filed ' + filed.on + ' by ' + filed.by + ' · locked in ' + live.name + '’s books' : '',
+        lockHref
+      };
+      sel.hasReqs = sel.reqs.length > 0; sel.noReqs = !sel.reqs.length;
+    } else {
+      const c = others.filter((x) => x.id === st.sel)[0] || others[0];
+      const raw = c.raw;
+      const isF = c.statusKey === 'filed';
+      const sv = ST[c.statusKey] || ST.started;
+      sel = {
+        live: false, name: c.name, ownerFirst: c.owner.split(' ')[0], meta: c.owner + ' · ' + c.kind + ' · sample client',
+        hasPeriods: false, periods: [],
+        stTitle: c.period + ' · ' + (c.statusLabel || sv.label), stBg: sv.bg, stFg: sv.fg, stLine: isF ? c.due + '. Locked in their books.' : 'Due ' + c.due,
+        totalsTitle: lk ? 'This period' : 'Totals by HMRC category, ' + c.period,
+        totals: (raw.totals || []).map((t) => ({ name: t[0], official: '', amount: m(t[1]), weight: 500, bg: '#FFFFFF' })),
+        hasTotals: true, noTotals: false, property: [], hasProperty: false, payroll: '', hasPayroll: false, checks: [], hasChecks: false,
+        reqs: (raw.requests || []).map((r) => ({ title: r.title, status: r.status === 'done' ? 'Done' : 'Open', pillBg: r.status === 'done' ? '#E2F6D5' : '#FFF0B8', pillFg: r.status === 'done' ? '#2F5711' : '#6B5000' })),
+        canFile: !isF && !/^Not VAT/.test(c.period), isFiled: isF,
+        fileLabel: 'Mark ' + c.period + ' filed', fileHint: 'Locks the period in their books.',
+        fileConfirm: 'Mark ' + c.period + ' filed for ' + c.name + '?', fileWarn: c.name + ' won’t be able to change entries in ' + c.period + ' after this.',
+        filedLine: c.due + ' · locked in ' + c.name + '’s books', lockHref: ''
+      };
+      sel.hasReqs = sel.reqs.length > 0; sel.noReqs = !sel.reqs.length;
+    }
+
+    const updateOther = (id, fn) => BE.change((s) => {
+      s.practice = Object.assign({}, s.practice, { clients: (s.practice.clients || []).map((x) => x.id === id ? Object.assign({}, x, fn(x)) : x) });
+    });
+
+    const presets = (lk
+      ? ['Upload the bank statement for ' + (per.long || 'this month'), 'Confirm this month’s cheques have cleared', 'Send the purchase invoices with VAT']
+      : ['Add records for a gap in ' + (per.label || 'the quarter'), 'Upload the letting agent statement', 'Sort the items without a category']
+    ).map((label) => ({ label, pick: () => this.setState({ reqDraft: label }) }));
+
+    return {
+      tool: pr.tool || 'TaxWise', firmName, firmShort, signedIn: contact,
+      midLabel: lk ? 'Your tax practitioner' : 'Your accountant', midLabelLower: lk ? 'your tax practitioner' : 'your accountant',
+      intro: (pp ? '' : 'You haven’t linked a ' + pr.noun + ' yet; this is what they would see. ') + (lk
+        ? 'A practitioner sees each client’s monthly VAT and SSCL position and payroll, sends requests that land on the client’s Home, and locks a month once the return is filed.'
+        : 'A practice sees each client’s quarter, readiness checks and totals by HMRC category, sends requests that land on the client’s Home, and locks a quarter once it is filed.'),
+      periodCol: lk ? 'VAT and SSCL period' : 'Quarter', dueCol: lk ? 'Return due' : 'Update due',
+      listSummary: all.length + ' clients · ' + counts.ready + ' ready · ' + counts.waiting + ' waiting',
+      clients, sel, presets,
+      reqOpen: st.reqOpen, reqClosed: !st.reqOpen, reqDraft: st.reqDraft,
+      openReq: () => this.setState({ reqOpen: true, reqDraft: '' }),
+      closeReq: () => this.setState({ reqOpen: false }),
+      setReq: (e) => this.setState({ reqDraft: e.target.value }),
+      sendReq: () => {
+        const title = (st.reqDraft || '').trim();
+        if (!title) { this.notify('Write what you need, or pick one above'); return; }
+        if (st.sel === 'me') {
+          const kind = /gap/i.test(title) ? 'gap' : /upload|statement|bill|invoice/i.test(title) ? 'upload' : /confirm/i.test(title) ? 'confirm' : 'question';
+          const href = /letting agent/i.test(title) ? 'Properties.dc.html' : /categor/i.test(title) ? 'ThreeOut.dc.html' : /gap|records/i.test(title) ? 'ThreeOut.dc.html#expense' : /cheque/i.test(title) ? 'SellInvoices.dc.html' : 'Accountant.dc.html';
+          const req = { id: BE.id('req'), dir: 'in', from: (pp && pp.contact) || firmShort, kind, status: 'open', created: BE.today, period: pid, title, body: 'From ' + firmShort + ' for ' + (per.long || ''), href, cta: href === 'Accountant.dc.html' ? 'Reply' : 'Go to it' };
+          BE.change((s) => {
+            s.requests = [req].concat(s.requests || []);
+            BE._notify(s, 'New request from ' + ((pp && pp.contact) || firmShort), title, 'Accountant.dc.html');
+          });
+          this.setState({ reqOpen: false, reqDraft: '' });
+          this.notify('Sent · it’s on ' + sel.ownerFirst + '’s Home now');
+        } else {
+          updateOther(st.sel, (x) => ({ requests: (x.requests || []).concat([{ id: BE.id('rq'), title, status: 'open', created: BE.today }]), status: 'waiting', statusLabel: 'Waiting on client' }));
+          this.setState({ reqOpen: false, reqDraft: '' });
+          this.notify('Request sent to ' + sel.ownerFirst);
+        }
+      },
+      fileOpen: st.fileAsk, fileClosed: !st.fileAsk,
+      askFile: () => this.setState({ fileAsk: true }),
+      cancelFile: () => this.setState({ fileAsk: false }),
+      confirmFile: () => {
+        if (st.sel === 'me') {
+          const label = lk ? per.long + ' VAT and SSCL return' : per.label + ' update';
+          BE.markFiled(pid, label);
+          this.notify(label + ' marked filed · locked in ' + live.name + '’s books');
+        } else {
+          updateOther(st.sel, () => ({ status: 'filed', statusLabel: 'Filed', due: 'Filed ' + BE.today }));
+          this.notify(sel.name + ' marked filed');
+        }
+        this.setState({ fileAsk: false });
+      },
+      reopen: () => {
+        if (st.sel === 'me') { const label = lk ? per.long : per.label; BE.reopenPeriod(pid, label); this.notify(label + ' reopened · ' + live.name + ' can edit it again'); }
+        else {
+          const c = (pd.clients || []).filter((x) => x.id === st.sel)[0] || {};
+          updateOther(st.sel, () => ({ status: 'started', statusLabel: 'In progress', due: lk ? '20 Oct 2026' : '7 Nov 2026' }));
+          this.notify((c.name || 'Client') + ' reopened');
+        }
+      },
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

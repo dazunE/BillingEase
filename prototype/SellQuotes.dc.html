@@ -27,7 +27,7 @@ a{color:#18161F}a:hover{color:#000000}
     <section aria-labelledby="q-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
       <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
         <h1 id="q-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span>Quotes</h1>
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">A price you send before the work starts. Your customer can accept it online, and you turn it into an invoice in one step. <span style="color: #5F5B68;">Some apps call these estimates.</span></p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">A price you send before the work starts. When your customer says yes, mark it accepted and turn it into an invoice in one step. <span style="color: #5F5B68;">Some apps call these estimates.</span></p>
         <sc-if value="{{hasQuotes}}" hint-placeholder-val="{{true}}">
           <div style="display: flex; flex-wrap: wrap; gap: 8px;">
             <sc-for list="{{tiles}}" as="t" hint-placeholder-count="3">
@@ -62,7 +62,7 @@ a{color:#18161F}a:hover{color:#000000}
           <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px 16px;">
             <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
               <h2 id="comp-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">{{c.heading}}</h2>
-              <span style="font-size: 14px; color: #47444F;">Pick lines from your catalog or type your own. Nothing goes out until you press Send.</span>
+              <span style="font-size: 14px; color: #47444F;">Pick from your products and services or type your own. Nothing goes out until you press Send.</span>
             </div>
             <button type="button" aria-label="Close the quote composer" onClick="{{closeComposer}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
           </div>
@@ -80,14 +80,14 @@ a{color:#18161F}a:hover{color:#000000}
             </label>
             <label style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
               <span style="font-size: 13px; font-weight: 600;">What it’s for</span>
-              <input class="be-field" type="text" placeholder="e.g. Lobby wayfinding signage" value="{{c.title}}" onChange="{{setTitle}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+              <input class="be-field" type="text" placeholder="{{c.titlePh}}" value="{{c.title}}" onChange="{{setTitle}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
             </label>
           </div>
           <sc-if value="{{c.isNewCust}}" hint-placeholder-val="{{false}}">
             <div style="display: flex; flex-wrap: wrap; gap: 14px; padding: 14px; border-radius: 16px; background: #F7F6F9;">
               <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
                 <span style="font-size: 13px; font-weight: 600;">Their business or name</span>
-                <input class="be-field" type="text" placeholder="e.g. Pine Street Dental" value="{{c.newName}}" onChange="{{setNewName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                <input class="be-field" type="text" placeholder="{{c.namePh}}" value="{{c.newName}}" onChange="{{setNewName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
               </label>
               <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
                 <span style="font-size: 13px; font-weight: 600;">Email</span>
@@ -95,9 +95,6 @@ a{color:#18161F}a:hover{color:#000000}
               </label>
               <span style="flex: 1 1 100%; font-size: 13px; color: #5F5B68;">We’ll add them to your customers when you save.</span>
             </div>
-          </sc-if>
-          <sc-if value="{{c.foreign}}" hint-placeholder-val="{{false}}">
-            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: #1F5E91; background: #E1EEF8; padding: 10px 14px; border-radius: 14px; line-height: 1.45;"><span>{{c.curNote}}</span></span>
           </sc-if>
 
           <!-- Lines -->
@@ -118,7 +115,7 @@ a{color:#18161F}a:hover{color:#000000}
               </div>
             </sc-for>
             <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px;">
-              <sc-if value="{{hasCatalog}}" hint-placeholder-val="{{true}}"><span style="font-size: 13px; color: #5F5B68;">Add from your catalog</span></sc-if>
+              <sc-if value="{{hasCatalog}}" hint-placeholder-val="{{true}}"><span style="font-size: 13px; color: #5F5B68;">Add from your products and services</span></sc-if>
               <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                 <sc-for list="{{catalog}}" as="ci" hint-placeholder-count="9">
                   <button type="button" onClick="{{ci.add}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 500 13px DM Sans, sans-serif; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{ci.label}} <span style="color: #5F5B68;">{{ci.price}}</span></button>
@@ -128,7 +125,7 @@ a{color:#18161F}a:hover{color:#000000}
             </div>
           </div>
 
-          <!-- Expiry + deposit -->
+          <!-- Expiry -->
           <div style="display: flex; flex-wrap: wrap; gap: 16px 32px; padding-top: 14px; border-top: 1px solid #EFEDF3;">
             <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
@@ -147,13 +144,9 @@ a{color:#18161F}a:hover{color:#000000}
                 </label>
               </sc-if>
             </div>
-            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
-              <span style="display: flex; flex-direction: column; gap: 2px;"><span id="dep-l" style="font-size: 14px; font-weight: 600;">Deposit when they accept</span><span style="font-size: 13px; color: #5F5B68;">You can invoice it on its own before the work starts.</span></span>
-              <div role="group" aria-labelledby="dep-l" style="align-self: flex-start; display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-                <sc-for list="{{c.depOpts}}" as="d" hint-placeholder-count="4">
-                  <button type="button" aria-pressed="{{d.on}}" onClick="{{d.pick}}" style="min-height: 36px; min-width: 52px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{d.bg}}; color: {{d.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{d.label}}</button>
-                </sc-for>
-              </div>
+            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #5F5B68; line-height: 1.45;">
+              <span style="font-size: 14px; font-weight: 600; color: #18161F;">When they answer</span>
+              <span>Open the quote and mark it accepted or declined. Accepted quotes become an invoice in one step.</span>
             </div>
           </div>
 
@@ -189,12 +182,9 @@ a{color:#18161F}a:hover{color:#000000}
         <aside aria-label="Quote total" style="flex: 1 1 280px; min-width: 0; background: #F7F6F9; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
           <span style="font-size: 13px; font-weight: 600; color: #47444F;">{{c.numLabel}}</span>
           <sc-for list="{{c.sums}}" as="s" hint-placeholder-count="2">
-            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #47444F;"><span>{{s.label}}</span><span style="font-variant-numeric: tabular-nums; color: #18161F;">{{s.value}}</span></span>
+            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #47444F;"><span style="display: flex; flex-direction: column; min-width: 0;"><span>{{s.label}}</span><sc-if value="{{s.hasSub}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #5F5B68;">{{s.sub}}</span></sc-if></span><span style="font-variant-numeric: tabular-nums; color: #18161F; white-space: nowrap;">{{s.value}}</span></span>
           </sc-for>
           <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 10px; border-top: 1px solid #E2DFE8;"><span style="font-weight: 600;">Total</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{c.total}}</span></span>
-          <sc-if value="{{c.foreign}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F; text-align: right;">{{c.usd}}</span></sc-if>
-          <sc-if value="{{c.depOn}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F;">{{c.depText}}</span></sc-if>
-          <sc-if value="{{c.reverse}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #47444F;">{{c.reverseText}}</span></sc-if>
           <span style="display: flex; gap: 8px; align-items: flex-start; margin-top: 6px; padding: 12px; border-radius: 14px; background: #EEE8FF; font-size: 13px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 5px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{c.feed}}</span></span>
         </aside>
       </section>
@@ -205,7 +195,7 @@ a{color:#18161F}a:hover{color:#000000}
       <section aria-label="No quotes yet" style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 14px;">
         <span style="width: 48px; height: 48px; border-radius: 16px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4zM8 9h8M8 12h5"></path></svg></span>
         <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">No quotes yet</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 560px;">Quotes you send will show here, with whether the customer has opened, accepted or declined them.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 560px;">Quotes you send will show here, with whether the customer accepted or declined them. You mark that yourself when they tell you.</p>
         <button type="button" onClick="{{newQuote}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Write your first quote</button>
       </section>
     </sc-if>
@@ -262,12 +252,12 @@ class Component extends DCLogic {
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   blank(cu) {
-    return { open: true, editId: null, who: cu ? cu.name : '', cur: cu ? (cu.cur || 'USD') : 'USD', title: '', lines: [], expOn: true, expDays: '30', deposit: 0, note: '', moreOpen: false, errors: [], newName: '', newEmail: '' };
+    return { open: true, editId: null, who: cu ? cu.name : '', title: '', lines: [], expOn: true, expDays: '30', note: '', moreOpen: false, errors: [], newName: '', newEmail: '' };
   }
   fromQuote(q, editId) {
     let n = 0;
-    return { open: true, editId, who: q.who, cur: q.cur || 'USD', title: editId ? q.title : q.title, lines: (q.lines || []).map((l) => ({ id: 'l' + (++n), name: l.name, kind: l.kind || 'service', unit: l.unit || 'jobs', qty: String(l.qty), rate: String(l.rate) })),
-      expOn: true, expDays: '30', deposit: q.deposit || 0, note: q.note || '', moreOpen: !!q.note, errors: [], newName: '', newEmail: '' };
+    return { open: true, editId, who: q.who, title: q.title, lines: (q.lines || []).map((l) => ({ id: 'l' + (++n), name: l.name, kind: l.kind || 'service', unit: l.unit || 'jobs', qty: String(l.qty), rate: String(l.rate), vat: l.vat })),
+      expOn: true, expDays: '30', note: q.note || '', moreOpen: !!q.note, errors: [], newName: '', newEmail: '' };
   }
   // The composer: open from state, or from the address (#new, #new=<customer id>, #edit=<quote>).
   comp() {
@@ -284,9 +274,10 @@ class Component extends DCLogic {
     const st = this.state;
     const h = BE.hash();
     const money = BE.money, num = BE.num;
-    const usd = (n) => BE.money(n, 'USD', { whole: true });
-    const FX = BE.FX, SYM = BE.SYM;
+    const usd = (n) => BE.money(n, null, { whole: true });
     const profile = BE.get('profile') || {};
+    const pack = BE.pack();
+    const lk = BE.is('lk');
     const quotes = BE.all('quotes');
     const custs = BE.all('customers').slice().sort((a, b) => a.name.localeCompare(b.name));
     const unitOf = (l) => num(l.qty) === 1 ? String(l.unit || '').replace(/s$/, '') : l.unit;
@@ -296,7 +287,7 @@ class Component extends DCLogic {
       waiting: { bg: '#E1EEF8', fg: '#1F5E91' }, changes: { bg: '#FFF0B8', fg: '#6B5000' }, draft: { bg: '#EFEDF3', fg: '#47444F' },
       accepted: { bg: '#E2F6D5', fg: '#2F5711' }, declined: { bg: '#FBE3DF', fg: '#A8200D' }
     };
-    const statusOf = (q) => q.state === 'waiting' ? (q.viewed ? 'Viewed ' + q.viewed : 'Sent ' + q.sent)
+    const statusOf = (q) => q.state === 'waiting' ? 'Sent ' + q.sent
       : q.state === 'changes' ? 'Asked for changes' : q.state === 'draft' ? 'Draft'
       : q.state === 'accepted' ? (q.invoice ? 'Accepted · invoiced' : 'Accepted ' + q.accepted) : 'Declined';
     const metaOf = (q) => q.state === 'waiting' || q.state === 'changes' ? (q.expires ? 'Expires ' + q.expires : 'No expiry')
@@ -304,7 +295,7 @@ class Component extends DCLogic {
     const item = (q) => {
       const t = BE.quoteTotals(q), on = q.num === h || (st.justSent && st.justSent.num === q.num), p = PILL[q.state] || PILL.draft;
       return {
-        num: q.num, who: q.who, title: q.title, total: money(t.total, q.cur), status: statusOf(q), meta: metaOf(q), pbg: p.bg, pfg: p.fg,
+        num: q.num, who: q.who, title: q.title, total: money(t.total), status: statusOf(q), meta: metaOf(q), pbg: p.bg, pfg: p.fg,
         href: 'SellQuote.dc.html#' + q.num, cur: q.num === h ? 'true' : false,
         bg: on ? '#EEE8FF' : '#FFFFFF', border: on ? '2px solid #7A5AF8' : '1px solid #E2DFE8'
       };
@@ -319,10 +310,10 @@ class Component extends DCLogic {
       const items = quotes.filter((q) => g.k.indexOf(q.state) >= 0).map(item);
       return { label: g.label, count: items.length, items, empty: items.length === 0, emptyText: g.empty };
     });
-    const sumUsd = (f) => quotes.filter(f).reduce((a, q) => a + BE.usd(BE.quoteTotals(q).total, q.cur), 0);
+    const sumUsd = (f) => quotes.filter(f).reduce((a, q) => a + BE.quoteTotals(q).total, 0);
     const tiles = [
       { label: 'Waiting', value: usd(sumUsd((q) => q.state === 'waiting' || q.state === 'changes')), dot: '#7A5AF8' },
-      { label: 'Drafts', value: '≈ ' + usd(sumUsd((q) => q.state === 'draft')), dot: '#C9BCFB' },
+      { label: 'Drafts', value: usd(sumUsd((q) => q.state === 'draft')), dot: '#C9BCFB' },
       { label: 'Ready to invoice', value: usd(sumUsd((q) => q.state === 'accepted' && !q.invoice)), dot: '#2F5711' }
     ];
 
@@ -331,51 +322,42 @@ class Component extends DCLogic {
     const setC = (patch) => this.setState({ c: Object.assign({}, this.comp() || this.blank(null), patch) });
     const isNewCust = c.who === '__new';
     const custOf = (name) => custs.find((x) => x.name === name);
-    const region = isNewCust ? 'US' : BE.regionOf(c.who);
-    const cur = c.cur || 'USD';
+    const cur = profile.currency || pack.currency;
     const lines = c.lines || [];
     const ct = BE.quoteTotals({ who: isNewCust ? '' : c.who, lines });
-    const cDep = Math.round(ct.total * (c.deposit || 0)) / 100;
     const lineIx = (id, patch) => { const cc = this.comp(); setC({ lines: cc.lines.map((l) => l.id === id ? Object.assign({}, l, patch) : l), errors: [] }); };
     const nextNum = c.editId || BE.nextNumber('Q');
-    const curName = { EUR: 'euros (€)', GBP: 'pounds (£)', CAD: 'Canadian dollars', AUD: 'Australian dollars' }[cur] || cur;
-    const showProducts = profile.sells !== 'services';
-    const CAT = BE.all('services').map((s) => ({ name: s.name, kind: 'service', unit: s.rt === 'hourly' ? 'hours' : s.rt === 'monthly' ? 'months' : (s.unit === 'page' ? 'pages' : 'jobs'), price: s.price }))
-      .concat(showProducts ? BE.all('products').map((p) => ({ name: p.name, kind: 'product', unit: p.unit || 'items', price: p.price, out: p.stock <= 0 })) : []);
-    const conv = (price) => cur === 'USD' ? price : Math.round(price / (FX[cur] || 1) / 5) * 5;
+    const CAT = BE.catalog().map((x) => ({ name: x.name, kind: x.kind, unit: String(x.unit || 'job').replace(/s$/, '') + 's', price: x.price, vat: x.vat }));
+    const conv = (price) => price;
     const composer = {
-      open: !!c.open, heading: c.editId ? 'Finish ' + c.editId : 'New quote', who: c.who || '', title: c.title || '', note: c.note || '', sym: SYM[cur] || '$',
+      open: !!c.open, heading: c.editId ? 'Finish ' + c.editId : 'New quote', who: c.who || '', title: c.title || '', note: c.note || '', sym: String(pack.symbol || '£') + (lk ? ' ' : ''),
+      titlePh: lk ? 'e.g. Spice gift set labels' : 'e.g. Brewery tour leaflet', namePh: lk ? 'e.g. Ceylon Crafts (Pvt) Ltd' : 'e.g. Headingley Florist',
       whoBorder: (c.errors || []).length && !c.who ? '#A8200D' : '#CBC7D3',
       isNewCust, newName: c.newName || '', newEmail: c.newEmail || '',
-      foreign: cur !== 'USD',
-      curNote: 'Quoted in ' + curName + '. Your bank sees dollars: 1 ' + cur + ' = ' + (FX[cur] || 1) + ' USD today.' + (region === 'EU' ? ' EU business customer, so VAT is reverse charged.' : ''),
-      noLines: lines.length === 0, noLinesText: CAT.length ? 'Add a line from your catalog below, or type your own.' : 'Type your first line below. Services you add to your catalog show up here as one-tap lines.',
+      noLines: lines.length === 0, noLinesText: CAT.length ? 'Add a line from your products and services below, or type your own.' : 'Type your first line below. Prices you save in Products and services show up here as one-tap lines.',
       lines: lines.map((l) => ({
         name: l.name, qty: l.qty, rate: l.rate, unit: unitOf(l), qtyLabel: 'Quantity in ' + l.unit, removeLabel: 'Remove ' + (l.name || 'line'),
-        amount: money(num(l.qty) * num(l.rate), cur),
+        amount: money(num(l.qty) * num(l.rate)),
         setName: (e) => lineIx(l.id, { name: e.target.value }), setQty: (e) => lineIx(l.id, { qty: e.target.value }), setRate: (e) => lineIx(l.id, { rate: e.target.value }),
         remove: () => { const cc = this.comp(); setC({ lines: cc.lines.filter((x) => x.id !== l.id) }); }
       })),
       expOn: c.expOn !== false, expBg: c.expOn !== false ? '#7A5AF8' : '#CBC7D3', expLeft: c.expOn !== false ? '25px' : '3px', expDays: c.expDays || '30', expDate: 'until ' + BE.inDays(+(c.expDays || 30)),
-      depOpts: [0, 25, 30, 50].map((v) => ({ label: v ? v + '%' : 'None', on: c.deposit === v, bg: c.deposit === v ? '#18161F' : 'transparent', fg: c.deposit === v ? '#FFFFFF' : '#18161F', pick: () => setC({ deposit: v }) })),
       moreOpen: !!c.moreOpen, moreIcon: c.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
       errors: c.errors || [], hasErrors: (c.errors || []).length > 0,
       numLabel: nextNum + (c.who && !isNewCust ? ' · ' + c.who : isNewCust && c.newName ? ' · ' + c.newName : ''),
-      sums: [{ label: 'Lines', value: money(ct.sub, cur) }].concat(ct.tax ? [{ label: 'NY sales tax 8.875% on products', value: money(ct.tax, cur) }] : []),
-      total: money(ct.total, cur), usd: '≈ ' + usd(BE.usd(ct.total, cur)) + ' in your bank',
-      depOn: (c.deposit || 0) > 0, depText: c.deposit + '% deposit due when they accept: ' + money(cDep, cur),
-      reverse: region === 'EU', reverseText: 'VAT reverse charged to the customer' + ((custOf(c.who) || {}).tax ? ' · VAT ID ' + custOf(c.who).tax : ''),
-      feed: ct.total > 0 ? 'Sending doesn’t change Coming in. If they accept and you invoice it, ' + (cur === 'USD' ? money(ct.total, 'USD') : '≈ ' + usd(BE.usd(ct.total, cur))) + ' is added.' : 'Quotes don’t count in Coming in until they become invoices.',
-      sendLabel: ct.total > 0 ? 'Send quote · ' + money(ct.total, cur) : 'Send quote'
+      sums: [{ label: ct.calc.vatOn || ct.calc.ssclOn ? 'Value of supply' : 'Lines', value: money(ct.sub), hasSub: false, sub: '' }].concat(BE.taxRows(ct.calc).map((r) => ({ label: r.label, sub: r.sub, hasSub: true, value: r.amount }))),
+      total: money(ct.total),
+      feed: ct.total > 0 ? 'Sending doesn’t change Coming in. If they accept and you invoice it, ' + money(ct.total) + ' is added.' : 'Quotes don’t count in Coming in until they become invoices.',
+      sendLabel: ct.total > 0 ? 'Send quote · ' + money(ct.total) : 'Send quote'
     };
-    const customers = custs.map((x) => ({ name: x.name, label: x.name + (x.cur && x.cur !== 'USD' ? ' · ' + x.cur : '') }));
+    const customers = custs.map((x) => ({ name: x.name, label: x.name }));
     const catalog = CAT.map((it) => ({
-      label: it.name, price: money(conv(it.price), cur) + (it.out ? ' · out of stock' : ''),
+      label: it.name, price: money(conv(it.price)),
       add: () => {
         const cc = this.comp() || this.blank(null);
         const id = 'l' + (this.state.seq + 1);
         this.setState({ seq: this.state.seq + 1 });
-        setC({ lines: cc.lines.concat([{ id, name: it.name, kind: it.kind, unit: it.unit, qty: it.unit === 'hours' ? '10' : '1', rate: String(conv(it.price)) }]), errors: [] });
+        setC({ lines: cc.lines.concat([{ id, name: it.name, kind: it.kind, unit: it.unit, qty: it.unit === 'hours' ? '10' : '1', rate: String(conv(it.price)), vat: it.vat }]), errors: [] });
       }
     }));
     const validate = (forSend) => {
@@ -393,19 +375,19 @@ class Component extends DCLogic {
       let who = c.who;
       if (isNewCust) {
         who = String(c.newName).trim();
-        if (!BE.find('customers', who, 'name')) BE.add('customers', { id: BE.id('cust'), name: who, contact: '', email: String(c.newEmail || '').trim(), phone: '', address: '', country: 'United States', cur: 'USD', tax: '', since: 'Added ' + BE.today, paid: 0, note: '' }, { end: true });
+        if (!BE.find('customers', who, 'name')) BE.addCustomer({ name: who, email: String(c.newEmail || '').trim() });
       }
       const qn = c.editId || BE.nextNumber('Q');
       const existing = BE.find('quotes', qn, 'num');
       const base = {
-        num: qn, who, title: String(c.title || '').trim() || 'Untitled quote', cur, deposit: c.deposit || 0, note: String(c.note || '').trim(),
-        lines: lines.map((l) => ({ name: String(l.name).trim(), kind: l.kind || 'service', unit: l.unit || 'jobs', qty: num(l.qty), rate: num(l.rate) })),
+        num: qn, who, title: String(c.title || '').trim() || 'Untitled quote', cur, note: String(c.note || '').trim(),
+        lines: lines.map((l) => { const o = { name: String(l.name).trim(), kind: l.kind || 'service', unit: l.unit || 'jobs', qty: num(l.qty), rate: num(l.rate) }; if (l.vat) o.vat = l.vat; return o; }),
         state, created: existing ? existing.created : BE.today,
-        sent: state === 'waiting' ? BE.today : '', viewed: '', expires: state === 'waiting' && c.expOn !== false ? BE.inDays(+(c.expDays || 30)) : '',
+        sent: state === 'waiting' ? BE.today : '', expires: state === 'waiting' && c.expOn !== false ? BE.inDays(+(c.expDays || 30)) : '',
         changeNote: ''
       };
       if (existing) BE.update('quotes', qn, base, 'num'); else BE.add('quotes', base);
-      if (state === 'waiting') BE.log('Sent quote ' + qn + ' to ' + who + ' · ' + money(BE.quoteTotals(base).total, cur));
+      if (state === 'waiting') BE.log('Emailed quote ' + qn + ' to ' + who + ' · ' + money(BE.quoteTotals(base).total));
       this.setState({ c: { open: false }, dismissed: h || null, justSent: { num: qn, state } });
       return { qn, who };
     };
@@ -423,7 +405,7 @@ class Component extends DCLogic {
     };
     const js = st.justSent && BE.find('quotes', st.justSent.num, 'num');
     const justSent = js ? { on: true, num: js.num, href: 'SellQuote.dc.html#' + js.num,
-      text: js.state === 'draft' ? js.num + ' is saved as a draft for ' + js.who + '. Nothing has gone out yet.' : js.num + ' is on its way to ' + js.who + '. We’ll tell you when they open it.' } : { on: false };
+      text: js.state === 'draft' ? js.num + ' is saved as a draft for ' + js.who + '. Nothing has gone out yet.' : js.num + ' is emailed to ' + js.who + '. When they say yes, open it and mark it accepted.' } : { on: false };
 
     return {
       tiles, groups, hasQuotes: quotes.length > 0, noQuotes: quotes.length === 0 && !c.open,
@@ -432,14 +414,7 @@ class Component extends DCLogic {
       dismissSent: () => this.setState({ justSent: null }),
       newQuote: () => { if (c.open && !c.editId) { this.notify('Your new quote is open below'); return; } this.setState({ c: this.blank(null), justSent: null }); },
       closeComposer: () => this.setState({ c: { open: false }, dismissed: h || null }),
-      setWho: (e) => {
-        const v = e.target.value;
-        const cu = custOf(v);
-        const ncur = cu ? (cu.cur || 'USD') : 'USD';
-        const cc = this.comp();
-        const f = (FX[cc.cur || 'USD'] || 1) / (FX[ncur] || 1);
-        setC({ who: v, cur: ncur, errors: [], lines: ncur === (cc.cur || 'USD') ? cc.lines : cc.lines.map((l) => Object.assign({}, l, { rate: String(Math.round(num(l.rate) * f / 5) * 5) })) });
-      },
+      setWho: (e) => setC({ who: e.target.value, errors: [] }),
       setNewName: (e) => setC({ newName: e.target.value }),
       setNewEmail: (e) => setC({ newEmail: e.target.value }),
       setTitle: (e) => setC({ title: e.target.value }),

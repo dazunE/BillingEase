@@ -14,42 +14,137 @@
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 @media (max-width: 900px){.be-op{flex-basis:100%!important;height:20px;font-size:26px!important}}
-@media (max-width: 420px){.be-jar{display:none!important}}
 .be-check:hover{background:#F7F6F9}
+.be-pc-row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px 28px}
+@media (max-width: 860px){.be-pc-row{grid-template-columns:minmax(0,1fr)}}
+.be-pc-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width: 420px){.be-pc-stats{gap:6px}.be-pc-stat{padding:10px!important}.be-pc-num{font-size:18px!important}}
+.be-mo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width: 760px){.be-mo{grid-template-columns:minmax(0,1fr)}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
 
   <dc-import name="AppHeader"></dc-import>
 
-  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 36px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 36px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
 
     <!-- The headline sentence -->
     <section style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
       <div style="display: flex; flex-direction: column; gap: 8px; max-width: 760px; min-width: 0;">
-        <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">Sunday, October 4 · {{biz}}</span>
+        <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">Sunday 11 October · {{biz}}</span>
         <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em; overflow-wrap: anywhere;">{{p.sentenceA}} <span style="background: #EEE8FF; border-radius: 12px; padding: 0 10px; box-decoration-break: clone; -webkit-box-decoration-break: clone;">{{p.hl}}</span> {{p.sentenceB}}</h1>
       </div>
-      <div role="group" aria-label="Period" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-        <sc-for list="{{periods}}" as="pd" hint-placeholder-count="3">
-          <sc-if value="{{pd.on}}" hint-placeholder-val="{{false}}">
-            <button type="button" aria-pressed="true" onClick="{{pd.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{pd.label}}</button>
-          </sc-if>
-          <sc-if value="{{pd.off}}" hint-placeholder-val="{{true}}">
-            <button type="button" aria-pressed="false" onClick="{{pd.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{pd.label}}</button>
-          </sc-if>
+      <div role="group" aria-label="Period" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 22px;">
+        <sc-for list="{{periods}}" as="pd" hint-placeholder-count="2">
+          <button type="button" aria-pressed="{{pd.pressed}}" onClick="{{pd.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{pd.bg}}; color: {{pd.color}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{pd.label}}</button>
         </sc-for>
       </div>
     </section>
 
+    <!-- UK: the MTD quarter card -->
+    <sc-if value="{{showQuarter}}" hint-placeholder-val="{{true}}">
+      <section aria-labelledby="qc-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.4vw, 26px); display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 20px;">
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+            <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">Making Tax Digital · {{q.year}}</span>
+            <h2 id="qc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(20px, 2.4vw, 26px); letter-spacing: -0.02em;">{{q.title}}</h2>
+          </div>
+          <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px; border-radius: 9999px; background: {{q.chipBg}}; color: {{q.chipFg}}; font-size: 13.5px; font-weight: 700;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{q.chipFg}};"></span>{{q.chip}}</span>
+        </div>
+        <sc-if value="{{q.hasNums}}" hint-placeholder-val="{{true}}">
+          <div class="be-pc-row">
+            <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+              <div class="be-pc-stats">
+                <sc-for list="{{q.stats}}" as="s" hint-placeholder-count="3">
+                  <div class="be-pc-stat" style="min-width: 0; padding: 12px 14px; border-radius: 16px; background: {{s.bg}}; display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12.5px; font-weight: 600; color: {{s.lc}};">{{s.label}}</span>
+                    <span class="be-pc-num" style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; color: {{s.fg}}; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;">{{s.value}}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <span style="font-size: 13px; color: #5F5B68; line-height: 1.45;">Self-employment, cash basis, in HMRC’s categories. {{q.propNote}}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+              <span style="font-size: 14px; font-weight: 700;">{{q.checksTitle}}</span>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
+                <sc-for list="{{q.checks}}" as="c" hint-placeholder-count="3">
+                  <li style="display: flex; align-items: center; gap: 10px; min-height: 36px; font-size: 14px;">
+                    <span style="width: 24px; height: 24px; border-radius: 9999px; background: {{c.bg}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{c.fg}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg>
+                    </span>
+                    <span style="flex: 1; min-width: 0; color: {{c.color}}; font-weight: {{c.weight}};">{{c.text}}</span>
+                    <sc-if value="{{c.href}}" hint-placeholder-val="{{false}}">
+                      <a href="{{c.href}}" style="flex: none; display: inline-flex; align-items: center; min-height: 34px; padding: 0 12px; border-radius: 9999px; background: rgba(24,22,31,0.07); font-size: 13px; font-weight: 600; text-decoration: none;">{{c.cta}}</a>
+                    </sc-if>
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{q.isEmpty}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 680px;">Record income and expenses as they happen. Each quarter we total them in HMRC’s categories and check for gaps, so your accountant can send the update on time.</p>
+        </sc-if>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-top: 14px; border-top: 1px solid #EFEDF3;">
+          <span style="font-size: 14px; color: #47444F;">{{q.next}}</span>
+          <a href="Quarters.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Open quarters<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Sri Lanka: this month's VAT/SSCL return and payroll -->
+    <sc-if value="{{showMonth}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="mc-h" style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+          <h2 id="mc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">This month</h2>
+          <span style="font-size: 13px; color: #5F5B68;">October 2026 · year of assessment {{m.year}}</span>
+        </div>
+        <div class="be-mo">
+          <sc-for list="{{m.tiles}}" as="mt" hint-placeholder-count="2">
+            <article style="min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="width: 44px; height: 44px; border-radius: 14px; background: {{mt.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{mt.icon}}"></path></svg>
+                </span>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                  <span style="font-weight: 700; font-size: 17px; line-height: 1.3;">{{mt.title}}</span>
+                  <span style="font-size: 14px; font-weight: 600; color: {{mt.whenColor}};">{{mt.when}}</span>
+                </div>
+              </div>
+              <sc-if value="{{mt.hasStats}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{mt.stats}}" as="s" hint-placeholder-count="3">
+                    <span style="display: inline-flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 14px; background: #F7F6F9; min-width: 0;">
+                      <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">{{s.label}}</span>
+                      <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{s.value}}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{mt.body}}</span>
+              <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px;">
+                <a href="{{mt.href}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{mt.cta}}</a>
+                <sc-if value="{{mt.alt}}" hint-placeholder-val="{{false}}">
+                  <a href="{{mt.altHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{mt.alt}}</a>
+                </sc-if>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
     <!-- The equation: Coming in − Going out = Yours to keep -->
-    <section aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px;">
+    <section aria-label="Your three numbers" style="display: flex; flex-direction: column; gap: 10px;">
+      <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">{{p.periodNote}}</span>
+      <div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px;">
       <a href="ThreeIn.dc.html" style="flex: 1 1 260px; min-width: 0; text-decoration: none; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
         <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
           <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 4vw, 46px); letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.in}}</span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 3.6vw, 44px); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;">{{p.in}}</span>
         <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;">
           <span style="width: {{p.inPaidPct}}%; background: #7A5AF8;"></span>
           <span style="width: {{p.inExpPct}}%; background: #C9BCFB;"></span>
@@ -61,7 +156,7 @@ a{color:#18161F}a:hover{color:#000000}
           </span>
         </sc-if>
         <sc-if value="{{p.inNone}}" hint-placeholder-val="{{false}}">
-          <span style="font-size: 13px; color: #47444F;">Invoices you send and payments you get add up here.</span>
+          <span style="font-size: 13px; color: #47444F;">Invoices you send and payments you record add up here.</span>
         </sc-if>
       </a>
       <div aria-hidden="true" class="be-op" style="flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 34px; color: #5F5B68; padding: 0 2px;">−</div>
@@ -70,7 +165,7 @@ a{color:#18161F}a:hover{color:#000000}
           <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Going out</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </span>
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 4vw, 46px); letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.out}}</span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 3.6vw, 44px); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;">{{p.out}}</span>
         <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;">
           <span style="width: {{p.outPaidPct}}%; background: #E0752D;"></span>
           <span style="width: {{p.outSchPct}}%; background: #F4C3A1;"></span>
@@ -82,30 +177,26 @@ a{color:#18161F}a:hover{color:#000000}
           </span>
         </sc-if>
         <sc-if value="{{p.outNone}}" hint-placeholder-val="{{false}}">
-          <span style="font-size: 13px; color: #47444F;">Expenses, bills and payroll add up here.</span>
+          <span style="font-size: 13px; color: #47444F;">{{p.outEmpty}}</span>
         </sc-if>
       </a>
       <div aria-hidden="true" class="be-op" style="flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 34px; color: #5F5B68; padding: 0 2px;">=</div>
-      <a href="ThreeKeep.dc.html" style="flex: 1 1 260px; min-width: 0; text-decoration: none; color: #FFFFFF; background: #18161F; border-radius: 24px; padding: 24px; display: flex; align-items: stretch; gap: 12px;">
-        <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
-          <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-            <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EEE8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-          </span>
-          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(34px, 4vw, 46px); letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{p.keep}}</span>
-          <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;">
-            <span style="width: {{p.keepPct}}%; background: #B9A3FF;"></span>
-            <span style="width: {{p.taxPct}}%; background: rgba(238,232,255,0.45);"></span>
-          </span>
-          <span style="font-size: 13px; color: #EEE8FF;">{{p.keepNoteA}} <strong style="color: #FFFFFF;">{{p.tax}}</strong> {{p.keepNoteB}}</span>
+      <a href="ThreeKeep.dc.html" style="flex: 1 1 260px; min-width: 0; text-decoration: none; color: #FFFFFF; background: #18161F; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EEE8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </span>
-        <span class="be-jar" aria-hidden="true" style="flex: none; display: flex; align-items: flex-end; margin: -6px -6px -10px 0;">
-          <dc-import name="CashJar" size="{{86}}" amount="{{p.keep}}" envelope="{{false}}" line="#EEE8FF" uid="home" hint-size="86px,118px"></dc-import>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 3.6vw, 44px); letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;">{{p.keep}}</span>
+        <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;">
+          <span style="width: {{p.keepPct}}%; background: #B9A3FF;"></span>
+          <span style="width: {{p.taxPct}}%; background: rgba(238,232,255,0.45);"></span>
         </span>
+        <span style="font-size: 13px; color: #EEE8FF; line-height: 1.45;">{{p.keepNoteA}} <strong style="color: #FFFFFF;">{{p.tax}}</strong> {{p.keepNoteB}}</span>
       </a>
+      </div>
     </section>
 
-    <!-- Needs you (or Get started) + Handled for you -->
+    <!-- Needs you (or Get started) + Recent activity -->
     <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
       <sc-if value="{{showStart}}" hint-placeholder-val="{{false}}">
         <section aria-labelledby="start-h" style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
@@ -134,7 +225,7 @@ a{color:#18161F}a:hover{color:#000000}
         <section aria-labelledby="needs-h" style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
           <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
             <h2 id="needs-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Needs you <span style="color: #5F5B68; font-weight: 600;">{{openCount}}</span></h2>
-            <span style="font-size: 13px; color: #5F5B68;">Only things we can&#39;t do without you</span>
+            <span style="font-size: 13px; color: #5F5B68;">Requests, late invoices, bills and dates</span>
           </div>
           <sc-for list="{{tasks}}" as="t" hint-placeholder-count="3">
             <sc-if value="{{t.open}}" hint-placeholder-val="{{true}}">
@@ -143,6 +234,9 @@ a{color:#18161F}a:hover{color:#000000}
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
                 </span>
                 <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                  <sc-if value="{{t.badge}}" hint-placeholder-val="{{false}}">
+                    <span style="align-self: flex-start; padding: 1px 9px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-size: 11.5px; font-weight: 700; line-height: 18px;">{{t.badge}}</span>
+                  </sc-if>
                   <span style="font-weight: 700; font-size: 16px;">{{t.title}}</span>
                   <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{t.body}}</span>
                 </div>
@@ -175,34 +269,32 @@ a{color:#18161F}a:hover{color:#000000}
           <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
             <div style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 6px;">
               <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; color: #B9A3FF;">All clear.</span>
-              <span style="font-size: 15px; color: #EEE8FF;">Nothing needs you today. Your books are up to date.</span>
+              <span style="font-size: 15px; color: #EEE8FF;">Nothing needs you today. No requests, nothing late, nothing due this week.</span>
             </div>
           </sc-if>
         </section>
       </sc-if>
 
-      <section aria-labelledby="handled-h" style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+      <section aria-labelledby="recent-h" style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
         <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
-          <h2 id="handled-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Handled for you</h2>
+          <h2 id="recent-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Recent activity</h2>
           <span style="font-size: 13px; color: #5F5B68;">Latest first</span>
         </div>
-        <sc-if value="{{hasHandled}}" hint-placeholder-val="{{true}}">
+        <sc-if value="{{hasRecent}}" hint-placeholder-val="{{true}}">
           <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;">
-            <sc-for list="{{handledShown}}" as="h" hint-placeholder-count="5">
+            <sc-for list="{{recentShown}}" as="h" hint-placeholder-count="5">
               <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45;">
-                <span style="width: 22px; height: 22px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none; margin-top: 1px;">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
-                </span>
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: #CBC7D3; flex: none; margin-top: 7px;"></span>
                 <span style="display: flex; flex-direction: column; min-width: 0;"><span>{{h.t}}</span><span style="font-size: 12px; color: #5F5B68;">{{h.when}}</span></span>
               </li>
             </sc-for>
           </ul>
-          <sc-if value="{{hasMoreHandled}}" hint-placeholder-val="{{true}}">
-            <button type="button" onClick="{{toggleHandled}}" style="align-self: flex-start; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">{{handledToggle}}</button>
+          <sc-if value="{{hasMoreRecent}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{toggleRecent}}" style="align-self: flex-start; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">{{recentToggle}}</button>
           </sc-if>
         </sc-if>
-        <sc-if value="{{noHandled}}" hint-placeholder-val="{{false}}">
-          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">The work we do on our own shows up here: matching payments to invoices, sorting card charges, setting money aside for tax.</p>
+        <sc-if value="{{noRecent}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">What you and {{practice}} do shows up here: invoices sent, payments recorded, requests answered.</p>
         </sc-if>
       </section>
     </div>
@@ -210,14 +302,9 @@ a{color:#18161F}a:hover{color:#000000}
     <!-- Quiet way into the full books -->
     <nav aria-label="More places" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
       <span>Need the full books?</span>
-      <a href="Everything.dc.html" style="font-weight: 600;">Everything BillingEase does</a>
-      <a href="BooksTax.dc.html" style="font-weight: 600;">Sales tax</a>
-      <a href="BooksReconcile.dc.html" style="font-weight: 600;">Check against your bank</a>
-      <a href="BooksCategories.dc.html" style="font-weight: 600;">Categories</a>
-      <a href="SellCustomers.dc.html" style="font-weight: 600;">Customers</a>
-      <a href="SpendVendors.dc.html" style="font-weight: 600;">Vendors</a>
-      <a href="Notifications.dc.html" style="font-weight: 600;">{{notifLabel}}</a>
-      <a href="Help.dc.html" style="font-weight: 600;">Help</a>
+      <sc-for list="{{more}}" as="mo" hint-placeholder-count="7">
+        <a href="{{mo.href}}" style="font-weight: 600;">{{mo.label}}</a>
+      </sc-for>
     </nav>
   </main>
 
@@ -229,52 +316,122 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1080}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { period: 'month', showAllHandled: false, toast: null };
+    this.state = { period: null, showAll: false, toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
   renderVals() {
     const st = this.state;
     const prof = BE.get('profile') || {};
+    const pk = BE.pack();
+    const lk = BE.is('lk');
     const empty = BE.isEmpty();
-    const t = BE.totals(st.period);
-    const LABEL = { month: 'This month', quarter: 'This quarter', year: 'This year' };
+    const pr = BE.practice();
+    const P = BE.homePeriods();
+    const period = P.some((x) => x[0] === st.period) ? st.period : P[0][0];
+    const t = BE.keepTotals(period);
+    const W = (n) => BE.money(n, null, { whole: true });
+    const ty = pk.taxYear ? pk.taxYear.label : '';
+    const taxWords = lk ? 'income tax' : 'Income Tax and NI';
+
+    // The headline sentence
     const SENT = {
+      quarter: ['Q3 has just started. You’re on track to keep', 'so far this quarter.'],
       month: ['You’re on track to keep', 'this October.'],
-      quarter: ['October has just started. You’re on track to keep', 'so far this quarter.'],
-      year: ['So far in 2026 you’ve kept', 'after tax.']
+      year: ['So far this ' + (lk ? 'year of assessment' : 'tax year') + ' you’ve kept', 'after ' + taxWords + '.']
     };
-    let sA = SENT[st.period][0], sB = SENT[st.period][1], hl = t.fmt.keep;
+    let sA = SENT[period][0], sB = SENT[period][1], hl = t.fmt.keep;
     const nothing = t.in === 0 && t.out === 0;
     if (nothing) { const nm = prof.first && prof.first !== 'there' ? ', ' + prof.first : ''; sA = 'Welcome' + nm + '. Let’s get'; hl = !prof.business || prof.business === 'Your business' ? 'your business' : prof.business; sB = 'set up.'; }
-    else if (t.profit < 0) { sA = 'Going out is ahead of Coming in by'; hl = BE.money(-t.profit, 'USD', { whole: true }); sB = { month: 'this October.', quarter: 'this quarter.', year: 'this year.' }[st.period]; }
-    const rest = (a) => (a > 0 ? 100 - a : 0);
+    else if (t.profit < 0) { sA = 'Going out is ahead of Coming in by'; hl = W(-t.profit); sB = { quarter: 'this quarter.', month: 'this October.', year: 'this ' + (lk ? 'year of assessment.' : 'tax year.') }[period]; }
     const inPaidPct = t.in > 0 ? t.inPaidPct : 0, outPaidPct = t.out > 0 ? t.outPaidPct : 0;
     const keepPct = t.profit > 0 ? t.keepPct : 0;
+    const pWords = { quarter: 'Q3 so far · 6 Oct – 11 Oct', month: 'October so far', year: (lk ? 'Year of assessment ' : 'Tax year ') + ty + ' so far · from ' + (pk.taxYear ? pk.taxYear.start : '') }[period];
     const p = {
-      sentenceA: sA, hl, sentenceB: sB,
+      sentenceA: sA, hl, sentenceB: sB, periodNote: pWords,
       in: t.fmt.in, inPaid: t.fmt.inPaid, inExp: t.fmt.inExp, inPaidPct, inExpPct: t.in > 0 ? 100 - inPaidPct : 0,
       inSome: t.in !== 0, inNone: t.in === 0,
       out: t.fmt.out, outPaid: t.fmt.outPaid, outSch: t.fmt.outSch, outPaidPct, outSchPct: t.out > 0 ? 100 - outPaidPct : 0,
       outSome: t.out !== 0, outNone: t.out === 0,
-      keep: t.fmt.keep, tax: t.profit > 0 ? t.fmt.tax : '', keepPct, taxPct: rest(keepPct),
-      keepNoteA: t.profit > 0 ? 'after' : 'Nothing to set aside for tax yet', keepNoteB: t.profit > 0 ? 'set aside for tax (' + Math.round(t.rate * 100) + '% of profit)' : ''
+      outEmpty: lk ? 'Expenses, bills and payroll add up here.' : 'Expenses, bills and property costs add up here.',
+      keep: t.fmt.keep, tax: t.profit > 0 && t.tax > 0 ? t.fmt.tax : '', keepPct, taxPct: keepPct > 0 ? 100 - keepPct : 0,
+      keepNoteA: t.profit > 0 ? (t.tax > 0 ? 'after about' : 'No ' + taxWords + ' expected on this yet') : 'No profit yet, so no ' + taxWords + ' to set aside',
+      keepNoteB: t.profit > 0 && t.tax > 0 ? taxWords + ', estimated for ' + ty : ''
     };
-    const periods = Object.keys(LABEL).map((k) => ({ label: LABEL[k], on: st.period === k, off: st.period !== k, pick: () => this.setState({ period: k }) }));
+    const periods = P.map(([k, label]) => ({ label, pressed: period === k ? 'true' : 'false', bg: period === k ? '#18161F' : 'transparent', color: period === k ? '#FFFFFF' : '#18161F', pick: () => this.setState({ period: k }) }));
+
+    // UK: the quarter card
+    let q = {};
+    if (!lk) {
+      const hq = BE.homeQuarter();
+      const L = hq.last, C = hq.cur;
+      const ok = 'm5 12 5 5 9-10', warn = 'M12 7v6M12 17h.01';
+      q = {
+        year: ty, hasNums: !hq.empty, isEmpty: hq.empty,
+        title: hq.empty ? C.label + ' is open: ' + C.from + ' – ' + C.to : L.label + ' has closed: ' + L.from + ' – ' + L.to,
+        chip: hq.empty ? 'First update due ' + C.due.replace(/ 20\d\d$/, '') : hq.filed ? 'Sent to HMRC by ' + pr.short : (pr.has ? pr.short + ' file by ' : 'Update due ') + L.due.replace(/ 20\d\d$/, ''),
+        chipBg: hq.filed ? '#E2F6D5' : '#FFF0B8', chipFg: hq.filed ? '#2F5711' : '#6B5000',
+        stats: [
+          { label: 'Income', value: W(hq.income), bg: '#EEE8FF', fg: '#18161F', lc: '#47444F' },
+          { label: 'Expenses', value: W(hq.expenses), bg: '#FDE6D6', fg: '#18161F', lc: '#47444F' },
+          { label: 'Profit', value: W(hq.profit), bg: '#18161F', fg: '#B9A3FF', lc: '#EEE8FF' }
+        ],
+        propNote: (prof.kind === 'both' || prof.kind === 'landlord') ? 'Your flat’s rent and costs are kept apart, under Properties.' : '',
+        checksTitle: hq.ready ? 'Ready to send' : 'Before ' + (pr.has ? pr.short : 'your accountant') + ' can send it · ' + hq.left + ' to do',
+        checks: hq.checks.map((c) => ({ text: c.text, href: c.href || false, cta: c.cta || '', icon: c.ok ? ok : warn, bg: c.ok ? '#E2F6D5' : '#FFF0B8', fg: c.ok ? '#2F5711' : '#6B5000', color: c.ok ? '#47444F' : '#18161F', weight: c.ok ? 500 : 700 })),
+        next: hq.empty ? 'Quarters run 6 Apr – 5 Jul, 6 Jul – 5 Oct, 6 Oct – 5 Jan and 6 Jan – 5 Apr.' : C.label + ' (' + C.from + ' – ' + C.to + ') has started. Its update is due ' + C.due + '.'
+      };
+    }
+
+    // Sri Lanka: this month
+    let m = {};
+    if (lk) {
+      const hm = BE.homeMonth();
+      const per = hm.period || {};
+      const vatOn = !!prof.vatRegistered;
+      const vatTile = vatOn && !empty ? {
+        title: per.label ? per.label.split(' ')[0] + ' VAT and SSCL return' : 'VAT and SSCL return', icon: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3', tint: '#EEE8FF',
+        when: hm.filed ? 'Filed' : 'Due ' + String(per.due || '').replace(/ 20\d\d$/, '') + ' · ' + BE.inWords(hm.dueDays), whenColor: hm.filed ? '#2F5711' : (hm.dueDays <= 10 ? '#A8200D' : '#6B5000'),
+        stats: hm.sum && hm.sum.vat != null ? [{ label: 'VAT payable', value: W(hm.sum.vat) }, { label: 'SSCL', value: W(hm.sum.sscl || 0) }] : [{ label: 'Tax invoices', value: String(hm.invoices) }, { label: 'Bills with input VAT', value: String(hm.bills) }],
+        body: 'Output VAT on your tax invoices, input VAT on suppliers’ bills and SSCL, in the order of the IRD return. ' + (pr.has ? pr.short + ' enter it on the return.' : 'You enter it on the IRD return.'),
+        href: 'TaxPeriods.dc.html', cta: 'Open tax periods', alt: false, altHref: ''
+      } : {
+        title: 'VAT and SSCL', icon: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3', tint: '#EEE8FF',
+        when: vatOn ? 'Your first period: October, due 20 Nov' : 'Not registered', whenColor: '#47444F', stats: [],
+        body: vatOn ? 'Send tax invoices and enter suppliers’ bills; each month’s VAT and SSCL are totalled for the IRD return.' : 'We watch your turnover and warn you well before the VAT registration threshold (' + W(pk.vatThreshold || 0) + ' a year, to confirm with IRD).',
+        href: 'TaxPeriods.dc.html', cta: 'Tax periods', alt: false, altHref: ''
+      };
+      const runDone = !hm.run && hm.paidRun;
+      const payTile = hm.hasPayroll ? {
+        title: 'October payroll', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8', tint: '#FDE6D6',
+        when: runDone ? 'Paid' : 'Run by ' + hm.payDue + ' · ' + BE.inWords(hm.payDays), whenColor: runDone ? '#2F5711' : '#6B5000',
+        stats: [{ label: 'People', value: String(hm.people) }].concat(hm.gross ? [{ label: 'Gross pay', value: W(hm.gross) }] : []).concat(hm.net ? [{ label: 'Take-home', value: W(hm.net) }] : []),
+        body: 'EPF 8% and 12%, ETF 3% and APIT are worked out for you. Pay them through the EPF, ETF and IRD channels.',
+        href: 'SpendPayroll.dc.html', cta: runDone ? 'See payroll' : 'Run payroll', alt: false, altHref: ''
+      } : {
+        title: 'Payroll', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8', tint: '#FDE6D6',
+        when: 'No employees yet', whenColor: '#47444F', stats: [],
+        body: 'Add employees when you hire. Payslips, EPF, ETF and APIT are worked out each month.',
+        href: 'SpendPayroll.dc.html', cta: 'Add employees', alt: false, altHref: ''
+      };
+      m = { year: ty, tiles: [vatTile, payTile].map((x) => Object.assign(x, { hasStats: x.stats.length > 0 })) };
+    }
 
     // Needs you, worked out from the data (data-home.js)
     const tasks = BE.homeNeeds().map((n) => {
-      const isBtn = n.kind !== 'sort';
       let act = null, undo = null;
-      if (n.kind === 'late') act = () => { const r = BE.nudgeInvoice(n.num); if (r) this.notify('Nudge sent to ' + r.to + ' · ' + n.num + ' stays in Late until they pay'); };
-      if (n.kind === 'payroll') {
-        act = () => { const r = BE.approvePayroll(n.runId); if (r) this.notify('Payroll approved · ' + BE.money(r.net) + ' stays in Going out as still to pay until ' + r.date); };
-        undo = () => { BE.unapprovePayroll(n.runId); this.notify('Approval undone. Payroll needs you again.'); };
+      if (n.kind === 'request') {
+        act = () => { const r = BE.completeRequest(n.reqId); if (r) this.notify('Marked done · ' + pr.short + ' can see it'); };
+        undo = () => { BE.reopenRequest(n.reqId); this.notify('Request reopened'); };
       }
-      return Object.assign({}, n, { open: !n.done, href: n.href || false, isBtn, act, undo, canUndo: !!undo });
+      if (n.kind === 'late') act = () => { const r = BE.nudgeInvoice(n.num); if (r) this.notify('Reminder sent to ' + r.to + ' by ' + r.by + ' · ' + n.num + ' stays late until they pay'); };
+      if (n.kind === 'dues') act = () => { const tot = BE.payHomeDues(n.dueIds); if (tot) this.notify('Marked paid · ' + BE.money(tot, null, { whole: true }) + ' recorded in Going out'); };
+      if (n.kind === 'bill') act = () => { const b = BE.payBill(n.billId, null, 'Bank transfer'); if (b) this.notify('Marked paid · ' + BE.money(b.amount) + ' moves to paid in Going out'); };
+      const isBtn = !!act;
+      return Object.assign({}, n, { open: !n.done, href: n.href || false, isBtn, act, undo, canUndo: !!undo, badge: n.badge || false });
     });
     const openCount = tasks.filter((x) => x.open).length;
     const check = BE.homeChecklist();
@@ -284,18 +441,27 @@ class Component extends DCLogic {
       strike: c.done ? 'line-through' : 'none', color: c.done ? '#5F5B68' : '#18161F', sub: c.done ? 'Done' : c.hint
     }));
 
-    const handled = BE.all('activity');
+    const recent = BE.all('activity');
     const unread = BE.unread();
+    const more = (lk ? [
+      ['Tax periods', 'TaxPeriods.dc.html'], ['Payroll', 'SpendPayroll.dc.html'], ['Your tax practitioner', 'Accountant.dc.html'], ['Ask', 'Ask.dc.html'],
+      ['Check against your bank', 'BooksReconcile.dc.html'], ['Customers', 'SellCustomers.dc.html'], ['Suppliers', 'SpendVendors.dc.html']
+    ] : [
+      ['Quarters', 'Quarters.dc.html'], ['Properties', 'Properties.dc.html'], ['Mileage', 'Mileage.dc.html'], ['Your accountant', 'Accountant.dc.html'], ['Ask', 'Ask.dc.html'],
+      ['Check against your bank', 'BooksReconcile.dc.html'], ['Customers', 'SellCustomers.dc.html'], ['Suppliers', 'SpendVendors.dc.html']
+    ]).concat([['Everything BillingEase does', 'Everything.dc.html'], [unread ? 'Notifications (' + unread + ' new)' : 'Notifications', 'Notifications.dc.html'], ['Help', 'Help.dc.html']])
+      .map(([label, href]) => ({ label, href }));
     return {
       biz: prof.business || 'Your business',
-      p, periods, tasks, openCount, check, showStart, showNeeds: !showStart,
+      p, periods, q, m, showQuarter: !lk, showMonth: lk,
+      tasks, openCount, check, showStart, showNeeds: !showStart,
       allClear: !showStart && openCount === 0,
-      handledShown: st.showAllHandled ? handled : handled.slice(0, 5),
-      hasHandled: handled.length > 0, noHandled: handled.length === 0, hasMoreHandled: handled.length > 5,
-      handledToggle: st.showAllHandled ? 'Show less' : 'Show all ' + handled.length,
-      toggleHandled: () => this.setState({ showAllHandled: !st.showAllHandled }),
-      notifLabel: unread ? 'Notifications (' + unread + ' new)' : 'Notifications',
-      toast: st.toast
+      recentShown: st.showAll ? recent : recent.slice(0, 6),
+      hasRecent: recent.length > 0, noRecent: recent.length === 0, hasMoreRecent: recent.length > 6,
+      recentToggle: st.showAll ? 'Show less' : 'Show all ' + recent.length,
+      toggleRecent: () => this.setState({ showAll: !st.showAll }),
+      practice: pr.has ? pr.short : 'your ' + pr.noun,
+      more, toast: st.toast
     };
   }
 }

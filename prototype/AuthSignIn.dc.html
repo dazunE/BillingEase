@@ -57,7 +57,7 @@ a{color:#18161F}a:hover{color:#000000}
     </div>
 
     <!-- Illustrations in the margins (a small band on phones) -->
-    <dc-import name="AuthArt" part="backdrop" variant="signin" hint-size="100%,84px"></dc-import>
+    <dc-import name="AuthArt" part="backdrop" variant="signin" country="{{cty}}" hint-size="100%,84px"></dc-import>
 
     <main style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 16px;">
       <div style="flex: 1 1 360px; max-width: 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
@@ -160,13 +160,13 @@ a{color:#18161F}a:hover{color:#000000}
           </div>
         </sc-if>
       </div>
-        <a href="AuthRecover.dc.html#invite" style="align-self: center; font-size: 14px; font-weight: 600;">Accepting a team invite?</a>
+        <a href="AuthRecover.dc.html#invite" style="align-self: center; font-size: 14px; font-weight: 600;">{{inviteLink}}</a>
       </div>
 
       <aside aria-label="Signing in safely" style="flex: 1 1 300px; max-width: 400px; min-width: 0; box-sizing: border-box; background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(22px, 4vw, 32px); display: flex; flex-direction: column; gap: 18px;">
         <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Picking up where you left off</span>
-        <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; color: #FFFFFF;">Your three numbers kept up while you were away.</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #EEE8FF;">Payments, bank charges and receipts that came in since your last visit are already sorted. Anything we couldn&#39;t do alone waits under Needs you.</p>
+        <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; color: #FFFFFF;">Your books, just as you left them.</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #EEE8FF;">{{sideBody}}</p>
         <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
           <sc-for list="{{safe}}" as="l" hint-placeholder-count="3">
             <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; color: #FFFFFF;">
@@ -175,7 +175,7 @@ a{color:#18161F}a:hover{color:#000000}
             </li>
           </sc-for>
         </ul>
-        <dc-import name="AuthArt" part="scene" variant="signin" hint-size="100%,206px"></dc-import>
+        <dc-import name="AuthArt" part="scene" variant="signin" country="{{cty}}" hint-size="100%,206px"></dc-import>
         <span style="margin-top: auto; font-size: 13px; color: #EEE8FF;">We never ask for your password by email or phone.</span>
       </aside>
     </main>
@@ -207,6 +207,7 @@ class Component extends DCLogic {
     const P = BE.get('profile') || {};
     const T = BE.totals();
     const unread = BE.unread();
+    const noun = ((BE.pack() || {}).practitioner || {}).noun || 'accountant';
     const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
     const red = '#A8200D', base = '#CBC7D3';
     const emailErr = s.tried ? (!s.email.trim() ? 'Enter your email.' : (!valid(s.email) ? 'Enter a valid email address.' : null)) : null;
@@ -240,7 +241,12 @@ class Component extends DCLogic {
       waiting: BE.isEmpty() && !unread ? 'Nothing waiting yet. Your home shows what to do first.' : (unread ? unread + ' new update' + (unread === 1 ? '' : 's') + ' since you were last here.' : 'All caught up since your last visit.'),
       tw: { on: s.two ? 'true' : 'false', track: s.two ? '#7A5AF8' : '#CBC7D3', justify: s.two ? 'flex-end' : 'flex-start' },
       isForm: s.stage === 'form', isCode: s.stage === 'code', isDone: s.stage === 'done',
-      safe: ['Your data is encrypted, and bank connections are read-only.', 'Two-step sign-in adds a code from your phone. Turn it on in Security.', 'Team members sign in with their own accounts, never yours.'],
+      cty: BE.country(),
+      inviteLink: 'Invited by your ' + noun + '?',
+      sideBody: BE.is('lk')
+        ? 'Your invoices, expenses and payroll are saved. Requests from your ' + noun + ' and what’s coming due, like VAT and SSCL or EPF and ETF, wait on Home.'
+        : 'Your invoices, expenses and quarter are saved. Requests from your ' + noun + ' and what’s coming due wait on Home.',
+      safe: ['Your data is encrypted while it travels and while it’s stored.', 'Two-step sign-in adds a code from your phone. Turn it on in Security.', 'Your ' + noun + ' signs in with their own account, never yours.'],
       toggleTwo: () => { set({ two: !s.two }); this.notify(s.two ? 'Two-step sign-in off for this demo' : 'Two-step sign-in on: a code step follows the password'); },
       setEmail: (e) => set({ email: e.target.value }),
       setPass: (e) => set({ pass: e.target.value }),
@@ -257,7 +263,7 @@ class Component extends DCLogic {
       setTrust: (e) => set({ trust: e.target.checked }),
       verify: () => { if (!codeOk) { set({ codeTried: true }); return; } finish('code'); },
       switchBackup: () => set({ backup: !s.backup, code: '', codeTried: false }),
-      textMe: () => this.notify('Code sent by text to (•••) •••-0192'),
+      textMe: () => this.notify('Code sent by text to ' + (BE.is('lk') ? '07• ••• ••10' : '07••• •••182')),
       backToForm: () => set({ stage: 'form', attempts: 0, tried: false }),
       signOut: () => { set({ stage: 'form', attempts: 0, tried: false, pass: '' }); this.notify('Signed out'); }
     };

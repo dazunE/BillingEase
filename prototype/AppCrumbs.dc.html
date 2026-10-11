@@ -27,7 +27,8 @@
       <span aria-current="page" style="color: #18161F;">{{here}}</span>
     </sc-if>
   </nav>
-  <nav aria-label="Your three numbers" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+  <nav aria-label="{{navLabel}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span title="{{periodTitle}}" style="font-size: 12px; font-weight: 600; color: #5F5B68; margin-right: 2px; white-space: nowrap;">{{periodWords}}</span>
     <a href="ThreeIn.dc.html" aria-current="{{inCur}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: {{pin.bg}}; border: {{pin.border}}; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.in}}</strong></a>
     <span style="display: inline-flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="font-family: Sora, sans-serif; font-weight: 700; color: #5F5B68;">−</span>
     <a href="ThreeOut.dc.html" aria-current="{{outCur}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 11px; border-radius: 9999px; background: {{pout.bg}}; border: {{pout.border}}; color: #18161F; text-decoration: none; font-size: 12.5px; font-weight: 600; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out <strong style="font-family: Sora, sans-serif; font-variant-numeric: tabular-nums;">{{n.out}}</strong></a></span>
@@ -40,7 +41,10 @@
 class Component extends DCLogic {
   renderVals() {
     const area = this.props.area || 'in';
-    const t = BE.totals('month');
+    // The same period and after-tax estimate as Home: UK this quarter, Sri Lanka this month, in £ or Rs.
+    const period = typeof BE.homePeriod === 'function' ? BE.homePeriod() : 'month';
+    const t = typeof BE.keepTotals === 'function' ? BE.keepTotals(period) : BE.totals(period);
+    const words = t.words || '';
     const AREAS = {
       in: { label: 'Coming in', href: 'ThreeIn.dc.html' },
       out: { label: 'Going out', href: 'ThreeOut.dc.html' },
@@ -54,7 +58,8 @@ class Component extends DCLogic {
     const on = (a, bg, border) => area === a ? { bg, border: '2px solid ' + border } : { bg: '#FFFFFF', border: '1px solid #E2DFE8' };
     return {
       trail, here: this.props.here || '',
-      n: t.fmt,
+      n: t.fmt, periodWords: words, navLabel: 'Your three numbers, ' + words,
+      periodTitle: 'Yours to keep is after ' + (t.taxLabel || 'tax') + ', estimated',
       pin: on('in', '#EEE8FF', '#7A5AF8'),
       pout: on('out', '#FDE6D6', '#E0752D'),
       pkeep: area === 'keep' ? { border: '2px solid #18161F', ring: '0 0 0 2px #B9A3FF' } : { border: '1px solid #18161F', ring: 'none' },

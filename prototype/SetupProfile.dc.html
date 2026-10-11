@@ -68,23 +68,35 @@ a{color:#18161F}a:hover{color:#000000}
         </ol>
       </div>
 
-      <!-- Step 1: name + country -->
+      <!-- Step 1: business, you, and the country it's in -->
       <sc-if value="{{s1}}" hint-placeholder-val="{{true}}">
         <div style="display: flex; flex-direction: column; gap: 22px;">
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px;">
           <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
             <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">What&#39;s your business called, and where is it?</h1>
-            <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Your country sets the currency, how dates look and what we call tax. You won&#39;t have to pick any of that yourself.</p>
+            <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Your country sets the currency, the tax year, the expense categories and the tax rules. It stays fixed once your business is set up.</p>
           </div>
-          <dc-import name="AuthArt" part="step" variant="setup" step="{{art.step}}" cur="{{art.cur}}" hint-size="168px,121px"></dc-import>
+          <dc-import name="AuthArt" part="step" variant="setup" pic="{{art.pic}}" country="{{art.country}}" hint-size="168px,121px"></dc-import>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span id="sp-country-l" style="font-size: 14px; font-weight: 600;">Country</span>
+            <div role="group" aria-labelledby="sp-country-l" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px;">
+              <sc-for list="{{countryOpts}}" as="o" hint-placeholder-count="2">
+                <button type="button" class="be-choice" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="display: flex; align-items: center; gap: 14px; min-height: 72px; box-sizing: border-box; padding: 12px 16px; border: 2px solid {{o.border}}; border-radius: 18px; background: {{o.bg}}; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+                  <span style="width: 44px; height: 44px; border-radius: 14px; background: {{o.tint}}; display: flex; align-items: center; justify-content: center; flex: none; font: 700 15px Sora, sans-serif;">{{o.sym}}</span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 16px;">{{o.name}}</span><span style="font-size: 13px; color: #47444F; line-height: 1.4;">{{o.ex}}</span></span>
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{countryNote}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #5F5B68;">{{countryNote}}</span></sc-if>
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label for="biz-name" style="font-size: 14px; font-weight: 600;">Business name</label>
-            <input id="biz-name" class="be-field" type="text" value="{{name}}" onChange="{{setName}}" placeholder="e.g. Northwind Studio" autocomplete="organization" style="min-height: 56px; box-sizing: border-box; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 18px DM Sans, sans-serif; color: #18161F;">
+            <input id="biz-name" class="be-field" type="text" value="{{name}}" onChange="{{setName}}" placeholder="{{namePh}}" autocomplete="organization" style="min-height: 56px; box-sizing: border-box; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 18px DM Sans, sans-serif; color: #18161F;">
             <sc-if value="{{nameError}}" hint-placeholder-val="{{false}}">
               <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{nameError}}</span>
             </sc-if>
-            <span style="font-size: 13px; color: #5F5B68;">It goes at the top of your invoices and quotes.</span>
+            <span style="font-size: 13px; color: #5F5B68;">It goes at the top of your invoices and quotes. Your own name is fine if you trade as yourself.</span>
           </div>
           <sc-if value="{{askYou}}" hint-placeholder-val="{{false}}">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px;">
@@ -108,30 +120,22 @@ a{color:#18161F}a:hover{color:#000000}
           </sc-if>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label for="biz-city" style="font-size: 14px; font-weight: 600;">Town or city <span style="font-weight: 400; color: #5F5B68;">(optional)</span></label>
-            <input id="biz-city" class="be-field" type="text" value="{{city}}" onChange="{{setCity}}" autocomplete="address-level2" style="min-height: 52px; box-sizing: border-box; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 17px DM Sans, sans-serif; color: #18161F;">
+            <input id="biz-city" class="be-field" type="text" value="{{city}}" onChange="{{setCity}}" placeholder="{{cityPh}}" autocomplete="address-level2" style="min-height: 52px; box-sizing: border-box; padding: 0 16px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 17px DM Sans, sans-serif; color: #18161F;">
             <span style="font-size: 13px; color: #5F5B68;">Shown under your business name on invoices.</span>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <label for="biz-country" style="font-size: 14px; font-weight: 600;">Country</label>
-            <select id="biz-country" class="be-field" value="{{country}}" onChange="{{setCountry}}" style="min-height: 56px; box-sizing: border-box; padding: 0 14px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 18px DM Sans, sans-serif; color: #18161F; cursor: pointer;">
-              <sc-for list="{{countryOpts}}" as="o" hint-placeholder-count="9">
-                <option value="{{o.id}}">{{o.name}}</option>
-              </sc-for>
-            </select>
           </div>
           <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
             <span style="font-size: 13px; font-weight: 700; color: #47444F;">Set for you from {{c.name}}</span>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px;">
               <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 12px; color: #5F5B68;">Currency</span><span style="font-weight: 700; font-size: 16px;">{{c.cur}} · {{c.sample}}</span></div>
-              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 12px; color: #5F5B68;">Today looks like</span><span style="font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{c.date}}</span></div>
-              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 12px; color: #5F5B68;">Tax on sales is called</span><span style="font-weight: 700; font-size: 16px;">{{c.tax}}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 12px; color: #5F5B68;">{{c.yearLabel}}</span><span style="font-weight: 700; font-size: 16px;">{{c.year}}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 12px; color: #5F5B68;">Tax on sales</span><span style="font-weight: 700; font-size: 16px;">{{c.tax}}</span></div>
             </div>
             <span style="font-size: 14px; line-height: 1.5; color: #47444F;">{{c.taxNote}}</span>
           </div>
         </div>
       </sc-if>
 
-      <!-- Steps 2-5: one question, big choices -->
+      <!-- Steps 2-5: questions with big choices -->
       <sc-if value="{{choiceStep}}" hint-placeholder-val="{{false}}">
         <div style="display: flex; flex-direction: column; gap: 22px;">
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px;">
@@ -139,37 +143,59 @@ a{color:#18161F}a:hover{color:#000000}
             <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">{{q.title}}</h1>
             <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">{{q.help}}</p>
           </div>
-          <dc-import name="AuthArt" part="step" variant="setup" step="{{art.step}}" sell="{{art.sell}}" team="{{art.team}}" acct="{{art.acct}}" abroad="{{art.abroad}}" cur="{{art.cur}}" hint-size="168px,121px"></dc-import>
+          <dc-import name="AuthArt" part="step" variant="setup" pic="{{art.pic}}" country="{{art.country}}" kind="{{art.kind}}" team="{{art.team}}" acct="{{art.acct}}" stamp="{{art.stamp}}" hint-size="168px,121px"></dc-import>
           </div>
-          <div role="group" aria-label="{{q.title}}" style="display: flex; flex-direction: column; gap: 10px;">
-            <sc-for list="{{q.choices}}" as="ch" hint-placeholder-count="3">
-              <button type="button" class="be-choice" aria-pressed="{{ch.on}}" onClick="{{ch.pick}}" style="display: flex; align-items: center; gap: 16px; width: 100%; min-height: 84px; box-sizing: border-box; padding: 16px 18px; border: 2px solid {{ch.border}}; border-radius: 20px; background: {{ch.bg}}; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
-                <span style="width: 48px; height: 48px; border-radius: 14px; background: {{ch.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ch.icon}}"></path></svg>
-                </span>
-                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 700; font-size: 17px;">{{ch.title}}</span><sc-if value="{{ch.tag}}" hint-placeholder-val="{{false}}"><span style="padding: 2px 8px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">{{ch.tag}}</span></sc-if></span>
-                  <span style="font-size: 14px; line-height: 1.45; color: #47444F;">{{ch.ex}}</span>
-                </span>
-                <span aria-hidden="true" style="width: 26px; height: 26px; box-sizing: border-box; border-radius: {{ch.ringRadius}}; border: 2px solid {{ch.ring}}; background: {{ch.ringBg}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ch.check}}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
-                </span>
-              </button>
-            </sc-for>
-          </div>
-
-          <!-- Overseas: optional currencies -->
-          <sc-if value="{{showCurs}}" hint-placeholder-val="{{false}}">
-            <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
-              <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;"><span style="font-weight: 700; font-size: 15px;">Which currencies do they pay in?</span><span style="font-size: 13px; color: #5F5B68;">Optional. You can add any currency on an invoice later.</span></span>
-              <div role="group" aria-label="Currencies you bill in" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <sc-for list="{{curChips}}" as="cc" hint-placeholder-count="5">
-                  <button type="button" aria-pressed="{{cc.on}}" onClick="{{cc.toggle}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1px solid {{cc.border}}; border-radius: 9999px; background: {{cc.bg}}; color: {{cc.color}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{cc.label}}</button>
-                </sc-for>
-              </div>
-              <span style="font-size: 13px; line-height: 1.5; color: #47444F;">{{curNote}}</span>
+          <sc-for list="{{q.parts}}" as="qq" hint-placeholder-count="1">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-if value="{{qq.label}}" hint-placeholder-val="{{false}}">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span id="{{qq.lid}}" style="font-weight: 700; font-size: 16px;">{{qq.label}}</span><sc-if value="{{qq.sub}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; line-height: 1.45; color: #5F5B68;">{{qq.sub}}</span></sc-if></span>
+              </sc-if>
+              <sc-if value="{{qq.isCards}}" hint-placeholder-val="{{true}}">
+                <div role="group" aria-label="{{qq.aria}}" style="display: flex; flex-direction: column; gap: 10px;">
+                  <sc-for list="{{qq.cards}}" as="ch" hint-placeholder-count="3">
+                    <button type="button" class="be-choice" aria-pressed="{{ch.on}}" onClick="{{ch.pick}}" style="display: flex; align-items: center; gap: 16px; width: 100%; min-height: 80px; box-sizing: border-box; padding: 14px 18px; border: 2px solid {{ch.border}}; border-radius: 20px; background: {{ch.bg}}; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+                      <span style="width: 48px; height: 48px; border-radius: 14px; background: {{ch.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ch.icon}}"></path></svg>
+                      </span>
+                      <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                        <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 700; font-size: 17px;">{{ch.title}}</span><sc-if value="{{ch.tag}}" hint-placeholder-val="{{false}}"><span style="padding: 2px 8px; border-radius: 9999px; background: #EFEDF3; color: #47444F; font-size: 12px; font-weight: 600;">{{ch.tag}}</span></sc-if></span>
+                        <span style="font-size: 14px; line-height: 1.45; color: #47444F;">{{ch.ex}}</span>
+                        <sc-if value="{{ch.official}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; line-height: 1.4; color: #5F5B68;">{{ch.official}}</span></sc-if>
+                      </span>
+                      <span aria-hidden="true" style="width: 26px; height: 26px; box-sizing: border-box; border-radius: 9999px; border: 2px solid {{ch.ring}}; background: {{ch.ringBg}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ch.check}}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+                      </span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{qq.isSeg}}" hint-placeholder-val="{{false}}">
+                <div role="group" aria-labelledby="{{qq.lid}}" style="display: inline-flex; flex-wrap: wrap; align-self: flex-start; gap: 4px; padding: 4px; border-radius: 22px; background: #EFEDF3; max-width: 100%; box-sizing: border-box;">
+                  <sc-for list="{{qq.segs}}" as="sg" hint-placeholder-count="2">
+                    <button type="button" aria-pressed="{{sg.on}}" onClick="{{sg.pick}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: {{sg.bg}}; color: {{sg.fg}}; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{sg.label}}</button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{qq.isField}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-direction: column; gap: 8px; padding: 16px 18px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E2DFE8;">
+                  <label for="{{qq.id}}" style="font-size: 14px; font-weight: 600;">{{qq.flabel}}</label>
+                  <input id="{{qq.id}}" class="be-field" type="{{qq.type}}" value="{{qq.value}}" onChange="{{qq.set}}" placeholder="{{qq.ph}}" autocomplete="off" aria-invalid="{{qq.inv}}" style="min-height: 48px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{qq.border}}; border-radius: 10px; background: #FFFFFF; font: 500 16px DM Sans, sans-serif; color: #18161F;">
+                  <sc-if value="{{qq.err}}" hint-placeholder-val="{{false}}"><span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{qq.err}}</span></sc-if>
+                  <sc-if value="{{qq.hint}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; line-height: 1.45; color: #5F5B68;">{{qq.hint}}</span></sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{qq.isLink}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px 18px; border-radius: 18px; background: {{qq.bg}}; border: 1px solid #E2DFE8;">
+                  <span style="width: 44px; height: 44px; border-radius: 14px; background: #18161F; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg></span>
+                  <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-weight: 700; font-size: 16px;">{{qq.ltitle}}</span>
+                    <span style="font-size: 14px; line-height: 1.45; color: #47444F;">{{qq.lbody}}</span>
+                  </span>
+                  <button type="button" onClick="{{qq.toggle}}" style="min-height: 44px; padding: 0 18px; border: {{qq.btnBorder}}; border-radius: 9999px; background: {{qq.btnBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{qq.btn}}</button>
+                </div>
+              </sc-if>
             </div>
-          </sc-if>
+          </sc-for>
 
           <!-- What that answer changed -->
           <sc-if value="{{changeNote}}" hint-placeholder-val="{{false}}">
@@ -190,32 +216,32 @@ a{color:#18161F}a:hover{color:#000000}
               Back
             </button>
           </sc-if>
-          <button type="button" onClick="{{next}}" disabled="{{cantNext}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: {{nextBg}}; color: {{nextColor}}; font: 600 15px DM Sans, sans-serif; cursor: {{nextCursor}};">
+          <button type="button" onClick="{{next}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
             {{nextLabel}}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
           </button>
-          <sc-if value="{{cantNext}}" hint-placeholder-val="{{false}}">
-            <span style="font-size: 13px; color: #5F5B68;">Pick one to continue</span>
+          <sc-if value="{{stepError}}" hint-placeholder-val="{{false}}">
+            <span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">{{stepError}}</span>
           </sc-if>
         </div>
       </sc-if>
 
-      <!-- Final: summary -->
-      <sc-if value="{{s6}}" hint-placeholder-val="{{false}}">
+      <!-- Final: summary and how to start -->
+      <sc-if value="{{sDone}}" hint-placeholder-val="{{false}}">
         <div style="display: flex; flex-direction: column; gap: 22px;">
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px;">
           <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
             <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>All set up</span>
             <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">Here&#39;s your BillingEase</h1>
-            <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Three numbers on your home, and only the features behind them that fit how {{bizName}} works. {{hiddenSentence}}</p>
+            <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Three numbers on your home, with the {{c.name}} rules behind them and only the features that fit how {{bizName}} works. {{hiddenSentence}}</p>
           </div>
-          <dc-import name="AuthArt" part="step" variant="setup" step="{{art.step}}" hint-size="168px,140px"></dc-import>
+          <dc-import name="AuthArt" part="step" variant="setup" pic="{{art.pic}}" country="{{art.country}}" hint-size="168px,140px"></dc-import>
           </div>
           <dl style="margin: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px 20px; display: flex; flex-direction: column;">
             <sc-for list="{{summary}}" as="sm" hint-placeholder-count="5">
               <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 14px 0; border-bottom: 1px solid {{sm.rule}};">
                 <dt style="flex: 0 0 150px; font-size: 13px; font-weight: 600; color: #5F5B68;">{{sm.k}}</dt>
-                <dd style="flex: 1 1 200px; min-width: 0; margin: 0; font-size: 15px; font-weight: 600; line-height: 1.45;">{{sm.v}}</dd>
+                <dd style="flex: 1 1 200px; min-width: 0; margin: 0; font-size: 15px; font-weight: 600; line-height: 1.45; overflow-wrap: anywhere;">{{sm.v}}</dd>
                 <button type="button" onClick="{{sm.change}}" aria-label="{{sm.aria}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">Change</button>
               </div>
             </sc-for>
@@ -229,7 +255,7 @@ a{color:#18161F}a:hover{color:#000000}
               <span style="width: 44px; height: 44px; border-radius: 14px; background: rgba(185,163,255,0.18); display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5zM9 9h6M9 13h4"></path></svg></span>
               <span style="display: flex; flex-direction: column; gap: 6px;">
                 <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; overflow-wrap: anywhere;">{{emptyTitle}}</span>
-                <span style="font-size: 14px; line-height: 1.5; color: #EEE8FF;">Your three numbers start at {{zero}}. They fill in as you bill customers, add costs and connect your bank.</span>
+                <span style="font-size: 14px; line-height: 1.5; color: #EEE8FF;">{{emptyBody}}</span>
               </span>
               <a href="ThreeHome.dc.html" onClick="{{startEmpty}}" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">Start empty
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
@@ -238,10 +264,10 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E2DFE8;">
               <span style="width: 44px; height: 44px; border-radius: 14px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg></span>
               <span style="display: flex; flex-direction: column; gap: 6px;">
-                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Start with a sample month</span>
-                <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Click around <strong style="color: #18161F;">Northwind Studio</strong>, a sample design studio in Brooklyn, with October already filled in: $24,850 coming in, $8,407 to keep. Nothing you do there is real.</span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Start with the sample business</span>
+                <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Click around <strong style="color: #18161F;">{{sample.name}}</strong>, {{sample.who}}, with the books already filled in to {{today}}. {{sample.now}} Nothing you do there is real.</span>
               </span>
-              <a href="ThreeHome.dc.html" onClick="{{startSample}}" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">Start with a sample month</a>
+              <a href="ThreeHome.dc.html" onClick="{{startSample}}" style="margin-top: auto; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none; text-align: center;">Open {{sample.name}}</a>
             </div>
           </div>
           <a href="Everything.dc.html" style="align-self: flex-start; font-size: 14px; font-weight: 600;">See everything BillingEase does</a>
@@ -249,13 +275,13 @@ a{color:#18161F}a:hover{color:#000000}
             <span style="width: 36px; height: 36px; border-radius: 12px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; flex: none;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8M16 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM10 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path></svg>
             </span>
-            <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Nothing here is permanent. Change any answer later in <a href="BizProfile.dc.html" style="font-weight: 600;">Business profile → What BillingEase shows you</a>, and features appear or tuck away to match.</span>
+            <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Change any answer except the country later in <a href="BizProfile.dc.html" style="font-weight: 600;">Business profile</a>, and features appear or tuck away to match.</span>
           </div>
         </div>
       </sc-if>
 
       <sc-if value="{{inSteps}}" hint-placeholder-val="{{true}}">
-        <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5F5B68;">Not sure? Pick the closest answer. You can change any of this later in <a href="BizProfile.dc.html" style="font-weight: 600; color: #47444F;">Business profile</a>.</p>
+        <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5F5B68;">Not sure? Pick the closest answer. You can change it later in <a href="BizProfile.dc.html" style="font-weight: 600; color: #47444F;">Business profile</a>, or ask your {{noun}}.</p>
       </sc-if>
     </section>
 
@@ -331,71 +357,89 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    // Sign up hands over what the person typed (sessionStorage 'be.signup').
+    // Sign up hands over the country and what the person typed (sessionStorage 'be.signup').
     let su = null, saved = null;
     try { su = JSON.parse(sessionStorage.getItem('be.signup') || 'null'); } catch (e) { su = null; }
     try { saved = JSON.parse(sessionStorage.getItem('be.setup') || 'null'); } catch (e) { saved = null; }
     su = su && typeof su === 'object' ? su : null;
-    const a = { name: (su && su.business) || '', owner: (su && su.name) || '', email: (su && su.email) || '', city: '', country: 'us', sell: null, team: null, acct: false, abroad: null, curs: [] };
+    const okC = (c) => c === 'uk' || c === 'lk';
+    if (saved && !(saved.a && okC(saved.a.country))) saved = null; // older saves (before the two countries)
+    // Opened from inside an empty business: start from its profile.
+    const P = (window.BE && BE.isEmpty && BE.isEmpty()) ? (BE.get('profile') || {}) : {};
+    const realP = P.business && P.business !== 'Your business';
+    const country = (su && okC(su.country) && su.country) || (window.BE ? BE.country() : 'uk');
+    const a = Object.assign(this.blank(country), {
+      name: (su && su.business) || (realP ? P.business : ''),
+      owner: (su && su.name) || (realP && P.owner !== 'You' ? P.owner : ''),
+      email: (su && su.email) || (realP ? P.email || '' : ''),
+      city: realP ? P.city || '' : ''
+    });
+    let start = a;
+    if (saved && saved.a) {
+      start = Object.assign({}, saved.a);
+      if (su) { start.name = saved.a.name || a.name; start.owner = a.owner || saved.a.owner; start.email = a.email || saved.a.email; if (okC(su.country) && su.country !== saved.a.country) start = a; }
+    }
     this.state = {
-      step: 1, reached: 1, toast: null, nameError: '', fromSignup: !!(su && su.email),
-      a: saved && saved.a ? Object.assign(a, saved.a, su ? { name: saved.a.name || a.name, owner: a.owner || saved.a.owner, email: a.email || saved.a.email } : {}) : a,
-      prev: null, note: ''
+      step: 1, reached: 1, toast: null, nameError: '', stepError: '', fromSignup: !!(su && su.email), fromCountry: !!(su && okC(su.country)),
+      a: start, prev: null, note: '', linking: false
     };
-    if (saved && saved.step) { this.state.step = Math.min(saved.step, 4); this.state.reached = Math.min(saved.reached || saved.step, 4); }
+    if (saved && saved.step && start !== a) { this.state.step = Math.min(saved.step, 5); this.state.reached = Math.min(saved.reached || saved.step, 5); }
+  }
+  blank(country) {
+    return {
+      country, name: '', owner: '', email: '', city: '',
+      // UK
+      kind: null, vat: null, vatNo: '', quarterType: 'standard', basis: 'cash', acct: null, acctEmail: '', acctName: '',
+      // Sri Lanka
+      lkKind: null, tin: '', vatLk: null, lkVatNo: '', sscl: null, employees: null, prac: null, pracEmail: '', pracName: '', taxwise: false
+    };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
-
-  countries() {
-    return {
-      us: { name: 'United States', cur: 'USD', loc: 'en-US', date: '10/04/2026', tax: 'Sales tax', taxNote: 'In the US, sales tax usually applies to products, not services. If you sell products, we add it to invoices and track what you owe the state.' },
-      uk: { name: 'United Kingdom', cur: 'GBP', loc: 'en-GB', date: '04/10/2026', tax: 'VAT', taxNote: 'VAT applies to most things you sell, services included. We add it to invoices and work out what you owe each quarter.' },
-      de: { name: 'Germany', cur: 'EUR', loc: 'de-DE', date: '04.10.2026', tax: 'VAT', taxNote: 'VAT (MwSt.) applies to most things you sell, services included. We add it to invoices and work out what you owe.' },
-      fr: { name: 'France', cur: 'EUR', loc: 'fr-FR', date: '04/10/2026', tax: 'VAT', taxNote: 'VAT (TVA) applies to most things you sell, services included. We add it to invoices and work out what you owe.' },
-      ie: { name: 'Ireland', cur: 'EUR', loc: 'en-IE', date: '04/10/2026', tax: 'VAT', taxNote: 'VAT applies to most things you sell, services included. We add it to invoices and work out what you owe.' },
-      nl: { name: 'Netherlands', cur: 'EUR', loc: 'nl-NL', date: '04-10-2026', tax: 'VAT', taxNote: 'VAT (btw) applies to most things you sell, services included. We add it to invoices and work out what you owe.' },
-      ca: { name: 'Canada', cur: 'CAD', loc: 'en-CA', date: '2026-10-04', tax: 'GST', taxNote: 'GST (or HST, depending on your province) applies to most sales. We add it to invoices and track what you owe.' },
-      au: { name: 'Australia', cur: 'AUD', loc: 'en-AU', date: '04/10/2026', tax: 'GST', taxNote: 'GST applies to most sales once you are registered. We add it to invoices and track what you owe.' },
-      in: { name: 'India', cur: 'INR', loc: 'en-IN', date: '04/10/2026', tax: 'GST', taxNote: 'GST applies to most sales once you are registered. We add it to invoices and track what you owe.' }
-    };
-  }
+  pack(c) { return (window.COUNTRY || {})[c] || {}; }
 
   // Every feature the preview can show, and when it appears.
   features(a) {
-    const C = this.countries()[a.country];
-    const S = a.sell === 'services' || a.sell === 'both';
-    const P = a.sell === 'products' || a.sell === 'both';
-    const us = C.tax === 'Sales tax';
-    const taxOn = us ? P : !!a.sell;
-    const team = a.team === 'team', acct = !!a.acct, abroad = a.abroad === 'yes';
-    const curs = a.curs.length ? a.curs.join(' and ').replace(/ and (?=.* and )/g, ', ') : 'other currencies';
-    const taxWhy = us ? 'Because you sell products' : 'Because you’re in ' + C.name;
+    const K = this.pack(a.country);
+    if (a.country === 'lk') {
+      const vat = a.vatLk === 'yes', sscl = a.sscl === 'yes', staff = a.employees === 'yes', prac = a.prac === 'now' || a.prac === 'later';
+      return [
+        { g: 'in', k: 'invoices', t: vat ? K.vatInvoiceTitle + 's with VAT and SSCL lines' : 'Invoices in rupees', on: true },
+        { g: 'in', k: 'quotes', t: 'Quotes you can mark accepted', on: true },
+        { g: 'in', k: 'pay', t: 'Payments by transfer, cheque, cash or LankaQR', on: true },
+        { g: 'in', k: 'whatsapp', t: 'Reminders by email and WhatsApp', on: true },
+        { g: 'out', k: 'expenses', t: 'Expenses with attachments', on: true },
+        { g: 'out', k: 'bills', t: vat ? 'Bills with input VAT' : 'Bills to pay', why: vat ? 'Because you’re VAT registered' : '', on: true },
+        { g: 'out', k: 'monthly', t: 'Every-month costs', on: true },
+        { g: 'out', k: 'payroll', t: 'Payroll with EPF, ETF and APIT', why: 'Because you have employees', on: staff },
+        { g: 'out', k: 'payslips', t: 'Payslips and monthly schedules', why: 'Because you have employees', on: staff },
+        { g: 'keep', k: 'estimate', t: 'Income tax estimate and instalments', on: true },
+        { g: 'keep', k: 'vat', t: 'VAT periods, in return order', why: 'Because you’re VAT registered', on: vat },
+        { g: 'keep', k: 'sscl', t: 'SSCL periods', why: 'Because you pay SSCL', on: sscl },
+        { g: 'keep', k: 'handoff', t: 'Year-end hand-off to TaxWise.lk', why: a.taxwise ? 'Your TaxWise.lk account is linked' : '', on: true },
+        { g: 'acct', k: 'prac', t: 'Your practitioner’s requests', why: 'Because you work with a practitioner', on: prac },
+        { g: 'acct', k: 'pview', t: 'What your practitioner sees', why: 'Because you work with a practitioner', on: prac },
+        { g: 'acct', k: 'ask', t: 'Ask: answers from Sri Lankan tax sources', on: true }
+      ];
+    }
+    const trade = a.kind === 'sole-trader' || a.kind === 'both', land = a.kind === 'landlord' || a.kind === 'both';
+    const vat = a.vat === 'yes', acct = a.acct === 'now' || a.acct === 'later';
     return [
-      { g: 'in', k: 'invoices', t: 'Invoices & getting paid', on: true },
-      { g: 'in', k: 'quotes', t: 'Quotes', why: 'Because you sell services', on: S },
-      { g: 'in', k: 'retainers', t: 'Monthly retainers', why: 'Because you sell services', on: S },
-      { g: 'in', k: 'time', t: 'Time you can bill', why: 'Because you sell services', on: S },
-      { g: 'in', k: 'stock', t: 'Products & stock', why: 'Because you sell products', on: P },
-      { g: 'in', k: 'tax-' + C.tax, t: us ? 'Sales tax on products' : C.tax + ' on your invoices', why: taxWhy, on: taxOn },
-      { g: 'in', k: 'fx-' + curs, t: 'Invoices in ' + curs, why: 'Because you bill abroad', on: abroad },
-      { g: 'in', k: 'refunds', t: 'Money back to a customer', on: true },
-      { g: 'out', k: 'receipts', t: 'Receipts', on: true },
-      { g: 'out', k: 'monthly', t: 'Every month costs', on: true },
+      { g: 'in', k: 'invoices', t: vat ? K.vatInvoiceTitle + 's with your VAT number' : 'Invoices in pounds', on: trade || !a.kind },
+      { g: 'in', k: 'quotes', t: 'Quotes you can mark accepted', on: trade || !a.kind },
+      { g: 'in', k: 'rent', t: 'Rent from your property', why: 'Because you let property', on: land },
+      { g: 'in', k: 'pay', t: 'Payments you record yourself', on: true },
+      { g: 'out', k: 'expenses', t: 'Expenses in HMRC’s categories', on: true },
       { g: 'out', k: 'bills', t: 'Bills to pay', on: true },
-      { g: 'out', k: 'buystock', t: 'Buying stock', why: 'Because you sell products', on: P },
-      { g: 'out', k: 'cogs', t: 'Cost of goods', why: 'Because you sell products', on: P },
-      { g: 'out', k: 'payroll', t: 'Payroll', why: 'Because you have a team', on: team },
-      { g: 'keep', k: 'setaside', t: 'Tax set-aside', on: true },
-      { g: 'keep', k: 'owed-' + C.tax, t: us ? 'Sales tax you collected' : C.tax + ' you owe', why: taxWhy, on: taxOn },
-      { g: 'keep', k: 'reconcile', t: 'Check against your bank statement', on: true },
-      { g: 'keep', k: 'gains', t: 'Currency gains & losses', why: 'Because you bill abroad', on: abroad },
-      { g: 'keep', k: 'categories', t: 'Categories (chart of accounts)', why: 'For your accountant', on: acct },
-      { g: 'keep', k: 'journal', t: 'Move money between categories by hand', why: 'For your accountant', on: acct },
-      { g: 'keep', k: 'yearend', t: 'Year-end close', why: 'For your accountant', on: acct },
-      { g: 'biz', k: 'profile', t: 'Business profile & invoice look', on: true },
-      { g: 'biz', k: 'security', t: 'Password & sign-in', on: true },
-      { g: 'biz', k: 'teamperm', t: 'Team & permissions', why: 'Because you have a team', on: team },
-      { g: 'biz', k: 'acctaccess', t: 'Accountant access', why: 'For your accountant', on: acct }
+      { g: 'out', k: 'monthly', t: 'Every-month costs', on: true },
+      { g: 'out', k: 'mileage', t: 'Mileage at ' + Math.round(K.mileage.rate1 * 100) + 'p a mile', why: 'Because you’re self-employed', on: trade },
+      { g: 'out', k: 'propcosts', t: 'Property costs, mortgage interest kept apart', why: 'Because you let property', on: land },
+      { g: 'keep', k: 'estimate', t: 'Income Tax and NI estimate', on: true },
+      { g: 'keep', k: 'quarters', t: (a.quarterType === 'calendar' ? 'Calendar' : 'Standard') + ' MTD quarters', on: true },
+      { g: 'keep', k: 'properties', t: 'Properties and the ' + BE.money(K.propertyAllowance, 'GBP') + ' allowance', why: 'Because you let property', on: land },
+      { g: 'keep', k: 'vat', t: 'VAT summary per quarter', why: 'Because you’re VAT registered', on: vat },
+      { g: 'acct', k: 'practice', t: 'Your practice’s requests', why: 'Because you have an accountant', on: acct },
+      { g: 'acct', k: 'pview', t: 'What your practice sees', why: 'Because you have an accountant', on: acct },
+      { g: 'acct', k: 'ask', t: 'Ask: answers from HMRC guidance', on: true }
     ];
   }
 
@@ -410,85 +454,165 @@ class Component extends DCLogic {
     let note = '';
     if (added.length) note = 'Added to your home: ' + list(added) + '.';
     if (removed.length) note += (note ? ' ' : '') + 'Tucked away: ' + list(removed) + '.';
-    this.setState({ a, prev: bk, note, nameError: '' });
+    this.setState({ a, prev: bk, note, nameError: '', stepError: '' });
   }
 
-  go(step) { this.setState({ step, reached: Math.max(this.state.reached, step), note: '', prev: null }); }
+  go(step) { this.setState({ step, reached: Math.max(this.state.reached, step), note: '', prev: null, stepError: '' }); }
 
   renderVals() {
     const st = this.state, a = st.a;
-    const CS = this.countries(), C = CS[a.country];
-    const fmt = (n) => new Intl.NumberFormat(C.loc, { style: 'currency', currency: C.cur, maximumFractionDigits: 0 }).format(n);
-    const STEP_NAMES = ['Your business', 'What you sell', 'Who works in it', 'Customers abroad'];
+    const lk = a.country === 'lk';
+    const K = this.pack(a.country);
+    const cur = K.currency || 'GBP';
+    const fmt = (n) => BE.money(n, cur, { whole: true });
+    const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
+    const STEP_NAMES = lk ? ['Your business', 'Business type', 'Tax registration', 'Employees', 'Practitioner'] : ['Your business', 'What you do', 'VAT', 'Quarters', 'Your accountant'];
+    const N = STEP_NAMES.length, DONE = N + 1;
     const step = st.step;
 
     const steps = STEP_NAMES.map((label, i) => {
-      const n = i + 1, done = n < step || step === 5, cur = n === step;
-      const reachable = n <= st.reached && !cur;
+      const n = i + 1, done = n < step || step === DONE, isCur = n === step;
+      const reachable = n <= st.reached && !isCur;
       return {
-        label, isBtn: reachable, isSpan: !reachable, current: cur ? 'step' : false,
-        aria: 'Step ' + n + ' of 4: ' + label + (done ? ', done' : cur ? ', current' : ''),
-        bar: done ? '#18161F' : cur ? '#7A5AF8' : '#E2DFE8',
-        color: cur ? '#18161F' : '#5F5B68',
+        label, isBtn: reachable, isSpan: !reachable, current: isCur ? 'step' : false,
+        aria: 'Step ' + n + ' of ' + N + ': ' + label + (done ? ', done' : isCur ? ', current' : ''),
+        bar: done ? '#18161F' : isCur ? '#7A5AF8' : '#E2DFE8',
+        color: isCur ? '#18161F' : '#5F5B68',
         go: () => this.go(n)
       };
     });
 
-    // Choice cards for steps 2-5
-    const card = (on, multi, o) => Object.assign({}, o, {
-      on: !!on, border: on ? '#18161F' : '#E2DFE8', bg: on ? '#EEE8FF' : '#FFFFFF',
-      ring: on ? '#18161F' : '#CBC7D3', ringBg: on ? '#18161F' : '#FFFFFF', check: on ? '#B9A3FF' : '#FFFFFF',
-      ringRadius: multi ? '8px' : '9999px', tag: o.tag || false
-    });
     const ICON = {
-      services: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2',
-      products: 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8',
-      both: 'M4 7h7v7H4zM15.5 21a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM14 4h6v6',
-      solo: 'M18 20v-1a5 5 0 0 0-5-5h-2a5 5 0 0 0-5 5v1M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+      person: 'M18 20v-1a5 5 0 0 0-5-5h-2a5 5 0 0 0-5 5v1M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+      house: 'M4 11 12 4l8 7M6 9.5V20h12V9.5M10 20v-5h4v5',
+      both: 'M3 20V11l6-5 6 5v9M7 20v-4h4v4M17 8h4M19 6v4',
       team: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8M15 4.2a3.5 3.5 0 0 1 0 6.6',
-      acct: 'M9 3h6l1 3H8zM6 6h12v15H6zM9 11h6M9 15h6M9 18h3',
-      home: 'M4 11 12 4l8 7M6 9.5V20h12V9.5',
-      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z'
+      company: 'M4 21V5l8-3v19M12 9h8v12M7 9h2M7 13h2M7 17h2M15 13h2M15 17h2M2 21h20',
+      doc: 'M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5',
+      nodoc: 'M6 3h9l4 4v14H6zM14 3v5h5M9 14l6 0',
+      cal: 'M4 6h16v15H4zM4 10h16M9 3v5M15 3v5',
+      cash: 'M3 7h18v10H3zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 10v4M18 10v4',
+      acc: 'M9 3h6l1 3H8zM6 6h12v15H6zM9 11h6M9 15h6M9 18h3',
+      mail: 'M3 6h18v12H3zM3 7l9 6 9-6',
+      clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2',
+      solo: 'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM6 21v-1a6 6 0 0 1 12 0v1'
     };
-    const T = { us: '#EEE8FF', o: '#FDE6D6', ink: '#EFEDF3' };
-    let q = { title: '', help: '', choices: [] };
-    if (step === 2) q = {
-      title: 'What do you sell?',
-      help: 'This decides what your invoices can hold and what we track behind Coming in and Going out.',
-      choices: [
-        card(a.sell === 'services', false, { title: 'Services', ex: 'Your time and skills, like design, consulting, cleaning, lessons or repairs.', icon: ICON.services, tint: T.us, pick: () => this.answer({ sell: 'services' }) }),
-        card(a.sell === 'products', false, { title: 'Products', ex: 'Things you make or stock, like prints, coffee beans, candles or parts.', icon: ICON.products, tint: T.o, pick: () => this.answer({ sell: 'products' }) }),
-        card(a.sell === 'both', false, { title: 'Both', ex: 'A studio that also sells prints, a salon that sells hair care.', icon: ICON.both, tint: T.ink, pick: () => this.answer({ sell: 'both' }) })
-      ]
-    };
-    if (step === 3) q = {
-      title: 'Who works in it?',
-      help: 'Pick one, and add your accountant if you have one. This sets up payroll and who can see what.',
-      choices: [
-        card(a.team === 'solo', false, { title: 'Just me', ex: 'You do the work and the books. Contractors you pay count as Going out.', icon: ICON.solo, tint: T.us, pick: () => this.answer({ team: 'solo' }) }),
-        card(a.team === 'team', false, { title: 'A small team', ex: 'People you pay a salary or wage, each with their own sign-in.', icon: ICON.team, tint: T.o, pick: () => this.answer({ team: 'team' }) }),
-        card(a.acct, true, { title: 'Plus an accountant', tag: 'Add-on', ex: 'They get read-only books and the extra tools accountants expect.', icon: ICON.acct, tint: T.ink, pick: () => this.answer({ acct: !a.acct }) })
-      ]
-    };
-    if (step === 4) q = {
-      title: 'Do you bill customers in other countries?',
-      help: 'If you do, you can invoice in their currency and we track what each payment is worth in ' + C.cur + '.',
-      choices: [
-        card(a.abroad === 'no', false, { title: 'No, they’re all in ' + C.name, ex: 'Everything stays in ' + C.cur + '. Easy to change if that day comes.', icon: ICON.home, tint: T.us, pick: () => this.answer({ abroad: 'no' }) }),
-        card(a.abroad === 'yes', false, { title: 'Yes, some are abroad', ex: 'Invoice in euros, pounds or dollars and see it all in ' + C.cur + '.', icon: ICON.globe, tint: T.o, pick: () => this.answer({ abroad: 'yes' }) })
-      ]
-    };
-
-    // Currency chips (step 4, yes)
-    const ALLC = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'INR'].filter((x) => x !== C.cur);
-    const curChips = ALLC.map((cc) => {
-      const on = a.curs.indexOf(cc) >= 0;
-      return { label: cc, on, border: on ? '#18161F' : '#CBC7D3', bg: on ? '#18161F' : '#FFFFFF', color: on ? '#FFFFFF' : '#18161F',
-        toggle: () => this.answer({ curs: on ? a.curs.filter((x) => x !== cc) : a.curs.concat([cc]) }) };
+    const T = { v: '#EEE8FF', o: '#FDE6D6', ink: '#EFEDF3' };
+    const card = (on, o) => Object.assign({ tag: false, official: false }, o, {
+      on: !!on, border: on ? '#18161F' : '#E2DFE8', bg: on ? '#EEE8FF' : '#FFFFFF',
+      ring: on ? '#18161F' : '#CBC7D3', ringBg: on ? '#18161F' : '#FFFFFF', check: on ? '#B9A3FF' : '#FFFFFF'
     });
+    const part = (o) => Object.assign({ label: false, sub: false, lid: 'q-' + String(o.label || o.id || 'choices').toLowerCase().replace(/[^a-z0-9]+/g, '-'), isCards: false, isSeg: false, isField: false, isLink: false, aria: o.label || '' }, o);
+    const cards = (label, list, sub) => part({ isCards: true, label: label || false, sub: sub || false, aria: label || (list[0] && list[0].aria) || 'Choices', cards: list });
+    const seg = (id, label, sub, value, opts, key) => part({ isSeg: true, lid: id, label, sub: sub || false,
+      segs: opts.map(([v, l]) => ({ label: l, on: value === v, bg: value === v ? '#18161F' : 'transparent', fg: value === v ? '#FFFFFF' : '#18161F', pick: () => this.answer({ [key]: v }) })) });
+    const errOn = st.stepError && st.stepErrorField;
+    const field = (id, flabel, key, o) => {
+      const err = errOn === id ? st.stepError : false;
+      return part(Object.assign({ isField: true, id, flabel, value: a[key] || '', type: 'text', ph: '', hint: false, err, inv: err ? 'true' : 'false', border: err ? '#A8200D' : '#CBC7D3',
+        set: (e) => this.setState({ a: Object.assign({}, this.state.a, { [key]: e.target.value }), stepError: '' }) }, o || {}));
+    };
 
-    const answered = { 1: true, 2: !!a.sell, 3: !!a.team, 4: !!a.abroad }[step];
-    const cantNext = step >= 2 && step <= 4 && !answered;
+    const fmtYear = (K.taxYear ? K.taxYear.start.replace(/ \d{4}$/, '') + ' to ' + K.taxYear.end.replace(/ \d{4}$/, '') : '');
+    const quarters = (K.quarters || []).map((q) => q.from + '–' + q.to).join(', ');
+    let q = { title: '', help: '', parts: [] };
+    let pic = 'biz', artKind = '', artTeam = '', artAcct = false, stamp = '';
+
+    if (!lk) {
+      if (step === 2) {
+        pic = 'kind'; artKind = a.kind || '';
+        q = { title: 'What do you do?', help: 'This decides which HMRC pages your records fill: self-employment, UK property, or both.', parts: [cards('', [
+          card(a.kind === 'sole-trader', { aria: 'What you do', title: 'Sole trader', ex: 'You work for yourself, like design, trades, tutoring or consulting.', official: 'Self-employment income', icon: ICON.person, tint: T.v, pick: () => this.answer({ kind: 'sole-trader' }) }),
+          card(a.kind === 'landlord', { title: 'Landlord', ex: 'You let a home, a flat or a room, and don’t trade otherwise.', official: 'UK property income', icon: ICON.house, tint: T.o, pick: () => this.answer({ kind: 'landlord' }) }),
+          card(a.kind === 'both', { title: 'Both', ex: 'You work for yourself and also let property, like a designer who lets a flat.', official: 'Self-employment and UK property income', icon: ICON.both, tint: T.ink, pick: () => this.answer({ kind: 'both' }) })
+        ])] };
+      }
+      if (step === 3) {
+        pic = 'tax'; stamp = 'VAT';
+        const parts = [cards('', [
+          card(a.vat === 'no', { aria: 'VAT registration', title: 'No, not VAT registered', ex: 'Most sole traders and landlords under ' + fmt(K.vatThreshold) + ' a year aren’t. Invoices go out without VAT.', icon: ICON.nodoc, tint: T.v, pick: () => this.answer({ vat: 'no' }) }),
+          card(a.vat === 'yes', { title: 'Yes, VAT registered', ex: 'Invoices become VAT invoices with your VAT number, and you get a VAT summary each quarter. Your practice files VAT from its own software.', icon: ICON.doc, tint: T.o, pick: () => this.answer({ vat: 'yes' }) })
+        ])];
+        if (a.vat === 'yes') parts.push(field('sp-vatno', K.vatIdLabel + ' (optional)', 'vatNo', { ph: 'GB 123 4567 89', hint: 'It goes on every VAT invoice. Add it later in Business profile if it isn’t to hand.' }));
+        q = { title: 'Are you registered for VAT?', help: 'You must register once your taxable turnover passes ' + fmt(K.vatThreshold) + ' in 12 months. Some people register earlier.', parts };
+      }
+      if (step === 4) {
+        pic = 'cal';
+        q = { title: 'How do your quarters run?', help: 'Making Tax Digital asks for an update every quarter. Your accountant can tell you which you use; most people keep the standard dates.', parts: [
+          cards('Quarter dates', [
+            card(a.quarterType === 'standard', { title: 'Standard quarters', tag: 'Most people', ex: quarters + '. They line up with the tax year.', official: 'Standard update periods', icon: ICON.cal, tint: T.v, pick: () => this.answer({ quarterType: 'standard' }) }),
+            card(a.quarterType === 'calendar', { title: 'Calendar quarters', ex: '1 Apr–30 Jun, 1 Jul–30 Sep, 1 Oct–31 Dec, 1 Jan–31 Mar. Handy if your other records run by month end.', official: 'Calendar update periods (an election you make)', icon: ICON.cal, tint: T.ink, pick: () => this.answer({ quarterType: 'calendar' }) })
+          ]),
+          cards('When money counts', [
+            card(a.basis === 'cash', { title: 'When it’s paid', tag: 'Default', ex: 'Income counts when a customer pays you, costs when you pay them. Simplest for most sole traders.', official: 'Cash basis', icon: ICON.cash, tint: T.v, pick: () => this.answer({ basis: 'cash' }) }),
+            card(a.basis === 'accrual', { title: 'When it’s invoiced', ex: 'Income counts on the invoice date and costs on the bill date, paid or not. Pick this if your accountant asks for it.', official: 'Accruals basis (traditional accounting)', icon: ICON.doc, tint: T.ink, pick: () => this.answer({ basis: 'accrual' }) })
+          ])
+        ] };
+      }
+      if (step === 5) {
+        pic = 'team'; artAcct = a.acct === 'now' || a.acct === 'later';
+        const parts = [cards('', [
+          card(a.acct === 'now', { aria: 'Your accountant', title: 'Yes, invite them now', ex: 'They see your quarter, send you requests and file your updates from their practice software.', icon: ICON.mail, tint: T.v, pick: () => this.answer({ acct: 'now' }) }),
+          card(a.acct === 'later', { title: 'Yes, I’ll invite them later', ex: 'Send the invite any time from Your accountant.', icon: ICON.acc, tint: T.o, pick: () => this.answer({ acct: 'later' }) }),
+          card(a.acct === 'none', { title: 'No, not yet', ex: 'BillingEase keeps your records ready. Find a practice when you need one; you can still file through your own software.', icon: ICON.solo, tint: T.ink, pick: () => this.answer({ acct: 'none' }) })
+        ])];
+        if (a.acct === 'now') {
+          parts.push(field('sp-acct-email', 'Your accountant’s email', 'acctEmail', { type: 'email', ph: 'name@practice.co.uk', hint: 'We email them an invite to link to ' + ((a.name || '').trim() || 'your business') + '. Nothing is shared until they accept.' }));
+          parts.push(field('sp-acct-name', 'Practice name (optional)', 'acctName', { ph: 'e.g. Dale & Shaw Accountants' }));
+        }
+        q = { title: 'Do you have an accountant?', help: 'In BillingEase your accountant works alongside you: they see your records in HMRC’s categories and send the quarterly updates for you.', parts };
+      }
+    } else {
+      if (step === 2) {
+        pic = 'kind'; artKind = a.lkKind || '';
+        q = { title: 'What kind of business is it?', help: 'This sets how your profit is taxed and what your practitioner hands over to TaxWise.lk at year end.', parts: [cards('', [
+          card(a.lkKind === 'sole-proprietor', { aria: 'Business type', title: 'Sole proprietor', ex: 'You own it yourself, even with staff. The profit goes on your own income tax return.', official: 'Individual: business income', icon: ICON.person, tint: T.v, pick: () => this.answer({ lkKind: 'sole-proprietor' }) }),
+          card(a.lkKind === 'partnership', { title: 'Partnership', ex: 'Two or more partners sharing the profit.', official: 'Partnership', icon: ICON.team, tint: T.o, pick: () => this.answer({ lkKind: 'partnership' }) }),
+          card(a.lkKind === 'company', { title: 'Company', ex: 'A (Pvt) Ltd company. BillingEase keeps the books; company income tax stays with your practitioner.', official: 'Company (books only)', icon: ICON.company, tint: T.ink, pick: () => this.answer({ lkKind: 'company' }) })
+        ])] };
+      }
+      if (step === 3) {
+        pic = 'tax'; stamp = 'TIN';
+        const parts = [
+          field('sp-tin', K.taxIdLabel + ' (optional)', 'tin', { ph: '123 456 789', hint: 'Your Taxpayer Identification Number from the Inland Revenue Department. It goes on your invoices; add it later if it isn’t to hand.' }),
+          seg('sp-vat-l', 'Registered for VAT?', 'VAT is ' + K.vatRates[0].label + '. Registered businesses issue ' + K.vatInvoiceTitle + 's in the IRD format.', a.vatLk, [['no', 'No'], ['yes', 'Yes']], 'vatLk')
+        ];
+        if (a.vatLk === 'yes') parts.push(field('sp-lkvat', K.vatIdLabel + ' (optional)', 'lkVatNo', { ph: '123456789-7000', hint: 'Printed on every ' + K.vatInvoiceTitle + '.' }));
+        parts.push(seg('sp-sscl-l', 'Registered for SSCL?', 'Social Security Contribution Levy, ' + (K.sscl * 100).toFixed(1).replace(/\.0$/, '') + '% shown as its own line on invoices.', a.sscl, [['no', 'No'], ['yes', 'Yes']], 'sscl'));
+        q = { title: 'Your tax registrations', help: 'These decide what your invoices show and which VAT and SSCL periods appear under Yours to keep.', parts };
+      }
+      if (step === 4) {
+        pic = 'team'; artTeam = a.employees === 'yes' ? 'team' : (a.employees ? 'solo' : '');
+        const pr = K.payroll || {};
+        q = { title: 'Do you have employees?', help: 'If you do, BillingEase works out their pay each month. You pay and file through the EPF, ETF and IRD channels.', parts: [cards('', [
+          card(a.employees === 'yes', { aria: 'Employees', title: 'Yes, I pay staff', ex: 'Monthly pay runs with EPF ' + pr.epfEmployee * 100 + '% + ' + pr.epfEmployer * 100 + '%, ETF ' + pr.etf * 100 + '% and APIT, payslips and the schedules to file.', official: 'Salaries, wages and EPF/ETF contributions', icon: ICON.team, tint: T.v, pick: () => this.answer({ employees: 'yes' }) }),
+          card(a.employees === 'no', { title: 'No employees', ex: 'Payroll stays tucked away. Turn it on in Business profile when you hire.', icon: ICON.solo, tint: T.ink, pick: () => this.answer({ employees: 'no' }) })
+        ])] };
+      }
+      if (step === 5) {
+        pic = 'team'; artAcct = a.prac === 'now' || a.prac === 'later';
+        const parts = [cards('', [
+          card(a.prac === 'now', { aria: 'Tax practitioner', title: 'With a practitioner, invite them now', ex: 'They see your books, VAT and SSCL and payroll in TaxWise.lk, send you requests and file your return.', icon: ICON.mail, tint: T.v, pick: () => this.answer({ prac: 'now' }) }),
+          card(a.prac === 'later', { title: 'With a practitioner, invite them later', ex: 'Send the invite any time from Your accountant.', icon: ICON.acc, tint: T.o, pick: () => this.answer({ prac: 'later' }) }),
+          card(a.prac === 'own', { title: 'On my own', ex: 'Keep the books yourself. Buy a TaxWise.lk return or invite a practitioner whenever you like.', icon: ICON.solo, tint: T.ink, pick: () => this.answer({ prac: 'own' }) })
+        ])];
+        if (a.prac === 'now') {
+          parts.push(field('sp-prac-email', 'Your practitioner’s email', 'pracEmail', { type: 'email', ph: 'name@firm.lk', hint: 'We email them an invite to link to ' + ((a.name || '').trim() || 'your business') + '. Nothing is shared until they accept.' }));
+          parts.push(field('sp-prac-name', 'Firm name (optional)', 'pracName', { ph: 'e.g. Jayasinghe & Co' }));
+        }
+        const linked = a.taxwise, mail = (a.email || '').trim() || 'your email';
+        parts.push(part({ isLink: true, label: 'TaxWise.lk', ltitle: linked ? 'Linked to TaxWise.lk' : (st.linking ? 'Linking…' : 'Link your TaxWise.lk account'),
+          lbody: linked ? 'Signed in as ' + mail + '. At year end your business profit, VAT, SSCL and payroll totals go straight into your return.' : 'Already use TaxWise.lk? Sign in once and the two share one account, so your books flow into your income tax return.',
+          btn: linked ? 'Unlink' : 'Link account', bg: linked ? '#E2F6D5' : '#FFFFFF', btnBg: linked ? '#FFFFFF' : '#B9A3FF', btnBorder: linked ? '1px solid #18161F' : '0',
+          toggle: () => {
+            if (linked) { this.answer({ taxwise: false }); this.notify('TaxWise.lk unlinked'); return; }
+            this.setState({ linking: true });
+            clearTimeout(this._lk); this._lk = setTimeout(() => { this.setState({ linking: false }); this.answer({ taxwise: true }); this.notify('TaxWise.lk linked as ' + mail); }, 500);
+          } }));
+        q = { title: 'Do you work with a tax practitioner?', help: 'BillingEase is the everyday books behind a TaxWise.lk return. Practitioners on TaxWise.lk see their clients’ books and take the year to the return.', parts };
+      }
+    }
+    if (step === DONE) pic = 'done';
 
     // Preview
     const feats = this.features(a);
@@ -497,7 +621,7 @@ class Component extends DCLogic {
       { g: 'in', name: 'Coming in', dot: '#7A5AF8', dotBorder: '0', dotRadius: '9999px' },
       { g: 'out', name: 'Going out', dot: '#E0752D', dotBorder: '0', dotRadius: '9999px' },
       { g: 'keep', name: 'Yours to keep', dot: '#18161F', dotBorder: '2px solid #B9A3FF', dotRadius: '9999px' },
-      { g: 'biz', name: 'Your business', dot: '#FFFFFF', dotBorder: '2px solid #18161F', dotRadius: '3px' }
+      { g: 'acct', name: lk ? 'Your practitioner' : 'Your accountant', dot: '#FFFFFF', dotBorder: '2px solid #18161F', dotRadius: '3px' }
     ];
     const groups = GROUPS.map((G) => {
       const items = feats.filter((f) => f.g === G.g && f.on).map((f) => {
@@ -507,73 +631,121 @@ class Component extends DCLogic {
       return Object.assign({}, G, { items, count: items.length });
     });
     const hidden = feats.filter((f) => !f.on).length;
-    const pv = { in: fmt(0), out: fmt(0), keep: fmt(0), note: 'Starts at ' + fmt(0) + ' and fills in as you bill and connect your bank.' };
+    const shown = feats.length - hidden;
+    const pv = { in: fmt(0), out: fmt(0), keep: fmt(0), note: 'Starts at ' + fmt(0) + ' and fills in as you add invoices and costs. ' + (lk ? 'Yours to keep is after income tax.' : 'Yours to keep is after Income Tax and NI.') };
 
     const bizName = (a.name || '').trim() || 'Your business';
     const ownerName = (a.owner || '').trim() || 'You';
     const email = (a.email || '').trim();
-    const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim());
-    const P = a.sell === 'products' || a.sell === 'both';
-    const profile = {
-      business: bizName, owner: ownerName, first: ownerName.split(' ')[0], email: email,
-      initials: BE.initials(ownerName === 'You' ? bizName : ownerName) || 'YB', role: 'Owner',
-      sells: a.sell || 'services', country: C.name, countryCode: a.country === 'uk' ? 'GB' : a.country.toUpperCase(), currency: C.cur, team: a.team || 'solo', accountant: !!a.acct,
-      overseas: a.abroad === 'yes', currencies: a.curs.slice(), city: (a.city || '').trim(), setAside: 0.25,
-      taxLabel: C.tax === 'Sales tax' ? (P ? 'Sales tax on products' : '') : C.tax
-    };
-    const stash = (extra) => { try { sessionStorage.setItem('be.setup', JSON.stringify(Object.assign({ a: a, step: step, reached: st.reached }, extra || {}))); } catch (e) { /* private window */ } };
-    const sellText = { services: 'Services', products: 'Products', both: 'Services and products' }[a.sell] || 'Not answered';
-    const whoText = (a.team === 'team' ? 'A small team' : a.team === 'solo' ? 'Just me' : 'Not answered') + (a.acct ? ', plus an accountant' : '');
-    const abroadText = a.abroad === 'yes' ? 'Yes' + (a.curs.length ? ', in ' + a.curs.join(', ') : ', currencies picked per invoice') : a.abroad === 'no' ? 'No, all in ' + C.name : 'Not answered';
-    const summaryRows = [
-      { k: 'Business', v: bizName + ' · ' + ((a.city || '').trim() ? a.city.trim() + ', ' : '') + C.name, s: 1 },
+    const city = (a.city || '').trim();
+    const yn = (v) => v === 'yes' ? 'Yes' : v === 'no' ? 'No' : 'Not answered';
+    const KIND = { 'sole-trader': 'Sole trader', landlord: 'Landlord', both: 'Sole trader and landlord', 'sole-proprietor': 'Sole proprietor', partnership: 'Partnership', company: 'Company' };
+    const acctText = lk
+      ? ({ now: 'Practitioner invited' + ((a.pracEmail || '').trim() ? ': ' + a.pracEmail.trim() : ''), later: 'Practitioner, invite later', own: 'On my own' }[a.prac] || 'Not answered') + (a.taxwise ? ' · TaxWise.lk linked' : '')
+      : ({ now: 'Invite ' + ((a.acctEmail || '').trim() || 'them') + ((a.acctName || '').trim() ? ' at ' + a.acctName.trim() : ''), later: 'Yes, invite later', none: 'No, not yet' }[a.acct] || 'Not answered');
+    const summaryRows = lk ? [
+      { k: 'Business', v: bizName + ' · ' + (city ? city + ', ' : '') + K.name, s: 1 },
       { k: 'You', v: ownerName + (email ? ' · ' + email : ''), s: 1 },
-      { k: 'Money and tax', v: C.cur + ' · dates like ' + C.date + ' · ' + C.tax, s: 1 },
-      { k: 'You sell', v: sellText, s: 2 },
-      { k: 'Who works in it', v: whoText, s: 3 },
-      { k: 'Customers abroad', v: abroadText, s: 4 }
+      { k: 'Business type', v: KIND[a.lkKind] || 'Not answered', s: 2 },
+      { k: 'Tax', v: (a.tin.trim() ? K.taxIdLabel + ' ' + a.tin.trim() + ' · ' : '') + 'VAT ' + yn(a.vatLk).toLowerCase() + (a.vatLk === 'yes' && a.lkVatNo.trim() ? ' (' + a.lkVatNo.trim() + ')' : '') + ' · SSCL ' + yn(a.sscl).toLowerCase(), s: 3 },
+      { k: 'Employees', v: a.employees === 'yes' ? 'Yes, payroll with EPF, ETF and APIT' : a.employees === 'no' ? 'No' : 'Not answered', s: 4 },
+      { k: 'Practitioner', v: acctText, s: 5 }
+    ] : [
+      { k: 'Business', v: bizName + ' · ' + (city ? city + ', ' : '') + K.name, s: 1 },
+      { k: 'You', v: ownerName + (email ? ' · ' + email : ''), s: 1 },
+      { k: 'What you do', v: KIND[a.kind] || 'Not answered', s: 2 },
+      { k: 'VAT', v: a.vat === 'yes' ? 'VAT registered' + (a.vatNo.trim() ? ' · ' + a.vatNo.trim() : '') : a.vat === 'no' ? 'Not VAT registered' : 'Not answered', s: 3 },
+      { k: 'Quarters', v: (a.quarterType === 'calendar' ? 'Calendar quarters' : 'Standard quarters') + ' · ' + (a.basis === 'accrual' ? 'accruals basis' : 'cash basis'), s: 4 },
+      { k: 'Accountant', v: acctText, s: 5 }
     ];
     const summary = summaryRows.map((r, i) => ({ k: r.k, v: r.v, aria: 'Change ' + r.k.toLowerCase(), rule: i === summaryRows.length - 1 ? 'transparent' : '#EFEDF3', change: () => this.go(r.s) }));
 
-    const shown = feats.filter((f) => f.on).length;
+    // What "Start empty" saves as the business profile.
+    const ownerFirst = ownerName === 'You' ? 'there' : ownerName.split(' ')[0];
+    const pEmail = lk ? (a.pracEmail || '').trim() : (a.acctEmail || '').trim();
+    const pName = lk ? (a.pracName || '').trim() : (a.acctName || '').trim();
+    const invited = lk ? a.prac === 'now' : a.acct === 'now';
+    const practice = invited && valid(pEmail) ? { name: pName || (lk ? 'Your practitioner' : 'Your accountant'), contact: '', email: pEmail, status: 'invited', invited: BE.today } : null;
+    const profile = Object.assign({
+      country: a.country, countryId: a.country, countryCode: lk ? 'LK' : 'GB', currency: cur,
+      business: bizName, owner: ownerName, first: ownerFirst, email, role: 'Owner',
+      initials: BE.initials(ownerName === 'You' ? bizName : ownerName) || 'YB',
+      city, town: city, legal: ownerName !== 'You' && bizName !== ownerName && (lk ? a.lkKind === 'sole-proprietor' : a.kind !== 'landlord') ? ownerName + ' trading as ' + bizName : '',
+      sells: 'services', overseas: false, practice, accountantLater: (lk ? a.prac === 'later' : a.acct === 'later')
+    }, lk ? {
+      kind: a.lkKind || 'sole-proprietor', tin: a.tin.trim(), vatRegistered: a.vatLk === 'yes', vatNo: a.vatLk === 'yes' ? a.lkVatNo.trim() : '', ssclRegistered: a.sscl === 'yes',
+      employees: a.employees === 'yes', team: a.employees === 'yes' ? 'team' : 'solo', practitioner: a.prac || 'own', taxwiseLinked: !!a.taxwise, basis: 'accrual'
+    } : {
+      kind: a.kind || 'sole-trader', vatRegistered: a.vat === 'yes', vatNo: a.vat === 'yes' ? a.vatNo.trim() : '', quarterType: a.quarterType, basis: a.basis, team: 'solo'
+    });
+    const stash = (extra) => { try { sessionStorage.setItem('be.setup', JSON.stringify(Object.assign({ a: a, step: step, reached: st.reached }, extra || {}))); } catch (e) { /* private window */ } };
 
-    let curSym = '$';
-    try { curSym = (new Intl.NumberFormat(C.loc, { style: 'currency', currency: C.cur }).formatToParts(0).find((x) => x.type === 'currency') || {}).value || '$'; } catch (e) { /* keep $ */ }
-    const art = { step, sell: a.sell || '', team: a.team || '', acct: !!a.acct, abroad: a.abroad || '', cur: curSym.length > 2 ? '$' : curSym };
+    const SAMPLE = lk
+      ? { name: 'Serendib Design Studio', who: 'a VAT-registered design studio in Colombo 03 with five employees', now: 'The September VAT and SSCL return is due 20 Oct and October payroll is ready to run.' }
+      : { name: 'Harper Studio', who: 'a sole trader designer in Leeds who also lets a flat', now: 'Q2 has just closed and Dale & Shaw Accountants file it by 7 Nov.' };
+
+    // Validation for each step's Continue
+    const check = () => {
+      if (step === 1) return null;
+      if (!lk) {
+        if (step === 2 && !a.kind) return ['Pick what you do to continue.'];
+        if (step === 3 && !a.vat) return ['Pick yes or no to continue.'];
+        if (step === 5 && !a.acct) return ['Pick one to continue.'];
+        if (step === 5 && a.acct === 'now' && !valid(a.acctEmail)) return [!(a.acctEmail || '').trim() ? 'Add your accountant’s email to invite them, or pick “later”.' : 'That doesn’t look like an email address.', 'sp-acct-email'];
+      } else {
+        if (step === 2 && !a.lkKind) return ['Pick a business type to continue.'];
+        if (step === 3 && (!a.vatLk || !a.sscl)) return ['Answer the VAT and SSCL questions to continue.'];
+        if (step === 4 && !a.employees) return ['Pick yes or no to continue.'];
+        if (step === 5 && !a.prac) return ['Pick one to continue.'];
+        if (step === 5 && a.prac === 'now' && !valid(a.pracEmail)) return [!(a.pracEmail || '').trim() ? 'Add your practitioner’s email to invite them, or pick “later”.' : 'That doesn’t look like an email address.', 'sp-prac-email'];
+      }
+      return null;
+    };
+
+    const countryOpts = ['uk', 'lk'].map((id) => {
+      const P = this.pack(id), on = a.country === id;
+      return { id, name: P.name, sym: P.symbol, on, border: on ? '#18161F' : '#E2DFE8', bg: on ? '#EEE8FF' : '#FFFFFF', tint: id === 'uk' ? '#EEE8FF' : '#FDE6D6',
+        ex: id === 'uk' ? 'Pounds · MTD quarters · HMRC categories' : 'Rupees · Tax Invoices · EPF, ETF and APIT',
+        pick: () => { if (on) return; const b = this.blank(id); this.setState({ a: Object.assign(b, { name: a.name, owner: a.owner, email: a.email, city: a.city }), reached: 1, note: '', prev: null }); this.notify('Set up for ' + P.name + ' · ' + P.currency); } };
+    });
 
     return {
-      art, steps, progressLabel: step === 5 ? 'All 4 steps done' : 'Step ' + step + ' of 4 · ' + STEP_NAMES[step - 1],
-      s1: step === 1, choiceStep: step >= 2 && step <= 4, s6: step === 5, inSteps: step <= 4,
+      art: { pic, country: a.country, kind: artKind, team: artTeam, acct: artAcct, stamp }, steps,
+      progressLabel: step === DONE ? 'All ' + N + ' steps done' : 'Step ' + step + ' of ' + N + ' · ' + STEP_NAMES[step - 1],
+      s1: step === 1, choiceStep: step >= 2 && step <= N, sDone: step === DONE, inSteps: step <= N,
       askYou: !st.fromSignup, signedInAs: st.fromSignup ? email : false, owner: a.owner, email: a.email, city: a.city,
       ownerError: st.ownerError || false, emailError: st.emailError || false,
+      countryOpts, countryNote: st.fromCountry ? 'From your sign up. Change it here if that was a slip; it can’t change once you start.' : false,
+      namePh: lk ? 'e.g. Serendib Design Studio' : 'e.g. Harper Studio', cityPh: lk ? 'e.g. Colombo 03' : 'e.g. Leeds',
       setOwner: (e) => this.setState({ a: Object.assign({}, a, { owner: e.target.value }), ownerError: '' }),
       setEmail: (e) => this.setState({ a: Object.assign({}, a, { email: e.target.value }), emailError: '' }),
       setCity: (e) => this.setState({ a: Object.assign({}, a, { city: e.target.value }) }),
       startEmpty: () => {
         BE.startEmpty(profile);
-        BE.log('Set up ' + bizName + ' · ' + C.name + ', ' + C.cur);
-        try { sessionStorage.removeItem('be.setup'); sessionStorage.setItem('be.flash', 'Welcome to BillingEase, ' + profile.first + '. ' + bizName + ' is ready.'); } catch (e) { /* ignore */ }
+        BE.log('Set up ' + bizName + ' · ' + K.name + ', ' + cur);
+        if (practice) {
+          BE.log('Invited ' + practice.email + ' to link as your ' + K.practitioner.noun);
+          BE.notify('Invite sent to ' + practice.email, 'They’ll see ' + bizName + ' once they accept.', 'Accountant.dc.html');
+        }
+        try { sessionStorage.removeItem('be.setup'); sessionStorage.setItem('be.flash', 'Welcome to BillingEase, ' + ownerFirst + '. ' + bizName + ' is ready, in ' + cur + '.'); } catch (e) { /* ignore */ }
       },
       startSample: () => {
-        stash({ step: 4 });
-        BE.startSample();
-        try { sessionStorage.setItem('be.flash', 'You’re looking at Northwind Studio, a sample design studio. Your own answers are saved in setup.'); } catch (e) { /* ignore */ }
+        stash({ step: N });
+        BE.startSample(a.country);
+        try { sessionStorage.setItem('be.flash', 'You’re looking at ' + SAMPLE.name + ', the ' + K.name + ' sample. Your own answers are saved in setup.'); } catch (e) { /* ignore */ }
       },
       emptyTitle: 'Start empty as ' + bizName,
-      zero: fmt(0),
+      emptyBody: 'Your three numbers start at ' + fmt(0) + '. They fill in as you add invoices, expenses and bills' + (lk && a.employees === 'yes' ? ' and run payroll' : '') + '.',
+      sample: SAMPLE, today: BE.today,
       name: a.name, nameError: st.nameError || false,
       setName: (e) => this.setState({ a: Object.assign({}, a, { name: e.target.value }), nameError: '' }),
-      country: a.country,
-      countryOpts: Object.keys(CS).map((id) => ({ id, name: CS[id].name })),
-      setCountry: (e) => this.answer({ country: e.target.value, curs: a.curs.filter((x) => x !== CS[e.target.value].cur) }),
-      c: { name: C.name, cur: C.cur, sample: fmt(1250), date: C.date, tax: C.tax, taxNote: C.taxNote },
-      q, showCurs: step === 4 && a.abroad === 'yes', curChips,
-      curNote: a.curs.length ? 'Invoices can go out in ' + a.curs.join(', ') + '. We use the day’s exchange rate and show what each is worth in ' + C.cur + '.' : 'Skip this and pick a currency when you write the invoice.',
-      changeNote: st.note || false,
-      canBack: step > 1 && step <= 4,
+      c: { name: K.name, cur: cur, sample: fmt(1250), yearLabel: lk ? 'Year of assessment' : 'Tax year', year: fmtYear, tax: lk ? 'VAT and SSCL' : 'VAT',
+        taxNote: lk ? 'Registered businesses issue ' + K.vatInvoiceTitle + 's with VAT at ' + K.vatRates[0].label + ' and SSCL as its own line. Employees are paid with EPF, ETF and APIT worked out for you.'
+          : 'Expenses go into HMRC’s categories and add up by quarter for Making Tax Digital. VAT applies only if you’re registered.' },
+      q, changeNote: st.note || false, stepError: st.stepError || false,
+      canBack: step > 1 && step <= N,
       back: () => this.go(step - 1),
-      cantNext, nextBg: cantNext ? '#EFEDF3' : '#B9A3FF', nextColor: cantNext ? '#5F5B68' : '#18161F', nextCursor: cantNext ? 'not-allowed' : 'pointer',
-      nextLabel: step === 4 ? 'See my BillingEase' : 'Continue',
+      nextLabel: step === N ? 'See my BillingEase' : 'Continue',
       next: () => {
         if (step === 1) {
           const errs = {
@@ -583,14 +755,16 @@ class Component extends DCLogic {
           };
           if (errs.nameError || errs.ownerError || errs.emailError) { this.setState(errs); return; }
         }
+        const bad = check();
+        if (bad) { this.setState({ stepError: bad[0], stepErrorField: bad[1] || '' }); return; }
         this.go(step + 1);
       },
       bizName, hiddenSentence: hidden ? hidden + ' more features stay out of sight until you need them.' : 'Every feature is switched on for you.',
-      summary,
-      pvTitle: step === 5 ? 'Your home' : 'Your home, as you answer',
-      pvDate: C.date, pv, groups,
+      summary, noun: K.practitioner ? K.practitioner.noun : 'accountant',
+      pvTitle: step === DONE ? 'Your home' : 'Your home, as you answer',
+      pvDate: 'Sun ' + BE.today + ' 2026', pv, groups,
       hiddenLine: hidden ? shown + ' features shown · ' + hidden + ' hidden until you need them' : 'All ' + shown + ' features shown',
-      later: () => { stash(); this.notify('Saved. We’ll pick up at step ' + Math.min(step, 4) + ' next time you open setup.'); },
+      later: () => { stash(); this.notify('Saved. We’ll pick up at step ' + Math.min(step, N) + ' next time you open setup.'); },
       toast: st.toast
     };
   }

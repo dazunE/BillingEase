@@ -114,7 +114,7 @@
         <rect x="2" y="2" width="96" height="46" rx="4" fill="#B6E0AE" stroke="#18161F" stroke-width="2"></rect>
         <rect x="8" y="8" width="84" height="34" rx="2" fill="none" stroke="#4F7F49" stroke-width="1.3"></rect>
         <circle cx="50" cy="25" r="11" fill="#D3EDCE" stroke="#4F7F49" stroke-width="1.3"></circle>
-        <text x="50" y="30" text-anchor="middle" font-family="Sora, sans-serif" font-size="14" font-weight="800" fill="#2F5711">$</text>
+        <text x="50" y="30" text-anchor="middle" font-family="Sora, sans-serif" font-size="14" font-weight="800" fill="#2F5711">{{bd.sym}}</text>
       </svg>
     </span>
 
@@ -172,7 +172,7 @@
       </svg>
       <span class="aa-lane"><span class="aa-lane-line"></span><span class="aa-pill" style="background: #7A5AF8; color: #FFFFFF; animation: aa-slide 7s linear infinite;">{{bd.inPill}}</span></span>
       <span class="aa-jar" style="flex: none; display: block; width: 58px;">
-        <dc-import name="CashJar" size="{{58}}" envelope="{{false}}" amount="" uid="{{bd.bandUid}}" hint-size="58px,80px"></dc-import>
+        <dc-import name="CashJar" size="{{58}}" envelope="{{false}}" amount="" sym="{{bd.sym}}" tax-pct="{{bd.pct}}" uid="{{bd.bandUid}}" hint-size="58px,80px"></dc-import>
       </span>
       <span class="aa-lane"><span class="aa-lane-line" style="border-top-color: #F4C3A1;"></span><span class="aa-pill" style="background: #FDE6D6; border: 1px solid #E0752D; color: #18161F; animation: aa-slide 8s linear infinite; animation-delay: -3s;">{{bd.outPill}}</span></span>
       <svg width="38" height="54" viewBox="0 0 42 56" style="flex: none; display: block; overflow: visible; transform: rotate(7deg);">
@@ -191,7 +191,7 @@
 <div class="aa aa-scene" aria-hidden="true">
   <sc-if value="{{sc.jar}}" hint-placeholder-val="{{true}}">
     <span class="aa-jar" style="position: relative; flex: none; display: block; width: 150px;">
-      <dc-import name="CashJar" size="{{150}}" envelope="{{false}}" amount="{{sc.amount}}" line="#EEE8FF" uid="{{sc.uid}}" hint-size="150px,206px"></dc-import>
+      <dc-import name="CashJar" size="{{150}}" envelope="{{false}}" amount="{{sc.amount}}" sym="{{bd.sym}}" tax-pct="{{bd.pct}}" line="#EEE8FF" uid="{{sc.uid}}" hint-size="150px,206px"></dc-import>
       <svg width="40" height="54" viewBox="0 0 40 54" style="position: absolute; left: 94px; top: 20px; overflow: visible; display: {{sc.lock}};">
         <g class="aa-top" style="animation: aa-swing 5s ease-in-out infinite;">
           <path d="M20 0 V6" stroke="#EEE8FF" stroke-width="2"></path>
@@ -242,7 +242,7 @@
         <path d="M-6 16 q6 5 12 0" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round"></path>
       </g>
       <text x="134" y="150" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#EEE8FF">you</text>
-      <text x="46" y="150" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#EEE8FF">Jordan</text>
+      <text x="46" y="150" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#EEE8FF">{{sc.who}}</text>
     </svg>
   </sc-if>
 
@@ -291,13 +291,13 @@
       </g>
       <g opacity="{{st.prdOp}}">
         <g style="animation: aa-bob 6s ease-in-out infinite; animation-delay: -1.5s;">
-          <path d="M106 64 L130 54 L154 64 L130 74 Z" fill="#E9CFA0" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
-          <path d="M106 64 V100 L130 110 V74 Z" fill="#E3C38F" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
-          <path d="M154 64 V100 L130 110 V74 Z" fill="#D3AC70" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
-          <path d="M118 59 L142 69 V80" fill="none" stroke="#FFF6E0" stroke-width="4"></path>
+          <path d="M102 80 L130 56 L158 80 Z" fill="#E0752D" stroke="#18161F" stroke-width="2.2" stroke-linejoin="round"></path>
+          <rect x="108" y="79" width="44" height="31" fill="#FFFFFF" stroke="#18161F" stroke-width="2.2"></rect>
+          <rect x="124" y="92" width="12" height="18" fill="#FDE6D6" stroke="#18161F" stroke-width="2"></rect>
+          <rect x="112" y="85" width="9" height="9" fill="#EEE8FF" stroke="#18161F" stroke-width="1.8"></rect>
+          <rect x="139" y="85" width="9" height="9" fill="#EEE8FF" stroke="#18161F" stroke-width="1.8"></rect>
         </g>
       </g>
-      <text x="94" y="26" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#18161F">{{st.sellNote}}</text>
     </g>
 
     <!-- 3 · who works in it -->
@@ -327,40 +327,71 @@
       </g>
     </g>
 
-    <!-- 4 · customers abroad: a globe and its coins -->
-    <g style="display: {{st.s4}};">
-      <circle cx="94" cy="72" r="34" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5"></circle>
-      <path d="M60 72 H128 M94 38 C80 52 80 92 94 106 C108 92 108 52 94 38 M66 54 H122 M66 90 H122" fill="none" stroke="#18161F" stroke-width="1.8"></path>
-      <path d="M78 50 c6 4 10 2 14 6 c-2 6 -10 6 -12 12 c-4 -2 -6 -10 -2 -18 z M104 76 c6 -2 12 2 14 8 c-4 6 -10 8 -14 4 z" fill="#B6E0AE" stroke="#18161F" stroke-width="1.5"></path>
-      <g transform="translate(40 40)" opacity="{{st.farOp}}"><g style="animation: aa-bob 5s ease-in-out infinite;"><circle r="13" fill="#FFC53D" stroke="#18161F" stroke-width="2"></circle><text y="5" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" font-weight="800" fill="#6B3E0E">{{st.far1}}</text></g></g>
-      <g transform="translate(150 46)" opacity="{{st.farOp}}"><g style="animation: aa-bob 5s ease-in-out infinite; animation-delay: -1.7s;"><circle r="13" fill="#FFC53D" stroke="#18161F" stroke-width="2"></circle><text y="5" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" font-weight="800" fill="#6B3E0E">{{st.far2}}</text></g></g>
-      <g transform="translate(144 104)"><g style="animation: aa-bob 5s ease-in-out infinite; animation-delay: -3.4s;"><circle r="13" fill="#FFC53D" stroke="#18161F" stroke-width="2"></circle><text y="5" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" font-weight="800" fill="#6B3E0E">{{st.home}}</text></g></g>
+    <!-- tax: a registration paper with its stamp, and a coin in the home currency -->
+    <g style="display: {{st.sTax}};">
+      <g transform="rotate(-6 94 72)">
+        <rect x="58" y="24" width="72" height="92" rx="4" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5"></rect>
+        <path d="M68 40 H112 M68 52 H120 M68 64 H104 M68 76 H116" stroke="#E2DFE8" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M68 40 H92" stroke="#7A5AF8" stroke-width="5" stroke-linecap="round"></path>
+      </g>
+      <g transform="translate(118 92)"><g class="aa-c" style="animation: aa-pop 5s ease-in-out infinite;">
+        <circle r="21" fill="#EEE8FF" stroke="#7A5AF8" stroke-width="2.5"></circle>
+        <circle r="16" fill="none" stroke="#7A5AF8" stroke-width="1.2" stroke-dasharray="3 2"></circle>
+        <text y="4.5" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" font-weight="800" fill="#18161F">{{st.stamp}}</text>
+      </g></g>
+      <g transform="translate(40 96)"><g style="animation: aa-bob 5s ease-in-out infinite;"><circle r="14" fill="#FFC53D" stroke="#18161F" stroke-width="2"></circle><text y="4.5" text-anchor="middle" font-family="Sora, sans-serif" font-size="{{st.symSize}}" font-weight="800" fill="#6B3E0E">{{st.home}}</text></g></g>
     </g>
+
+    <!-- quarters: a year split in four -->
+    <g style="display: {{st.sCal}};">
+      <rect x="44" y="30" width="100" height="84" rx="8" fill="#FFFFFF" stroke="#18161F" stroke-width="2.5"></rect>
+      <path d="M44 48 H144" stroke="#18161F" stroke-width="2.5"></path>
+      <path d="M66 22 V36 M122 22 V36" stroke="#18161F" stroke-width="3" stroke-linecap="round"></path>
+      <rect x="54" y="56" width="38" height="22" rx="5" fill="#B6E0AE" stroke="#18161F" stroke-width="1.8"></rect>
+      <rect x="96" y="56" width="38" height="22" rx="5" fill="#B6E0AE" stroke="#18161F" stroke-width="1.8"></rect>
+      <rect x="54" y="84" width="38" height="22" rx="5" fill="#EEE8FF" stroke="#7A5AF8" stroke-width="2" class="aa-c" style="animation: aa-pop 4s ease-in-out infinite;"></rect>
+      <rect x="96" y="84" width="38" height="22" rx="5" fill="#F7F6F9" stroke="#CBC7D3" stroke-width="1.8"></rect>
+      <text x="73" y="71" text-anchor="middle" font-family="Sora, sans-serif" font-size="10" font-weight="800" fill="#18161F">Q1</text>
+      <text x="115" y="71" text-anchor="middle" font-family="Sora, sans-serif" font-size="10" font-weight="800" fill="#18161F">Q2</text>
+      <text x="73" y="99" text-anchor="middle" font-family="Sora, sans-serif" font-size="10" font-weight="800" fill="#18161F">Q3</text>
+      <text x="115" y="99" text-anchor="middle" font-family="Sora, sans-serif" font-size="10" font-weight="800" fill="#5F5B68">Q4</text>
+    </g>
+    <text x="94" y="20" text-anchor="middle" font-family="Caveat, cursive" font-size="20" font-weight="700" fill="#18161F" style="display: {{st.noteOn}};">{{st.note}}</text>
   </svg>
 
   <!-- 5 · done: the jar -->
   <span class="aa-jar" style="display: {{st.s5}}; width: 100%; padding-top: 4px;">
-    <dc-import name="CashJar" size="{{168}}" envelope="{{true}}" amount="" uid="setupjar" hint-size="168px,140px"></dc-import>
+    <dc-import name="CashJar" size="{{168}}" envelope="{{true}}" amount="" sym="{{bd.sym}}" tax-pct="{{bd.pct}}" uid="setupjar" hint-size="168px,140px"></dc-import>
   </span>
 </span>
 </sc-if>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"part":{"editor":"enum","options":["backdrop","scene","step"],"default":"backdrop"},"variant":{"editor":"enum","options":["signup","signin","forgot","verify","invite","setup"],"default":"signup"},"step":{"editor":"int","default":1},"sell":{"editor":"text","default":""},"team":{"editor":"text","default":""},"acct":{"editor":"boolean","default":false},"abroad":{"editor":"text","default":""},"cur":{"editor":"text","default":"$"},"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"part":{"editor":"enum","options":["backdrop","scene","step"],"default":"backdrop"},"variant":{"editor":"enum","options":["signup","signin","forgot","verify","invite","setup"],"default":"signup"},"pic":{"editor":"enum","options":["biz","kind","tax","cal","team","done"],"default":"biz"},"country":{"editor":"enum","options":["","uk","lk"],"default":""},"kind":{"editor":"text","default":""},"team":{"editor":"text","default":""},"acct":{"editor":"boolean","default":false},"stamp":{"editor":"text","default":""},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
     const P = this.props;
     const part = P.part || 'backdrop';
     const v = P.variant || 'signup';
     const setup = v === 'setup';
+    // The pictures follow the country being signed up for, or the business's own country.
+    const country = P.country === 'uk' || P.country === 'lk' ? P.country : ((window.BE && BE.country && BE.country()) || 'uk');
+    const lk = country === 'lk';
+    const cur = lk ? 'LKR' : 'GBP';
+    const m = (n) => (window.BE ? BE.money(n, cur, { whole: true }) : String(n));
+    const sym = lk ? 'Rs' : '£';
 
     // Backdrop: items sit in the margins beside the centred cards, anchored to the page centre
     // so they never slide under the form. Setup's content is wider, so its margins start further out.
     const C = setup ? 606 : 468;
     const L = (off, top) => 'right: calc(50% + ' + (C + off) + 'px); top: ' + top + '%;';
     const R = (off, top) => 'left: calc(50% + ' + (C + off) + 'px); top: ' + top + '%;';
-    const word = v === 'signin'
-      ? { invNo: 'INV-0151', invWho: 'Bluebird Yoga', invAmt: '$540', inPill: '+$540', outPill: '−$135', rcWho: 'Software · Oct', rcAmt: '$135' }
-      : { invNo: 'INV-0156', invWho: 'Atlas Freight', invAmt: '$6,300', inPill: '+$6,300', outPill: '−$1,200', rcWho: 'Rent · Oct', rcAmt: '$1,200' };
+    // Illustrative documents from the country's sample business.
+    const W = lk
+      ? { a: { invNo: 'SDS-0216', invWho: 'Colombo Dental Clinic', inv: 180000, out: 12500, rcWho: 'Internet · Oct' }, b: { invNo: 'SDS-0214', invWho: 'Kandyan Spice Co', inv: 640000, out: 350000, rcWho: 'Office rent · Oct' } }
+      : { a: { invNo: 'HS-0046', invWho: 'Ochre Café', inv: 450, out: 54, rcWho: 'Software · Oct' }, b: { invNo: 'HS-0048', invWho: 'Kirkstall Brewing Co', inv: 2400, out: 180, rcWho: 'Desk · Oct' } };
+    const w = v === 'signin' ? W.a : W.b;
+    const rate = (window.BE && BE.country() === country && (BE.get('profile') || {}).setAside) || (lk ? 0.2 : 0.25);
+    const word = { pct: Math.round(rate * 100) + '%', invNo: w.invNo, invWho: w.invWho, invAmt: m(w.inv), inPill: '+' + m(w.inv), outPill: '−' + m(w.out), rcWho: w.rcWho, rcAmt: m(w.out), sym };
     const bd = Object.assign({}, word, setup ? {
       cls: 'aa-xl', rootCls: 'aa-noband', band: false, bandUid: 'band-' + v,
       blobL: L(-30, 8), blobR: R(-40, 46), blobSize: '200px',
@@ -381,31 +412,34 @@ class Component extends DCLogic {
     const chipOut = (t) => ({ t, mark: '−', bg: '#FDE6D6', fg: '#18161F', mk: '#18161F', bd: '1px solid #E0752D' });
     const chipKeep = (t) => ({ t, mark: '=', bg: '#B9A3FF', fg: '#18161F', mk: '#18161F', bd: '0' });
     const done = (t) => ({ t, mark: '✓', bg: '#FFFFFF', fg: '#18161F', mk: '#2F5711', bd: '0' });
+    const ex = lk ? { inv: 640000, out: 350000, keep: 1450000 - 980000 - Math.round((1450000 - 980000) * 0.2) } : { inv: 2400, out: 180, keep: 5200 - 1950 - Math.round((5200 - 1950) * 0.25) };
     const SC = {
-      signup: { jar: true, amount: '$8,407', chips: [chipIn('$6,300 invoice paid'), chipOut('$1,200 rent'), chipKeep('$8,407 yours to keep')] },
-      signin: { jar: true, amount: '', chips: [done('Payments matched'), done('Card charges sorted'), done('Tax put aside')] },
-      forgot: { jar: true, lock: true, amount: '', chips: [done('Invoices still go out'), done('Payments still come in'), done('Every number adds up')] },
+      signup: { jar: true, amount: m(ex.keep), chips: [chipIn(m(ex.inv) + ' invoice paid'), chipOut(m(ex.out) + (lk ? ' office rent' : ' desk rent')), chipKeep(m(ex.keep) + ' yours to keep')] },
+      signin: { jar: true, amount: '', chips: lk ? [done('VAT and SSCL worked out'), done('Payroll ready to run'), done('Tax put aside')] : [done('Quarter totals up to date'), done('Requests from your accountant'), done('Tax put aside')] },
+      forgot: { jar: true, lock: true, amount: '', chips: [done('Invoices still go out'), done('Records stay as they are'), done('Every number adds up')] },
       verify: { mail: true, chips: [done('One click in the email'), done('Then invoices go out')] },
-      invite: { team: true, chips: [done('Your own sign-in'), done('Only Staff access')] }
+      invite: { team: true, chips: lk ? [done('Your own sign-in'), done('Your practitioner sees your books')] : [done('Your own sign-in'), done('Your accountant sees your records')] }
     };
     const s = SC[v] || SC.signup;
     const sc = {
       jar: !!s.jar, mail: !!s.mail, team: !!s.team, lock: s.lock ? 'block' : 'none',
-      amount: s.amount || '', uid: 'scene-' + v,
+      amount: s.amount || '', uid: 'scene-' + v, who: lk ? 'Ruwan' : 'Priya',
       chips: s.chips.map((c, i) => Object.assign({}, c, { delay: (i * 1.2) + 's' }))
     };
 
     // Setup: a picture of the current question that answers back.
-    const step = +P.step || 1, sell = P.sell || '', team = P.team || '';
-    const far = ['€', '£', '$', '¥'].filter((x) => x !== (P.cur || '$'));
+    const pic = P.pic || ({ 1: 'biz', 2: 'kind', 3: 'team', 4: 'tax', 5: 'done' })[+P.step || 1] || 'biz';
+    const kind = P.kind || '', team = P.team || '';
     const show = (on) => on ? 'inline' : 'none';
+    const NOTE = { 'sole-trader': 'your work', landlord: 'your flat', both: 'a bit of both', 'sole-proprietor': 'just you', partnership: 'partners', company: 'a company' };
+    const note = pic === 'kind' ? (NOTE[kind] || '') : '';
     const st = {
-      s1: show(step === 1), s2: show(step === 2), s3: show(step === 3), s4: show(step === 4), s5: step === 5 ? 'block' : 'none', svg: step === 5 ? 'none' : 'block',
-      svcOp: sell === 'products' ? 0.25 : 1, prdOp: sell === 'services' ? 0.25 : 1,
-      sellNote: { services: 'your time', products: 'your things', both: 'a bit of both' }[sell] || '',
+      s1: show(pic === 'biz' || (pic === 'kind' && lk)), s2: show(pic === 'kind' && !lk), s3: show(pic === 'team'), sTax: show(pic === 'tax'), sCal: show(pic === 'cal'),
+      s5: pic === 'done' ? 'block' : 'none', svg: pic === 'done' ? 'none' : 'block',
+      svcOp: kind === 'landlord' ? 0.25 : 1, prdOp: kind === 'sole-trader' ? 0.25 : 1,
+      note, noteOn: note ? 'inline' : 'none',
       teamOn: show(team === 'team'), acctOn: show(!!P.acct),
-      farOp: P.abroad === 'no' ? 0.25 : 1, home: P.cur || '$',
-      far1: far[0], far2: far[1]
+      stamp: P.stamp || (lk ? 'TIN' : 'VAT'), home: sym, symSize: lk ? 11 : 14
     };
 
     return { isBackdrop: part === 'backdrop', isScene: part === 'scene', isStep: part === 'step', bd, sc, st };

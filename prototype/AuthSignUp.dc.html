@@ -34,6 +34,9 @@ a{color:#18161F}a:hover{color:#000000}
 .bz-eqrow{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:14px;background:rgba(238,232,255,0.08)}
 .bz-eqtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px}
 .bz-eqline{font-size:13px;line-height:1.45;color:#EEE8FF}
+.bz-cty{display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:10px 14px;border-radius:16px;font:inherit;color:#18161F;text-align:left;cursor:pointer}
+.bz-cty:hover{border-color:#18161F!important}
+.bz-cty:focus-visible{outline:3px solid #7A5AF8;outline-offset:2px}
 </style>
 </helmet>
 
@@ -48,7 +51,7 @@ a{color:#18161F}a:hover{color:#000000}
     </header>
 
     <!-- Illustrations in the margins (a small band on phones) -->
-    <dc-import name="AuthArt" part="backdrop" variant="signup" hint-size="100%,84px"></dc-import>
+    <dc-import name="AuthArt" part="backdrop" variant="signup" country="{{side.country}}" hint-size="100%,84px"></dc-import>
 
     <main style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 16px;">
       <div style="flex: 1 1 360px; max-width: 480px; min-width: 0; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 5vw, 40px); display: flex; flex-direction: column; gap: 20px;">
@@ -58,7 +61,20 @@ a{color:#18161F}a:hover{color:#000000}
           <div style="display: flex; flex-direction: column; gap: 20px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <h1 class="bz-h1">Create your account.</h1>
-              <p class="bz-sub">Free to start. Setup takes about three minutes, and you can bill someone today.</p>
+              <p class="bz-sub">Free to start. Setup takes about three minutes, and you can send an invoice today.</p>
+            </div>
+            <div class="bz-field">
+              <span id="su-country-l" class="bz-lbl">Where is your business?</span>
+              <div role="group" aria-labelledby="su-country-l" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 8px;">
+                <sc-for list="{{countries}}" as="co" hint-placeholder-count="2">
+                  <button type="button" class="bz-cty" aria-pressed="{{co.on}}" onClick="{{co.pick}}" style="border: 2px solid {{co.border}}; background: {{co.bg}};">
+                    <span style="width: 38px; height: 38px; border-radius: 12px; background: {{co.tint}}; display: flex; align-items: center; justify-content: center; flex: none; font: 700 14px Sora, sans-serif;">{{co.sym}}</span>
+                    <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{co.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{co.ex}}</span></span>
+                  </button>
+                </sc-for>
+              </div>
+              <sc-if value="{{f.countryErr}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{f.countryErr}}</span></sc-if>
+              <sc-if value="{{f.countryHint}}" hint-placeholder-val="{{true}}"><span class="bz-mut">It sets your currency, tax year and tax rules, and can&#39;t change later.</span></sc-if>
             </div>
 
             <button type="button" class="bz-btn bz-btnline" onClick="{{google}}">
@@ -152,6 +168,19 @@ a{color:#18161F}a:hover{color:#000000}
               <p class="bz-sub">Welcome, {{g.first}}. Your account uses <strong style="color: #18161F; overflow-wrap: anywhere;">{{g.email}}</strong>, already verified by Google, so there&#39;s no email to check.</p>
             </div>
             <div class="bz-field">
+              <span id="su-gcountry-l" class="bz-lbl">Where is your business?</span>
+              <div role="group" aria-labelledby="su-gcountry-l" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 8px;">
+                <sc-for list="{{countries}}" as="co" hint-placeholder-count="2">
+                  <button type="button" class="bz-cty" aria-pressed="{{co.on}}" onClick="{{co.pick}}" style="border: 2px solid {{co.border}}; background: {{co.bg}};">
+                    <span style="width: 38px; height: 38px; border-radius: 12px; background: {{co.tint}}; display: flex; align-items: center; justify-content: center; flex: none; font: 700 14px Sora, sans-serif;">{{co.sym}}</span>
+                    <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;"><span style="font-weight: 700; font-size: 15px;">{{co.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{co.ex}}</span></span>
+                  </button>
+                </sc-for>
+              </div>
+              <sc-if value="{{f.countryErr}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{f.countryErr}}</span></sc-if>
+              <sc-if value="{{f.countryHint}}" hint-placeholder-val="{{true}}"><span class="bz-mut">It sets your currency, tax year and tax rules, and can&#39;t change later.</span></sc-if>
+            </div>
+            <div class="bz-field">
               <label class="bz-lbl" for="su-gbiz">What&#39;s your business called?</label>
               <input id="su-gbiz" class="bz-in" type="text" autocomplete="organization" value="{{f.biz}}" onChange="{{setBiz}}" aria-invalid="{{g.inv}}" style="border-color: {{g.border}};">
               <sc-if value="{{g.err}}" hint-placeholder-val="{{false}}"><span class="bz-err">{{g.err}}</span></sc-if>
@@ -167,23 +196,28 @@ a{color:#18161F}a:hover{color:#000000}
       <aside aria-label="How BillingEase works" style="flex: 1 1 300px; max-width: 400px; min-width: 0; box-sizing: border-box; background: #18161F; color: #FFFFFF; border-radius: 24px; padding: clamp(22px, 4vw, 32px); display: flex; flex-direction: column; gap: 18px;">
         <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>How it works</span>
         <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; color: #FFFFFF;">Your business, in three numbers.</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #EEE8FF;">Invoices, receipts, payroll and tax each sit behind one of them. We do the bookkeeping and ask you only for what we can&#39;t do alone.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #EEE8FF;">{{side.body}}</p>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div class="bz-eqrow">
-            <span class="bz-eqtop"><span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #C9BCFB;"></span>Coming in</span><strong style="font-variant-numeric: tabular-nums;">$24,850</strong></span>
+            <span class="bz-eqtop"><span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #C9BCFB;"></span>Coming in</span><strong style="font-variant-numeric: tabular-nums;">{{side.in}}</strong></span>
             <span class="bz-eqline">What customers paid you this month, or still owe.</span>
           </div>
           <div class="bz-eqrow">
-            <span class="bz-eqtop"><span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #F4C3A1;"></span>− Going out</span><strong style="font-variant-numeric: tabular-nums;">$13,640</strong></span>
-            <span class="bz-eqline">Bills, subscriptions and payroll, paid or still to pay.</span>
+            <span class="bz-eqtop"><span style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #F4C3A1;"></span>− Going out</span><strong style="font-variant-numeric: tabular-nums;">{{side.out}}</strong></span>
+            <span class="bz-eqline">{{side.outLine}}</span>
           </div>
           <div class="bz-eqrow" style="background: rgba(185,163,255,0.16);">
-            <span class="bz-eqtop"><span style="font-weight: 600;">= Yours to keep</span><strong style="font: 700 24px Sora, sans-serif; letter-spacing: -0.02em; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407</strong></span>
-            <span class="bz-eqline">What&#39;s left after tax is set aside. Actually yours.</span>
+            <span class="bz-eqtop"><span style="font-weight: 600;">= Yours to keep</span><strong style="font: 700 24px Sora, sans-serif; letter-spacing: -0.02em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{side.keep}}</strong></span>
+            <span class="bz-eqline">{{side.keepLine}}</span>
           </div>
         </div>
-        <dc-import name="AuthArt" part="scene" variant="signup" hint-size="100%,206px"></dc-import>
-        <span style="margin-top: auto; font-size: 13px; color: #EEE8FF;">Example: a small design studio in October.</span>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{side.rules}}" as="r" hint-placeholder-count="3">
+            <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; color: #FFFFFF;"><span style="width: 20px; height: 20px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none; margin-top: 1px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>{{r}}</li>
+          </sc-for>
+        </ul>
+        <dc-import name="AuthArt" part="scene" variant="signup" country="{{side.country}}" hint-size="100%,206px"></dc-import>
+        <span style="margin-top: auto; font-size: 13px; color: #EEE8FF;">{{side.foot}}</span>
       </aside>
     </main>
 
@@ -205,7 +239,8 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { stage: 'form', name: '', biz: '', email: '', gTried: false, pass: '', show: false, terms: false, tried: false, legal: null, toast: null };
+    const h = (() => { try { return (window.location.hash || '').slice(1); } catch (e) { return ''; } })();
+    this.state = { stage: 'form', country: h === 'uk' || h === 'lk' ? h : null, cTried: false, name: '', biz: '', email: '', gTried: false, pass: '', show: false, terms: false, tried: false, legal: null, toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   strength(p) {
@@ -231,7 +266,8 @@ class Component extends DCLogic {
     const emailErr = s.tried ? (!s.email.trim() ? 'Enter your work email.' : (!valid(s.email) ? 'That doesn’t look like an email address. Check for typos.' : null)) : null;
     const passErr = s.tried ? (!s.pass ? 'Choose a password.' : (s.pass.length < 8 ? 'Use at least 8 characters.' : (sc < 2 ? 'A bit stronger, please: make it longer or add numbers and symbols.' : null))) : null;
     const termsErr = s.tried && !s.terms ? 'Please agree to the Terms to create an account.' : null;
-    const nErr = [nameErr, bizErr, emailErr, passErr, termsErr].filter(Boolean).length;
+    const countryErr = (s.tried || s.cTried) && !s.country ? 'Choose where your business is. It decides your tax rules.' : null;
+    const nErr = [countryErr, nameErr, bizErr, emailErr, passErr, termsErr].filter(Boolean).length;
     const red = '#A8200D', base = '#CBC7D3';
 
     const f = {
@@ -242,26 +278,51 @@ class Component extends DCLogic {
       nameErr, emailErr, passErr, termsErr,
       nameInv: nameErr ? 'true' : 'false', emailInv: emailErr ? 'true' : 'false', passInv: passErr ? 'true' : 'false', termsInv: termsErr ? 'true' : 'false',
       nameB: nameErr ? red : base, emailB: emailErr ? red : base, passB: passErr ? red : base,
-      emailHint: !emailErr,
+      emailHint: !emailErr, countryErr, countryHint: !countryErr,
       summary: nErr > 1 ? 'Fix ' + nErr + ' things above to create your account.' : null
     };
     const LEGAL = {
       terms: { title: 'Terms, in short', body: 'You own your data and can export or delete it any time. Free to start; paid features say their price before you turn them on.' },
-      privacy: { title: 'Privacy, in short', body: 'We use your details to run your account and never sell them. Bank connections are read-only.' }
+      privacy: { title: 'Privacy, in short', body: 'We use your details to run your account and never sell them. Your accountant sees your books only once you link them, and you can remove them any time.' }
     };
     const set = (o) => this.setState(o);
     // What the person typed travels to setup and becomes their business profile.
-    const GOOGLE = { name: s.name.trim() || 'Alex Morgan', email: valid(s.email) ? s.email.trim() : 'alex.morgan@gmail.com' };
+    const GOOGLE = s.country === 'lk'
+      ? { name: s.name.trim() || 'Nimal Perera', email: valid(s.email) ? s.email.trim() : 'nimal.perera@gmail.com' }
+      : { name: s.name.trim() || 'Sam Taylor', email: valid(s.email) ? s.email.trim() : 'sam.taylor@gmail.com' };
     const keep = (o) => { try { sessionStorage.setItem('be.signup', JSON.stringify(o)); } catch (e) { /* private window: setup asks again */ } };
-    const gErr = s.gTried && !s.biz.trim() ? 'Add your business name to continue.' : null;
+    const gErr = s.gTried && !s.biz.trim() ? 'Add your business name to continue.' : (s.gTried && !s.country ? 'Choose where your business is to continue.' : null);
     const g = { first: GOOGLE.name.split(' ')[0], email: GOOGLE.email, err: gErr, inv: gErr ? 'true' : 'false', border: gErr ? red : base };
+    // The dark panel shows the chosen country's version (the UK until one is picked).
+    const sideC = s.country || 'uk';
+    const K = (window.COUNTRY || {})[sideC] || {};
+    const cur = K.currency || 'GBP';
+    const m = (n) => BE.money(n, cur, { whole: true });
+    const EX = sideC === 'lk' ? { in: 1450000, out: 980000, rate: 0.2 } : { in: 5200, out: 1950, rate: 0.25 };
+    const exProfit = EX.in - EX.out;
+    const side = {
+      country: sideC, in: m(EX.in), out: m(EX.out), keep: m(exProfit - Math.round(exProfit * EX.rate)),
+      body: sideC === 'lk' ? 'Invoices, expenses, payroll and your VAT and SSCL each sit behind one of them. Your practitioner sees the same books in TaxWise.lk.' : 'Invoices, expenses, your property and your MTD quarter each sit behind one of them. Your accountant sees the same records.',
+      outLine: sideC === 'lk' ? 'Expenses, bills and payroll, paid or still to pay.' : 'Expenses and bills, paid or still to pay.',
+      keepLine: sideC === 'lk' ? 'What’s left after income tax is set aside.' : 'What’s left after Income Tax and National Insurance are set aside.',
+      rules: sideC === 'lk'
+        ? ['Rupees, with the year of assessment from ' + K.taxYear.start.replace(/ \d{4}$/, ''), K.vatInvoiceTitle + 's with VAT ' + K.vatRates[0].label + ' and SSCL as its own line', 'Payroll with EPF, ETF and APIT worked out for you']
+        : ['Pounds, with the tax year from ' + K.taxYear.start.replace(/ \d{4}$/, ''), 'Expenses in HMRC’s categories, ready each quarter', 'Your practice files your Making Tax Digital updates'],
+      foot: s.country ? 'Example month for a small design studio in ' + K.name + '.' : 'Example month for a small design studio. Pick your country to see its version.'
+    };
+    const countries = ['uk', 'lk'].map((id) => {
+      const P = (window.COUNTRY || {})[id] || {}, on = s.country === id;
+      return { name: P.name, sym: P.symbol, on: on ? 'true' : 'false', border: on ? '#18161F' : '#E2DFE8', bg: on ? '#EEE8FF' : '#FFFFFF', tint: id === 'uk' ? '#EEE8FF' : '#FDE6D6',
+        ex: id === 'uk' ? 'Pounds · HMRC · MTD' : 'Rupees · IRD · EPF and ETF', pick: () => set({ country: id, cTried: false }) };
+    });
     return {
+      side, countries,
       g, biz: s.biz.trim() || 'your business',
       setBiz: (e) => set({ biz: e.target.value, gTried: false }),
-      saveSignup: () => keep({ name: s.name.trim(), business: s.biz.trim(), email: s.email.trim(), via: 'email' }),
+      saveSignup: () => keep({ country: s.country, name: s.name.trim(), business: s.biz.trim(), email: s.email.trim(), via: 'email' }),
       saveGoogle: (e) => {
-        if (!s.biz.trim()) { if (e && e.preventDefault) e.preventDefault(); set({ gTried: true }); return; }
-        keep({ name: GOOGLE.name, business: s.biz.trim(), email: GOOGLE.email, via: 'google' });
+        if (!s.biz.trim() || !s.country) { if (e && e.preventDefault) e.preventDefault(); set({ gTried: true, cTried: true }); return; }
+        keep({ country: s.country, name: GOOGLE.name, business: s.biz.trim(), email: GOOGLE.email, via: 'google' });
       },
       toast: s.toast, f, legal: s.legal ? LEGAL[s.legal] : null,
       isForm: s.stage === 'form', isDone: s.stage === 'done', isGoogle: s.stage === 'google',
@@ -275,8 +336,8 @@ class Component extends DCLogic {
       showPrivacy: () => { set({ legal: s.legal === 'privacy' ? null : 'privacy' }); },
       closeLegal: () => set({ legal: null }),
       create: () => {
-        if (!s.name.trim() || !s.biz.trim() || !valid(s.email) || s.pass.length < 8 || sc < 2 || !s.terms) { set({ tried: true }); return; }
-        keep({ name: s.name.trim(), business: s.biz.trim(), email: s.email.trim(), via: 'email' });
+        if (!s.country || !s.name.trim() || !s.biz.trim() || !valid(s.email) || s.pass.length < 8 || sc < 2 || !s.terms) { set({ tried: true }); return; }
+        keep({ country: s.country, name: s.name.trim(), business: s.biz.trim(), email: s.email.trim(), via: 'email' });
         set({ stage: 'done', tried: false });
       },
       google: () => { set({ stage: 'google' }); this.notify('Signed in with Google'); },

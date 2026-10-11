@@ -64,7 +64,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
   <sc-if value="{{banner}}" hint-placeholder-val="{{false}}">
     <div role="status" style="background: #FFF0B8; color: #6B5000; padding: 10px clamp(16px, 4vw, 32px); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; font-size: 14px;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3z"></path><path d="m3 7 9 6 9-6"></path></svg>
-      <span><strong>Verify {{v.email}}</strong> to send invoices and get paid.</span>
+      <span><strong>Verify {{v.email}}</strong> to email invoices and quotes.</span>
       <button type="button" class="bz-link" style="font-size: 14px; color: #6B5000; min-height: 28px;" disabled="{{v.cooling}}" onClick="{{resendVerify}}">{{v.resendLabel}}</button>
     </div>
   </sc-if>
@@ -84,10 +84,15 @@ select.bz-in{cursor:pointer;padding-right:8px}
       <div class="bz-seg">
         <sc-for list="{{flows}}" as="f" hint-placeholder-count="3"><button type="button" aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="min-height: 36px; font-size: 13px;">{{f.label}}</button></sc-for>
       </div>
+      <sc-if value="{{showFrom}}" hint-placeholder-val="{{false}}">
+        <div class="bz-seg" role="group" aria-label="Invite from">
+          <sc-for list="{{froms}}" as="f" hint-placeholder-count="2"><button type="button" aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="min-height: 36px; font-size: 13px;">{{f.label}}</button></sc-for>
+        </div>
+      </sc-if>
     </div>
 
     <!-- Illustrations in the margins (a small band on phones) -->
-    <dc-import name="AuthArt" part="backdrop" variant="forgot" hint-size="100%,84px"></dc-import>
+    <dc-import name="AuthArt" part="backdrop" variant="forgot" country="{{cty}}" hint-size="100%,84px"></dc-import>
 
     <main style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 16px;">
       <div style="flex: 1 1 360px; max-width: 480px; min-width: 0; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(22px, 5vw, 40px); display: flex; flex-direction: column; gap: 20px;">
@@ -204,10 +209,10 @@ select.bz-in{cursor:pointer;padding-right:8px}
             <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(32px, 6vw, 42px); line-height: 1.05; letter-spacing: -0.03em;">Email verified.</h1>
-              <p class="bz-sub" style="font-size: 15px;"><strong style="color: #18161F; overflow-wrap: anywhere;">{{v.email}}</strong> is confirmed. Invoices can go out now, and customers can pay you online.</p>
+              <p class="bz-sub" style="font-size: 15px;"><strong style="color: #18161F; overflow-wrap: anywhere;">{{v.email}}</strong> is confirmed. Invoices and quotes can go out by email now.</p>
             </div>
             <a href="ThreeHome.dc.html" class="bz-btn" style="min-height: 48px; font-size: 15px;">Go to Home</a>
-            <a href="ThreeIn.dc.html" style="align-self: center; font-size: 14px; font-weight: 600;">Bill someone now</a>
+            <a href="ThreeIn.dc.html#bill" style="align-self: center; font-size: 14px; font-weight: 600;">Send an invoice now</a>
           </div>
         </sc-if>
 
@@ -215,12 +220,12 @@ select.bz-in{cursor:pointer;padding-right:8px}
         <sc-if value="{{iForm}}" hint-placeholder-val="{{false}}">
           <div style="display: flex; flex-direction: column; gap: 18px;">
             <div style="display: flex; align-items: center; gap: 12px;">
-              <span class="bz-av" style="background: #EEE8FF; color: #18161F;">JL</span>
-              <span class="bz-mut">Jordan Lee · jordan@northwind.studio<br>Sent Oct 2 · works until Oct 9</span>
+              <span class="bz-av" style="background: #EEE8FF; color: #18161F;">{{inv.initials}}</span>
+              <span class="bz-mut">{{inv.contact}} · {{inv.firm}}<br>{{inv.from}} · sent 9 Oct, works until 23 Oct</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(28px, 5vw, 36px); line-height: 1.1; letter-spacing: -0.03em;">Jordan Lee invited you to Northwind Studio as Staff.</h1>
-              <p class="bz-sub" style="font-size: 15px;">Join to create quotes and invoices and log your time. The invite is for <strong style="color: #18161F;">sam@northwind.studio</strong>.</p>
+              <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(28px, 5vw, 36px); line-height: 1.1; letter-spacing: -0.03em;">{{inv.firm}} invited you to keep your books in BillingEase.</h1>
+              <p class="bz-sub" style="font-size: 15px;">{{inv.sub}} The invite is for <strong style="color: #18161F; overflow-wrap: anywhere;">{{inv.to}}</strong>.</p>
             </div>
             <div role="group" aria-label="How you’ll join" class="bz-seg" style="align-self: stretch; display: flex;">
               <sc-for list="{{iTabs}}" as="t" hint-placeholder-count="2"><button type="button" aria-pressed="{{t.on}}" onClick="{{t.pick}}" style="flex: 1;">{{t.label}}</button></sc-for>
@@ -243,7 +248,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
               <div style="display: flex; flex-direction: column; gap: 14px;">
                 <div class="bz-field"><label class="bz-lbl" for="iv-email">Email</label><input id="iv-email" class="bz-in" type="email" autocomplete="email" value="{{iv.email}}" onChange="{{setIvEmail}}"></div>
                 <div class="bz-field"><label class="bz-lbl" for="iv-pw2">Password</label><input id="iv-pw2" class="bz-in" type="password" autocomplete="current-password" value="{{iv.pass2}}" onChange="{{setIvPass2}}"></div>
-                <span class="bz-mut">Northwind Studio gets added next to your other businesses. Switch between them from your account menu.</span>
+                <span class="bz-mut">{{inv.haveNote}}</span>
               </div>
             </sc-if>
             <sc-if value="{{iv.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{iv.err}}</span></sc-if>
@@ -255,13 +260,13 @@ select.bz-in{cursor:pointer;padding-right:8px}
           <div role="status" style="display: flex; flex-direction: column; gap: 20px;">
             <span style="width: 56px; height: 56px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(32px, 6vw, 42px); line-height: 1.05; letter-spacing: -0.03em;">Welcome to Northwind Studio.</h1>
-              <p class="bz-sub" style="font-size: 15px;">You&#39;re in as Staff, {{iv.first}}. We let Jordan know. Start with a quote or log some time.</p>
+              <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(32px, 6vw, 42px); line-height: 1.05; letter-spacing: -0.03em;">You&#39;re linked, {{iv.first}}.</h1>
+              <p class="bz-sub" style="font-size: 15px;">{{inv.joined}}</p>
             </div>
             <a href="ThreeHome.dc.html" class="bz-btn" style="min-height: 48px; font-size: 15px;">Go to Home</a>
             <span style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 20px;">
-              <a href="SellQuotes.dc.html#new" style="font-size: 14px; font-weight: 600;">Start a quote</a>
-              <a href="ThreeIn.dc.html" style="font-size: 14px; font-weight: 600;">Open Coming in</a>
+              <a href="Accountant.dc.html" style="font-size: 14px; font-weight: 600;">{{inv.acctLink}}</a>
+              <a href="ThreeOut.dc.html#expense" style="font-size: 14px; font-weight: 600;">Add an expense</a>
             </span>
           </div>
         </sc-if>
@@ -269,7 +274,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
           <div role="status" style="display: flex; flex-direction: column; gap: 20px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <h1 style="margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 700; font-size: clamp(32px, 6vw, 42px); line-height: 1.05; letter-spacing: -0.03em;">Invite declined.</h1>
-              <p class="bz-sub" style="font-size: 15px;">We told Jordan Lee. Nothing was created for you, and the link no longer works.</p>
+              <p class="bz-sub" style="font-size: 15px;">We told {{inv.contact}}. Nothing was created for you, and the link no longer works.</p>
             </div>
             <button type="button" class="bz-btn bz-btn2" style="min-height: 48px; font-size: 15px;" onClick="{{undoDecline}}">I changed my mind</button>
             <a href="ThreeLanding.dc.html" style="align-self: center; font-size: 14px; font-weight: 600;">What is BillingEase?</a>
@@ -299,7 +304,7 @@ select.bz-in{cursor:pointer;padding-right:8px}
             </sc-for>
           </ul>
         </sc-if>
-        <dc-import name="AuthArt" part="scene" variant="{{panel.art}}" hint-size="100%,206px"></dc-import>
+        <dc-import name="AuthArt" part="scene" variant="{{panel.art}}" country="{{cty}}" hint-size="100%,206px"></dc-import>
         <span style="margin-top: auto; font-size: 13px; color: #EEE8FF;">{{panel.foot}}</span>
       </aside>
     </main>
@@ -329,7 +334,7 @@ class Component extends DCLogic {
       fp: { email: me, tried: false },
       np: { pass: '', again: '', show: false, others: true, tried: false },
       v: { email: me, done: false, editing: false, draft: '', tried: false },
-      iv: { tab: 'new', name: 'Sam Ortiz', pass: '', show: false, email: 'sam@northwind.studio', pass2: '', tried: false, stage: 'form' },
+      iv: { tab: 'new', name: '', pass: '', show: false, email: '', pass2: '', tried: false, stage: 'form' }, from: null,
       cool: { fp: 0, v: 0 }, toast: null
     };
   }
@@ -385,21 +390,32 @@ class Component extends DCLogic {
       pass: s.np.pass, again: s.np.again, others: s.np.others, type: s.np.show ? 'text' : 'password', showLabel: s.np.show ? 'Hide' : 'Show', shown: s.np.show ? 'true' : 'false',
       bars: m.bars, strength: m.label, rules, err: npErr,
       border: s.np.tried && npErr && s.np.pass.length < 8 ? '#A8200D' : '#CBC7D3', border2: mismatch ? '#A8200D' : '#CBC7D3',
-      othersNote: s.np.others ? 'We signed you out on your iPhone and iPad.' : 'Your other devices stay signed in.'
+      othersNote: s.np.others ? 'We signed you out on your other devices.' : 'Your other devices stay signed in.'
     };
 
     const vErr = s.v.tried && !valid(s.v.draft) ? 'Enter a valid email address.' : null;
     const v = { email: s.v.email, editing: s.v.editing, notEditing: !s.v.editing, draft: s.v.draft, err: vErr, border: vErr ? '#A8200D' : '#CBC7D3', cooling: s.cool.v > 0, resendLabel: s.cool.v > 0 ? 'Resend in ' + mmss(s.cool.v) : 'Resend the email' };
 
+    // The accountant invite: a UK practice (Dale & Shaw) or a Sri Lankan practitioner (Jayasinghe & Co).
+    const from = s.from || BE.country();
+    const INV = from === 'lk'
+      ? { firm: 'Jayasinghe & Co', firmLong: 'Jayasinghe & Co, Chartered Accountants', contact: 'Ruwan Jayasinghe', initials: 'RJ', from: 'Your tax practitioner', owner: 'Ayesha Fernando', to: 'ayesha@serendibstudio.lk', biz: 'Serendib Design Studio',
+          sub: 'Join as their client: you keep your books, invoices and payroll here, and Ruwan sees them in TaxWise.lk, sends you requests and takes your year into your income tax return.',
+          haveNote: 'Your TaxWise.lk sign-in works here too. Your books stay yours; Jayasinghe & Co get access to them.', acctLink: 'See your practitioner' }
+      : { firm: 'Dale & Shaw Accountants', firmLong: 'Dale & Shaw Accountants', contact: 'Priya Shaw', initials: 'PS', from: 'Your accountant', owner: 'Ellie Harper', to: 'ellie@harperstudio.co.uk', biz: 'Harper Studio',
+          sub: 'Join as their client: you keep your records here in HMRC’s categories, and Priya sees your quarter, sends you requests and files your Making Tax Digital updates.',
+          haveNote: 'Your records stay yours; Dale & Shaw get access to them. You can remove that access any time.', acctLink: 'See your accountant' };
+    const ivName = s.iv.name || INV.owner, ivEmail = s.iv.email || INV.to;
+    const inv = Object.assign({}, INV, { joined: INV.biz + ' is now linked to ' + INV.firmLong + '. We let ' + INV.contact.split(' ')[0] + ' know, and their requests will show on your Home.' });
     const ivM = this.meter(s.iv.pass);
-    const ivErr = s.iv.tried ? (s.iv.tab === 'new' ? (!s.iv.name.trim() ? 'Enter your name.' : (s.iv.pass.length < 8 ? 'Your password needs at least 8 characters.' : null)) : (!valid(s.iv.email) ? 'Enter a valid email address.' : (!s.iv.pass2 ? 'Enter your password.' : null))) : null;
+    const ivErr = s.iv.tried ? (s.iv.tab === 'new' ? (!ivName.trim() ? 'Enter your name.' : (s.iv.pass.length < 8 ? 'Your password needs at least 8 characters.' : null)) : (!valid(ivEmail) ? 'Enter a valid email address.' : (!s.iv.pass2 ? 'Enter your password.' : null))) : null;
     const iv = {
-      name: s.iv.name, pass: s.iv.pass, email: s.iv.email, pass2: s.iv.pass2, type: s.iv.show ? 'text' : 'password', showLabel: s.iv.show ? 'Hide' : 'Show', shown: s.iv.show ? 'true' : 'false',
-      bars: ivM.bars, strength: ivM.label, err: ivErr, first: (s.iv.name.trim() || 'Sam').split(' ')[0],
+      name: ivName, pass: s.iv.pass, email: ivEmail, pass2: s.iv.pass2, type: s.iv.show ? 'text' : 'password', showLabel: s.iv.show ? 'Hide' : 'Show', shown: s.iv.show ? 'true' : 'false',
+      bars: ivM.bars, strength: ivM.label, err: ivErr, first: (ivName.trim() || INV.owner).split(' ')[0],
       cta: s.iv.tab === 'new' ? 'Create account and join' : 'Sign in and join'
     };
 
-    const FLOWS = [['forgot', 'Forgot password'], ['verify', 'Verify email'], ['invite', 'Team invite']];
+    const FLOWS = [['forgot', 'Forgot password'], ['verify', 'Verify email'], ['invite', 'Accountant invite']];
     const flows = FLOWS.map(([k, label]) => ({ label, on: flow === k, pick: () => { try { if (hashFlow) history.replaceState(null, '', '#' + k); } catch (e) { /* ignore */ } this.setState({ flow: k }); } }));
     const STEPS = ['Email', 'Inbox', 'New password', 'Done'];
     const steps = STEPS.map((label, i) => ({ label, aria: 'Step ' + (i + 1) + ': ' + label, on: s.step === i + 1, fg: s.step >= i + 1 ? '#18161F' : '#5F5B68', bar: s.step > i ? (s.step === i + 1 ? '#7A5AF8' : '#18161F') : '#E2DFE8', pick: () => this.setState({ step: i + 1 }) }));
@@ -410,11 +426,17 @@ class Component extends DCLogic {
     const no = (t) => ({ t, icon: NO, bg: 'rgba(238,232,255,0.16)', stroke: '#EEE8FF', fg: '#EEE8FF' });
     let panel;
     if (isF) panel = { art: 'forgot', eyebrow: P.business || 'Your business', eqLabel: (P.business || 'Your business') + ' this October', title: 'Your books are safe.', body: 'A new password doesn’t touch anything in your business. Invoices still go out, payments still come in, and October still adds up.', eq: true, list: false, foot: 'We never ask for your password by email or phone.' };
-    else if (isV) panel = { art: 'verify', eyebrow: 'Why we ask', title: s.v.done ? 'All set.' : 'Two things wait for a verified email.', body: 'Customers reply to the address on your invoices, and we need a way to reach you about money moving.', eq: false, list: [s.v.done ? yes('Sending invoices') : no('Sending invoices'), s.v.done ? yes('Getting paid online') : no('Getting paid online'), yes('Setting up your business'), yes('Adding expenses and receipts')], foot: 'The link in the email works for 24 hours.' };
-    else panel = { art: 'invite', eyebrow: 'Staff at Northwind Studio', title: 'What you’ll be able to do', body: 'Jordan picked the Staff role for you. An Owner or Admin can change it later.', eq: false, list: [yes('Create quotes and invoices'), yes('Log time you can bill'), yes('See invoices you made'), no('See the bank or payroll'), no('Pay bills or change settings')], foot: 'Your pay stays private: Staff can’t see anyone’s payroll.' };
+    else if (isV) panel = { art: 'verify', eyebrow: 'Why we ask', title: s.v.done ? 'All set.' : 'Two things wait for a verified email.', body: 'Customers reply to the address on your invoices, and we need a way to reach you about your account.', eq: false, list: [s.v.done ? yes('Emailing invoices') : no('Emailing invoices'), s.v.done ? yes('Emailing quotes') : no('Emailing quotes'), yes('Setting up your business'), yes('Adding expenses and attachments')], foot: 'The link in the email works for 24 hours.' };
+    else panel = { art: 'invite', eyebrow: 'Client of ' + INV.firm, title: 'What ' + INV.firm + ' will see', body: from === 'lk' ? 'A practitioner on TaxWise.lk works from your books instead of a box of papers at year end.' : 'A practice on TaxWise works from your records instead of a spreadsheet at the end of each quarter.', eq: false,
+      list: from === 'lk'
+        ? [yes('Your books, VAT and SSCL and payroll'), yes('Requests that show on your Home'), yes('Your year, taken into your TaxWise.lk return'), no('Your password, or signing in as you')]
+        : [yes('Your records and quarter totals'), yes('Requests that show on your Home'), yes('Your quarterly updates, filed from their software'), no('Your password, or signing in as you')],
+      foot: 'You can remove their access any time from Your accountant.' };
 
     return {
-      toast: s.toast, flows, steps, panel, fp, np, v, iv, t,
+      toast: s.toast, flows, steps, panel, fp, np, v, iv, t, inv, cty: isI ? from : BE.country(),
+      showFrom: isI && s.iv.stage === 'form',
+      froms: [['uk', 'UK practice'], ['lk', 'Sri Lanka practitioner']].map(([k, label]) => ({ label, on: from === k, pick: () => this.setState({ from: k, iv: Object.assign({}, s.iv, { name: '', email: '', tried: false }) }) })),
       topHint: isI ? 'Already joined?' : (isV ? 'Wrong account?' : 'Remembered it?'),
       isForgot: isF, f1: isF && s.step === 1, f2: isF && s.step === 2, f3: isF && s.step === 3, f4: isF && s.step === 4,
       banner: isV && !s.v.done, vPending: isV && !s.v.done, vDone: isV && s.v.done,
@@ -437,19 +459,19 @@ class Component extends DCLogic {
       cancelVEmail: () => set('v', { editing: false, tried: false }),
       setVDraft: (e) => set('v', { draft: e.target.value }),
       saveVEmail: () => { if (!valid(s.v.draft)) { set('v', { tried: true }); return; } set('v', { email: s.v.draft.trim(), editing: false, tried: false }); this.notify('Link sent to ' + s.v.draft.trim()); this.cooldown('v', 60); },
-      setIvName: (e) => set('iv', { name: e.target.value }),
+      setIvName: (e) => set('iv', { name: e.target.value || ' ' }),
       setIvPass: (e) => set('iv', { pass: e.target.value }),
-      setIvEmail: (e) => set('iv', { email: e.target.value }),
+      setIvEmail: (e) => set('iv', { email: e.target.value || ' ' }),
       setIvPass2: (e) => set('iv', { pass2: e.target.value }),
       toggleIv: () => set('iv', { show: !s.iv.show }),
-      acceptInvite: () => { if (ivErr || (s.iv.tab === 'new' ? (!s.iv.name.trim() || s.iv.pass.length < 8) : (!valid(s.iv.email) || !s.iv.pass2))) { set('iv', { tried: true }); return; } set('iv', { stage: 'joined', tried: false });
-        // Joining as a team member opens the business that invited you (the sample, Northwind Studio).
-        if (BE.isEmpty() || (BE.get('profile') || {}).business !== 'Northwind Studio') BE.startSample();
-        const who = s.iv.tab === 'new' ? s.iv.name.trim() : 'Sam Ortiz';
-        BE.update('team', 'sam', { pending: false, status: 'Joined today', name: who || 'Sam Ortiz', email: s.iv.tab === 'new' ? 'sam@northwind.studio' : s.iv.email.trim() });
-        BE.log((who || 'Sam Ortiz') + ' accepted the invite and joined as Staff');
-        BE.notify((who || 'Sam Ortiz') + ' joined Northwind Studio', 'Accepted Jordan Lee’s invite as Staff', 'BizTeam.dc.html');
-        this.notify('You joined Northwind Studio as Staff');
+      acceptInvite: () => { if (ivErr || (s.iv.tab === 'new' ? (!ivName.trim() || s.iv.pass.length < 8) : (!valid(ivEmail) || !s.iv.pass2))) { set('iv', { tried: true }); return; } set('iv', { stage: 'joined', tried: false });
+        // The invite opens the business the practice set up for this client (the country's sample).
+        if (BE.isEmpty() || BE.country() !== from || (BE.get('profile') || {}).business !== INV.biz) BE.startSample(from);
+        const who = s.iv.tab === 'new' ? ivName.trim() : INV.owner;
+        if (who && who !== INV.owner) BE.set('profile', Object.assign({}, BE.get('profile'), { owner: who, first: who.split(' ')[0], initials: BE.initials(who) }));
+        BE.log(who + ' accepted ' + INV.contact + '’s invite and linked ' + INV.biz + ' to ' + INV.firm);
+        BE.notify('Linked to ' + INV.firm, INV.contact + ' can now see ' + INV.biz + ' and send you requests.', 'Accountant.dc.html');
+        this.notify('You’re now a client of ' + INV.firm);
       },
       declineInvite: () => set('iv', { stage: 'declined' }),
       undoDecline: () => set('iv', { stage: 'form' }),

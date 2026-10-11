@@ -1,11 +1,376 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · Ask</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Ask</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-sug:hover{background:#EEE8FF!important;border-color:#B9A3FF!important}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+    <dc-import name="AppCrumbs" area="home" here="Ask"></dc-import>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section aria-labelledby="ask-h" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 8px; max-width: 760px;">
+          <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-size: 12px; font-weight: 700;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>
+            AI answers for {{countryWord}}
+          </span>
+          <h1 id="ask-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">Ask about tax and your books</h1>
+          <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Answers come from {{sources}}, and name the source they rely on. They can be wrong and they never file anything. When it needs judgement, send it to {{practice}}.</p>
+        </div>
+
+        <!-- Question box -->
+        <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <label style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 600;">Your question
+            <textarea class="be-field" rows="3" value="{{draft}}" onChange="{{setDraft}}" onKeyDown="{{draftKey}}" placeholder="{{placeholder}}" style="padding: 12px 14px; border: 1px solid {{draftBorder}}; border-radius: 14px; font: 400 16px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; resize: vertical; box-sizing: border-box; width: 100%;"></textarea>
+          </label>
+          <sc-if value="{{draftErr}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">Type a question first, or pick one below.</span></sc-if>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+            <span style="font-size: 12.5px; color: #5F5B68;">Press Enter to ask · Shift and Enter for a new line</span>
+            <button type="button" onClick="{{ask}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>Ask
+            </button>
+          </div>
+        </div>
+
+        <!-- Suggested questions -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 14px; font-weight: 600; color: #47444F;">People in {{countryWord}} often ask</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{suggestions}}" as="sg" hint-placeholder-count="8">
+              <button type="button" class="be-sug" onClick="{{sg.pick}}" aria-pressed="{{sg.pressed}}" style="min-height: 40px; max-width: 100%; padding: 8px 14px; border: 1px solid {{sg.border}}; border-radius: 18px; background: {{sg.bg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; text-align: left; cursor: pointer;">{{sg.q}}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Answers, newest first -->
+        <sc-if value="{{hasThread}}" hint-placeholder-val="{{true}}">
+          <div aria-live="polite" style="display: flex; flex-direction: column; gap: 16px;">
+            <sc-for list="{{thread}}" as="a" hint-placeholder-count="1">
+              <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(16px, 2.4vw, 24px); display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-size: 12.5px; font-weight: 600; color: #5F5B68;">You asked</span>
+                  <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; line-height: 1.3; overflow-wrap: anywhere;">{{a.q}}</h2>
+                </div>
+                <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12.5px; font-weight: 700;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>
+                  {{a.label}}
+                </span>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <sc-for list="{{a.body}}" as="para" hint-placeholder-count="3">
+                    <p style="margin: 0; font-size: 15.5px; line-height: 1.6; color: #2E2B36;">{{para}}</p>
+                  </sc-for>
+                </div>
+                <sc-if value="{{a.fact}}" hint-placeholder-val="{{false}}">
+                  <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; background: #EEE8FF; font-size: 14px; line-height: 1.45;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="M4 20V10M10 20V4M16 20v-7M2 20h20"></path></svg>
+                    <span><strong>From your books:</strong> {{a.fact}}</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{a.hasSources}}" hint-placeholder-val="{{true}}">
+                  <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #EFEDF3;">
+                    <span style="font-size: 13px; font-weight: 700;">Sources</span>
+                    <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px;">
+                      <sc-for list="{{a.sources}}" as="src" hint-placeholder-count="2">
+                        <li style="display: flex; gap: 8px; align-items: baseline; font-size: 13.5px; line-height: 1.45; color: #47444F;">
+                          <span style="flex: none; min-width: 20px; height: 20px; border-radius: 6px; background: #EFEDF3; color: #18161F; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{src.n}}</span>
+                          <span>{{src.name}}</span>
+                        </li>
+                      </sc-for>
+                    </ol>
+                  </div>
+                </sc-if>
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+                  <sc-for list="{{a.links}}" as="l" hint-placeholder-count="1">
+                    <a href="{{l.href}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{l.label}}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+                  </sc-for>
+                  <sc-if value="{{a.canSend}}" hint-placeholder-val="{{true}}">
+                    <button type="button" onClick="{{a.send}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{a.sendBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4zM8 9h8M8 12h5"></path></svg>{{askLabel}}
+                    </button>
+                  </sc-if>
+                  <sc-if value="{{a.noPractice}}" hint-placeholder-val="{{false}}">
+                    <a href="Accountant.dc.html" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Link {{practiceNoun}} to ask them</a>
+                  </sc-if>
+                  <sc-if value="{{a.sent}}" hint-placeholder-val="{{false}}">
+                    <span style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; min-height: 40px; padding: 4px 14px; border-radius: 20px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+                      Sent to {{practice}}
+                      <a href="Accountant.dc.html" style="color: #2F5711; font-weight: 700;">See it</a>
+                    </span>
+                  </sc-if>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{noThread}}" hint-placeholder-val="{{false}}">
+          <div style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 24px; padding: 28px 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Your answers show up here</span>
+            <span style="font-size: 15px; line-height: 1.5; color: #47444F; max-width: 560px;">Ask in your own words, or tap a question above. Each answer lists the sources it used and links to the place in BillingEase where you do it.</span>
+          </div>
+        </sc-if>
+      </section>
+
+      <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+        <section aria-labelledby="mine-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 id="mine-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Your questions to {{practice}}</h2>
+          <sc-if value="{{hasMine}}" hint-placeholder-val="{{false}}">
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{mine}}" as="mq" hint-placeholder-count="2">
+                <li style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 1.4;">
+                  <span style="font-weight: 600;">{{mq.title}}</span>
+                  <span style="font-size: 12.5px; color: #5F5B68;">{{mq.meta}}</span>
+                </li>
+              </sc-for>
+            </ul>
+            <a href="Accountant.dc.html" style="align-self: flex-start; font-size: 14px; font-weight: 600;">Open {{practiceTitle}}</a>
+          </sc-if>
+          <sc-if value="{{noMine}}" hint-placeholder-val="{{true}}">
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">When an answer isn’t enough, send the question on. It lands with {{practice}} with the answer attached, and shows on {{practiceTitle}}.</p>
+          </sc-if>
+        </section>
+        <section aria-labelledby="how-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 id="how-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">How Ask works</h2>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.45; color: #47444F;">
+            <sc-for list="{{how}}" as="h" hint-placeholder-count="4">
+              <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span><span>{{h}}</span></li>
+            </sc-for>
+          </ul>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 14px; font-weight: 600;">
+            <a href="Help.dc.html">Help with BillingEase</a>
+            <a href="ThreeHome.dc.html">Back to Home</a>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    // Ask.dc.html#<suggestion id> opens with that answer (e.g. #mileage, #epf).
+    const h = BE.hash();
+    this.state = { draft: '', tried: false, thread: h && /^[a-z-]+$/.test(h) ? [{ id: 't0', key: h, q: '' }] : [], sent: {}, toast: null };
+    this._n = 1;
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+
+  // Canned, grounded answers per country. No real AI calls in the prototype.
+  answers(lk) {
+    const W = (n) => BE.money(n, null, { whole: true });
+    const prof = BE.get('profile') || {};
+    const pk = BE.pack();
+    const pr = BE.practice();
+    if (!lk) {
+      const mi = pk.mileage || { first: 10000, rate1: 0.45, rate2: 0.25 };
+      const trips = BE.all('trips');
+      const miles = trips.reduce((a, x) => a + (Number(x.miles) || 0), 0);
+      const prop = BE.all('properties')[0];
+      const interest = prop ? Number(prop.mortgage || prop.interest || 0) : 0;
+      const kt = BE.keepTotals('year');
+      const est = kt.estimate || {};
+      const poa = (est.paymentsOnAccount || []);
+      const qs = pk.quarters || [];
+      return [
+        { id: 'expenses', q: 'What expenses can I claim as a sole trader?', kw: 'expense expenses claim allowable deduct deductible cost costs sole trader what can',
+          body: ['You can claim costs that are wholly and exclusively for your business. BillingEase sorts them into HMRC’s self-employment categories, such as Premises, Phone, internet and office, and Car, van and travel, which are the boxes your accountant uses for your quarterly updates.',
+            'Not allowable: client entertaining, the private share of anything you also use personally, fines, and money you take out for yourself. Equipment such as a laptop is a capital item: it’s claimed through capital allowances (usually the Annual Investment Allowance), not as an everyday expense.',
+            'For something used partly for work, like your phone, claim only the business share. Set the business-use percentage on the expense.'],
+          sources: ['gov.uk · Expenses if you’re self-employed', 'HMRC Business Income Manual · BIM37000, wholly and exclusively', 'Income Tax (Trading and Other Income) Act 2005 · section 34'],
+          links: [['Categories', 'BooksCategories.dc.html'], ['Record an expense', 'ThreeOut.dc.html#expense']] },
+        { id: 'home', q: 'Can I claim for working from home?', kw: 'home working from home use of home house flat rate office room heating broadband',
+          body: ['Yes, in one of two ways. The simplified flat rate depends on the hours you work at home each month: £10 for 25 to 50 hours, £18 for 51 to 100 hours, and £26 for 101 hours or more.',
+            'Or claim a share of your actual household costs, such as heating, electricity and broadband, split by the rooms you use for work and the time you use them. Keep a note of how you worked it out.',
+            'If you also rent a desk elsewhere (that goes under Premises), only count the hours you genuinely work at home.'],
+          sources: ['gov.uk · Simplified expenses if you’re self-employed: working from home', 'HMRC Business Income Manual · BIM47800, use of home'],
+          links: [['Record an expense', 'ThreeOut.dc.html#expense']] },
+        { id: 'mileage', q: 'How much can I claim for business mileage?', kw: 'mileage miles mile car van drive driving trip trips travel 45p fuel',
+          body: ['Using simplified expenses, claim ' + Math.round(mi.rate1 * 100) + 'p a mile for the first ' + mi.first.toLocaleString('en-GB') + ' business miles in the tax year, then ' + Math.round(mi.rate2 * 100) + 'p a mile after that. The rate covers fuel, insurance, repairs and wear, so you can’t also claim those for the same vehicle.',
+            'Trips to clients and suppliers count. Your regular journey to a permanent workplace is commuting, which doesn’t.'],
+          fact: miles ? 'you’ve logged ' + trips.length + ' trips and ' + miles + ' business miles this tax year, about ' + W(Math.min(miles, mi.first) * mi.rate1 + Math.max(0, miles - mi.first) * mi.rate2) + ' to claim.' : '',
+          sources: ['gov.uk · Simplified expenses if you’re self-employed: vehicles', 'HMRC Business Income Manual · BIM75005, simplified expenses for vehicles', 'Income Tax (Trading and Other Income) Act 2005 · sections 94D to 94I'],
+          links: [['Mileage', 'Mileage.dc.html'], ['Log a trip', 'Mileage.dc.html#new']] },
+        { id: 'mtd', q: 'When are my Making Tax Digital updates due?', kw: 'mtd making tax digital quarter quarterly update updates due deadline when dates final declaration',
+          body: ['For the 2026/27 tax year the standard update periods and deadlines are: ' + qs.map((q) => q.label + ' (' + q.from + ' to ' + q.to + ') by ' + q.due).join('; ') + '.',
+            'After the year, a final declaration replaces the old tax return; for 2026/27 it’s due by ' + (pk.finalDeclarationDue || '31 Jan 2028') + '. You’re in Making Tax Digital from 6 April 2026 if your self-employment and property income is over £50,000; the threshold drops to £30,000 from April 2027 and £20,000 from April 2028.',
+            pr.has ? pr.short + ' send the updates from their software. BillingEase keeps your records in HMRC’s categories and checks each quarter for gaps.' : 'Your accountant or your own MTD software sends the updates. BillingEase keeps your records in HMRC’s categories and checks each quarter for gaps.'],
+          sources: ['gov.uk · Making Tax Digital for Income Tax: find out if and when you need to use it', 'gov.uk · Send quarterly updates for Making Tax Digital for Income Tax'],
+          links: [['Quarters', 'Quarters.dc.html']] },
+        { id: 'mortgage', q: 'Can I deduct the mortgage interest on my rental flat?', kw: 'mortgage interest landlord rental flat property finance costs let letting deduct',
+          body: ['Not as an expense. For a residential let, mortgage interest and other finance costs give a tax reduction at the basic rate (20%) instead of being taken off your rent.',
+            'Letting agent fees, repairs, insurance and ground rent are still deducted from the rent as usual. BillingEase keeps mortgage interest in its own category so the reduction is worked out separately.'],
+          fact: interest ? 'interest on ' + (prop.name || 'your property') + ' is ' + W(interest) + ' a month, ' + W(interest * 12) + ' a year, so the reduction is about ' + W(interest * 12 * 0.2) + '.' : '',
+          sources: ['gov.uk · Restricting finance cost relief for individual landlords', 'HMRC Property Income Manual · PIM2054', 'Income Tax (Trading and Other Income) Act 2005 · section 272A'],
+          links: [['Properties', 'Properties.dc.html']] },
+        { id: 'poa', q: 'What are payments on account?', kw: 'payments on account poa january july advance payment self assessment tax bill',
+          body: ['If your Self Assessment bill is more than £1,000, and less than 80% of your tax was taken at source, HMRC asks for two advance payments towards the next year. Each is half of the previous year’s bill, due on 31 January and 31 July, with a balancing payment the following 31 January.',
+            'If your income drops, you can ask HMRC to reduce them, but you’ll pay interest if you reduce them too far. That’s a judgement call worth making with ' + (pr.has ? pr.short : 'your accountant') + '.'],
+          fact: est.total ? 'at this year’s pace your ' + (pk.taxYear ? pk.taxYear.label + ' ' : '') + 'Income Tax and NI is about ' + W(est.total) + (poa.length ? ', which would mean payments on account of about ' + W(poa[0].amount) + ' each.' : '.') : '',
+          sources: ['gov.uk · Understanding your Self Assessment tax bill: payments on account', 'Taxes Management Act 1970 · section 59A'],
+          links: [['Yours to keep', 'ThreeKeep.dc.html']] },
+        { id: 'vat', q: 'Do I need to register for VAT?', kw: 'vat register registration threshold 90000 turnover',
+          body: ['You must register if your VAT-taxable turnover for the last 12 months goes over ' + W(pk.vatThreshold || 90000) + ', or if you expect it to go over that in the next 30 days alone. Check it every month on a rolling basis, not just at the tax year end.',
+            'Rent from a residential let is exempt, so it doesn’t count towards the threshold. You can also register voluntarily below it.'],
+          fact: prof.vatRegistered ? 'you’re VAT registered (' + (prof.vatNo || 'number on your business profile') + ').' : 'you’re not VAT registered.',
+          sources: ['gov.uk · Register for VAT', 'VAT Notice 700/1 · Who should register for VAT'],
+          links: [['Business profile', 'BizProfile.dc.html']] },
+        { id: 'records', q: 'How long do I keep my records?', kw: 'records keep how long receipts years retention',
+          body: ['Keep your business records for at least 5 years after the 31 January submission deadline of the tax year they relate to. For 2026/27 that means until at least 31 January 2033.',
+            'Attachments you add to expenses and bills in BillingEase are kept with the record, so a photo or PDF counts.'],
+          sources: ['gov.uk · Business records if you’re self-employed'],
+          links: [['Security and your data', 'BizSecurity.dc.html']] }
+      ];
+    }
+    const vatR = ((pk.vatRates || [])[0] || { rate: 0.18 }).rate, sscl = pk.sscl || 0.025;
+    const ex = 250000, exS = ex * sscl, exV = (ex + exS) * vatR;
+    const emp = BE.all('employees')[0];
+    const pay = emp ? BE.empMonthly(emp) : 0;
+    const pr2 = pk.payroll || {};
+    const apit = emp && pr2.apit ? pr2.apit(pay) : 0;
+    const kt = BE.keepTotals('year');
+    const est = kt.estimate || {};
+    const inst = est.paymentsOnAccount || [];
+    return [
+      { id: 'invoice', q: 'How do VAT and SSCL show on a tax invoice?', kw: 'vat sscl tax invoice invoices show line format levy 18 2.5',
+        body: ['A VAT-registered business issues a Tax Invoice in the IRD’s revised format: your name, address, TIN and VAT registration number, the customer’s details (and their VAT number if they have one), the date, a description of the work, and the amounts.',
+          'SSCL at ' + (sscl * 100) + '% goes on its own line. VAT at ' + Math.round(vatR * 100) + '% is then worked out on the value including SSCL. On ' + W(ex) + ' of design work: SSCL ' + W(exS) + ', VAT ' + W(exV) + ', total ' + W(ex + exS + exV) + '.',
+          'Whether SSCL sits inside the VAT base is still to confirm with the IRD; BillingEase notes it on each invoice until it is.'],
+        sources: ['Value Added Tax Act No. 14 of 2002 (as amended) · tax invoices', 'Social Security Contribution Levy Act No. 25 of 2022', 'IRD guidance · revised tax invoice format'],
+        links: [['Send a tax invoice', 'ThreeIn.dc.html#bill']] },
+      { id: 'register', q: 'When do I have to register for VAT?', kw: 'vat register registration threshold turnover quarter 60 36 million',
+        body: ['You must register once your taxable supplies go over the registration threshold for a year, or for a quarter. We use ' + W(pk.vatThreshold || 60000000) + ' a year (and a quarter of that, ' + W((pk.vatThreshold || 60000000) / 4) + ', for any quarter).',
+          'Sources disagree on the current figure (Rs 60 million or Rs 36 million a year), so confirm it with the IRD or ' + (pr.has ? pr.short : 'your tax practitioner') + ' before you rely on it.'],
+        fact: (BE.get('profile') || {}).vatRegistered ? 'you’re registered for VAT (' + (prof.vatNo || 'see your business profile') + ') and SSCL.' : '',
+        sources: ['Value Added Tax Act No. 14 of 2002 (as amended) · registration', 'IRD guidance · VAT registration'],
+        links: [['Business profile', 'BizProfile.dc.html']] },
+      { id: 'epf', q: 'How are EPF and ETF worked out?', kw: 'epf etf provident trust fund contribution 8 12 3 employee employer',
+        body: ['EPF is 8% of the employee’s total earnings, taken from their pay, plus 12% from you as the employer. ETF is a further 3%, paid by you. Total earnings means basic pay plus the allowances that count for EPF.',
+          'Pay both by the last working day of the following month, with the contribution schedules. BillingEase works them out on each pay run; you pay and file them through the EPF and ETF channels.'],
+        fact: emp ? emp.name + ' earns ' + W(pay) + ' a month: EPF ' + W(pay * 0.08) + ' from their pay and ' + W(pay * 0.12) + ' from you, ETF ' + W(pay * 0.03) + '.' : '',
+        sources: ['Employees’ Provident Fund Act No. 15 of 1958', 'Employees’ Trust Fund Act No. 46 of 1980', 'Department of Labour · EPF contributions guidance'],
+        links: [['Payroll', 'SpendPayroll.dc.html']] },
+      { id: 'apit', q: 'How is APIT on salaries calculated?', kw: 'apit advance personal income tax salary salaries paye withholding employee tables',
+        body: ['APIT is income tax you take from salaries each month using the IRD’s tables. The first Rs 150,000 a month (Rs 1.8 million a year) is tax-free; above that the rates step up from 6% to 36%.',
+          'Pay it to the IRD by the 15th of the following month, and give each employee a certificate after the year ends. BillingEase uses the current tables on every pay run.'],
+        fact: emp ? 'on ' + emp.name + '’s ' + W(pay) + ' a month, APIT is about ' + W(apit) + '.' : '',
+        sources: ['Inland Revenue Act No. 24 of 2017 (as amended) · withholding on employment income', 'IRD · APIT tables from 1 April 2025'],
+        links: [['Payroll', 'SpendPayroll.dc.html']] },
+      { id: 'instalments', q: 'When are my income tax instalments due?', kw: 'income tax instalment instalments quarterly due when pay advance',
+        body: ['Individuals with business income pay income tax for the year of assessment in quarterly instalments, on ' + (inst.length ? inst.map((x) => x.due).join(', ') : '15 August, 15 November, 15 February and 15 May') + '.',
+          'The return for the year of assessment 2026/27 (1 April 2026 to 31 March 2027) is due by 30 November 2027, when any balance is settled.'],
+        fact: est.total ? 'at this year’s pace your income tax is about ' + W(est.total) + ', so each instalment is about ' + W(inst[0] ? inst[0].amount : est.total / 4) + '.' : '',
+        sources: ['Inland Revenue Act No. 24 of 2017 · payment of tax by quarterly instalments', 'IRD guidance · quarterly instalments for individuals'],
+        links: [['Yours to keep', 'ThreeKeep.dc.html']] },
+      { id: 'taxwise', q: 'What goes to TaxWise.lk at the year end?', kw: 'taxwise taxwise.lk year end hand off handoff return send what goes',
+        body: ['After 31 March, Send to TaxWise.lk moves your year into the income tax return: business income, expenses by line of the business income schedule, capital items for allowances, VAT and SSCL totals, and payroll totals with APIT for each employee.',
+          pr.has ? pr.short + ' receive it in their TaxWise.lk file for you and prepare the return.' : 'If you link a practitioner, it goes to their TaxWise.lk file for you; otherwise into your own TaxWise.lk return.'],
+        sources: ['IRD · Return of income tax for individuals, year of assessment 2026/27', 'TaxWise.lk · year-end hand-off from BillingEase'],
+        links: [['Your tax practitioner', 'Accountant.dc.html'], ['What they see', 'PracticeView.dc.html']] },
+      { id: 'input', q: 'Can I claim input VAT on my bills?', kw: 'input vat claim credit bills supplier purchase',
+        body: ['Yes, on supplies for your business, when you hold a valid tax invoice from a VAT-registered supplier. Enter the VAT on the bill and it’s counted as input VAT in that month’s return.',
+          'There’s no credit for SSCL you pay, and none for VAT on items that are blocked, such as some entertainment and passenger vehicles.'],
+        sources: ['Value Added Tax Act No. 14 of 2002 (as amended) · input tax', 'IRD guidance · claiming input tax'],
+        links: [['Enter a bill', 'SpendBill.dc.html#new'], ['Tax periods', 'TaxPeriods.dc.html']] },
+      { id: 'rent', q: 'Is my office rent an allowable expense?', kw: 'rent office allowable deductible expense premises',
+        body: ['Yes. Expenses incurred in producing your business income are deductible, and office rent is one of them. It goes under Rent and rates, the line used in your business income schedule.',
+          'If part of the space is used privately, claim only the business share.'],
+        sources: ['Inland Revenue Act No. 24 of 2017 · general deductions', 'IRD guidance · business income of individuals'],
+        links: [['Every month', 'SpendEveryMonth.dc.html']] }
+    ];
+  }
+
+  renderVals() {
+    const st = this.state;
+    const lk = BE.is('lk');
+    const pk = BE.pack();
+    const pr = BE.practice();
+    const A = this.answers(lk);
+    const byId = {}; A.forEach((a) => { byId[a.id] = a; });
+    const practice = pr.has ? pr.short : 'your ' + pr.noun;
+    const find = (text) => {
+      const words = String(text || '').toLowerCase().replace(/[^a-z0-9.& ]+/g, ' ').split(/\s+/).filter((w) => w.length > 2 && ['the', 'and', 'for', 'can', 'how', 'what', 'when', 'does', 'are', 'my', 'do', 'is'].indexOf(w) < 0);
+      let best = null, score = 0;
+      A.forEach((a) => {
+        const hay = (a.q + ' ' + a.kw).toLowerCase();
+        const sc = words.filter((w) => hay.indexOf(w) >= 0).length;
+        if (sc > score) { score = sc; best = a; }
+      });
+      return score >= 1 ? best : null;
+    };
+    const fallback = (q) => ({ id: 'none', q, body: ['I couldn’t find a grounded answer to that in ' + (pk.askSources || 'the sources I use') + '.', 'It may depend on your circumstances, so it’s a good one to send to ' + practice + '. They’ll see your question and your books.'], sources: [], links: [['Help with BillingEase', 'Help.dc.html']] });
+    const ask = (text, key) => {
+      const q = String(text || '').trim();
+      if (!q && !key) { this.setState({ tried: true }); return; }
+      const id = 't' + (this._n++);
+      this.setState({ thread: [{ id, key: key || '', q }].concat(st.thread), draft: key ? st.draft : '', tried: false });
+    };
+    const thread = st.thread.map((t) => {
+      const a = t.key ? (byId[t.key] || fallback(t.q || t.key)) : (find(t.q) || fallback(t.q));
+      const q = t.q || a.q;
+      const sent = !!st.sent[t.id];
+      return {
+        q, body: a.body, fact: a.fact || false, label: 'AI answer · check with your ' + pr.noun,
+        sources: (a.sources || []).map((name, i) => ({ n: i + 1, name })), hasSources: (a.sources || []).length > 0,
+        links: (a.links || []).map(([label, href]) => ({ label, href })),
+        sent, canSend: pr.has && !sent, noPractice: !pr.has, sendBg: a.id === 'none' ? '#B9A3FF' : 'rgba(24,22,31,0.07)',
+        send: () => {
+          const r = BE.askPractitioner(q, 'Asked in BillingEase Ask. The AI answer cited: ' + ((a.sources || []).join('; ') || 'no source found') + '.');
+          this.setState({ sent: Object.assign({}, st.sent, { [t.id]: r.id }) });
+          this.notify('Sent to ' + practice + ' · it’s on ' + (lk ? 'Your tax practitioner' : 'Your accountant'));
+        }
+      };
+    });
+    const shownKeys = {}; st.thread.forEach((t) => { if (t.key) shownKeys[t.key] = 1; });
+    const suggestions = A.map((a) => ({ q: a.q, pressed: shownKeys[a.id] ? 'true' : 'false', bg: shownKeys[a.id] ? '#EEE8FF' : '#FFFFFF', border: shownKeys[a.id] ? '#B9A3FF' : '#E2DFE8', pick: () => ask(a.q, a.id) }));
+    const mine = BE.all('requests').filter((r) => r.dir === 'out').slice(0, 5).map((r) => ({ title: r.title, meta: (BE.requestDone(r) ? 'Answered' : 'Waiting for ' + (pr.contact ? pr.first : practice)) + ' · asked ' + (r.created || r.asked || '') }));
+    return {
+      countryWord: lk ? 'Sri Lanka' : 'the UK',
+      sources: pk.askSources || 'official guidance',
+      practice, practiceNoun: 'your ' + pr.noun, practiceTitle: lk ? 'Your tax practitioner' : 'Your accountant',
+      askLabel: 'Ask ' + (pr.has ? pr.short : 'them'),
+      placeholder: lk ? 'For example: do I charge SSCL on a quote I’ve already sent?' : 'For example: can I claim my phone bill if I also use it personally?',
+      draft: st.draft, setDraft: (e) => this.setState({ draft: e.target.value, tried: false }),
+      draftKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(e.target.value); } },
+      draftErr: st.tried, draftBorder: st.tried ? '#A8200D' : '#CBC7D3',
+      ask: () => ask(st.draft),
+      suggestions, thread, hasThread: thread.length > 0, noThread: thread.length === 0,
+      mine, hasMine: mine.length > 0, noMine: mine.length === 0,
+      how: [
+        'Answers are grounded in ' + (pk.askSources || 'official guidance') + ', and list the sources they used.',
+        'Every answer is marked as AI. It explains; it never files a return or changes your books.',
+        lk ? 'Rates and thresholds come from the Sri Lanka country pack and are checked against IRD notices and gazettes.' : 'It follows HMRC’s guidance on generative AI in tax software, and rates come from the UK country pack.',
+        'For anything that needs judgement, send the question to ' + practice + ' in one tap.'
+      ],
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

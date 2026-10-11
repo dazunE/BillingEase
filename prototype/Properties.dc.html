@@ -1,11 +1,576 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · Properties</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Properties</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-row:hover{background:#F7F6F9}
+.be-in{min-height:44px;box-sizing:border-box;padding:0 12px;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;font:400 15px DM Sans,sans-serif;color:#18161F;width:100%}
+.be-lab{flex:1 1 160px;min-width:0;display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+.be-p{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.be-s{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;background:rgba(24,22,31,0.07);color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.be-p:disabled,.be-s:disabled{opacity:.5;cursor:default}
+.be-month{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:64px;padding:10px 10px;border-radius:14px;font:600 13px DM Sans,sans-serif;cursor:pointer;text-align:left;box-sizing:border-box;width:100%}
+.be-month:disabled{cursor:default}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+    <dc-import name="AppCrumbs" area="keep" here="Properties"></dc-import>
+
+    <!-- Not a UK business -->
+    <sc-if value="{{notUk}}" hint-placeholder-val="{{false}}">
+      <section style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 12px; max-width: 640px;">
+        <span style="display: inline-flex; align-items: center; min-height: 28px; padding: 0 12px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 13px; font-weight: 600;">UK only</span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; line-height: 1.15;">Properties are for UK landlords</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F;">Landlord mode follows HMRC&#39;s property rules, so it only shows for businesses in the UK. In Sri Lanka, record rent you receive as income, and {{practitionerTool}} takes it into your income tax return.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;">
+          <a href="ThreeHome.dc.html" class="be-p">Back to Home</a>
+          <a href="ThreeIn.dc.html" class="be-s">See Coming in</a>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{uk}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px;">
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 420px;">
+          <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Properties</h1>
+          <p style="margin: 0; font-size: 15px; color: #47444F; line-height: 1.5;">Rent and costs for the homes you let, kept apart from your other work. {{practiceLine}}</p>
+        </div>
+        <sc-if value="{{hasProps}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <button type="button" class="be-s" onClick="{{openProp}}">Add a property</button>
+            <button type="button" class="be-p" onClick="{{openAdd}}">Add a cost or income</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Add a property -->
+      <sc-if value="{{propOpen}}" hint-placeholder-val="{{false}}">
+        <section aria-labelledby="np-h" style="background: #FFFFFF; border: 2px solid #18161F; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <h2 id="np-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Add a property</h2>
+              <p style="margin: 0; font-size: 14px; color: #47444F;">One you let out. Your share decides how much of its rent and costs are yours.</p>
+            </div>
+            <button type="button" aria-label="Close" onClick="{{closeProp}}" style="flex: none; width: 40px; height: 40px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <label class="be-lab" style="flex: 2 1 260px;">Address<input class="be-in be-field" type="text" placeholder="e.g. Flat 1, 4 Cardigan Road" value="{{np.name}}" onChange="{{np.setName}}"></label>
+            <label class="be-lab">Area and postcode<input class="be-in be-field" type="text" placeholder="e.g. Headingley, Leeds LS6" value="{{np.area}}" onChange="{{np.setArea}}"></label>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <label class="be-lab">Your share (%)<input class="be-in be-field" type="text" inputmode="numeric" value="{{np.share}}" onChange="{{np.setShare}}"></label>
+            <label class="be-lab">Rent a month ({{sym}})<input class="be-in be-field" type="text" inputmode="decimal" placeholder="0" value="{{np.rent}}" onChange="{{np.setRent}}"></label>
+            <label class="be-lab">Rent due on day<input class="be-in be-field" type="text" inputmode="numeric" value="{{np.rentDay}}" onChange="{{np.setDay}}"></label>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <label class="be-lab" style="flex: 2 1 260px;">Letting agent (optional)<input class="be-in be-field" type="text" placeholder="Leave empty if you manage it yourself" value="{{np.agent}}" onChange="{{np.setAgent}}"></label>
+            <label class="be-lab">Agent&#39;s fee (% of rent)<input class="be-in be-field" type="text" inputmode="decimal" placeholder="0" value="{{np.agentPct}}" onChange="{{np.setPct}}"></label>
+          </div>
+          <sc-if value="{{np.err}}" hint-placeholder-val="{{false}}"><p role="alert" style="margin: 0; font-size: 14px; color: #A8200D; font-weight: 600;">{{np.err}}</p></sc-if>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <button type="button" class="be-p" onClick="{{saveProp}}">Add property</button>
+            <button type="button" class="be-s" onClick="{{closeProp}}">Cancel</button>
+          </div>
+        </section>
+      </sc-if>
+
+      <!-- Add a cost or income -->
+      <sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}">
+        <section aria-labelledby="ne-h" style="background: #FFFFFF; border: 2px solid #18161F; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <h2 id="ne-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Add a cost or income</h2>
+              <p style="margin: 0; font-size: 14px; color: #47444F;">Goes into the quarter it falls in, under HMRC&#39;s property headings.</p>
+            </div>
+            <button type="button" aria-label="Close" onClick="{{closeAdd}}" style="flex: none; width: 40px; height: 40px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+          <div role="group" aria-label="Kind" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px; align-self: flex-start;">
+            <sc-for list="{{kinds}}" as="k" hint-placeholder-count="2">
+              <button type="button" aria-pressed="{{k.pressed}}" onClick="{{k.pick}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{k.bg}}; color: {{k.color}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{k.label}}</button>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <sc-if value="{{manyProps}}" hint-placeholder-val="{{false}}">
+              <label class="be-lab">Property<select class="be-in be-field" value="{{ne.prop}}" onChange="{{ne.setProp}}"><sc-for list="{{propOpts}}" as="o" hint-placeholder-count="1"><option value="{{o.id}}">{{o.name}}</option></sc-for></select></label>
+            </sc-if>
+            <label class="be-lab" style="flex: 2 1 240px;">Category<select class="be-in be-field" value="{{ne.cat}}" onChange="{{ne.setCat}}"><sc-for list="{{catOpts}}" as="o" hint-placeholder-count="4"><option value="{{o.id}}">{{o.name}}</option></sc-for></select></label>
+          </div>
+          <p style="margin: -6px 0 0; font-size: 13px; color: #5F5B68;">{{ne.official}}</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <label class="be-lab" style="flex: 2 1 240px;">What it was<input class="be-in be-field" type="text" placeholder="{{ne.placeholder}}" value="{{ne.what}}" onChange="{{ne.setWhat}}"></label>
+            <label class="be-lab">Amount ({{sym}})<input class="be-in be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{ne.amount}}" onChange="{{ne.setAmount}}"></label>
+            <label class="be-lab">Date<input class="be-in be-field" type="date" min="2026-04-06" max="2027-04-05" value="{{ne.date}}" onChange="{{ne.setDate}}"></label>
+          </div>
+          <sc-if value="{{ne.finance}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; padding: 12px 14px; border-radius: 14px; background: #EEE8FF; font-size: 14px; line-height: 1.5; color: #18161F;">Mortgage interest is kept separate. It isn&#39;t taken off your rent; instead it reduces your Income Tax by 20% of the interest.</p>
+          </sc-if>
+          <sc-if value="{{ne.err}}" hint-placeholder-val="{{false}}"><p role="alert" style="margin: 0; font-size: 14px; color: #A8200D; font-weight: 600;">{{ne.err}}</p></sc-if>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+            <button type="button" class="be-p" onClick="{{saveEntry}}">{{ne.saveLabel}}</button>
+            <button type="button" class="be-s" onClick="{{closeAdd}}">Cancel</button>
+            <span style="font-size: 13px; color: #5F5B68;">{{ne.quarterNote}}</span>
+          </div>
+        </section>
+      </sc-if>
+
+      <!-- No property yet -->
+      <sc-if value="{{noProps}}" hint-placeholder-val="{{false}}">
+        <sc-if value="{{propClosed}}" hint-placeholder-val="{{true}}">
+          <section style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+            <span style="width: 48px; height: 48px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"></path></svg></span>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Let a home? Add it here</span>
+            <span style="font-size: 15px; color: #47444F; max-width: 480px; line-height: 1.5;">Its rent, costs and mortgage interest stay apart from your other work and go into each quarter under HMRC&#39;s property headings.</span>
+            <button type="button" class="be-p" onClick="{{openProp}}" style="margin-top: 6px;">Add a property</button>
+          </section>
+        </sc-if>
+      </sc-if>
+
+      <sc-if value="{{hasProps}}" hint-placeholder-val="{{true}}">
+        <!-- The year so far -->
+        <section aria-label="This tax year so far" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px;">
+          <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+            <div style="background: {{s.bg}}; color: {{s.fg}}; border: 1px solid {{s.border}}; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: {{s.sub}};"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{s.dot}};"></span>{{s.label}}</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: {{s.num}};">{{s.value}}</span>
+              <span style="font-size: 13px; line-height: 1.4; color: {{s.sub}};">{{s.note}}</span>
+            </div>
+          </sc-for>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+          <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+            <sc-for list="{{props}}" as="p" hint-placeholder-count="1">
+              <section aria-label="{{p.name}}" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                  <div style="display: flex; gap: 14px; align-items: flex-start; min-width: 0;">
+                    <span style="width: 44px; height: 44px; border-radius: 14px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"></path></svg></span>
+                    <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                      <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{p.name}}</h2>
+                      <span style="font-size: 14px; color: #47444F;">{{p.area}}</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <sc-for list="{{p.chips}}" as="c" hint-placeholder-count="3">
+                      <span style="display: inline-flex; align-items: center; min-height: 30px; padding: 0 12px; border-radius: 9999px; background: #EFEDF3; font-size: 13px; font-weight: 600;">{{c}}</span>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <!-- Ownership share -->
+                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
+                  <span style="font-size: 14px; color: #47444F; line-height: 1.45; min-width: 0; flex: 1 1 260px;"><strong style="color: #18161F;">You own {{p.share}}%.</strong> {{p.shareNote}}</span>
+                  <sc-if value="{{p.shareClosed}}" hint-placeholder-val="{{true}}">
+                    <button type="button" class="be-s" onClick="{{p.editShare}}" style="min-height: 40px;">Change share</button>
+                  </sc-if>
+                  <sc-if value="{{p.shareOpen}}" hint-placeholder-val="{{false}}">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+                      <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;">Your share<input class="be-in be-field" type="text" inputmode="numeric" aria-label="Your share in percent" value="{{p.shareDraft}}" onChange="{{p.setShare}}" style="width: 80px;"> %</label>
+                      <button type="button" class="be-p" onClick="{{p.saveShare}}" style="min-height: 40px;">Save</button>
+                      <button type="button" class="be-s" onClick="{{p.cancelShare}}" style="min-height: 40px;">Cancel</button>
+                    </span>
+                  </sc-if>
+                </div>
+
+                <!-- Rent roll -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px;">
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Rent roll · {{taxYear}}</h3>
+                    <span style="font-size: 14px; color: #47444F;">{{p.rollSummary}}</span>
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px;">
+                    <sc-for list="{{p.months}}" as="m" hint-placeholder-count="12">
+                      <button type="button" class="be-month" onClick="{{m.toggle}}" disabled="{{m.disabled}}" aria-pressed="{{m.pressed}}" aria-label="{{m.aria}}" style="border: {{m.border}}; background: {{m.bg}}; color: #18161F;">
+                        <span style="display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%;">{{m.label}}
+                          <sc-if value="{{m.received}}" hint-placeholder-val="{{true}}"><span style="width: 20px; height: 20px; border-radius: 9999px; background: #2F5711; display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span></sc-if>
+                          <sc-if value="{{m.isDue}}" hint-placeholder-val="{{false}}"><span style="width: 20px; height: 20px; border-radius: 9999px; border: 2px solid #6B5000; box-sizing: border-box;"></span></sc-if>
+                        </span>
+                        <span style="font-size: 12px; font-weight: 500; color: {{m.subColor}};">{{m.sub}}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                  <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.45;">{{p.rollHint}}</p>
+                </div>
+
+                <!-- Letting agent statements -->
+                <sc-if value="{{p.hasAgent}}" hint-placeholder-val="{{true}}">
+                  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-top: 16px; border-top: 1px solid #E2DFE8;">
+                    <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 280px;">
+                      <span style="font-size: 15px; font-weight: 700;">Statements from {{p.agent}}</span>
+                      <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{p.stmtLine}}</span>
+                    </div>
+                    <sc-if value="{{p.stmtMissing}}" hint-placeholder-val="{{true}}">
+                      <button type="button" class="be-s" onClick="{{p.attach}}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 12-8.5 8.5a5 5 0 0 1-7-7L14 5a3.3 3.3 0 0 1 4.7 4.7L10.2 18a1.7 1.7 0 0 1-2.4-2.4L15.5 8"></path></svg>
+                        {{p.attachLabel}}
+                      </button>
+                    </sc-if>
+                  </div>
+                </sc-if>
+              </section>
+            </sc-for>
+
+            <!-- Entries -->
+            <section aria-labelledby="en-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px;">
+                <h2 id="en-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Income and costs</h2>
+                <div role="group" aria-label="Show" style="display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 22px;">
+                  <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+                    <button type="button" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{f.bg}}; color: {{f.color}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{f.label}}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <sc-if value="{{hasRows}}" hint-placeholder-val="{{true}}">
+                <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+                  <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+                    <li class="be-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 8px; border-top: 1px solid #EFEDF3; border-radius: 12px;">
+                      <span style="width: 54px; flex: none; font-size: 13px; color: #5F5B68; font-variant-numeric: tabular-nums;">{{r.date}}</span>
+                      <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                        <span style="font-size: 15px; font-weight: 600; line-height: 1.35;">{{r.what}}</span>
+                        <span style="font-size: 13px; color: #47444F;">{{r.cat}} <span style="color: #5F5B68;">· {{r.official}}</span></span>
+                      </span>
+                      <span style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+                        <sc-if value="{{r.tag}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 9999px; background: {{r.tagBg}}; color: {{r.tagFg}}; font-size: 12px; font-weight: 600; white-space: nowrap;">{{r.tag}}</span></sc-if>
+                        <span style="display: inline-flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{r.dot}};"></span>{{r.amount}}</span>
+                        <sc-if value="{{r.canRemove}}" hint-placeholder-val="{{true}}">
+                          <button type="button" onClick="{{r.remove}}" aria-label="{{r.removeLabel}}" title="Remove" style="width: 36px; height: 36px; border: 0; border-radius: 9999px; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></button>
+                        </sc-if>
+                        <sc-if value="{{r.spacer}}" hint-placeholder-val="{{false}}"><span title="Comes and goes with the rent" style="width: 36px; height: 36px; flex: none;"></span></sc-if>
+                        <sc-if value="{{r.locked}}" hint-placeholder-val="{{false}}">
+                          <span title="{{r.lockNote}}" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="{{r.lockNote}}" role="img"><path d="M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4"></path></svg></span>
+                        </sc-if>
+                      </span>
+                    </li>
+                  </sc-for>
+                </ul>
+                <sc-if value="{{moreRows}}" hint-placeholder-val="{{false}}">
+                  <button type="button" class="be-s" onClick="{{showAllRows}}" style="align-self: flex-start;">{{moreLabel}}</button>
+                </sc-if>
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding: 12px 8px 0; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+                  <span>{{rowsTotal.label}}</span>
+                  <span style="font-variant-numeric: tabular-nums;">Income <strong style="color: #18161F;">{{rowsTotal.income}}</strong> · Costs <strong style="color: #18161F;">{{rowsTotal.costs}}</strong> · Mortgage interest <strong style="color: #18161F;">{{rowsTotal.finance}}</strong></span>
+                </div>
+              </sc-if>
+              <sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+                <div style="padding: 20px 8px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+                  <span style="font-size: 15px; color: #47444F;">{{noRowsText}}</span>
+                  <button type="button" class="be-s" onClick="{{openAdd}}">Add a cost or income</button>
+                </div>
+              </sc-if>
+            </section>
+          </div>
+
+          <!-- Side -->
+          <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+            <section aria-labelledby="q-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+              <h2 id="q-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">In your quarterly updates</h2>
+              <p style="margin: 0; font-size: 14px; color: #47444F; line-height: 1.45;">Your property summary goes into each quarter next to your design work. Figures are your {{shareWord}} share.</p>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{quarters}}" as="q" hint-placeholder-count="4">
+                  <li style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 14px; background: {{q.bg}};">
+                    <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                      <strong style="font-size: 14px;">{{q.label}} <span style="font-weight: 500; color: #5F5B68; margin-left: 4px;">{{q.range}}</span></strong>
+                      <span style="display: inline-flex; align-items: center; gap: 4px; min-height: 22px; padding: 0 9px; border-radius: 9999px; background: {{q.pillBg}}; color: {{q.pillFg}}; font-size: 12px; font-weight: 600; white-space: nowrap;">{{q.status}}</span>
+                    </span>
+                    <span style="font-size: 13px; color: #47444F; font-variant-numeric: tabular-nums; line-height: 1.45;">{{q.line}}</span>
+                  </li>
+                </sc-for>
+              </ul>
+              <a href="Quarters.dc.html" style="font-size: 14px; font-weight: 600;">Open your quarters</a>
+            </section>
+
+            <section aria-labelledby="al-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+              <h2 id="al-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">The {{allowance}} property allowance</h2>
+              <p style="margin: 0; font-size: 14px; color: #47444F; line-height: 1.5;">{{allow.text}}</p>
+              <sc-if value="{{allow.offer}}" hint-placeholder-val="{{false}}">
+                <button type="button" class="be-p" onClick="{{useAllowance}}" style="align-self: flex-start;">Use the {{allowance}} allowance</button>
+              </sc-if>
+              <sc-if value="{{allow.using}}" hint-placeholder-val="{{false}}">
+                <button type="button" class="be-s" onClick="{{useCosts}}" style="align-self: flex-start;">Claim my costs instead</button>
+              </sc-if>
+              <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.45;">Property income allowance. You can take it or your costs, not both, and using it means no mortgage interest reduction.</p>
+            </section>
+
+            <section aria-labelledby="mi-h" style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+              <h2 id="mi-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Mortgage interest, kept separate</h2>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{fin.relief}}</span>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #E2DFE8;">{{fin.text}}</p>
+              <p style="margin: 0; font-size: 13px; line-height: 1.45; color: #C9C5D1;">Residential property finance costs: a basic-rate (20%) tax reduction, not a deduction from rent.</p>
+              <a href="ThreeKeep.dc.html" style="color: #FFFFFF; font-size: 14px; font-weight: 600;">See your tax estimate</a>
+            </section>
+          </aside>
+        </div>
+      </sc-if>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'year', addOpen: false, propOpen: false, ne: null, np: null, shareEdit: null, shareDraft: '', toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  blankEntry() {
+    const p = BE.all('properties')[0];
+    return { prop: p ? p.id : '', kind: 'cost', cat: 'p-repairs', what: '', amount: '', date: BE.isoOf(BE.todayDate), err: '' };
+  }
+  renderVals() {
+    const st = this.state;
+    const uk = BE.is('uk');
+    const pack = BE.pack();
+    const ukPack = (window.COUNTRY || {}).uk || {};
+    const m = (n) => BE.money(n);
+    const M = BE.MON;
+    if (!uk) {
+      return { uk: false, notUk: true, practitionerTool: (pack.practitioner || {}).tool || 'your practitioner', toast: st.toast };
+    }
+    const cats = ukPack.propertyCategories || [];
+    const catById = {}; cats.forEach((c) => { catById[c.id] = c; });
+    const INCOME = [{ id: 'rent', name: 'Rent', official: 'Rents and other income from property' }, { id: 'other-income', name: 'Other property income', official: 'Other income from property (e.g. deposits kept)' }];
+    INCOME.forEach((c) => { catById[c.id] = c; });
+    const props = BE.all('properties');
+    const entries = BE.all('propertyEntries');
+    const prof = BE.get('profile') || {};
+    const practice = prof.practice;
+    const today = BE.todayDate.getTime();
+    const qLabel = (id) => (ukPack.quarters || []).filter((q) => q.id === id).map((q) => q.label)[0] || id.toUpperCase();
+    const lockedQ = (dateLike) => { const q = BE.ukQuarterOf(dateLike); return q && BE.isFiled(q) ? q : ''; };
+
+    // ---- property cards
+    const months = [];
+    for (let i = 0; i < 12; i++) { const d = new Date(2026, 3 + i, 1); months.push({ y: d.getFullYear(), m: d.getMonth() + 1, key: BE.isoOf(d).slice(0, 7) }); }
+    const propCards = props.map((p) => {
+      const day = Number(p.rentDay) || 1;
+      let received = 0, dueSoFar = 0, firstDue = null;
+      const ms = months.map((mo) => {
+        const due = new Date(mo.y, mo.m - 1, day);
+        const got = entries.some((e) => e.prop === p.id && e.kind === 'income' && e.rentMonth === mo.key);
+        const past = due.getTime() <= today;
+        const lq = lockedQ(due);
+        if (got) received++;
+        if (past) dueSoFar++;
+        if (past && !got && !firstDue) firstDue = M[mo.m - 1];
+        const state = got ? 'got' : past ? 'due' : 'later';
+        const label = M[mo.m - 1];
+        return {
+          label, received: state === 'got', isDue: state === 'due',
+          sub: state === 'got' ? (lq ? 'Received · locked' : 'Received') : state === 'due' ? 'Due ' + day + ' ' + label : day + ' ' + label,
+          subColor: state === 'due' ? '#6B5000' : state === 'got' ? '#2F5711' : '#5F5B68',
+          bg: state === 'got' ? '#E2F6D5' : state === 'due' ? '#FFF0B8' : '#FFFFFF',
+          border: state === 'later' ? '1px solid #E2DFE8' : '1px solid transparent',
+          pressed: state === 'got' ? 'true' : 'false',
+          disabled: state === 'later' || !!lq,
+          aria: label + ' ' + mo.y + ' rent: ' + (state === 'got' ? 'received' + (lq ? ', locked because ' + qLabel(lq) + ' is filed' : ', press to untick') : state === 'due' ? 'due, press to mark received' : 'not due yet'),
+          toggle: () => {
+            if (state === 'got') { BE.unmarkRent(p.id, mo.key); this.notify(label + ' rent unticked · ' + m(p.rent) + ' taken off ' + qLabel(BE.ukQuarterOf(due))); }
+            else if (state === 'due') {
+              BE.markRent(p.id, mo.key);
+              const d2 = due.getTime() > today ? BE.todayDate : due;
+              this.notify(label + ' rent received · ' + m(p.rent) + ' added to ' + qLabel(BE.ukQuarterOf(d2)) + (Number(p.agentPct) ? ', agent fee ' + m(Math.round(p.rent * p.agentPct) / 100) + ' added' : ''));
+            }
+          }
+        };
+      });
+      const share = Number(p.share) || 100;
+      const agentPct = Number(p.agentPct) || 0;
+      // Statements: one per month of rent received; the latest one missing is offered.
+      const got = (p.statements || []);
+      const gotMonths = months.filter((mo) => entries.some((e) => e.prop === p.id && e.kind === 'income' && e.rentMonth === mo.key)).map((mo) => mo.key);
+      const missing = gotMonths.filter((k) => got.indexOf(k) < 0);
+      const lastMissing = missing[missing.length - 1];
+      const monthName = (k) => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][+k.slice(5, 7) - 1];
+      const editing = st.shareEdit === p.id;
+      return {
+        name: p.name, area: p.area || '', share,
+        chips: [m(p.rent) + ' a month', 'Due on the ' + day + (day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th')].concat(p.agent ? [p.agent + ' · ' + agentPct + '%'] : ['Managed by you']),
+        shareNote: share === 100 ? 'All of its rent and costs are yours.' : 'You count ' + share + '% of its rent and costs; the co-owner reports the rest.',
+        shareOpen: editing, shareClosed: !editing, shareDraft: editing ? st.shareDraft : String(share),
+        editShare: () => this.setState({ shareEdit: p.id, shareDraft: String(share) }),
+        setShare: (e) => this.setState({ shareDraft: e.target.value }),
+        cancelShare: () => this.setState({ shareEdit: null }),
+        saveShare: () => {
+          const v = Math.round(BE.num(st.shareDraft));
+          if (!(v > 0 && v <= 100)) { this.notify('Enter a share between 1 and 100%'); return; }
+          BE.update('properties', p.id, { share: v });
+          BE.log('Changed your share of ' + p.name + ' to ' + v + '%');
+          this.setState({ shareEdit: null });
+          this.notify('Your share of ' + p.name + ' is now ' + v + '% · quarter totals updated');
+        },
+        months: ms,
+        rollSummary: 'Expected ' + m(p.rent) + ' a month · received ' + m(received * p.rent) + ' of ' + m(dueSoFar * p.rent) + ' due so far',
+        rollHint: firstDue ? 'Tick a month when the rent reaches you. ' + firstDue + ' is due and not ticked yet.' : received ? 'All rent due so far is ticked. Months show here as they come due.' : 'Tick a month when the rent reaches you.',
+        hasAgent: !!p.agent, agent: p.agent || '',
+        stmtMissing: !!lastMissing,
+        stmtLine: lastMissing ? 'The ' + monthName(lastMissing) + ' statement isn’t attached yet. ' + (got.length ? got.length + ' earlier statement' + (got.length === 1 ? '' : 's') + ' attached.' : '') : (got.length ? 'All ' + got.length + ' statements are attached.' : 'Statements appear here once rent is ticked.'),
+        attachLabel: lastMissing ? 'Attach ' + monthName(lastMissing) + ' statement' : '',
+        attach: () => {
+          BE.update('properties', p.id, (x) => ({ statements: (x.statements || []).concat([lastMissing]) }));
+          const req = BE.all('requests').filter((r) => r.status !== 'done' && !r.done && (r.dir || 'in') === 'in' && /letting agent statement/i.test(r.title || ''))[0];
+          if (req) { if (typeof BE.completeRequest === 'function') BE.completeRequest(req.id, 'Statement attached'); else BE.update('requests', req.id, { status: 'done', doneOn: BE.today }); }
+          BE.log('Attached the ' + monthName(lastMissing) + ' statement from ' + p.agent + ' (PDF)');
+          this.notify(monthName(lastMissing) + ' statement attached' + (req ? ' · ' + ((practice && practice.contact) || 'your accountant') + '’s request is done' : ''));
+        }
+      };
+    });
+
+    // ---- totals
+    const yt = BE.propertyTotals();
+    const allowance = ukPack.propertyAllowance || 1000;
+    const shareWord = props.every((p) => (Number(p.share) || 100) === 100) ? 'full' : 'own';
+    const stats = [
+      { label: 'Rent received', value: m(yt.income), note: 'This tax year, ' + (ukPack.taxYear || {}).label, bg: '#FFFFFF', fg: '#18161F', border: '#E2DFE8', dot: '#7A5AF8', sub: '#47444F', num: '#18161F' },
+      { label: 'Costs', value: m(yt.useAllowance ? Math.min(allowance, yt.income) : yt.costs), note: yt.useAllowance ? 'Using the ' + m(allowance) + ' allowance instead' : 'Agent, repairs, insurance and more', bg: '#FFFFFF', fg: '#18161F', border: '#E2DFE8', dot: '#E0752D', sub: '#47444F', num: '#18161F' },
+      { label: 'Mortgage interest', value: m(yt.finance), note: 'Kept separate · 20% tax reduction', bg: '#FFFFFF', fg: '#18161F', border: '#E2DFE8', dot: '#F4C3A1', sub: '#47444F', num: '#18161F' },
+      { label: 'Property profit so far', value: m(yt.profit), note: 'Before the mortgage interest reduction', bg: '#18161F', fg: '#FFFFFF', border: '#18161F', dot: '#B9A3FF', sub: '#E2DFE8', num: '#B9A3FF' }
+    ];
+
+    const quarters = (ukPack.quarters || []).map((q) => {
+      const t = BE.propertyTotals(q.id);
+      const f = BE.filedInfo(q.id);
+      const cur = q.id === ukPack.currentQuarter, last = q.id === ukPack.lastQuarter;
+      const status = f ? 'Filed ' + f.on : last ? 'Filing by ' + q.due.replace(/ \d{4}$/, '') : cur ? 'In progress' : 'Not started';
+      return {
+        label: q.label, range: q.from + '–' + q.to, status,
+        pillBg: f ? '#E2F6D5' : last ? '#FFF0B8' : cur ? '#E1EEF8' : '#EFEDF3', pillFg: f ? '#2F5711' : last ? '#6B5000' : cur ? '#1F5E91' : '#47444F',
+        bg: last ? '#F7F5FF' : '#F7F6F9',
+        line: t.count ? 'Rent ' + m(t.income) + ' · costs ' + m(t.costs) + ' · interest ' + m(t.finance) : 'Nothing yet'
+      };
+    });
+
+    let allow;
+    if (yt.useAllowance) allow = { text: 'You’re using the allowance: ' + m(Math.min(allowance, yt.income)) + ' comes off your rent instead of your costs (' + m(yt.costs) + ' so far).', offer: false, using: true };
+    else if (!yt.income) allow = { text: 'Once rent comes in, we compare your costs with the ' + m(allowance) + ' allowance and tell you which is better.', offer: false, using: false };
+    else if (yt.costs < allowance) allow = { text: 'Your costs so far (' + m(yt.costs) + ') are less than the ' + m(allowance) + ' allowance. Claiming the allowance instead would take ' + m(Math.min(allowance, yt.income) - yt.costs) + ' more off your rent.', offer: true, using: false };
+    else allow = { text: 'Your costs so far (' + m(yt.costs) + ') are more than the ' + m(allowance) + ' allowance, so claiming your costs is better. We’ll tell you if that changes.', offer: false, using: false };
+
+    const fin = {
+      relief: m(yt.financeRelief) + ' off your tax',
+      text: yt.useAllowance ? 'With the allowance, mortgage interest (' + m(yt.finance) + ' so far) gets no reduction.' : yt.finance ? 'Mortgage interest of ' + m(yt.finance) + ' this year isn’t taken off your rent. It reduces your Income Tax by 20% of it instead.' : 'Add mortgage interest under its own heading; it reduces your Income Tax by 20% of it.'
+    };
+
+    // ---- entries list
+    const f = st.filter;
+    const shown = entries.filter((e) => f === 'year' ? !!BE.ukQuarterOf(e.iso || e.date) : BE.ukQuarterOf(e.iso || e.date) === f);
+    const multi = props.length > 1;
+    const propName = {}; props.forEach((p) => { propName[p.id] = p.name; });
+    const LIMIT = 10;
+    const cut = !st.allRows && shown.length > LIMIT;
+    const rows = (cut ? shown.slice(0, LIMIT) : shown).map((e) => {
+      const c = catById[e.cat] || { name: 'Other', official: '' };
+      const lq = lockedQ(e.iso || e.date);
+      const isIncome = e.kind === 'income';
+      return {
+        date: e.date, what: e.what + (multi ? ' · ' + (propName[e.prop] || '') : ''), cat: c.name, official: c.official,
+        amount: (isIncome ? '+' : '−') + m(e.amount), dot: isIncome ? '#7A5AF8' : e.cat === 'p-finance' ? '#F4C3A1' : '#E0752D',
+        tag: e.cat === 'p-finance' ? 'Kept separate' : e.isNew ? 'New' : '', tagBg: e.cat === 'p-finance' ? '#EEE8FF' : '#E1EEF8', tagFg: e.cat === 'p-finance' ? '#18161F' : '#1F5E91',
+        locked: !!lq, canRemove: !lq && !e.auto, spacer: !lq && !!e.auto, lockNote: lq ? 'Locked: ' + qLabel(lq) + ' is filed' : '',
+        removeLabel: 'Remove ' + e.what,
+        remove: () => {
+          if (e.rentMonth && isIncome) BE.unmarkRent(e.prop, e.rentMonth); else BE.remove('propertyEntries', e.id);
+          this.notify('Removed ' + e.what + ' · ' + m(e.amount) + (e.rentMonth && isIncome ? ' and its agent fee' : ''));
+        }
+      };
+    });
+    const tf = f === 'year' ? BE.propertyTotals() : BE.propertyTotals(f);
+    const FL = [['year', 'Whole year']].concat((ukPack.quarters || []).map((q) => [q.id, q.label]));
+
+    // ---- composer
+    const ne = st.ne || this.blankEntry();
+    const neCats = ne.kind === 'income' ? INCOME : cats;
+    const neCat = catById[ne.cat] || neCats[0];
+    const neQ = BE.ukQuarterOf(ne.date);
+    const setNe = (patch) => this.setState({ ne: Object.assign({}, ne, patch, { err: '' }) });
+    const np = st.np || { name: '', area: '', share: '100', rent: '', rentDay: '1', agent: '', agentPct: '', err: '' };
+    const setNp = (patch) => this.setState({ np: Object.assign({}, np, patch, { err: '' }) });
+
+    return {
+      uk: true, notUk: false, sym: pack.symbol || '£', taxYear: (ukPack.taxYear || {}).label,
+      practiceLine: practice && practice.name ? practice.name + ' sees them in your quarterly updates.' : 'They go into your quarterly updates.',
+      hasProps: props.length > 0, noProps: !props.length, manyProps: multi,
+      props: propCards, stats, quarters, allow, fin, allowance: m(allowance), shareWord,
+      useAllowance: () => { BE.patch('landlord', { useAllowance: true }); BE.log('Switched to the ' + m(allowance) + ' property allowance'); this.notify('Using the ' + m(allowance) + ' allowance · your property profit is updated'); },
+      useCosts: () => { BE.patch('landlord', { useAllowance: false }); BE.log('Switched back to claiming property costs'); this.notify('Claiming your costs again · ' + m(yt.costs) + ' so far'); },
+      filters: FL.map(([id, label]) => ({ label, pressed: f === id ? 'true' : 'false', bg: f === id ? '#18161F' : 'transparent', color: f === id ? '#FFFFFF' : '#18161F', pick: () => this.setState({ filter: id, allRows: false }) })),
+      rows, hasRows: rows.length > 0, moreRows: cut, moreLabel: 'Show all ' + shown.length, showAllRows: () => this.setState({ allRows: true }), noRows: !rows.length,
+      noRowsText: f === 'year' ? 'No rent or costs yet this tax year.' : 'Nothing in ' + qLabel(f) + ' yet.',
+      rowsTotal: { label: f === 'year' ? 'Tax year so far, your share' : qLabel(f) + ', your share', income: m(tf.income), costs: m(tf.costs), finance: m(tf.finance) },
+
+      addOpen: st.addOpen, propOpen: st.propOpen, propClosed: !st.propOpen,
+      openAdd: () => this.setState({ addOpen: true, propOpen: false, ne: this.blankEntry() }),
+      closeAdd: () => this.setState({ addOpen: false, ne: null }),
+      openProp: () => this.setState({ propOpen: true, addOpen: false, np: null }),
+      closeProp: () => this.setState({ propOpen: false, np: null }),
+      kinds: [['cost', 'A cost'], ['income', 'Income']].map(([id, label]) => ({ label, pressed: ne.kind === id ? 'true' : 'false', bg: ne.kind === id ? '#18161F' : 'transparent', color: ne.kind === id ? '#FFFFFF' : '#18161F', pick: () => setNe({ kind: id, cat: id === 'income' ? 'rent' : 'p-repairs' }) })),
+      propOpts: props.map((p) => ({ id: p.id, name: p.name })),
+      catOpts: neCats.map((c) => ({ id: c.id, name: c.name })),
+      ne: {
+        prop: ne.prop, cat: ne.cat, what: ne.what, amount: ne.amount, date: ne.date, err: ne.err,
+        official: neCat ? 'HMRC: ' + neCat.official : '',
+        finance: ne.cat === 'p-finance',
+        placeholder: ne.kind === 'income' ? 'e.g. Rent for October' : 'e.g. Boiler service',
+        saveLabel: ne.kind === 'income' ? 'Add income' : 'Add cost',
+        quarterNote: neQ ? 'Goes into ' + qLabel(neQ) + (BE.isFiled(neQ) ? ', which is filed and locked' : '') : 'Pick a date in the ' + (ukPack.taxYear || {}).label + ' tax year',
+        setProp: (e) => setNe({ prop: e.target.value }), setCat: (e) => setNe({ cat: e.target.value }),
+        setWhat: (e) => setNe({ what: e.target.value }), setAmount: (e) => setNe({ amount: e.target.value }), setDate: (e) => setNe({ date: e.target.value })
+      },
+      saveEntry: () => {
+        const amt = Math.round(BE.num(ne.amount) * 100) / 100;
+        const q = BE.ukQuarterOf(ne.date);
+        const err = !(amt > 0) ? 'Enter an amount.' : !q ? 'Pick a date in the ' + (ukPack.taxYear || {}).label + ' tax year (6 Apr 2026 to 5 Apr 2027).' : BE.isFiled(q) ? qLabel(q) + ' is filed and locked. Pick a later date, or ask your accountant.' : !ne.prop ? 'Add a property first.' : '';
+        if (err) { this.setState({ ne: Object.assign({}, ne, { err }) }); return; }
+        const d = BE.dateOf(ne.date);
+        const c = catById[ne.cat] || { name: 'Other' };
+        const what = (ne.what || '').trim() || c.name;
+        BE.change((s) => {
+          s.propertyEntries = [{ id: BE.id('pe'), prop: ne.prop, kind: ne.kind, cat: ne.cat, what, amount: amt, iso: ne.date, date: BE.dayLabel(d), isNew: true }].concat(s.propertyEntries || []).sort((a, b) => a.iso < b.iso ? 1 : -1);
+          BE._log(s, 'Added ' + what + ' · ' + m(amt) + ' under ' + c.name + ' (' + (propName[ne.prop] || 'property') + ')');
+        });
+        this.setState({ addOpen: false, ne: null, filter: 'year' });
+        this.notify(what + ' · ' + m(amt) + (ne.cat === 'p-finance' ? ' kept separate as mortgage interest' : ' added to ' + c.name) + ' in ' + qLabel(q));
+      },
+      np: {
+        name: np.name, area: np.area, share: np.share, rent: np.rent, rentDay: np.rentDay, agent: np.agent, agentPct: np.agentPct, err: np.err,
+        setName: (e) => setNp({ name: e.target.value }), setArea: (e) => setNp({ area: e.target.value }), setShare: (e) => setNp({ share: e.target.value }),
+        setRent: (e) => setNp({ rent: e.target.value }), setDay: (e) => setNp({ rentDay: e.target.value }), setAgent: (e) => setNp({ agent: e.target.value }), setPct: (e) => setNp({ agentPct: e.target.value })
+      },
+      saveProp: () => {
+        const share = Math.round(BE.num(np.share)), rent = BE.num(np.rent), day = Math.round(BE.num(np.rentDay)) || 1;
+        const err = !np.name.trim() ? 'Add the address.' : !(share > 0 && share <= 100) ? 'Your share is between 1 and 100%.' : !(rent > 0) ? 'Add the monthly rent.' : day > 28 ? 'Pick a day from 1 to 28.' : '';
+        if (err) { this.setState({ np: Object.assign({}, np, { err }) }); return; }
+        const p = { name: np.name.trim(), area: np.area.trim(), share, rent, rentDay: day, agent: np.agent.trim(), agentPct: np.agent.trim() ? BE.num(np.agentPct) : 0, statements: [], since: 'Added ' + BE.today };
+        BE.add('properties', p, { end: true });
+        BE.log('Added a property: ' + p.name);
+        this.setState({ propOpen: false, np: null });
+        this.notify(p.name + ' added · its rent shows in the rent roll');
+      },
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

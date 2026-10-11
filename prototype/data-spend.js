@@ -1,218 +1,139 @@
-/* Going out: costs that repeat every month, receipts and vendors (October 2026). */
+/* Going out: costs you pay every month (templates you set up) and who you pay (suppliers), per country. */
 (function () {
-  // paidDay > 0: already paid this month (it's in expenses). Active costs not yet paid with day > 4
-  // count as "scheduled" in Going out ($782). active: false = paused or cancelled (doesn't count).
-  BE.define('monthly', [
-    { id: 'wework', who: 'WeWork rent', vendor: 'wework', cat: 'Rent', day: 1, card: 'Chase ••4417', amount: 1200, paidDay: 1, start: 'Oct', active: true },
-    { id: 'gws', who: 'Google Workspace', vendor: 'google', cat: 'Software', day: 5, card: 'Amex ••1009', amount: 72, paidDay: 0, start: 'Oct', active: true },
-    { id: 'adobe', who: 'Adobe Creative Cloud', vendor: 'adobe', cat: 'Software', day: 8, card: 'Amex ••1009', amount: 90, paidDay: 1, start: 'Oct', active: true },
-    { id: 'notion', who: 'Notion', vendor: 'notion', cat: 'Software', day: 9, card: 'Amex ••1009', amount: 40, paidDay: 0, start: 'Oct', active: true },
-    { id: 'figma', who: 'Figma', vendor: 'figma', cat: 'Software', day: 12, card: 'Amex ••1009', amount: 45, paidDay: 2, start: 'Oct', active: true },
-    { id: 'comcast', who: 'Comcast Business', vendor: 'comcast', cat: 'Internet & phone', day: 15, card: 'Chase ••4417', amount: 129, paidDay: 3, start: 'Oct', active: true },
-    { id: 'dropbox', who: 'Dropbox', vendor: 'dropbox', cat: 'Software', day: 20, card: 'Amex ••1009', amount: 24, paidDay: 0, start: 'Oct', active: true, unused: 'No files changed in 60 days' },
-    { id: 'ins', who: 'Business insurance', vendor: 'hiscox', cat: 'Insurance', day: 28, card: 'Chase ••4417', amount: 646, paidDay: 0, start: 'Oct', active: true }
-  ]);
-
-  // Small decisions on the Every month screen ("Canva looks like it repeats").
-  BE.define('spendFlags', { canva: 'ask' }, { canva: 'none' });
-
-  // Receipts. status: 'waiting' (read, not matched yet), 'blurry' (needs the total typed),
-  // 'matched' (expenseId points at the expense it proves). readyAt: still being read until then.
-  BE.define('receipts', [
-    { id: 'rc-staples', merchant: 'Staples', date: 'Oct 3', total: 84, tax: 6.83, cat: 'Office supplies', file: 'IMG_4468.jpg', source: 'Snapped on Maya’s phone', added: 'Oct 3', month: 'Oct', status: 'waiting' },
-    { id: 'rc-delta', merchant: 'Delta Air Lines', date: 'Oct 2', total: 412, tax: 38.12, cat: 'Travel', file: 'delta-eticket-HX7Q2L.pdf', source: 'Forwarded from maya@northwind.studio', added: 'Oct 3', month: 'Oct', status: 'waiting' },
-    { id: 'rc-bluebottle', merchant: 'Blue Bottle Coffee', date: 'Oct 4', total: 18.5, tax: 1.51, cat: 'Meals', file: 'IMG_4473.jpg', source: 'Snapped on Jordan’s phone', added: 'Oct 4', month: 'Oct', status: 'waiting' },
-    { id: 'rc-homedepot', merchant: 'The Home Depot', date: 'Oct 3', total: 0, tax: 0, cat: 'Office supplies', file: 'IMG_4471.jpg', source: 'Snapped on Maya’s phone', added: 'Oct 4', month: 'Oct', status: 'blurry' },
-    { id: 'rc-elena', merchant: 'Elena Rossi', date: 'Oct 3', total: 936, tax: 0, cat: 'Contractors', file: 'ER-013.pdf', source: 'Emailed invoice', added: 'Oct 3', month: 'Oct', status: 'matched', expenseId: 'exp-1' },
-    { id: 'rc-comcast', merchant: 'Comcast Business', date: 'Oct 3', total: 129, tax: 9.41, cat: 'Internet & phone', file: 'comcast-oct.pdf', source: 'Emailed', added: 'Oct 3', month: 'Oct', status: 'matched', expenseId: 'exp-2' },
-    { id: 'rc-shell', merchant: 'Shell', date: 'Oct 3', total: 48, tax: 0, cat: 'Fuel', file: 'IMG_4466.jpg', source: 'Snapped on Maya’s phone', added: 'Oct 3', month: 'Oct', status: 'matched', expenseId: 'exp-3' },
-    { id: 'rc-lps', merchant: 'Local Print Shop', date: 'Oct 2', total: 236, tax: 19.24, cat: 'Printing', file: 'LPS-2264.pdf', source: 'Uploaded', added: 'Oct 2', month: 'Oct', status: 'matched', expenseId: 'exp-4' },
-    { id: 'rc-figma', merchant: 'Figma', date: 'Oct 2', total: 45, tax: 0, cat: 'Software', file: 'figma-invoice-oct.pdf', source: 'Emailed', added: 'Oct 2', month: 'Oct', status: 'matched', expenseId: 'exp-6' },
-    { id: 'rc-adobe', merchant: 'Adobe Creative Cloud', date: 'Oct 1', total: 90, tax: 0, cat: 'Software', file: 'adobe-oct.pdf', source: 'Emailed', added: 'Oct 1', month: 'Oct', status: 'matched', expenseId: 'exp-8' },
-    { id: 'rc-wework', merchant: 'WeWork', date: 'Oct 1', total: 1200, tax: 0, cat: 'Rent', file: 'wework-oct.pdf', source: 'Emailed invoice', added: 'Oct 1', month: 'Oct', status: 'matched', expenseId: 'exp-9' },
-    { id: 'rc-s1', merchant: 'Blue Bottle Coffee', date: 'Sep 18', total: 22.4, tax: 1.83, cat: 'Meals', file: 'IMG_4310.jpg', source: 'Snapped', added: 'Sep 18', month: 'Sep', status: 'matched', charge: 'SQ *BLUE BOTTLE · Sep 18 · Amex ••1009' },
-    { id: 'rc-s2', merchant: 'Staples', date: 'Sep 14', total: 46.3, tax: 3.77, cat: 'Office supplies', file: 'IMG_4288.jpg', source: 'Snapped', added: 'Sep 14', month: 'Sep', status: 'matched', charge: 'STAPLES 00123 · Sep 14 · Amex ••1009' },
-    { id: 'rc-s3', merchant: 'Comcast Business', date: 'Sep 3', total: 129, tax: 9.41, cat: 'Internet & phone', file: 'comcast-sep.pdf', source: 'Emailed', added: 'Sep 3', month: 'Sep', status: 'matched', charge: 'COMCAST BUSINESS · Sep 3 · Chase ••4417' },
-    { id: 'rc-s4', merchant: 'WeWork', date: 'Sep 1', total: 1200, tax: 0, cat: 'Rent', file: 'wework-sep.pdf', source: 'Emailed invoice', added: 'Sep 1', month: 'Sep', status: 'matched', charge: 'WEWORK 1460 BROADWAY · Sep 1 · Chase ••4417' },
-    { id: 'rc-a1', merchant: 'B&H Photo', date: 'Aug 21', total: 389, tax: 34.52, cat: 'Equipment', file: 'bh-order-8812.pdf', source: 'Uploaded', added: 'Aug 21', month: 'Aug', status: 'matched', charge: 'B&H PHOTO 420 9TH AVE · Aug 21 · Amex ••1009' },
-    { id: 'rc-a2', merchant: 'Lyft', date: 'Aug 9', total: 31.6, tax: 0, cat: 'Travel', file: 'lyft-aug-9.pdf', source: 'Emailed', added: 'Aug 9', month: 'Aug', status: 'matched', charge: 'LYFT *RIDE · Aug 9 · Amex ••1009' }
-  ]);
-
-  // Who the business pays. Bills and expenses link to a vendor by name (`who`), or any of `aka`.
-  // paidBefore: paid to them in 2026 before October (October comes from expenses).
-  BE.define('vendors', [
-    { id: 'local-print-shop', name: 'Local Print Shop', cat: 'Printing', contact: 'Dan Ruiz', email: 'orders@localprintshop.nyc', phone: '(718) 555-0142', terms: 'Net 10', via: 'Amex ••1009', paidBefore: 3882,
-      past: [{ date: 'Sep 9', what: 'Menu boards', amount: 418, how: 'Amex ••1009' }, { date: 'Aug 21', what: 'Trade show banners', amount: 1120, how: 'Chase ••4417' }] },
-    { id: 'comcast', name: 'Comcast Business', cat: 'Internet & phone', contact: 'Business account ••8830', email: 'business@comcast.com', phone: '(800) 391-3000', terms: 'Autopay on the 15th', via: 'Chase ••4417', paidBefore: 1161, monthly: 'comcast',
-      past: [{ date: 'Sep 3', what: 'Monthly service', amount: 129, how: 'Chase ••4417' }, { date: 'Aug 3', what: 'Monthly service', amount: 129, how: 'Chase ••4417' }] },
-    { id: 'staples', name: 'Staples', cat: 'Office supplies', contact: 'Business account', email: 'business@staples.com', phone: '', terms: 'Net 30', via: 'Amex ••1009', paidBefore: 1062,
-      past: [{ date: 'Aug 30', what: 'Shipping boxes', amount: 146, how: 'Amex ••1009' }, { date: 'Jul 12', what: 'Desk lamps', amount: 238, how: 'Amex ••1009' }] },
-    { id: 'adobe', name: 'Adobe Creative Cloud', cat: 'Software', contact: 'Teams plan, 3 seats', email: 'billing@adobe.com', phone: '', terms: 'Card on file', via: 'Amex ••1009', paidBefore: 810, monthly: 'adobe',
-      past: [{ date: 'Sep 1', what: 'Monthly plan', amount: 90, how: 'Amex ••1009' }, { date: 'Aug 1', what: 'Monthly plan', amount: 90, how: 'Amex ••1009' }] },
-    { id: 'wework', name: 'WeWork', aka: ['WeWork rent'], cat: 'Rent', contact: 'Private office, Dumbo', email: 'dumbo@wework.com', phone: '', terms: 'Rent on the 1st', via: 'Chase ••4417', paidBefore: 10800, monthly: 'wework',
-      past: [{ date: 'Sep 1', what: 'September rent', amount: 1200, how: 'Chase ••4417' }, { date: 'Aug 1', what: 'August rent', amount: 1200, how: 'Chase ••4417' }] },
-    { id: 'elena-rossi', name: 'Elena Rossi', cat: 'Contractors', contact: 'Illustrator', email: 'elena@rossi.studio', phone: '(347) 555-0198', terms: 'Net 30', via: 'Bank transfer', paidBefore: 8924, contractor: true, w9: 'Feb 3, 2026',
-      past: [{ date: 'Sep 4', what: 'Invoice ER-012', amount: 1210, how: 'Bank transfer' }, { date: 'Aug 5', what: 'Invoice ER-011', amount: 880, how: 'Bank transfer' }] },
-    { id: 'figma', name: 'Figma', cat: 'Software', contact: 'Professional plan, 2 editors', email: 'billing@figma.com', phone: '', terms: 'Card on file', via: 'Amex ••1009', paidBefore: 405, monthly: 'figma',
-      past: [{ date: 'Sep 2', what: 'Monthly plan', amount: 45, how: 'Amex ••1009' }] },
-    { id: 'delta', name: 'Delta Air Lines', cat: 'Travel', contact: 'Card charges only', email: '', phone: '', terms: 'Paid by card', via: 'Amex ••1009', paidBefore: 1074,
-      past: [{ date: 'Jun 14', what: 'JFK to Austin, conference', amount: 1074, how: 'Amex ••1009' }] },
-    { id: 'shell', name: 'Shell', cat: 'Fuel', contact: 'Card charges only', email: '', phone: '', terms: 'Paid by card', via: 'Amex ••1009', paidBefore: 469,
-      past: [{ date: 'Sep 18', what: 'Fuel', amount: 52, how: 'Amex ••1009' }, { date: 'Sep 2', what: 'Fuel', amount: 46, how: 'Amex ••1009' }] },
-    { id: 'google', name: 'Google Workspace', cat: 'Software', contact: '6 users', email: '', phone: '', terms: 'Card on file', via: 'Amex ••1009', paidBefore: 648, monthly: 'gws',
-      past: [{ date: 'Sep 5', what: 'Monthly plan', amount: 72, how: 'Amex ••1009' }] },
-    { id: 'notion', name: 'Notion', cat: 'Software', contact: 'Plus plan', email: '', phone: '', terms: 'Card on file', via: 'Amex ••1009', paidBefore: 360, monthly: 'notion',
-      past: [{ date: 'Sep 9', what: 'Monthly plan', amount: 40, how: 'Amex ••1009' }] },
-    { id: 'dropbox', name: 'Dropbox', cat: 'Software', contact: 'Business plan', email: '', phone: '', terms: 'Card on file', via: 'Amex ••1009', paidBefore: 216, monthly: 'dropbox',
-      past: [{ date: 'Sep 20', what: 'Monthly plan', amount: 24, how: 'Amex ••1009' }] },
-    { id: 'hiscox', name: 'Hiscox', aka: ['Business insurance'], cat: 'Insurance', contact: 'General liability policy', email: 'service@hiscox.com', phone: '(866) 283-7545', terms: 'Monthly on the 28th', via: 'Chase ••4417', paidBefore: 5814, monthly: 'ins',
-      past: [{ date: 'Sep 28', what: 'Monthly premium', amount: 646, how: 'Chase ••4417' }] }
-  ]);
-
-  // ---- helpers for receipts and vendors ----
   var r2 = function (n) { return Math.round((Number(n) || 0) * 100) / 100; };
-  var lc = function (s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); };
-  var first = function (s) { return lc(s).split(' ')[0] || ''; };
-
-  /** Is this receipt still being read? (A fresh upload reads for a moment.) */
-  BE.receiptReading = function (r) { return !!(r && r.readyAt && Date.now() < r.readyAt); };
-
-  /** The receipt attached to an expense, if any. */
-  BE.receiptFor = function (expenseId) {
-    var x = BE.find('expenses', expenseId);
-    if (x && x.receiptId) { var r = BE.find('receipts', x.receiptId); if (r) return r; }
-    return BE.all('receipts').filter(function (r) { return r.expenseId === expenseId; })[0] || null;
+  var name = function (country, id) {
+    var P = (window.COUNTRY || {})[country] || {};
+    var c = (P.categories || []).concat(P.propertyCategories || []).filter(function (x) { return x.id === id; })[0];
+    return c ? c.name : 'Other';
   };
-
-  /**
-   * Charges a receipt could belong to: paid expenses with no receipt yet, and card charges
-   * not sorted yet. Same amount; the same store or a date close by makes it a better guess.
-   */
-  BE.receiptCandidates = function (r) {
-    if (!r || !(r.total > 0)) return [];
-    var taken = {};
-    BE.all('receipts').forEach(function (o) { if (o.expenseId && o.id !== r.id) taken[o.expenseId] = 1; });
-    var out = [];
-    var day = function (d) { var m = String(d || '').match(/(\d+)$/); return m ? +m[1] : 0; };
-    var why = function (name, date) {
-      var same = first(name) && (first(name) === first(r.merchant) || lc(name).indexOf(first(r.merchant)) >= 0);
-      var gap = Math.abs(day(date) - day(r.date));
-      return { score: (same ? 2 : 0) + (gap === 0 ? 1 : 0), reason: (same ? 'same store, ' : '') + 'same amount, ' + (gap === 0 ? 'same day' : gap === 1 ? 'a day apart' : gap + ' days apart') };
+  var M = function (country) {
+    return function (id, who, vendor, catId, day, how, amount, o) {
+      o = o || {};
+      var m = { id: id, who: who, vendor: vendor, catId: catId, cat: name(country, catId), day: day, how: how, amount: amount, vat: o.vat || 0, paidDay: o.paidDay || 0, start: 'Oct', active: true };
+      if (o.property) m.property = o.property;
+      if (o.expense) m.expense = o.expense;
+      return m;
     };
-    BE.all('expenses').forEach(function (x) {
-      if (x.receipt || x.receiptId || taken[x.id] || Math.abs(x.amount - r.total) > 0.005) return;
-      var w = why(x.who + ' ' + (x.raw || ''), x.date);
-      out.push({ kind: 'expense', id: x.id, label: x.raw || x.who, who: x.who, date: x.date, how: x.how, amount: x.amount, score: w.score + 1, reason: w.reason });
-    });
-    BE.all('charges').forEach(function (c) {
-      if (Math.abs(c.amount - r.total) > 0.005) return;
-      var w = why(c.nice + ' ' + c.raw, c.date);
-      out.push({ kind: 'charge', id: c.id, label: c.raw, who: c.nice, date: c.date, how: c.how, amount: c.amount, score: w.score, reason: w.reason + ', not sorted yet' });
-    });
-    return out.sort(function (a, b) { return b.score - a.score; });
   };
+  var UM = M('uk'), LM = M('lk');
+
+  /*
+   * Every month: templates the business set up for costs that come back each month. BillingEase
+   * pays nothing and reads nothing: on the day, you record the payment (one tap) and it moves to paid.
+   * paidDay > 0: recorded for October (it's in expenses). Active, unrecorded templates after the 4th
+   * count in Going out as still to pay. active: false = stopped (doesn't count).
+   */
+  BE.define('monthly', BE.perCountry({
+    uk: [
+      UM('m-desk', 'Desk at Northern Desk Co-working', 'northern-desk', 'premises', 1, 'Bank transfer', 180, { paidDay: 1, expense: 'x-u25' }),
+      UM('m-mortgage', 'Mortgage interest, Flat 2', 'leeds-bs', 'p-finance', 1, 'Bank transfer', 410, { paidDay: 1, expense: 'x-u24', property: 'ash-grove' }),
+      UM('m-agent', 'Letting agent fee, Flat 2', 'headingley-lettings', 'p-professional', 1, 'Bank transfer', 105, { paidDay: 1, expense: 'x-u23', property: 'ash-grove' }),
+      UM('m-adobe', 'Adobe Creative Cloud', 'adobe', 'office', 2, 'Card', 54, { paidDay: 2, expense: 'x-u26' }),
+      UM('m-ee', 'EE mobile', 'ee', 'office', 3, 'Bank transfer', 32, { paidDay: 3, expense: 'x-u27' }),
+      UM('m-google', 'Google Workspace', 'google', 'office', 14, 'Card', 10.3),
+      UM('m-krystal', 'Krystal web hosting', 'krystal', 'office', 28, 'Card', 12)
+    ],
+    lk: [
+      LM('m-rent', 'Studio rent', 'kollupitiya-estates', 'rent', 1, 'Cheque', 350000, { paidDay: 1, expense: 'x-l13' }),
+      LM('m-slt', 'SLT-Mobitel fibre', 'slt', 'utilities', 5, 'Bank transfer', 12500, { vat: 1906.78, paidDay: 5, expense: 'x-l15' }),
+      LM('m-security', 'Night security', 'guardian', 'other', 15, 'Bank transfer', 65000, { vat: 9915.25 }),
+      LM('m-adobe', 'Adobe Creative Cloud', 'adobe', 'office', 18, 'Bank transfer', 28500),
+      LM('m-water', 'NWSDB water', 'nwsdb', 'utilities', 22, 'Bank transfer', 3800),
+      LM('m-clean', 'Studio cleaning', 'sparkle', 'other', 25, 'Cash', 22000)
+    ]
+  }), BE.perCountry({ uk: [], lk: [] }));
+
+  /*
+   * Suppliers: who the business pays. Bills and expenses link to a supplier by name (`who`), or any
+   * of `aka`. paidBefore: paid to them this tax year before the entries kept here (UK from 6 Apr,
+   * Sri Lanka from 1 Apr). vatNo: their VAT registration number (Sri Lanka: input VAT needs their
+   * tax invoice). property: a UK landlord's supplier for the flat.
+   */
+  var V = function (country) {
+    return function (id, nm, catId, o) {
+      o = o || {};
+      return Object.assign({ id: id, name: nm, catId: catId, cat: name(country, catId), contact: '', email: '', phone: '', terms: '', via: 'Bank transfer', paidBefore: 0, vatNo: '' }, o);
+    };
+  };
+  var UV = V('uk'), LV = V('lk');
+  BE.define('vendors', BE.perCountry({
+    uk: [
+      UV('northern-desk', 'Northern Desk Co-working', 'premises', { contact: 'Hannah Kerr, community manager', email: 'hello@northerndesk.co.uk', phone: '0113 496 0457', terms: 'Direct debit on the 1st', paidBefore: 540, monthly: 'm-desk' }),
+      UV('footprint', 'Footprint Print', 'office', { contact: 'Sam Akhtar', email: 'orders@footprintprint.co.uk', phone: '0113 496 0221', terms: '14 days', via: 'Card', paidBefore: 310 }),
+      UV('dale-shaw', 'Dale & Shaw Accountants', 'professional', { contact: 'Priya Shaw', email: 'priya@daleandshaw.co.uk', phone: '0113 496 0870', terms: '14 days' }),
+      UV('adobe', 'Adobe Creative Cloud', 'office', { contact: 'Single app plan', email: '', terms: 'Card, monthly', via: 'Card', paidBefore: 162, monthly: 'm-adobe' }),
+      UV('ee', 'EE', 'office', { contact: 'Business mobile ending 4410', terms: 'Direct debit on the 3rd', paidBefore: 96, monthly: 'm-ee' }),
+      UV('leeds-bs', 'Leeds Building Society', 'p-finance', { contact: 'Buy-to-let mortgage ending 7731', phone: '0345 050 5075', terms: 'Direct debit on the 1st', paidBefore: 1230, monthly: 'm-mortgage', property: 'ash-grove' }),
+      UV('headingley-lettings', 'Headingley Lettings', 'p-professional', { contact: 'Gemma Price', email: 'lettings@headingleylettings.co.uk', phone: '0113 496 0612', terms: '10% taken from the rent', paidBefore: 315, monthly: 'm-agent', property: 'ash-grove' }),
+      UV('kirkstall-heating', 'Kirkstall Heating', 'p-repairs', { contact: 'Dave Morton, Gas Safe registered', email: 'dave@kirkstallheating.co.uk', phone: '0113 496 0399', terms: '14 days', property: 'ash-grove' }),
+      UV('lner', 'LNER', 'travel', { contact: 'Tickets bought online', terms: 'Paid by card', via: 'Card', paidBefore: 124.6 }),
+      UV('northern-rail', 'Northern Rail', 'travel', { contact: 'Tickets bought online', terms: 'Paid by card', via: 'Card', paidBefore: 22.8 }),
+      UV('google', 'Google Workspace', 'office', { contact: 'One user', terms: 'Card, monthly', via: 'Card', paidBefore: 30.9, monthly: 'm-google' }),
+      UV('krystal', 'Krystal Hosting', 'office', { contact: 'harperstudio.co.uk hosting', terms: 'Card, monthly', via: 'Card', paidBefore: 36, monthly: 'm-krystal' }),
+      UV('hiscox', 'Hiscox', 'premises', { contact: 'Policy ending 2207', phone: '0800 840 2298', terms: 'Yearly, renews 15 Jul' }),
+      UV('royal-mail', 'Royal Mail', 'office', { contact: 'Post Office counter', terms: 'Paid at the counter', via: 'Cash', paidBefore: 18.4 })
+    ],
+    lk: [
+      LV('kollupitiya-estates', 'Kollupitiya Estates (Pvt) Ltd', 'rent', { contact: 'Mr. Nimal Perera', email: 'accounts@kollupitiyaestates.lk', phone: '011 257 3301', terms: 'Cheque on the 1st', via: 'Cheque', paidBefore: 1750000, monthly: 'm-rent' }),
+      LV('cph', 'Colombo Print House (Pvt) Ltd', 'cogs', { contact: 'Ms. Shanika de Silva', email: 'orders@colomboprint.lk', phone: '011 243 8812', terms: '10 days', paidBefore: 412300, vatNo: '114228905-7000' }),
+      LV('studio-furnish', 'Studio Furnish (Pvt) Ltd', 'capital', { contact: 'Mr. Ranjith Fonseka', email: 'sales@studiofurnish.lk', phone: '011 250 6627', terms: '30 days', via: 'Cheque', vatNo: '134552019-7000' }),
+      LV('jco', 'Jayasinghe & Co, Chartered Accountants', 'professional', { contact: 'Ruwan Jayasinghe', email: 'ruwan@jayasinghe.lk', phone: '011 269 4520', terms: '30 days', paidBefore: 177000, vatNo: '104771360-7000' }),
+      LV('ceb', 'Ceylon Electricity Board', 'utilities', { contact: 'Account 0417-2291', terms: '15 days', paidBefore: 231000 }),
+      LV('slt', 'SLT-Mobitel', 'utilities', { contact: 'Fibre account 011 257 4410', terms: 'Monthly', paidBefore: 62500, monthly: 'm-slt', vatNo: '114038271-7000' }),
+      LV('guardian', 'Guardian Security Services', 'other', { contact: 'Night guard for the studio', phone: '011 258 9940', terms: 'Monthly', paidBefore: 325000, monthly: 'm-security', vatNo: '124660218-7000' }),
+      LV('lwh', 'Lanka Web Hosting (Pvt) Ltd', 'office', { contact: 'serendibstudio.lk hosting', email: 'billing@lankawebhosting.lk', terms: '30 days', vatNo: '114902337-7000' }),
+      LV('techzone', 'Techzone Lanka (Pvt) Ltd', 'capital', { contact: 'Unity Plaza, Colombo 04', phone: '011 250 3318', terms: 'On receipt', vatNo: '114517803-7000' }),
+      LV('adobe', 'Adobe Creative Cloud', 'office', { contact: 'Teams plan, 4 seats', terms: 'Monthly', paidBefore: 142500, monthly: 'm-adobe' }),
+      LV('nwsdb', 'NWSDB water', 'utilities', { contact: 'Account 03/14/2207', terms: 'Monthly', paidBefore: 19000, monthly: 'm-water' }),
+      LV('sparkle', 'Sparkle Cleaners', 'other', { contact: 'Mrs. Kumari', phone: '077 412 8830', terms: 'Cash, monthly', via: 'Cash', paidBefore: 110000, monthly: 'm-clean' }),
+      LV('ceypetco', 'Ceypetco, Kollupitiya', 'travel', { contact: 'Fuel for the studio van', terms: 'Cash', via: 'Cash', paidBefore: 98000 })
+    ]
+  }), BE.perCountry({ uk: [], lk: [] }));
+
+  // ---- helpers for every month and suppliers ----
+  var lc = function (s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); };
+  var TODAY = 11; // Sunday 11 October 2026
 
   /**
-   * Match a receipt to a paid expense (no change to Going out) or to an unsorted card charge
-   * (the charge is sorted under the receipt's category and joins Going out). Returns the expense.
+   * Where an every-month cost stands in October: 'paid' (recorded), 'due' (later this month),
+   * 'late' (its day has passed, not recorded yet), 'missed' (1st–4th, not recorded; not counted in
+   * still to pay) or 'stopped'. 'due' and 'late' count in Going out as still to pay, as in BE.totals().
    */
-  BE.matchReceipt = function (rid, kind, id) {
-    return BE.change(function (s) {
-      var r = (s.receipts || []).filter(function (x) { return x.id === rid; })[0];
-      if (!r) return null;
-      var exp = null;
-      if (kind === 'charge') {
-        var c = (s.charges || []).filter(function (x) { return x.id === id; })[0];
-        if (!c) return null;
-        exp = { id: BE.id('exp'), who: r.merchant || c.nice, cat: r.cat || c.sug, how: c.how, date: c.date, amount: c.amount, inMonth: true, receipt: true, receiptId: rid, note: '', split: null, kind: 'business', raw: c.raw, isNew: true };
-        s.charges = s.charges.filter(function (x) { return x.id !== id; });
-        s.expenses = [exp].concat(s.expenses || []);
-        BE._log(s, 'Sorted ' + c.raw + ' as ' + exp.cat + ' and attached the ' + r.merchant + ' receipt');
-      } else {
-        s.expenses = (s.expenses || []).map(function (x) {
-          if (x.id !== id) return x;
-          exp = Object.assign({}, x, { receipt: true, receiptId: rid });
-          return exp;
-        });
-        if (!exp) return null;
-        BE._log(s, 'Matched the ' + r.merchant + ' receipt to ' + (exp.raw || exp.who) + ' · ' + BE.money(exp.amount));
-      }
-      s.receipts = s.receipts.map(function (x) { return x.id === rid ? Object.assign({}, x, { status: 'matched', expenseId: exp.id, matchedOn: BE.today }) : x; });
-      return exp;
-    });
+  BE.monthlyState = function (m) {
+    if (!m || m.active === false) return 'stopped';
+    if (m.paidDay) return 'paid';
+    if (m.day > TODAY) return 'due';
+    if (m.day > 4) return 'late';
+    return 'missed';
+  };
+  /** Who an every-month cost is paid to: its supplier's name, or the template's name. */
+  BE.monthlyPayee = function (m) { var v = m && m.vendor ? BE.find('vendors', m.vendor) : null; return v ? v.name : (m ? m.who : ''); };
+  /** Record October's payment for an every-month cost. Adds the expense and marks it paid. */
+  BE.recordMonthly = function (id, how, cheque) {
+    var m = BE.find('monthly', id);
+    if (!m || m.paidDay) return null;
+    var x = BE.recordExpense({ who: BE.monthlyPayee(m), amount: m.amount, catId: m.catId, vat: m.vat || 0, how: how || m.how, cheque: cheque, property: m.property, monthly: m.id, note: m.who + ', October' });
+    BE.update('monthly', id, { paidDay: TODAY, expense: x.id });
+    return x;
   };
 
-  /** No charge will show up (cash, personal card): record the receipt as its own expense. Adds to Going out. */
-  BE.receiptToExpense = function (rid, how) {
-    return BE.change(function (s) {
-      var r = (s.receipts || []).filter(function (x) { return x.id === rid; })[0];
-      if (!r || !(r.total > 0)) return null;
-      var exp = { id: BE.id('exp'), who: r.merchant, cat: r.cat || 'Other', how: how || 'Cash', date: r.date || BE.today, amount: r2(r.total), inMonth: true, receipt: true, receiptId: rid, note: r.note || '', split: null, kind: 'business', isNew: true };
-      s.expenses = [exp].concat(s.expenses || []);
-      s.receipts = s.receipts.map(function (x) { return x.id === rid ? Object.assign({}, x, { status: 'matched', expenseId: exp.id, matchedOn: BE.today, made: true }) : x; });
-      BE._log(s, 'Recorded ' + BE.money(exp.amount) + ' to ' + exp.who + ' from a receipt (' + exp.how + ')');
-      return exp;
-    });
-  };
-
-  /** Take a receipt off its expense; it goes back to waiting. */
-  BE.unmatchReceipt = function (rid) {
-    return BE.change(function (s) {
-      var r = (s.receipts || []).filter(function (x) { return x.id === rid; })[0];
-      if (!r) return null;
-      s.expenses = (s.expenses || []).map(function (x) { return x.id === r.expenseId || x.receiptId === rid ? Object.assign({}, x, { receipt: false, receiptId: null }) : x; });
-      s.receipts = s.receipts.map(function (x) { return x.id === rid ? Object.assign({}, x, { status: x.total > 0 ? 'waiting' : 'blurry', expenseId: null, made: false }) : x; });
-      return r;
-    });
-  };
-
-  /** Delete a receipt (its expense stays, without the proof). */
-  BE.deleteReceipt = function (rid) {
-    return BE.change(function (s) {
-      var r = (s.receipts || []).filter(function (x) { return x.id === rid; })[0];
-      if (!r) return null;
-      s.expenses = (s.expenses || []).map(function (x) { return (r.expenseId && x.id === r.expenseId) || x.receiptId === rid ? Object.assign({}, x, { receipt: false, receiptId: null }) : x; });
-      s.receipts = s.receipts.filter(function (x) { return x.id !== rid; });
-      BE._log(s, 'Deleted the ' + (r.merchant || 'unread') + ' receipt');
-      return r;
-    });
-  };
-
-  // What "reading" a new upload finds. Uploads are read in this order, so the first one
-  // matches an unsorted card charge and a later one has no charge at all.
-  var READS = [
-    { merchant: 'Uber', date: 'Oct 2', total: 27.8, tax: 2.21, cat: 'Travel' },
-    { merchant: 'Amazon', date: 'Oct 2', total: 64.2, tax: 5.24, cat: 'Office supplies' },
-    { merchant: 'Joe’s Hardware', date: 'Oct 4', total: 37.45, tax: 3.05, cat: 'Office supplies' },
-    { merchant: 'Canva', date: 'Oct 1', total: 14.99, tax: 0, cat: 'Software' },
-    { merchant: 'Brooklyn Bagel', date: 'Oct 4', total: 23.6, tax: 1.92, cat: 'Meals' }
-  ];
-  /** Add a picked file as a receipt. It "reads" for a moment, then shows what it found. */
-  BE.addReceipt = function (file, source, known) {
-    var n = BE.all('receipts').filter(function (x) { return x.uploaded; }).length;
-    // known: { merchant, total, date, tax, cat } when the receipt is for a charge we already have.
-    var g = Object.assign({}, READS[n % READS.length], known || {});
-    var r = { id: BE.id('rc'), merchant: g.merchant, date: g.date, total: g.total, tax: g.tax, cat: g.cat, file: file || 'receipt.jpg', source: source || 'Uploaded just now', added: BE.today, month: 'Oct', status: 'waiting', uploaded: true, readyAt: Date.now() + 1600, isNew: true };
-    BE.change(function (s) { s.receipts = [r].concat(s.receipts || []); BE._log(s, 'Read a new receipt: ' + r.merchant + ' · ' + BE.money(r.total)); });
-    return r;
-  };
-
-  /** The vendor someone is, by name or one of their other names. */
-  BE.vendorFor = function (name) {
-    var k = lc(name);
+  /** The supplier someone is, by name or one of their other names. */
+  BE.vendorFor = function (nm) {
+    var k = lc(nm);
     if (!k) return null;
     return BE.all('vendors').filter(function (v) { return lc(v.name) === k || (v.aka || []).some(function (a) { return lc(a) === k; }); })[0] || null;
   };
   var isVendor = function (v, who) { var k = lc(who); return lc(v.name) === k || (v.aka || []).some(function (a) { return lc(a) === k; }); };
-  /** Bills, October payments and the year so far for one vendor. */
+  /** Bills, payments this month and this tax year, and input VAT for one supplier. */
   BE.vendorStats = function (v) {
     var bills = BE.all('bills').filter(function (b) { return isVendor(v, b.who); });
-    var open = bills.filter(function (b) { return b.status !== 'paid'; });
+    var open = bills.filter(function (b) { return BE.billLeft(b) > 0; });
     var pays = BE.all('expenses').filter(function (x) { return isVendor(v, x.who) && x.kind !== 'personal' && x.kind !== 'transfer'; });
-    var oct = pays.reduce(function (a, x) { return a + (x.inMonth ? x.amount : 0); }, 0);
+    var sum = function (f) { return r2(pays.reduce(function (a, x) { return a + (f(x) || 0); }, 0)); };
     return {
-      bills: bills, open: open, openSum: r2(open.reduce(function (a, b) { return a + (BE.billLeft ? BE.billLeft(b) : b.amount - (b.paid || 0)); }, 0)),
-      pays: pays, month: r2(oct), year: r2((Number(v.paidBefore) || 0) + oct)
+      bills: bills, open: open, openSum: r2(open.reduce(function (a, b) { return a + BE.billLeft(b); }, 0)),
+      pays: pays, month: sum(function (x) { return x.inMonth ? x.amount : 0; }), year: r2((Number(v.paidBefore) || 0) + sum(function (x) { return x.amount; })),
+      vat: sum(function (x) { return x.vat; })
     };
   };
 })();

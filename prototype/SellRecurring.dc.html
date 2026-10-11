@@ -20,13 +20,13 @@ a{color:#18161F}a:hover{color:#000000}
   <dc-import name="AppHeader"></dc-import>
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
-    <dc-import name="AppCrumbs" area="in" here="Repeating and refunds"></dc-import>
+    <dc-import name="AppCrumbs" area="in" here="{{crumbHere}}"></dc-import>
 
     <!-- Title -->
     <section aria-labelledby="r-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
       <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
         <h1 id="r-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span>Repeating invoices</h1>
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">Retainers and subscriptions that bill themselves. Each run creates a normal invoice, so it shows up in Coming in the day it goes out.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">{{intro}}</p>
       </div>
       <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 13px; font-weight: 600; color: #47444F;">Billed every month</span>
@@ -46,7 +46,7 @@ a{color:#18161F}a:hover{color:#000000}
       <sc-if value="{{nw.open}}" hint-placeholder-val="{{false}}">
         <div style="background: #FFFFFF; border: 2px solid #7A5AF8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
           <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
-            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">New repeating invoice</span><span style="font-size: 14px; color: #47444F;">We send the same invoice every month on the day you pick.</span></span>
+            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">New repeating invoice</span><span style="font-size: 14px; color: #47444F;">{{nwSub}}</span></span>
             <button type="button" aria-label="Close" onClick="{{closeNew}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
           </div>
           <sc-if value="{{nw.noCustomers}}" hint-placeholder-val="{{false}}">
@@ -62,10 +62,10 @@ a{color:#18161F}a:hover{color:#000000}
             </label>
             <label style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
               <span style="font-size: 13px; font-weight: 600;">What it’s for</span>
-              <input class="be-field" type="text" placeholder="e.g. Monthly design retainer" value="{{nw.what}}" onChange="{{setNwWhat}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+              <input class="be-field" type="text" placeholder="{{nwPh}}" value="{{nw.what}}" onChange="{{setNwWhat}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
             </label>
             <label style="flex: 1 1 130px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-              <span style="font-size: 13px; font-weight: 600;">Amount ({{nw.sym}})</span>
+              <span style="font-size: 13px; font-weight: 600;">{{amtLabel}} ({{nw.sym}})</span>
               <input class="be-field" type="text" inputmode="decimal" placeholder="0" value="{{nw.amount}}" onChange="{{setNwAmount}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid {{nw.amountBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
             </label>
             <label style="flex: 1 1 130px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
@@ -74,14 +74,6 @@ a{color:#18161F}a:hover{color:#000000}
                 <option value="1">1st</option><option value="5">5th</option><option value="15">15th</option><option value="28">28th</option>
               </select>
             </label>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <span id="nhow-l" style="font-size: 13px; font-weight: 600;">How they pay</span>
-            <div role="group" aria-labelledby="nhow-l" style="align-self: flex-start; display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-              <sc-for list="{{nw.hows}}" as="hw" hint-placeholder-count="2">
-                <button type="button" aria-pressed="{{hw.on}}" onClick="{{hw.pick}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{hw.bg}}; color: {{hw.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{hw.label}}</button>
-              </sc-for>
-            </div>
           </div>
           <span style="display: flex; gap: 8px; align-items: flex-start; font-size: 14px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 6px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{nw.feed}}</span></span>
           <sc-if value="{{nw.hasError}}" hint-placeholder-val="{{false}}"><span role="alert" style="font-size: 14px; font-weight: 600; color: #A8200D;">{{nw.error}}</span></sc-if>
@@ -132,7 +124,7 @@ a{color:#18161F}a:hover{color:#000000}
               <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 17px;">Edit {{p.who}}</span>
               <div style="display: flex; flex-wrap: wrap; gap: 14px;">
                 <label style="flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-                  <span style="font-size: 13px; font-weight: 600;">Amount ({{p.sym}})</span>
+                  <span style="font-size: 13px; font-weight: 600;">{{amtLabel}} ({{p.sym}})</span>
                   <input class="be-field" type="text" inputmode="decimal" value="{{ed.amount}}" onChange="{{setEdAmount}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid {{ed.amountBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
                 </label>
                 <label style="flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
@@ -148,15 +140,7 @@ a{color:#18161F}a:hover{color:#000000}
                   </select>
                 </label>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 8px;">
-                <span id="how-l" style="font-size: 13px; font-weight: 600;">How they pay</span>
-                <div role="group" aria-labelledby="how-l" style="align-self: flex-start; display: flex; flex-wrap: wrap; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-                  <sc-for list="{{ed.hows}}" as="hw" hint-placeholder-count="2">
-                    <button type="button" aria-pressed="{{hw.on}}" onClick="{{hw.pick}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: {{hw.bg}}; color: {{hw.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{hw.label}}</button>
-                  </sc-for>
-                </div>
-                <span style="font-size: 13px; color: #5F5B68;">{{ed.howHint}}</span>
-              </div>
+              <span style="font-size: 13px; color: #5F5B68;">{{ed.howHint}}</span>
               <sc-if value="{{ed.hasError}}" hint-placeholder-val="{{false}}"><span role="alert" style="font-size: 13px; font-weight: 600; color: #A8200D;">Enter an amount above zero.</span></sc-if>
               <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                 <button type="button" onClick="{{saveEdit}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save changes</button>
@@ -195,13 +179,13 @@ a{color:#18161F}a:hover{color:#000000}
     <section aria-labelledby="mb-h" style="display: flex; flex-direction: column; gap: 12px;">
       <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 12px;">
         <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
-          <h2 id="mb-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">Money back to customers</h2>
-          <span style="font-size: 14px; color: #47444F;">Credit notes and refunds. <span style="color: #5F5B68;">Taking money off an invoice lowers Coming in; a refund of a paid invoice is recorded in Going out.</span></span>
+          <h2 id="mb-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">{{mbTitle}}</h2>
+          <span style="font-size: 14px; color: #47444F;">Credit notes and refunds. <span style="color: #5F5B68;">{{mbSub}}</span></span>
         </div>
         <sc-if value="{{mbClosed}}" hint-placeholder-val="{{true}}">
           <button type="button" onClick="{{openMb}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3"></path></svg>
-            Give money back
+            {{mbBtn}}
           </button>
         </sc-if>
       </div>
@@ -211,7 +195,7 @@ a{color:#18161F}a:hover{color:#000000}
         <div style="background: #FFFFFF; border: 2px solid #7A5AF8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
           <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
-              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Give money back</span><span style="font-size: 14px; color: #47444F;">We write the credit note ({{mb.cn}}) and email it with the change.</span></span>
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{mbBtn}}</span><span style="font-size: 14px; color: #47444F;">{{mb.sub}}</span></span>
               <button type="button" aria-label="Close" onClick="{{closeMb}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
             </div>
             <sc-if value="{{mb.noInvoices}}" hint-placeholder-val="{{false}}">
@@ -231,7 +215,7 @@ a{color:#18161F}a:hover{color:#000000}
                 </select>
               </label>
               <label style="flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-                <span style="font-size: 13px; font-weight: 600;">Amount ({{mb.sym}})</span>
+                <span style="font-size: 13px; font-weight: 600;">Amount including tax ({{mb.sym}})</span>
                 <input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{mb.amount}}" onChange="{{setMbAmount}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid {{mb.amtBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
               </label>
             </div>

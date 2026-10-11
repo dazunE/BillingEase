@@ -91,10 +91,13 @@ a{color:#18161F}a:hover{color:#000000}
                 <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email for invoices
                   <input class="be-field" type="email" value="{{nc.email}}" onChange="{{setNcEmail}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
                 </label>
-                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">They pay in
-                  <select class="be-field" value="{{nc.cur}}" onChange="{{setNcCur}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
-                    <option value="USD">US dollars</option><option value="EUR">Euros</option><option value="GBP">Pounds</option><option value="CAD">Canadian dollars</option>
-                  </select>
+                <sc-if value="{{nc.lk}}" hint-placeholder-val="{{false}}">
+                  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Their TIN <span style="font-weight: 400; color: #5F5B68;">optional</span>
+                    <input class="be-field" type="text" value="{{nc.tin}}" onChange="{{setNcTin}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                  </label>
+                </sc-if>
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">{{nc.vatLabel}} <span style="font-weight: 400; color: #5F5B68;">if they have one</span>
+                  <input class="be-field" type="text" value="{{nc.vat}}" onChange="{{setNcVat}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
                 </label>
               </div>
               <sc-if value="{{nc.errOn}}" hint-placeholder-val="{{false}}"><span role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{nc.err}}</span></sc-if>
@@ -104,21 +107,10 @@ a{color:#18161F}a:hover{color:#000000}
               </div>
             </div>
           </sc-if>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;">
-            <span id="cur-l" style="font-size: 13px; font-weight: 600;">Currency</span>
-            <div role="group" aria-labelledby="cur-l" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
-              <sc-for list="{{curs}}" as="cr" hint-placeholder-count="3">
-                <button type="button" aria-pressed="{{cr.on}}" onClick="{{cr.pick}}" style="min-height: 36px; min-width: 60px; padding: 0 12px; border: 0; border-radius: 9999px; background: {{cr.bg}}; color: {{cr.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{cr.label}}</button>
-              </sc-for>
-            </div>
-            <span style="font-size: 13px; color: #47444F;">{{curNote}}</span>
+          <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #F7F6F9; color: #47444F; font-size: 14px; line-height: 1.45;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5"></path></svg>
+            <span>{{taxInfo}}</span>
           </div>
-          <sc-if value="{{cust.reverse}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #E1EEF8; color: #1F5E91; font-size: 14px; line-height: 1.45;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5E91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px;"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5"></path></svg>
-              <span>{{cust.reverseText}}</span>
-            </div>
-          </sc-if>
         </section>
 
         <!-- Lines -->
@@ -146,7 +138,14 @@ a{color:#18161F}a:hover{color:#000000}
                   <span>{{ln.rateWord}}</span>
                   <span style="display: inline-flex; align-items: center; gap: 2px; min-height: 40px; padding: 0 0 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font-size: 15px; color: #47444F;">{{sym}}<input class="be-field" type="text" inputmode="decimal" value="{{ln.rate}}" onChange="{{ln.setRate}}" style="width: 76px; min-height: 38px; box-sizing: border-box; padding: 0 8px 0 2px; border: 0; border-radius: 10px; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
                 </label>
-                <button type="button" aria-pressed="{{ln.taxOn}}" disabled="{{ln.taxLocked}}" onClick="{{ln.toggleTax}}" title="Sales tax on this line" style="min-height: 32px; padding: 0 12px; border-radius: 9999px; border: 1px solid {{ln.taxBorder}}; background: {{ln.taxBg}}; color: #18161F; font: 600 12px DM Sans, sans-serif; cursor: pointer;">{{ln.taxLabel}}</button>
+                <sc-if value="{{vatOn}}" hint-placeholder-val="{{false}}">
+                  <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #47444F;">
+                    <span>VAT</span>
+                    <select class="be-field" value="{{ln.vat}}" onChange="{{ln.setVat}}" style="min-height: 40px; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 14px DM Sans, sans-serif; color: #18161F; cursor: pointer;">
+                      <sc-for list="{{vatRates}}" as="vr" hint-placeholder-count="3"><option value="{{vr.id}}">{{vr.label}}</option></sc-for>
+                    </select>
+                  </label>
+                </sc-if>
                 <span style="margin-left: auto; font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{ln.amount}}</span>
               </div>
               <sc-if value="{{ln.hasWarn}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: {{ln.warnFg}};">{{ln.warn}}</span></sc-if>
@@ -156,7 +155,7 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="position: relative;">
               <button type="button" aria-haspopup="menu" aria-expanded="{{catOpen}}" onClick="{{toggleCat}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-                Add from catalog
+                Add from products and services
               </button>
               <sc-if value="{{catOpen}}" hint-placeholder-val="{{false}}">
                 <div role="menu" style="position: absolute; left: 0; top: calc(100% + 8px); z-index: 20; width: 320px; max-width: calc(100vw - 48px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
@@ -169,21 +168,20 @@ a{color:#18161F}a:hover{color:#000000}
                       </button>
                     </sc-if>
                   </sc-for>
-                  <sc-if value="{{catEmpty}}" hint-placeholder-val="{{false}}"><span style="padding: 10px 12px; font-size: 13px; color: #47444F;">Nothing in your catalog yet. Add what you sell once and pick it here.</span></sc-if>
-                  <a href="SellCatalog.dc.html" style="display: flex; align-items: center; min-height: 40px; padding: 0 12px; font-size: 13px; font-weight: 600; border-top: 1px solid #EFEDF3; margin-top: 4px;">Edit your catalog</a>
+                  <sc-if value="{{catEmpty}}" hint-placeholder-val="{{false}}"><span style="padding: 10px 12px; font-size: 13px; color: #47444F;">Nothing saved yet. Add what you sell once and pick it here.</span></sc-if>
+                  <a href="SellCatalog.dc.html" style="display: flex; align-items: center; min-height: 40px; padding: 0 12px; font-size: 13px; font-weight: 600; border-top: 1px solid #EFEDF3; margin-top: 4px;">Edit products and services</a>
                 </div>
               </sc-if>
             </div>
             <button type="button" onClick="{{addBlank}}" style="min-height: 40px; padding: 0 12px; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Type your own line</button>
-            <sc-if value="{{time.on}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #5F5B68;">Unbilled time? <a href="SellCatalog.dc.html" style="font-weight: 600;">{{time.text}}</a></span></sc-if>
           </div>
         </section>
 
         <!-- Adjustments -->
         <section aria-labelledby="adj-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 16px;">
-          <h2 id="adj-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Discount, shipping and deposit</h2>
+          <h2 id="adj-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Discount</h2>
           <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-            <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+            <div style="flex: 1 1 220px; min-width: 0; max-width: 360px; display: flex; flex-direction: column; gap: 6px;">
               <span id="disc-l" style="font-size: 13px; font-weight: 600;">Discount</span>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <div role="group" aria-labelledby="disc-l" style="display: flex; gap: 2px; background: #EFEDF3; padding: 3px; border-radius: 9999px; flex: none;">
@@ -194,38 +192,22 @@ a{color:#18161F}a:hover{color:#000000}
                 <input class="be-field" type="text" inputmode="decimal" aria-label="Discount value" placeholder="0" value="{{f.disc}}" onChange="{{setDisc}}" style="flex: 1 1 auto; width: 60px; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
               </div>
             </div>
-            <label style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-              <span style="font-size: 13px; font-weight: 600;">Shipping ({{sym}})</span>
-              <input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.ship}}" onChange="{{setShip}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
-            </label>
-            <label style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-              <span style="font-size: 13px; font-weight: 600;">Deposit already paid ({{sym}})</span>
-              <input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.dep}}" onChange="{{setDep}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid {{depBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
-            </label>
           </div>
-          <span style="font-size: 13px; color: #5F5B68;">The discount is taken before tax. A deposit you already received is subtracted from what’s due, so it isn’t counted twice in Coming in.</span>
+          <span style="font-size: 13px; color: #5F5B68;">{{discNote}}</span>
         </section>
 
         <!-- Getting paid -->
         <section aria-labelledby="paid-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
-          <h2 id="paid-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Getting paid</h2>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <span style="font-size: 13px; font-weight: 600;">Let them pay by</span>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <sc-for list="{{methods}}" as="m" hint-placeholder-count="3">
-                <button type="button" aria-pressed="{{m.on}}" onClick="{{m.toggle}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{m.border}}; background: {{m.bg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.icon}}"></path></svg>
-                  {{m.label}}
-                </button>
-              </sc-for>
-            </div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="paid-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Getting paid</h2>
+            <span style="font-size: 13px; color: #5F5B68;">{{paidSub}}</span>
           </div>
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
             <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">Repeat every month</span><span style="font-size: 13px; color: #5F5B68;">{{repeatHint}}</span></span>
             <button type="button" role="switch" aria-checked="{{f.repeat}}" aria-label="Repeat every month" onClick="{{toggleRepeat}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{repeatBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{repeatLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
           </div>
           <label style="display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-size: 13px; font-weight: 600;">Note to your customer</span>
+            <span style="font-size: 13px; font-weight: 600;">How to pay you, printed on the invoice</span>
             <textarea class="be-field" rows="2" value="{{f.notes}}" onChange="{{setNotes}}" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
           </label>
           <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -273,16 +255,17 @@ a{color:#18161F}a:hover{color:#000000}
               <span style="display: flex; flex-direction: column; gap: 4px;">
                 <span style="display: flex; align-items: center; gap: 8px;"><svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true" style="flex: none; display: block;"><rect width="48" height="48" rx="13" fill="#18161F"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg><span style="font-weight: 700; font-size: 14px;">{{biz.name}}</span></span>
                 <span style="font-size: 12px; color: #5F5B68; overflow-wrap: anywhere;">{{biz.line}}</span>
+                <sc-for list="{{pv.seller}}" as="sf" hint-placeholder-count="0"><span style="font-size: 11px; color: #47444F;">{{sf.label}}: {{sf.value}}</span></sc-for>
               </span>
-              <span style="font-size: 12px; color: #5F5B68; text-align: right; white-space: nowrap;">Invoice<br><strong style="color: #18161F; font-size: 13px;">{{inv.num}}</strong></span>
+              <span style="font-size: 12px; color: #5F5B68; text-align: right; white-space: nowrap;">{{pv.title}}<br><strong style="color: #18161F; font-size: 13px;">{{inv.num}}</strong></span>
             </div>
             <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px;">
               <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
-                <span style="font-size: 12px; color: #5F5B68;">Bill to</span>
+                <span style="font-size: 12px; color: #5F5B68;">{{pv.billTo}}</span>
                 <span style="font-weight: 700; font-size: 15px; color: {{pv.custColor}};">{{pv.cust}}</span>
-                <sc-if value="{{cust.hasInfo}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F;">{{cust.info}}</span></sc-if>
+                <sc-for list="{{pv.buyer}}" as="bf" hint-placeholder-count="0"><span style="font-size: 11px; color: #47444F;">{{bf.label}}: {{bf.value}}</span></sc-for>
               </span>
-              <span style="display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #47444F;"><span>Dated {{today}}, 2026</span><span>Due {{dueDate}}</span><sc-if value="{{pv.hasPo}}" hint-placeholder-val="{{false}}"><span>PO {{f.po}}</span></sc-if></span>
+              <span style="display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #47444F;"><span>Dated {{today}} 2026</span><sc-if value="{{pv.lk}}" hint-placeholder-val="{{false}}"><span>Delivered {{today}} 2026</span></sc-if><span>Due {{dueDate}}</span><sc-if value="{{pv.hasPo}}" hint-placeholder-val="{{false}}"><span>PO {{f.po}}</span></sc-if></span>
             </div>
             <div style="display: flex; flex-direction: column; border-top: 1px solid #EFEDF3;">
               <sc-for list="{{pv.rows}}" as="pr" hint-placeholder-count="2">
@@ -294,23 +277,20 @@ a{color:#18161F}a:hover{color:#000000}
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <sc-for list="{{pv.sums}}" as="s" hint-placeholder-count="3">
-                <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #47444F;"><span>{{s.label}}</span><span style="font-variant-numeric: tabular-nums; color: #18161F;">{{s.value}}</span></span>
+                <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #47444F;"><span style="display: flex; flex-direction: column; min-width: 0;"><span>{{s.label}}</span><sc-if value="{{s.hasSub}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; color: #5F5B68;">{{s.sub}}</span></sc-if></span><span style="font-variant-numeric: tabular-nums; color: #18161F; white-space: nowrap;">{{s.value}}</span></span>
               </sc-for>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 10px; border-top: 1px solid #E2DFE8;">
               <span style="font-size: 13px; font-weight: 600;">Amount due</span>
               <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{pv.due}}</span>
             </div>
-            <sc-if value="{{pv.foreign}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F; text-align: right;">{{pv.usd}}</span></sc-if>
-            <sc-if value="{{cust.reverse}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 600; color: #18161F;">VAT reverse charged to the customer.</span></sc-if>
-            <span style="display: flex; align-items: center; justify-content: center; min-height: 40px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-weight: 600; font-size: 14px;">Pay {{pv.due}}</span>
-            <span style="font-size: 12px; color: #5F5B68; text-align: center;">{{pv.methods}}</span>
-            <sc-if value="{{pv.hasNotes}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #47444F; line-height: 1.5;">{{f.notes}}</span></sc-if>
+            <sc-if value="{{pv.hasNotes}}" hint-placeholder-val="{{false}}"><span style="padding: 10px 12px; border-radius: 12px; background: #F7F6F9; font-size: 12px; color: #47444F; line-height: 1.5;">{{f.notes}}</span></sc-if>
+            <sc-if value="{{pv.hasSsclNote}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; color: #5F5B68; line-height: 1.45;">{{pv.ssclNote}}</span></sc-if>
             <sc-if value="{{f.repeat}}" hint-placeholder-val="{{false}}">
               <span style="align-self: center; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #1F5E91;"></span>Repeats monthly</span>
             </sc-if>
           </div>
-          <span style="display: block; margin-top: 10px; font-size: 12px; color: #5F5B68; text-align: center;">Live preview · this is what your customer sees</span>
+          <span style="display: block; margin-top: 10px; font-size: 12px; color: #5F5B68; text-align: center;">Live preview · this is the PDF your customer gets</span>
         </div>
         <span style="display: flex; gap: 8px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; background: #EEE8FF; font-size: 13px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 5px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{feedLong}}</span></span>
       </aside>
@@ -341,11 +321,11 @@ class Component extends DCLogic {
     this.state = {
       toast: null, seq: 50, catOpen: false, moreOpen: false, tried: false,
       loadedFor: h, f: this.formFor(h),
-      nc: { open: false, name: '', email: '', cur: 'USD', err: '' }
+      nc: { open: false, name: '', email: '', tin: '', vat: '', err: '' }
     };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
-  /** Catalog items: services and products from the store. */
+  /** Products and services from the store. */
   catalogItems() {
     const live = (x) => x.active !== false && x.archived !== true;
     return { services: BE.all('services').filter(live), products: BE.all('products').filter(live) };
@@ -354,31 +334,28 @@ class Component extends DCLogic {
   blank() {
     const p = BE.get('profile') || {};
     return {
-      who: '', cur: p.currency || 'USD', terms: '30', discType: '%', disc: '', ship: '', dep: '', po: '', repeat: false, copy: true,
-      notes: p.business && p.business !== 'Your business' ? 'Thank you for working with ' + p.business + '.' : 'Thank you for your business.',
-      pay: Object.assign({ card: true, bank: true, apple: true }, (BE.get('paySettings') || {}).methods || {}),
+      who: '', terms: String(BE.terms()), discType: '%', disc: '', po: '', repeat: false, copy: true,
+      notes: p.note || (p.business && p.business !== 'Your business' ? 'Thank you for working with ' + p.business + '. Please pay by bank transfer.' : 'Thank you. Please pay by bank transfer.'),
       lines: []
     };
   }
-  /** The form for a hash: '' new, 'copy=INV-…' a new copy, 'INV-…' or 'D-…' that invoice. */
+  /** The form for a hash: '' new, 'copy=HS-…' a new copy, 'HS-…' or 'D-…' that invoice. */
   formFor(h) {
     const copy = /^copy=/.test(h);
     const inv = BE.find('invoices', copy ? h.slice(5) : h, 'num');
     if (!inv) return this.blank();
     const m = inv.form || {};
     const b = this.blank();
-    let ship = '', id = 0;
-    const lines = [];
-    (inv.lines || []).forEach((l) => {
-      if (l.kind === 'ship' || l.unit === 'shipping') { ship = String(l.rate); return; }
+    let id = 0;
+    const lines = (inv.lines || []).map((l) => {
       const prod = l.kind === 'product' || (!l.kind && this.productOf(l.name));
-      lines.push({ id: ++id, name: l.name, kind: prod ? 'product' : 'service', unit: String(l.unit || 'item').replace(/s$/, ''), rateType: l.rateType || '', qty: String(l.qty), rate: String(l.rate), base: null, tax: prod ? (l.tax !== false && (inv.tax > 0 || !!l.tax)) : !!l.tax });
+      return { id: ++id, name: l.name, kind: prod ? 'product' : 'service', unit: String(l.unit || 'item').replace(/s$/, ''), rateType: l.rateType || '', qty: String(l.qty), rate: String(l.rate), vat: l.vat || 'std' };
     });
     return Object.assign(b, {
-      who: inv.who, cur: inv.cur || b.cur, terms: String(m.terms != null ? m.terms : (inv.dueIn >= 0 && inv.dueIn < 99 && !copy ? 30 : 30)),
+      who: inv.who, terms: String(m.terms != null ? m.terms : BE.terms()),
       discType: m.discType || 'amt', disc: m.disc != null ? String(m.disc) : (inv.discount ? String(inv.discount) : ''),
-      ship: ship, dep: copy ? '' : (inv.deposit ? String(inv.deposit) : ''), po: m.po || '', repeat: !!inv.repeat, copy: m.copy !== false,
-      notes: inv.note || b.notes, pay: Object.assign({}, b.pay, m.pay || {}), lines
+      po: m.po || '', repeat: !!inv.repeat, copy: m.copy !== false,
+      notes: inv.note || b.notes, lines
     });
   }
   renderVals() {
@@ -386,13 +363,13 @@ class Component extends DCLogic {
     const hash = BE.hash();
     const f = st.loadedFor === hash ? st.f : this.formFor(hash);
     const profile = BE.get('profile') || {};
-    const home = profile.currency || 'USD';
-    const SYM = (c) => (BE.SYM[c] || (c + ' '));
-    const FX = BE.FX;
+    const pack = BE.pack();
+    const lk = BE.is('lk');
     const num = BE.num;
     const r2 = (n) => Math.round(n * 100) / 100;
-    const fmt = (n) => BE.money(n, f.cur, { cents: true });
-    const usd = (n) => BE.money(n, 'USD', { whole: true });
+    const fmt = (n) => BE.money(n, null, { cents: true });
+    const w = (n) => BE.money(n, null, { whole: true });
+    const sym = String(pack.symbol || '£') + (lk ? ' ' : '');
     const setF = (patch) => this.setState({ f: Object.assign({}, f, patch), loadedFor: hash });
 
     // which invoice this is
@@ -401,110 +378,72 @@ class Component extends DCLogic {
     const mode = !editInv ? 'new' : editInv.void || BE.invStatus(editInv) === 'paid' ? 'locked' : editInv.draft ? 'draft' : 'sent';
     const invNum = editInv ? editInv.num : BE.nextNumber('INV');
 
-    // customers and tax
+    // customers and tax: a sent invoice keeps the registration it went out under
     const customers = BE.all('customers').slice().sort((a, b) => a.name.localeCompare(b.name));
     const cu = customers.find((x) => x.name === f.who) || null;
-    const EU = ['Germany', 'France', 'Netherlands', 'Ireland', 'Spain', 'Italy', 'Belgium', 'Austria', 'Portugal', 'Sweden', 'Denmark', 'Finland'];
-    const homeCountry = profile.country || 'United States';
-    const region = !cu || !cu.country || cu.country === homeCountry ? 'home' : EU.indexOf(cu.country) >= 0 ? 'EU' : 'abroad';
-    const rm = String(profile.taxLabel || '').match(/([\d.]+)%/);
-    const taxRate = rm ? Number(rm[1]) / 100 : 0;
-    const taxName = rm ? String(profile.taxLabel).replace(/\s*on products$/i, '') : 'Sales tax';
-    const taxable = region === 'home' && taxRate > 0;
+    const reg = mode === 'sent' ? { vatOn: !!editInv.vatOn, ssclOn: !!editInv.ssclOn } : { vatOn: BE.vatOn(), ssclOn: BE.ssclOn() };
+    const vatRates = (pack.vatRates || []).filter((r) => r.id !== 'outside' || !lk);
+    const rateLabel = (id) => { const r = vatRates.find((x) => x.id === id); return r ? r.label.replace(/ \(.*\)$/, '') : ''; };
 
     // catalog
     const cat = this.catalogItems();
-    const convTo = (homePrice, cur) => cur === home ? homePrice : Math.max(1, Math.round(homePrice / (FX[cur] || 1) / (homePrice >= 100 ? 5 : 1)) * (homePrice >= 100 ? 5 : 1));
-    const reprice = (l, from, to) => Object.assign({}, l, { rate: String(l.base ? convTo(l.base, to) : r2(num(l.rate) * (FX[from] || 1) / (FX[to] || 1))) });
 
     // totals
     const amt = (l) => num(l.qty) * num(l.rate);
     const sub = f.lines.reduce((a, l) => a + amt(l), 0);
     const disc = r2(f.discType === '%' ? sub * Math.min(num(f.disc), 100) / 100 : Math.min(num(f.disc), sub));
-    const ratio = sub ? disc / sub : 0;
-    const taxBase = taxable ? f.lines.filter((l) => l.tax).reduce((a, l) => a + amt(l), 0) * (1 - ratio) : 0;
-    const tax = r2(taxBase * taxRate);
-    const ship = num(f.ship), dep = num(f.dep);
-    const total = r2(sub - disc + tax + ship);
-    const due = r2(total - dep);
-    const dueUsd = BE.usd(due, f.cur);
+    const taxLines = f.lines.map((l) => ({ qty: num(l.qty), rate: num(l.rate), vat: l.vat || 'std' }));
+    const tx = BE.calcTax(taxLines, disc, reg);
+    const total = tx.total;
+    const credit = mode === 'sent' ? (Number(editInv.credit) || 0) : 0;
+    const due = r2(total - credit);
 
     const lineSet = (id, patch) => setF({ lines: f.lines.map((l) => l.id === id ? Object.assign({}, l, patch) : l) });
     const errLine = (l) => st.tried && (!l.name.trim() || !(amt(l) > 0));
     const lines = f.lines.map((l) => {
-      const taxOn = taxable && l.tax;
       let warn = '', warnFg = '#6B5000';
-      const prod = l.kind === 'product' ? this.productOf(l.name) : null;
-      if (prod && prod.stock != null) {
-        const stock = Number(prod.stock) || 0, reorder = Number(prod.reorder || prod.reorderAt || 15);
-        if (stock === 0) { warn = 'Out of stock. You can still bill it; it shows as a back order.'; warnFg = '#A8200D'; }
-        else if (num(l.qty) > stock) { warn = 'Only ' + stock + ' in stock.'; warnFg = '#A8200D'; }
-        else warn = (stock - num(l.qty)) + ' left in stock after you send this' + (stock - num(l.qty) < reorder ? ' (below your reorder point)' : '');
-      }
-      if (errLine(l)) { warn = !l.name.trim() ? 'Add a description.' : 'Add a quantity and a rate.'; warnFg = '#A8200D'; }
+      if (errLine(l)) { warn = !l.name.trim() ? 'Add a description.' : 'Add a quantity and a price.'; warnFg = '#A8200D'; }
       return {
-        name: l.name, qty: l.qty, rate: l.rate,
-        qtyWord: l.unit === 'hour' ? 'Hours' : 'Qty', rateWord: l.unit === 'hour' ? 'Rate / hour' : 'Price',
+        name: l.name, qty: l.qty, rate: l.rate, vat: l.vat || 'std',
+        qtyWord: l.unit === 'hour' ? 'Hours' : l.unit === 'day' ? 'Days' : 'Qty', rateWord: l.unit === 'hour' ? 'Rate / hour' : l.unit === 'day' ? 'Rate / day' : 'Price',
         kindLabel: l.kind === 'product' ? 'Product' : (l.rateType ? 'Service · ' + l.rateType.toLowerCase() : 'Service'),
         kindBg: l.kind === 'product' ? '#FDE6D6' : '#EEE8FF',
         amount: fmt(amt(l)), removeLabel: 'Remove ' + (l.name || 'line'),
-        taxOn, taxLocked: !taxable, taxLabel: !taxable ? 'No sales tax' : l.tax ? taxName : 'No tax',
-        taxBg: taxOn ? '#EEE8FF' : '#FFFFFF', taxBorder: taxOn ? '#7A5AF8' : '#CBC7D3',
         hasWarn: !!warn, warn, warnFg, border: errLine(l) ? '1px solid #A8200D' : '1px solid transparent',
-        setName: (e) => lineSet(l.id, { name: e.target.value }), setQty: (e) => lineSet(l.id, { qty: e.target.value }), setRate: (e) => lineSet(l.id, { rate: e.target.value, base: null }),
-        toggleTax: () => lineSet(l.id, { tax: !l.tax }),
+        setName: (e) => lineSet(l.id, { name: e.target.value }), setQty: (e) => lineSet(l.id, { qty: e.target.value }), setRate: (e) => lineSet(l.id, { rate: e.target.value }),
+        setVat: (e) => lineSet(l.id, { vat: e.target.value }),
         remove: () => setF({ lines: f.lines.filter((x) => x.id !== l.id) })
       };
     });
+    const rtName = (c) => ({ flat: 'Flat', hourly: 'Hourly', monthly: 'Monthly', daily: 'Daily' })[c.rt] || '';
     const addItem = (c, kind) => {
       const seq = st.seq + 1;
-      const unit = String(c.unit || (kind === 'product' ? 'item' : 'item')).replace(/^per\s+/i, '').replace(/s$/, '');
-      this.setState({ seq, catOpen: false, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: seq, name: c.name, kind, unit, rateType: kind === 'service' ? rtName(c) : '', qty: '1', rate: String(convTo(Number(c.price) || 0, f.cur)), base: Number(c.price) || 0, tax: kind === 'product' }]) }) });
+      const unit = String(c.unit || 'item').replace(/^per\s+/i, '').replace(/s$/, '');
+      this.setState({ seq, catOpen: false, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: seq, name: c.name, kind, unit, rateType: kind === 'service' ? rtName(c) : '', qty: '1', rate: String(Number(c.price) || 0), vat: c.vat || 'std' }]) }) });
       this.notify(c.name + ' added');
     };
-    const rtName = (c) => ({ flat: 'Flat', hourly: 'Hourly', monthly: 'Monthly', daily: 'Daily' })[c.rt] || c.per || c.billing || c.rateType || '';
+    const vatTag = (c) => (reg.vatOn ? ' · VAT ' + rateLabel(c.vat || 'std') : '') + (reg.ssclOn && c.sscl !== false ? ' · SSCL' : '');
     const catalog = [];
-    if (cat.services.length) catalog.push({ isHead: true, isItem: false, label: 'Services · ' + (taxRate ? 'not taxed' : 'what you do') });
-    cat.services.forEach((c) => catalog.push({ isHead: false, isItem: true, label: c.name, price: SYM(f.cur) + convTo(Number(c.price) || 0, f.cur).toLocaleString('en-US'), sub: rtName(c) === 'Flat' ? 'Flat price' + (c.unit ? ' per ' + c.unit : '') : (c.unit ? 'Per ' + String(c.unit).replace(/^per\s+/i, '') : rtName(c) || 'Service'), subFg: '#5F5B68', add: () => addItem(c, 'service') }));
-    if (cat.products.length) catalog.push({ isHead: true, isItem: false, label: 'Products' + (taxRate ? ' · ' + taxName : '') });
-    cat.products.forEach((c) => {
-      const stock = c.stock == null ? null : Number(c.stock), low = stock != null && stock > 0 && stock < Number(c.reorder || c.reorderAt || 15);
-      catalog.push({ isHead: false, isItem: true, label: c.name, price: SYM(f.cur) + convTo(Number(c.price) || 0, f.cur).toLocaleString('en-US'),
-        sub: stock == null ? 'Product' : stock === 0 ? 'Out of stock' : stock + ' in stock' + (low ? ' · low' : ''), subFg: stock === 0 || low ? '#A8200D' : '#5F5B68', add: () => addItem(c, 'product') });
-    });
-    const curList = ['USD', 'EUR', 'GBP'].concat([home, cu && cu.cur].filter((c) => c && ['USD', 'EUR', 'GBP'].indexOf(c) < 0));
-    const curs = curList.map((k) => ({
-      label: SYM(k).trim() + ' ' + k, on: f.cur === k, bg: f.cur === k ? '#18161F' : 'transparent', fg: f.cur === k ? '#FFFFFF' : '#18161F',
-      pick: () => {
-        if (k === f.cur) return;
-        const fx = (FX[f.cur] || 1) / (FX[k] || 1);
-        setF({ cur: k, lines: f.lines.map((l) => reprice(l, f.cur, k)), ship: f.ship ? String(r2(num(f.ship) * fx)) : '', dep: f.dep ? String(r2(num(f.dep) * fx)) : '', disc: f.discType === 'amt' && f.disc ? String(r2(num(f.disc) * fx)) : f.disc });
-      }
-    }));
-    const M = [
-      { k: 'card', label: 'Card', icon: 'M3 6h18v12H3zM3 10h18' },
-      { k: 'bank', label: 'Bank transfer', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18' },
-      { k: 'apple', label: 'Apple Pay', icon: 'M5 12h14M12 5v14' }
-    ];
-    const methods = M.map((m) => ({
-      label: m.label, on: !!f.pay[m.k], icon: f.pay[m.k] ? 'm5 12 5 5 9-10' : m.icon,
-      bg: f.pay[m.k] ? '#EEE8FF' : '#FFFFFF', border: f.pay[m.k] ? '#7A5AF8' : '#CBC7D3',
-      toggle: () => setF({ pay: Object.assign({}, f.pay, { [m.k]: !f.pay[m.k] }) })
-    }));
-    const mNames = M.filter((m) => f.pay[m.k]).map((m) => m.k === 'apple' ? 'Apple Pay' : m.label.toLowerCase());
+    if (cat.services.length) catalog.push({ isHead: true, isItem: false, label: 'Services' });
+    cat.services.forEach((c) => catalog.push({ isHead: false, isItem: true, label: c.name, price: BE.money(Number(c.price) || 0), sub: (rtName(c) === 'Flat' ? 'Flat price' + (c.unit ? ' per ' + c.unit : '') : (c.unit ? 'Per ' + String(c.unit).replace(/^per\s+/i, '') : rtName(c) || 'Service')) + vatTag(c), subFg: '#5F5B68', add: () => addItem(c, 'service') }));
+    if (cat.products.length) catalog.push({ isHead: true, isItem: false, label: 'Products' });
+    cat.products.forEach((c) => catalog.push({ isHead: false, isItem: true, label: c.name, price: BE.money(Number(c.price) || 0), sub: 'Per ' + (c.unit || 'item') + vatTag(c), subFg: '#5F5B68', add: () => addItem(c, 'product') }));
 
-    const sums = [{ label: 'Subtotal', value: fmt(sub) }];
+    const sums = [{ label: reg.vatOn || reg.ssclOn ? 'Value of supply' : 'Subtotal', value: fmt(sub) }];
     if (disc) sums.push({ label: 'Discount' + (f.discType === '%' ? ' ' + num(f.disc) + '%' : ''), value: '−' + fmt(disc) });
-    if (taxable) sums.push({ label: taxName + ' on products', value: fmt(tax) });
-    if (ship) sums.push({ label: 'Shipping', value: fmt(ship) });
-    if (dep) { sums.push({ label: 'Total', value: fmt(total) }); sums.push({ label: 'Deposit already paid', value: '−' + fmt(dep) }); }
+    BE.taxRows(tx).forEach((r) => sums.push({ label: r.label, sub: r.sub, hasSub: true, value: r.amount }));
+    if (credit) { sums.push({ label: 'Total', value: fmt(total) }); sums.push({ label: (lk ? 'Credit note' : 'Money back') + ' already applied', value: '−' + fmt(credit) }); }
+    sums.forEach((x) => { if (!x.hasSub) { x.hasSub = false; x.sub = ''; } });
 
+    const title = reg.vatOn ? (pack.vatInvoiceTitle || 'VAT invoice') : (pack.invoiceTitle || 'Invoice');
     const pv = {
+      title, lk, billTo: lk && reg.vatOn ? 'Purchaser' : 'Bill to',
+      seller: reg.vatOn || lk ? BE.sellerFields() : [], buyer: BE.buyerFields(cu),
       cust: f.who || 'Choose a customer', custColor: f.who ? '#18161F' : '#5F5B68', hasPo: !!f.po.trim(),
-      rows: f.lines.length ? f.lines.map((l) => ({ name: l.name || 'Untitled line', color: l.name ? '#18161F' : '#5F5B68', qty: num(l.qty) + ' ' + l.unit + (num(l.qty) === 1 ? '' : 's') + ' × ' + fmt(num(l.rate)) + (taxable && l.tax ? ' · taxed' : ''), amount: fmt(amt(l)) })) : [{ name: 'No lines yet', color: '#5F5B68', qty: '', amount: '' }],
-      sums, due: fmt(due), foreign: f.cur !== home, usd: '≈ ' + usd(dueUsd) + ' at 1 ' + f.cur + ' = ' + (FX[f.cur] || 1) + ' ' + home,
-      methods: mNames.length ? 'They can pay by ' + mNames.join(', ') : 'No online payment; they pay you directly',
-      hasNotes: !!f.notes.trim()
+      rows: f.lines.length ? f.lines.map((l) => ({ name: l.name || 'Untitled line', color: l.name ? '#18161F' : '#5F5B68', qty: num(l.qty) + ' ' + l.unit + (num(l.qty) === 1 ? '' : 's') + ' × ' + fmt(num(l.rate)) + (reg.vatOn ? ' · VAT ' + rateLabel(l.vat || 'std') : ''), amount: fmt(amt(l)) })) : [{ name: 'No lines yet', color: '#5F5B68', qty: '', amount: '' }],
+      sums, due: fmt(due),
+      hasNotes: !!f.notes.trim(),
+      hasSsclNote: !!(reg.ssclOn && pack.ssclNote), ssclNote: pack.ssclNote || ''
     };
 
     const validate = (draft) => {
@@ -513,58 +452,49 @@ class Component extends DCLogic {
       if (draft) return e;
       if (!f.lines.length) e.push('Add at least one line.');
       if (f.lines.some((l) => !l.name.trim())) e.push('Every line needs a description.');
-      if (f.lines.some((l) => l.name.trim() && !(amt(l) > 0))) e.push('Every line needs a quantity and a rate above zero.');
-      if (dep > total) e.push('The deposit is more than the invoice total.');
+      if (f.lines.some((l) => l.name.trim() && !(amt(l) > 0))) e.push('Every line needs a quantity and a price above zero.');
       return e;
     };
     const liveErr = st.tried ? validate(false) : [];
 
     // what gets written to the store
     const record = () => {
-      const ls = f.lines.filter((l) => l.name.trim() || amt(l) > 0).map((l) => ({ name: l.name.trim() || 'Untitled line', qty: num(l.qty), unit: l.unit + (num(l.qty) === 1 ? '' : 's'), rate: num(l.rate), kind: l.kind, tax: !!(taxable && l.tax), rateType: l.rateType || '' }));
-      if (ship) ls.push({ name: 'Shipping', qty: 1, unit: 'shipping', rate: ship, kind: 'ship' });
+      const ls = f.lines.filter((l) => l.name.trim() || amt(l) > 0).map((l) => ({ name: l.name.trim() || 'Untitled line', qty: num(l.qty), unit: l.unit + (num(l.qty) === 1 ? '' : 's'), rate: num(l.rate), kind: l.kind, vat: l.vat || 'std', rateType: l.rateType || '' }));
       const first = ls[0] ? ls[0].name : 'Invoice';
       const what = editInv && editInv.what ? editInv.what : (ls.length > 1 ? first + ' and ' + (ls.length - 1) + ' more' : first);
       return {
-        who: f.who, what, cur: f.cur, lines: ls.length ? ls : [{ name: 'Untitled line', qty: 1, unit: 'item', rate: 0 }], tax, discount: disc, deposit: dep,
-        note: f.notes, repeat: f.repeat, email: cu ? cu.email : (editInv ? editInv.email : ''), taxLabel: taxable ? taxName + ' on products' : '',
-        vat: region === 'EU' ? 'VAT reverse charged to the customer' + (cu && cu.tax ? ' (VAT ID ' + cu.tax + ')' : '') : '',
-        form: { terms: +f.terms, discType: f.discType, disc: f.disc, po: f.po, copy: f.copy, pay: f.pay }
+        who: f.who, what, lines: ls.length ? ls : [{ name: 'Untitled line', qty: 1, unit: 'item', rate: 0 }], discount: disc,
+        tax: tx.tax, vatAmt: tx.vat, ssclAmt: tx.sscl, vatOn: reg.vatOn, ssclOn: reg.ssclOn,
+        note: f.notes, repeat: f.repeat, email: cu ? cu.email : (editInv ? editInv.email : ''),
+        form: { terms: +f.terms, discType: f.discType, disc: f.disc, po: f.po, copy: f.copy }
       };
     };
-    const go = (num, msg) => {
+    const go = (n, msg) => {
       try { sessionStorage.setItem('be.flash', msg); } catch (e) { /* ignore */ }
-      try { location.href = 'SellInvoices.dc.html#' + num; } catch (e) { /* ignore */ }
+      try { location.href = 'SellInvoices.dc.html#' + n; } catch (e) { /* ignore */ }
     };
-    const stockNote = (changed) => {
-      const low = changed.filter((c) => c.left < 15);
-      return low.length ? ' · ' + low.map((c) => c.left + ' ' + c.name.toLowerCase() + ' left').join(', ') : '';
-    };
-    const productLines = () => f.lines.map((l) => ({ name: l.name, kind: l.kind, qty: num(l.qty) }));
     const send = () => {
       const e = validate(false);
       if (e.length) { this.setState({ tried: true, loadedFor: hash, f }); return; }
       const r = record();
-      const amtText = (f.cur === 'USD' ? usd(dueUsd) : BE.money(due, f.cur) + ' (≈ ' + usd(dueUsd) + ')');
       let n;
       if (mode === 'new') {
-        const inv = BE.createInvoice(Object.assign({}, r, { terms: +f.terms }));
+        const inv = BE.makeInvoice(Object.assign({}, r, { terms: +f.terms }));
         n = inv.num;
-        BE.update('invoices', n, { form: r.form, taxLabel: r.taxLabel, vat: r.vat, paid: dep, deposit: dep }, 'num');
-        const ch = BE.takeStock(productLines());
-        go(n, n + ' sent to ' + f.who + ' · ' + amtText + ' added to Coming in' + stockNote(ch));
+        BE.update('invoices', n, { form: r.form }, 'num');
+        go(n, n + ' sent to ' + f.who + ' · ' + w(BE.invTotal(inv)) + ' added to Coming in');
       } else if (mode === 'draft') {
-        BE.update('invoices', editInv.num, Object.assign({}, r, { paid: dep }), 'num');
+        BE.update('invoices', editInv.num, r, 'num');
         n = BE.sendDraft(editInv.num, +f.terms);
-        const ch = BE.takeStock(productLines());
-        go(n, n + ' sent to ' + f.who + ' · ' + amtText + ' added to Coming in' + stockNote(ch));
+        const inv = BE.find('invoices', n, 'num');
+        go(n, n + ' sent to ' + f.who + ' · ' + w(inv ? BE.invTotal(inv) : due) + ' added to Coming in');
       } else {
-        const before = BE.usd(BE.invOpen(editInv), editInv.cur);
-        BE.update('invoices', editInv.num, (x) => Object.assign({}, r, { paid: Math.max(x.paid || 0, dep), events: (x.events || []).concat([{ label: 'Changed and sent again to ' + (r.email || f.who), date: BE.today, todo: false }]) }), 'num');
-        BE.log('Updated ' + editInv.num + ' for ' + f.who + ' and sent it again');
-        const after = BE.usd(BE.invOpen(BE.find('invoices', editInv.num, 'num')), f.cur === editInv.cur ? f.cur : f.cur);
+        const before = BE.invOpen(editInv);
+        BE.update('invoices', editInv.num, (x) => Object.assign({}, r, { events: (x.events || []).concat([{ label: 'Changed and emailed again to ' + (r.email || f.who), date: BE.today, todo: false }]) }), 'num');
+        BE.log('Updated ' + editInv.num + ' for ' + f.who + ' and emailed it again');
+        const after = BE.invOpen(BE.find('invoices', editInv.num, 'num'));
         const diff = Math.round(after - before);
-        go(editInv.num, editInv.num + ' updated and sent again' + (editInv.inMonth && editInv.dueIn >= 0 && diff ? ' · Coming in ' + (diff > 0 ? '+' : '−') + usd(Math.abs(diff)) : ''));
+        go(editInv.num, editInv.num + ' updated and emailed again' + (editInv.inMonth && editInv.dueIn >= 0 && diff ? ' · Coming in ' + (diff > 0 ? '+' : '−') + w(Math.abs(diff)) : ''));
       }
     };
     const saveDraft = () => {
@@ -572,19 +502,19 @@ class Component extends DCLogic {
       if (e.length) { this.setState({ tried: true, loadedFor: hash, f }); return; }
       const r = record();
       if (mode === 'new') {
-        const inv = BE.createInvoice(Object.assign({}, r, { draft: true }));
-        BE.update('invoices', inv.num, { form: r.form, taxLabel: r.taxLabel, vat: r.vat }, 'num');
+        const inv = BE.createInvoice(Object.assign({}, r, { draft: true, num: 'D-' + (BE.all('invoices').filter((x) => /^D-/.test(x.num)).reduce((a, x) => Math.max(a, +x.num.slice(2) || 0), 0) + 1) }));
+        BE.update('invoices', inv.num, { form: r.form, vatOn: r.vatOn, ssclOn: r.ssclOn, vatAmt: r.vatAmt, ssclAmt: r.ssclAmt }, 'num');
         this.setState({ loadedFor: inv.num, f, tried: false });
         try { location.hash = inv.num; } catch (er) { /* ignore */ }
-        this.notify('Draft ' + inv.num + ' saved for ' + f.who + '. Drafts don’t count in Coming in until you send them.');
+        this.notify('Draft saved for ' + f.who + '. Drafts don’t count in Coming in until you send them.');
       } else if (mode === 'draft') {
         BE.update('invoices', editInv.num, r, 'num');
         this.setState({ loadedFor: hash, f, tried: false });
         this.notify('Draft saved. It still doesn’t count in Coming in.');
       } else {
-        BE.update('invoices', editInv.num, (x) => Object.assign({}, r, { paid: x.paid, events: (x.events || []).concat([{ label: 'Changed by ' + (profile.owner || 'you') + ' (not re-sent)', date: BE.today, todo: false }]) }), 'num');
+        BE.update('invoices', editInv.num, (x) => Object.assign({}, r, { events: (x.events || []).concat([{ label: 'Changed by ' + (profile.owner || 'you') + ' (not emailed again)', date: BE.today, todo: false }]) }), 'num');
         this.setState({ loadedFor: hash, f, tried: false });
-        this.notify(editInv.num + ' saved. ' + f.who + ' sees the change next time they open it.');
+        this.notify(editInv.num + ' saved. Email the PDF again from All invoices when you’re ready.');
       }
     };
 
@@ -595,80 +525,71 @@ class Component extends DCLogic {
       if (!name) { this.setState({ nc: Object.assign({}, nc, { open: true, err: 'Add the name you bill them under.' }) }); return; }
       if (customers.some((c) => c.name.toLowerCase() === name.toLowerCase())) { this.setState({ nc: Object.assign({}, nc, { open: true, err: name + ' is already a customer.' }) }); return; }
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { this.setState({ nc: Object.assign({}, nc, { open: true, err: 'That email doesn’t look right. Try name@company.com.' }) }); return; }
-      const c = BE.addCustomer({ name, email, cur: nc.cur });
-      const fx = (FX[f.cur] || 1) / (FX[c.cur] || 1);
-      this.setState({ nc: { open: false, name: '', email: '', cur: home, err: '' }, loadedFor: hash,
-        f: Object.assign({}, f, { who: c.name, cur: c.cur, lines: c.cur === f.cur ? f.lines : f.lines.map((l) => reprice(l, f.cur, c.cur)), ship: f.ship && c.cur !== f.cur ? String(r2(num(f.ship) * fx)) : f.ship }) });
+      const c = BE.addCustomer({ name, email, tin: nc.tin.trim(), tax: nc.vat.trim() });
+      this.setState({ nc: { open: false, name: '', email: '', tin: '', vat: '', err: '' }, loadedFor: hash, f: Object.assign({}, f, { who: c.name }) });
       this.notify(name + ' added to your customers');
     };
 
-    const feedAmt = f.cur === 'USD' ? usd(dueUsd) : '≈ ' + usd(dueUsd);
     const st0 = editInv ? BE.invStatus(editInv) : '';
     const locked = mode === 'locked' ? {
       on: true, num: editInv.num, backHref: 'SellInvoices.dc.html#' + editInv.num, copyHref: 'SellInvoice.dc.html#copy=' + editInv.num,
       bg: editInv.void ? '#EFEDF3' : '#E2F6D5', fg: editInv.void ? '#47444F' : '#2F5711', icon: editInv.void ? 'M6 6l12 12M18 6 6 18' : 'm5 12 5 5 9-10',
       title: editInv.num + (editInv.void ? ' was voided' : ' is paid'),
-      body: editInv.void ? 'A voided invoice stays in your records as it was. Copy it into a new invoice to bill the work again.' : editInv.who + ' paid it in full, so it stays as they saw it. To bill them again, copy it into a new invoice.'
+      body: editInv.void ? 'A voided invoice stays in your records as it was. Copy it into a new invoice to bill the work again.' : editInv.who + ' paid it in full, so it stays as it was issued' + (editInv.vatOn ? ' (it’s part of your ' + (lk ? 'VAT and SSCL records' : 'VAT records') + ')' : '') + '. To bill them again, copy it into a new invoice.'
     } : { on: false };
-    const time = BE.all('time').filter((x) => !x.inv && !x.billed && (!f.who || x.who === f.who));
-    const tHours = time.reduce((a, x) => a + (Number(x.hours) || 0), 0);
-    const tWho = time.length ? (time[0].who || time[0].customer || '') : '';
+    const taxInfo = reg.vatOn
+      ? (lk ? 'You’re VAT and SSCL registered, so this is a Tax Invoice: your TIN and VAT number, the purchaser’s, SSCL ' + ((pack.sscl || 0) * 100) + '% on its own line, then VAT on the value plus SSCL.' : 'You’re VAT registered, so this is a VAT invoice with your VAT number and VAT on each line.')
+      : (lk ? (reg.ssclOn ? 'SSCL is added on its own line. You’re not VAT registered, so no VAT is charged.' : 'You’re not registered for VAT or SSCL, so no tax is added. Change it in your business profile.') : 'You’re not VAT registered, so no VAT is added. Change it in your business profile if you register.');
+    const noBuyerId = lk && reg.vatOn && cu && !cu.tin && !cu.tax;
     return {
       crumbHere: mode === 'new' ? (isCopy ? 'New copy' : 'New invoice') : (editInv.draft ? 'Draft for ' + editInv.who : 'Edit ' + editInv.num),
-      title: mode === 'new' ? 'New invoice' : mode === 'draft' ? 'Finish the draft' : mode === 'sent' ? 'Edit ' + editInv.num : editInv.num,
-      intro: mode === 'sent' ? 'Change anything and send it again; ' + editInv.who + ' gets the updated version and the same link.' : 'The full editor, for when one sentence isn’t enough: several lines, products, discounts, other currencies.',
+      title: mode === 'new' ? 'New ' + (reg.vatOn ? title : 'invoice') : mode === 'draft' ? 'Finish the draft' : mode === 'sent' ? 'Edit ' + editInv.num : editInv.num,
+      intro: mode === 'sent' ? 'Change anything and email it again; ' + editInv.who + ' gets the updated PDF.' : 'The full editor, for when one sentence isn’t enough: several lines, products and services, a discount' + (reg.vatOn ? ', VAT per line' : '') + '.',
       inv: { num: mode === 'draft' && /^D-/.test(invNum) ? 'Numbered when you send it' : invNum, state: mode === 'new' ? 'Not saved yet' : mode === 'draft' ? 'Draft' : st0 === 'late' ? 'Sent · late' : st0 === 'part' ? 'Sent · part paid' : mode === 'locked' ? (editInv.void ? 'Void' : 'Paid') : 'Sent' },
-      locked, editing: mode !== 'locked', today: BE.today,
-      f: Object.assign({}, f, { who: ncOn && !cu ? '__new' : f.who }), biz: { name: profile.business || 'Your business', line: [profile.city, profile.email].filter(Boolean).join(' · ') },
+      locked, editing: mode !== 'locked', today: mode === 'sent' ? editInv.issued : BE.today, vatOn: reg.vatOn, vatRates, taxInfo: taxInfo + (noBuyerId ? ' ' + cu.name + ' has no TIN or VAT number saved; add it on their page if they’re a registered business.' : ''),
+      f: Object.assign({}, f, { who: ncOn && !cu ? '__new' : f.who }), biz: { name: profile.business || 'Your business', line: [[profile.street, profile.town].filter(Boolean).join(', ') || profile.city, profile.email].filter(Boolean).join(' · ') },
       meEmail: profile.email ? 'To ' + profile.email : 'To the email on your account',
-      customers: customers.map((x) => ({ name: x.name, label: x.name + (x.cur && x.cur !== home ? ' · ' + x.cur : '') })),
-      cust: {
-        hasInfo: !!(cu && (cu.country !== homeCountry || cu.tax)), info: cu ? [cu.country !== homeCountry ? cu.country : '', cu.tax ? 'VAT ID ' + cu.tax : ''].filter(Boolean).join(' · ') + (region === 'abroad' ? ' · no ' + (taxRate ? 'sales tax' : 'tax added') : '') : '',
-        reverse: region === 'EU', reverseText: (cu ? cu.name : 'This customer') + ' is a business in the EU, so you don’t charge VAT. The invoice says “VAT reverse charged to the customer” and shows their VAT ID. ' + (taxRate ? 'Your sales tax is off too.' : ''),
-        hasLink: !!cu, href: cu ? 'SellCustomer.dc.html#' + cu.id : 'SellCustomers.dc.html'
-      },
-      nc: { on: ncOn, name: nc.name, email: nc.email, cur: nc.cur, err: nc.err, errOn: !!nc.err, canCancel: customers.length > 0 },
+      customers: customers.map((x) => ({ name: x.name, label: x.name })),
+      cust: { hasLink: !!cu, href: cu ? 'SellCustomer.dc.html#' + cu.id : 'SellCustomers.dc.html',
+        hasInfo: !!(cu && (cu.tin || cu.tax)), info: cu ? BE.buyerFields(cu).map((x) => x.label + ' ' + x.value).join(' · ') : '' },
+      nc: { on: ncOn, name: nc.name, email: nc.email, tin: nc.tin, vat: nc.vat, lk, vatLabel: lk ? 'Their VAT number' : 'Their VAT number', err: nc.err, errOn: !!nc.err, canCancel: customers.length > 0 },
       setNcName: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { name: e.target.value, err: '' }) }),
       setNcEmail: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { email: e.target.value, err: '' }) }),
-      setNcCur: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { cur: e.target.value }) }),
-      saveCustomer, cancelCustomer: () => { this.setState({ nc: { open: false, name: '', email: '', cur: home, err: '' } }); setF({ who: '' }); },
+      setNcTin: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { tin: e.target.value }) }),
+      setNcVat: (e) => this.setState({ nc: Object.assign({}, this.state.nc, { vat: e.target.value }) }),
+      saveCustomer, cancelCustomer: () => { this.setState({ nc: { open: false, name: '', email: '', tin: '', vat: '', err: '' } }); setF({ who: '' }); },
       whoErr: st.tried && !f.who, whoBorder: st.tried && !f.who ? '2px solid #A8200D' : '1px solid #CBC7D3',
-      dueDate: f.terms === '0' ? 'on receipt (' + BE.today + ')' : BE.inDays(+f.terms),
-      curs, curNote: f.cur === home ? 'Your home currency' : 'Converted for your books: ' + feedAmt + ' at 1 ' + f.cur + ' = ' + (FX[f.cur] || 1) + ' ' + home + ' (' + BE.today + ')',
-      taxNote: taxRate ? (region === 'home' ? 'Products get ' + taxName + '. Services don’t.' : 'No ' + taxName + ' for customers outside ' + homeCountry + '.') : 'No sales tax is set up for your business.',
-      sym: SYM(f.cur), lines, noLines: f.lines.length === 0, catalog, catOpen: st.catOpen, catEmpty: catalog.length === 0,
-      time: time.length ? { on: true, text: tHours + ' unbilled ' + (tHours === 1 ? 'hour' : 'hours') + (tWho ? ' for ' + tWho : '') } : { on: false },
+      dueDate: mode === 'sent' && String((editInv.form || {}).terms != null ? editInv.form.terms : BE.terms()) === f.terms ? editInv.due : (f.terms === '0' ? 'on receipt (' + BE.today + ')' : BE.inDays(+f.terms)),
+      sym, lines, noLines: f.lines.length === 0, catalog, catOpen: st.catOpen, catEmpty: catalog.length === 0,
       toggleCat: () => this.setState({ catOpen: !st.catOpen }),
-      addBlank: () => this.setState({ seq: st.seq + 1, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: st.seq + 1, name: '', kind: 'service', unit: 'item', qty: '1', rate: '', tax: false }]) }) }),
-      discTypes: [{ k: '%', label: '%', aria: 'Discount as a percentage' }, { k: 'amt', label: SYM(f.cur).trim(), aria: 'Discount as an amount' }].map((d) => ({
+      addBlank: () => this.setState({ seq: st.seq + 1, loadedFor: hash, f: Object.assign({}, f, { lines: f.lines.concat([{ id: st.seq + 1, name: '', kind: 'service', unit: 'item', qty: '1', rate: '', vat: 'std' }]) }) }),
+      discTypes: [{ k: '%', label: '%', aria: 'Discount as a percentage' }, { k: 'amt', label: sym.trim(), aria: 'Discount as an amount' }].map((d) => ({
         label: d.label, aria: d.aria, on: f.discType === d.k, bg: f.discType === d.k ? '#18161F' : 'transparent', fg: f.discType === d.k ? '#FFFFFF' : '#18161F',
         pick: () => setF({ discType: d.k })
       })),
-      setDisc: (e) => setF({ disc: e.target.value }), setShip: (e) => setF({ ship: e.target.value }), setDep: (e) => setF({ dep: e.target.value }),
-      depBorder: dep > total ? '#A8200D' : '#CBC7D3',
-      methods, setNotes: (e) => setF({ notes: e.target.value }), setPo: (e) => setF({ po: e.target.value }),
+      discNote: reg.vatOn ? 'The discount comes off before ' + (reg.ssclOn ? 'SSCL and VAT are' : 'VAT is') + ' worked out.' : 'The discount comes off the subtotal.',
+      paidSub: 'Customers pay you directly. When the money arrives, record it on the invoice: ' + BE.receiveMethods().join(', ').toLowerCase().replace(/lankaqr/i, 'LankaQR') + '.',
+      setDisc: (e) => setF({ disc: e.target.value }),
+      setNotes: (e) => setF({ notes: e.target.value }), setPo: (e) => setF({ po: e.target.value }),
       setWho: (e) => {
         const v = e.target.value;
-        if (v === '__new') { this.setState({ nc: Object.assign({}, this.state.nc, { open: true, cur: home }), loadedFor: hash, f: Object.assign({}, f, { who: '' }) }); return; }
-        const c2 = customers.find((x) => x.name === v);
-        const cur = c2 && c2.cur ? c2.cur : f.cur;
-        const fx = (FX[f.cur] || 1) / (FX[cur] || 1);
+        if (v === '__new') { this.setState({ nc: Object.assign({}, this.state.nc, { open: true }), loadedFor: hash, f: Object.assign({}, f, { who: '' }) }); return; }
         this.setState({ nc: Object.assign({}, this.state.nc, { open: false, err: '' }) });
-        setF({ who: v, cur, lines: cur === f.cur ? f.lines : f.lines.map((l) => reprice(l, f.cur, cur)), ship: f.ship && cur !== f.cur ? String(r2(num(f.ship) * fx)) : f.ship });
+        setF({ who: v });
       },
       setTerms: (e) => setF({ terms: e.target.value }),
       toggleRepeat: () => setF({ repeat: !f.repeat }), repeatBg: f.repeat ? '#7A5AF8' : '#CBC7D3', repeatLeft: f.repeat ? '25px' : '3px',
-      repeatHint: f.repeat ? 'Goes out on the ' + (new Date(2026, 9, 4).getDate()) + 'th of every month. Next one ' + BE.inDays(31) + '. Change it later in repeating invoices.' : 'Sends the same invoice on this day each month.',
+      repeatHint: f.repeat ? 'Goes out on the 11th of every month. Next one ' + BE.inDays(31) + '. Change it later in repeating invoices.' : 'Sends the same invoice on this day each month.',
       toggleCopy: () => setF({ copy: !f.copy }), copyBg: f.copy ? '#7A5AF8' : '#CBC7D3', copyLeft: f.copy ? '25px' : '3px',
       moreOpen: st.moreOpen, moreIcon: st.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
       pv, errors: liveErr, hasErrors: liveErr.length > 0,
-      sendLabel: (mode === 'sent' ? 'Save and send again · ' : 'Send · ') + fmt(due),
-      saveLabel: mode === 'sent' ? 'Save without sending' : 'Save draft',
+      sendLabel: (mode === 'sent' ? 'Save and email again · ' : 'Send · ') + fmt(due),
+      saveLabel: mode === 'sent' ? 'Save without emailing' : 'Save draft',
       hasBack: !!editInv, backHref: editInv ? 'SellInvoices.dc.html#' + editInv.num : 'SellInvoices.dc.html',
-      feed: mode === 'sent' ? 'It already counts in Coming in; we’ll update the amount.' : 'Sending adds ' + feedAmt + ' to Coming in.',
+      feed: mode === 'sent' ? 'It already counts in Coming in; we’ll update the amount.' : 'Sending adds ' + w(due) + ' to Coming in.',
       feedLong: mode === 'sent'
-        ? 'This invoice is already in Coming in. Saving changes updates what’s counted to ' + feedAmt + '.'
-        : 'When you send it, ' + feedAmt + ' is added to Coming in as money on the way' + (dep ? ' (the ' + fmt(dep) + ' deposit was already counted when it arrived)' : '') + '. Drafts don’t count.' + (f.lines.some((l) => l.kind === 'product') ? ' Products you sell come off your stock.' : ''),
+        ? 'This invoice is already in Coming in. Saving changes updates what’s counted to ' + w(due) + '.'
+        : 'When you send it, ' + w(due) + ' is added to Coming in as money on the way' + (reg.vatOn ? ', and ' + (reg.ssclOn ? 'the SSCL and VAT go' : 'the VAT goes') + ' into this period’s ' + (lk ? 'VAT and SSCL summary' : 'VAT summary') : '') + '. Drafts don’t count.',
       send, saveDraft,
       toast: st.toast
     };

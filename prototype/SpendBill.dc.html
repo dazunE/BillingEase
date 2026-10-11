@@ -15,6 +15,7 @@ body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
 .be-bill:hover{background:#F7F6F9}
+.be-file:focus-within{outline:2px solid #7A5AF8;outline-offset:2px}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
@@ -33,7 +34,7 @@ a{color:#18161F}a:hover{color:#000000}
         <span style="font-size: 14px; color: #47444F;">{{top.line}}</span>
       </div>
       <div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">A bill is something you owe and pay later. Enter it once, attach the PDF, and pay it all at once or in parts. Or forward bills to <strong style="color: #18161F; overflow-wrap: anywhere;">{{top.inbox}}</strong>.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F;">{{top.lead}}</p>
         <a href="SpendBill.dc.html#new" aria-current="{{isNewCur}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
           Enter a bill
@@ -60,13 +61,13 @@ a{color:#18161F}a:hover{color:#000000}
             <p style="margin: 0; padding: 12px; font-size: 14px; line-height: 1.5; color: #47444F;">Bills you enter show up here, soonest due first.</p>
           </sc-if>
         </div>
-        <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.5;">Costs that repeat live in <a href="SpendEveryMonth.dc.html" style="font-weight: 600;">Every month</a>. Payroll has its own page: <a href="SpendPayroll.dc.html" style="font-weight: 600;">Payroll</a>.</p>
+        <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.5;">Costs that repeat live in <a href="SpendEveryMonth.dc.html" style="font-weight: 600;">Every month</a>. Who you pay is in <a href="SpendVendors.dc.html" style="font-weight: 600;">Suppliers</a>.</p>
       </nav>
 
       <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
 
         <sc-if value="{{notFound}}" hint-placeholder-val="{{false}}">
-          <p role="status" style="margin: 0; padding: 12px 16px; border-radius: 14px; background: #FFF0B8; color: #6B5000; font-size: 14px; font-weight: 600;">We couldn’t find that bill. Here’s the next one to pay instead.</p>
+          <p role="status" style="margin: 0; padding: 12px 16px; border-radius: 14px; background: #FFF0B8; color: #6B5000; font-size: 14px; font-weight: 600;">We couldn’t find that bill. Here’s the next one due instead.</p>
         </sc-if>
 
         <!-- ============ NEW BILL ============ -->
@@ -74,10 +75,10 @@ a{color:#18161F}a:hover{color:#000000}
           <section aria-labelledby="new-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 20px;">
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <h2 id="new-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">Enter a bill</h2>
-              <span style="font-size: 14px; color: #47444F;">Who sent it, when it’s due, and what it’s for.</span>
+              <span style="font-size: 14px; color: #47444F;">{{f.intro}}</span>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px;">
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">From
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Supplier
                 <select class="be-field" value="{{f.vendor}}" onChange="{{setVendor}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
                   <sc-for list="{{vendorNames}}" as="vn" hint-placeholder-count="5"><option value="{{vn}}">{{vn}}</option></sc-for>
                   <option value="__new">Someone new…</option>
@@ -85,7 +86,7 @@ a{color:#18161F}a:hover{color:#000000}
               </label>
               <sc-if value="{{f.isNewVendor}}" hint-placeholder-val="{{false}}">
                 <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Their name
-                  <input class="be-field" type="text" value="{{f.newVendor}}" onChange="{{setNewVendor}}" placeholder="e.g. Ace Printing" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                  <input class="be-field" type="text" value="{{f.newVendor}}" onChange="{{setNewVendor}}" placeholder="{{f.newPh}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
                 </label>
               </sc-if>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Bill number
@@ -93,136 +94,97 @@ a{color:#18161F}a:hover{color:#000000}
               </label>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Bill date
                 <select class="be-field" value="{{f.date}}" onChange="{{setDate}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <option value="0">Today, Oct 4</option><option value="-1">Oct 3, 2026</option><option value="-2">Oct 2, 2026</option><option value="-3">Oct 1, 2026</option>
+                  <sc-for list="{{dateOpts}}" as="d" hint-placeholder-count="7"><option value="{{d.v}}">{{d.label}}</option></sc-for>
                 </select>
               </label>
               <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Due
                 <select class="be-field" value="{{f.terms}}" onChange="{{setTerms}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <option value="0">On receipt</option><option value="15">In 15 days</option><option value="21">In 21 days</option><option value="30">In 30 days</option>
+                  <option value="0">On receipt</option><option value="7">In 7 days</option><option value="14">In 14 days</option><option value="30">In 30 days</option><option value="45">In 45 days</option>
                 </select>
               </label>
             </div>
             <span style="margin-top: -8px; font-size: 13px; color: #47444F;">Due <strong style="color: #18161F;">{{f.dueText}}</strong></span>
 
+            <sc-if value="{{f.landlord}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-size: 13px; font-weight: 600;">Which part of your income is it for?</span>
+                <div role="group" aria-label="Business or property" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{scopes}}" as="sc" hint-placeholder-count="2">
+                    <button type="button" aria-pressed="{{sc.on}}" onClick="{{sc.pick}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{sc.border}}; background: {{sc.bg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{sc.label}}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
             <!-- Lines -->
             <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-                <span style="font-size: 15px; font-weight: 700;">What it’s for</span>
-                <sc-if value="{{stockOn}}" hint-placeholder-val="{{true}}">
-                  <span style="font-size: 12px; color: #5F5B68;">Stock lines shown because you sell products · <a href="BizProfile.dc.html" style="font-weight: 600; color: #47444F;">change</a></span>
-                </sc-if>
-              </div>
-              <sc-for list="{{lines}}" as="ln" hint-placeholder-count="2">
-                <div style="border: 1px solid {{ln.border}}; background: {{ln.bg}}; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-                  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{ln.tagBg}}; color: {{ln.tagFg}}; font-size: 12px; font-weight: 700;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{ln.tagFg}};"></span>{{ln.tag}}</span>
-                    <sc-if value="{{ln.canRemove}}" hint-placeholder-val="{{true}}">
-                      <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+              <span style="font-size: 15px; font-weight: 700;">What it’s for</span>
+              <sc-for list="{{lines}}" as="ln" hint-placeholder-count="1">
+                <div style="border: 1px solid #E2DFE8; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+                  <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
+                    <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Description
+                      <input class="be-field" type="text" value="{{ln.desc}}" onChange="{{ln.setDesc}}" placeholder="What it was" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                    </label>
+                    <label style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
+                      <select class="be-field" value="{{ln.catId}}" onChange="{{ln.setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                        <sc-for list="{{catOpts}}" as="co" hint-placeholder-count="10"><option value="{{co.id}}">{{co.name}}</option></sc-for>
+                      </select>
+                    </label>
+                    <label style="flex: 1 1 120px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
+                      <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">{{sym}}<input class="be-field" type="text" inputmode="decimal" value="{{ln.amt}}" onChange="{{ln.setAmt}}" placeholder="0.00" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                    </label>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px;">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12px; color: #5F5B68;"><span>{{ln.official}}</span><sc-if value="{{ln.badge}}" hint-placeholder-val="{{false}}"><span style="padding: 1px 8px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 11px; font-weight: 700;">{{ln.badge}}</span></sc-if></span>
+                    <sc-if value="{{ln.canRemove}}" hint-placeholder-val="{{false}}">
+                      <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
                     </sc-if>
                   </div>
-                  <sc-if value="{{ln.isStock}}" hint-placeholder-val="{{true}}">
-                    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
-                      <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Product
-                        <select class="be-field" value="{{ln.product}}" onChange="{{ln.setProduct}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                          <sc-for list="{{products}}" as="pr" hint-placeholder-count="4"><option value="{{pr.id}}">{{pr.name}}</option></sc-for>
-                        </select>
-                      </label>
-                      <label style="flex: 1 1 90px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">How many
-                        <input class="be-field" type="text" inputmode="numeric" value="{{ln.qty}}" onChange="{{ln.setQty}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
-                      </label>
-                      <label style="flex: 1 1 110px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Cost each
-                        <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{ln.cost}}" onChange="{{ln.setCost}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-                      </label>
-                      <span style="flex: 0 0 auto; min-height: 44px; display: flex; align-items: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{ln.total}}</span>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 13px; color: #47444F;">
-                      <span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"></path></svg>{{ln.stockText}}</span>
-                      <sc-if value="{{ln.low}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #6B5000;"></span>{{ln.lowText}}</span></sc-if>
-                    </div>
-                  </sc-if>
-                  <sc-if value="{{ln.isCost}}" hint-placeholder-val="{{false}}">
-                    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
-                      <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Description
-                        <input class="be-field" type="text" value="{{ln.desc}}" onChange="{{ln.setDesc}}" placeholder="What it was" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                      </label>
-                      <label style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Category
-                        <select class="be-field" value="{{ln.cat}}" onChange="{{ln.setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                          <option value="Printing">Printing</option><option value="Office supplies">Office supplies</option><option value="Software">Software</option><option value="Contractors">Contractors</option><option value="Internet &amp; phone">Internet &amp; phone</option><option value="Shipping &amp; delivery">Shipping &amp; delivery</option><option value="Rent">Rent</option><option value="Other">Other</option>
-                        </select>
-                      </label>
-                      <label style="flex: 1 1 110px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
-                        <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{ln.amt}}" onChange="{{ln.setAmt}}" placeholder="0.00" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-                      </label>
-                    </div>
-                  </sc-if>
                 </div>
               </sc-for>
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
-                <button type="button" onClick="{{addCost}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a cost</button>
-                <sc-if value="{{canStock}}" hint-placeholder-val="{{true}}">
-                  <button type="button" onClick="{{addStock}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add stock you’re buying</button>
-                </sc-if>
-                <sc-if value="{{stockNeedsProducts}}" hint-placeholder-val="{{false}}">
-                  <span style="font-size: 13px; color: #5F5B68;">Buying stock? Add the product in <a href="SellCatalog.dc.html" style="font-weight: 600;">your catalog</a> first.</span>
-                </sc-if>
-              </div>
+              <button type="button" onClick="{{addLine}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a line</button>
             </div>
 
-            <!-- Totals + how it counts -->
             <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-              <dl style="flex: 1 1 220px; min-width: 0; margin: 0; padding: 16px; border-radius: 16px; background: #F7F6F9; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; font-size: 14px; align-content: start;">
-                <dt style="color: #47444F;">Stock you’re buying</dt><dd style="margin: 0; text-align: right; font-variant-numeric: tabular-nums;">{{f.stockTotal}}</dd>
-                <dt style="color: #47444F;">Costs</dt><dd style="margin: 0; text-align: right; font-variant-numeric: tabular-nums;">{{f.costTotal}}</dd>
-                <dt style="font-weight: 700; border-top: 1px solid #E2DFE8; padding-top: 8px;">Bill total</dt><dd style="margin: 0; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; border-top: 1px solid #E2DFE8; padding-top: 8px; font-variant-numeric: tabular-nums;">{{f.total}}</dd>
-              </dl>
-              <div style="flex: 2 1 300px; min-width: 0; padding: 16px; border-radius: 16px; background: #FDE6D6; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.45;">
-                <span style="font-weight: 700;">How this bill counts</span>
-                <span style="display: flex; gap: 10px;"><span style="width: 10px; height: 10px; margin-top: 5px; border-radius: 3px; background: #F4C3A1; border: 1px solid #E0752D; box-sizing: border-box; flex: none;"></span><span>{{f.costEffect}}</span></span>
-                <span style="display: flex; gap: 10px;"><span style="width: 10px; height: 10px; margin-top: 5px; border-radius: 3px; background: #FFFFFF; border: 1px solid #47444F; box-sizing: border-box; flex: none;"></span><span>{{f.stockEffect}}</span></span>
+              <!-- Totals -->
+              <div style="flex: 1 1 260px; min-width: 0; padding: 16px; border-radius: 16px; background: #F7F6F9; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+                <sc-if value="{{f.vatOn}}" hint-placeholder-val="{{false}}">
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">{{f.vatTitle}}</span><span style="font-size: 12px; color: #5F5B68;">{{f.vatHelp}}</span></span>
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+                      <label style="flex: 0 1 170px; min-width: 0; display: flex; align-items: center; min-height: 40px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 14px DM Sans, sans-serif;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">VAT on the bill</span>{{sym}}<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{f.vat}}" onChange="{{setVat}}" style="flex: 1; min-width: 0; min-height: 38px; box-sizing: border-box; padding: 0 8px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 14px DM Sans, sans-serif; color: #18161F;"></label>
+                      <button type="button" onClick="{{fillVat}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{f.vatFill}}</button>
+                    </div>
+                  </div>
+                </sc-if>
+                <dl style="margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px;">
+                  <sc-if value="{{f.vatOn}}" hint-placeholder-val="{{false}}"><dt style="color: #47444F;">{{f.vatRow}}</dt><dd style="margin: 0; text-align: right; font-variant-numeric: tabular-nums;">{{f.vatShown}}</dd></sc-if>
+                  <dt style="font-weight: 700; border-top: 1px solid #E2DFE8; padding-top: 8px;">Bill total</dt><dd style="margin: 0; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; border-top: 1px solid #E2DFE8; padding-top: 8px; font-variant-numeric: tabular-nums;">{{f.total}}</dd>
+                </dl>
+              </div>
+              <!-- Attachment -->
+              <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 16px; border: 2px dashed #CBC7D3;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">The bill itself <span style="font-weight: 400; color: #5F5B68;">(optional)</span></span><span style="font-size: 12px; color: #5F5B68;">A photo or PDF, kept with your books. BillingEase doesn’t read it, so type the numbers above.</span></span>
+                <sc-if value="{{f.noFile}}" hint-placeholder-val="{{true}}">
+                  <label class="be-file" style="position: relative; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: rgba(24,22,31,0.07); font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.5 12.5 21a5 5 0 0 1-7-7L14 5.5a3.3 3.3 0 0 1 4.7 4.7L10.2 18.7a1.7 1.7 0 0 1-2.4-2.4L15.5 8.6"></path></svg>
+                    Attach a photo or PDF
+                    <input type="file" accept="image/*,application/pdf" onChange="{{pickNewFile}}" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                  </label>
+                </sc-if>
+                <sc-if value="{{f.hasFile}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+                    <span style="width: 34px; height: 34px; border-radius: 10px; background: #FBE3DF; color: #A8200D; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex: none;">{{f.fileKind}}</span>
+                    <span style="flex: 1 1 140px; min-width: 0; font-size: 14px; font-weight: 600; overflow-wrap: anywhere;">{{f.fileName}}</span>
+                    <button type="button" onClick="{{removeNewFile}}" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+                  </span>
+                </sc-if>
               </div>
             </div>
 
-            <!-- PDF -->
-            <sc-if value="{{f.noPdf}}" hint-placeholder-val="{{true}}">
-              <button type="button" onClick="{{attachPdf}}" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 64px; padding: 12px 16px; border: 2px dashed #CBC7D3; border-radius: 16px; background: #FFFFFF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.5 12.5 21a5 5 0 0 1-7-7L14 5.5a3.3 3.3 0 0 1 4.7 4.7L10.2 18.7a1.7 1.7 0 0 1-2.4-2.4L15.5 8.6"></path></svg>
-                Attach the PDF of the bill
-              </button>
-            </sc-if>
-            <sc-if value="{{f.hasPdf}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; border-radius: 16px; border: 1px solid #E2DFE8;">
-                <span style="width: 40px; height: 40px; border-radius: 12px; background: #FBE3DF; color: #A8200D; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none;">PDF</span>
-                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 14px;">{{f.pdfName}}</span><span style="font-size: 13px; color: #5F5B68;">{{f.pdfNote}}</span></span>
-                <button type="button" onClick="{{removePdf}}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
-              </div>
-            </sc-if>
-
-            <!-- More options: schedule -->
-            <div style="border-top: 1px solid #EFEDF3; padding-top: 12px; display: flex; flex-direction: column; gap: 14px;">
-              <button type="button" aria-expanded="{{moreOpen}}" onClick="{{toggleMore}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{moreIcon}}"></path></svg>
-                More options: payment schedule
-              </button>
-              <sc-if value="{{moreOpen}}" hint-placeholder-val="{{false}}">
-                <div style="display: flex; flex-direction: column; gap: 14px;">
-                  <div role="group" aria-label="How you’ll pay it" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <sc-for list="{{plans}}" as="pl" hint-placeholder-count="3">
-                      <button type="button" aria-pressed="{{pl.on}}" onClick="{{pl.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{pl.border}}; background: {{pl.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{pl.label}}</button>
-                    </sc-for>
-                  </div>
-                  <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
-                    <sc-for list="{{f.sched}}" as="sc" hint-placeholder-count="1">
-                      <li style="display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-radius: 12px; background: #F7F6F9; font-size: 14px;"><span>{{sc.label}}</span><strong style="font-variant-numeric: tabular-nums;">{{sc.amt}}</strong></li>
-                    </sc-for>
-                  </ul>
-                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                    <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">Pay automatically from Chase ••4417</span><span style="font-size: 13px; color: #5F5B68;">On each date above. We’ll email you the day before.</span></span>
-                    <button type="button" role="switch" aria-checked="{{f.auto}}" aria-label="Pay automatically" onClick="{{toggleAuto}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{f.autoBg}}; cursor: pointer; padding: 0;">
-                      <span style="position: absolute; top: 3px; left: {{f.autoLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span>
-                    </button>
-                  </div>
-                </div>
-              </sc-if>
+            <div style="padding: 14px 16px; border-radius: 16px; background: #FDE6D6; display: flex; gap: 10px; font-size: 14px; line-height: 1.45;">
+              <span style="width: 10px; height: 10px; margin-top: 5px; border-radius: 3px; background: #F4C3A1; border: 1px solid #E0752D; box-sizing: border-box; flex: none;"></span>
+              <span>{{f.effect}}</span>
             </div>
 
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
@@ -245,7 +207,7 @@ a{color:#18161F}a:hover{color:#000000}
             <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 20px;">
               <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
                 <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{b.bg}}; color: {{b.fg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{b.fg}};"></span>{{b.status}}</span>
-                <h2 id="det-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.02em;">
+                <h2 id="det-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.02em; overflow-wrap: anywhere;">
                   <sc-if value="{{b.vendorHref}}" hint-placeholder-val="{{false}}"><a href="{{b.vendorHref}}" style="text-decoration: none;">{{b.vendor}}</a></sc-if>
                   <sc-if value="{{b.noVendor}}" hint-placeholder-val="{{true}}">{{b.vendor}}</sc-if>
                 </h2>
@@ -267,71 +229,51 @@ a{color:#18161F}a:hover{color:#000000}
               </span>
             </div>
 
-            <!-- Pay actions -->
+            <!-- Mark paid -->
             <sc-if value="{{b.open}}" hint-placeholder-val="{{true}}">
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
-                <button type="button" onClick="{{payAll}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{b.payAllLabel}}</button>
-                <button type="button" onClick="{{togglePay}}" aria-expanded="{{payOpen}}" style="min-height: 46px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Pay part of it</button>
-                <sc-if value="{{b.notScheduled}}" hint-placeholder-val="{{true}}">
-                  <button type="button" onClick="{{toggleSched}}" aria-expanded="{{schedOpen}}" style="min-height: 46px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Schedule it</button>
-                </sc-if>
-              </div>
-            </sc-if>
-            <sc-if value="{{b.scheduled}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 16px; border-radius: 16px; background: #E1EEF8; color: #1F5E91; font-size: 14px; font-weight: 600;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5E91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>
-                <span style="flex: 1 1 220px; min-width: 0;">{{b.schedText}}</span>
-                <button type="button" onClick="{{cancelSched}}" style="min-height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #1F5E91; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Don’t pay automatically</button>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                  <button type="button" onClick="{{openFull}}" aria-expanded="{{payFull}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{b.payAllLabel}}</button>
+                  <button type="button" onClick="{{openPart}}" aria-expanded="{{payPart}}" style="min-height: 46px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Mark part paid</button>
+                </div>
+                <span style="font-size: 13px; color: #5F5B68;">{{b.payHint}}</span>
               </div>
             </sc-if>
             <sc-if value="{{payOpen}}" hint-placeholder-val="{{false}}">
               <div style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 16px; background: #F7F6F9;">
-                <span style="font-weight: 700; font-size: 15px;">Pay part of it today</span>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                  <sc-for list="{{quick}}" as="q" hint-placeholder-count="2">
-                    <button type="button" aria-pressed="{{q.on}}" onClick="{{q.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{q.border}}; background: {{q.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{q.label}}</button>
-                  </sc-for>
-                </div>
-                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
-                  <label style="flex: 1 1 130px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount
-                    <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" value="{{p.amt}}" onChange="{{setPayAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-                  </label>
-                  <label style="flex: 1 1 170px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">From
-                    <select class="be-field" value="{{p.from}}" onChange="{{setPayFrom}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                      <option value="Chase ••4417">Chase Checking ••4417</option><option value="Amex ••1009">Amex Business ••1009</option><option value="Paper check">Paper check</option>
+                <span style="font-weight: 700; font-size: 15px;">{{p.title}}</span>
+                <sc-if value="{{payPart}}" hint-placeholder-val="{{false}}">
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <sc-for list="{{quick}}" as="q" hint-placeholder-count="2">
+                      <button type="button" aria-pressed="{{q.on}}" onClick="{{q.pick}}" style="min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{q.border}}; background: {{q.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{q.label}}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 10px;">
+                  <sc-if value="{{payPart}}" hint-placeholder-val="{{false}}">
+                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount paid
+                      <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">{{sym}}<input class="be-field" type="text" inputmode="decimal" value="{{p.amt}}" onChange="{{setPayAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                    </label>
+                  </sc-if>
+                  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">You paid by
+                    <select class="be-field" value="{{p.how}}" onChange="{{setPayHow}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                      <sc-for list="{{methods}}" as="m" hint-placeholder-count="3"><option value="{{m.id}}">{{m.label}}</option></sc-for>
                     </select>
                   </label>
+                  <sc-if value="{{p.cheque}}" hint-placeholder-val="{{false}}">
+                    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Cheque number
+                      <input class="be-field" type="text" inputmode="numeric" placeholder="e.g. 004514" value="{{p.chequeNo}}" onChange="{{setChequeNo}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 15px DM Sans, sans-serif; color: #18161F;">
+                    </label>
+                  </sc-if>
                 </div>
                 <span style="font-size: 13px; color: #47444F;">{{p.effect}}</span>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                   <button type="button" onClick="{{savePay}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{p.saveLabel}}</button>
-                  <button type="button" onClick="{{togglePay}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+                  <button type="button" onClick="{{closePay}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
                 </div>
                 <sc-if value="{{p.hasErr}}" hint-placeholder-val="{{false}}">
                   <div role="alert" style="padding: 10px 14px; border-radius: 12px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{p.err}}</div>
                 </sc-if>
-              </div>
-            </sc-if>
-            <sc-if value="{{schedOpen}}" hint-placeholder-val="{{false}}">
-              <div style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 16px; background: #F7F6F9;">
-                <span style="font-weight: 700; font-size: 15px;">Pay it automatically on a date</span>
-                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;">
-                  <label style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">On
-                    <select class="be-field" value="{{s.date}}" onChange="{{setSchedDate}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                      <sc-for list="{{s.dates}}" as="sd" hint-placeholder-count="3"><option value="{{sd.value}}">{{sd.label}}</option></sc-for>
-                    </select>
-                  </label>
-                  <label style="flex: 1 1 170px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">From
-                    <select class="be-field" value="{{s.from}}" onChange="{{setSchedFrom}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                      <option value="Chase ••4417">Chase Checking ••4417</option><option value="Amex ••1009">Amex Business ••1009</option>
-                    </select>
-                  </label>
-                </div>
-                <span style="font-size: 13px; color: #47444F;">It stays in Going out as still to pay until that day, then moves to paid. We’ll email you the day before.</span>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                  <button type="button" onClick="{{saveSched}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{s.saveLabel}}</button>
-                  <button type="button" onClick="{{toggleSched}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
-                </div>
               </div>
             </sc-if>
 
@@ -341,12 +283,35 @@ a{color:#18161F}a:hover{color:#000000}
               <ul style="margin: 0; padding: 0 16px; list-style: none; border: 1px solid #E2DFE8; border-radius: 16px;">
                 <sc-for list="{{b.lines}}" as="l" hint-placeholder-count="1">
                   <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 12px 0; border-top: {{l.border}};">
-                    <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 600; font-size: 14px;">{{l.desc}}</span><span style="font-size: 13px; color: #5F5B68;">{{l.meta}}</span></span>
-                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{l.tagBg}}; color: {{l.tagFg}}; font-size: 12px; font-weight: 600;">{{l.tag}}</span>
+                    <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 600; font-size: 14px;">{{l.desc}}</span><span style="font-size: 13px; color: #5F5B68;">{{l.cat}} · <span style="font-size: 12px;">{{l.official}}</span></span></span>
+                    <sc-if value="{{l.badge}}" hint-placeholder-val="{{false}}"><span style="padding: 2px 10px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12px; font-weight: 600;">{{l.badge}}</span></sc-if>
                     <span style="font-variant-numeric: tabular-nums; font-weight: 700; font-size: 15px; min-width: 80px; text-align: right;">{{l.amt}}</span>
                   </li>
                 </sc-for>
+                <sc-if value="{{b.hasVat}}" hint-placeholder-val="{{false}}">
+                  <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 12px 0; border-top: 1px solid #EFEDF3;">
+                    <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 600; font-size: 14px;">{{b.vatLabel}}</span><span style="font-size: 13px; color: #5F5B68;">{{b.vatNote}}</span></span>
+                    <span style="font-variant-numeric: tabular-nums; font-weight: 700; font-size: 15px; min-width: 80px; text-align: right;">{{b.vat}}</span>
+                  </li>
+                </sc-if>
               </ul>
+            </div>
+
+            <!-- Attachment -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-if value="{{b.asked}}" hint-placeholder-val="{{false}}">
+                <p style="margin: 0; padding: 12px 16px; border-radius: 14px; background: #FFF0B8; color: #6B5000; font-size: 14px; font-weight: 600;">{{b.askedText}}</p>
+              </sc-if>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; border-radius: 16px; border: {{b.fileBorder}};">
+                <span style="width: 40px; height: 40px; border-radius: 12px; background: {{b.fileBg}}; color: {{b.fileFg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none;">{{b.fileKind}}</span>
+                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 14px; overflow-wrap: anywhere;">{{b.file}}</span><span style="font-size: 13px; color: #5F5B68;">{{b.fileNote}}</span></span>
+                <label class="be-file" style="position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: {{b.fileBtnBg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{b.fileBtn}}
+                  <input type="file" accept="image/*,application/pdf" onChange="{{pickFile}}" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                </label>
+                <sc-if value="{{b.hasFile}}" hint-placeholder-val="{{false}}">
+                  <button type="button" onClick="{{removeFile}}" style="min-height: 36px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+                </sc-if>
+              </div>
             </div>
 
             <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
@@ -354,7 +319,7 @@ a{color:#18161F}a:hover{color:#000000}
               <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
                 <span style="font-size: 15px; font-weight: 700;">Payments</span>
                 <sc-if value="{{b.noPays}}" hint-placeholder-val="{{true}}">
-                  <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: #F7F6F9; font-size: 14px; color: #47444F;">No payments yet. Each one you make shows up here and in Going out as paid.</p>
+                  <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: #F7F6F9; font-size: 14px; color: #47444F;">Nothing marked paid yet. Each payment you mark shows up here and in Going out as paid.</p>
                 </sc-if>
                 <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px;">
                   <sc-for list="{{b.pays}}" as="py" hint-placeholder-count="0">
@@ -365,7 +330,6 @@ a{color:#18161F}a:hover{color:#000000}
                     </a></li>
                   </sc-for>
                 </ul>
-                <span style="font-size: 13px; color: #5F5B68;">{{b.autoText}}</span>
               </div>
               <!-- History -->
               <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
@@ -376,26 +340,6 @@ a{color:#18161F}a:hover{color:#000000}
                   </sc-for>
                 </ol>
               </div>
-            </div>
-
-            <!-- PDF -->
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; border-radius: 16px; border: 1px solid #E2DFE8;">
-                <span style="width: 40px; height: 40px; border-radius: 12px; background: #FBE3DF; color: #A8200D; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none;">PDF</span>
-                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 14px;">{{b.pdf}}</span><span style="font-size: 13px; color: #5F5B68;">{{b.pdfNote}}</span></span>
-                <button type="button" onClick="{{togglePdf}}" aria-expanded="{{pdfOpen}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{pdfLabel}}</button>
-              </div>
-              <sc-if value="{{pdfOpen}}" hint-placeholder-val="{{false}}">
-                <div aria-label="Bill preview" style="align-self: flex-start; width: 100%; max-width: 420px; box-sizing: border-box; padding: 22px; border-radius: 8px; border: 1px solid #E2DFE8; background: #FFFFFF; box-shadow: 0 1px 2px rgba(24,22,31,0.06); display: flex; flex-direction: column; gap: 10px; font-size: 12px; color: #47444F;">
-                  <span style="display: flex; justify-content: space-between; gap: 12px;"><strong style="font-size: 15px; color: #18161F;">{{b.vendor}}</strong><span>BILL {{b.num}}</span></span>
-                  <span>To: {{b.to}}</span>
-                  <span>Dated {{b.date}} · Payment due {{b.due}}</span>
-                  <span style="height: 1px; background: #EFEDF3;"></span>
-                  <sc-for list="{{b.lines}}" as="l" hint-placeholder-count="1"><span style="display: flex; justify-content: space-between; gap: 12px;"><span>{{l.desc}}</span><span>{{l.amt}}</span></span></sc-for>
-                  <span style="height: 1px; background: #EFEDF3;"></span>
-                  <span style="display: flex; justify-content: space-between; font-weight: 700; color: #18161F; font-size: 13px;"><span>Total due</span><span>{{b.total}}</span></span>
-                </div>
-              </sc-if>
             </div>
 
             <!-- How it counts -->
@@ -426,32 +370,38 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { toast: null, seenHash: null, savedId: null, f: this.freshForm(''), moreOpen: false, errors: [],
-      payOpen: false, p: { amt: '', from: 'Chase ••4417' }, pErr: '', schedOpen: false, s: { date: '', from: 'Chase ••4417' }, pdfOpen: false };
+    this.state = { toast: null, seenHash: null, savedId: null, f: this.freshForm(''), errors: [], pay: null, p: { amt: '', how: 'Bank transfer', chequeNo: '' }, pErr: '' };
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  componentWillUnmount() { clearTimeout(this._t); }
   freshForm(vendor) {
-    return { vendor: vendor || '', newVendor: '', num: '', date: '0', terms: '30', lines: [{ kind: 'cost', desc: '', cat: 'Printing', amt: '' }], pdf: false, plan: 'full', auto: false };
+    const lk = BE.is('lk');
+    return { vendor: vendor || '', newVendor: '', num: '', date: '0', terms: lk ? '30' : '14', scope: 'business', lines: [{ desc: '', catId: '', amt: '' }], vat: '', fileName: '', fileKind: '' };
   }
   renderVals() {
     const st = this.state;
-    const money2 = (n) => BE.money(n, 'USD', { cents: true });
-    const money = (n) => BE.money(n);
+    const money = (n) => BE.money(n, null, { cents: true });
+    const money0 = (n) => BE.money(n);
     const num = (s) => BE.num(s);
-    const day = (off) => BE.inDays(off);
     const ini = (s) => BE.initials(s);
     const t = BE.totals('month');
     const prof = BE.get('profile') || {};
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const vatOn = BE.vatOn();
     const bills = BE.all('bills');
     const vendors = BE.all('vendors');
+    const methods = BE.payMethods();
+    const sym = pack.symbol === 'Rs' ? 'Rs ' : (pack.symbol || '£');
+    const noun = (pack.practitioner || {}).noun || 'accountant';
 
-    // Where are we? #<bill id> · #new · #new=<vendor id>
+    // Where are we? #<bill id> · #new · #new=<supplier id>
     const h = BE.hash();
     if (h !== st.seenHash) {
       let vendor = '';
       const m = h.match(/^new=(.+)$/);
       if (m) { const v = BE.find('vendors', m[1]); vendor = v ? v.name : ''; }
-      this.state = Object.assign({}, st, { seenHash: h, savedId: null, payOpen: false, schedOpen: false, pdfOpen: false, pErr: '',
+      this.state = Object.assign({}, st, { seenHash: h, savedId: null, pay: null, pErr: '',
         f: /^new/.test(h) ? this.freshForm(vendor) : st.f, errors: /^new/.test(h) ? [] : st.errors });
       return this.renderVals();
     }
@@ -465,252 +415,204 @@ class Component extends DCLogic {
 
     const statusOf = (b) => {
       const tot = BE.billTotal(b), l = left(b), paid = Math.round((tot - l) * 100) / 100;
-      if (l <= 0) return { text: 'Paid', bg: '#E2F6D5', fg: '#2F5711', left: l, paid, t: tot };
+      if (l <= 0) return { text: 'Paid' + (b.paidOn ? ' ' + b.paidOn : ''), bg: '#E2F6D5', fg: '#2F5711', left: l, paid, t: tot };
+      if (b.dueIn < 0) return { text: 'Late · was due ' + b.due, bg: '#FBE3DF', fg: '#A8200D', left: l, paid, t: tot };
       if (paid > 0) return { text: 'Part paid · due ' + b.due, bg: '#E1EEF8', fg: '#1F5E91', left: l, paid, t: tot };
-      if (b.dueIn != null && b.dueIn <= 8) return { text: 'Due ' + b.due + ' · in ' + b.dueIn + ' days', bg: '#FFF0B8', fg: '#6B5000', left: l, paid, t: tot };
+      if (b.dueIn != null && b.dueIn <= 7) return { text: 'Due ' + b.due + ' · in ' + b.dueIn + (b.dueIn === 1 ? ' day' : ' days'), bg: '#FFF0B8', fg: '#6B5000', left: l, paid, t: tot };
       return { text: 'Due ' + b.due, bg: '#EFEDF3', fg: '#47444F', left: l, paid, t: tot };
     };
 
     // List
     const list = sorted.map((b) => {
       const s = statusOf(b), on = view === b.id;
-      return { vendor: b.who, ini: ini(b.who), status: s.text, fg: s.fg, left: s.left > 0 ? money(s.left) : money(s.t), cur: on ? 'page' : false,
+      return { vendor: b.who, ini: ini(b.who), status: s.text, fg: s.fg, left: s.left > 0 ? money0(s.left) : money0(s.t), cur: on ? 'page' : false,
         bg: on ? '#FDE6D6' : 'transparent', iniBg: on ? '#FFFFFF' : '#FDE6D6', href: 'SpendBill.dc.html#' + b.id };
     });
     const unpaid = sorted.filter((b) => left(b) > 0);
     const owed = unpaid.reduce((a, b) => a + left(b), 0);
-    const slug = String(prof.business || 'you').toLowerCase().replace(/[^a-z0-9]+/g, '');
     const top = {
-      owed: money(owed), inbox: 'bills+' + slug + '@billingease.app',
-      line: unpaid.length ? unpaid.length + (unpaid.length === 1 ? ' bill' : ' bills') + ' · next due ' + unpaid[0].due + ': ' + unpaid[0].who + ' ' + money(left(unpaid[0])) : (bills.length ? 'Every bill is paid.' : 'No bills yet. Enter one when it arrives and we’ll remind you before it’s due.')
+      owed: money0(owed),
+      lead: 'A bill is something you owe and pay later, outside BillingEase. Enter it once with a photo or PDF, then mark it paid in full or in part when you’ve paid it' + (lk ? ' by bank transfer, cheque or cash.' : ' by bank, card or cash.'),
+      line: unpaid.length ? unpaid.length + (unpaid.length === 1 ? ' bill' : ' bills') + ' · next due ' + unpaid[0].due + ': ' + unpaid[0].who + ' ' + money0(left(unpaid[0])) : (bills.length ? 'Every bill is paid.' : 'No bills yet. Enter one when it arrives and it counts in Going out until you pay it.')
     };
-
-    // Products you can buy as stock
-    const showsProducts = BE.shows ? BE.shows('products') : true;
-    const prods = BE.all('products').filter((p) => p.stock != null && p.kind !== 'service');
-    const prodOf = (id) => prods.filter((p) => p.id === id)[0] || null;
 
     // ---------- New bill form ----------
     const names = [];
     vendors.forEach((v) => { if (v.name && names.indexOf(v.name) < 0) names.push(v.name); });
     bills.forEach((b) => { if (b.who && names.indexOf(b.who) < 0) names.push(b.who); });
-    BE.all('expenses').forEach((x) => { if (x.who && x.who !== 'Payroll' && x.kind !== 'personal' && names.indexOf(x.who) < 0) names.push(x.who); });
     const f = st.f;
-    const vendorSel = f.vendor && (names.indexOf(f.vendor) >= 0) ? f.vendor : (f.vendor && f.vendor !== '__new' ? (names.push(f.vendor), f.vendor) : (names.length && f.vendor !== '__new' ? names[0] : '__new'));
+    const vendorSel = f.vendor && names.indexOf(f.vendor) >= 0 ? f.vendor : (f.vendor && f.vendor !== '__new' ? (names.push(f.vendor), f.vendor) : (names.length && f.vendor !== '__new' ? names[0] : '__new'));
+    const isNewVendor = vendorSel === '__new';
+    const selV = !isNewVendor ? BE.vendorFor(vendorSel) : null;
+    const landlord = !!(pack.features && pack.features.landlord) && (prof.kind === 'both' || prof.kind === 'landlord');
+    const props = BE.all('properties');
+    const propList = props.length ? props.map((p) => ({ id: p.id, name: p.short || p.name })) : (landlord ? [{ id: BE.isEmpty() ? 'property' : 'ash-grove', name: BE.isEmpty() ? 'Your rental property' : 'Flat 2, 18 Ash Grove' }] : []);
+    const scopeNow = f.scope !== 'business' ? f.scope : (selV && selV.property && landlord ? selV.property : 'business');
+    const isProp = landlord && scopeNow !== 'business';
+    const CATS = BE.expenseCats(isProp ? 'property' : 'business');
+    const defCat = (selV && CATS.some((c) => c.id === selV.catId)) ? selV.catId : (CATS.filter((c) => c.id === 'other' || c.id === 'p-other')[0] || CATS[0] || {}).id;
     const off = parseInt(f.date, 10) || 0, terms = parseInt(f.terms, 10) || 0;
     const dueOff = off + terms;
     const setF = (patch) => this.setState({ f: Object.assign({}, this.state.f, patch), errors: [] });
     const setLine = (i, patch) => setF({ lines: this.state.f.lines.map((l, j) => (j === i ? Object.assign({}, l, patch) : l)) });
-    const lineAmt = (l) => (l.kind === 'stock' ? Math.round(num(l.qty) * num(l.cost) * 100) / 100 : num(l.amt));
+    const lineCat = (l) => (l.catId && CATS.some((c) => c.id === l.catId) ? l.catId : defCat);
     const lines = f.lines.map((l, i) => {
-      const isStock = l.kind === 'stock';
-      const P = isStock ? prodOf(l.product) : null;
-      const now = P ? Number(P.stock) || 0 : 0, q = Math.round(num(l.qty));
+      const c = CATS.filter((x) => x.id === lineCat(l))[0] || {};
       return {
-        isStock, isCost: !isStock, tag: isStock ? 'Buying stock' : 'Cost', tagBg: isStock ? '#18161F' : '#FDE6D6', tagFg: isStock ? '#FFFFFF' : '#18161F',
-        border: isStock ? '#CBC7D3' : '#E2DFE8', bg: isStock ? '#F7F6F9' : '#FFFFFF',
+        desc: l.desc || '', catId: lineCat(l), amt: l.amt || '', official: c.official || '', badge: BE.catBadge(c),
         removeLabel: 'Remove line ' + (i + 1), canRemove: f.lines.length > 1,
         remove: () => setF({ lines: this.state.f.lines.filter((x, j) => j !== i) }),
-        product: l.product || '', qty: l.qty || '', cost: l.cost || '', total: money2(lineAmt(l)),
-        stockText: P ? P.name + ': ' + now + ' in stock now → ' + (now + q) + ' once these arrive' : '',
-        low: !!P && now < (Number(P.reorder) || 0), lowText: P ? (now === 0 ? 'Out of stock now' : 'Low · reorder at ' + P.reorder) : '',
-        setProduct: (e) => { const np = prodOf(e.target.value); setLine(i, { product: e.target.value, cost: np && np.cost != null ? Number(np.cost).toFixed(2) : '' }); },
-        setQty: (e) => setLine(i, { qty: e.target.value }),
-        setCost: (e) => setLine(i, { cost: e.target.value }),
-        desc: l.desc || '', cat: l.cat || 'Other', amt: l.amt || '',
         setDesc: (e) => setLine(i, { desc: e.target.value }),
-        setCat: (e) => setLine(i, { cat: e.target.value }),
+        setCat: (e) => setLine(i, { catId: e.target.value }),
         setAmt: (e) => setLine(i, { amt: e.target.value })
       };
     });
-    const fCost = f.lines.filter((l) => l.kind !== 'stock').reduce((a, l) => a + lineAmt(l), 0);
-    const fStock = f.lines.filter((l) => l.kind === 'stock').reduce((a, l) => a + lineAmt(l), 0);
-    const fTotal = Math.round((fCost + fStock) * 100) / 100;
-    const firstStock = f.lines.filter((l) => l.kind === 'stock')[0];
-    const firstStockP = firstStock ? prodOf(firstStock.product) : null;
-    const planN = f.plan === 'three' ? 3 : (f.plan === 'two' ? 2 : 1);
-    const mkSched = (total, n, dueO, startO) => {
-      const out = []; let used = 0;
-      for (let i = 0; i < n; i++) {
-        const o = Math.max(startO, dueO - (n - 1 - i) * 15);
-        const a = i === n - 1 ? Math.round((total - used) * 100) / 100 : Math.round(total / n * 100) / 100;
-        used += a; out.push({ date: day(o), amt: a, dueIn: o });
-      }
-      return out;
-    };
-    const fSched = mkSched(fTotal, planN, dueOff, off);
-    const isNewVendor = vendorSel === '__new';
+    const fTotal = Math.round(f.lines.reduce((a, l) => a + num(l.amt), 0) * 100) / 100;
+    const fVat = vatOn ? Math.round(num(f.vat) * 100) / 100 : 0;
+    const scopes = landlord ? [{ id: 'business', name: '' }].concat(propList).map((p) => {
+      const on = scopeNow === p.id;
+      return { label: p.id === 'business' ? 'Your business' : 'Property: ' + p.name, on, bg: on ? '#FDE6D6' : '#FFFFFF', border: on ? '#E0752D' : '#CBC7D3',
+        pick: () => setF({ scope: p.id, lines: this.state.f.lines.map((l) => Object.assign({}, l, { catId: '' })) }) };
+    }) : [];
     const fv = {
-      vendor: vendorSel, isNewVendor, newVendor: f.newVendor, num: f.num, date: f.date, terms: f.terms,
-      dueText: (terms === 0 ? 'on receipt, ' : '') + day(dueOff) + ', 2026',
-      stockTotal: money2(fStock), costTotal: money2(fCost), total: money2(fTotal),
-      costEffect: fCost > 0 ? money2(fCost) + ' of costs goes into Going out now as still to pay, and moves to paid when you pay the bill.' : 'No costs on this bill yet, so Going out doesn’t change.',
-      stockEffect: fStock > 0 ? 'Stock you buy isn’t Going out until you sell it. The ' + money2(fStock) + ' sits on your shelf, and each one you sell moves its cost' + (firstStockP ? ' (' + money2(num(firstStock.cost)) + ' for a ' + String(firstStockP.name).toLowerCase() + ')' : '') + ' into Going out as cost of goods.' : 'Stock you buy isn’t Going out until you sell it. Add a stock line when you buy products to sell.',
-      noPdf: !f.pdf, hasPdf: f.pdf, pdfName: (f.num || 'bill') + '.pdf', pdfNote: '1 page · we read a total of ' + money2(fTotal) + ', which matches',
-      sched: fSched.map((s, i) => ({ label: (planN > 1 ? 'Payment ' + (i + 1) + ' · ' : 'All at once · ') + s.date, amt: money2(s.amt) })),
-      auto: f.auto, autoBg: f.auto ? '#E0752D' : '#CBC7D3', autoLeft: f.auto ? '25px' : '3px',
-      saveLabel: fTotal > 0 ? 'Save bill · ' + money2(fTotal) : 'Save bill'
+      intro: 'Who sent it, when it’s due and what it’s for, as it says on the bill.', newPh: lk ? 'e.g. Lanka Office Supplies' : 'e.g. Leeds Paper Co',
+      vendor: vendorSel, isNewVendor, newVendor: f.newVendor, num: f.num, date: f.date, terms: f.terms, landlord,
+      dueText: (terms === 0 ? 'on receipt, ' : '') + BE.dayOf(dueOff).label + ' 2026',
+      vatOn, vat: f.vat, vatTitle: lk ? 'VAT on the supplier’s Tax Invoice' : 'VAT on the VAT invoice',
+      vatHelp: lk ? 'Only if they’re VAT registered. It’s input tax on your VAT return.' : 'Only if the supplier charges VAT.',
+      vatFill: 'Work it out at ' + Math.round(BE.vatRate() * 1000) / 10 + '%', vatRow: 'Of which VAT', vatShown: money(fVat),
+      total: money(fTotal),
+      noFile: !f.fileName, hasFile: !!f.fileName, fileName: f.fileName, fileKind: f.fileKind === 'pdf' ? 'PDF' : 'IMG',
+      effect: fTotal > 0 ? money(fTotal) + ' goes into Going out now as still to pay, and moves to paid when you mark it paid.' + (fVat > 0 ? ' The ' + money(fVat) + ' VAT goes to your ' + (lk ? 'VAT return as input tax.' : 'VAT return.') : '') : 'Add the amounts on the bill to see how it counts.',
+      saveLabel: fTotal > 0 ? 'Save bill · ' + money(fTotal) : 'Save bill'
     };
-    const plans = [['full', 'Pay in full'], ['two', '2 payments'], ['three', '3 payments']].map((p) => ({ label: p[1], on: f.plan === p[0], bg: f.plan === p[0] ? '#FDE6D6' : '#FFFFFF', border: f.plan === p[0] ? '#E0752D' : '#CBC7D3', pick: () => setF({ plan: p[0] }) }));
     const saveBill = () => {
       const errs = [];
       const who = isNewVendor ? String(f.newVendor || '').trim() : vendorSel;
       if (!who) errs.push('Say who sent the bill.');
       if (!f.num.trim()) errs.push('Add the bill number from the bill, so you can find it later.');
-      if (!f.lines.length) errs.push('Add at least one line.');
       f.lines.forEach((l, i) => {
-        if (l.kind === 'stock' && !(num(l.qty) > 0 && num(l.cost) > 0)) errs.push('Line ' + (i + 1) + ': how many, and the cost of each.');
-        if (l.kind === 'stock' && !prodOf(l.product)) errs.push('Line ' + (i + 1) + ': pick a product.');
-        if (l.kind !== 'stock' && !(num(l.amt) > 0)) errs.push('Line ' + (i + 1) + ': add an amount.');
-        if (l.kind !== 'stock' && !String(l.desc || '').trim()) errs.push('Line ' + (i + 1) + ': say what it was for.');
+        if (!(num(l.amt) > 0)) errs.push('Line ' + (i + 1) + ': add an amount.');
+        if (!String(l.desc || '').trim()) errs.push('Line ' + (i + 1) + ': say what it was for.');
       });
+      if (fVat >= fTotal && fVat > 0) errs.push('The VAT has to be less than the bill total.');
       if (errs.length) { this.setState({ errors: errs }); return; }
-      const outLines = f.lines.map((l) => (l.kind === 'stock'
-        ? { kind: 'stock', product: l.product, name: prodOf(l.product).name, qty: Math.round(num(l.qty)), cost: num(l.cost) }
-        : { kind: 'cost', desc: String(l.desc).trim(), cat: l.cat || 'Other', amt: num(l.amt) }));
-      const costs = outLines.filter((l) => l.kind === 'cost');
-      const stocks = outLines.filter((l) => l.kind === 'stock');
-      const hist = [{ label: 'Entered by ' + (prof.owner || 'you'), date: BE.today }]
-        .concat(stocks.map((l) => ({ label: 'Added ' + l.qty + ' × ' + l.name + ' to stock', date: BE.today })))
-        .concat(f.auto ? [{ label: 'Set to pay itself from Chase ••4417', date: BE.today }] : []);
+      const outLines = f.lines.map((l) => { const c = BE.catById(lineCat(l)); return { desc: String(l.desc).trim(), catId: c ? c.id : null, cat: c ? c.name : 'Other', amt: num(l.amt) }; });
+      const d = BE.dayOf(off), due = BE.dayOf(dueOff);
+      const hist = [{ label: 'Entered by ' + (prof.owner || 'you'), date: BE.today }].concat(f.fileName ? [{ label: 'Attached ' + f.fileName, date: BE.today }] : []);
       const bill = BE.addBill({
-        num: f.num.trim(), who, what: costs.length ? costs.map((l) => l.desc).join(', ') : 'Stock: ' + stocks.map((l) => l.qty + ' × ' + l.name).join(', '),
-        amount: Math.round(fCost * 100) / 100, stockAmt: Math.round(fStock * 100) / 100, paid: 0, stockPaid: 0,
-        date: day(off), due: day(dueOff), dueIn: dueOff, cat: costs.length ? costs[0].cat : 'Stock', lines: outLines,
-        pdf: f.pdf ? f.num.trim() + '.pdf' : '', sched: fSched, auto: f.auto, inMonth: true, history: hist
+        num: f.num.trim(), who, what: outLines.map((l) => l.desc).join(', '), amount: fTotal, vat: fVat, paid: 0,
+        date: d.label, due: due.label, dueIn: dueOff, catId: outLines[0].catId, cat: outLines[0].cat, lines: outLines, property: isProp ? scopeNow : undefined,
+        attachment: f.fileName ? { name: f.fileName, kind: f.fileKind || 'pdf' } : null, inMonth: true, entered: BE.today, history: hist
       });
-      if (stocks.length) {
-        BE.change((s) => {
-          s.products = (s.products || []).map((p) => {
-            const add = stocks.filter((l) => l.product === p.id).reduce((a, l) => a + l.qty, 0);
-            return add ? Object.assign({}, p, { stock: (Number(p.stock) || 0) + add }) : p;
-          });
-        });
-      }
-      this.setState({ savedId: bill.id, f: this.freshForm(''), moreOpen: false, errors: [] });
-      this.notify(stocks.length
-        ? 'Bill saved · ' + stocks[0].qty + ' × ' + stocks[0].name + ' added to stock' + (fCost > 0 ? ' · ' + money2(fCost) + ' to Going out' : '')
-        : 'Bill saved · ' + money2(fCost) + ' added to Going out as still to pay');
+      this.setState({ savedId: bill.id, f: this.freshForm(''), errors: [] });
+      this.notify('Bill saved · ' + money(fTotal) + ' added to Going out as still to pay');
     };
 
     // ---------- Detail ----------
     const cur = view !== 'new' ? BE.find('bills', view) : null;
-    let b = {}, quick = [], p = {}, sv = {};
+    let b = {}, quick = [], p = {};
+    const pay = cur && st.pay && st.pay.id === cur.id ? st.pay.mode : null;
     if (cur) {
       const s = statusOf(cur);
       const tot = s.t, paid = s.paid, l = s.left;
-      const vend = BE.vendorFor ? BE.vendorFor(cur.who) : vendors.filter((v) => v.name === cur.who)[0];
-      const blines = (cur.lines && cur.lines.length ? cur.lines : [{ kind: 'cost', desc: cur.what, cat: cur.cat, amt: cur.amount }]);
-      const pays = BE.all('expenses').filter((x) => x.bill === cur.id).map((x) => ({ date: x.date, from: x.how, amt: money2(x.amount), href: 'SpendTransaction.dc.html#' + x.id }));
-      (cur.history || []).forEach((hh) => { if (/for stock/.test(hh.label)) pays.push({ date: hh.date, from: hh.label.replace(/^Paid \S+ for stock from /, '') + ' · stock', amt: (hh.label.match(/\$[\d,.]+/) || [''])[0], href: 'SpendBill.dc.html#' + cur.id }); });
-      const sch = cur.auto && cur.sched && cur.sched.length ? cur.sched.filter((x) => x.dueIn >= 0)[0] || cur.sched[0] : null;
+      const vend = BE.vendorFor(cur.who);
+      const blines = (cur.lines && cur.lines.length ? cur.lines : [{ desc: cur.what, catId: cur.catId, cat: cur.cat, amt: cur.amount }]);
+      const pays = BE.all('expenses').filter((x) => x.bill === cur.id).map((x) => ({ date: x.date, from: BE.howText(x), amt: money(x.amount), href: 'SpendTransaction.dc.html#' + x.id }));
       let effect;
-      const sA = Number(cur.stockAmt) || 0, cA = Number(cur.amount) || 0;
-      if (sA > 0) effect = money2(cA) + ' of costs counts in Going out. The ' + money2(sA) + ' of stock doesn’t: stock you buy isn’t Going out until you sell it. Then each one moves into Going out as cost of goods.';
-      else if (paid <= 0) effect = 'All ' + money2(tot) + ' is in Going out as still to pay. Paying it moves it to paid; the Going out total stays the same.';
-      else if (l > 0) effect = money2(paid) + ' moved from still to pay to paid. ' + money2(l) + ' is still to pay. The Going out total stays the same.';
-      else effect = 'All ' + money2(tot) + ' is now in paid. Nothing from this bill is left in still to pay.';
+      if (paid <= 0) effect = 'All ' + money(tot) + ' is in Going out as still to pay. Marking it paid moves it to paid; the Going out total stays the same.';
+      else if (l > 0) effect = money(paid) + ' moved from still to pay to paid. ' + money(l) + ' is still to pay. The Going out total stays the same.';
+      else effect = 'All ' + money(tot) + ' is paid. Nothing from this bill is left in still to pay.';
+      if (cur.inMonth === false) effect = 'This bill was from before October, so it’s in earlier months’ numbers, not this month’s Going out.';
       const paidPct = tot ? Math.round(paid / tot * 100) : 0;
+      const vatMonth = (() => { const m = String(cur.date || '').split(' ')[1]; const full = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' }; return full[m] || 'this month’s'; })();
+      const att = cur.attachment || (cur.pdf ? { name: cur.pdf, kind: 'pdf' } : null);
+      const asker = (prof.practice && prof.practice.contact) || 'Your ' + noun;
       b = {
-        vendor: cur.who, num: cur.num || '—', date: cur.date || cur.entered || '', due: cur.due, status: s.text, bg: s.bg, fg: s.fg,
+        vendor: cur.who, status: s.text, bg: s.bg, fg: s.fg,
         vendorHref: vend ? 'SpendVendor.dc.html#' + vend.id : '', noVendor: !vend,
-        meta: 'Bill ' + (cur.num || '') + (cur.date ? ' · dated ' + cur.date : '') + ' · due ' + cur.due,
-        to: (prof.business || 'Your business') + (prof.city ? ', ' + prof.city : ''),
-        total: money2(tot), paid: money2(paid), left: money2(l), leftText: l > 0 ? money2(l) + ' left to pay' : 'Paid in full',
-        paidPct, leftPct: 100 - paidPct, open: l > 0, payAllLabel: (paid > 0 ? 'Pay the rest · ' : 'Pay ') + money2(l) + ' now',
-        scheduled: l > 0 && !!sch, notScheduled: !sch,
-        schedText: sch ? 'Pays itself ' + money2(Math.min(sch.amt, l)) + ' on ' + sch.date + ' from ' + (cur.autoFrom || 'Chase ••4417') + '.' : '',
-        lines: blines.map((x, i) => (x.kind === 'stock'
-          ? { desc: x.qty + ' × ' + (x.name || 'Product'), meta: money2(x.cost) + ' each · added to stock' + (prodOf(x.product) ? ' (now ' + prodOf(x.product).stock + ')' : ''), tag: 'Stock', tagBg: '#18161F', tagFg: '#FFFFFF', amt: money2(x.qty * x.cost), border: i === 0 ? '0' : '1px solid #EFEDF3' }
-          : { desc: x.desc, meta: x.cat, tag: 'Cost', tagBg: '#FDE6D6', tagFg: '#18161F', amt: money2(x.amt), border: i === 0 ? '0' : '1px solid #EFEDF3' })),
-        autoText: sch ? 'Pays automatically on ' + sch.date + '.' : 'You pay it yourself. We’ll remind you two days before it’s due.',
+        meta: 'Bill ' + (cur.num || '') + (cur.date ? ' · dated ' + cur.date : '') + ' · due ' + cur.due + (cur.property ? ' · for the property' : ''),
+        total: money(tot), paid: money(paid), left: money(l), leftText: l > 0 ? money(l) + ' left to pay' : 'Paid in full',
+        paidPct, leftPct: 100 - paidPct, open: l > 0,
+        payAllLabel: paid > 0 ? 'Mark the rest paid · ' + money(l) : 'Mark paid in full · ' + money(l),
+        payHint: 'Pay ' + cur.who + ' the usual way first' + (lk ? ' (bank transfer, cheque or cash)' : ' (bank, card or cash)') + '. BillingEase doesn’t send money.',
+        lines: blines.map((x, i) => { const c = BE.catOf(x); return { desc: x.desc, cat: c ? c.name : (x.cat || 'Other'), official: c ? c.official : '', badge: BE.catBadge(c), amt: money(x.amt), border: i === 0 ? '0' : '1px solid #EFEDF3' }; }),
+        hasVat: (cur.vat || 0) > 0, vat: money(cur.vat || 0), vatLabel: lk ? 'Input VAT (inside the total)' : 'VAT (inside the total)',
+        vatNote: lk ? 'From the supplier’s Tax Invoice · goes to the ' + vatMonth + ' VAT return' + (vend && vend.vatNo ? ' · their VAT no. ' + vend.vatNo : '') : 'Reclaimed on your VAT return',
+        asked: !!cur.requested && !att, askedText: asker + ' asked for a copy of this bill. Attach a photo or the PDF and they’ll see it in their ' + ((pack.practitioner || {}).tool || 'practice tool') + '.',
+        hasFile: !!att, file: att ? att.name : 'No copy attached yet', fileKind: att ? (att.kind === 'photo' ? 'IMG' : 'PDF') : '—',
+        fileNote: att ? 'Kept with your books' + (lk ? ' for your ' + noun : ' · HMRC can ask to see it') : 'Attach a photo or the PDF the supplier sent',
+        fileBg: att ? '#FBE3DF' : '#EFEDF3', fileFg: att ? '#A8200D' : '#5F5B68', fileBorder: att ? '1px solid #E2DFE8' : '2px dashed #CBC7D3',
+        fileBtn: att ? 'Replace' : 'Attach a photo or PDF', fileBtnBg: att ? 'rgba(24,22,31,0.07)' : '#B9A3FF',
         pays, noPays: pays.length === 0,
         history: (cur.history || []).slice().reverse().map((x, i) => ({ label: x.label, date: x.date, border: i === 0 ? '0' : '1px solid #E2DFE8' })),
-        pdf: cur.pdf || 'No PDF attached yet', pdfNote: cur.pdf ? 'The bill as ' + cur.who + ' sent it · kept with your books' : 'Attach it so it’s kept with your books for tax',
         effect
       };
       const half = Math.round(l / 2 * 100) / 100;
-      const pa = num(st.p.amt);
-      quick = l > 0 ? [['Half · ' + money2(half), half], ['All of it · ' + money2(l), l]].map((q) => {
+      const pa = pay === 'full' ? l : num(st.p.amt);
+      quick = l > 0 ? [['Half · ' + money(half), half], ['All of it · ' + money(l), l]].map((q) => {
         const on = Math.abs(pa - q[1]) < 0.005;
         return { label: q[0], on, bg: on ? '#FDE6D6' : '#FFFFFF', border: on ? '#E0752D' : '#CBC7D3', pick: () => this.setState({ p: Object.assign({}, this.state.p, { amt: q[1].toFixed(2) }), pErr: '' }) };
       }) : [];
-      const costLeft = Math.max(0, cA - (cur.paid || 0));
       p = {
-        amt: st.p.amt, from: st.p.from, hasErr: !!st.pErr, err: st.pErr,
-        saveLabel: pa > 0 ? 'Pay ' + money2(pa) : 'Pay',
-        effect: pa > 0 ? (costLeft > 0 ? 'Moves ' + money2(Math.min(pa, costLeft)) + ' from still to pay to paid in Going out' : 'This pays for stock, so Going out doesn’t change') + (pa < l ? ', and leaves ' + money2(l - pa) + ' on this bill.' : '. This bill is then done.') : 'Type an amount, or pick one above.'
+        title: pay === 'full' ? 'Mark ' + money(l) + ' paid to ' + cur.who : 'Mark part of it paid',
+        amt: st.p.amt, how: st.p.how, chequeNo: st.p.chequeNo, cheque: st.p.how === 'Cheque', hasErr: !!st.pErr, err: st.pErr,
+        saveLabel: pa > 0 ? 'Mark ' + money(pa) + ' paid' : 'Mark paid',
+        effect: pa > 0 ? 'Moves ' + money(Math.min(pa, l)) + ' from still to pay to paid in Going out' + (pa < l ? ', and leaves ' + money(l - pa) + ' on this bill.' : '. This bill is then done.') : 'Type the amount you paid, or pick one above.'
       };
-      const dates = [];
-      [cur.dueIn, Math.max(1, (cur.dueIn || 0) - 2), 1].forEach((d) => { if (d != null && d >= 1 && !dates.some((x) => x.value === String(d))) dates.push({ value: String(d), label: day(d) + (d === cur.dueIn ? ' (due date)' : '') }); });
-      const sDate = st.s.date && dates.some((x) => x.value === st.s.date) ? st.s.date : (dates[0] ? dates[0].value : '1');
-      sv = { date: sDate, from: st.s.from, dates, saveLabel: 'Pay ' + money2(l) + ' on ' + day(Number(sDate)) };
-      this._cur = { cur, left: l, sDate };
+      this._cur = { cur, left: l };
     } else this._cur = null;
 
     const savePay = () => {
       const c = this._cur; if (!c) return;
-      const pa = Math.round(num(this.state.p.amt) * 100) / 100;
+      const ps = this.state.p;
+      const pa = pay === 'full' ? c.left : Math.round(num(ps.amt) * 100) / 100;
       if (!(pa > 0)) { this.setState({ pErr: 'Add the amount you paid.' }); return; }
-      if (pa > c.left + 0.005) { this.setState({ pErr: 'That’s more than the ' + money2(c.left) + ' left on this bill.' }); return; }
-      BE.payBillAll(c.cur.id, pa, this.state.p.from);
-      this.setState({ payOpen: false, pErr: '' });
+      if (pa > c.left + 0.005) { this.setState({ pErr: 'That’s more than the ' + money(c.left) + ' left on this bill.' }); return; }
+      if (ps.how === 'Cheque' && !String(ps.chequeNo || '').trim()) { this.setState({ pErr: 'Add the cheque number.' }); return; }
+      BE.markBillPaid(c.cur.id, pa, ps.how, ps.how === 'Cheque' ? { no: String(ps.chequeNo).trim(), date: BE.today } : null);
+      this.setState({ pay: null, pErr: '' });
       const rest = Math.round((c.left - pa) * 100) / 100;
-      this.notify('Paid ' + money2(pa) + ' to ' + c.cur.who + (rest > 0 ? ' · ' + money2(rest) + ' left' : ' · paid in full') + ' · moved to paid');
+      this.notify('Marked ' + money(pa) + ' paid to ' + c.cur.who + (rest > 0 ? ' · ' + money(rest) + ' left' : ' · paid in full') + ' · moved to paid');
     };
-    const payAll = () => {
-      const c = this._cur; if (!c || c.left <= 0) return;
-      BE.payBillAll(c.cur.id, null, 'Chase ••4417');
-      this.setState({ payOpen: false, schedOpen: false });
-      this.notify('Paid ' + c.cur.who + ' ' + money2(c.left) + ' from Chase ••4417 · moved to paid in Going out');
-    };
-    const saveSched = () => {
+    const openPay = (mode) => () => {
       const c = this._cur; if (!c) return;
-      const d = Number(c.sDate), from = this.state.s.from;
-      BE.update('bills', c.cur.id, (x) => ({ auto: true, autoFrom: from, sched: [{ date: day(d), amt: c.left, dueIn: d }], history: (x.history || []).concat([{ label: 'Scheduled ' + money2(c.left) + ' for ' + day(d) + ' from ' + from, date: BE.today }]) }));
-      this.setState({ schedOpen: false });
-      this.notify('Scheduled ' + money2(c.left) + ' for ' + day(d) + ' · still to pay until then');
+      const v = BE.vendorFor(c.cur.who);
+      const how = v && methods.some((m) => m.id === v.via) ? v.via : 'Bank transfer';
+      this.setState({ pay: st.pay && st.pay.id === c.cur.id && st.pay.mode === mode ? null : { id: c.cur.id, mode }, pErr: '', p: { amt: mode === 'full' ? c.left.toFixed(2) : '', how, chequeNo: '' } });
     };
-    const cancelSched = () => {
-      const c = this._cur; if (!c) return;
-      BE.update('bills', c.cur.id, (x) => ({ auto: false, history: (x.history || []).concat([{ label: 'Stopped paying it automatically', date: BE.today }]) }));
-      this.notify('Won’t pay automatically · we’ll remind you before ' + c.cur.due);
+    const setFile = (ev) => {
+      const file = ev.target.files && ev.target.files[0]; if (!file || !cur) return;
+      const kind = /pdf$/i.test(file.type || file.name) ? 'pdf' : 'photo';
+      BE.update('bills', cur.id, (x) => ({ attachment: { name: file.name, kind }, history: (x.history || []).concat([{ label: 'Attached ' + file.name, date: BE.today }]) }));
+      this.notify('Attached ' + file.name + (cur.requested ? ' · ' + ((prof.practice && prof.practice.contact) || 'your ' + noun) + ' can see it now' : ''));
     };
 
-    const stockOn = showsProducts && prods.length > 0;
     return {
-      n: t.fmt, toast: st.toast, top, list, noBills: bills.length === 0, notFound,
+      n: t.fmt, toast: st.toast, top, list, noBills: bills.length === 0, notFound, sym,
       crumb: view === 'new' ? 'New bill' : (cur ? cur.who : ''), isNewCur: view === 'new' ? 'page' : false,
       isNew: view === 'new', isDetail: !!cur,
-      vendorNames: names, products: prods.map((x) => ({ id: x.id, name: x.name })),
-      f: fv, lines, plans, saveBill, stockOn, canStock: stockOn, stockNeedsProducts: showsProducts && !prods.length,
-      setVendor: (e) => setF({ vendor: e.target.value }), setNewVendor: (e) => setF({ newVendor: e.target.value }), setNum: (e) => setF({ num: e.target.value }),
-      setDate: (e) => setF({ date: e.target.value }), setTerms: (e) => setF({ terms: e.target.value }),
-      addCost: () => setF({ lines: this.state.f.lines.concat([{ kind: 'cost', desc: '', cat: 'Other', amt: '' }]) }),
-      addStock: () => { const p0 = prods[0]; setF({ lines: this.state.f.lines.concat([{ kind: 'stock', product: p0 ? p0.id : '', qty: '', cost: p0 && p0.cost != null ? Number(p0.cost).toFixed(2) : '' }]) }); },
-      attachPdf: () => { setF({ pdf: true }); this.notify('Attached ' + (f.num || 'bill') + '.pdf'); },
-      removePdf: () => setF({ pdf: false }),
-      toggleAuto: () => setF({ auto: !f.auto }),
-      moreOpen: st.moreOpen, moreIcon: st.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
-      toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
-      resetForm: () => this.setState({ f: this.freshForm(''), errors: [], moreOpen: false }),
+      vendorNames: names, catOpts: CATS.map((c) => ({ id: c.id, name: c.name })), methods, scopes,
+      dateOpts: [0, -1, -2, -3, -4, -5, -6, -10, -14].map((o) => ({ v: String(o), label: (o === 0 ? 'Today, ' : '') + BE.dayOf(o).label + ' 2026' })),
+      f: fv, lines, saveBill,
+      setVendor: (e) => setF({ vendor: e.target.value, scope: 'business', lines: this.state.f.lines.map((l) => Object.assign({}, l, { catId: '' })) }),
+      setNewVendor: (e) => setF({ newVendor: e.target.value }), setNum: (e) => setF({ num: e.target.value }),
+      setDate: (e) => setF({ date: e.target.value }), setTerms: (e) => setF({ terms: e.target.value }), setVat: (e) => setF({ vat: e.target.value }),
+      fillVat: () => { if (!(fTotal > 0)) { this.setState({ errors: ['Add the amounts on the bill first.'] }); return; } setF({ vat: BE.vatIn(fTotal).toFixed(2) }); },
+      addLine: () => setF({ lines: this.state.f.lines.concat([{ desc: '', catId: '', amt: '' }]) }),
+      pickNewFile: (ev) => { const file = ev.target.files && ev.target.files[0]; if (!file) return; setF({ fileName: file.name, fileKind: /pdf$/i.test(file.type || file.name) ? 'pdf' : 'photo' }); },
+      removeNewFile: () => setF({ fileName: '', fileKind: '' }),
+      resetForm: () => this.setState({ f: this.freshForm(''), errors: [] }),
       dirty: JSON.stringify(f) !== JSON.stringify(this.freshForm(f.vendor)) || st.errors.length > 0,
       errors: st.errors, hasErrors: st.errors.length > 0,
-      b, g: { paidPct: t.out ? t.outPaidPct : 0, schPct: t.out ? 100 - t.outPaidPct : 0 }, quick, p, s: sv,
-      payOpen: st.payOpen && !!cur && b.open, schedOpen: st.schedOpen && !!cur && b.open,
-      togglePay: () => this.setState({ payOpen: !st.payOpen, schedOpen: false, pErr: '', p: { amt: this._cur ? this._cur.left.toFixed(2) : '', from: 'Chase ••4417' } }),
-      toggleSched: () => this.setState({ schedOpen: !st.schedOpen, payOpen: false }),
+      b, g: { paidPct: t.out ? t.outPaidPct : 0, schPct: t.out ? 100 - t.outPaidPct : 0 }, quick, p,
+      payOpen: !!pay && !!cur && b.open, payFull: pay === 'full', payPart: pay === 'part',
+      openFull: openPay('full'), openPart: openPay('part'), closePay: () => this.setState({ pay: null, pErr: '' }),
       setPayAmt: (e) => this.setState({ p: Object.assign({}, this.state.p, { amt: e.target.value }), pErr: '' }),
-      setPayFrom: (e) => this.setState({ p: Object.assign({}, this.state.p, { from: e.target.value }) }),
-      setSchedDate: (e) => this.setState({ s: Object.assign({}, this.state.s, { date: e.target.value }) }),
-      setSchedFrom: (e) => this.setState({ s: Object.assign({}, this.state.s, { from: e.target.value }) }),
-      savePay, payAll, saveSched, cancelSched,
-      pdfOpen: st.pdfOpen && !!(cur && cur.pdf), pdfLabel: cur && cur.pdf ? (st.pdfOpen ? 'Hide' : 'View') : 'Attach PDF',
-      togglePdf: () => {
-        if (!cur) return;
-        if (!cur.pdf) { const name = (cur.num || 'bill') + '.pdf'; BE.update('bills', cur.id, (x) => ({ pdf: name, history: (x.history || []).concat([{ label: 'Attached ' + name, date: BE.today }]) })); this.notify('Attached ' + name); return; }
-        this.setState({ pdfOpen: !st.pdfOpen });
-      }
+      setPayHow: (e) => this.setState({ p: Object.assign({}, this.state.p, { how: e.target.value }), pErr: '' }),
+      setChequeNo: (e) => this.setState({ p: Object.assign({}, this.state.p, { chequeNo: e.target.value }), pErr: '' }),
+      savePay, pickFile: setFile,
+      removeFile: () => { if (!cur) return; const nm = (cur.attachment || {}).name || cur.pdf || 'the file'; BE.update('bills', cur.id, (x) => ({ attachment: null, pdf: '', history: (x.history || []).concat([{ label: 'Removed ' + nm, date: BE.today }]) })); this.notify('Removed ' + nm); }
     };
   }
 }

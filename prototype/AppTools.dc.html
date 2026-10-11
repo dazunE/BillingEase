@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
 <style>
 .be-tools{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
-@media (min-width:1000px){.be-tools-5{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media (min-width:1000px){.be-tools-5{grid-template-columns:repeat(5,minmax(0,1fr))}.be-tools-4{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .be-tool{transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}
 .be-tool:hover{border-color:#CBC7D3!important;box-shadow:0 6px 18px rgba(24,22,31,0.07);transform:translateY(-1px)}
 .be-tool:focus-visible{outline:2px solid #7A5AF8;outline-offset:2px}
@@ -62,9 +62,9 @@ class Component extends DCLogic {
   renderVals() {
     const area = ['in', 'out', 'keep'].indexOf(this.props.area) >= 0 ? this.props.area : 'keep';
     const fn = (k) => typeof BE[k] === 'function';
-    const W = (n) => BE.money(n, 'USD', { whole: true });
+    const W = (n) => BE.money(n, null, { whole: true });
     const plural = (n, one, many) => n + ' ' + (n === 1 ? one : (many || one + 's'));
-    const t = BE.totals('month');
+    const t = BE.totals(typeof BE.homePeriod === 'function' ? BE.homePeriod() : 'month');
     const TONE = { attn: ['#FFF0B8', '#6B5000'], good: ['#E2F6D5', '#2F5711'], plain: ['#EFEDF3', '#47444F'] };
     // live: a status from the data (tone: attn | good | plain), or null for the plain hint.
     const tool = (href, name, desc, icon, live, hint) => {
@@ -89,121 +89,121 @@ class Component extends DCLogic {
       percent: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3',
       bank: 'M3 10 12 4l9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18',
       folder: 'M3 6h7l2 2h9v11H3z',
-      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18'
+      car: 'M5 16h14v-4l-2-5H7l-2 5zM5 16v2M19 16v2M7.5 13h.01M16.5 13h.01',
+      home: 'M4 11 12 4l8 7v9h-5v-6H9v6H4z',
+      cal: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4'
     };
     let tools = [];
+    const lk = BE.is('lk');
+    const prof = BE.get('profile') || {};
+    const pk = BE.pack();
 
     if (area === 'in') {
       const inv = BE.all('invoices').filter((i) => !i.void);
       const open = inv.filter((i) => !i.draft && BE.invOpen(i) > 0);
-      const late = fn('invStatus') ? open.filter((i) => BE.invStatus(i) === 'late') : [];
+      const late = open.filter((i) => BE.invStatus(i) === 'late');
       const drafts = inv.filter((i) => i.draft).length;
       const quotes = BE.all('quotes');
-      const waiting = quotes.filter((q) => q.state === 'waiting' || q.state === 'changes').length;
+      const waiting = quotes.filter((q) => q.state === 'waiting' || q.state === 'sent' || q.state === 'changes').length;
       const qDrafts = quotes.filter((q) => q.state === 'draft').length;
       const custs = BE.all('customers');
       const lateWho = {}; late.forEach((i) => { lateWho[i.who] = 1; });
       const nLateWho = Object.keys(lateWho).length;
       const rec = BE.all('recurring');
       const recOn = rec.filter((r) => !r.paused).length;
-      const prods = BE.all('products'), svcs = BE.all('services');
-      const out = prods.filter((p) => (Number(p.stock) || 0) <= 0).length;
-      const low = prods.filter((p) => (Number(p.stock) || 0) > 0 && p.reorder != null && p.stock <= p.reorder).length;
-      const pays = BE.all('payments').filter((p) => p.inMonth);
+      const items = BE.all('products').length + BE.all('services').length;
       tools = [
-        tool('SellInvoices.dc.html', 'All invoices', 'Every invoice, sent, paid or late', I.invoice,
+        tool('SellInvoices.dc.html', lk && prof.vatRegistered ? 'Tax invoices' : 'Invoices', lk ? 'Every invoice, with VAT and SSCL' : 'Every invoice, sent, paid or late', I.invoice,
           open.length ? [open.length + ' unpaid' + (late.length ? ' · ' + late.length + ' late' : ''), late.length ? 'attn' : 'plain'] : (inv.length ? [drafts ? plural(drafts, 'draft') + ' · none unpaid' : 'All paid', drafts ? 'plain' : 'good'] : null),
           'Your first one shows here'),
-        tool('SellQuotes.dc.html', 'Quotes', 'Price a job before you bill it', I.quote,
+        tool('SellQuotes.dc.html', 'Quotes', 'Price a job, mark it accepted', I.quote,
           waiting ? [waiting + ' waiting for an answer', 'plain'] : (qDrafts ? [plural(qDrafts, 'draft') + ' to send', 'attn'] : (quotes.length ? [plural(quotes.length, 'quote'), 'plain'] : null)),
           'Send one before you start'),
+        tool('SellRecurring.dc.html', 'Repeating', 'Monthly drafts and money back', I.repeat,
+          rec.length ? [recOn ? recOn + ' active' : 'All paused', 'plain'] : null,
+          'For monthly retainers'),
         tool('SellCustomers.dc.html', 'Customers', 'Who you work for and what they owe', I.people,
           custs.length ? [plural(custs.length, 'customer') + (nLateWho ? ' · ' + nLateWho + ' late' : ''), nLateWho ? 'attn' : 'plain'] : null,
           'Add who you work for'),
-        tool('SellRecurring.dc.html', 'Repeating', 'Retainers that bill themselves', I.repeat,
-          rec.length ? [recOn ? recOn + ' active' : 'All paused', 'plain'] : null,
-          'For monthly retainers'),
-        tool('SellCatalog.dc.html', 'Products and services', 'What you sell, prices and stock', I.box,
-          (low || out) ? [[low ? low + ' low on stock' : '', out ? out + ' out of stock' : ''].filter(Boolean).join(' · '), 'attn'] : ((prods.length + svcs.length) ? [plural(prods.length + svcs.length, 'item'), 'plain'] : null),
-          'Add what you sell'),
-        tool('SellPayments.dc.html', 'Getting paid online', 'Card, bank transfer and Apple Pay', I.card,
-          pays.length ? [W(t.inPaid) + ' received', 'good'] : null,
-          'Let customers pay by card')
+        tool('SellCatalog.dc.html', 'Products and services', 'What you sell, with prices', I.box,
+          items ? [plural(items, 'item'), 'plain'] : null,
+          'Save your prices once')
       ];
     } else if (area === 'out') {
-      const rc = BE.all('receipts').filter((r) => r.month === 'Oct' || !r.month);
-      const rWait = rc.filter((r) => r.status === 'waiting').length;
-      const rBlur = rc.filter((r) => r.status === 'blurry').length;
       const left = (b) => (fn('billLeft') ? BE.billLeft(b) : b.amount - (b.paid || 0));
       const bills = BE.all('bills');
       const openB = bills.filter((b) => left(b) > 0);
-      const runs = BE.all('payroll');
-      const run = runs.filter((r) => r.status !== 'paid' && r.inMonth)[0];
-      const paidRun = runs.filter((r) => r.status === 'paid' && r.paidOn)[0];
-      const emps = BE.all('employees');
+      const lateB = openB.filter((b) => b.dueIn != null && b.dueIn < 0).length;
       const mo = BE.all('monthly').filter((m) => m.active !== false);
       const vendors = BE.all('vendors');
       const exp = BE.all('expenses').filter((x) => x.inMonth);
-      let payLive = null;
-      if (run) payLive = run.status === 'needs' ? ['Needs approval · ' + run.date, 'attn'] : ['Approved · pays ' + run.date, 'good'];
-      else if (paidRun) payLive = ['Paid ' + paidRun.paidOn, 'good'];
-      else if (emps.length) payLive = [plural(emps.length, 'person', 'people') + ' on payroll', 'plain'];
+      const uncat = BE.all('expenses').filter((x) => x.needsCat || x.uncategorised || !x.cat || /^(uncategori[sz]ed|needs a category)$/i.test(x.cat || '')).length;
       tools = [
-        tool('SpendReceipts.dc.html', 'Receipts', 'Snap or forward them, we match them', I.receipt,
-          rWait ? [rWait + ' waiting to match', 'attn'] : rBlur ? [rBlur + ' to retype', 'attn'] : (rc.length ? ['All matched', 'good'] : null),
-          'Snap your first receipt'),
         tool('SpendBill.dc.html', 'Bills', 'What you owe and when it’s due', I.bill,
-          openB.length ? [openB.length + ' to pay · ' + W(openB.reduce((a, b) => a + left(b), 0)), 'plain'] : (bills.length ? ['All paid', 'good'] : null),
+          openB.length ? [openB.length + ' to pay · ' + W(openB.reduce((a, b) => a + left(b), 0)) + (lateB ? ' · ' + lateB + ' overdue' : ''), lateB ? 'attn' : 'plain'] : (bills.length ? ['All paid', 'good'] : null),
           'Enter one to pay later'),
-        tool('SpendEveryMonth.dc.html', 'Every month', 'Rent, software and insurance', I.cycle,
-          mo.length ? (t.outMonthly > 0 ? [W(t.outMonthly) + ' still to come', 'plain'] : ['All paid this month', 'good']) : null,
-          'Repeats show up on their own'),
-        tool('SpendPayroll.dc.html', 'Payroll', 'Pay your team, taxes filed for you', I.team, payLive, 'Set it up when you hire'),
-        tool('SpendVendors.dc.html', 'Vendors', 'Everyone you pay, and how much', I.shop,
-          vendors.length ? [plural(vendors.length, 'vendor'), 'plain'] : null,
-          'Added as you pay people'),
-        tool('SpendTransaction.dc.html', 'Transactions', 'Each payment, in detail', I.list,
-          exp.length ? [exp.length + ' this month', 'plain'] : null,
-          'They appear as you spend')
+        tool('SpendVendors.dc.html', 'Suppliers', 'Everyone you pay, and how much', I.shop,
+          vendors.length ? [plural(vendors.length, 'supplier'), 'plain'] : null,
+          'Added as you record costs'),
+        tool('SpendEveryMonth.dc.html', 'Every month', lk ? 'Rent, electricity and internet' : 'Desk rent, software and phone', I.cycle,
+          mo.length ? (t.outMonthly > 0 ? [W(t.outMonthly) + ' still to come', 'plain'] : ['All recorded this month', 'good']) : null,
+          'Costs you set up to repeat'),
+        tool('SpendTransaction.dc.html', 'Transactions', 'Each cost, its category and attachment', I.list,
+          uncat ? [uncat + ' need' + (uncat === 1 ? 's' : '') + ' a category', 'attn'] : (exp.length ? [exp.length + ' this month', 'plain'] : null),
+          'They appear as you record costs')
       ];
+      if (!lk && pk.features && pk.features.mileage) {
+        const trips = BE.all('trips').concat(BE.all('mileage'));
+        const miles = trips.reduce((a, x) => a + (Number(x.miles) || 0), 0);
+        tools.push(tool('Mileage.dc.html', 'Mileage', 'Business miles at 45p, then 25p', I.car,
+          trips.length ? [plural(trips.length, 'trip') + (miles ? ' · ' + Math.round(miles) + ' miles' : ''), 'plain'] : null,
+          'Log your first trip'));
+      }
+      if (!lk && pk.features && pk.features.landlord && (prof.kind === 'both' || prof.kind === 'landlord')) {
+        const props = BE.all('properties');
+        tools.push(tool('Properties.dc.html', 'Properties', 'Rent and costs, kept apart', I.home,
+          props.length ? [plural(props.length, 'property', 'properties') + (props[0] && props[0].rent ? ' · ' + W(props.reduce((a, x) => a + (Number(x.rent) || 0), 0)) + ' rent a month' : ''), 'plain'] : null,
+          'Add the property you let'));
+      }
     } else {
       const hasData = !!(t.in || t.out);
-      const books = BE.books || {};
-      const tax = typeof books.salesTax === 'function' ? books.salesTax() : null;
-      let taxLive = null;
-      if (tax && tax.open && !tax.filed) taxLive = [BE.money(tax.open.tax, 'USD', { cents: true }) + ' due ' + tax.open.due, 'attn'];
-      else if (tax && tax.filed) taxLive = ['Filed' + (tax.filed.when ? ' ' + tax.filed.when : ''), 'good'];
-      else if (tax && tax.owed > 0) taxLive = [BE.money(tax.owed, 'USD', { cents: true }) + ' collected', 'plain'];
       const bank = BE.get('bank');
       let bankLive = null;
-      if (bank && bank.done) bankLive = [(bank.short || 'Last month') + ' matched', 'good'];
+      if (bank && bank.done) bankLive = [(bank.short || 'Last statement') + ' checked', 'good'];
       else if (bank && (bank.lines || []).length) {
         const cleared = (Number(bank.opening) || 0) + bank.lines.filter((l) => l.cleared).reduce((a, l) => a + l.amount, 0);
         const diff = Math.round((cleared - (Number(bank.ending) || 0)) * 100) / 100;
         bankLive = diff === 0 ? [(bank.short || 'Statement') + ' ready to finish', 'good'] : [W(Math.abs(diff)) + ' to check', 'attn'];
-      } else if (bank && bank.connected) bankLive = ['Connected', 'good'];
-      const cats = BE.all('categories').filter((c) => !c.archived);
-      const fx = BE.all('invoices').filter((i) => !i.draft && !i.void && i.cur && i.cur !== ((BE.get('profile') || {}).currency || 'USD') && BE.invOpen(i) > 0).length;
-      const curs = BE.all('currencies');
-      tools = [
-        tool('BooksReports.dc.html', 'Reports', 'Profit & loss, balance sheet, cash flow', I.chart,
-          hasData ? ['Profit ' + t.fmt.profit, 'plain'] : null,
-          'Fill in as you bill and spend'),
-        tool('BooksTax.dc.html', 'Sales tax', 'File on time, then close the year', I.percent, taxLive, 'Only if you sell products'),
-        tool('BooksReconcile.dc.html', 'Bank check', 'Tick your statement against the books', I.bank, bankLive, 'Connect your bank'),
-        tool('BooksCategories.dc.html', 'Categories', 'Where every dollar is filed', I.folder,
-          (!BE.isEmpty() && cats.length) ? [plural(cats.length, 'category', 'categories'), 'plain'] : null,
-          'A short starter list'),
-        tool('BooksCurrencies.dc.html', 'Currencies', 'Billing in euros, pounds and more', I.globe,
-          fx ? [plural(fx, 'foreign invoice') + ' open', 'plain'] : (curs.length ? [curs.map((c) => c.code).join(' and ') + ' in use', 'plain'] : null),
-          'If you bill abroad')
-      ];
+      }
+      const nCats = (pk.categories || []).length;
+      const reports = tool('BooksReports.dc.html', 'Reports', lk ? 'Profit and loss, VAT, SSCL and payroll' : 'Profit and loss, balance sheet', I.chart,
+        hasData ? ['Profit ' + t.fmt.profit, 'plain'] : null, 'Fill in as you bill and spend');
+      const cats = tool('BooksCategories.dc.html', 'Categories', lk ? 'Lines of the income tax return' : 'HMRC’s self-employment boxes', I.folder,
+        nCats ? [plural(nCats, 'category', 'categories'), 'plain'] : null, 'A starter list for ' + (pk.short || 'you'));
+      const bankT = tool('BooksReconcile.dc.html', 'Bank check', 'Tick a statement against your books', I.bank, bankLive, 'Import a statement (CSV)');
+      if (lk) {
+        const hm = fn('homeMonth') ? BE.homeMonth() : null;
+        const per = hm && hm.period;
+        const taxLive = !prof.vatRegistered ? null : per && per.due ? (hm.filed ? [per.label + ' filed', 'good'] : [per.label.split(' ')[0] + ' due ' + per.due.replace(/ 20\d\d$/, ''), hm.dueDays <= 10 ? 'attn' : 'plain']) : null;
+        const payLive = hm && hm.hasPayroll ? (hm.run ? ['October · run by ' + hm.payDue, 'attn'] : hm.paidRun ? ['October paid', 'good'] : [plural(hm.people, 'person', 'people'), 'plain']) : null;
+        tools = [
+          tool('TaxPeriods.dc.html', 'Tax periods', 'VAT and SSCL, month by month', I.percent, taxLive, prof.vatRegistered ? 'Your first period shows here' : 'If you register for VAT'),
+          tool('SpendPayroll.dc.html', 'Payroll', 'Payslips, EPF, ETF and APIT', I.team, payLive, 'Add employees when you hire'),
+          reports, cats, bankT
+        ];
+      } else {
+        const hq = fn('homeQuarter') ? BE.homeQuarter() : null;
+        const qLive = hq && !hq.empty ? (hq.filed ? [hq.last.label + ' sent', 'good'] : hq.left ? [hq.last.label + ' · ' + plural(hq.left, 'check') + ' left', 'attn'] : [hq.last.label + ' ready to send', 'good']) : null;
+        tools = [tool('Quarters.dc.html', 'Quarters', 'Making Tax Digital updates', I.cal, qLive, 'Q3 runs 6 Oct – 5 Jan')];
+        if (prof.vatRegistered) tools.push(tool('TaxPeriods.dc.html', 'VAT summary', 'Per VAT quarter, for your accountant', I.percent, null, 'Totals for each VAT quarter'));
+        tools = tools.concat([reports, cats, bankT]);
+      }
     }
 
     const HEAD = {
-      in: ['Tools for Coming in', 'Invoices, quotes, customers and getting paid'],
-      out: ['Tools for Going out', 'Receipts, bills, payroll and who you pay'],
-      keep: ['Your books', 'Reports, tax and the checks your accountant asks for']
+      in: ['Tools for Coming in', 'Invoices, quotes and customers'],
+      out: ['Tools for Going out', lk ? 'Bills, suppliers and what you spend' : 'Bills, suppliers, mileage and your property'],
+      keep: ['Your books', lk ? 'Tax periods, payroll and the reports your practitioner uses' : 'Quarters, reports and the checks your accountant asks for']
     }[area];
     const TINT = { in: { bg: '#EEE8FF', fg: '#18161F' }, out: { bg: '#FDE6D6', fg: '#18161F' }, keep: { bg: '#18161F', fg: '#B9A3FF' } }[area];
     return {
