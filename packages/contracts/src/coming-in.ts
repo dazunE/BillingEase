@@ -179,6 +179,8 @@ export const InvoiceDetail = InvoiceRow.extend({
   sentAt: z.string().nullable(),
   lastReminderAt: z.string().nullable(),
   activity: z.array(ActivityRow),
+  /** Emails about this invoice in the outbox: "kept" means stored only (no email provider set up). */
+  emails: z.array(z.object({ to: z.string(), subject: z.string(), status: z.string(), at: z.string() })),
 });
 export type InvoiceDetail = z.infer<typeof InvoiceDetail>;
 

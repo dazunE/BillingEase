@@ -180,6 +180,16 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             ))}
           </ol>
         )}
+        {inv.emails.length > 0 && (
+          <ul className="flex flex-col gap-1.5 border-t border-line pt-3 text-sm" aria-label="Emails">
+            {inv.emails.map((m, i) => (
+              <li key={i} className="flex flex-wrap items-center justify-between gap-2">
+                <span className="flex items-center gap-2"><Icon d={ICONS.mail} size={16} />{m.subject} → {m.to}</span>
+                <Badge tone={m.status === "sent" ? "pos" : m.status === "failed" ? "late" : "neutral"}>{m.status === "kept" ? "Kept in the outbox" : m.status === "sent" ? "Delivered" : m.status === "failed" ? "Couldn't send" : "Sending"}</Badge>
+              </li>
+            ))}
+          </ul>
+        )}
       </Panel>
 
       {(draft || (live && inv.paid === 0 && inv.credited === 0)) && (

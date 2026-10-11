@@ -3,7 +3,7 @@ import type { InvoiceDetail, InvoiceRow, LineInput } from "@billingease/contract
 import { addDays, computeInvoice, daysBetween, formatDate, formatMoney, invoiceTitle, posting, rulesFor, today, type InvoiceTotals } from "@billingease/core";
 import { postEntry, reverseEntry, type Exec } from "@billingease/db";
 import {
-  activity, customers, invoiceLines, invoices, items, quoteLines, quotes, receipts, type InvoiceSnapshot,
+  activity, customers, invoiceLines, invoices, items, outboxEmails, quoteLines, quotes, receipts, type InvoiceSnapshot,
 } from "@billingease/db/schema";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import type { BusinessRow } from "../lib/context";
@@ -141,7 +141,7 @@ export async function invoiceDetail(db: Exec, b: BusinessRow, id: string): Promi
   if (!r) throw notFound("That invoice");
   const i = r.inv;
   const [c] = await db.select().from(customers).where(and(eq(customers.id, i.customerId), eq(customers.businessId, b.id)));
-  const [lines, recs, credits, parent, quote, acts] = await Promise.all([
+  const [lines, recs, credits, parent, quote, acts, mails] = await Promise.all([
     db.select().from(invoiceLines).where(and(eq(invoiceLines.invoiceId, i.id), eq(invoiceLines.businessId, b.id))).orderBy(asc(invoiceLines.position)),
     db.select().from(receipts).where(and(eq(receipts.invoiceId, i.id), eq(receipts.businessId, b.id))).orderBy(asc(receipts.receivedOn), asc(receipts.createdAt)),
     db.select({ id: invoices.id, number: invoices.number, issueDate: invoices.issueDate, total: invoices.total }).from(invoices)
@@ -149,6 +149,8 @@ export async function invoiceDetail(db: Exec, b: BusinessRow, id: string): Promi
     i.creditForId ? db.select({ id: invoices.id, number: invoices.number }).from(invoices).where(and(eq(invoices.id, i.creditForId), eq(invoices.businessId, b.id))) : Promise.resolve([]),
     i.quoteId ? db.select({ id: quotes.id, number: quotes.number }).from(quotes).where(and(eq(quotes.id, i.quoteId), eq(quotes.businessId, b.id))) : Promise.resolve([]),
     db.select({ message: activity.message, at: activity.createdAt }).from(activity).where(and(eq(activity.businessId, b.id), eq(activity.link, invoiceLink(i.id)))).orderBy(desc(activity.createdAt)).limit(50),
+    db.select({ to: outboxEmails.toEmail, subject: outboxEmails.subject, status: outboxEmails.status, at: outboxEmails.createdAt }).from(outboxEmails)
+      .where(and(eq(outboxEmails.businessId, b.id), eq(outboxEmails.attachInvoiceId, i.id))).orderBy(desc(outboxEmails.createdAt)).limit(20),
   ]);
   return {
     ...toRow(r),
@@ -165,6 +167,7 @@ export async function invoiceDetail(db: Exec, b: BusinessRow, id: string): Promi
     sentAt: i.sentAt?.toISOString() ?? null,
     lastReminderAt: i.lastReminderAt?.toISOString() ?? null,
     activity: acts.map((a) => ({ message: a.message, at: a.at.toISOString() })),
+    emails: mails.map((m) => ({ to: m.to, subject: m.subject, status: m.status, at: m.at.toISOString() })),
   };
 }
 

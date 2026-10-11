@@ -1,4 +1,4 @@
-import type { InvoiceRow, QuoteRow } from "@billingease/contracts";
+import type { InvoiceRow, QuoteRow, Recurring } from "@billingease/contracts";
 import { formatDate, formatMoney, type Currency } from "@billingease/core";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -212,3 +212,5 @@ export function Notice({ done, error, messages }: { done?: string; error?: strin
   if (!text) return null;
   return <p role="status" className="flex items-center gap-2 rounded-2xl bg-pos-bg px-4 py-3 text-[15px] font-semibold text-pos"><Icon d={ICONS.check} size={18} />{text}</p>;
 }
+
+export const FREQ: Record<Recurring["frequency"], string> = { weekly: "every week", monthly: "every month", quarterly: "every 3 months", yearly: "every year" };

@@ -71,6 +71,7 @@ describe("UK invoices (not VAT registered)", () => {
     expect(issued.body).toMatchObject({ status: "sent", number: "HS-0001", emailed: true, title: "Invoice" });
     expect(issued.body.snapshot.seller.name).toBe("Harper Studio");
     expect(issued.body.activity[0].message).toContain("HS-0001 emailed to Ochre Café");
+    expect(issued.body.emails[0]).toMatchObject({ to: "sam@ochrecafe.co.uk", status: "sent" });
 
     // The outbox row and the delivered email with the PDF attached.
     const [mail] = await t.db.select().from(outboxEmails).where(and(eq(outboxEmails.businessId, business.id), eq(outboxEmails.attachInvoiceId, draft.body.id)));

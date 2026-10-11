@@ -1,5 +1,5 @@
 import { comingIn } from "@billingease/contracts";
-import { invoiceTitle, rulesFor, today } from "@billingease/core";
+import { invoiceTitle, today } from "@billingease/core";
 import type { Metadata } from "next";
 import { Crumbs } from "@/components/in/bits";
 import { editorBusiness, editorCustomers } from "@/components/in/data";
@@ -20,7 +20,6 @@ export default async function NewInvoicePage({ searchParams }: { searchParams: P
   ]);
   const title = invoiceTitle(b.country, b.vatRegistered);
   const now = today();
-  const rules = rulesFor(b.country);
   return (
     <>
       <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "All invoices", href: "/app/in/invoices" }, { label: "New invoice" }]} />
@@ -40,7 +39,6 @@ export default async function NewInvoicePage({ searchParams }: { searchParams: P
         action={saveInvoice}
         cancelHref="/app/in/invoices"
       />
-      <p className="sr-only">{rules.name}</p>
     </>
   );
 }
