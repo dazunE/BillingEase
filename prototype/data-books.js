@@ -531,7 +531,7 @@
     var status = filed ? 'filed' : closed ? 'due' : started ? 'open' : 'upcoming';
     var reqs = BE.all('requests').filter(function (r) { return r.period === id && r.status !== 'done' && (r.dir || 'in') === 'in'; });
     var boxes = lk ? [
-      { n: '1', label: 'Value of taxable supplies at ' + Math.round(std * 100) + '%', sub: 'Includes SSCL in the VAT base (to confirm with IRD)', amount: base, sec: 'vat' },
+      { n: '1', label: 'Value of taxable supplies at ' + Math.round(std * 100) + '%', sub: P.ssclInVatBase === false ? 'Value of supplies (SSCL not in the VAT base)' : 'Includes SSCL in the VAT base (to confirm with IRD)', amount: base, sec: 'vat' },
       { n: '2', label: 'Zero-rated supplies', amount: zero, sec: 'vat' },
       { n: '3', label: 'Exempt supplies', amount: exempt, sec: 'vat' },
       { n: '4', label: 'Total supplies', amount: r2(base + zero + exempt), sec: 'vat', total: true },
