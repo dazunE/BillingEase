@@ -32,7 +32,7 @@
         vat: o.vat || 0, attachment: o.file ? { name: o.file, kind: /\.pdf$/i.test(o.file) ? 'pdf' : 'photo' } : null, receipt: !!o.file,
         note: o.note || '', kind: 'business', events: []
       };
-      ['cheque', 'property', 'bill', 'monthly'].forEach(function (k) { if (o[k]) x[k] = o[k]; });
+      ['cheque', 'property', 'bill', 'monthly', 'rentMonth'].forEach(function (k) { if (o[k]) x[k] = o[k]; });
       return x;
     };
   };
@@ -52,7 +52,6 @@
       U('x-u26', '2026-10-02', 'Adobe Creative Cloud', 'office', 54, 'Card', { monthly: 'm-adobe', file: 'adobe-invoice-oct.pdf' }),
       U('x-u25', '2026-10-01', 'Northern Desk Co-working', 'premises', 180, 'Bank transfer', { monthly: 'm-desk', file: 'northern-desk-oct.pdf', note: 'Desk for October' }),
       U('x-u24', '2026-10-01', 'Leeds Building Society', 'p-finance', 410, 'Bank transfer', { property: FLAT, monthly: 'm-mortgage', note: 'Mortgage interest, Flat 2' }),
-      U('x-u23', '2026-10-01', 'Headingley Lettings', 'p-professional', 105, 'Bank transfer', { property: FLAT, monthly: 'm-agent', note: '10% of October’s rent' }),
       U('x-u22', '2026-09-30', 'Leeds Kirkgate Market', null, 21.45, 'Cash'),
       U('x-u21', '2026-09-28', 'Krystal Hosting', 'office', 12, 'Card', { monthly: 'm-krystal' }),
       U('x-u20', '2026-09-26', 'Fontshop', null, 118, 'Card'),
@@ -65,7 +64,7 @@
       U('x-u13', '2026-09-02', 'Adobe Creative Cloud', 'office', 54, 'Card', { monthly: 'm-adobe' }),
       U('x-u12', '2026-09-01', 'Northern Desk Co-working', 'premises', 180, 'Bank transfer', { monthly: 'm-desk' }),
       U('x-u11', '2026-09-01', 'Leeds Building Society', 'p-finance', 410, 'Bank transfer', { property: FLAT, monthly: 'm-mortgage' }),
-      U('x-u10', '2026-09-01', 'Headingley Lettings', 'p-professional', 105, 'Bank transfer', { property: FLAT, monthly: 'm-agent' }),
+      U('x-u10', '2026-09-07', 'Headingley Lettings', 'p-professional', 105, 'Deducted from rent', { property: FLAT, rentMonth: '2026-09', note: '10% of September’s rent' }),
       U('x-u09', '2026-08-28', 'Krystal Hosting', 'office', 12, 'Card', { monthly: 'm-krystal' }),
       U('x-u08', '2026-08-22', 'Northern Rail', 'travel', 12.4, 'Card', { note: 'Leeds to Harrogate, Moor & Dale Outdoor' }),
       U('x-u07', '2026-08-20', 'Meta (Instagram ads)', 'advertising', 60, 'Card'),
@@ -76,7 +75,7 @@
       U('x-u03a', '2026-08-02', 'Adobe Creative Cloud', 'office', 54, 'Card', { monthly: 'm-adobe' }),
       U('x-u03', '2026-08-01', 'Northern Desk Co-working', 'premises', 180, 'Bank transfer', { monthly: 'm-desk' }),
       U('x-u02b', '2026-08-01', 'Leeds Building Society', 'p-finance', 410, 'Bank transfer', { property: FLAT, monthly: 'm-mortgage' }),
-      U('x-u02a', '2026-08-01', 'Headingley Lettings', 'p-professional', 105, 'Bank transfer', { property: FLAT, monthly: 'm-agent' }),
+      U('x-u02a', '2026-08-07', 'Headingley Lettings', 'p-professional', 105, 'Deducted from rent', { property: FLAT, rentMonth: '2026-08', note: '10% of August’s rent' }),
       U('x-u02', '2026-07-31', 'Dale & Shaw Accountants', 'professional', 600, 'Bank transfer', { file: 'DS-1094.pdf', note: '2025/26 accounts and tax return' }),
       U('x-u01d', '2026-07-29', 'Amazon', null, 64.2, 'Card'),
       U('x-u01c', '2026-07-28', 'Krystal Hosting', 'office', 12, 'Card', { monthly: 'm-krystal' }),
@@ -85,6 +84,7 @@
       U('x-u01', '2026-07-14', 'LNER', 'travel', 86.2, 'Card', { note: 'Leeds to London, D&AD workshop' }),
       U('x-u00b', '2026-07-14', 'Google Workspace', 'office', 10.3, 'Card', { monthly: 'm-google' }),
       U('x-u00a', '2026-07-14', 'Premier Inn London', 'travel', 118, 'Card', { note: 'One night for the D&AD workshop' }),
+      U('x-u00c', '2026-07-07', 'Headingley Lettings', 'p-professional', 105, 'Deducted from rent', { property: FLAT, rentMonth: '2026-07', note: '10% of July’s rent' }),
       U('x-u00', '2026-07-08', 'Creative Leeds', 'advertising', 75, 'Card', { note: 'Directory listing for a year' })
     ],
     // Serendib Design Studio. October so far (paid Rs 706,580) and September, with input VAT from
@@ -281,7 +281,7 @@
     return { bill: out, expense: x };
   };
   /** Older name, kept for other screens: mark a bill paid. Returns the bill. */
-  BE.payBillAll = function (id, amount, how) { return BE.markBillPaid(id, amount, /Chase|Amex/.test(how || '') ? 'Bank transfer' : how).bill; };
+  BE.payBillAll = function (id, amount, how) { return BE.markBillPaid(id, amount, how).bill; };
 
   /** Add an event to an expense's history (newest first). fn(x) can compute more fields. */
   BE.expenseEvent = function (id, label, patch, fn) {

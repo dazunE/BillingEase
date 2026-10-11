@@ -27,7 +27,6 @@
     uk: [
       UM('m-desk', 'Desk at Northern Desk Co-working', 'northern-desk', 'premises', 1, 'Bank transfer', 180, { paidDay: 1, expense: 'x-u25' }),
       UM('m-mortgage', 'Mortgage interest, Flat 2', 'leeds-bs', 'p-finance', 1, 'Bank transfer', 410, { paidDay: 1, expense: 'x-u24', property: 'ash-grove' }),
-      UM('m-agent', 'Letting agent fee, Flat 2', 'headingley-lettings', 'p-professional', 1, 'Bank transfer', 105, { paidDay: 1, expense: 'x-u23', property: 'ash-grove' }),
       UM('m-adobe', 'Adobe Creative Cloud', 'adobe', 'office', 2, 'Card', 54, { paidDay: 2, expense: 'x-u26' }),
       UM('m-ee', 'EE mobile', 'ee', 'office', 3, 'Bank transfer', 32, { paidDay: 3, expense: 'x-u27' }),
       UM('m-google', 'Google Workspace', 'google', 'office', 14, 'Card', 10.3),

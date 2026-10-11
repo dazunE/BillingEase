@@ -24,7 +24,7 @@
   // ---- Money in and out before October, for BE.totals('year') (the tax year / year of assessment so far).
   // Worked out from the ledger below for 6 Apr (UK) / 1 Apr (Sri Lanka) to 30 Sep; October comes from the entries.
   BE.define('history', BE.perCountry({
-    uk: { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 34350, outPaid: 13539.55 } },
+    uk: { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 34350, outPaid: 13644.55 } },
     lk: { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 14000000, outPaid: 11227377.97 } }
   }), { month: { inPaid: 0, outPaid: 0 }, quarter: { inPaid: 0, outPaid: 0 }, year: { inPaid: 0, outPaid: 0 } });
 
@@ -626,7 +626,8 @@
     var pace = Math.max(0, y.profit) * 12 / m, monthPace = Math.max(0, BE.totals('month').profit) * 12;
     var annual = Math.round(Math.max(pace, monthPace));
     var finance = Math.round(financeSoFar() * 12 / m);
-    var est = typeof P.estimate === 'function' ? P.estimate(annual, { financeCosts: finance }) : { total: Math.round(annual * 0.25), lines: [], paymentsOnAccount: [], label: 'Tax' };
+    var propProfit = BE.is('uk') && BE.propertyTotals ? Math.max(0, BE.propertyTotals().profit || 0) * 12 / m : 0;
+    var est = typeof P.estimate === 'function' ? P.estimate(annual, { financeCosts: finance, tradingProfit: Math.round(annual - propProfit) }) : { total: Math.round(annual * 0.25), lines: [], paymentsOnAccount: [], label: 'Tax' };
     var rate = annual > 0 ? est.total / annual : 0;
     return { soFar: y.profit, annual: annual, byMonth: monthPace > pace, monthProfit: r2(monthPace / 12), months: r2(m), finance: finance, est: est, total: est.total, rate: rate, monthly: Math.round(est.total / 12), label: est.label || 'Tax' };
   }

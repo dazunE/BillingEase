@@ -390,7 +390,7 @@ class Component extends DCLogic {
             else if (state === 'due') {
               BE.markRent(p.id, mo.key);
               const d2 = due.getTime() > today ? BE.todayDate : due;
-              this.notify(label + ' rent received · ' + m(p.rent) + ' added to ' + qLabel(BE.ukQuarterOf(d2)) + (Number(p.agentPct) ? ' · record the agent fee in Going out' : ''));
+              this.notify(label + ' rent received · ' + m(p.rent) + ' added to ' + qLabel(BE.ukQuarterOf(d2)) + (Number(p.agentPct) ? ', agent fee ' + m(Math.round(p.rent * p.agentPct) / 100) + ' added' : ''));
             }
           }
         };

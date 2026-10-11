@@ -77,14 +77,16 @@
         check: { personalAllowance: 12570, basicRate: 0.2, higherRate: 0.4, basicBand: 37700, eeNIThreshold: 12570, eeNIUpper: 50270, eeNIRate: 0.08, eeNIUpperRate: 0.02, erNIThreshold: 5000, erNIRate: 0.15, pensionLower: 6240, pensionUpper: 50270, pensionEe: 0.05, pensionEr: 0.03, taxCode: '1257L' },
         pensionDueDay: 22
       },
-      /** Income Tax (England, Wales and NI bands) plus Class 4 NI on a year's profit. Illustrative 2026/27 figures. */
+      /** Income Tax (England, Wales and NI bands) on a year's profit plus Class 4 NI on the trading part. Illustrative 2026/27 figures. */
       estimate: function (profit, o) {
         o = o || {};
         var pa = 12570;
         if (profit > 100000) pa = Math.max(0, pa - (profit - 100000) / 2);
         var taxable = Math.max(0, profit - pa);
         var it = bands(taxable, [[37700, 0.2], [125140 - 37700 - 12570, 0.4], [Infinity, 0.45]]);
-        var ni = bands(Math.max(0, profit - 12570), [[50270 - 12570, 0.06], [Infinity, 0.02]]);
+        // Class 4 NI is on trading profit only, never on rental profit (o.tradingProfit when there is property income).
+        var trading = o.tradingProfit != null ? Math.min(profit, Math.max(0, o.tradingProfit)) : profit;
+        var ni = bands(Math.max(0, trading - 12570), [[50270 - 12570, 0.06], [Infinity, 0.02]]);
         var financeRelief = Math.round((o.financeCosts || 0) * 0.2);
         var incomeTax = Math.max(0, it.tax - financeRelief);
         var total = Math.round(incomeTax + ni.tax);

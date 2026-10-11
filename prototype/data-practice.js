@@ -34,10 +34,8 @@
     var month = iso(2026, m, 1).slice(0, 7);
     E('income', 'rent', 'Rent for ' + MON[m - 1] + ' 2026', 1050, 2026, m, 7, { rentMonth: month });
   });
-  [5, 6, 7].forEach(function (m) {
-    E('cost', 'p-finance', 'Mortgage interest · Leeds Building Society', 410, 2026, m, 1);
-    E('cost', 'p-professional', 'Headingley Lettings · 10% management fee', 105, 2026, m, 1);
-  });
+  [5, 6, 7].forEach(function (m) { E('cost', 'p-finance', 'Mortgage interest · Leeds Building Society', 410, 2026, m, 1); });
+  [4, 5, 6].forEach(function (m) { E('cost', 'p-professional', 'Headingley Lettings · 10% management fee', 105, 2026, m, 7, { rentMonth: iso(2026, m, 1).slice(0, 7), auto: true }); });
   E('cost', 'p-running', 'Landlord insurance (annual)', 186, 2026, 5, 2);
   entries.sort(function (a, b) { return a.iso < b.iso ? 1 : -1; });
 
@@ -219,7 +217,7 @@
   BE.propertyLedger = function () {
     var fromOut = BE.all('expenses').filter(function (x) { return x.property; }).map(function (x) {
       return { id: 'exp-' + x.id, expenseId: x.id, prop: x.property, kind: 'cost', cat: x.catId || 'p-other', what: x.who + (x.note ? ' · ' + x.note : ''),
-        amount: Number(x.amount) || 0, iso: x.iso, date: x.date, isNew: x.isNew };
+        amount: Number(x.amount) || 0, iso: x.iso, date: x.date, isNew: x.isNew, rentMonth: x.rentMonth, auto: !!x.rentMonth };
     });
     return BE.all('propertyEntries').concat(fromOut).sort(function (a, b) { return a.iso < b.iso ? 1 : a.iso > b.iso ? -1 : 0; });
   };
@@ -251,7 +249,7 @@
     };
   };
 
-  /** Tick a month's rent as received ('2026-10'). */
+  /** Tick a month's rent as received ('2026-10'). The agent's fee, if any, is recorded with it as an expense. */
   BE.markRent = function (propId, month) {
     var p = BE.find('properties', propId);
     if (!p) return null;
@@ -262,7 +260,11 @@
     BE.change(function (s) {
       var list = (s.propertyEntries || []).slice();
       list.unshift({ id: BE.id('pe'), prop: p.id, kind: 'income', cat: 'rent', what: 'Rent for ' + MON[m - 1] + ' ' + y, amount: Number(p.rent) || 0, iso: dIso, date: BE.dayLabel(d), rentMonth: month, isNew: true });
-      // The agent's fee is a monthly cost recorded in Going out, so it isn't added here.
+      // The agent keeps their fee from the rent: it goes into Going out as an expense on the same day.
+      if (Number(p.agentPct)) s.expenses = [{ id: BE.id('exp'), who: p.agent || 'Letting agent', catId: 'p-professional', cat: 'Letting and legal fees',
+        how: 'Deducted from rent', date: BE.dayLabel(d), iso: dIso, inMonth: dIso.indexOf('2026-10') === 0, gross: Math.round((Number(p.rent) || 0) * p.agentPct) / 100, bizPct: 100,
+        amount: Math.round((Number(p.rent) || 0) * p.agentPct) / 100, vat: 0, attachment: null, receipt: false, note: p.agentPct + '% of ' + MON[m - 1] + '’s rent', kind: 'business',
+        events: [], property: p.id, rentMonth: month, isNew: true }].concat(s.expenses || []);
       s.propertyEntries = list.sort(function (a, b) { return a.iso < b.iso ? 1 : -1; });
       BE._log(s, 'Rent for ' + MON[m - 1] + ' received · ' + p.name);
     });
@@ -271,6 +273,7 @@
   BE.unmarkRent = function (propId, month) {
     BE.change(function (s) {
       s.propertyEntries = (s.propertyEntries || []).filter(function (e) { return !(e.prop === propId && e.rentMonth === month); });
+      s.expenses = (s.expenses || []).filter(function (x) { return !(x.property === propId && x.rentMonth === month); });
     });
   };
 
