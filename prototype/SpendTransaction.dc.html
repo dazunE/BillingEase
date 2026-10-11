@@ -14,6 +14,11 @@
 body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-file:focus-within{outline:2px solid #7A5AF8;outline-offset:2px}
+.be-cat{min-width:0;overflow-wrap:anywhere}
+.be-cat:hover{border-color:#47444F!important}
+.be-cats{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+@media (max-width: 640px){.be-cats{grid-template-columns:1fr 1fr}}
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
@@ -38,30 +43,28 @@ a{color:#18161F}a:hover{color:#000000}
     </sc-if>
 
     <sc-if value="{{found}}" hint-placeholder-val="{{true}}">
-    <!-- The charge -->
+    <!-- The payment -->
     <section aria-labelledby="tx-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px;">
       <span style="width: 64px; height: 64px; border-radius: 20px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px;">{{x.ini}}</span>
       <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-        <sc-if value="{{x.raw}}" hint-placeholder-val="{{true}}">
-          <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: #47444F; overflow-wrap: anywhere;">{{x.raw}}</span>
-        </sc-if>
-        <h1 id="tx-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(26px, 3.4vw, 34px); letter-spacing: -0.03em; line-height: 1.1;">
+        <h1 id="tx-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(26px, 3.4vw, 34px); letter-spacing: -0.03em; line-height: 1.1; overflow-wrap: anywhere;">
           <sc-if value="{{x.vendorHref}}" hint-placeholder-val="{{false}}"><a href="{{x.vendorHref}}" style="text-decoration: none;">{{x.who}}</a></sc-if>
           <sc-if value="{{x.noVendor}}" hint-placeholder-val="{{true}}">{{x.who}}</sc-if>
         </h1>
-        <span style="font-size: 14px; color: #47444F;">{{x.date}}, 2026 · {{x.how}}</span>
+        <span style="font-size: 14px; color: #47444F;">{{x.meta}}</span>
         <span style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{kind.badgeBg}}; color: {{kind.badgeFg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{kind.badgeFg}};"></span>{{kind.badge}}</span>
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{rc.badgeBg}}; color: {{rc.badgeFg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{rc.badgeFg}};"></span>{{rc.badge}}</span>
+          <sc-for list="{{x.badges}}" as="bd" hint-placeholder-count="2">
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{bd.bg}}; color: {{bd.fg}}; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{bd.fg}};"></span>{{bd.label}}</span>
+          </sc-for>
         </span>
       </div>
       <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-left: auto;">
-        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(36px, 5vw, 48px); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; text-decoration: {{kind.strike}};">{{x.amount}}</span>
-        <span style="font-size: 13px; color: #47444F; text-align: right;">{{kind.counts}}</span>
+        <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(36px, 5vw, 48px); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums;">{{x.amount}}</span>
+        <span style="font-size: 13px; color: #47444F; text-align: right;">{{x.counts}}</span>
       </div>
       <sc-if value="{{link.has}}" hint-placeholder-val="{{false}}">
         <div style="flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px 16px; border-radius: 14px; background: #F7F6F9; font-size: 14px; color: #47444F;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M3 6h18v12H3zM3 10h18M7 15h3"></path></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"></path></svg>
           <span style="flex: 1 1 220px; min-width: 0;">{{link.text}}</span>
           <a href="{{link.href}}" style="font-weight: 600;">{{link.cta}}</a>
         </div>
@@ -72,147 +75,60 @@ a{color:#18161F}a:hover{color:#000000}
       <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
 
         <!-- Category -->
-        <section aria-labelledby="cat-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 16px;">
+        <section aria-labelledby="cat-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
           <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
             <h2 id="cat-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">What was it for?</h2>
-            <a href="BooksCategories.dc.html" style="font-size: 13px; font-weight: 600;">Edit categories</a>
+            <span style="font-size: 12px; color: #5F5B68;">{{catSource}}</span>
           </div>
-          <sc-if value="{{kind.notBusiness}}" hint-placeholder-val="{{false}}">
-            <p style="margin: 0; padding: 12px 16px; border-radius: 14px; background: #F7F6F9; font-size: 14px; color: #47444F;">Categories are for business costs. This one is marked as {{kind.lower}}, so it isn’t in any category.</p>
+          <sc-if value="{{noCatYet}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; padding: 12px 16px; border-radius: 14px; background: #FFF0B8; color: #6B5000; font-size: 14px; font-weight: 600;">{{noCatText}}</p>
           </sc-if>
-          <sc-if value="{{showCats}}" hint-placeholder-val="{{true}}">
-            <div role="group" aria-label="Category" style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
-                <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{c.label}}</button>
+          <sc-if value="{{landlord}}" hint-placeholder-val="{{false}}">
+            <div role="group" aria-label="Business or property" style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{scopes}}" as="sc" hint-placeholder-count="2">
+                <button type="button" aria-pressed="{{sc.on}}" onClick="{{sc.pick}}" style="min-height: 38px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{sc.border}}; background: {{sc.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{sc.label}}</button>
               </sc-for>
             </div>
           </sc-if>
-          <sc-if value="{{showSplitSummary}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 16px; background: #FDE6D6;">
-              <span style="font-size: 13px; font-weight: 700;">Split across {{splitSaved.count}} categories</span>
-              <span style="display: flex; height: 10px; border-radius: 9999px; overflow: hidden; gap: 2px; background: #FFFFFF;">
-                <sc-for list="{{splitSaved.parts}}" as="sp" hint-placeholder-count="2"><span style="width: {{sp.pct}}%; background: {{sp.color}};"></span></sc-for>
-              </span>
-              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px;">
-                <sc-for list="{{splitSaved.parts}}" as="sp" hint-placeholder-count="2">
-                  <li style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{sp.color}};"></span><strong>{{sp.amount}}</strong> {{sp.cat}}</li>
-                </sc-for>
-              </ul>
-              <span style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <button type="button" onClick="{{editSplit}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Edit split</button>
-                <button type="button" onClick="{{undoSplit}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Put it back in one category</button>
-              </span>
-            </div>
-          </sc-if>
-
-          <!-- Split editor -->
-          <sc-if value="{{splitOpen}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
-              <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 16px;">Split {{x.amount2}} across categories</span><span style="font-size: 13px; color: #5F5B68;">For one charge that paid for more than one kind of thing.</span></span>
-              <sc-for list="{{lines}}" as="ln" hint-placeholder-count="2">
-                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px;">
-                  <label style="flex: 0 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">{{ln.amtLabel}}
-                    <span style="display: flex; align-items: center; min-height: 44px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif;">$<input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{ln.amt}}" onChange="{{ln.setAmt}}" style="flex: 1; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
-                  </label>
-                  <label style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">{{ln.catLabel}}
-                    <select class="be-field" value="{{ln.cat}}" onChange="{{ln.setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                      <sc-for list="{{catNames}}" as="cn" hint-placeholder-count="7"><option value="{{cn}}">{{cn}}</option></sc-for>
-                    </select>
-                  </label>
-                  <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" disabled="{{ln.cantRemove}}" style="width: 44px; height: 44px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: {{ln.removeOpacity}};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
-                </div>
-              </sc-for>
-              <button type="button" onClick="{{addLine}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-                Add a line
+          <div role="group" aria-label="Category" class="be-cats" style="display: grid; gap: 8px;">
+            <sc-for list="{{cats}}" as="c" hint-placeholder-count="12">
+              <button type="button" class="be-cat" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-height: 56px; padding: 9px 12px; border-radius: 14px; border: {{c.border}}; background: {{c.bg}}; color: #18161F; font-family: DM Sans, sans-serif; cursor: pointer;">
+                <span style="font-weight: 700; font-size: 14px;">{{c.label}}</span>
+                <span style="font-size: 12px; line-height: 1.35; color: #5F5B68;">{{c.official}}</span>
+                <sc-if value="{{c.badge}}" hint-placeholder-val="{{false}}"><span style="padding: 1px 8px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 11px; font-weight: 700;">{{c.badge}}</span></sc-if>
               </button>
-              <div role="status" aria-live="polite" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; padding: 12px 16px; border-radius: 14px; background: {{rem.bg}}; color: {{rem.fg}}; font-size: 14px; font-weight: 600;">
-                <span>{{rem.text}}</span>
-                <span style="font-variant-numeric: tabular-nums;">{{rem.sum}} of {{x.amount2}}</span>
-              </div>
-              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button type="button" onClick="{{saveSplit}}" disabled="{{rem.cantSave}}" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: {{rem.btnBg}}; color: {{rem.btnFg}}; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Save split</button>
-                <button type="button" onClick="{{cancelSplit}}" style="min-height: 46px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
-              </div>
-            </div>
-          </sc-if>
-
-          <sc-if value="{{showCatTools}}" hint-placeholder-val="{{true}}">
-            <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #EFEDF3; padding-top: 14px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">Always do this for {{x.who}}</span><span style="font-size: 13px; color: #5F5B68;">{{ruleText}}</span></span>
-                <button type="button" role="switch" aria-checked="{{rule}}" aria-label="{{ruleAria}}" onClick="{{toggleRule}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{ruleBg}}; cursor: pointer; padding: 0;">
-                  <span style="position: absolute; top: 3px; left: {{ruleLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span>
-                </button>
-              </div>
-              <sc-if value="{{canSplit}}" hint-placeholder-val="{{true}}">
-                <button type="button" onClick="{{openSplit}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v6a6 6 0 0 0 6 6h0a6 6 0 0 1 6 6M18 3v6a6 6 0 0 1-6 6"></path></svg>
-                  Split across categories
-                </button>
-              </sc-if>
-            </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{catNote}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 13px; color: #47444F; line-height: 1.45;">{{catNote}}</span>
           </sc-if>
         </section>
 
-        <!-- Receipt -->
+        <!-- Attachment -->
         <section aria-labelledby="rc-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
-          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
-            <h2 id="rc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Receipt</h2>
-            <a href="SpendReceipts.dc.html" style="font-size: 13px; font-weight: 600;">All receipts</a>
+          <h2 id="rc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Receipt or invoice</h2>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 14px 16px; border-radius: 16px; border: {{rc.border}};">
+            <span style="width: 44px; height: 44px; border-radius: 12px; background: {{rc.bg}}; color: {{rc.fg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none;">{{rc.kind}}</span>
+            <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 15px; overflow-wrap: anywhere;">{{rc.title}}</span><span style="font-size: 13px; color: #5F5B68; line-height: 1.4;">{{rc.note}}</span></span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+              <label class="be-file" style="position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: {{rc.btnBg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.5 12.5 21a5 5 0 0 1-7-7L14 5.5a3.3 3.3 0 0 1 4.7 4.7L10.2 18.7a1.7 1.7 0 0 1-2.4-2.4L15.5 8.6"></path></svg>
+                {{rc.btn}}
+                <input type="file" accept="image/*,application/pdf" onChange="{{pickFile}}" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+              </label>
+              <sc-if value="{{rc.has}}" hint-placeholder-val="{{false}}">
+                <button type="button" onClick="{{detach}}" style="min-height: 40px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+              </sc-if>
+            </span>
           </div>
-          <sc-if value="{{rc.found}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
-              <span aria-hidden="true" style="width: 44px; height: 56px; flex: none; border-radius: 6px; border: 1px solid #E2DFE8; background: #FFFFFF; padding: 7px 6px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px;">
-                <span style="height: 4px; width: 70%; border-radius: 2px; background: #CBC7D3;"></span>
-                <span style="height: 3px; width: 90%; border-radius: 2px; background: #EFEDF3;"></span>
-                <span style="height: 3px; width: 75%; border-radius: 2px; background: #EFEDF3;"></span>
-                <span style="height: 4px; width: 50%; border-radius: 2px; background: #F4C3A1; margin-top: auto; align-self: flex-end;"></span>
-              </span>
-              <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
-                <span style="font-weight: 700; font-size: 15px;">{{rc.foundTitle}}</span>
-                <span style="font-size: 13px; color: #5F5B68;">{{rc.foundNote}}</span>
-              </span>
-              <span style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <button type="button" onClick="{{attachFound}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Attach it</button>
-                <button type="button" onClick="{{upload}}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Upload another</button>
-              </span>
-            </div>
-          </sc-if>
-          <sc-if value="{{rc.none}}" hint-placeholder-val="{{true}}">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 14px 16px; border-radius: 16px; border: 2px dashed #CBC7D3;">
-              <span style="flex: 1 1 240px; min-width: 0; font-size: 14px; line-height: 1.5; color: #47444F;">No receipt yet. Keep one with every business cost so tax time is easy. Snap a photo, or forward the email to <strong style="color: #18161F; overflow-wrap: anywhere;">{{rc.inbox}}</strong>.</span>
-              <button type="button" onClick="{{upload}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Attach a receipt</button>
-            </div>
-          </sc-if>
-          <sc-if value="{{rc.attached}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-wrap: wrap; gap: 16px 22px; align-items: flex-start;">
-              <span aria-hidden="true" style="width: {{rc.w}}; max-width: 100%; box-sizing: border-box; flex: none; border-radius: 10px; border: 1px solid #E2DFE8; background: #FFFFFF; box-shadow: 0 1px 2px rgba(24,22,31,0.06); padding: 14px 12px; display: flex; flex-direction: column; gap: 7px; font-size: {{rc.fs}}; color: #47444F;">
-                <strong style="color: #18161F; font-size: 1.15em; text-transform: uppercase;">{{x.who}}</strong>
-                <span>Receipt · {{x.date}}, 2026</span>
-                <span style="height: 1px; background: #EFEDF3;"></span>
-                <span style="display: flex; justify-content: space-between; gap: 8px;"><span>{{x.catText}}</span><span>{{x.amount2}}</span></span>
-                <span style="display: flex; justify-content: space-between; font-weight: 700; color: #18161F;"><span>Total</span><span>{{x.amount2}}</span></span>
-                <span>{{x.how}}</span>
-              </span>
-              <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
-                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700; font-size: 15px; overflow-wrap: anywhere;">{{rc.file}}</span><span style="font-size: 13px; color: #5F5B68;">Kept with your books for tax · same amount, same day</span></span>
-                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
-                  <button type="button" onClick="{{toggleBig}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{rc.bigLabel}}</button>
-                  <button type="button" onClick="{{detach}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
-                  <a href="{{rc.href}}" style="font-size: 14px; font-weight: 600;">Open in Receipts</a>
-                </span>
-              </div>
-            </div>
-          </sc-if>
         </section>
 
         <!-- Note -->
         <section aria-labelledby="note-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
           <h2 id="note-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Note</h2>
           <sc-if value="{{noteEditing}}" hint-placeholder-val="{{true}}">
-            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Anything you’ll want to remember at tax time
-              <textarea class="be-field" rows="3" placeholder="e.g. Flight to Atlanta for the Atlas Freight kickoff" value="{{noteDraft}}" onChange="{{setNote}}" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">{{notePrompt}}
+              <textarea class="be-field" rows="3" placeholder="{{notePh}}" value="{{noteDraft}}" onChange="{{setNote}}" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
             </label>
             <span style="display: flex; flex-wrap: wrap; gap: 8px;">
               <button type="button" onClick="{{saveNote}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save note</button>
@@ -231,35 +147,42 @@ a{color:#18161F}a:hover{color:#000000}
       </div>
 
       <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
-        <!-- Kind -->
-        <section aria-labelledby="kind-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
-          <h2 id="kind-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">What kind of money is this?</h2>
-          <div role="group" aria-label="What kind of money" style="display: flex; flex-direction: column; gap: 8px;">
-            <sc-for list="{{kinds}}" as="k" hint-placeholder-count="3">
-              <button type="button" aria-pressed="{{k.on}}" onClick="{{k.pick}}" style="text-align: left; display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 16px; border: {{k.border}}; background: {{k.bg}}; color: #18161F; cursor: pointer; font-family: DM Sans, sans-serif;">
-                <span style="width: 18px; height: 18px; flex: none; margin-top: 1px; border-radius: 9999px; border: 2px solid #18161F; box-sizing: border-box; display: flex; align-items: center; justify-content: center;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{k.dot}};"></span></span>
-                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-weight: 700; font-size: 14px;">{{k.label}}</span><span style="font-size: 13px; color: #47444F; line-height: 1.4;">{{k.hint}}</span></span>
-              </button>
-            </sc-for>
-          </div>
-          <sc-if value="{{kind.isTransfer}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #F7F6F9;">
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Money moved to
-                <select class="be-field" value="{{xferTo}}" onChange="{{setXfer}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                  <option value="Chase Checking ••4417">Chase Checking ••4417</option>
-                  <option value="Chase Savings ••8820">Chase Savings ••8820</option>
-                  <option value="Amex Business ••1009">Amex Business ••1009</option>
-                </select>
-              </label>
-              <span style="font-size: 13px; color: #47444F;">We’ll look for the matching {{x.amount2}} on the other account so it’s not counted twice.</span>
+        <!-- Business use (UK) -->
+        <sc-if value="{{bu.show}}" hint-placeholder-val="{{false}}">
+          <section aria-labelledby="bu-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <h2 id="bu-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Business use</h2>
+              <span style="font-size: 13px; color: #5F5B68; line-height: 1.4;">If you also used it personally, only the business share is a business cost.</span>
             </div>
-          </sc-if>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 12px 14px; border-radius: 14px; background: #FDE6D6; font-size: 14px;">
-            <span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D; flex: none;"></span>
-            <span>Going out this month: <strong style="font-variant-numeric: tabular-nums;">{{n.out}}</strong></span>
-            <span style="color: #47444F;">{{kind.effect}}</span>
-          </div>
-        </section>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+              <sc-for list="{{bu.chips}}" as="pc" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{pc.on}}" onClick="{{pc.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 9999px; border: 1px solid {{pc.border}}; background: {{pc.bg}}; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{pc.label}}</button>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+              <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;">Other
+                <input class="be-field" type="number" min="1" max="100" value="{{bu.draft}}" onChange="{{bu.set}}" style="width: 76px; min-height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #CBC7D3; border-radius: 10px; font: 500 14px DM Sans, sans-serif; color: #18161F;">%</label>
+              <button type="button" onClick="{{bu.save}}" style="min-height: 38px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Save</button>
+            </div>
+            <div style="padding: 12px 14px; border-radius: 14px; background: #FDE6D6; font-size: 14px; line-height: 1.45;">{{bu.text}}</div>
+          </section>
+        </sc-if>
+
+        <!-- Input VAT (VAT registered) -->
+        <sc-if value="{{vt.show}}" hint-placeholder-val="{{false}}">
+          <section aria-labelledby="vt-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <h2 id="vt-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">{{vt.title}}</h2>
+              <span style="font-size: 13px; color: #5F5B68; line-height: 1.4;">{{vt.help}}</span>
+            </div>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; font-variant-numeric: tabular-nums;">{{vt.amount}}</span>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+              <label style="flex: 0 1 160px; min-width: 0; display: flex; align-items: center; min-height: 40px; padding-left: 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 14px DM Sans, sans-serif;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">VAT amount</span>{{sym}}<input class="be-field" type="text" inputmode="decimal" value="{{vt.draft}}" onChange="{{vt.set}}" style="flex: 1; min-width: 0; min-height: 38px; box-sizing: border-box; padding: 0 8px 0 4px; border: 0; border-radius: 10px; background: transparent; font: 500 14px DM Sans, sans-serif; color: #18161F;"></label>
+              <button type="button" onClick="{{vt.save}}" style="min-height: 38px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Save</button>
+              <button type="button" onClick="{{vt.fill}}" style="min-height: 38px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">{{vt.fillLabel}}</button>
+            </div>
+          </section>
+        </sc-if>
 
         <!-- History -->
         <section aria-labelledby="hist-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
@@ -267,7 +190,7 @@ a{color:#18161F}a:hover{color:#000000}
           <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
             <sc-for list="{{history}}" as="h" hint-placeholder-count="3">
               <li style="display: flex; gap: 12px; padding: 10px 0; border-top: {{h.border}};">
-                <span style="width: 28px; height: 28px; flex: none; border-radius: 9999px; background: {{h.bg}}; color: {{h.fg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">{{h.ini}}</span>
+                <span style="width: 28px; height: 28px; flex: none; border-radius: 9999px; background: #18161F; color: #B9A3FF; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">{{h.ini}}</span>
                 <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; line-height: 1.4;">{{h.what}}</span><span style="font-size: 12px; color: #5F5B68;">{{h.who}} · {{h.when}}</span></span>
               </li>
             </sc-for>
@@ -276,7 +199,7 @@ a{color:#18161F}a:hover{color:#000000}
 
         <!-- Delete -->
         <section aria-labelledby="del-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
-          <h2 id="del-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Not a real expense?</h2>
+          <h2 id="del-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">Entered by mistake?</h2>
           <sc-if value="{{del.locked}}" hint-placeholder-val="{{false}}">
             <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">{{del.lockedText}}</p>
           </sc-if>
@@ -286,7 +209,7 @@ a{color:#18161F}a:hover{color:#000000}
           </sc-if>
           <sc-if value="{{del.asking}}" hint-placeholder-val="{{false}}">
             <div role="alert" style="display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 16px; background: #FBE3DF; color: #A8200D; font-size: 14px; line-height: 1.45;">
-              <strong>Delete {{x.who}} {{x.amount2}}?</strong>
+              <strong>Delete {{x.who}} {{x.amount}}?</strong>
               <span>{{del.effect}} You can’t undo this.</span>
               <span style="display: flex; flex-wrap: wrap; gap: 8px;">
                 <button type="button" onClick="{{del.confirm}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #A8200D; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Yes, delete it</button>
@@ -318,160 +241,148 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { toast: null, forId: null, splitOpen: false, lines: [], big: false, noteEditing: null, noteDraft: '', asking: false, deleted: null };
+    this.state = { toast: null, forId: null, noteEditing: null, noteDraft: '', asking: false, deleted: null, pctDraft: null, vatDraft: null, scope: null };
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  componentWillUnmount() { clearTimeout(this._t); }
   renderVals() {
     const st = this.state;
-    const money2 = (n) => BE.money(n, 'USD', { cents: true });
+    const money = (n) => BE.money(n, null, { cents: true });
     const num = (s) => BE.num(s);
     const all = BE.all('expenses');
     const hash = BE.hash();
     const cur = hash ? BE.find('expenses', hash) : all[0];
     const t = BE.totals('month');
     const n = t.fmt;
-    const out = { toast: st.toast, n };
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const prof = BE.get('profile') || {};
+    const noun = (pack.practitioner || {}).noun || 'accountant';
+    const out = { toast: st.toast, n, sym: pack.symbol === 'Rs' ? 'Rs ' : (pack.symbol || '£') };
 
     if (!cur) {
       const d = st.deleted;
       const gone = d
-        ? { title: 'Deleted ' + d.who + ' ' + money2(d.amount), text: 'It’s gone from Going out and your reports. Going out this month is now ' + n.out + '.' }
+        ? { title: 'Deleted ' + d.who + ' ' + money(d.amount), text: 'It’s gone from Going out and your reports. Going out this month is now ' + n.out + '.' }
         : (all.length
           ? { title: 'We couldn’t find that expense', text: 'It may have been deleted. Everything you’ve paid this month is in Going out.' }
-          : { title: 'Your expenses will show up here', text: 'Each expense you record, card charge we import or bill you pay gets its own page, where you can change its category, split it, mark it personal or attach a receipt.' });
+          : { title: 'Your expenses will show up here', text: 'Each expense you record and each bill you mark paid gets its own page, where you can change its category' + (lk ? ', note the input VAT' : ', set how much was for the business') + ' and attach a photo or PDF.' });
       return Object.assign(out, { missing: true, found: false, gone, crumb: d ? 'Deleted' : 'Transaction' });
     }
 
     // A different expense than last render: reset the drafts
     if (st.forId !== cur.id) {
-      this.state = Object.assign({}, st, { forId: cur.id, splitOpen: false, lines: [], big: false, noteEditing: null, noteDraft: '', asking: false });
+      this.state = Object.assign({}, st, { forId: cur.id, noteEditing: null, noteDraft: '', asking: false, pctDraft: null, vatDraft: null, scope: null });
       return this.renderVals();
     }
     const id = cur.id;
-    const TOTAL = Number(cur.amount) || 0;
-    const ev = (label, patch) => BE.expenseEvent(id, label, patch);
+    const ev = (label, patch, fn) => BE.expenseEvent(id, label, patch, fn);
     const outNow = () => BE.totals('month').fmt.out;
-    const kindNow = cur.kind || 'business';
-    const business = kindNow === 'business';
-    const vendor = BE.vendorFor ? BE.vendorFor(cur.who) : BE.all('vendors').filter((v) => v.name === cur.who)[0];
+    const vendor = BE.vendorFor(cur.who);
+    const c = BE.catOf(cur);
+    const gross = cur.gross != null ? cur.gross : cur.amount;
+    const pct = cur.bizPct || 100;
 
-    // Category
-    const CATS = ['Travel', 'Meals', 'Client meetings', 'Office supplies', 'Software', 'Advertising', 'Printing', 'Contractors', 'Rent', 'Internet & phone', 'Fuel', 'Other'];
-    const catNames = CATS.indexOf(cur.cat) >= 0 || !cur.cat || cur.cat === 'Personal' ? CATS : [cur.cat].concat(CATS);
-    const cats = catNames.map((c) => ({
-      label: c, on: cur.cat === c, bg: cur.cat === c ? '#FDE6D6' : '#FFFFFF', border: cur.cat === c ? '#E0752D' : '#CBC7D3',
-      pick: () => { if (cur.cat === c) return; ev('Changed category from ' + cur.cat + ' to ' + c, { cat: c }); this.notify('Moved to ' + c + ' · your reports and categories update'); }
-    }));
+    // Category: business or (UK landlord) the property
+    const landlord = !!(pack.features && pack.features.landlord) && (prof.kind === 'both' || prof.kind === 'landlord');
+    const scope = st.scope || (cur.property || (c && c.property) ? 'property' : 'business');
+    const CATS = BE.expenseCats(scope === 'property' && landlord ? 'property' : 'business');
+    const propId = cur.property || (BE.all('properties')[0] || {}).id || 'ash-grove';
+    const cats = CATS.map((k) => {
+      const on = !!c && c.id === k.id;
+      return {
+        label: k.name, official: k.official, badge: BE.catBadge(k), on, bg: on ? '#FDE6D6' : '#FFFFFF', border: on ? '2px solid #E0752D' : '1px solid #E2DFE8',
+        pick: () => {
+          if (on) return;
+          const isP = !!k.property;
+          ev((c ? 'Changed category from ' + c.name + ' to ' : 'Put in ') + k.name, { catId: k.id, cat: k.name, property: isP ? propId : null },
+            isP ? (x) => ({ bizPct: 100, amount: x.gross != null ? x.gross : x.amount }) : null);
+          this.notify((c ? 'Moved to ' : 'Put in ') + k.name + (BE.catBadge(k) ? ' · ' + BE.catBadge(k).toLowerCase() : '') + ' · your reports update');
+        }
+      };
+    });
+    const scopes = landlord ? [['business', 'Your business'], ['property', 'Property: ' + (((BE.find('properties', propId) || {}).short) || 'Flat 2, 18 Ash Grove')]].map(([k, label]) => {
+      const on = scope === k;
+      return { label, on, bg: on ? '#FDE6D6' : '#FFFFFF', border: on ? '#E0752D' : '#CBC7D3', pick: () => this.setState({ scope: k }) };
+    }) : [];
 
-    // Split
-    const COLORS = ['#E0752D', '#F4C3A1', '#7A5AF8', '#47444F', '#C9BCFB'];
-    const lines = st.lines.map((ln, i) => ({
-      amt: ln.amt, cat: ln.cat, amtLabel: 'Amount ' + (i + 1), catLabel: 'Category ' + (i + 1),
-      removeLabel: 'Remove line ' + (i + 1), cantRemove: st.lines.length <= 2, removeOpacity: st.lines.length <= 2 ? '0.4' : '1',
-      setAmt: (e) => this.setState({ lines: this.state.lines.map((x, j) => (j === i ? Object.assign({}, x, { amt: e.target.value }) : x)) }),
-      setCat: (e) => this.setState({ lines: this.state.lines.map((x, j) => (j === i ? Object.assign({}, x, { cat: e.target.value }) : x)) }),
-      remove: () => this.setState({ lines: this.state.lines.filter((x, j) => j !== i) })
-    }));
-    const sum = Math.round(st.lines.reduce((a, x) => a + num(x.amt), 0) * 100) / 100;
-    const diff = Math.round((TOTAL - sum) * 100) / 100;
-    const blank = st.lines.some((x) => !(num(x.amt) > 0));
-    let rem;
-    if (diff > 0) rem = { text: money2(diff) + ' left to split', bg: '#FFF0B8', fg: '#6B5000' };
-    else if (diff < 0) rem = { text: money2(-diff) + ' too much. Take it off one of the lines.', bg: '#FBE3DF', fg: '#A8200D' };
-    else if (blank) rem = { text: 'Every line needs an amount. Remove the empty one.', bg: '#FFF0B8', fg: '#6B5000' };
-    else rem = { text: 'All ' + money2(TOTAL) + ' is split', bg: '#E2F6D5', fg: '#2F5711' };
-    const ok = diff === 0 && !blank;
-    Object.assign(rem, { sum: money2(sum), cantSave: !ok, btnBg: ok ? '#B9A3FF' : '#EFEDF3', btnFg: ok ? '#18161F' : '#5F5B68' });
-    const saveSplit = () => {
-      if (!ok) return;
-      const parts = st.lines.map((x) => ({ amount: num(x.amt), cat: x.cat }));
-      const txt = parts.map((p) => money2(p.amount) + ' ' + p.cat).join(' + ');
-      ev('Split it: ' + txt, { split: parts });
-      this.setState({ splitOpen: false });
-      this.notify('Split saved · ' + txt);
+    // Business use (UK, business costs only)
+    const pd = st.pctDraft != null ? st.pctDraft : String(pct);
+    const setPct = (p) => {
+      p = Math.max(1, Math.min(100, Math.round(Number(p) || 0)));
+      if (!(p >= 1)) { this.notify('Pick a share from 1% to 100%'); return; }
+      if (p === pct) { this.setState({ pctDraft: null }); return; }
+      BE.setBizPct(id, p);
+      this.setState({ pctDraft: null });
+      this.notify(p + '% business · ' + BE.money(Math.round(gross * p) / 100, null, { cents: true }) + ' counts · Going out now ' + outNow());
     };
-    const split = cur.split && cur.split.length ? cur.split : null;
-    const splitSaved = split ? { count: split.length, parts: split.map((p, i) => ({ amount: money2(p.amount), cat: p.cat, pct: TOTAL ? Math.round(p.amount / TOTAL * 1000) / 10 : 0, color: COLORS[i % COLORS.length] })) } : { count: 0, parts: [] };
-
-    // Kind
-    const KINDS = [
-      { id: 'business', label: 'Business expense', hint: 'A cost of running ' + ((BE.get('profile') || {}).business || 'the business') + '. Counts in Going out.' },
-      { id: 'personal', label: 'Personal (owner’s draw)', hint: 'You used the business card for yourself. It comes off Going out and is recorded as money you took out.' },
-      { id: 'transfer', label: 'Transfer between your accounts', hint: 'Money moving between your own accounts isn’t spending. It comes off Going out.' }
-    ];
-    const kinds = KINDS.map((k) => ({
-      label: k.label, hint: k.hint, on: kindNow === k.id,
-      border: kindNow === k.id ? '2px solid #E0752D' : '1px solid #E2DFE8', bg: kindNow === k.id ? '#FDE6D6' : '#FFFFFF', dot: kindNow === k.id ? '#18161F' : 'transparent',
-      pick: () => {
-        if (kindNow === k.id) return;
-        ev('Marked as ' + k.label.toLowerCase(), { kind: k.id });
-        this.setState({ splitOpen: false });
-        this.notify(k.id === 'business' ? 'Back in Going out · ' + money2(TOTAL) + ' added (now ' + outNow() + ')' : 'Marked ' + (k.id === 'personal' ? 'personal' : 'as a transfer') + ' · ' + money2(TOTAL) + ' off Going out (now ' + outNow() + ')');
-      }
-    }));
-    const catText = split ? 'Split · ' + split.map((p) => p.cat).join(' + ') : (cur.cat || 'Other');
-    const KB = {
-      business: { badge: catText, badgeBg: '#FDE6D6', badgeFg: '#18161F', counts: cur.inMonth ? 'Counts in Going out · paid' : 'Paid before this month', lower: 'a business expense', effect: '' },
-      personal: { badge: 'Owner’s draw', badgeBg: '#EEE8FF', badgeFg: '#18161F', counts: 'Not in Going out · money you took out', lower: 'personal', effect: 'This ' + money2(TOTAL) + ' isn’t in it.' },
-      transfer: { badge: 'Transfer', badgeBg: '#E1EEF8', badgeFg: '#1F5E91', counts: 'Not in Going out · moved between accounts', lower: 'a transfer', effect: 'This ' + money2(TOTAL) + ' isn’t in it.' }
+    const bu = {
+      show: !lk && !cur.payroll && !(c && c.property), draft: pd,
+      chips: [100, 75, 50, 25].map((p) => ({ label: p + '%', on: pct === p, bg: pct === p ? '#FDE6D6' : '#FFFFFF', border: pct === p ? '#E0752D' : '#CBC7D3', pick: () => setPct(p) })),
+      set: (e) => this.setState({ pctDraft: e.target.value }),
+      save: () => setPct(num(pd)),
+      text: pct < 100 ? money(cur.amount) + ' of the ' + money(gross) + ' you paid counts as a business cost (' + pct + '%). The rest is personal and stays out of Going out.' : 'All ' + money(gross) + ' is a business cost.'
     };
-    const kind = Object.assign({}, KB[kindNow] || KB.business, { strike: business ? 'none' : 'line-through', notBusiness: !business, isTransfer: kindNow === 'transfer' });
 
-    // Receipt
-    const prof = BE.get('profile') || {};
-    const slug = String(prof.business || 'you').toLowerCase().replace(/[^a-z0-9]+/g, '');
-    const receipts = BE.all('receipts');
-    const linked = BE.receiptFor ? BE.receiptFor(id) : (cur.receiptId ? BE.find('receipts', cur.receiptId) : null);
-    const rAmt = (r) => Number(r.total != null ? r.total : r.amount) || 0;
-    const rWho = (r) => r.merchant || r.who || r.vendor || 'Receipt';
-    const match = !cur.receipt && !linked ? receipts.filter((r) => Math.abs(rAmt(r) - TOTAL) < 0.005 && !r.expenseId && r.status !== 'matched')[0] : null;
+    // Input VAT (VAT registered)
+    const vd = st.vatDraft != null ? st.vatDraft : (cur.vat ? Number(cur.vat).toFixed(2) : '');
+    const saveVat = (v) => {
+      v = Math.round(num(v) * 100) / 100;
+      if (v >= gross) { this.notify('The VAT has to be less than the ' + money(gross) + ' you paid'); return; }
+      ev(v > 0 ? 'Input VAT set to ' + money(v) : 'Input VAT removed', { vat: v });
+      this.setState({ vatDraft: null });
+      this.notify(v > 0 ? money(v) + ' input VAT goes to your VAT return' : 'No input VAT on this one');
+    };
+    const vt = {
+      show: BE.vatOn() && !cur.payroll, title: lk ? 'Input VAT' : 'VAT on this',
+      help: lk ? 'From the supplier’s Tax Invoice. It’s input tax on your VAT return.' : 'From the supplier’s VAT invoice. It’s reclaimed on your VAT return.',
+      amount: cur.vat ? money(cur.vat) : 'None', draft: vd,
+      set: (e) => this.setState({ vatDraft: e.target.value }), save: () => saveVat(vd),
+      fill: () => this.setState({ vatDraft: BE.vatIn(gross).toFixed(2) }), fillLabel: 'Work it out at ' + Math.round(BE.vatRate() * 1000) / 10 + '%'
+    };
+
+    // Attachment
+    const att = cur.attachment || (cur.receipt && cur.receiptFile ? { name: cur.receiptFile, kind: 'pdf' } : null);
     const rc = {
-      attached: !!(cur.receipt || linked), found: !cur.receipt && !linked && !!match, none: !cur.receipt && !linked && !match,
-      foundTitle: match ? 'We found it: ' + rWho(match) + ' receipt, ' + money2(rAmt(match)) : '',
-      foundNote: match ? (match.source ? match.source + ' · ' : '') + (match.date ? match.date + ' · ' : '') + 'same amount' : '',
-      inbox: 'receipts+' + slug + '@billingease.app',
-      file: linked ? (linked.file || rWho(linked) + ' receipt') : (cur.receiptFile || String(cur.who).toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-receipt.pdf'),
-      href: linked ? 'SpendReceipt.dc.html#' + linked.id : 'SpendReceipts.dc.html',
-      badge: cur.receipt || linked ? 'Receipt attached' : 'No receipt yet', badgeBg: cur.receipt || linked ? '#E2F6D5' : '#FFF0B8', badgeFg: cur.receipt || linked ? '#2F5711' : '#6B5000',
-      w: st.big ? '320px' : '170px', fs: st.big ? '13px' : '10px', bigLabel: st.big ? 'Smaller' : 'See full size'
+      has: !!att, kind: att ? (att.kind === 'photo' ? 'IMG' : 'PDF') : '—', bg: att ? (att.kind === 'photo' ? '#E1EEF8' : '#FBE3DF') : '#EFEDF3', fg: att ? (att.kind === 'photo' ? '#1F5E91' : '#A8200D') : '#5F5B68',
+      border: att ? '1px solid #E2DFE8' : '2px dashed #CBC7D3', title: att ? att.name : 'Nothing attached yet',
+      note: att ? 'Kept with your books' + (lk ? ' for your ' + noun + '.' : '. HMRC can ask to see it.') : 'Attach a photo of the receipt or the PDF invoice. BillingEase keeps it with this expense; it doesn’t read it.',
+      btn: att ? 'Replace' : 'Attach a photo or PDF', btnBg: att ? 'rgba(24,22,31,0.07)' : '#B9A3FF'
     };
 
-    // Linked bill or payroll
+    // Linked bill, payroll or every-month template
     const bill = cur.bill ? BE.find('bills', cur.bill) : null;
     const run = cur.payroll ? BE.find('payroll', cur.payroll) : null;
+    const tmpl = cur.monthly ? BE.find('monthly', cur.monthly) : null;
     const link = bill
-      ? { has: true, text: 'This paid bill ' + (bill.num || '') + ' from ' + bill.who + (BE.billLeft(bill) > 0 ? ' · ' + BE.money(BE.billLeft(bill)) + ' still to pay on it' : ' · paid in full'), href: 'SpendBill.dc.html#' + bill.id, cta: 'Open the bill' }
-      : (run ? { has: true, text: 'This paid ' + (run.label || 'payroll') + ' for ' + (run.people || []).length + ' people.', href: 'SpendPayroll.dc.html', cta: 'Open payroll' } : { has: false });
+      ? { has: true, text: 'A payment on bill ' + (bill.num || '') + ' from ' + bill.who + (BE.billLeft(bill) > 0 ? ' · ' + BE.money(BE.billLeft(bill)) + ' still to pay on it' : ' · paid in full'), href: 'SpendBill.dc.html#' + bill.id, cta: 'Open the bill' }
+      : (run ? { has: true, text: 'This paid ' + (run.label || 'payroll') + '.', href: 'SpendPayroll.dc.html', cta: 'Open payroll' }
+        : (tmpl ? { has: true, text: 'Recorded from your every-month cost “' + tmpl.who + '”, ' + BE.money(tmpl.amount) + ' on the ' + tmpl.day + (tmpl.day === 1 ? 'st' : tmpl.day === 2 ? 'nd' : tmpl.day === 3 ? 'rd' : 'th') + '.', href: 'SpendEveryMonth.dc.html', cta: 'Every month' } : { has: false }));
 
     // Note
     const editingNote = st.noteEditing === null ? !cur.note : st.noteEditing;
 
     // History
     const base = [];
-    if (bill) base.push({ what: 'Paid toward bill ' + (bill.num || '') + ' from ' + cur.how, who: 'You', when: cur.date });
-    else if (run) base.push({ what: 'Paid by direct deposit from ' + cur.how, who: 'BillingEase', when: cur.date });
-    else if (cur.isNew && !cur.raw) base.push({ what: 'Recorded by hand, paid with ' + cur.how, who: prof.owner || 'You', when: cur.date });
-    else {
-      if (cur.receipt && !cur.isNew) base.push({ what: 'Matched the receipt from your email', who: 'BillingEase', when: cur.date });
-      if (!cur.isNew) base.push({ what: 'Put in ' + cur.cat + '. ' + cur.who + ' charges usually are', who: 'BillingEase', when: cur.date });
-      else base.push({ what: 'Sorted into ' + cur.cat + ' by you', who: prof.owner || 'You', when: cur.date });
-      base.push({ what: 'Imported from ' + cur.how, who: 'BillingEase', when: cur.date });
-    }
-    const evs = (cur.events || []).map((h) => ({ what: h.label, who: h.who, when: h.date, me: true }));
-    const history = evs.concat(base).map((h, i) => ({ what: h.what, who: h.who, when: h.when, ini: h.who === 'BillingEase' ? 'BE' : BE.initials(h.who), bg: h.who === 'BillingEase' ? '#EEE8FF' : '#18161F', fg: h.who === 'BillingEase' ? '#18161F' : '#B9A3FF', border: i === 0 ? '0' : '1px solid #EFEDF3' }));
+    if (bill) base.push({ what: 'Marked paid on bill ' + (bill.num || '') + ' · ' + BE.howText(cur), who: prof.owner || 'You', when: cur.date });
+    else if (tmpl) base.push({ what: 'Recorded from Every month · ' + BE.howText(cur), who: prof.owner || 'You', when: cur.date });
+    else base.push({ what: 'Recorded by hand · ' + BE.howText(cur) + (cur.cheque && cur.cheque.date ? ', dated ' + cur.cheque.date : ''), who: prof.owner || 'You', when: cur.date });
+    const evs = (cur.events || []).map((h) => ({ what: h.label, who: h.who || prof.owner || 'You', when: h.date }));
+    const history = evs.concat(base).map((h, i) => ({ what: h.what, who: h.who, when: h.when, ini: BE.initials(h.who) || 'YO', border: i === 0 ? '0' : '1px solid #EFEDF3' }));
 
     // Delete
     const locked = !!(bill || run);
     const del = {
-      locked, lockedText: bill ? 'This is a payment on a bill from ' + bill.who + '. Payments stay with the bill so it adds up; mark it as a transfer if it wasn’t spending.' : 'This is a payroll payment. It stays with the payroll run.',
+      locked, lockedText: bill ? 'This is a payment marked on a bill from ' + bill.who + '. It stays with the bill so the bill adds up.' : 'This is a payroll payment. It stays with the payroll run.',
       idle: !locked && !st.asking, asking: !locked && st.asking,
-      effect: business && cur.inMonth ? money2(TOTAL) + ' comes off Going out.' : 'It isn’t counted in Going out now, so your numbers stay the same.',
+      effect: cur.inMonth ? money(cur.amount) + ' comes off Going out.' : 'It’s from before October, so this month’s Going out stays the same; your ' + (lk ? 'reports' : 'quarter') + ' change.',
       ask: () => this.setState({ asking: true }),
       cancel: () => this.setState({ asking: false }),
       confirm: () => {
         BE.remove('expenses', id);
-        BE.log('Deleted ' + cur.who + ' ' + money2(TOTAL) + ' from expenses');
-        this.setState({ asking: false, deleted: { who: cur.who, amount: TOTAL } });
+        if (tmpl && tmpl.expense === id) BE.update('monthly', tmpl.id, { paidDay: 0, expense: null });
+        BE.log('Deleted ' + cur.who + ' ' + money(cur.amount) + ' from expenses');
+        this.setState({ asking: false, deleted: { who: cur.who, amount: cur.amount } });
         this.notify('Deleted · Going out now ' + outNow());
       }
     };
@@ -481,39 +392,36 @@ class Component extends DCLogic {
     const newer = idx > 0 ? all[idx - 1] : null, older = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
     const nav = { newer: newer ? 'SpendTransaction.dc.html#' + newer.id : '', newerWho: newer ? newer.who : '', older: older ? 'SpendTransaction.dc.html#' + older.id : '', olderWho: older ? older.who : '' };
 
-    const ruleOn = !!cur.rule;
-    const ruleCat = split ? 'the same split' : cur.cat;
+    // Badges and how it counts
+    const badges = [];
+    badges.push(c ? { label: c.name, bg: '#FDE6D6', fg: '#18161F' } : { label: 'Needs a category', bg: '#FFF0B8', fg: '#6B5000' });
+    if (BE.catBadge(c)) badges.push({ label: BE.catBadge(c), bg: '#EFEDF3', fg: '#47444F' });
+    if (pct < 100) badges.push({ label: pct + '% business', bg: '#E1EEF8', fg: '#1F5E91' });
+    if (cur.vat) badges.push({ label: 'VAT ' + money(cur.vat), bg: '#EEE8FF', fg: '#18161F' });
+    badges.push(att ? { label: 'Attached', bg: '#E2F6D5', fg: '#2F5711' } : { label: 'Nothing attached', bg: '#EFEDF3', fg: '#47444F' });
+    const qtr = !lk && cur.iso ? (cur.iso >= '2026-10-06' ? 'Q3' : cur.iso >= '2026-07-06' ? 'Q2' : 'Q1') : '';
+    const counts = cur.inMonth ? 'Counts in Going out · paid' + (qtr ? ' · ' + qtr : '') : 'Paid before October' + (qtr ? ' · in ' + qtr : '');
+
     return Object.assign(out, {
       missing: false, found: true, crumb: cur.who,
-      x: { who: cur.who, raw: cur.raw || '', ini: BE.initials(cur.who), date: cur.date, how: cur.how, amount: money2(TOTAL), amount2: money2(TOTAL), catText,
-        vendorHref: vendor ? 'SpendVendor.dc.html#' + vendor.id : '', noVendor: !vendor },
-      link, kind, kinds, xferTo: cur.xferTo || 'Chase Savings ••8820',
-      setXfer: (e) => { ev('Transfer to ' + e.target.value, { xferTo: e.target.value }); this.notify('Noted · moved to ' + e.target.value); },
-      cats, catNames: catNames.filter((c) => c !== 'Personal'), showCats: business && !split && !st.splitOpen, showSplitSummary: business && !!split && !st.splitOpen, showCatTools: business && !st.splitOpen,
-      canSplit: !split,
-      splitOpen: business && st.splitOpen, lines, rem, saveSplit, splitSaved,
-      openSplit: () => { const half = Math.round(TOTAL / 2 * 100) / 100; this.setState({ splitOpen: true, lines: [{ amt: String(half), cat: cur.cat || 'Other' }, { amt: String(Math.round((TOTAL - half) * 100) / 100), cat: cur.cat === 'Meals' ? 'Travel' : 'Meals' }] }); },
-      editSplit: () => this.setState({ splitOpen: true, lines: split.map((p) => ({ amt: String(p.amount), cat: p.cat })) }),
-      undoSplit: () => { ev('Removed the split · all of it back in ' + cur.cat, { split: null }); this.notify('Back in one category: ' + cur.cat); },
-      cancelSplit: () => this.setState({ splitOpen: false }),
-      addLine: () => this.setState({ lines: st.lines.concat([{ amt: diff > 0 ? String(diff) : '', cat: 'Other' }]) }),
-      rule: ruleOn, ruleAria: 'Always do this for ' + cur.who, ruleBg: ruleOn ? '#E0752D' : '#CBC7D3', ruleLeft: ruleOn ? '25px' : '3px',
-      ruleText: ruleOn ? 'On. Every ' + cur.who + ' charge goes to ' + ruleCat + ' on its own.' : 'Off. We’ll still guess ' + cur.cat + ' next time, and you can change it.',
-      toggleRule: () => { const on = !ruleOn; ev(on ? 'Made a rule: ' + cur.who + ' always goes to ' + ruleCat : 'Turned off the ' + cur.who + ' rule', { rule: on }); this.notify(on ? 'Rule on: ' + cur.who + ' → ' + ruleCat : 'Rule turned off'); },
-      rc,
-      attachFound: () => { BE.matchReceipt(match.id, 'expense', id); ev('Attached the ' + rWho(match) + ' receipt'); this.notify('Receipt attached and kept for tax'); },
-      upload: () => {
-        const f = String(cur.who).toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-receipt.pdf';
-        if (BE.addReceipt && BE.matchReceipt) { const r = BE.addReceipt(f, 'Uploaded from this transaction', { merchant: cur.who, total: cur.amount, date: cur.date, cat: cur.cat, tax: 0 }); BE.matchReceipt(r.id, 'expense', id); ev('Uploaded a receipt'); }
-        else ev('Uploaded a receipt', { receipt: true, receiptFile: f });
-        this.notify('Uploaded ' + f + ' and attached it');
+      x: {
+        who: cur.who, ini: BE.initials(cur.who), amount: money(cur.amount), badges, counts: pct < 100 ? money(cur.amount) + ' of ' + money(gross) + ' · ' + counts : counts,
+        meta: cur.date + ' 2026 · ' + BE.howText(cur) + (cur.cheque && cur.cheque.date ? ' dated ' + cur.cheque.date : '') + (cur.property ? ' · for the property' : ''),
+        vendorHref: vendor ? 'SpendVendor.dc.html#' + vendor.id : '', noVendor: !vendor
       },
-      detach: () => {
-        if (linked && BE.unmatchReceipt) BE.unmatchReceipt(linked.id);
-        ev('Removed the receipt', { receipt: false, receiptId: null, receiptFile: null });
-        this.setState({ big: false }); this.notify('Receipt removed. It’s back in Receipts');
+      link, cats, scopes, landlord, catSource: lk ? 'Lines from the business income schedule' : (scope === 'property' ? 'HMRC property income categories' : 'HMRC self-employment categories'),
+      noCatYet: !c, noCatText: lk ? 'Pick a category so your ' + noun + ' can put it on the right line of your return.' : 'Pick a category so your accountant can include it in the quarterly update.',
+      catNote: c && c.allowable === false ? (c.id === 'capital' ? 'Equipment you keep for years isn’t taken off profit as an expense. ' + (lk ? 'Your ' + noun + ' claims capital allowances on it in your return.' : 'Your accountant claims capital allowances on it instead.') : (c.id === 'p-finance' ? 'Mortgage interest on a home you let isn’t deducted from rent. You get a tax credit of 20% of it instead; your accountant works it out.' : 'This kind of cost isn’t allowed against tax, but it still counts in Going out.')) : '',
+      bu, vt, rc,
+      pickFile: (e) => {
+        const file = e.target.files && e.target.files[0]; if (!file) return;
+        const kind = /pdf$/i.test(file.type || file.name) ? 'pdf' : 'photo';
+        ev((att ? 'Replaced the attachment with ' : 'Attached ') + file.name, { attachment: { name: file.name, kind }, receipt: true });
+        this.notify('Attached ' + file.name + ' · kept with your books');
       },
-      toggleBig: () => this.setState({ big: !st.big }),
+      detach: () => { ev('Removed ' + (att ? att.name : 'the attachment'), { attachment: null, receipt: false, receiptFile: null }); this.notify('Removed the attachment'); },
+      notePrompt: lk ? 'Anything your ' + noun + ' should know' : 'Anything you’ll want to remember at tax time',
+      notePh: lk ? 'e.g. Fuel for the trip to Kandyan Spice Co, Kandy' : 'e.g. Train to York for the Ochre Café menus',
       noteEditing: editingNote, noteSaved: !editingNote, noteDraft: st.noteDraft, note: cur.note || '', canCancelNote: !!cur.note,
       setNote: (e) => this.setState({ noteDraft: e.target.value }),
       saveNote: () => {

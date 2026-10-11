@@ -215,7 +215,7 @@ a{color:#18161F}a:hover{color:#000000}
                 </select>
               </label>
               <label style="flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-                <span style="font-size: 13px; font-weight: 600;">Amount including tax ({{mb.sym}})</span>
+                <span style="font-size: 13px; font-weight: 600;">{{mb.amtLabel}} ({{mb.sym}})</span>
                 <input class="be-field" type="text" inputmode="decimal" placeholder="0.00" value="{{mb.amount}}" onChange="{{setMbAmount}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid {{mb.amtBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
               </label>
             </div>
@@ -330,7 +330,7 @@ class Component extends DCLogic {
     this.state = {
       toast: null, editId: null, ed: null, edErr: false, hist: {},
       nw: null, nwErr: '',
-      mb: { open: false, inv: '', amount: '', reason: 'Mistake on the invoice', way: '', tried: false },
+      mb: { open: false, inv: '', amount: '', reason: 'Mistake on the invoice', way: '', tried: false }, mbHash: null,
       issued: null, viewId: null
     };
   }
@@ -338,11 +338,18 @@ class Component extends DCLogic {
   renderVals() {
     const st = this.state;
     const money = BE.money, num = BE.num;
-    const usd = (n) => BE.money(n, 'USD', { whole: true });
+    const usd = (n) => BE.money(n, null, { whole: true });
     const ord = (d) => d + (d === 1 || d === 21 ? 'st' : d === 2 ? 'nd' : d === 3 ? 'rd' : 'th');
     const MON = BE.MON;
-    const runsFrom = (day) => { const out = []; let m = day > 4 ? 9 : 10; for (let i = 0; i < 3; i++) { out.push(MON[m % 12] + ' ' + day + (m >= 12 ? ', 2027' : '')); m++; } return out; };
+    const runsFrom = (day) => { const out = []; let m = day > 11 ? 9 : 10; for (let i = 0; i < 3; i++) { out.push(day + ' ' + MON[m % 12] + (m >= 12 ? ' 2027' : '')); m++; } return out; };
     const profile = BE.get('profile') || {};
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const vatOn = BE.vatOn(), ssclOn = BE.ssclOn();
+    const sym = String(pack.symbol || '£').trim();
+    const withTax = (amt) => BE.calcTax([{ qty: 1, rate: Number(amt) || 0 }], 0).total;
+    const hash = BE.hash();
+    const aDoc = vatOn ? 'a ' + BE.invTitle() : 'an invoice';
     const custs = BE.all('customers').slice().sort((a, b) => a.name.localeCompare(b.name));
     const custHref = (who) => { const c = BE.find('customers', who, 'name'); return c ? 'SellCustomer.dc.html#' + c.id : 'SellCustomers.dc.html'; };
     const invoices = BE.all('invoices');
@@ -351,26 +358,25 @@ class Component extends DCLogic {
 
     // ---------- repeating ----------
     const active = plansAll.filter((p) => !p.paused);
-    const monthlyUsd = active.reduce((a, p) => a + BE.usd(p.amount, p.cur), 0);
+    const monthlyUsd = active.reduce((a, p) => a + withTax(p.amount), 0);
     const plans = plansAll.map((p) => {
       const runs = runsFrom(p.day);
-      const amt = money(p.amount, p.cur), amtUsd = usd(BE.usd(p.amount, p.cur));
+      const amt = money(withTax(p.amount)), amtUsd = amt;
       const next = p.skip ? runs[1] : runs[0];
       const editing = st.editId === p.id;
-      const auto = p.how === 'auto';
       const feed = p.paused ? 'Paused. Nothing goes out and nothing is added to Coming in until you resume.'
-        : p.skip ? runs[0] + ' is skipped, so that ' + (p.cur === 'USD' ? amt : '≈ ' + amtUsd) + ' won’t be added to Coming in. Billing picks up again ' + runs[1] + '.'
-        : 'Each run adds ' + (p.cur === 'USD' ? amt : '≈ ' + amtUsd) + ' to Coming in on the ' + ord(p.day) + (auto ? ', and the card charge lands the same day.' : '. Sending one now adds it today.');
+        : p.skip ? runs[0] + ' is skipped, so that ' + amt + ' won’t be added to Coming in. Billing picks up again ' + runs[1] + '.'
+        : 'Each run adds ' + amt + ' to Coming in on the ' + ord(p.day) + '. Sending one now adds it today.';
       const mine = invoices.filter((i) => i.who === p.who && !i.draft && (i.repeat || (i.lines || []).some((l) => l.name === p.what)));
       const STATUS = { paid: ['Paid', '#E2F6D5', '#2F5711'], late: ['Late', '#FBE3DF', '#A8200D'], part: ['Part paid', '#E1EEF8', '#1F5E91'], open: ['On the way', '#E1EEF8', '#1F5E91'], void: ['Voided', '#EFEDF3', '#47444F'] };
       return {
-        who: p.who, what: p.what, sym: BE.SYM[p.cur] || '$', custHref: custHref(p.who),
+        who: p.who, what: p.what, sym, custHref: custHref(p.who),
         status: p.paused ? 'Paused' : 'Active', pbg: p.paused ? '#FFF0B8' : '#E2F6D5', pfg: p.paused ? '#6B5000' : '#2F5711',
         schedule: 'every month on the ' + ord(p.day) + (p.ends === 'dec' ? ', until December 2026' : p.ends === 'jun' ? ', until June 2027' : ''),
-        how: auto ? 'Charges their card on file' + (p.card ? ' (' + p.card + ')' : '') + ' automatically' : 'Emailed; they pay by bank transfer',
-        howIcon: auto ? 'M3 6h18v12H3zM3 10h18' : 'M4 6h16v12H4zM4 7l8 6 8-6',
+        how: 'Emailed as ' + aDoc + '; you record the payment',
+        howIcon: 'M4 6h16v12H4zM4 7l8 6 8-6',
         count: (p.count || 0) + ' sent so far',
-        amount: amt, usd: p.cur === 'USD' ? 'per month' : '≈ ' + amtUsd + ' per month',
+        amount: amt, usd: vatOn ? money(p.amount) + ' before ' + (ssclOn ? 'SSCL and VAT' : 'VAT') + ' · per month' : 'per month',
         runs: runs.map((r, i) => {
           const skipped = p.skip && i === 0, isNext = !p.paused && r === next;
           return { label: skipped ? r + ' · skipped' : isNext ? 'Next: ' + r : r, bg: isNext ? '#EEE8FF' : '#FFFFFF', border: isNext ? '#7A5AF8' : '#E2DFE8', fg: p.paused || skipped ? '#5F5B68' : '#18161F', strike: skipped ? 'line-through' : 'none' };
@@ -379,7 +385,7 @@ class Component extends DCLogic {
         pauseLabel: p.paused ? 'Resume' : 'Pause', pauseIcon: p.paused ? 'M7 5v14l11-7z' : 'M8 5v14M16 5v14', pauseBg: p.paused ? '#B9A3FF' : 'rgba(24,22,31,0.07)',
         togglePause: () => { BE.update('recurring', p.id, { paused: !p.paused }); BE.log((p.paused ? 'Resumed ' : 'Paused ') + p.who + '’s repeating invoice'); this.notify(p.paused ? p.who + ' resumed · next invoice ' + next : p.who + ' paused · no invoices until you resume'); },
         skipLabel: p.skip ? 'Undo skip' : 'Skip next (' + runs[0] + ')', skipOpacity: p.paused ? '0.5' : '1',
-        toggleSkip: () => { BE.update('recurring', p.id, { skip: !p.skip }); this.notify(p.skip ? runs[0] + ' is back on for ' + p.who : runs[0] + ' skipped for ' + p.who + '. We’ll tell them by email.'); },
+        toggleSkip: () => { BE.update('recurring', p.id, { skip: !p.skip }); this.notify(p.skip ? runs[0] + ' is back on for ' + p.who : runs[0] + ' skipped for ' + p.who + '.'); },
         sendNow: () => {
           const before = BE.totals().in;
           const inv = BE.runRecurring(p.id);
@@ -388,52 +394,51 @@ class Component extends DCLogic {
           this.setState({ issued: { text: inv.num + ' sent to ' + p.who + ' for ' + amt + '. Coming in is now ' + usd(BE.totals().in) + '.', href: 'SellInvoices.dc.html#' + inv.num, link: 'Open ' + inv.num } });
           this.notify(inv.num + ' sent to ' + p.who + ' · ' + usd(added) + ' added to Coming in');
         },
-        edit: () => this.setState({ editId: p.id, edErr: false, ed: { amount: String(p.amount), day: String(p.day), how: p.how, ends: p.ends || 'never' } }),
+        edit: () => this.setState({ editId: p.id, edErr: false, ed: { amount: String(p.amount), day: String(p.day), how: 'email', ends: p.ends || 'never' } }),
         histOpen: !!st.hist[p.id], historyLabel: st.hist[p.id] ? 'Hide past invoices' : 'Past invoices',
         history: () => this.setState({ hist: Object.assign({}, st.hist, { [p.id]: !st.hist[p.id] }) }),
-        hist: mine.map((i) => { const s = STATUS[BE.invStatus(i)] || STATUS.open; return { num: i.num, href: 'SellInvoices.dc.html#' + i.num, date: i.issued + (BE.invOpen(i) > 0 ? ' · due ' + i.due : ''), status: s[0], bg: s[1], fg: s[2], amount: money(BE.invTotal(i), i.cur) }; }),
+        hist: mine.map((i) => { const s = STATUS[BE.invStatus(i)] || STATUS.open; return { num: i.num, href: 'SellInvoices.dc.html#' + i.num, date: i.issued + (BE.invOpen(i) > 0 ? ' · due ' + i.due : ''), status: s[0], bg: s[1], fg: s[2], amount: money(BE.invTotal(i)) }; }),
         histNote: mine.length ? 'Older invoices are in All invoices.' : 'Nothing sent from this one yet. The first goes out ' + next + '.'
       };
     });
-    const ed = st.ed || { amount: '', day: '1', how: 'auto', ends: 'never' };
+    const ed = st.ed || { amount: '', day: '1', how: 'email', ends: 'never' };
     const edPlan = plansAll.find((p) => p.id === st.editId);
     const setEd = (patch) => this.setState({ ed: Object.assign({}, this.state.ed, patch), edErr: false });
-    const HOWS = [{ k: 'auto', label: 'Charge card on file' }, { k: 'email', label: 'Email the invoice' }];
     const edVals = {
       amount: ed.amount, day: ed.day, ends: ed.ends, hasError: st.edErr, amountBorder: st.edErr ? '#A8200D' : '#CBC7D3',
-      hows: HOWS.map((h) => ({ label: h.label, on: ed.how === h.k, bg: ed.how === h.k ? '#18161F' : 'transparent', fg: ed.how === h.k ? '#FFFFFF' : '#18161F', pick: () => setEd({ how: h.k }) })),
-      howHint: ed.how === 'auto' ? 'We charge the card and email a receipt. If it fails, we email the invoice instead and tell you.' : 'They get the invoice by email with a pay link. We remind them 3 days before it’s due.'
+      howHint: 'They get the invoice by email with your payment details. When the money arrives, record it on the invoice.'
     };
 
     // new plan
     const nw = st.nw;
     const setNw = (patch) => this.setState({ nw: Object.assign({}, this.state.nw, patch), nwErr: '' });
     const nwCust = nw ? custs.find((c) => c.name === nw.who) : null;
-    const nwCur = nwCust ? (nwCust.cur || 'USD') : 'USD';
+    const nwCur = profile.currency || pack.currency;
     const nwAmt = nw ? num(nw.amount) : 0;
     const nwVals = nw ? {
-      open: true, who: nw.who, what: nw.what, amount: nw.amount, day: nw.day, sym: BE.SYM[nwCur] || '$', noCustomers: custs.length === 0,
+      open: true, who: nw.who, what: nw.what, amount: nw.amount, day: nw.day, sym, noCustomers: custs.length === 0,
       whoBorder: st.nwErr && !nw.who ? '#A8200D' : '#CBC7D3', amountBorder: st.nwErr && !(nwAmt > 0) ? '#A8200D' : '#CBC7D3',
-      hows: HOWS.map((h) => ({ label: h.label, on: nw.how === h.k, bg: nw.how === h.k ? '#18161F' : 'transparent', fg: nw.how === h.k ? '#FFFFFF' : '#18161F', pick: () => setNw({ how: h.k }) })),
-      feed: nwAmt > 0 ? 'Each run adds ' + money(nwAmt, nwCur) + (nwCur !== 'USD' ? ' (≈ ' + usd(BE.usd(nwAmt, nwCur)) + ')' : '') + ' to Coming in on the ' + ord(+nw.day) + '. The first one goes out ' + runsFrom(+nw.day)[0] + '.' : 'Nothing is added to Coming in until the first invoice goes out.',
+      feed: nwAmt > 0 ? 'Each run adds ' + money(withTax(nwAmt)) + (vatOn ? ' (with ' + (ssclOn ? 'SSCL and VAT' : 'VAT') + ')' : '') + ' to Coming in on the ' + ord(+nw.day) + '. The first one goes out ' + runsFrom(+nw.day)[0] + '.' : 'Nothing is added to Coming in until the first invoice goes out.',
       hasError: !!st.nwErr, error: st.nwErr
-    } : { open: false, hows: [] };
+    } : { open: false };
 
     // ---------- money back ----------
     const sent = invoices.filter((i) => !i.draft && !i.void);
     const openInv = sent.filter((i) => BE.invOpen(i) > 0);
     const paidInv = sent.filter((i) => (Number(i.paid) || 0) > 0);
-    const lab = (i, paid) => i.num + ' · ' + i.who + ' · ' + (paid ? money(i.paid, i.cur) + ' paid' + (i.paidHow ? ' by ' + String(i.paidHow).toLowerCase() : '') : money(BE.invOpen(i), i.cur) + ' open');
-    const mb = st.mb;
-    const setMb = (patch) => this.setState({ mb: Object.assign({}, this.state.mb, patch) });
+    const lab = (i, paid) => i.num + ' · ' + i.who + ' · ' + (paid ? money(i.paid) + ' paid' + (i.paidHow ? ' by ' + String(i.paidHow).toLowerCase() : '') : money(BE.invOpen(i)) + ' open');
+    // #back=HS-0045 opens money back for that invoice
+    const backNum = /^back=/.test(hash) ? hash.slice(5) : '';
+    const backInv = backNum && st.mbHash !== hash ? sent.find((i) => i.num === backNum) : null;
+    const mb = backInv ? { open: true, inv: backInv.num, amount: '', reason: 'Mistake on the invoice', way: '', tried: false } : st.mb;
+    const setMb = (patch) => this.setState({ mb: Object.assign({}, mb, patch), mbHash: hash });
     const inv = mb.inv ? BE.find('invoices', mb.inv, 'num') : null;
     const amount = num(mb.amount);
     const isPaid = inv && (Number(inv.paid) || 0) > 0;
     const isOpen = inv && BE.invOpen(inv) > 0;
-    const viaCard = inv && /card|apple/i.test(inv.paidHow || '');
     const WAYS = [
-      { k: 'apply', label: 'Take it off the invoice', ok: !!isOpen, max: inv ? BE.invOpen(inv) : 0, hint: isOpen ? 'They pay less: ' + money(BE.invOpen(inv), inv.cur) + ' → ' + money(Math.max(0, BE.invOpen(inv) - amount), inv.cur) + '.' : 'Only for invoices that aren’t paid yet.' },
-      { k: 'refund', label: viaCard ? 'Refund to their card' : 'Send a bank refund', ok: !!isPaid, max: inv ? Number(inv.paid) || 0 : 0, hint: isPaid ? (viaCard ? 'Back to the card they paid with. Recorded in Going out under Refunds.' : 'We send it from Chase ••4417. Recorded in Going out under Refunds.') : 'Only for invoices already paid.' },
+      { k: 'apply', label: 'Take it off the invoice', ok: !!isOpen, max: inv ? BE.invOpen(inv) : 0, hint: isOpen ? 'They pay less: ' + money(BE.invOpen(inv)) + ' → ' + money(Math.max(0, BE.invOpen(inv) - amount)) + '.' : 'Only for invoices that aren’t paid yet.' },
+      { k: 'refund', label: 'Pay it back', ok: !!isPaid, max: inv ? Number(inv.paid) || 0 : 0, hint: isPaid ? 'You pay them back by bank transfer' + (lk ? ' or cheque' : '') + ' yourself. We record it in Going out.' : 'Only for invoices already paid.' },
       { k: 'credit', label: 'Keep as credit', ok: !!inv, max: inv ? BE.invTotal(inv) : 0, hint: 'Held for their next invoice. Your numbers don’t change until it’s used.' }
     ];
     const wayObj = WAYS.find((w) => w.k === mb.way && w.ok) || WAYS.find((w) => w.ok) || { k: '', max: 0 };
@@ -442,36 +447,38 @@ class Component extends DCLogic {
     if (mb.tried) {
       if (!inv) errors.push('Choose the invoice this is for.');
       if (!(amount > 0)) errors.push('Enter how much to give back.');
-      else if (inv && amount > wayObj.max) errors.push('That’s more than ' + (way === 'refund' ? 'they paid' : way === 'apply' ? 'is still open' : 'the invoice') + ' (' + money(wayObj.max, inv.cur) + ').');
+      else if (inv && amount > wayObj.max) errors.push('That’s more than ' + (way === 'refund' ? 'they paid' : way === 'apply' ? 'is still open' : 'the invoice') + ' (' + money(wayObj.max) + ').');
     }
     const cn = BE.nextNumber('CN');
     const valid = inv && amount > 0 && amount <= wayObj.max;
-    const amtUsd = inv ? BE.usd(amount, inv.cur) : 0;
+    const amtUsd = inv ? amount : 0;
     const counted = inv && inv.inMonth && inv.dueIn >= 0;
     let fx = { numLabel: 'Coming in', dot: '#7A5AF8', before: t.fmt.in, after: t.fmt.in, moves: true, explain: 'Pick an invoice to see the effect on your three numbers.' };
     if (inv && way === 'apply') fx = counted
-      ? { numLabel: 'Coming in', dot: '#7A5AF8', before: t.fmt.in, after: usd(t.in - (valid ? amtUsd : 0)), moves: true, explain: inv.num + ' is money on the way this month, so Coming in drops by ' + money(valid ? amount : 0, inv.cur) + '.' }
+      ? { numLabel: 'Coming in', dot: '#7A5AF8', before: t.fmt.in, after: usd(t.in - (valid ? amtUsd : 0)), moves: true, explain: inv.num + ' is money on the way this month, so Coming in drops by ' + money(valid ? amount : 0) + '.' + (inv.vatOn ? ' The ' + (inv.ssclOn ? 'SSCL and VAT' : 'VAT') + ' on it comes down by its share too.' : '') }
       : { numLabel: 'Coming in', dot: '#7A5AF8', before: t.fmt.in, after: t.fmt.in, moves: false, explain: inv.num + (inv.dueIn < 0 ? ' is late, so it isn’t in October’s Coming in. It just shrinks what they owe.' : ' is due after October, so October’s Coming in doesn’t change. It just shrinks what they owe.') };
-    if (inv && way === 'refund') fx = { numLabel: 'Going out', dot: '#E0752D', before: t.fmt.out, after: usd(t.out + (valid ? amtUsd : 0)), moves: true, explain: 'The money they paid stays in Coming in. The refund is recorded in Going out under Refunds, so Yours to keep drops.' };
+    if (inv && way === 'refund') fx = { numLabel: 'Going out', dot: '#E0752D', before: t.fmt.out, after: usd(t.out + (valid ? amtUsd : 0)), moves: true, explain: 'The money they paid stays in Coming in. The refund is recorded in Going out, so Yours to keep drops.' };
     if (inv && way === 'credit') fx = { numLabel: 'Coming in', dot: '#7A5AF8', before: t.fmt.in, after: t.fmt.in, moves: false, explain: 'Nothing changes today. The credit comes off ' + inv.who + '’s next invoice.' };
     const mbVals = Object.assign({
-      open: mb.open, inv: mb.inv, amount: mb.amount, cn, sym: inv ? (BE.SYM[inv.cur] || '$') : '$', noInvoices: sent.length === 0,
+      open: mb.open, inv: mb.inv, amount: mb.amount, cn, sym, noInvoices: sent.length === 0,
+      amtLabel: inv && inv.vatOn ? 'Amount including ' + (inv.ssclOn ? 'SSCL and VAT' : 'VAT') : 'Amount',
+      sub: 'We write the credit note (' + cn + ') and you email it with the change.' + (lk && vatOn ? ' It reduces the output VAT and SSCL for this period.' : ''),
       invBorder: mb.tried && !inv ? '#A8200D' : '#CBC7D3', amtBorder: mb.tried && !valid ? '#A8200D' : '#CBC7D3',
       reasons: ['Mistake on the invoice', 'Work not delivered', 'Damaged product', 'Goodwill'].map((r) => ({ label: r, on: mb.reason === r, bg: mb.reason === r ? '#EEE8FF' : '#FFFFFF', border: mb.reason === r ? '#7A5AF8' : '#CBC7D3', pick: () => setMb({ reason: r }) })),
       ways: WAYS.map((w) => ({ label: w.label, hint: w.hint, on: w.k === way, off: !w.ok, opacity: w.ok ? '1' : '0.55', bg: w.k === way ? '#EEE8FF' : '#FFFFFF', border: w.k === way ? '2px solid #7A5AF8' : '1px solid #E2DFE8', pick: () => setMb({ way: w.k }) })),
       errors, hasErrors: errors.length > 0, strike: fx.moves ? 'line-through' : 'none',
-      hasInvLine: !!inv, invLine: inv ? inv.num + ' · ' + inv.who + ' · ' + money(BE.invTotal(inv), inv.cur) + ' · ' + (isOpen ? money(BE.invOpen(inv), inv.cur) + ' still open' : 'paid' + (inv.paidHow ? ' by ' + String(inv.paidHow).toLowerCase() : '')) : '',
-      btn: amount > 0 && inv ? 'Issue ' + cn + ' · ' + money(amount, inv.cur) : 'Issue ' + cn
+      hasInvLine: !!inv, invLine: inv ? inv.num + ' · ' + inv.who + ' · ' + money(BE.invTotal(inv)) + ' · ' + (isOpen ? money(BE.invOpen(inv)) + ' still open' : 'paid' + (inv.paidHow ? ' by ' + String(inv.paidHow).toLowerCase() : '')) : '',
+      btn: amount > 0 && inv ? 'Issue ' + cn + ' · ' + money(amount) : 'Issue ' + cn
     }, fx);
     const issue = () => {
-      if (!valid) { setMb({ tried: true }); return; }
+      if (!valid) { setMb({ tried: true, open: true }); return; }
       const before = BE.totals();
       const c = BE.giveMoneyBack({ inv: inv.num, amount, reason: mb.reason, way });
       const after = BE.totals();
-      const msg = way === 'apply' ? cn + ' issued · ' + money(amount, inv.cur) + ' off ' + inv.num + (after.in !== before.in ? ', Coming in now ' + after.fmt.in : '')
-        : way === 'refund' ? cn + ' refund recorded in Going out (Refunds) · Going out now ' + after.fmt.out
+      const msg = way === 'apply' ? cn + ' issued · ' + money(amount) + ' off ' + inv.num + (after.in !== before.in ? ', Coming in now ' + after.fmt.in : '')
+        : way === 'refund' ? cn + ' refund recorded in Going out · Going out now ' + after.fmt.out
         : cn + ' held as credit for ' + inv.who;
-      this.setState({ mb: { open: false, inv: '', amount: '', reason: 'Mistake on the invoice', way: '', tried: false },
+      this.setState({ mbHash: hash, mb: { open: false, inv: '', amount: '', reason: 'Mistake on the invoice', way: '', tried: false },
         issued: { text: msg + '.', href: way === 'refund' ? 'ThreeOut.dc.html' : 'SellInvoices.dc.html#' + inv.num, link: way === 'refund' ? 'See Going out' : 'Open ' + inv.num }, viewId: c ? c.id : null });
       this.notify(msg);
     };
@@ -481,37 +488,43 @@ class Component extends DCLogic {
       const k = KIND[c.kind] || KIND.apply;
       return {
         num: c.num, who: c.who, date: c.date, inv: c.inv, invHref: 'SellInvoices.dc.html#' + c.inv, custHref: custHref(c.who),
-        amount: money(c.amount, c.cur), reason: c.reason, how: c.how, status: k[0], pbg: k[1], pfg: k[2],
+        amount: money(c.amount), reason: c.reason, how: c.how, status: k[0], pbg: k[1], pfg: k[2],
         border: i === 0 ? '0' : '1px solid #EFEDF3', viewLabel: 'View ' + c.num,
         view: () => this.setState({ viewId: st.viewId === c.id ? null : c.id })
       };
     });
     const vc = cnList.find((c) => c.id === st.viewId);
     const view = vc ? { on: true, num: vc.num, who: vc.who, biz: profile.business || 'Your business', rows: [
-      { label: 'To', value: vc.who }, { label: 'Against invoice', value: vc.inv }, { label: 'Date', value: vc.date + ', 2026' },
-      { label: 'Amount', value: money(vc.amount, vc.cur) }, { label: 'Reason', value: vc.reason }, { label: 'How', value: vc.how }
-    ] } : { on: false, rows: [] };
+      { label: 'To', value: vc.who }, { label: 'Against invoice', value: vc.inv }, { label: 'Date', value: vc.date + ' 2026' }]
+      .concat(vc.sscl != null || vc.vat != null ? [{ label: 'Value of supply', value: money(vc.net || 0, null, { cents: true }) }].concat(vc.sscl ? [{ label: 'SSCL', value: money(vc.sscl, null, { cents: true }) }] : []).concat([{ label: 'VAT', value: money(vc.vat || 0, null, { cents: true }) }]) : [])
+      .concat([{ label: 'Total credit', value: money(vc.amount, null, { cents: true }) }, { label: 'Reason', value: vc.reason }, { label: 'How', value: vc.how }]) } : { on: false, rows: [] };
 
     return {
       toast: st.toast,
       plans, planCount: plans.length, noPlans: plans.length === 0 && !nw, ed: edVals, nw: nwVals, monthly: usd(monthlyUsd),
-      monthlyHint: plansAll.length === 0 ? 'Nothing repeats yet' : active.length === plansAll.length ? 'From ' + active.length + (active.length === 1 ? ' customer' : ' customers') + (plansAll.some((p) => p.cur !== 'USD') ? ' · other currencies in dollars at today’s rate' : '') : active.length + ' of ' + plansAll.length + ' active · paused ones don’t count',
-      custOpts: custs.map((c) => ({ name: c.name, label: c.name + (c.cur && c.cur !== 'USD' ? ' · ' + c.cur : '') })),
+      monthlyHint: plansAll.length === 0 ? 'Nothing repeats yet' : (active.length === plansAll.length ? 'From ' + active.length + (active.length === 1 ? ' customer' : ' customers') : active.length + ' of ' + plansAll.length + ' active · paused ones don’t count') + (vatOn ? ' · with ' + (ssclOn ? 'SSCL and VAT' : 'VAT') : ''),
+      custOpts: custs.map((c) => ({ name: c.name, label: c.name })),
+      crumbHere: lk ? 'Repeating and credit notes' : 'Repeating and money back',
+      intro: 'Retainers that bill on the same day each month. Each run makes ' + aDoc + ', emailed to your customer, so it shows up in Coming in the day it goes out.',
+      nwSub: 'We email the same ' + (vatOn ? BE.invTitle() : 'invoice') + ' every month on the day you pick.', nwPh: lk ? 'e.g. Social media pack' : 'e.g. Monthly social graphics',
+      amtLabel: vatOn ? 'Amount before ' + (ssclOn ? 'SSCL and VAT' : 'VAT') : 'Amount',
+      mbTitle: lk ? 'Credit notes to customers' : 'Money back to customers', mbBtn: lk ? 'Issue a credit note' : 'Give money back',
+      mbSub: 'Taking money off an invoice lowers Coming in; paying back a paid invoice is recorded in Going out.',
       openNew: () => this.setState({ nw: { who: '', what: '', amount: '', day: '1', how: 'email' }, nwErr: '' }),
       closeNew: () => this.setState({ nw: null, nwErr: '' }),
       setNwWho: (e) => setNw({ who: e.target.value }), setNwWhat: (e) => setNw({ what: e.target.value }), setNwAmount: (e) => setNw({ amount: e.target.value }), setNwDay: (e) => setNw({ day: e.target.value }),
       saveNew: () => {
         if (!nw.who || !(nwAmt > 0)) { this.setState({ nwErr: !nw.who ? 'Choose who it’s for.' : 'Enter an amount above zero.' }); return; }
         const what = String(nw.what || '').trim() || 'Monthly retainer';
-        BE.add('recurring', { id: BE.id('rec'), who: nw.who, what, cur: nwCur, amount: nwAmt, day: +nw.day, how: nw.how, ends: 'never', count: 0, paused: false, skip: false }, { end: true });
-        BE.log('Set up a repeating invoice for ' + nw.who + ' · ' + money(nwAmt, nwCur) + ' every month');
+        BE.add('recurring', { id: BE.id('rec'), who: nw.who, what, cur: nwCur, amount: nwAmt, day: +nw.day, how: 'email', ends: 'never', count: 0, paused: false, skip: false }, { end: true });
+        BE.log('Set up a repeating invoice for ' + nw.who + ' · ' + money(withTax(nwAmt)) + ' every month');
         this.setState({ nw: null });
         this.notify(nw.who + ' now repeats monthly · first invoice ' + runsFrom(+nw.day)[0]);
       },
       setEdAmount: (e) => setEd({ amount: e.target.value }), setEdDay: (e) => setEd({ day: e.target.value }), setEdEnds: (e) => setEd({ ends: e.target.value }),
       saveEdit: () => {
         if (!(num(ed.amount) > 0)) { this.setState({ edErr: true }); return; }
-        BE.update('recurring', st.editId, { amount: num(ed.amount), day: +ed.day, how: ed.how, ends: ed.ends });
+        BE.update('recurring', st.editId, { amount: num(ed.amount), day: +ed.day, how: 'email', ends: ed.ends });
         this.setState({ editId: null });
         this.notify('Saved. ' + (edPlan ? edPlan.who : '') + '’s next invoice uses the new details.');
       },
@@ -525,7 +538,7 @@ class Component extends DCLogic {
       },
       mb: mbVals, mbClosed: !mb.open,
       invOpen: openInv.map((i) => ({ num: i.num, label: lab(i, false) })), invPaid: paidInv.map((i) => ({ num: i.num, label: lab(i, true) })),
-      openMb: () => this.setState({ mb: Object.assign({}, this.state.mb, { open: true }), issued: null }), closeMb: () => setMb({ open: false, tried: false }),
+      openMb: () => this.setState({ mb: Object.assign({}, mb, { open: true }), mbHash: hash, issued: null }), closeMb: () => setMb({ open: false, tried: false }),
       setMbInv: (e) => setMb({ inv: e.target.value, way: '' }),
       setMbAmount: (e) => setMb({ amount: e.target.value }),
       issue, credits, hasCredits: credits.length > 0, noCredits: credits.length === 0,

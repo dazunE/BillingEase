@@ -289,16 +289,4 @@
       return Object.assign({}, patch || {}, fn ? fn(x) : {}, { events: [{ label: label, who: (BE.get('profile') || {}).owner || 'You', date: BE.today }].concat(x.events || []) });
     });
   };
-
-  /** Pay a payroll run now: it moves from scheduled to paid in Going out. */
-  BE.payPayroll = function (id) {
-    var run = BE.find('payroll', id);
-    if (!run || run.status === 'paid') return null;
-    var x = BE.addExpense({ who: 'Payroll', cat: 'Payroll', how: 'Chase ••4417', amount: run.net, inMonth: true, receipt: true });
-    BE.change(function (s) {
-      s.expenses = s.expenses.map(function (e) { return e.id === x.id ? Object.assign({}, e, { payroll: id, raw: 'DIRECT DEP ' + String(run.label || 'PAYROLL').toUpperCase(), note: (run.people || []).length + ' people · take-home pay for ' + run.date }) : e; });
-      s.payroll = s.payroll.map(function (r) { return r.id === id ? Object.assign({}, r, { status: 'paid', paidOn: BE.today, expense: x.id }) : r; });
-    });
-    return x;
-  };
 })();

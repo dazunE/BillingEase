@@ -82,8 +82,8 @@ a{color:#18161F}a:hover{color:#000000}
           <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
             <span style="width: 48px; height: 48px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Nothing here yet</span>
-            <span style="font-size: 15px; color: #47444F; max-width: 440px; line-height: 1.5;">When a customer views a quote, pays an invoice or something needs your OK, you&#39;ll hear about it here.</span>
-            <a href="ThreeIn.dc.html#bill" style="margin-top: 6px; display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Send your first invoice</a>
+            <span style="font-size: 15px; color: #47444F; max-width: 440px; line-height: 1.5;">{{noneText}}</span>
+            <a href="ThreeIn.dc.html#bill" style="margin-top: 6px; display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{noneCta}}</a>
           </div>
         </sc-if>
       </section>
@@ -91,11 +91,11 @@ a{color:#18161F}a:hover{color:#000000}
       <aside aria-labelledby="how-h" style="flex: 1 1 280px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
         <h2 id="how-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">What you hear about</h2>
         <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.45; color: #47444F;">
-          <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span><span>Payments that land, and quotes or invoices a customer opens</span></li>
-          <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #E0752D; flex: none;"></span><span>Payroll to approve, bills coming due, stock running low</span></li>
-          <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #18161F; flex: none;"></span><span>Tax dates, and changes to your team</span></li>
+          <sc-for list="{{hear}}" as="hr" hint-placeholder-count="3">
+            <li style="display: flex; gap: 10px;"><span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: {{hr.dot}}; flex: none;"></span><span>{{hr.text}}</span></li>
+          </sc-for>
         </ul>
-        <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.45;">What we handle on our own goes to Handled for you on Home instead, so this list stays short.</p>
+        <p style="margin: 0; font-size: 13px; color: #5F5B68; line-height: 1.45;">Everything else you and {{practice}} do goes to Recent activity on Home, so this list stays short.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 14px; font-weight: 600;">
           <a href="ThreeHome.dc.html">Back to Home</a>
           <a href="Help.dc.html">Help</a>
@@ -125,6 +125,8 @@ class Component extends DCLogic {
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
     const st = this.state;
+    const prc = BE.practice();
+    const pr = prc.has ? prc.short : 'your ' + prc.noun;
     const all = BE.all('notifications');
     const unread = all.filter((n) => !n.read).length;
     // Unread first, then read; newest first within each (the list is stored newest first).
@@ -136,6 +138,9 @@ class Component extends DCLogic {
       const h = n.href || '';
       if (/^Sell|^ThreeIn/.test(h)) return { tint: '#EEE8FF', icon: /Quote/.test(h) ? 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' : 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' };
       if (/^Spend|^ThreeOut/.test(h)) return { tint: '#FDE6D6', icon: /Payroll/.test(h) ? 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' : 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' };
+      if (/^Accountant|^PracticeView/.test(h)) return { tint: '#EEE8FF', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' };
+      if (/^Quarters|^TaxPeriods/.test(h)) return { tint: '#FFF0B8', icon: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4' };
+      if (/^Properties|^Mileage/.test(h)) return { tint: '#FDE6D6', icon: 'M4 11 12 4l8 7v9h-5v-6H9v6H4z' };
       if (/^Books|^ThreeKeep/.test(h)) return { tint: '#EFEDF3', icon: 'M4 20V10M10 20V4M16 20v-7M22 20H2' };
       if (/^Biz/.test(h)) return { tint: '#EFEDF3', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' };
       return { tint: '#EEE8FF', icon: 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0' };
@@ -165,6 +170,20 @@ class Component extends DCLogic {
       caughtUp: all.length > 0 && items.length === 0,
       noneYet: all.length === 0,
       showAll: () => this.setState({ filter: 'all' }),
+      hear: (BE.is('lk') ? [
+        { dot: '#18161F', text: 'Requests from ' + pr + ', and replies to your questions' },
+        { dot: '#7A5AF8', text: 'Payments you record and invoices that go late' },
+        { dot: '#E0752D', text: 'Payroll to run, EPF, ETF and APIT dates, bills coming due' },
+        { dot: '#FFF0B8', text: 'VAT and SSCL return dates and income tax instalments' }
+      ] : [
+        { dot: '#18161F', text: 'Requests from ' + pr + ', and replies to your questions' },
+        { dot: '#7A5AF8', text: 'Payments you record and invoices that go late' },
+        { dot: '#E0752D', text: 'Bills coming due, PAYE dates and property costs' },
+        { dot: '#FFF0B8', text: 'When a quarter closes and when its update is due' }
+      ]),
+      practice: pr,
+      noneText: 'When ' + pr + ' sends a request, an invoice goes late or a ' + (BE.is('lk') ? 'VAT return or payroll date' : 'quarter or tax date') + ' comes up, you’ll hear about it here.',
+      noneCta: BE.is('lk') && (BE.get('profile') || {}).vatRegistered ? 'Send your first tax invoice' : 'Send your first invoice',
       toast: st.toast
     };
   }
