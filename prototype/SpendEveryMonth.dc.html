@@ -267,6 +267,170 @@ a{color:#18161F}a:hover{color:#000000}
   </sc-if>
 </div>
 </x-dc>
-@@SCRIPT@@
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { toast: null, menuId: null, editId: null, eAmount: '', eDay: '', eCard: '', eCat: '', addOpen: BE.hash() === 'add', f: this.fresh(), errors: [] };
+  }
+  fresh() { return { name: '', amount: '', day: '15', cat: '', card: BE.is('lk') ? 'Bank transfer' : 'Card', vat: '' }; }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  componentWillUnmount() { clearTimeout(this._t); }
+  renderVals() {
+    const st = this.state;
+    const money = (n) => BE.money(n);
+    const out = () => BE.totals().fmt.out;
+    const lk = BE.is('lk');
+    const pack = BE.pack();
+    const prof = BE.get('profile') || {};
+    const TODAY = 11;
+    const DOW = ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed']; // 1 Oct 2026 is a Thursday
+    const dow = (d) => DOW[(d - 1) % 7];
+    const suf = (d) => (d === 31 ? '' : ((d % 10 === 1 && d !== 11) ? 'st' : (d % 10 === 2 && d !== 12) ? 'nd' : (d % 10 === 3 && d !== 13) ? 'rd' : 'th'));
+    const dayText = (d) => (d === 31 ? 'last day' : d + suf(d));
+    const methods = BE.payMethods();
+    const landlord = !!(pack.features && pack.features.landlord) && (prof.kind === 'both' || prof.kind === 'landlord');
+    const CATS = BE.expenseCats().concat(landlord ? BE.expenseCats('property').map((c) => Object.assign({}, c, { name: 'Property: ' + c.name })) : []);
+    const catOpts = CATS.map((c) => ({ id: c.id, name: c.name }));
+    const catById = (id) => CATS.filter((c) => c.id === id)[0] || null;
+    const defCat = (CATS.filter((c) => c.id === 'other')[0] || CATS[0] || {}).id;
+
+    const allItems = BE.all('monthly').slice().sort((a, b) => a.day - b.day);
+    const items = allItems.filter((it) => it.active !== false);
+    const stoppedItems = allItems.filter((it) => it.active === false);
+    const state = (it) => BE.monthlyState(it);
+    const counts = (it) => state(it) === 'due' || state(it) === 'late';
+    const monthTotal = items.reduce((a, it) => a + it.amount, 0);
+    const paidT = allItems.filter((it) => it.paidDay).reduce((a, it) => a + it.amount, 0);
+    const dueT = BE.totals().outMonthly;
+    const paidPct = Math.round(paidT / Math.max(1, paidT + dueT) * 100);
+    const t = { month: money(monthTotal), year: money(Math.round(monthTotal * 12 * 100) / 100), paid: money(paidT), due: money(dueT), paidPct, duePct: 100 - paidPct };
+    const vendorHref = (it) => { const v = (it.vendor && BE.find('vendors', it.vendor)) || BE.vendorFor(it.who); return v ? 'SpendVendor.dc.html#' + v.id : ''; };
+    const record = (it) => {
+      const x = BE.recordMonthly(it.id);
+      this.setState({ menuId: null });
+      if (x) this.notify(it.who + ' recorded · ' + money(it.amount) + ' moved from still to pay to paid. Going out stays ' + out());
+    };
+
+    const stop = (it, kind) => {
+      const was = counts(it);
+      BE.update('monthly', it.id, { active: false, ended: kind, endedOn: BE.today });
+      this.setState({ menuId: null, editId: null });
+      BE.log((kind === 'stopped' ? 'Stopped ' : 'Paused ') + it.who + ' · ' + money(it.amount) + ' a month');
+      this.notify((kind === 'stopped' ? 'Stopped ' : 'Paused ') + it.who + (was ? ' · −' + money(it.amount) + ' off Going out (now ' + out() + ')' : ' · it won’t count from ' + (it.paidDay ? 'November' : 'now on')));
+    };
+
+    const rows = items.map((it, i) => {
+      const s = state(it);
+      let status, bg, fg, next;
+      if (s === 'paid') { status = 'Recorded ' + it.paidDay + ' Oct'; bg = '#E2F6D5'; fg = '#2F5711'; next = it.day + ' Nov'; }
+      else if (s === 'late') { status = 'Was due ' + it.day + ' Oct'; bg = '#FBE3DF'; fg = '#A8200D'; next = 'now'; }
+      else if (s === 'missed') { status = 'Not recorded for October'; bg = '#EFEDF3'; fg = '#47444F'; next = it.day + ' Nov'; }
+      else if (it.day <= TODAY + 3) { status = 'Due ' + it.day + ' Oct'; bg = '#FFF0B8'; fg = '#6B5000'; next = it.day + ' Oct'; }
+      else { status = 'Due ' + it.day + ' Oct'; bg = '#EFEDF3'; fg = '#47444F'; next = it.day + ' Oct'; }
+      const href = vendorHref(it);
+      const c = BE.catById(it.catId);
+      return {
+        who: it.who, href, noHref: !href, cat: c ? c.name : (it.cat || 'Other'), dayText: dayText(it.day), dayNum: it.day === 31 ? 'Last' : it.day, daySuf: it.day === 31 ? 'day' : suf(it.day), card: it.how || '',
+        prop: it.property ? ' · for the property' : '', flag: c && BE.catBadge(c) ? BE.catBadge(c) : '',
+        amount: money(it.amount), status, bg, fg, next, border: i === 0 ? '0' : '1px solid #EFEDF3',
+        menuOpen: st.menuId === it.id, menuLabel: 'More for ' + it.who,
+        toggleMenu: () => this.setState({ menuId: st.menuId === it.id ? null : it.id }),
+        editing: st.editId === it.id, eAmount: st.eAmount, eDay: st.eDay, eCard: st.eCard, eCat: st.eCat, catOpts,
+        edit: () => this.setState({ menuId: null, editId: it.id, eAmount: String(it.amount), eDay: String(it.day), eCard: it.how || methods[0].id, eCat: it.catId || defCat }),
+        setEAmount: (e) => this.setState({ eAmount: e.target.value }),
+        setEDay: (e) => this.setState({ eDay: e.target.value }),
+        setECard: (e) => this.setState({ eCard: e.target.value }),
+        setECat: (e) => this.setState({ eCat: e.target.value }),
+        cancelEdit: () => this.setState({ editId: null }),
+        saveEdit: () => {
+          const v = BE.num(st.eAmount), d = Math.round(BE.num(st.eDay));
+          if (!(v > 0)) { this.notify('Add an amount above ' + money(0)); return; }
+          if (!(d >= 1 && d <= 31)) { this.notify('Pick a day from 1 to 31'); return; }
+          const before = BE.totals().out;
+          const nc = catById(st.eCat);
+          BE.update('monthly', it.id, { amount: Math.round(v * 100) / 100, day: d, how: st.eCard, catId: nc ? nc.id : it.catId, cat: nc ? nc.name.replace(/^Property: /, '') : it.cat });
+          this.setState({ editId: null });
+          const diff = Math.round((BE.totals().out - before) * 100) / 100;
+          this.notify(it.who + ' is now ' + money(v) + ' on the ' + dayText(d) + (diff ? ' · Going out ' + (diff > 0 ? '+' : '−') + money(Math.abs(diff)) + ' (now ' + out() + ')' : ''));
+        },
+        canPay: s !== 'paid',
+        payEarly: () => record(it),
+        pause: () => stop(it, 'paused'),
+        cancel: () => stop(it, 'stopped')
+      };
+    });
+
+    const stopped = stoppedItems.map((it, i) => ({
+      who: it.who, amount: money(it.amount), status: it.ended === 'paused' ? 'Paused' : 'Stopped',
+      meta: (it.cat || 'Other') + ' · was on the ' + dayText(it.day) + (it.endedOn ? ' · since ' + it.endedOn : ''),
+      border: i === 0 ? '0' : '1px solid #EFEDF3',
+      resumeLabel: it.ended === 'paused' ? 'Resume' : 'Start again',
+      resume: () => {
+        BE.update('monthly', it.id, { active: true, ended: null, endedOn: null });
+        this.notify(it.who + ' is back' + (counts(Object.assign({}, it, { active: true })) ? ' · +' + money(it.amount) + ' to Going out (now ' + out() + ')' : ''));
+      }
+    }));
+
+    // Calendar strip
+    const days = [];
+    for (let d = 1; d <= 31; d++) {
+      const paid = allItems.some((it) => it.paidDay && it.day === d && it.active !== false);
+      const due = items.some((it) => counts(it) && it.day === d);
+      days.push({ n: d, bg: paid ? '#E0752D' : (due ? '#F4C3A1' : (d < TODAY ? '#F7F6F9' : '#EFEDF3')), fg: paid ? '#FFFFFF' : (due ? '#18161F' : '#5F5B68'), ring: d === TODAY ? 'inset 0 0 0 2px #18161F' : 'none' });
+    }
+    const upItems = items.filter(counts);
+    const upcoming = upItems.map((it) => ({ dow: dow(it.day), day: it.day, who: it.who, amount: money(it.amount), card: it.how || '', bg: state(it) === 'late' ? '#FBE3DF' : (it.day <= TODAY + 3 ? '#FFF0B8' : '#FDE6D6'),
+      record: () => record(it), recordLabel: 'Record ' + it.who + ' as paid' }));
+
+    // Add form
+    const f = st.f;
+    const amt = BE.num(f.amount), day = parseInt(f.day, 10);
+    const fc = catById(f.cat || defCat) || {};
+    const thisMonth = day > 4;
+    const effect = !(amt > 0) ? 'Add an amount and a day to see how it counts.'
+      : (thisMonth ? money(amt) + ' joins Going out as still to pay' + (day <= TODAY ? ' (its day has passed, so record it once you’ve paid)' : ' for ' + day + ' Oct') + ', then every month after. Going out becomes ' + money(BE.totals().out + amt) + '.'
+        : 'The ' + dayText(day) + ' has passed this month, so the first one is ' + day + ' Nov. October’s numbers stay the same.');
+    const setF = (k) => (e) => this.setState({ f: Object.assign({}, f, { [k]: e.target.value }), errors: [] });
+    const saveAdd = () => {
+      const errs = [];
+      if (!f.name.trim()) errs.push(lk ? 'Give it a name, like “Studio rent”.' : 'Give it a name, like “Office cleaning”.');
+      if (!(amt > 0)) errs.push('Add the amount you pay each month.');
+      const vat = BE.vatOn() ? BE.num(f.vat) : 0;
+      if (vat >= amt && vat > 0) errs.push('The VAT has to be less than the amount.');
+      if (errs.length) { this.setState({ errors: errs }); return; }
+      const v = BE.vendorFor(f.name.trim());
+      const isP = !!fc.property;
+      BE.add('monthly', { id: BE.id('mo'), who: f.name.trim(), vendor: v ? v.id : '', catId: fc.id, cat: String(fc.name || 'Other').replace(/^Property: /, ''), day: day, how: f.card, amount: Math.round(amt * 100) / 100, vat: Math.round(vat * 100) / 100,
+        paidDay: 0, start: thisMonth ? 'Oct' : 'Nov', active: true, property: isP ? ((BE.all('properties')[0] || {}).id || 'ash-grove') : undefined }, { end: true });
+      BE.log('Set up ' + f.name.trim() + ' · ' + money(amt) + ' every month');
+      this.setState({ addOpen: false, f: this.fresh(), errors: [] });
+      this.notify(f.name.trim() + ' set up · ' + money(amt) + ' every month on the ' + dayText(day) + (thisMonth ? ' · +' + money(amt) + ' to Going out (now ' + out() + ')' : ''));
+    };
+    const DAYS = [1, 5, 10, 15, 20, 25, 28, 31];
+
+    const has = allItems.length > 0;
+    return {
+      has, none: !has, sym: pack.symbol === 'Rs' ? 'Rs ' : (pack.symbol || '£'),
+      intro: has ? (lk ? 'Rent, utilities and services you pay every month. Set each one up once; on the day, record the payment and it moves to paid in its category. Until then it counts in Going out as still to pay.' : 'Desk rent, phone and software you pay every month. Set each one up once; on the day, record the payment and it moves to paid in its HMRC category. Until then it counts in Going out as still to pay.')
+        : 'Costs that come back every month, like rent or a phone contract. Set one up and it counts in Going out before you pay it, so Yours to keep already allows for it.',
+      noneText: lk ? 'Studio rent, electricity, internet and cleaning go here. Each one you set up counts in Going out as still to pay until you record the payment.' : 'Desk rent, your phone, software and the flat’s mortgage go here. Each one you set up counts in Going out as still to pay until you record the payment.',
+      t, rows, rowCount: rows.length, noRows: rows.length === 0, days, upcoming, noUpcoming: upcoming.length === 0,
+      upCountText: upItems.length ? upItems.length + (upItems.length === 1 ? ' more payment · ' : ' more payments · ') + t.due + ' still to pay' : 'All recorded for October',
+      stopped, hasStopped: stopped.length > 0, methods, catOpts,
+      addOpen: st.addOpen,
+      openAdd: () => this.setState({ addOpen: !st.addOpen, errors: [] }),
+      closeAdd: () => this.setState({ addOpen: false, errors: [] }),
+      dayOpts: DAYS.map((d) => ({ v: String(d), label: d === 31 ? 'Last day' : dayText(d) })),
+      f: { name: f.name, amount: f.amount, day: f.day, cat: f.cat || defCat, card: f.card, vat: f.vat, effect, namePh: lk ? 'e.g. Studio cleaning' : 'e.g. Office cleaning',
+        official: fc.official || '', badge: BE.catBadge(fc), vatOn: BE.vatOn(), vatLabel: lk ? 'Input VAT each month (from their Tax Invoice)' : 'VAT each month',
+        saveLabel: amt > 0 ? 'Set up ' + money(amt) + ' a month' : 'Set it up' },
+      setName: setF('name'), setAmount: setF('amount'), setDay: setF('day'), setCat: setF('cat'), setCard: setF('card'), setVat: setF('vat'),
+      saveAdd, errors: st.errors, hasErrors: st.errors.length > 0,
+      toast: st.toast
+    };
+  }
+}
+</script>
 </body>
 </html>

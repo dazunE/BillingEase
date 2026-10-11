@@ -401,7 +401,7 @@ class Component extends DCLogic {
       const got = (p.statements || []);
       const gotMonths = months.filter((mo) => entries.some((e) => e.prop === p.id && e.kind === 'income' && e.rentMonth === mo.key)).map((mo) => mo.key);
       const missing = gotMonths.filter((k) => got.indexOf(k) < 0);
-      const lastMissing = missing[missing.length - 1];
+      const lastMissing = missing[0];
       const monthName = (k) => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][+k.slice(5, 7) - 1];
       const editing = st.shareEdit === p.id;
       return {
@@ -425,7 +425,7 @@ class Component extends DCLogic {
         rollHint: firstDue ? 'Tick a month when the rent reaches you. ' + firstDue + ' is due and not ticked yet.' : received ? 'All rent due so far is ticked. Months show here as they come due.' : 'Tick a month when the rent reaches you.',
         hasAgent: !!p.agent, agent: p.agent || '',
         stmtMissing: !!lastMissing,
-        stmtLine: lastMissing ? 'The ' + monthName(lastMissing) + ' statement isn’t attached yet. ' + (got.length ? got.length + ' earlier statement' + (got.length === 1 ? '' : 's') + ' attached.' : '') : (got.length ? 'All ' + got.length + ' statements are attached.' : 'Statements appear here once rent is ticked.'),
+        stmtLine: lastMissing ? (missing.length > 1 ? missing.length + ' statements aren’t attached yet, starting with ' + monthName(lastMissing) + '. ' : 'The ' + monthName(lastMissing) + ' statement isn’t attached yet. ') + (got.length ? got.length + ' earlier statement' + (got.length === 1 ? '' : 's') + ' attached.' : '') : (got.length ? 'All ' + got.length + ' statements are attached.' : 'Statements appear here once rent is ticked.'),
         attachLabel: lastMissing ? 'Attach ' + monthName(lastMissing) + ' statement' : '',
         attach: () => {
           BE.update('properties', p.id, (x) => ({ statements: (x.statements || []).concat([lastMissing]) }));

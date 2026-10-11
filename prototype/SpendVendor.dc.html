@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BillingEase · Vendor</title>
+<title>BillingEase · Supplier</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@ a{color:#18161F}a:hover{color:#000000}
 
   <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
 
-    <dc-import name="AppCrumbs" area="out" mid="Vendors" mid-href="SpendVendors.dc.html" here="{{crumb}}"></dc-import>
+    <dc-import name="AppCrumbs" area="out" mid="Suppliers" mid-href="SpendVendors.dc.html" here="{{crumb}}"></dc-import>
 
     <sc-if value="{{missing}}" hint-placeholder-val="{{false}}">
       <section style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
@@ -48,7 +48,7 @@ a{color:#18161F}a:hover{color:#000000}
             </span>
           </div>
           <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
-            <span style="font-size: 13px; color: #47444F;">Paid in 2026</span>
+            <span style="font-size: 13px; color: #47444F;">Paid this tax year</span>
             <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{p.ytd}}</span>
             <span style="font-size: 13px; color: #47444F;">{{p.openText}}</span>
           </span>
@@ -86,7 +86,7 @@ a{color:#18161F}a:hover{color:#000000}
                     <strong style="font-family: Sora, sans-serif; font-size: 15px; font-variant-numeric: tabular-nums;">{{b.amt}}</strong>
                   </a>
                   <sc-if value="{{b.open}}" hint-placeholder-val="{{true}}">
-                    <button type="button" onClick="{{b.pay}}" aria-label="{{b.payLabel}}" style="min-height: 38px; margin: 0 8px 0 12px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Pay</button>
+                    <button type="button" onClick="{{b.pay}}" aria-label="{{b.payLabel}}" style="min-height: 38px; margin: 0 8px 0 12px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">Mark paid</button>
                   </sc-if>
                 </li>
               </sc-for>
@@ -130,18 +130,12 @@ a{color:#18161F}a:hover{color:#000000}
         </div>
 
         <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
-          <!-- 1099 -->
+          <!-- VAT registration (Sri Lanka) -->
           <sc-if value="{{c.on}}" hint-placeholder-val="{{false}}">
-            <section aria-labelledby="nec-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px;">
-              <h2 id="nec-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: #B9A3FF;">1099 contractor</h2>
-              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{c.nec}}</span>
-              <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #EEE8FF;">{{c.necText}}</p>
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 16px; background: rgba(238,232,255,0.12); font-size: 14px; color: #EEE8FF;">
-                <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><strong style="color: #FFFFFF;">{{c.w9Title}}</strong><span>{{c.w9Text}}</span></span>
-                <sc-if value="{{c.canAsk}}" hint-placeholder-val="{{false}}">
-                  <button type="button" onClick="{{askW9}}" style="min-height: 38px; padding: 0 16px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Ask for a W-9</button>
-                </sc-if>
-              </div>
+            <section aria-labelledby="vat-h" style="background: #18161F; color: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 10px;">
+              <h2 id="vat-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: #B9A3FF;">{{c.title}}</h2>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{c.big}}</span>
+              <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #EEE8FF;">{{c.text}}</p>
             </section>
           </sc-if>
 
@@ -169,15 +163,9 @@ a{color:#18161F}a:hover{color:#000000}
                 </sc-for>
                 <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Usually goes to
                   <select class="be-field" value="{{d.cat}}" onChange="{{setCat}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 15px DM Sans, sans-serif; color: #18161F;">
-                    <sc-for list="{{catOpts}}" as="co" hint-placeholder-count="6"><option value="{{co}}">{{co}}</option></sc-for>
+                    <sc-for list="{{catOpts}}" as="co" hint-placeholder-count="6"><option value="{{co.id}}">{{co.name}}</option></sc-for>
                   </select>
                 </label>
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #F7F6F9;">
-                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">1099 contractor</span><span style="font-size: 13px; color: #5F5B68; line-height: 1.4;">A person you pay for work. We track the total for their 1099-NEC.</span></span>
-                  <button type="button" role="switch" aria-checked="{{d.contractor}}" aria-label="1099 contractor" onClick="{{toggleContractor}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{d.swBg}}; cursor: pointer; padding: 0;">
-                    <span style="position: absolute; top: 3px; left: {{d.swLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span>
-                  </button>
-                </div>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                   <button type="button" onClick="{{saveEdit}}" style="min-height: 42px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save</button>
                   <button type="button" onClick="{{cancelEdit}}" style="min-height: 42px; padding: 0 16px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
@@ -190,11 +178,11 @@ a{color:#18161F}a:hover{color:#000000}
           </section>
 
           <!-- Delete -->
-          <section aria-label="Delete vendor" style="display: flex; flex-direction: column; gap: 10px; padding: 0 4px;">
+          <section aria-label="Delete supplier" style="display: flex; flex-direction: column; gap: 10px; padding: 0 4px;">
             <sc-if value="{{delIdle}}" hint-placeholder-val="{{true}}">
               <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px;">
                 <span style="font-size: 14px; color: #47444F;">Not paying them any more?</span>
-                <button type="button" onClick="{{askDelete}}" style="min-height: 40px; padding: 0 16px; border: 1px solid #A8200D; border-radius: 9999px; background: #FFFFFF; color: #A8200D; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Delete vendor</button>
+                <button type="button" onClick="{{askDelete}}" style="min-height: 40px; padding: 0 16px; border: 1px solid #A8200D; border-radius: 9999px; background: #FFFFFF; color: #A8200D; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Delete supplier</button>
               </div>
             </sc-if>
             <sc-if value="{{delAsk}}" hint-placeholder-val="{{false}}">
@@ -230,105 +218,107 @@ class Component extends DCLogic {
     const st = this.state;
     const money = (n) => BE.money(n);
     const out = () => BE.totals().fmt.out;
+    const lk = BE.is('lk');
+    const pack = BE.pack();
+    const prof = BE.get('profile') || {};
     const vendors = BE.all('vendors');
     const id = BE.hash();
     const v = BE.find('vendors', id) || (id ? null : vendors[0]) || null;
     if (!v) {
-      return { found: false, missing: true, crumb: 'Vendor', toast: st.toast,
-        missingTitle: st.deleted ? st.deleted + ' is deleted' : (vendors.length ? 'This vendor isn’t here' : 'No vendors yet'),
-        missingText: st.deleted ? 'Their bills and payments stay in your books and in Going out. Only the vendor card is gone.' : (vendors.length ? 'They may have been deleted, or the link is out of date.' : 'Vendors show up as you enter bills and record what you pay. Add your first one in Vendors.'),
-        missingCta: vendors.length || st.deleted ? 'All vendors' : 'Add a vendor', missingHref: vendors.length || st.deleted ? 'SpendVendors.dc.html' : 'SpendVendors.dc.html#add' };
+      return { found: false, missing: true, crumb: 'Supplier', toast: st.toast,
+        missingTitle: st.deleted ? st.deleted + ' is deleted' : (vendors.length ? 'This supplier isn’t here' : 'No suppliers yet'),
+        missingText: st.deleted ? 'Their bills and payments stay in your books and in Going out. Only the supplier card is gone.' : (vendors.length ? 'They may have been deleted, or the link is out of date.' : 'Suppliers show up as you enter bills and record what you pay. Add your first one in Suppliers.'),
+        missingCta: vendors.length || st.deleted ? 'All suppliers' : 'Add a supplier', missingHref: vendors.length || st.deleted ? 'SpendVendors.dc.html' : 'SpendVendors.dc.html#add' };
     }
     const s = BE.vendorStats(v);
-    const CATS = ['Printing', 'Office supplies', 'Software', 'Contractors', 'Rent', 'Internet & phone', 'Insurance', 'Travel', 'Fuel', 'Meals', 'Stock you sell', 'Other'];
-    const left = (b) => (BE.billLeft ? BE.billLeft(b) : b.amount - (b.paid || 0));
+    const landlord = !!(pack.features && pack.features.landlord) && (prof.kind === 'both' || prof.kind === 'landlord');
+    const CATS = BE.expenseCats().concat(landlord ? BE.expenseCats('property').map((c) => Object.assign({}, c, { name: 'Property: ' + c.name })) : []);
+    const catOpts = CATS.map((c) => ({ id: c.id, name: c.name }));
+    const vc = BE.catById(v.catId);
     const mo = v.monthly ? BE.find('monthly', v.monthly) : null;
+    const methods = BE.payMethods();
+    const how = methods.some((m) => m.id === v.via) && v.via !== 'Cheque' ? v.via : 'Bank transfer';
 
     // Bills: open first, then paid
-    const sorted = s.open.slice().sort((a, b) => (a.dueIn || 0) - (b.dueIn || 0)).concat(s.bills.filter((b) => b.status === 'paid'));
+    const sorted = s.open.slice().sort((a, b) => (a.dueIn || 0) - (b.dueIn || 0)).concat(s.bills.filter((b) => BE.billLeft(b) <= 0));
     const bills = sorted.map((b) => {
-      const open = b.status !== 'paid';
-      const soon = open && b.dueIn <= 8;
+      const left = BE.billLeft(b);
+      const open = left > 0;
+      const soon = open && b.dueIn <= 7;
       const part = open && (b.paid || 0) > 0;
       return {
         href: 'SpendBill.dc.html#' + b.id, what: b.what || 'Bill', num: b.num ? b.num : '', open,
-        amt: money(open ? left(b) : (BE.billTotal ? BE.billTotal(b) : b.amount)),
+        amt: money(open ? left : BE.billTotal(b)),
         status: open ? (b.dueIn < 0 ? 'Late · was due ' + b.due : 'Due ' + b.due + (part ? ' · part paid' : '')) : 'Paid ' + (b.paidOn || ''),
         bg: open ? (b.dueIn < 0 ? '#FBE3DF' : soon ? '#FFF0B8' : '#EFEDF3') : '#E2F6D5', fg: open ? (b.dueIn < 0 ? '#A8200D' : soon ? '#6B5000' : '#47444F') : '#2F5711',
-        payLabel: 'Pay ' + v.name + ' ' + money(left(b)),
+        payLabel: 'Mark ' + v.name + ' ' + money(left) + ' paid',
         pay: () => {
-          const amt = left(b);
-          const how = /^(Amex|Chase)/.test(v.via || '') ? v.via : 'Chase ••4417';
-          if (BE.payBillAll) BE.payBillAll(b.id, null, how); else BE.payBill(b.id, null, how);
-          this.notify('Paid ' + v.name + ' ' + money(amt) + ' from ' + how + ' · moved from still to pay to paid. Going out stays ' + out());
+          BE.markBillPaid(b.id, null, how);
+          this.notify('Marked ' + money(left) + ' paid to ' + v.name + ' by ' + how.toLowerCase() + ' · moved to paid. Going out stays ' + out());
         }
       };
     });
 
-    // Payments: this month's (from expenses) then earlier ones
-    const octPays = s.pays.slice().map((x) => ({ href: 'SpendTransaction.dc.html#' + x.id, plain: false, date: x.date, what: x.bill ? 'Bill ' + ((BE.find('bills', x.bill) || {}).num || '') : (x.note || x.cat), how: x.how, amt: money(x.amount), isNew: x.date === BE.today && !!x.isNew }));
-    const past = (v.past || []).map((x) => ({ href: '', plain: true, date: x.date, what: x.what, how: x.how, amt: money(x.amount), isNew: false }));
-    const pays = octPays.concat(past).map((x, i) => Object.assign(x, { border: i === 0 ? '0' : '1px solid #EFEDF3' }));
+    // Payments recorded (expenses), newest first
+    const pays = s.pays.slice().sort((a, b) => String(b.iso || '').localeCompare(String(a.iso || ''))).map((x, i) => ({
+      href: 'SpendTransaction.dc.html#' + x.id, plain: false, date: x.date, what: x.bill ? 'Bill ' + ((BE.find('bills', x.bill) || {}).num || '') : (x.note || x.cat),
+      how: BE.howText(x) + (x.vat ? ' · VAT ' + money(x.vat) : ''), amt: money(x.amount), isNew: !!x.isNew, border: i === 0 ? '0' : '1px solid #EFEDF3' }));
 
-    const tags = [{ label: v.cat || 'Other', bg: '#FDE6D6', fg: '#18161F' }];
-    if (v.contractor) tags.push({ label: '1099 contractor', bg: '#E1EEF8', fg: '#1F5E91' });
+    const tags = [{ label: vc ? vc.name : (v.cat || 'Other'), bg: '#FDE6D6', fg: '#18161F' }];
+    if (lk && v.vatNo) tags.push({ label: 'VAT registered', bg: '#E1EEF8', fg: '#1F5E91' });
+    if (v.property) tags.push({ label: 'For the property', bg: '#EEE8FF', fg: '#18161F' });
     if (mo) tags.push({ label: mo.active === false ? 'Every month · ' + (mo.ended || 'stopped') : 'Every month', bg: '#EFEDF3', fg: '#47444F' });
-    const first = v.name.split(' ')[0];
 
     // Details edit
-    const d = st.edit && st.d ? st.d : { name: v.name, contact: v.contact || '', email: v.email || '', phone: v.phone || '', terms: v.terms || '', via: v.via || '', cat: v.cat || 'Other', contractor: !!v.contractor };
+    const d = st.edit && st.d ? st.d : { name: v.name, contact: v.contact || '', email: v.email || '', phone: v.phone || '', terms: v.terms || '', via: v.via || '', vatNo: v.vatNo || '', cat: v.catId || (CATS[0] || {}).id };
     const setD = (k) => (e) => this.setState({ d: Object.assign({}, d, { [k]: e.target.value }), err: '' });
-    const F = [['name', 'Name', ''], ['contact', 'Contact', 'Person or account'], ['email', 'Email', 'billing@example.com'], ['phone', 'Phone', ''], ['terms', 'Payment terms', 'e.g. Net 30'], ['via', 'You usually pay with', 'e.g. Chase ••4417']];
+    const F = [['name', 'Name', ''], ['contact', 'Contact', 'Person or account'], ['email', 'Email', lk ? 'accounts@example.lk' : 'accounts@example.co.uk'], ['phone', 'Phone', ''], ['terms', 'Payment terms', lk ? 'e.g. 30 days' : 'e.g. 14 days'], ['via', 'You usually pay by', lk ? 'Bank transfer, cheque or cash' : 'Bank transfer, card or cash']]
+      .concat(lk ? [['vatNo', 'VAT registration number', 'e.g. 114228905-7000']] : []);
     const saveEdit = () => {
       const name = d.name.trim();
-      if (!name) { this.setState({ err: 'A vendor needs a name.' }); return; }
-      if (vendors.some((x) => x.id !== v.id && x.name.toLowerCase() === name.toLowerCase())) { this.setState({ err: name + ' is already one of your vendors.' }); return; }
+      if (!name) { this.setState({ err: 'A supplier needs a name.' }); return; }
+      if (vendors.some((x) => x.id !== v.id && x.name.toLowerCase() === name.toLowerCase())) { this.setState({ err: name + ' is already one of your suppliers.' }); return; }
       const aka = (v.aka || []).slice();
       if (name !== v.name && aka.indexOf(v.name) < 0) aka.push(v.name);
-      BE.update('vendors', v.id, { name, contact: d.contact.trim(), email: d.email.trim(), phone: d.phone.trim(), terms: d.terms.trim(), via: d.via.trim(), cat: d.cat, contractor: d.contractor, aka });
+      const c = CATS.filter((x) => x.id === d.cat)[0];
+      BE.update('vendors', v.id, { name, contact: d.contact.trim(), email: d.email.trim(), phone: d.phone.trim(), terms: d.terms.trim(), via: d.via.trim(), vatNo: String(d.vatNo || '').trim(), catId: c ? c.id : v.catId, cat: c ? c.name.replace(/^Property: /, '') : v.cat, aka });
       this.setState({ edit: false, d: null, err: '' });
-      this.notify('Saved ' + name + (d.cat !== v.cat ? ' · new bills go to ' + d.cat : ''));
+      this.notify('Saved ' + name + (c && c.id !== v.catId ? ' · new bills go to ' + c.name : ''));
     };
 
-    const ytd = s.year;
     return {
       found: true, missing: false, crumb: v.name, toast: st.toast,
       p: {
-        name: v.name, ini: BE.initials(v.name), tags, ytd: money(ytd),
+        name: v.name, ini: BE.initials(v.name), tags, ytd: money(s.year),
         contactLine: [v.contact, v.email, v.phone].filter(Boolean).join(' · ') || 'No contact details yet',
         openText: s.open.length ? money(s.openSum) + ' owed in ' + s.open.length + (s.open.length === 1 ? ' open bill' : ' open bills') : 'Nothing owed right now',
         billHref: 'SpendBill.dc.html#new=' + v.id,
         monthly: !!mo, monthlyText: mo ? (mo.active === false ? 'Every month (' + (mo.ended || 'stopped') + ')' : money(mo.amount) + ' every month') : ''
       },
-      billSub: s.open.length ? money(s.openSum) + ' still to pay, counted in Going out' : 'All paid',
+      billSub: s.open.length ? money(s.openSum) + ' still to pay, counted in Going out' : (s.bills.length ? 'All paid' : ''),
       bills, noBills: bills.length === 0,
-      noBillsText: mo ? v.name + ' charges you automatically every month, so there are no bills to enter. Each charge shows under Payments made.' : 'No bills from ' + v.name + '. When one arrives, enter it and it counts in Going out until you pay it.',
-      payNote: s.open.length ? 'Paying moves a bill from still to pay to paid. Your Going out total stays the same.' : '',
-      paySub: money(s.month) + ' in October · ' + money(ytd) + ' this year',
-      pays, noPays: pays.length === 0, noPaysText: 'Nothing paid to ' + v.name + ' yet. Payments show here as they happen.',
+      noBillsText: mo ? 'You pay ' + v.name + ' every month, so there are no bills to enter. Each payment you record shows under Payments made.' : 'No bills from ' + v.name + '. When one arrives, enter it and it counts in Going out until you mark it paid.',
+      payNote: s.open.length ? 'Pay ' + v.name + ' the usual way, then mark the bill paid. Going out stays the same; the bill moves from still to pay to paid.' : '',
+      paySub: money(s.month) + ' in October · ' + money(s.year) + ' this tax year',
+      pays, noPays: pays.length === 0, noPaysText: 'Nothing recorded to ' + v.name + ' yet. Expenses and bills you mark paid show here.',
       c: {
-        on: !!v.contractor,
-        nec: money(ytd) + ' paid this year',
-        necText: ytd >= 600 ? 'That’s over $600, so we’ll prepare ' + first + '’s 1099-NEC and send it by Jan 31, 2027. Payments by card don’t count toward it; bank transfers do.' : 'A 1099-NEC is needed once you pay ' + first + ' $600 or more in a year. We’ll keep count.',
-        w9Title: v.w9 ? 'W-9 on file' : (v.w9Asked ? 'W-9 requested' : 'W-9 needed'),
-        w9Text: v.w9 ? 'Received ' + v.w9 + '. Name, address and tax ID are saved for the 1099.' : (v.w9Asked ? 'We emailed ' + first + ' a secure link on ' + v.w9Asked + '. We’ll tell you when it’s back.' : 'We need their name, address and tax ID before January.'),
-        canAsk: !v.w9 && !v.w9Asked
+        on: lk,
+        title: v.vatNo ? 'VAT registered' : 'Not VAT registered',
+        big: v.vatNo ? money(s.vat) + ' input VAT' : 'No input VAT',
+        text: v.vatNo ? 'VAT no. ' + v.vatNo + '. That’s the input VAT on their Tax Invoices you’ve recorded this tax year, for your VAT returns.' : 'Without a VAT registration number, their bills carry no input VAT you can claim. Add the number in Details if they register.'
       },
-      askW9: () => { BE.update('vendors', v.id, { w9Asked: BE.today }); this.notify('W-9 request sent to ' + (v.email || v.name)); },
       viewing: !st.edit, editing: st.edit,
-      facts: [['Contact', v.contact], ['Email', v.email], ['Phone', v.phone], ['Terms', v.terms], ['Pays with', v.via], ['Usually goes to', v.cat]].map(([k, val]) => ({ k, v: val || 'Not added' })),
+      facts: [['Contact', v.contact], ['Email', v.email], ['Phone', v.phone], ['Terms', v.terms], ['Pays by', v.via], ['Usually goes to', vc ? vc.name + ' (' + vc.official + ')' : v.cat]].concat(lk ? [['VAT no.', v.vatNo]] : []).map(([k, val]) => ({ k, v: val || 'Not added' })),
       startEdit: () => this.setState({ edit: true, d: null, err: '' }),
       cancelEdit: () => this.setState({ edit: false, d: null, err: '' }),
       fields: F.map(([k, label, ph]) => ({ label, ph, value: d[k], set: setD(k) })),
-      d: { cat: d.cat, contractor: d.contractor, swBg: d.contractor ? '#18161F' : '#CBC7D3', swLeft: d.contractor ? '25px' : '3px' },
-      setCat: setD('cat'), catOpts: CATS,
-      toggleContractor: () => this.setState({ d: Object.assign({}, d, { contractor: !d.contractor }) }),
+      d: { cat: d.cat }, setCat: setD('cat'), catOpts,
       saveEdit, err: st.err,
       delIdle: !st.del, delAsk: st.del,
       delText: 'Delete ' + v.name + '? ' + (s.bills.length || s.pays.length ? 'Their bills and payments stay in your books and in Going out.' : 'Nothing changes in your numbers.'),
       askDelete: () => this.setState({ del: true }),
       cancelDelete: () => this.setState({ del: false }),
-      doDelete: () => { const n = v.name; BE.remove('vendors', v.id); BE.log('Deleted the vendor ' + n); this.setState({ del: false, deleted: n }); this.notify('Deleted ' + n + ' from your vendors'); }
+      doDelete: () => { const n = v.name; BE.remove('vendors', v.id); BE.log('Deleted the supplier ' + n); this.setState({ del: false, deleted: n }); this.notify('Deleted ' + n + ' from your suppliers'); }
     };
   }
 }

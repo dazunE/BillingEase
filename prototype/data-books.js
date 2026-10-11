@@ -615,17 +615,20 @@
     var rate = annual > 0 ? est.total / annual : 0;
     return { soFar: y.profit, annual: annual, months: r2(m), finance: finance, est: est, total: est.total, rate: rate, monthly: Math.round(est.total / 12), label: est.label || 'Tax' };
   }
-  // Yours to keep on Home and here: after the estimate, with UK mortgage interest relief.
+  // Yours to keep on Home and here: after the estimate (with UK mortgage interest relief), or the share
+  // you chose on Yours to keep (profile.setAsideMode 'own', profile.setAside 0.25).
   var homeKeep = BE.keepTotals;
   if (typeof homeKeep === 'function') {
     BE.keepTotals = function (period) {
       var t = homeKeep(period);
-      if (!BE.is('uk') || !financeSoFar()) return t;
+      var own = prof().setAsideMode === 'own' && prof().setAside != null;
+      if (!own && (!BE.is('uk') || !financeSoFar())) return t;
       var e = estimate();
-      var tax = Math.round(Math.max(t.profit, 0) * e.rate);
+      var rate = own ? Number(prof().setAside) || 0 : e.rate;
+      var tax = Math.round(Math.max(t.profit, 0) * rate);
       var keep = Math.round(t.profit - tax);
       var W = function (n) { return BE.money(n, t.currency, { whole: true }); };
-      return Object.assign({}, t, { tax: tax, keep: keep, rate: e.rate, estimate: e.est, keepPct: t.profit > 0 ? Math.max(keep > 0 ? 2 : 0, Math.min(100, Math.round(keep / t.profit * 100))) : 0, fmt: Object.assign({}, t.fmt, { tax: W(tax), keep: W(keep) }) });
+      return Object.assign({}, t, { tax: tax, keep: keep, rate: rate, own: own, estimate: e.est, keepPct: t.profit > 0 ? Math.max(keep > 0 ? 2 : 0, Math.min(100, Math.round(keep / t.profit * 100))) : 0, fmt: Object.assign({}, t.fmt, { tax: W(tax), keep: W(keep) }) });
     };
   }
 

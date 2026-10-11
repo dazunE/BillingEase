@@ -396,7 +396,8 @@ class Component extends DCLogic {
       bill: 'M3 6h18v12H3zM3 10h18M7 15h3',
       people: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8'
     };
-    const landlord = prof.kind === 'both' || prof.kind === 'landlord';
+    const shows = (w, d) => (typeof BE.shows === 'function' ? BE.shows(w) : d);
+    const landlord = shows('landlord', prof.kind === 'both' || prof.kind === 'landlord');
     const verbs = lk ? [
       { label: prof.vatRegistered ? 'Send a tax invoice' : 'Send an invoice', hint: prof.vatRegistered ? 'VAT and SSCL on their own lines' : 'In rupees, in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: I.invoice },
       { label: 'Record an expense', hint: 'Already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: I.expense },
@@ -406,7 +407,7 @@ class Component extends DCLogic {
       { label: 'Send an invoice', hint: 'In pounds, in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: I.invoice },
       { label: 'Record an expense', hint: 'Already paid, in an HMRC category', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: I.expense }
     ].concat(landlord ? [{ label: 'Add a property cost', hint: 'Repairs, agent fees, mortgage interest', href: 'Properties.dc.html#cost', tint: '#FDE6D6', icon: I.home }] : []).concat([
-      { label: 'Log a trip', hint: 'Business miles at 45p a mile', href: 'Mileage.dc.html#new', tint: '#FDE6D6', icon: I.car },
+    ]).concat(shows('mileage', true) ? [{ label: 'Log a trip', hint: 'Business miles at 45p a mile', href: 'Mileage.dc.html#new', tint: '#FDE6D6', icon: I.car }] : []).concat([
       { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html#new', tint: '#FDE6D6', icon: I.bill }
     ]);
 

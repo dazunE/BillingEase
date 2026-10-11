@@ -364,7 +364,7 @@ class Component extends DCLogic {
       const lockHref = lk ? 'TaxPeriods.dc.html' : 'Quarters.dc.html';
       sel = {
         live: true, name: live.name, ownerFirst: (prof.first || prof.owner || 'the client').split(' ')[0],
-        meta: [prof.owner, kindWord, (lk ? pack.taxIdLabel + ' ' + (prof.tin || '–') : pack.taxIdLabel + ' ' + (prof.utr || '–')), (prof.basis === 'accrual' ? 'Accrual basis' : 'Cash basis'), prof.city].filter(Boolean).join(' · '),
+        meta: [prof.owner, kindWord, (lk ? (prof.tin ? pack.taxIdLabel + ' ' + prof.tin : '') : (prof.utr ? pack.taxIdLabel + ' ' + prof.utr : '')), (prof.basis === 'accrual' ? 'Accrual basis' : 'Cash basis'), prof.city].filter(Boolean).join(' · '),
         hasPeriods: true,
         periods: periods.map((p) => ({ label: p.label + (BE.isFiled(p.id) ? ' · filed' : ''), pressed: p.id === pid ? 'true' : 'false', bg: p.id === pid ? '#18161F' : 'transparent', color: p.id === pid ? '#FFFFFF' : '#18161F', pick: () => this.setState({ period: p.id, fileAsk: false }) })),
         stTitle: per.long + ' · ' + sv.label, stBg: sv.bg, stFg: sv.fg,

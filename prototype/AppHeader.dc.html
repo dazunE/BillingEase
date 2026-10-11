@@ -194,7 +194,8 @@ class Component extends DCLogic {
     }
     const results = R.slice(0, 8);
     const unread = BE.unread();
-    const landlord = p.kind === 'both' || p.kind === 'landlord';
+    const shows = (w, d) => (typeof BE.shows === 'function' ? BE.shows(w) : d);
+    const landlord = shows('landlord', p.kind === 'both' || p.kind === 'landlord');
     const I = {
       invoice: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5',
       expense: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6',
@@ -212,7 +213,7 @@ class Component extends DCLogic {
       { label: 'Send an invoice', hint: 'In pounds, in one sentence', href: 'ThreeIn.dc.html#bill', tint: IN, icon: I.invoice },
       { label: 'Record an expense', hint: 'Already paid, in an HMRC category', href: 'ThreeOut.dc.html#expense', tint: OUT, icon: I.expense }
     ].concat(landlord ? [{ label: 'Add a property cost', hint: 'Repairs, agent fees, mortgage interest', href: 'Properties.dc.html#cost', tint: OUT, icon: I.home }] : []).concat([
-      { label: 'Log a trip', hint: 'Business miles at 45p a mile', href: 'Mileage.dc.html#new', tint: OUT, icon: I.car },
+    ]).concat(shows('mileage', true) ? [{ label: 'Log a trip', hint: 'Business miles at 45p a mile', href: 'Mileage.dc.html#new', tint: OUT, icon: I.car }] : []).concat([
       { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html#new', tint: OUT, icon: I.bill }
     ]);
     const other = lk ? 'uk' : 'lk';
@@ -235,6 +236,7 @@ class Component extends DCLogic {
       acct: [
         { label: 'Business profile', hint: lk ? 'Name, logo, TIN, VAT and SSCL' : 'Name, logo, UTR and VAT', href: 'BizProfile.dc.html' },
         { label: lk ? 'Your tax practitioner' : 'Your accountant', hint: pr.has ? pr.name : 'Link ' + (lk ? 'a practitioner or TaxWise.lk' : 'your accountant'), href: 'Accountant.dc.html' },
+        { label: 'People and access', hint: 'Who can see your books', href: 'BizTeam.dc.html' },
         { label: 'Security and your data', hint: 'Sign-in, import, export', href: 'BizSecurity.dc.html' },
         { label: 'Everything BillingEase does', hint: 'Every feature in plain words', href: 'Everything.dc.html' },
         { label: 'Help', hint: 'Answers, and talk to a person', href: 'Help.dc.html' },

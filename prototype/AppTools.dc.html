@@ -152,14 +152,14 @@ class Component extends DCLogic {
           uncat ? [uncat + ' need' + (uncat === 1 ? 's' : '') + ' a category', 'attn'] : (exp.length ? [exp.length + ' this month', 'plain'] : null),
           'They appear as you record costs')
       ];
-      if (!lk && pk.features && pk.features.mileage) {
+      if (!lk && pk.features && pk.features.mileage && (typeof BE.shows !== 'function' || BE.shows('mileage'))) {
         const trips = BE.all('trips').concat(BE.all('mileage'));
         const miles = trips.reduce((a, x) => a + (Number(x.miles) || 0), 0);
         tools.push(tool('Mileage.dc.html', 'Mileage', 'Business miles at 45p, then 25p', I.car,
           trips.length ? [plural(trips.length, 'trip') + (miles ? ' · ' + Math.round(miles) + ' miles' : ''), 'plain'] : null,
           'Log your first trip'));
       }
-      if (!lk && pk.features && pk.features.landlord && (prof.kind === 'both' || prof.kind === 'landlord')) {
+      if (!lk && (typeof BE.shows === 'function' ? BE.shows('landlord') : (prof.kind === 'both' || prof.kind === 'landlord'))) {
         const props = BE.all('properties');
         tools.push(tool('Properties.dc.html', 'Properties', 'Rent and costs, kept apart', I.home,
           props.length ? [plural(props.length, 'property', 'properties') + (props[0] && props[0].rent ? ' · ' + W(props.reduce((a, x) => a + (Number(x.rent) || 0), 0)) + ' rent a month' : ''), 'plain'] : null,

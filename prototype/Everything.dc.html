@@ -15,7 +15,6 @@ body{margin:0}
 a{color:#18161F}a:hover{color:#000000}
 .be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
 .be-item-link{text-decoration:none}
-@media (min-width: 900px){.be-bizmenu{left:auto!important;right:0}}
 .be-search::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 .be-item-link:hover{text-decoration:underline;text-underline-offset:3px}
 </style>
@@ -33,27 +32,15 @@ a{color:#18161F}a:hover{color:#000000}
       <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px;">
         <div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
           <h1 id="ev-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">Everything BillingEase does</h1>
-          <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 680px;">You won&#39;t need most of this on day one. Every feature lives behind one of your three numbers, or under Your business, and only shows up when it fits how you work.</p>
+          <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 680px;">You won&#39;t need most of this on day one. Every feature lives behind one of your three numbers, or under Your business. What you see is set by your country and how you work.</p>
         </div>
         <div style="flex: 0 1 auto; display: flex; flex-direction: column; gap: 6px; min-width: 0;">
           <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">Showing it for</span>
-          <div style="position: relative;">
-            <button type="button" aria-haspopup="menu" aria-expanded="{{bizOpen}}" onClick="{{toggleBiz}}" style="display: inline-flex; align-items: center; gap: 10px; max-width: 100%; min-height: 44px; padding: 0 14px 0 6px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
-              <span style="width: 32px; height: 32px; border-radius: 9999px; background: {{biz.tint}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none;">{{biz.ini}}</span>
-              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz.name}}</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m6 9 6 6 6-6"></path></svg>
-            </button>
-            <sc-if value="{{bizOpen}}" hint-placeholder-val="{{false}}">
-              <div role="menu" class="be-bizmenu" style="position: absolute; left: 0; top: calc(100% + 8px); z-index: 30; width: 300px; max-width: calc(100vw - 32px); background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 18px; padding: 8px; box-shadow: 0 16px 40px rgba(24,22,31,0.16); display: flex; flex-direction: column; gap: 2px;">
-                <sc-for list="{{bizOpts}}" as="bo" hint-placeholder-count="2">
-                  <button type="button" role="menuitemradio" aria-checked="{{bo.on}}" onClick="{{bo.pick}}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 12px; border: 0; border-radius: 12px; background: {{bo.bg}}; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
-                    <span style="width: 34px; height: 34px; border-radius: 9999px; background: {{bo.tint}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none;">{{bo.ini}}</span>
-                    <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 15px;">{{bo.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{bo.hint}}</span></span>
-                  </button>
-                </sc-for>
-              </div>
-            </sc-if>
-          </div>
+          <span style="display: inline-flex; align-items: center; gap: 10px; max-width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 14px 0 6px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; font-weight: 600; font-size: 15px;">
+            <span style="width: 32px; height: 32px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none;">{{biz.ini}}</span>
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz.name}}</span>
+            <span style="flex: none; padding: 1px 8px; border-radius: 9999px; background: #EFEDF3; font-size: 11.5px; font-weight: 700; line-height: 18px;">{{biz.country}}</span>
+          </span>
         </div>
       </div>
 
@@ -62,7 +49,7 @@ a{color:#18161F}a:hover{color:#000000}
           <label style="flex: 1 1 320px; min-width: 0; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 0 18px; border-radius: 9999px; border: 1px solid #CBC7D3; background: #FFFFFF;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none;"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search features</span>
-            <input class="be-field be-search" type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="Search in plain words: “stock”, “VAT”, “refund”, “reconcile”" style="flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; border-radius: 8px; background: transparent; font: 400 16px DM Sans, sans-serif; color: #18161F;">
+            <input class="be-field be-search" type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="{{searchHint}}" style="flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; border-radius: 8px; background: transparent; font: 400 16px DM Sans, sans-serif; color: #18161F;">
             <sc-if value="{{hasQuery}}" hint-placeholder-val="{{false}}">
               <button type="button" onClick="{{clearQuery}}" aria-label="Clear search" style="width: 36px; height: 36px; flex: none; border: 0; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
@@ -92,7 +79,7 @@ a{color:#18161F}a:hover{color:#000000}
     <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
       <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
         <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Nothing called “{{query}}” yet</span>
-        <span style="font-size: 15px; color: #47444F; max-width: 460px; line-height: 1.5;">Try a plain word like “tax”, “stock” or “team”. If it&#39;s something you need, tell us and we&#39;ll look into it.</span>
+        <span style="font-size: 15px; color: #47444F; max-width: 460px; line-height: 1.5;">Try a plain word like “tax”, “invoice” or “{{tryWord}}”. If it&#39;s something you need, tell us and we&#39;ll look into it.</span>
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 6px;">
           <button type="button" onClick="{{clearQuery}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Clear search</button>
           <button type="button" onClick="{{suggest}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Ask for this feature</button>
@@ -130,8 +117,8 @@ a{color:#18161F}a:hover{color:#000000}
                   <sc-if value="{{it.off}}" hint-placeholder-val="{{false}}">
                     <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; font-size: 12.5px; color: #47444F;">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM6 6l12 12"></path></svg>
-                      <span>Turned off for your business ·</span>
-                      <a href="BizProfile.dc.html" style="font-weight: 700;" aria-label="{{it.turnOnAria}}">turn on</a>
+                      <span>{{it.offWhy}}</span>
+                      <a href="{{it.turnHref}}" style="font-weight: 700;" aria-label="{{it.turnOnAria}}">set it up</a>
                     </span>
                   </sc-if>
                 </li>
@@ -144,8 +131,8 @@ a{color:#18161F}a:hover{color:#000000}
 
     <!-- Quiet footer -->
     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 16px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
-      <span>Starting over, or setting up another business?</span>
-      <a href="SetupProfile.dc.html" style="font-weight: 600;">Answer the setup questions again</a>
+      <span>Looking for an answer rather than a feature?</span>
+      <a href="Ask.dc.html" style="font-weight: 600;">Ask</a>
       <a href="BooksReports.dc.html" style="font-weight: 600;">All reports</a>
       <a href="Help.dc.html" style="font-weight: 600;">Help</a>
       <a href="Notifications.dc.html" style="font-weight: 600;">Notifications</a>
@@ -164,115 +151,88 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { query: '', filter: 'all', biz: 'cur', bizOpen: false, toast: null };
+    this.state = { query: '', filter: 'all', toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
     const st = this.state;
+    const lk = BE.is('lk');
+    const pk = BE.pack();
+    const prof = BE.get('profile') || {};
+    const prc = BE.practice();
     const first = (name) => BE.all(name)[0];
-    const c0 = first('customers'), q0 = first('quotes'), v0 = first('vendors'), r0 = first('receipts');
+    const c0 = first('customers'), q0 = first('quotes'), v0 = first('vendors');
     const H = {
       cust: c0 ? 'SellCustomer.dc.html#' + c0.id : 'SellCustomers.dc.html',
       quote: q0 ? 'SellQuote.dc.html#' + q0.num : 'SellQuotes.dc.html',
-      vendor: v0 ? 'SpendVendor.dc.html#' + v0.id : 'SpendVendors.dc.html',
-      receipt: r0 ? 'SpendReceipt.dc.html#' + r0.id : 'SpendReceipts.dc.html'
+      vendor: v0 ? 'SpendVendor.dc.html#' + v0.id : 'SpendVendors.dc.html'
     };
-
-    // need: which part of the business profile turns a feature on. tags: which filter highlights it.
+    const vat = !!prof.vatRegistered;
+    const landlord = typeof BE.shows === 'function' ? BE.shows('landlord') : (prof.kind === 'both' || prof.kind === 'landlord');
+    const staff = BE.all('employees').length > 0 || BE.all('payroll').length > 0;
+    // need: what turns a feature on (landlord | vat | staff | practice). tags: which filter highlights it.
     const F = [
       // Coming in
-      { g: 'in', name: 'Bill someone', formal: 'Invoice', text: 'Send an invoice in one sentence. We remind them and match the payment when it lands.', href: 'ThreeIn.dc.html', tags: ['services', 'products'], kw: 'invoice bill charge' },
-      { g: 'in', name: 'Detailed invoices', formal: 'Invoice editor', text: 'Several lines, discounts, a deposit, tax and payment terms, for when one sentence isn’t enough.', href: 'SellInvoice.dc.html', tags: ['services', 'products'], kw: 'line items discount deposit terms' },
-      { g: 'in', name: 'Quotes', formal: 'Estimates', text: 'Send a price first. When they accept, it becomes an invoice in one tap.', href: 'SellQuotes.dc.html', need: 'services', tags: ['services'], kw: 'estimate proposal' },
-      { g: 'in', name: 'Repeat invoices and retainers', formal: 'Recurring invoices', text: 'Bill the same customer every month by email, or charge the card they keep on file.', href: 'SellRecurring.dc.html', need: 'services', tags: ['services'], kw: 'recurring subscription monthly retainer' },
-      { g: 'in', name: 'Money back to a customer', formal: 'Credit note · refund', text: 'Take money off an invoice or give it back. It comes off Coming in.', href: 'SellRecurring.dc.html', tags: ['services', 'products'], kw: 'credit note refund return' },
-      { g: 'in', name: 'What you sell', formal: 'Products & services', text: 'Save your prices once, then pick them when you write a quote or invoice.', href: 'SellCatalog.dc.html', tags: ['services', 'products'], kw: 'catalog price list items' },
-      { g: 'in', name: 'Products and stock', formal: 'Inventory', text: 'See what’s on the shelf and get a heads-up before something runs out.', href: 'SellCatalog.dc.html', need: 'products', tags: ['products'], kw: 'inventory stock reorder' },
-      { g: 'in', name: 'Time you can bill', formal: 'Billable hours', text: 'Log hours as you or your team work, then add them to the next invoice.', href: 'SellCatalog.dc.html', need: 'services', tags: ['services', 'teams'], kw: 'timesheet hours timer' },
-      { g: 'in', name: 'Bill in other currencies', formal: 'Multi-currency invoices', text: 'Invoice in euros or pounds. We show what each one is worth in dollars.', href: 'SellInvoice.dc.html', need: 'overseas', tags: ['overseas'], kw: 'currency euro pound eur gbp foreign vat reverse charge' },
-      { g: 'in', name: 'Getting paid online', formal: 'Card, bank and Apple Pay', text: 'Customers pay straight from the invoice, and the money lands in your bank.', href: 'SellPayments.dc.html', tags: ['services', 'products'], kw: 'payments card ach stripe payout' },
-      { g: 'in', name: 'Your customers', formal: 'Customer list', text: 'Who you work for, what they owe, and everything you’ve sent them.', href: 'SellCustomers.dc.html', tags: ['services', 'products'], kw: 'clients contacts' },
-      { g: 'in', name: 'One customer’s page', formal: 'Customer detail', text: 'Their invoices, quotes, payments and notes in one place, with what they owe right now.', href: H.cust, tags: ['services', 'products'], kw: 'customer detail contact history statement' },
-      { g: 'in', name: 'All invoices', formal: 'Invoice list', text: 'Every invoice you’ve sent, what’s late, and what each customer has seen.', href: 'SellInvoices.dc.html', tags: ['services', 'products'], kw: 'invoices list late overdue paid draft' },
-      { g: 'in', name: 'One quote', formal: 'Quote detail', text: 'See if they opened it, change it, or turn it into an invoice when they say yes.', href: H.quote, need: 'services', tags: ['services'], kw: 'quote estimate detail accept convert' },
+      { g: 'in', name: lk && vat ? 'Send a tax invoice' : 'Send an invoice', formal: lk && vat ? 'Tax Invoice' : 'Invoice', text: lk ? 'Write it in one sentence. VAT 18% and SSCL 2.5% go on their own lines, with your TIN.' : 'Write it in one sentence, in pounds, with your bank details for payment.', href: 'ThreeIn.dc.html#bill', tags: ['vat'], kw: 'invoice bill charge' },
+      { g: 'in', name: 'Detailed invoices', formal: 'Invoice editor', text: 'Several lines, discounts, a deposit, ' + (lk ? 'VAT and SSCL' : 'VAT if you’re registered') + ' and payment terms.', href: 'SellInvoice.dc.html', tags: ['vat'], kw: 'line items discount deposit terms' },
+      { g: 'in', name: 'Record a payment', formal: 'Payment received', text: lk ? 'Bank transfer, cheque with its number and date, cash or LankaQR.' : 'Bank transfer, card machine or cash, recorded by you.', href: 'SellInvoices.dc.html', tags: [], kw: 'paid payment cheque cash lankaqr bank transfer' },
+      { g: 'in', name: 'Quotes', formal: 'Estimates', text: 'Send a price first. When they say yes, mark it accepted and turn it into an invoice.', href: 'SellQuotes.dc.html', tags: [], kw: 'estimate proposal' },
+      { g: 'in', name: 'Repeating invoices and money back', formal: 'Recurring · credit notes', text: 'A draft every month for retainers, and credit notes to take money off an invoice.', href: 'SellRecurring.dc.html', tags: [], kw: 'recurring monthly retainer refund credit note' },
+      { g: 'in', name: 'What you sell', formal: 'Products and services', text: 'Save your prices once, then pick them on a quote or invoice.', href: 'SellCatalog.dc.html', tags: [], kw: 'catalog price list items' },
+      { g: 'in', name: 'Your customers', formal: 'Customer list', text: 'Who you work for, what they owe, and everything you’ve sent them.', href: 'SellCustomers.dc.html', tags: [], kw: 'clients contacts' },
+      { g: 'in', name: 'One customer’s page', formal: 'Customer detail', text: 'Their invoices, quotes and payments in one place, with what they owe now.', href: H.cust, tags: [], kw: 'customer detail statement' },
+      { g: 'in', name: 'One quote', formal: 'Quote detail', text: 'Change it, mark it sent or accepted, or turn it into an invoice.', href: H.quote, tags: [], kw: 'quote detail accept convert' },
       // Going out
-      { g: 'out', name: 'Record an expense', formal: '', text: 'Cash, card or a bill to pay later, written in one line.', href: 'ThreeOut.dc.html', tags: [], kw: 'expense spend cost' },
-      { g: 'out', name: 'Receipts', formal: 'Receipt scanning', text: 'Snap or forward a receipt. We read it and match it to the charge.', href: 'SpendReceipts.dc.html', tags: [], kw: 'receipt scan photo ocr upload' },
-      { g: 'out', name: 'Every month', formal: 'Recurring expenses', text: 'Rent and subscriptions you pay each month, and the ones you may not be using.', href: 'SpendEveryMonth.dc.html', tags: [], kw: 'recurring subscription rent' },
-      { g: 'out', name: 'Card and bank charges', formal: 'Transactions', text: 'Change a category, split a charge, or mark it personal or a transfer.', href: 'SpendTransaction.dc.html', tags: [], kw: 'transaction categorize split personal transfer bank feed' },
-      { g: 'out', name: 'Bills to pay', formal: 'Bills · accounts payable', text: 'Enter a bill once, then pay it all, in parts or on a schedule.', href: 'SpendBill.dc.html', tags: ['products'], kw: 'bill payable vendor partial payment schedule' },
-      { g: 'out', name: 'Buying stock', formal: 'Inventory purchases', text: 'Stock you buy isn’t Going out until you sell it.', href: 'SpendBill.dc.html', need: 'products', tags: ['products'], kw: 'inventory purchase order stock supplier' },
-      { g: 'out', name: 'Cost of goods', formal: 'COGS', text: 'What the things you sold cost you, counted on the day they sell.', href: 'SellCatalog.dc.html', need: 'products', tags: ['products'], kw: 'cogs cost of goods sold margin' },
-      { g: 'out', name: 'Payroll', formal: '', text: 'Pay your team by direct deposit. Payroll taxes are filed for you.', href: 'SpendPayroll.dc.html', need: 'team', tags: ['teams'], kw: 'payroll salary wages employees w-2 1099' },
-      { g: 'out', name: 'Who you pay', formal: 'Vendors', text: 'Suppliers and contractors, and what you owe each of them.', href: 'SpendVendors.dc.html', tags: [], kw: 'vendor supplier contractor' },
-      { g: 'out', name: 'One vendor’s page', formal: 'Vendor detail', text: 'Their bills, what you’ve paid them this year, and their tax details for 1099s.', href: H.vendor, tags: [], kw: 'vendor detail supplier contractor 1099 history' },
-      { g: 'out', name: 'One receipt', formal: 'Receipt detail', text: 'What we read from the photo, the charge it matches, and the category it went to.', href: H.receipt, tags: [], kw: 'receipt detail match ocr photo' },
+      { g: 'out', name: 'Record an expense', formal: '', text: lk ? 'Already paid, in a category that matches your tax return. Attach a photo or PDF.' : 'Already paid, in an HMRC category, with a business-use share. Attach a photo or PDF.', href: 'ThreeOut.dc.html#expense', tags: [], kw: 'expense spend cost receipt attachment' },
+      { g: 'out', name: 'Bills to pay', formal: 'Bills', text: 'Enter a bill once, then mark it paid in full or in parts.' + (lk ? ' Input VAT is counted for your return.' : ''), href: 'SpendBill.dc.html', tags: lk ? ['vat'] : [], kw: 'bill payable supplier partial input vat' },
+      { g: 'out', name: 'Every month', formal: 'Repeating costs', text: lk ? 'Office rent, electricity and internet set up once.' : 'Desk rent, software and phone set up once.', href: 'SpendEveryMonth.dc.html', tags: [], kw: 'recurring rent subscription' },
+      { g: 'out', name: 'Transactions', formal: '', text: 'Each cost with its category, business-use share and attachment.', href: 'SpendTransaction.dc.html', tags: [], kw: 'transaction categorise split personal' },
+      { g: 'out', name: 'Who you pay', formal: 'Suppliers', text: 'Suppliers and what you owe each of them.', href: 'SpendVendors.dc.html', tags: [], kw: 'vendor supplier contractor' },
+      { g: 'out', name: 'One supplier’s page', formal: 'Supplier detail', text: 'Their bills and what you’ve paid them this year.', href: H.vendor, tags: [], kw: 'supplier detail history' },
+      lk ? { g: 'out', name: 'Payroll', formal: 'EPF · ETF · APIT', text: 'Monthly pay runs with EPF 8% and 12%, ETF 3%, APIT, payslips and the schedules to pay.', href: 'SpendPayroll.dc.html', need: 'staff', tags: ['staff'], kw: 'payroll salary epf etf apit payslip employees' }
+         : { g: 'out', name: 'Payroll records', formal: 'Staff costs', text: 'Pay runs entered from your payroll software, with PAYE due on the 22nd. RTI stays in your payroll software.', href: 'SpendPayroll.dc.html', need: 'staff', tags: ['staff'], kw: 'payroll paye staff wages employees rti' },
       // Yours to keep
-      { g: 'keep', name: 'Tax set-aside', formal: 'Estimated tax', text: 'A share of each month’s profit put aside, so tax day isn’t a surprise.', href: 'ThreeKeep.dc.html', tags: [], kw: 'income tax estimated quarterly irs' },
-      { g: 'keep', name: 'Sales tax you collected', formal: 'Sales tax · VAT · GST', text: 'What you added to invoices and owe the state, with filing dates. Called VAT or GST outside the US.', href: 'BooksTax.dc.html', need: 'products', tags: ['products', 'overseas'], kw: 'sales tax vat gst filing return' },
-      { g: 'keep', name: 'Check against your bank statement', formal: 'Reconciliation', text: 'Line up your books with the bank, and spot what’s missing.', href: 'BooksReconcile.dc.html', tags: [], kw: 'reconcile reconciliation bank statement' },
-      { g: 'keep', name: 'Categories', formal: 'Chart of accounts', text: 'The buckets your money is sorted into. Rename or add your own.', href: 'BooksCategories.dc.html', tags: [], kw: 'chart of accounts ledger accounts' },
-      { g: 'keep', name: 'Move money between categories by hand', formal: 'Journal entries', text: 'For fixes your accountant asks for. Most people never need it.', href: 'BooksCategories.dc.html', need: 'accountant', tags: ['teams'], kw: 'journal entry adjustment debit credit' },
-      { g: 'keep', name: 'Currencies and exchange rates', formal: 'FX gains and losses', text: 'What you gained or lost when a euro or pound payment arrived.', href: 'BooksCurrencies.dc.html', need: 'overseas', tags: ['overseas'], kw: 'currency exchange rate fx gain loss' },
-      { g: 'keep', name: 'Cash or accrual view', formal: 'Accounting method', text: 'Count money when it moves, or when you invoice and get billed.', href: 'BooksTax.dc.html', need: 'advanced', tags: [], kw: 'cash accrual basis method' },
-      { g: 'keep', name: 'Close the year', formal: 'Year-end close', text: 'Lock last year once your taxes are filed, so nothing changes by accident.', href: 'BooksTax.dc.html', need: 'accountant', tags: ['teams'], kw: 'year end close lock period' },
-      { g: 'keep', name: 'How much did I make?', formal: 'Profit & loss', text: 'Coming in minus Going out, month by month, ready to share.', href: 'BooksReports.dc.html', tags: [], kw: 'profit loss income statement p&l' },
-      { g: 'keep', name: 'All reports', formal: 'Balance sheet, cash flow and more', text: 'Every standard report your accountant or bank might ask for.', href: 'BooksReports.dc.html', tags: [], kw: 'reports balance sheet cash flow aged receivables trial balance general ledger' },
+      lk ? { g: 'keep', name: 'Income tax estimate', formal: 'Year of assessment ' + (pk.taxYear ? pk.taxYear.label : ''), text: 'Yours to keep is after income tax on your profit, with the quarterly instalment dates.', href: 'ThreeKeep.dc.html', tags: [], kw: 'income tax estimate instalments' }
+         : { g: 'keep', name: 'Income Tax and NI estimate', formal: 'Tax year ' + (pk.taxYear ? pk.taxYear.label : ''), text: 'Yours to keep is after Income Tax and Class 4 NI, with payments on account.', href: 'ThreeKeep.dc.html', tags: [], kw: 'income tax national insurance estimate payments on account' },
+      lk ? { g: 'keep', name: 'VAT and SSCL periods', formal: 'Tax periods', text: 'Output VAT, input VAT and SSCL for each month, in the order of the IRD return.', href: 'TaxPeriods.dc.html', need: 'vat', tags: ['vat'], kw: 'vat sscl return period ird' }
+         : { g: 'keep', name: 'Quarters', formal: 'Making Tax Digital', text: 'Each quarter in HMRC’s categories, with readiness checks, for your accountant to send.', href: 'Quarters.dc.html', tags: [], kw: 'mtd making tax digital quarter update hmrc' },
+      lk ? null : { g: 'keep', name: 'VAT summary', formal: 'VAT quarters', text: 'Totals for each VAT quarter, for your accountant’s MTD for VAT software.', href: 'TaxPeriods.dc.html', need: 'vat', tags: ['vat'], kw: 'vat return summary' },
+      lk ? null : { g: 'keep', name: 'Your rental property', formal: 'Landlord · SA105', text: 'Rent and costs per property, mortgage interest kept apart, the £1,000 allowance when it’s better.', href: 'Properties.dc.html', need: 'landlord', tags: ['landlord'], kw: 'landlord property rent mortgage interest allowance' },
+      lk ? null : { g: 'keep', name: 'Mileage', formal: 'Simplified expenses', text: 'Business trips at 45p a mile, then 25p after 10,000 miles.', href: 'Mileage.dc.html', tags: [], kw: 'mileage miles car van trips' },
+      { g: 'keep', name: 'Check against your bank statement', formal: 'Reconciliation', text: 'Import a statement (CSV) and tick it against your books.', href: 'BooksReconcile.dc.html', tags: [], kw: 'reconcile bank statement csv import' },
+      { g: 'keep', name: 'Categories', formal: lk ? 'Return schedule lines' : 'HMRC categories', text: 'Plain names on top, the official name underneath.', href: 'BooksCategories.dc.html', tags: [], kw: 'chart of accounts categories' },
+      { g: 'keep', name: 'Entries by hand', formal: 'Journal entries', text: 'For fixes your ' + prc.noun + ' asks for, marked as theirs.', href: 'BooksCategories.dc.html', need: 'practice', tags: ['practice'], kw: 'journal entry adjustment' },
+      { g: 'keep', name: 'How much did I make?', formal: 'Profit and loss', text: 'Coming in minus Going out, month by month, ready to share.', href: 'BooksReports.dc.html', tags: [], kw: 'profit loss income statement p&l' },
+      { g: 'keep', name: 'All reports', formal: lk ? 'Balance sheet, VAT, SSCL, payroll' : 'Balance sheet, aged lists', text: 'The reports your ' + prc.noun + ' or bank might ask for, as CSV.', href: 'BooksReports.dc.html', tags: [], kw: 'reports balance sheet aged receivables payables csv' },
       // Your business
-      { g: 'biz', name: 'Business profile and invoice look', formal: 'Branding', text: 'Your name, logo, colors and the details printed on every invoice.', href: 'BizProfile.dc.html', tags: [], kw: 'profile logo branding address' },
-      { g: 'biz', name: 'Country, currency and tax', formal: '', text: 'Where you’re based. It sets your currency, date format and what tax is called.', href: 'BizProfile.dc.html', tags: ['overseas'], kw: 'country currency tax vat gst settings locale' },
-      { g: 'biz', name: 'What BillingEase shows you', formal: 'Feature settings', text: 'Say what you sell and who works with you; we show or tuck away features to match.', href: 'BizProfile.dc.html', tags: ['services', 'products', 'overseas', 'teams'], kw: 'settings features turn on off' },
-      { g: 'biz', name: 'Team and permissions', formal: 'Users & roles', text: 'Invite people and choose what each one can see and do.', href: 'BizTeam.dc.html', need: 'team', tags: ['teams'], kw: 'team users roles permissions invite staff admin' },
-      { g: 'biz', name: 'Your accountant', formal: 'Accountant access', text: 'Read-only books and reports for your accountant. They can’t move money.', href: 'BizTeam.dc.html', need: 'accountant', tags: ['teams'], kw: 'accountant cpa bookkeeper advisor' },
-      { g: 'biz', name: 'Switch business', formal: 'Multiple businesses', text: 'Run more than one business from one sign-in, each with its own books.', href: 'BizTeam.dc.html', tags: [], kw: 'switch business multiple companies' },
-      { g: 'biz', name: 'Password and sign-in', formal: 'Security · two-step', text: 'Change your password, turn on two-step sign-in, see where you’re signed in.', href: 'BizSecurity.dc.html', tags: [], kw: 'security password 2fa two-factor sessions' },
-      { g: 'biz', name: 'Bring data in or take it out', formal: 'Import · export', text: 'Move over from another app, or download everything as spreadsheets.', href: 'BizSecurity.dc.html', tags: [], kw: 'import export csv download migrate' },
-      { g: 'biz', name: 'Close your account', formal: 'Delete account', text: 'Download your books first, then delete the business for good.', href: 'BizSecurity.dc.html', tags: [], kw: 'delete account close cancel' },
-      { g: 'biz', name: 'Notifications', formal: '', text: 'Payments that land, quotes opened, and things waiting for your OK. Also behind the bell.', href: 'Notifications.dc.html', tags: [], kw: 'notifications alerts bell unread news' },
-      { g: 'biz', name: 'Help', formal: 'Support', text: 'Short answers in plain words, and a way to ask a real person.', href: 'Help.dc.html', tags: [], kw: 'help support question contact answer faq' }
-    ];
+      { g: 'biz', name: lk ? 'Your tax practitioner' : 'Your accountant', formal: lk ? 'TaxWise.lk link' : 'Practice link', text: lk ? 'Link Jayasinghe & Co or another practitioner, answer their requests, and hand the year to TaxWise.lk.' : 'Link your practice, answer their requests and see what they’ve filed.', href: 'Accountant.dc.html', tags: ['practice'], kw: 'accountant practitioner requests taxwise' },
+      { g: 'biz', name: 'What they see', formal: lk ? 'TaxWise.lk preview' : 'Practice workbench preview', text: 'A preview of your books as your ' + prc.noun + ' sees them.', href: 'PracticeView.dc.html', need: 'practice', tags: ['practice'], kw: 'practice view preview workbench' },
+      { g: 'biz', name: 'Ask', formal: 'AI answers', text: 'Questions about tax answered from ' + (pk.askSources || 'official sources') + ', with sources named.', href: 'Ask.dc.html', tags: ['practice'], kw: 'ask ai question answer' },
+      { g: 'biz', name: 'Business profile and invoice look', formal: lk ? 'TIN · VAT · SSCL' : 'UTR · VAT', text: 'Your name, logo, tax numbers and the details printed on every invoice.', href: 'BizProfile.dc.html', tags: ['vat'], kw: 'profile logo branding address tin utr vat' },
+      { g: 'biz', name: 'People and access', formal: 'Who can see your books', text: 'Invite someone to help with your books and choose what they can see.', href: 'BizTeam.dc.html', tags: [], kw: 'team people access invite roles bookkeeper' },
+      { g: 'biz', name: 'Password and sign-in', formal: 'Security · two-step', text: 'Change your password, turn on two-step sign-in, see where you’re signed in.', href: 'BizSecurity.dc.html', tags: [], kw: 'security password 2fa sessions' },
+      { g: 'biz', name: 'Bring data in or take it out', formal: 'Import · export', text: 'Import a bank statement or customer list, or download everything as spreadsheets.', href: 'BizSecurity.dc.html', tags: [], kw: 'import export csv download' },
+      { g: 'biz', name: 'Notifications', formal: '', text: 'Requests, late invoices and tax dates. Also behind the bell.', href: 'Notifications.dc.html', tags: [], kw: 'notifications alerts bell' },
+      { g: 'biz', name: 'Help', formal: 'Support', text: 'Short answers about BillingEase, and a way to ask a real person.', href: 'Help.dc.html', tags: [], kw: 'help support contact' }
+    ].filter(Boolean);
 
-    // What's turned on comes from the business profile (Business profile → What BillingEase shows you).
-    const prof = BE.get('profile') || {};
-    const describe = (name, o) => {
-      const sells = o.services && o.products ? 'services and products' : o.products ? 'products' : 'services';
-      const bits = [sells + (o.services && o.products ? '' : ' only')];
-      bits.push(o.overseas ? 'bills customers abroad' : 'in ' + (!prof.country || prof.country === 'United States' ? 'the US' : prof.country));
-      const who = o.team ? (o.accountant ? 'has a team with an accountant' : 'has a team') : (o.accountant ? 'it’s you and your accountant' : 'it’s just you');
-      return {
-        hint: [sells.charAt(0).toUpperCase() + sells.slice(1) + (o.services && o.products ? '' : ' only'), o.team ? 'team' : 'just you', o.overseas ? 'abroad' : ''].filter(Boolean).join(' · '),
-        profile: name + ' sells ' + bits[0] + ', ' + bits[1] + (o.team ? ' and ' : ', and ') + who + '.'
-      };
-    };
-    const team = BE.all('team');
-    const curOn = {
-      services: prof.sells !== 'products' ? 1 : 0, products: prof.sells === 'products' || prof.sells === 'both' ? 1 : 0,
-      overseas: prof.overseas ? 1 : 0, team: prof.team && prof.team !== 'solo' ? 1 : 0,
-      accountant: team.some((t) => t.role === 'Accountant') || /accountant/.test(prof.team || '') ? 1 : 0, advanced: prof.advanced ? 1 : 0
-    };
-    const curName = prof.business || 'Your business';
-    const BIZ = { cur: Object.assign({ name: curName, ini: BE.initials(curName), tint: '#EEE8FF', on: curOn }, describe(curName, curOn)) };
-    BE.all('businesses').filter((x) => !x.current).forEach((x) => {
-      const on = { services: 1 };
-      BIZ[x.id] = Object.assign({ name: x.name, ini: BE.initials(x.name), tint: '#FDE6D6', on }, describe(x.name, on));
-    });
-    const bizKey = BIZ[st.biz] ? st.biz : 'cur';
-    const B = BIZ[bizKey];
-
-    const FILTERS = [
-      { id: 'all', label: 'Everything', icon: 'M4 6h16M4 12h16M4 18h16' },
-      { id: 'services', label: 'Services', icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2' },
-      { id: 'products', label: 'Products', icon: 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8' },
-      { id: 'overseas', label: 'Overseas', icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z' },
-      { id: 'teams', label: 'Teams', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' }
-    ];
-    const fl = st.filter;
+    const on = { vat: vat, landlord: landlord, staff: staff, practice: prc.has };
+    const FILTERS = [{ id: 'all', label: 'Everything', icon: 'M4 6h16M4 12h16M4 18h16' }].concat(lk ? [
+      { id: 'vat', label: 'VAT and SSCL', icon: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3' },
+      { id: 'staff', label: 'Employees', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' },
+      { id: 'practice', label: 'With a practitioner', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' }
+    ] : [
+      { id: 'landlord', label: 'Landlords', icon: 'M4 11 12 4l8 7v9h-5v-6H9v6H4z' },
+      { id: 'vat', label: 'VAT registered', icon: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3' },
+      { id: 'staff', label: 'With staff', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' },
+      { id: 'practice', label: 'With an accountant', icon: 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5' }
+    ]);
+    const fl = FILTERS.some((f) => f.id === st.filter) ? st.filter : 'all';
     const filters = FILTERS.map((f) => {
-      const on = fl === f.id;
-      return { label: f.label, icon: f.icon, on, border: on ? '#18161F' : '#CBC7D3', bg: on ? '#18161F' : '#FFFFFF', color: on ? '#FFFFFF' : '#18161F',
-        pick: () => this.setState({ filter: f.id }) };
+      const o = fl === f.id;
+      return { label: f.label, icon: f.icon, on: o, border: o ? '#18161F' : '#CBC7D3', bg: o ? '#18161F' : '#FFFFFF', color: o ? '#FFFFFF' : '#18161F', pick: () => this.setState({ filter: f.id }) };
     });
-    const filterLabel = { services: 'For services', products: 'For products', overseas: 'For overseas', teams: 'For teams' }[fl];
+    const filterLabel = (FILTERS.filter((f) => f.id === fl)[0] || {}).label;
 
     const q = st.query.trim().toLowerCase();
     const words = q.split(/\s+/).filter(Boolean);
@@ -282,18 +242,19 @@ class Component extends DCLogic {
     const COLS = [
       { g: 'in', name: 'Coming in', sub: 'Money customers pay you.', open: 'Open Coming in', href: 'ThreeIn.dc.html', dot: '#7A5AF8', dotBorder: '0', dotRadius: '9999px', rule: '#7A5AF8' },
       { g: 'out', name: 'Going out', sub: 'What you spend to run the business.', open: 'Open Going out', href: 'ThreeOut.dc.html', dot: '#E0752D', dotBorder: '0', dotRadius: '9999px', rule: '#E0752D' },
-      { g: 'keep', name: 'Yours to keep', sub: 'What’s left, the tax on it, and the books behind it.', open: 'Open Yours to keep', href: 'ThreeKeep.dc.html', dot: '#18161F', dotBorder: '2px solid #B9A3FF', dotRadius: '9999px', rule: '#18161F' },
-      { g: 'biz', name: 'Your business', sub: 'Settings, people and your account. Also in the menu under your initials.', open: 'Business profile', href: 'BizProfile.dc.html', dot: '#FFFFFF', dotBorder: '2px solid #18161F', dotRadius: '3px', rule: '#CBC7D3' }
+      { g: 'keep', name: 'Yours to keep', sub: lk ? 'What’s left after income tax, and the books behind it.' : 'What’s left after Income Tax and NI, and the books behind it.', open: 'Open Yours to keep', href: 'ThreeKeep.dc.html', dot: '#18161F', dotBorder: '2px solid #B9A3FF', dotRadius: '9999px', rule: '#18161F' },
+      { g: 'biz', name: 'Your business', sub: 'Settings, your ' + prc.noun + ' and your account. Also in the menu under your initials.', open: 'Business profile', href: 'BizProfile.dc.html', dot: '#FFFFFF', dotBorder: '2px solid #18161F', dotRadius: '3px', rule: '#CBC7D3' }
     ];
     const cols = COLS.map((C) => {
       const items = F.filter((f) => f.g === C.g && matchQ(f)).map((f) => {
-        const off = !!f.need && !B.on[f.need];
+        const off = !!f.need && !on[f.need];
         const hl = fl !== 'all' && f.tags.indexOf(fl) >= 0;
         shownCount++; if (hl) hlCount++; if (off) offCount++;
         return {
           name: f.name, formal: f.formal || false, text: f.text, href: f.href,
-          off, turnOnAria: 'Turn on ' + f.name + ' in Business profile',
-          matchTag: hl ? filterLabel : false,
+          off, turnOnAria: 'Turn on ' + f.name, turnHref: f.need === 'practice' ? 'Accountant.dc.html' : f.need === 'staff' ? 'SpendPayroll.dc.html' : 'BizProfile.dc.html',
+          offWhy: { vat: 'Not VAT registered ·', landlord: 'Not set up as a landlord ·', staff: 'No employees yet ·', practice: 'No ' + prc.noun + ' linked ·' }[f.need] || 'Turned off ·',
+          matchTag: hl ? 'For ' + filterLabel.toLowerCase() : false,
           bg: off ? '#F7F6F9' : hl ? '#EEE8FF' : '#FFFFFF',
           border: off ? '1px dashed #CBC7D3' : hl ? '2px solid #18161F' : '1px solid #E2DFE8',
           nameColor: off ? '#47444F' : '#18161F',
@@ -307,24 +268,21 @@ class Component extends DCLogic {
     if (!shownCount) statusLine = 'No features match “' + st.query.trim() + '”';
     else {
       statusLine = (words.length ? shownCount + ' of ' + F.length + ' features match “' + st.query.trim() + '”' : F.length + ' features in four places');
-      if (fl !== 'all') statusLine += ' · ' + hlCount + ' ' + filterLabel.toLowerCase() + ' highlighted';
-      if (offCount) statusLine += ' · ' + offCount + ' turned off';
+      if (fl !== 'all') statusLine += ' · ' + hlCount + ' highlighted';
+      if (offCount) statusLine += ' · ' + offCount + ' not set up yet';
     }
-
-    const bizOpts = Object.keys(BIZ).map((k) => ({
-      name: BIZ[k].name + (k === 'cur' ? ' (open now)' : ''), ini: BIZ[k].ini, tint: BIZ[k].tint, hint: BIZ[k].hint + (k === 'cur' ? '' : ' · preview'), on: bizKey === k, bg: bizKey === k ? '#EEE8FF' : 'transparent',
-      pick: () => this.setState({ biz: k, bizOpen: false })
-    }));
-
+    const name = prof.business || 'Your business';
+    const bits = lk ? [vat ? 'VAT and SSCL registered' : 'not VAT registered', staff ? 'with employees' : 'no employees yet', prc.has ? 'works with ' + prc.short : 'no practitioner linked']
+      : [landlord ? 'sole trader and landlord' : 'sole trader', vat ? 'VAT registered' : 'not VAT registered', prc.has ? 'works with ' + prc.short : 'no accountant linked'];
     return {
-      bizOpen: st.bizOpen, bizOpts,
-      toggleBiz: () => this.setState({ bizOpen: !st.bizOpen }),
-      biz: { name: B.name, ini: B.ini, tint: B.tint },
+      biz: { name, ini: BE.initials(name), country: pk.short || '' },
+      searchHint: lk ? 'Search in plain words: “cheque”, “EPF”, “SSCL”, “TaxWise”' : 'Search in plain words: “mileage”, “quarter”, “rent”, “VAT”',
+      tryWord: lk ? 'payroll' : 'mileage',
       query: st.query, hasQuery: st.query.length > 0,
       setQuery: (e) => this.setState({ query: e.target.value }),
       clearQuery: () => this.setState({ query: '' }),
       suggest: () => this.notify('Thanks. We’ve noted “' + st.query.trim() + '” as a feature request.'),
-      filters, cols, statusLine, profileLine: B.profile,
+      filters, cols, statusLine, profileLine: name + ' (' + (pk.name || '') + '): ' + bits.join(', ') + '.',
       noResults: shownCount === 0,
       toast: st.toast
     };
