@@ -10,7 +10,7 @@ import { load } from "@/lib/api";
 
 export const metadata: Metadata = { title: "Going out" };
 
-type Search = { period?: string; show?: string };
+type Search = { period?: string; show?: string; sort?: string };
 
 export default async function GoingOutPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
@@ -40,49 +40,9 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
   const items = show === "paid" ? money.paid : money.toPay;
   const periodWord = summary.period.key === "month" ? `this ${monthLabel(summary.period.from).split(" ")[0]}` : summary.period.key === "quarter" ? `this quarter (${summary.period.label})` : `this ${summary.period.label.replace(/^Tax year/, "tax year")}`;
 
-  return (
-    <>
-      <Crumbs trail={[{ label: "Going out" }]} />
-
-      <HeroCard
-        label={<>Going out {periodWord}</>}
-        amount={fmt(summary.total)}
-        sub={<><SplitBar paid={summary.paid} toPay={summary.toPay} /><Legend paid={summary.paid} toPay={summary.toPay} currency={cur} /></>}
-        aside={
-          <nav aria-label="Period" className="flex flex-wrap gap-1.5 self-start rounded-full bg-surface p-1">
-            {summary.periods.map((p) => (
-              <Link key={p.key} href={link({ period: p.key })} aria-current={p.key === summary.period.key ? "page" : undefined}
-                className={cx("flex min-h-10 items-center rounded-full px-3.5 text-sm font-semibold", p.key === summary.period.key ? "bg-white text-ink shadow-sm" : "text-ink2 hover:text-ink")}>
-                {p.key === "month" ? "This month" : p.key === "quarter" ? "This quarter" : p.label.replace("Tax year", setup.country === "lk" ? "Year" : "Tax year")}
-              </Link>
-            ))}
-          </nav>
-        }
-      >
-        <p className="text-[15px] leading-relaxed">
-          What you&apos;ve paid {periodWord}, plus bills still to pay. You record each payment yourself; nothing is paid from BillingEase.
-        </p>
-        <div className="flex flex-wrap gap-2.5">
-          <a href="#expense" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-violet px-5 text-[15px] font-semibold hover:bg-[#a98ffb]"><Icon d={ICONS.plus} size={18} strokeWidth={2.4} />Record an expense</a>
-          <ButtonLink href="/app/out/bills/new" variant="secondary"><Icon d={ICONS.bill} size={18} />Enter a bill</ButtonLink>
-        </div>
-      </HeroCard>
-
-      <ExpensePanel setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)} />
-
-      <section className="flex flex-col gap-4" aria-labelledby="tools-h">
-        <SectionTitle id="tools-h" aside="Bills, suppliers and every-month costs">Tools for Going out</SectionTitle>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <ToolCard href="/app/out/bills" icon={ICONS.bill} title="Bills" line="What you owe and when it's due"
-            chip={summary.counts.openBills ? `${summary.counts.openBills} to pay · ${fmt(summary.counts.openBillsTotal)}` : "Nothing to pay"} chipTone={summary.needs.overdueBills ? "late" : "neutral"} />
-          <ToolCard href="/app/out/suppliers" icon={ICONS.people} title="Suppliers" line="Everyone you pay, and how much"
-            chip={`${summary.counts.suppliers} supplier${summary.counts.suppliers === 1 ? "" : "s"}`} />
-          <ToolCard href="/app/out/monthly" icon={ICONS.clock} title="Every month" line={setup.country === "uk" ? "Desk rent, software and phone" : "Rent, electricity and internet"}
-            chip={summary.counts.monthlyCosts ? (summary.counts.monthlyToPay ? `${fmt(summary.counts.monthlyToPay)} still to come` : "All recorded this month") : "None set up"} />
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-3" aria-labelledby="needs-h">
+  const sorting = sp.sort === "1";
+  const needsSection = (
+      <section id="sort" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="needs-h">
         <SectionTitle id="needs-h" aside={needs ? `${unsorted.expenses.length} to categorise · ${urgent.length} bill${urgent.length === 1 ? "" : "s"}` : undefined}>
           Needs you {needs > 0 && <span className="text-muted">{needs}</span>}
         </SectionTitle>
@@ -121,6 +81,53 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
           </div>
         ))}
       </section>
+  );
+
+  return (
+    <>
+      <Crumbs trail={[{ label: "Going out" }]} />
+
+      <HeroCard
+        label={<>Going out {periodWord}</>}
+        amount={fmt(summary.total)}
+        sub={<><SplitBar paid={summary.paid} toPay={summary.toPay} /><Legend paid={summary.paid} toPay={summary.toPay} currency={cur} /></>}
+        aside={
+          <nav aria-label="Period" className="flex flex-wrap gap-1.5 self-start rounded-full bg-surface p-1">
+            {summary.periods.map((p) => (
+              <Link key={p.key} href={link({ period: p.key })} aria-current={p.key === summary.period.key ? "page" : undefined}
+                className={cx("flex min-h-10 items-center rounded-full px-3.5 text-sm font-semibold", p.key === summary.period.key ? "bg-white text-ink shadow-sm" : "text-ink2 hover:text-ink")}>
+                {p.key === "month" ? "This month" : p.key === "quarter" ? "This quarter" : p.label.replace("Tax year", setup.country === "lk" ? "Year" : "Tax year")}
+              </Link>
+            ))}
+          </nav>
+        }
+      >
+        <p className="text-[15px] leading-relaxed">
+          What you&apos;ve paid {periodWord}, plus bills still to pay. You record each payment yourself; nothing is paid from BillingEase.
+        </p>
+        <div className="flex flex-wrap gap-2.5">
+          <a href="#expense" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-violet px-5 text-[15px] font-semibold hover:bg-[#a98ffb]"><Icon d={ICONS.plus} size={18} strokeWidth={2.4} />Record an expense</a>
+          <ButtonLink href="/app/out/bills/new" variant="secondary"><Icon d={ICONS.bill} size={18} />Enter a bill</ButtonLink>
+        </div>
+      </HeroCard>
+
+      {sorting && needsSection}
+
+      <ExpensePanel setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)} />
+
+      <section className="flex flex-col gap-4" aria-labelledby="tools-h">
+        <SectionTitle id="tools-h" aside="Bills, suppliers and every-month costs">Tools for Going out</SectionTitle>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ToolCard href="/app/out/bills" icon={ICONS.bill} title="Bills" line="What you owe and when it's due"
+            chip={summary.counts.openBills ? `${summary.counts.openBills} to pay · ${fmt(summary.counts.openBillsTotal)}` : "Nothing to pay"} chipTone={summary.needs.overdueBills ? "late" : "neutral"} />
+          <ToolCard href="/app/out/suppliers" icon={ICONS.people} title="Suppliers" line="Everyone you pay, and how much"
+            chip={`${summary.counts.suppliers} supplier${summary.counts.suppliers === 1 ? "" : "s"}`} />
+          <ToolCard href="/app/out/monthly" icon={ICONS.clock} title="Every month" line={setup.country === "uk" ? "Desk rent, software and phone" : "Rent, electricity and internet"}
+            chip={summary.counts.monthlyCosts ? (summary.counts.monthlyToPay ? `${fmt(summary.counts.monthlyToPay)} still to come` : "All recorded this month") : "None set up"} />
+        </div>
+      </section>
+
+      {!sorting && needsSection}
 
       <section className="flex flex-col gap-4" aria-labelledby="money-h">
         <div className="flex flex-wrap items-center justify-between gap-3">

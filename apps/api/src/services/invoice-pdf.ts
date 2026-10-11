@@ -206,7 +206,7 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   pdf.setProducer("BillingEase");
   pdf.setKeywords([numberText]);
   // The number in plain text too, so mail filters and search can find it.
-  pdf.getInfoDict().set(PDFName.of("DocumentNumber"), PDFString.of(numberText));
+  (pdf as unknown as { getInfoDict(): { set(k: PDFName, v: PDFString): void } }).getInfoDict().set(PDFName.of("DocumentNumber"), PDFString.of(numberText));
 
   const pages: PDFPage[] = [];
   let page!: PDFPage;
