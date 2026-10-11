@@ -72,7 +72,10 @@
       payroll: {
         mode: 'records',
         banner: 'BillingEase keeps your payroll records. Run payroll and report to HMRC (RTI) through your payroll software.',
-        payeDueDay: 22
+        payeDueDay: 22,
+        // For the "check the figures" calculator only (a sense check, not a payroll calculation). Illustrative 2026/27 (verify).
+        check: { personalAllowance: 12570, basicRate: 0.2, higherRate: 0.4, basicBand: 37700, eeNIThreshold: 12570, eeNIUpper: 50270, eeNIRate: 0.08, eeNIUpperRate: 0.02, erNIThreshold: 5000, erNIRate: 0.15, pensionLower: 6240, pensionUpper: 50270, pensionEe: 0.05, pensionEr: 0.03, taxCode: '1257L' },
+        pensionDueDay: 22
       },
       /** Income Tax (England, Wales and NI bands) plus Class 4 NI on a year's profit. Illustrative 2026/27 figures. */
       estimate: function (profit, o) {
@@ -102,7 +105,9 @@
         { label: 'First payment on account 2026/27', due: '31 Jan 2027' }
       ],
       askSources: 'HMRC manuals, gov.uk guidance and UK legislation',
-      practitioner: { tool: 'TaxWise practice workbench', noun: 'accountant', practice: 'practice' }
+      practitioner: { tool: 'TaxWise practice workbench', noun: 'accountant', practice: 'practice' },
+      // How customers pay, recorded by hand (Coming in).
+      payMethods: ['Bank transfer', 'Card machine', 'Cash', 'Cheque']
     },
 
     lk: {
@@ -145,7 +150,12 @@
           var r = bands(Math.max(0, monthly - 150000), [[1000000 / 12, 0.06], [500000 / 12, 0.18], [500000 / 12, 0.24], [500000 / 12, 0.30], [Infinity, 0.36]]);
           return Math.round(r.tax);
         },
-        dues: { epf: 'last working day of the following month', apit: '15th of the following month' }
+        dues: { epf: 'last working day of the following month', apit: '15th of the following month' },
+        apitDueDay: 15,
+        payTo: { epf: 'EPF, Central Bank of Sri Lanka', etf: 'Employees’ Trust Fund Board', apit: 'Inland Revenue Department' },
+        // Overtime is left out of EPF/ETF earnings; fixed allowances count unless marked otherwise (verify, spec section 14).
+        overtimeInEpf: false,
+        reliefMonthly: 150000
       },
       /** Income tax for an individual on a year's business profit. Illustrative 2026/27 bands (verify). */
       estimate: function (profit) {
@@ -172,7 +182,12 @@
         { label: 'Income tax instalment', due: '15 Nov 2026' }
       ],
       askSources: 'the Inland Revenue Act, IRD guidance and gazettes, and EPF/ETF rules',
-      practitioner: { tool: 'TaxWise.lk', noun: 'tax practitioner', practice: 'firm' }
+      practitioner: { tool: 'TaxWise.lk', noun: 'tax practitioner', practice: 'firm' },
+      // How customers pay, recorded by hand (Coming in). Cheques keep their number, bank and date.
+      payMethods: ['Bank transfer', 'Cheque', 'Cash', 'LankaQR'],
+      // Tax Invoice: SSCL is shown as its own line and included in the VAT base (to confirm with IRD).
+      ssclInVatBase: true,
+      ssclNote: 'SSCL is shown as its own line and included in the value VAT is charged on. To confirm with IRD.'
     }
   };
 

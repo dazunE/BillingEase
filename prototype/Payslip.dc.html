@@ -1,11 +1,221 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>BillingEase · Payslip</title><script src="./support.js"></script></head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Payslip</title>
+<script src="./support.js"></script>
+</head>
+<body>
 <x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.ps-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 15px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.ps-btn2{background:rgba(24,22,31,0.07)}
+.ps-kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid #EFEDF3;font-size:14px;font-variant-numeric:tabular-nums}
+.ps-kv:first-of-type{border-top:0}
+.ps-cap{font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#5F5B68}
+.ps-chip{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:9999px;background:rgba(24,22,31,0.07);font-size:13px;font-weight:600;text-decoration:none}
+.ps-chip[aria-current="page"]{background:#18161F;color:#FFFFFF}
+@media print{[data-dc-import],.ps-noprint{display:none!important}main{padding:0!important}.ps-paper{border:0!important;box-shadow:none!important}}
+</style>
+</helmet>
 <div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
-<dc-import name="AppHeader"></dc-import>
-<main style="max-width: 1200px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px);"><p>Being designed.</p></main>
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+
+    <dc-import name="AppCrumbs" area="out" mid="Payroll" mid-href="SpendPayroll.dc.html" here="{{here}}"></dc-import>
+
+    <!-- UK: payslips come from the payroll software -->
+    <sc-if value="{{ukNote}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="uk-h" style="max-width: 720px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 14px;">
+        <h1 id="uk-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em;">Payslips come from your payroll software</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F;">In the UK, BillingEase keeps your payroll records: each pay run’s figures, the staff costs in your books and what you owe HMRC. Payslips, RTI reports to HMRC and P60s come from the payroll software {{ukWho}} uses.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <a href="SpendPayroll.dc.html" class="ps-btn">Back to payroll records</a>
+          <a href="Accountant.dc.html" class="ps-btn ps-btn2">Your accountant</a>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Sri Lanka: pick a payslip -->
+    <sc-if value="{{pick.show}}" hint-placeholder-val="{{false}}">
+      <section aria-labelledby="pick-h" style="max-width: 760px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 14px;">
+        <h1 id="pick-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.02em;">{{pick.title}}</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #47444F;">{{pick.text}}</p>
+        <ul style="margin: 0; padding: 0; list-style: none;">
+          <sc-for list="{{pick.rows}}" as="r" hint-placeholder-count="5">
+            <li style="border-top: 1px solid #EFEDF3;"><a href="{{r.href}}" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 12px 0; text-decoration: none;"><span style="font-weight: 700;">{{r.name}}</span><span style="color: #47444F; font-variant-numeric: tabular-nums;">Net pay <strong style="color: #18161F;">{{r.net}}</strong></span></a></li>
+          </sc-for>
+        </ul>
+        <a href="SpendPayroll.dc.html" class="ps-btn ps-btn2" style="align-self: flex-start;">{{pick.back}}</a>
+      </section>
+    </sc-if>
+
+    <!-- Sri Lanka: one payslip -->
+    <sc-if value="{{has}}" hint-placeholder-val="{{true}}">
+      <div class="ps-noprint" style="width: 100%; max-width: 820px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;" role="navigation" aria-label="Other months">
+          <sc-for list="{{months}}" as="m" hint-placeholder-count="7"><a href="{{m.href}}" class="ps-chip" aria-current="{{m.cur}}">{{m.label}}</a></sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <button type="button" class="ps-btn" onClick="{{print}}">Print or save as PDF</button>
+          <sc-if value="{{canEmail}}" hint-placeholder-val="{{true}}"><button type="button" class="ps-btn ps-btn2" onClick="{{email}}">{{emailLabel}}</button></sc-if>
+        </div>
+      </div>
+      <sc-if value="{{printNote}}" hint-placeholder-val="{{false}}">
+        <div role="status" class="ps-noprint" style="width: 100%; max-width: 820px; margin: 0 auto; box-sizing: border-box; padding: 12px 16px; border-radius: 16px; background: #E1EEF8; color: #1F5E91; font-size: 14px; line-height: 1.45;">If the print window didn’t open, use your browser’s Print (Ctrl+P or ⌘P) and choose “Save as PDF”. This page prints without the menus.</div>
+      </sc-if>
+
+      <article aria-labelledby="ps-h" class="ps-paper" style="max-width: 820px; width: 100%; margin: 0 auto; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; box-shadow: 0 2px 10px rgba(24,22,31,0.05); padding: clamp(20px, 4vw, 44px); display: flex; flex-direction: column; gap: 24px;">
+        <header style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 24px; padding-bottom: 20px; border-bottom: 2px solid #18161F;">
+          <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 260px;">
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{biz.name}}</span>
+            <span style="font-size: 13px; color: #47444F; line-height: 1.5;">{{biz.address}}</span>
+            <span style="font-size: 13px; color: #47444F;">{{biz.ids}}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start; flex: 0 1 auto;">
+            <h1 id="ps-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">Payslip</h1>
+            <span style="font-size: 14px; font-weight: 600;">{{slip.month}}</span>
+            <sc-if value="{{slip.draft}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12px; font-weight: 600;">Draft · not approved yet</span></sc-if>
+          </div>
+        </header>
+
+        <section aria-label="Employee" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px 24px; font-size: 14px;">
+          <sc-for list="{{who}}" as="w" hint-placeholder-count="8">
+            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="ps-cap">{{w.k}}</span><span style="font-weight: 600; overflow-wrap: anywhere;">{{w.v}}</span></span>
+          </sc-for>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px 32px;">
+          <section aria-labelledby="earn-h" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column;">
+            <h2 id="earn-h" class="ps-cap" style="margin: 0 0 6px;">Earnings</h2>
+            <sc-for list="{{earn}}" as="k" hint-placeholder-count="3"><span class="ps-kv"><span>{{k.label}}</span><span>{{k.v}}</span></span></sc-for>
+            <span class="ps-kv" style="border-top: 2px solid #E2DFE8; font-weight: 700;"><span>Gross earnings</span><span>{{slip.gross}}</span></span>
+          </section>
+          <section aria-labelledby="ded-h" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column;">
+            <h2 id="ded-h" class="ps-cap" style="margin: 0 0 6px;">Deductions</h2>
+            <sc-for list="{{ded}}" as="k" hint-placeholder-count="2"><span class="ps-kv"><span>{{k.label}}</span><span>{{k.v}}</span></span></sc-for>
+            <span class="ps-kv" style="border-top: 2px solid #E2DFE8; font-weight: 700;"><span>Total deductions</span><span>{{slip.dedTotal}}</span></span>
+          </section>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; padding: 18px 20px; border-radius: 16px; background: #F7F6F9;">
+          <span style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 16px;">Net pay</strong><span style="font-size: 13px; color: #47444F;">{{slip.netNote}}</span></span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 4vw, 36px); letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{slip.net}}</span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px 32px;">
+          <section aria-labelledby="er-h" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column;">
+            <h2 id="er-h" class="ps-cap" style="margin: 0 0 6px;">Paid by your employer (not deducted)</h2>
+            <sc-for list="{{er}}" as="k" hint-placeholder-count="2"><span class="ps-kv"><span>{{k.label}}</span><span>{{k.v}}</span></span></sc-for>
+          </section>
+          <section aria-labelledby="ytd-h" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column;">
+            <h2 id="ytd-h" class="ps-cap" style="margin: 0 0 6px;">{{ytdTitle}}</h2>
+            <sc-for list="{{ytd}}" as="k" hint-placeholder-count="3"><span class="ps-kv"><span>{{k.label}}</span><span>{{k.v}}</span></span></sc-for>
+          </section>
+        </div>
+
+        <footer style="display: flex; flex-direction: column; gap: 6px; padding-top: 16px; border-top: 1px solid #E2DFE8; font-size: 12.5px; color: #5F5B68; line-height: 1.5;">
+          <span>EPF ({{rates.ee}} from pay, {{rates.er}} from your employer) and ETF {{rates.etf}} are worked out on EPF earnings of {{slip.epfBase}}; overtime is left out. APIT is from the {{rates.year}} monthly tables. Prepared with BillingEase; contributions are paid and filed by {{biz.name}} through the EPF, ETF and IRD channels.</span>
+          <span>English. Sinhala and Tamil payslips are coming soon.</span>
+        </footer>
+      </article>
+
+      <nav class="ps-noprint" aria-label="Other people" style="width: 100%; max-width: 820px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; font-size: 14px;">
+        <sc-if value="{{prev}}" hint-placeholder-val="{{true}}"><a href="{{prev.href}}" style="font-weight: 600;">← {{prev.name}}</a></sc-if>
+        <a href="SpendPayroll.dc.html" style="font-weight: 600;">Back to payroll</a>
+        <sc-if value="{{next}}" hint-placeholder-val="{{true}}"><a href="{{next.href}}" style="font-weight: 600;">{{next.name}} →</a></sc-if>
+      </nav>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" class="ps-noprint" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic { renderVals() { return {}; } }
-</script></body></html>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { toast: null, printNote: false }; }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  renderVals() {
+    const st = this.state;
+    const money = (n) => BE.money(n, null, { cents: true });
+    const isUK = BE.is('uk');
+    const prof = BE.get('profile') || {};
+    const sett = BE.get('payrollSettings') || {};
+    const P = BE.pack().payroll || {};
+    const base = { toast: st.toast, printNote: st.printNote, here: 'Payslip', ukNote: false, ukWho: '', pick: { show: false }, has: false };
+    if (isUK) return Object.assign(base, { ukNote: true, ukWho: (prof.practice && prof.practice.name) ? prof.practice.name : 'you or your accountant' });
+
+    const key = BE.hash();
+    const s = BE.payslip(key);
+    const runs = BE.payRuns().filter((r) => r.country === 'lk');
+    if (!s) {
+      const run = runs.filter((r) => r.status !== 'needs')[0] || runs[0];
+      return Object.assign(base, {
+        pick: {
+          show: true,
+          title: run ? 'Payslips for ' + run.month : 'No payslips yet',
+          text: run ? (key ? 'We couldn’t find that payslip. Here are the latest ones.' : 'Pick someone to see their payslip.') : 'Payslips appear here once you work out your first month’s payroll.',
+          rows: run ? (run.people || []).map((p) => ({ name: p.name, net: BE.money(p.net), href: 'Payslip.dc.html#' + run.id + '-' + p.id })) : [],
+          back: run ? 'Back to payroll' : 'Go to payroll'
+        }
+      });
+    }
+    const { run, person: p, emp: e } = s;
+    const ppl = run.people || [];
+    const at = ppl.findIndex((x) => x.id === p.id);
+    const link = (x) => (x ? { name: x.name, href: 'Payslip.dc.html#' + run.id + '-' + x.id } : null);
+    const bank = e.bank || {};
+    const acct = String(bank.acct || '').replace(/\s/g, '');
+    const allowances = (e.allowances && e.allowances.length) ? e.allowances : (p.allow ? [{ name: 'Allowances', amount: p.allow }] : []);
+    const pct = (n) => Math.round((n || 0) * 100) + '%';
+    const first = p.name.split(' ')[0];
+    return Object.assign(base, {
+      has: true, here: run.month.split(' ')[0] + ' · ' + p.name,
+      biz: {
+        name: prof.business || 'Your business',
+        address: [prof.street, prof.town || prof.city, prof.postal].filter(Boolean).join(', ') || prof.city || '',
+        ids: [prof.tin ? 'TIN ' + prof.tin : '', sett.epfReg ? 'EPF employer no ' + sett.epfReg : '', sett.etfReg && sett.etfReg !== sett.epfReg ? 'ETF no ' + sett.etfReg : ''].filter(Boolean).join(' · ')
+      },
+      slip: {
+        month: run.month + ' · pay period ' + run.period, draft: run.status === 'needs',
+        gross: money(p.gross), dedTotal: money(p.epfEe + p.apit), net: money(p.net), epfBase: money(p.epfBase),
+        netNote: (run.status === 'paid' ? 'Paid ' + (run.paidOn || run.date) : 'To be paid ' + run.day) + (bank.name ? ' to ' + bank.name + (acct ? ' ••' + acct.slice(-4) : '') : '')
+      },
+      who: [
+        { k: 'Employee', v: p.name }, { k: 'Designation', v: e.job || p.job || '—' }, { k: 'NIC', v: e.nic || '—' }, { k: 'EPF member no', v: e.epfNo || '—' },
+        { k: 'Pay period', v: run.period + ' ' + run.month.split(' ')[1] }, { k: 'Pay date', v: run.day }, { k: 'Bank', v: bank.name ? bank.name + (bank.branch ? ', ' + bank.branch : '') : '—' }, { k: 'Since', v: e.start || '—' }
+      ],
+      earn: [{ label: 'Basic salary', v: money(p.basic) }].concat(allowances.map((a) => ({ label: a.name, v: money(a.amount) }))).concat(p.ot ? [{ label: 'Overtime', v: money(p.ot) }] : []),
+      ded: [{ label: 'EPF, employee ' + pct(P.epfEmployee || 0.08), v: money(p.epfEe) }, { label: 'APIT (income tax)', v: money(p.apit) }],
+      er: [{ label: 'EPF, employer ' + pct(P.epfEmployer || 0.12), v: money(p.epfEr) }, { label: 'ETF ' + pct(P.etf || 0.03), v: money(p.etf) }],
+      ytdTitle: 'This year of assessment (from 1 April)',
+      ytd: [{ label: 'Gross earnings', v: money(s.ytd.gross) }, { label: 'EPF, employee', v: money(s.ytd.epfEe) }, { label: 'APIT deducted', v: money(s.ytd.apit) }],
+      rates: { ee: pct(P.epfEmployee || 0.08), er: pct(P.epfEmployer || 0.12), etf: pct(P.etf || 0.03), year: (BE.pack().taxYear || {}).label || '' },
+      months: runs.filter((r) => (r.people || []).some((x) => x.id === p.id)).slice().reverse().map((r) => ({ label: r.month.split(' ')[0].slice(0, 3), href: 'Payslip.dc.html#' + r.id + '-' + p.id, cur: r.id === run.id ? 'page' : false })),
+      prev: link(ppl[at - 1]), next: link(ppl[at + 1]),
+      canEmail: !!e.email, emailLabel: (e.sentSlips || []).indexOf(run.id) >= 0 ? 'Email again' : 'Email to ' + first,
+      print: () => { this.setState({ printNote: true }); try { window.print(); } catch (err) { /* the note explains */ } },
+      email: () => {
+        if (run.status === 'needs') { this.notify('Approve ' + run.month + ' first, then email the payslip'); return; }
+        BE.update('employees', e.id, (x) => ({ sentSlips: (x.sentSlips || []).filter((id) => id !== run.id).concat([run.id]) }));
+        BE.log('Emailed ' + p.name + '’s ' + run.month + ' payslip to ' + e.email);
+        this.notify('Payslip emailed to ' + e.email + ' as a PDF');
+      }
+    });
+  }
+}
+</script>
+</body>
+</html>
