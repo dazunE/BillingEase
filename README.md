@@ -19,10 +19,25 @@ Needs Node 22.
 ```sh
 npm install
 npm run dev
-# API on http://localhost:4000, web app on http://localhost:3000
+# web app on http://localhost:3000 (the API runs on :4000); Ctrl+C stops both
 ```
 
 With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, so there is nothing else to install. Emails are kept in the `outbox_emails` table instead of being sent until `POSTMARK_TOKEN` is set. Ask needs `ANTHROPIC_API_KEY`. All settings are in [`.env.example`](.env.example).
+
+## Try it locally
+
+1. `npm install`, then `npm run dev` and open http://localhost:3000.
+2. **Create an account**, choosing the **United Kingdom** or **Sri Lanka**. Try both: use a second email (or a private window) for the other country.
+3. **Set up the business.** Say yes to VAT (and SSCL in Sri Lanka) to see VAT invoices and Tax Invoices.
+4. **New → Add a customer**, then **New → New invoice**: two lines, *Save and send*. Download the PDF from the invoice page.
+5. On the invoice, **Record a payment** (in Sri Lanka try a cheque, with its number and bank).
+6. **New → Record an expense** and **New → Add a bill**; pay the bill in part, then the rest.
+7. Back on **Home**, the three numbers have moved (without VAT and SSCL). Try the period switch, search and notifications.
+8. **Ask** says it isn't set up until you set `ANTHROPIC_API_KEY` before `npm run dev`.
+
+Emails you send are kept in the database (`outbox_emails`), not sent. To start again from an empty database, stop the app and delete `apps/api/.data/pglite`. To see the app on a fixed date, start it with `BILLINGEASE_TODAY=2026-10-11 npm run dev`.
+
+Automated checks: `npm run typecheck`, `npm test` (unit and API tests) and `npm run test:e2e` (the browser journey in both countries; needs Playwright's Chromium: `npx playwright install chromium`).
 
 ## Run it with Docker
 
