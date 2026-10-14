@@ -52,29 +52,29 @@ export function TeamScene({ t }: { t: TeamSceneText }) {
         opacity="0.45"
       />
       <g className={s.bob} style={{ animationDuration: "7s" }}>
-        <rect x="190" y="120" width="144" height="188" rx="12" fill="#18161F" opacity="0.07" transform="translate(6 8)" />
-        <rect x="190" y="120" width="144" height="188" rx="12" fill="#FFFFFF" stroke="#18161F" strokeWidth="3" />
-        <text x="206" y="146" className="font-display" fontSize="11" fontWeight="800" fill="#18161F" letterSpacing="1">
+        <rect x="184" y="120" width="156" height="188" rx="12" fill="#18161F" opacity="0.07" transform="translate(6 8)" />
+        <rect x="184" y="120" width="156" height="188" rx="12" fill="#FFFFFF" stroke="#18161F" strokeWidth="3" />
+        <text x="200" y="146" className="font-display" fontSize="11" fontWeight="800" fill="#18161F" letterSpacing="1">
           {t.docTitle}
         </text>
-        <text x="206" y="164" className="font-sans" fontSize="11" fontWeight="700" fill="#5F5B68">
+        <text x="200" y="164" className="font-sans" fontSize="11" fontWeight="700" fill="#5F5B68">
           {t.docSub}
         </text>
         {t.rows.map(([l, v], i) => (
           <g key={l}>
-            <text x="206" y={190 + i * 18} className="font-sans" fontSize="10" fill="#47444F">
+            <text x="200" y={190 + i * 18} className="font-sans" fontSize="10" fill="#47444F">
               {l}
             </text>
-            <text x="318" y={190 + i * 18} textAnchor="end" className="font-sans" fontSize="10" fontWeight="700" fill="#18161F">
+            <text x="324" y={190 + i * 18} textAnchor="end" className="font-sans" fontSize="10" fontWeight="700" fill="#18161F">
               {v}
             </text>
           </g>
         ))}
-        <path d="M206 250 H318" stroke="#E2DFE8" strokeWidth="2" />
-        <text x="206" y="280" className="font-sans" fontSize="11" fontWeight="600" fill="#5F5B68">
+        <path d="M200 250 H324" stroke="#E2DFE8" strokeWidth="2" />
+        <text x="200" y="280" className="font-sans" fontSize="11" fontWeight="600" fill="#5F5B68">
           Total
         </text>
-        <text x="318" y="282" textAnchor="end" className="font-display" fontSize="17" fontWeight="800" fill="#18161F">
+        <text x="324" y="282" textAnchor="end" className="font-display" fontSize="16" fontWeight="800" fill="#18161F">
           {t.total}
         </text>
         <g transform="rotate(-12 262 210)">

@@ -205,7 +205,9 @@ export function ProductCta({
   text,
   jar,
   more,
+  secondary = { label: "See pricing", href: ROUTES.pricing.href },
 }: {
+  secondary?: { label: string; href: string };
   country: SiteCountry;
   kicker: ReactNode;
   dot?: DotTone;
@@ -227,8 +229,8 @@ export function ProductCta({
             <Pill href={signUpHref(country)} variant="dark" arrow className="[&_svg]:stroke-white">
               Start free
             </Pill>
-            <Pill href={ROUTES.pricing.href} variant="white">
-              See pricing
+            <Pill href={secondary.href} variant="white">
+              {secondary.label}
             </Pill>
             {more && (
               <Link href={more.href} className="inline-flex min-h-11 items-center px-2 text-[15px] font-semibold underline underline-offset-4">
@@ -245,22 +247,4 @@ export function ProductCta({
   );
 }
 
-/** A visual-only switch track (inside a role="switch" button). */
-export function SwitchTrack({ on, dark = false }: { on: boolean; dark?: boolean }) {
-  return (
-    <span aria-hidden className={cx("relative h-[26px] w-11 flex-none rounded-full transition-colors", on ? "bg-coming" : dark ? "bg-ink2" : "bg-input")}>
-      <span className="absolute top-[3px] size-5 rounded-full bg-white transition-[left]" style={{ left: on ? 21 : 3 }} />
-    </span>
-  );
-}
-
-/** Check icon in a small circle. */
-export function CheckDot({ tint = "bg-tint", stroke = "#18161F", size = 20 }: { tint?: string; stroke?: string; size?: number }) {
-  return (
-    <span aria-hidden className={cx("mt-px flex flex-none items-center justify-center rounded-full", tint)} style={{ width: size, height: size }}>
-      <svg width={size * 0.6} height={size * 0.6} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m5 12 5 5 9-10" />
-      </svg>
-    </span>
-  );
-}
+export { SwitchTrack, CheckDot } from "./kit-client";
