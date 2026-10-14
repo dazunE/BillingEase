@@ -1,0 +1,32 @@
+/* Animations for the "who it's for" illustrations (prototype Site{Freelancers,Shops,Teams,Partners,Global}). */
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(2deg); } }
+@keyframes sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes stamp { 0%, 40% { opacity: 0; transform: scale(1.9); } 48% { opacity: 1; transform: scale(1); } 90% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
+@keyframes pop { 0%, 20% { opacity: 0; transform: translateY(8px) scale(0.96); } 30%, 88% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-4px); } }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes plane { 0% { transform: translate(0, 0) rotate(-8deg); opacity: 0; } 10% { opacity: 1; } 60% { transform: translate(60px, -26px) rotate(6deg); opacity: 1; } 75%, 100% { transform: translate(78px, -18px) rotate(12deg); opacity: 0; } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+
+.c { transform-box: fill-box; transform-origin: center; }
+.top { transform-box: fill-box; transform-origin: 50% 0; }
+.bob { animation: bob 6s ease-in-out infinite; }
+.float { animation: float 7s ease-in-out infinite; }
+.sway { animation: sway 5s ease-in-out infinite; }
+.spin { animation: spin 8s linear infinite; }
+.stamp { animation: stamp 7s ease-out infinite; }
+.pop { animation: pop 7s ease-out infinite; }
+.plane { animation: plane 6s ease-in-out infinite; }
+.blink { animation: blink 1.6s ease-in-out infinite; }
+.dash { stroke-dasharray: 4 8; animation: dash 1.6s linear infinite; }
+.in { animation: fade 0.35s ease-out both; }
+
+/* Hidden below 760px (decorative extras that would crowd a phone). */
+@media (max-width: 760px) { .hideSm { display: none !important; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .bob, .float, .sway, .spin, .stamp, .pop, .plane, .blink, .dash, .in { animation: none !important; }
+  .stamp, .pop { opacity: 1; }
+}

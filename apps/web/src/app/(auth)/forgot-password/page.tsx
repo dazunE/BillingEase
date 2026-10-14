@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AuthFrame } from "@/components/auth/Frame";
 import { BooksAreSafe } from "@/components/auth/panels";
-import { isCty } from "@/components/auth/country";
+import { pageCountry } from "@/components/auth/pageCountry";
 import { ForgotForm, SignInLink } from "./ForgotForm";
 
 export const metadata: Metadata = {
@@ -11,6 +11,6 @@ export const metadata: Metadata = {
 
 export default async function ForgotPasswordPage({ searchParams }: { searchParams: Promise<{ country?: string }> }) {
   const { country: c } = await searchParams;
-  const country = isCty(c) ? c : "uk";
+  const country = (await pageCountry(c)) ?? "uk";
   return <AuthFrame country={country} variant="forgot" topLink={<SignInLink />} card={<ForgotForm />} aside={<BooksAreSafe country={country} variant="forgot" />} />;
 }

@@ -14,11 +14,6 @@ const COUNTRIES = {
   lk: { name: "Sri Lanka", line: "Rupees · IRD · EPF and ETF" },
 };
 
-const LEGAL = {
-  terms: { title: "Terms, in short", body: "Your books are yours. BillingEase keeps them for you; your accountant prepares and files your returns from them." },
-  privacy: { title: "Privacy, in short", body: "We use your details to run your account and never sell them. Your accountant sees your books only once you link them, and you can remove them any time." },
-};
-
 export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
   const [state, action, pending] = useActionState(signUp, undefined);
   const v = state?.values ?? {};
@@ -26,7 +21,6 @@ export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
   const [country, setCountry] = useState<Cty | "">((v.country as Cty) || initialCountry || "");
   const [password, setPassword] = useState("");
   const [shown, setShown] = useState(false);
-  const [legal, setLegal] = useState<keyof typeof LEGAL | null>(null);
   const side: Cty = country || "uk";
 
   const card = (
@@ -51,19 +45,12 @@ export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
             className="mt-px size-[18px] flex-none cursor-pointer accent-ink" />
           <span>
             <label htmlFor="su-terms" className="cursor-pointer">I agree to the</label>{" "}
-            <button type="button" aria-expanded={legal === "terms"} onClick={() => setLegal(legal === "terms" ? null : "terms")} className="font-semibold text-ink underline underline-offset-[3px]">Terms</button>{" "}
+            <Link href="/legal/terms" target="_blank" rel="noopener" className="font-semibold text-ink underline underline-offset-[3px]">Terms<span className="sr-only"> (opens in a new tab)</span></Link>{" "}
             and{" "}
-            <button type="button" aria-expanded={legal === "privacy"} onClick={() => setLegal(legal === "privacy" ? null : "privacy")} className="font-semibold text-ink underline underline-offset-[3px]">Privacy notice</button>.
+            <Link href="/legal/privacy" target="_blank" rel="noopener" className="font-semibold text-ink underline underline-offset-[3px]">Privacy notice<span className="sr-only"> (opens in a new tab)</span></Link>.
           </span>
         </span>
         {e.terms && <FieldError>{e.terms}</FieldError>}
-        {legal && (
-          <div className="flex flex-col gap-1.5 rounded-[14px] bg-bg px-3.5 py-3 text-[13px] leading-normal text-ink2">
-            <strong className="text-ink">{LEGAL[legal].title}</strong>
-            <span>{LEGAL[legal].body}</span>
-            <button type="button" onClick={() => setLegal(null)} className="min-h-7 self-start font-semibold text-ink underline underline-offset-[3px]">Close</button>
-          </div>
-        )}
       </div>
 
       <FormError message={state?.message} />

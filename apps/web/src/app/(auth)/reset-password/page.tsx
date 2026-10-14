@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui";
 import { AuthFrame, AuthTitle } from "@/components/auth/Frame";
 import { BooksAreSafe } from "@/components/auth/panels";
-import { isCty } from "@/components/auth/country";
+import { pageCountry } from "@/components/auth/pageCountry";
 import { ResetForm } from "./ResetForm";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function ResetPasswordPage({ searchParams }: { searchParams: Promise<{ token?: string; country?: string }> }) {
   const { token, country: c } = await searchParams;
-  const country = isCty(c) ? c : "uk";
+  const country = (await pageCountry(c)) ?? "uk";
   const card = token ? (
     <ResetForm token={token} />
   ) : (

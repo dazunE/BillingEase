@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthFrame } from "@/components/auth/Frame";
 import { JustAsYouLeft } from "@/components/auth/panels";
-import { isCty } from "@/components/auth/country";
+import { pageCountry } from "@/components/auth/pageCountry";
 import { SignInForm } from "./SignInForm";
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function SignInPage({ searchParams }: { searchParams: Promise<{ next?: string; country?: string }> }) {
   const { next, country: c } = await searchParams;
-  const country = isCty(c) ? c : "uk";
+  const country = (await pageCountry(c)) ?? "uk";
   return (
     <AuthFrame
       country={country}
