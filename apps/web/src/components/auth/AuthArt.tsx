@@ -48,8 +48,9 @@ export function Backdrop({ country, variant = "signup", setup = false }: { count
               <path d="M14 70 H84 M14 82 H100 M14 94 H70" stroke="#EEE8FF" strokeWidth="5" strokeLinecap="round" />
               <path d="M14 70 H40" stroke="#B9A3FF" strokeWidth="5" strokeLinecap="round" />
               <path d="M14 122 H114" stroke="#E2DFE8" strokeWidth="1.5" />
-              <text x="14" y="142" fontSize="9" fontWeight="600" fill="#5F5B68">Total</text>
-              <text x="114" y="143" textAnchor="end" className="font-display" fontSize="15" fontWeight="800" fill="#18161F">{w.invAmt}</text>
+              {/* Long amounts (Rs 640,000) go under their label instead of beside it. */}
+              <text x="14" y={w.invAmt.length > 8 ? 134 : 142} fontSize="9" fontWeight="600" fill="#5F5B68">Total</text>
+              <text x="114" y={w.invAmt.length > 8 ? 149 : 143} textAnchor="end" className="font-display" fontSize={w.invAmt.length > 8 ? 13 : 15} fontWeight="800" fill="#18161F">{w.invAmt}</text>
               <g transform="rotate(-14 86 98)">
                 <g className={cx(s.c, s.stamp)}>
                   <rect x="56" y="85" width="60" height="26" rx="6" fill="#E2F6D5" fillOpacity="0.9" stroke="#2F5711" strokeWidth="2.5" />
@@ -92,8 +93,8 @@ export function Backdrop({ country, variant = "signup", setup = false }: { count
             <path d="M16 66 H62 M16 78 H52 M16 90 H68" stroke="#FDE6D6" strokeWidth="5" strokeLinecap="round" />
             <path d="M16 66 H32" stroke="#E0752D" strokeWidth="5" strokeLinecap="round" />
             <path d="M16 106 H94" stroke="#18161F" strokeWidth="1.2" strokeDasharray="3 3" />
-            <text x="16" y="126" fontSize="9" fontWeight="600" fill="#5F5B68">Paid</text>
-            <text x="94" y="127" textAnchor="end" className="font-display" fontSize={w.outAmt.length > 8 ? 11 : 14} fontWeight="800" fill="#18161F">{w.outAmt}</text>
+            <text x="16" y={w.outAmt.length > 8 ? 117 : 126} fontSize="9" fontWeight="600" fill="#5F5B68">Paid</text>
+            <text x="94" y={w.outAmt.length > 8 ? 131 : 127} textAnchor="end" className="font-display" fontSize={w.outAmt.length > 8 ? 12 : 14} fontWeight="800" fill="#18161F">{w.outAmt}</text>
           </svg>
         </span>
 
