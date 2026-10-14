@@ -34,7 +34,7 @@ export const SEC_LOCKS = {
   lead: "None of this needs setting up. It’s how BillingEase works for every business, on every plan.",
   items: [
     { icon: I.ledger, tint: "#EEE8FF", t: "A ledger that can’t be rewritten", d: "Every invoice, payment and expense posts balanced double-entry lines to an append-only ledger. Corrections post a reversal; nothing is edited or deleted in place.", tech: "Double-entry · append-only", status: "" },
-    { icon: I.lock, tint: "#FDE6D6", t: { uk: "Filed quarters, locked", lk: "Filed periods, locked" }, d: { uk: "Once your accountant files a quarter, it’s locked. Nothing dated inside it can be added, changed or voided by accident.", lk: "Once a VAT and SSCL period is filed, it’s locked. Nothing dated inside it can be added, changed or voided by accident." }, tech: "Period locks checked on every write", status: "" },
+    { icon: I.lock, tint: "#FDE6D6", t: { uk: "Filed quarters, locked", lk: "Filed periods, locked" }, d: { uk: "Once your accountant files a quarter, it’s locked. Nothing dated inside it can be added, changed or voided by accident.", lk: "Once a VAT and SSCL period is filed, it’s locked. Nothing dated inside it can be added, changed or voided by accident." }, tech: "Locks checked whenever the ledger is written", status: "" },
     { icon: I.apart, tint: "#E2F6D5", t: "Each business kept apart", d: "Every record belongs to one business, and every read and write is checked against the business you’re signed in to. One business can never see another’s books.", tech: "Business-scoped queries", status: "" },
     { icon: I.key, tint: "#FFF0B8", t: "Sessions with hashed tokens", d: "We keep only a hash of your session token, never the token itself. Signing out ends the session, and resetting your password signs out every device.", tech: "Hashed tokens · passwords hashed with bcrypt", status: "" },
     { icon: I.gauge, tint: "#E1EEF8", t: "Rate-limited sign-in", d: "Sign-in, sign-up and password reset are limited to a handful of attempts a minute, so nobody can guess their way in.", tech: "Per-route rate limits", status: "" },
@@ -47,12 +47,12 @@ export const SEC_ROLES = {
   lead: { uk: "Your books belong to your business. You and the accountant you invite can see them; nobody else can.", lk: "Your books belong to your business. You and the practitioner you invite can see them; nobody else can." } satisfies Copy,
   roles: {
     uk: [
-      { id: "you", name: "You", init: "EH", who: "Ellie Harper, owner", line: "Harper Studio (sample business)", tint: "#B9A3FF", items: [["Everything in your books", true], ["Invite or remove your accountant", true], ["Send invoices and reminders", true], ["Change a filed quarter", false]] },
+      { id: "you", name: "You", init: "EH", who: "Ellie Harper, owner", line: "Harper Studio (sample business)", tint: "#B9A3FF", items: [["Everything in your books", true], ["Decide who sees your books", true], ["Send invoices and reminders", true], ["Change a filed quarter", false]] },
       { id: "acct", name: "Your accountant", init: "PS", who: "Priya Shah, Dale & Shaw", line: "Invited by Ellie (sample)", tint: "#FFF0B8", items: [["Sees every quarter, report and entry", true], ["Sends requests to your Home", true], ["Locks a quarter once filed", true], ["Sees any other business’s books", false]] },
       { id: "other", name: "Anyone else", init: "?", who: "Not invited", line: "Another BillingEase user", tint: "#EFEDF3", items: [["Sees your books", false], ["Sees that your business exists", false], ["Signs in as you without your password", false], ["Changes anything", false]] },
     ],
     lk: [
-      { id: "you", name: "You", init: "AF", who: "Ayesha Fernando, owner", line: "Serendib Design Studio (sample business)", tint: "#B9A3FF", items: [["Everything in your books, payroll included", true], ["Invite or remove your practitioner", true], ["Send Tax Invoices and reminders", true], ["Change a filed period", false]] },
+      { id: "you", name: "You", init: "AF", who: "Ayesha Fernando, owner", line: "Serendib Design Studio (sample business)", tint: "#B9A3FF", items: [["Everything in your books, payroll included", true], ["Decide who sees your books", true], ["Send Tax Invoices and reminders", true], ["Change a filed period", false]] },
       { id: "acct", name: "Your practitioner", init: "RJ", who: "Ruwan Jayasinghe, Jayasinghe & Co", line: "Invited by Ayesha (sample)", tint: "#FFF0B8", items: [["Sees every period, report and entry", true], ["Sends requests to your Home", true], ["Locks a period once filed", true], ["Sees any other business’s books", false]] },
       { id: "other", name: "Anyone else", init: "?", who: "Not invited", line: "Another BillingEase user", tint: "#EFEDF3", items: [["Sees your books", false], ["Sees that your business exists", false], ["Signs in as you without your password", false], ["Changes anything", false]] },
     ],
@@ -111,7 +111,7 @@ export const SEC_FAQ: ByCountry<{ q: string; a: string }[]> = {
     { q: "Do you connect to my bank?", a: "No. BillingEase has no bank or card feeds, so we never hold bank log-ins or connections. You record payments and costs yourself." },
     { q: "Where is my data stored?", a: "In one hosting region, UK or EU, to be confirmed before launch. We’ll name it on this page." },
     { q: "What happens if I delete an invoice?", a: "Invoices aren’t deleted once sent; they’re voided. The ledger gets a reversal, so your accountant can see what happened and when." },
-    { q: "Can my accountant change a filed quarter?", a: "No one can change entries dated in a locked quarter. If something must be fixed, a correcting entry goes into an open period." },
+    { q: "Can my accountant change a filed quarter?", a: "No one can change entries dated in a locked quarter. If something really must be fixed, your accountant reopens the quarter or posts a correction at a later date." },
     { q: "Can I take my books with me?", a: "Invoices and quotes download as PDF today. A full export of your books is planned." },
   ],
   lk: [
@@ -119,7 +119,7 @@ export const SEC_FAQ: ByCountry<{ q: string; a: string }[]> = {
     { q: "Do you connect to my bank?", a: "No. Sri Lanka has no bank feeds, and BillingEase never holds bank log-ins. You record payments and costs yourself." },
     { q: "Where is my data stored?", a: "In one hosting region, chosen under the PDPA and confirmed before launch. We’ll name it on this page." },
     { q: "Who can see payroll?", a: "You and the practitioner you invite. No one at another business can see your employees, salaries or payslips." },
-    { q: "Can my practitioner change a filed period?", a: "No one can change entries dated in a locked period. If something must be fixed, a correcting entry goes into an open period." },
+    { q: "Can my practitioner change a filed period?", a: "No one can change entries dated in a locked period. If something really must be fixed, your practitioner reopens the period or posts a correction at a later date." },
     { q: "Can I take my books with me?", a: "Tax Invoices, quotes and payslips download as PDF today. A full export of your books is planned." },
   ],
 };
