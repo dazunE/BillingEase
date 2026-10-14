@@ -11,7 +11,8 @@ import { useSiteCountry } from "./SiteCountry";
 import s from "./site.module.css";
 
 /** Pages that end with their own closing band, so the footer's band would repeat it. */
-const NO_BAND = ["/"];
+// Pages that end with their own closing band.
+const NO_BAND = ["/", "/features", "/coming-in", "/going-out", "/yours-to-keep", "/pricing", "/switch", "/security"];
 
 /**
  * The marketing site footer (prototype SiteFooter.dc.html): a closing band

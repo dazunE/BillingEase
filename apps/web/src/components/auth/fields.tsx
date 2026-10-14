@@ -158,12 +158,12 @@ export function CountryCards({
             <label
               key={c}
               className={cx(
-                "flex cursor-pointer items-center gap-3 border-2 text-left transition-colors hover:border-ink has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-coming",
+                "relative flex cursor-pointer items-center gap-3 border-2 text-left transition-colors hover:border-ink has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-coming",
                 big ? "min-h-[72px] gap-3.5 rounded-[18px] px-4 py-3" : "min-h-16 rounded-2xl px-3.5 py-2.5",
                 on ? "border-ink bg-tint" : "border-line bg-white",
               )}
             >
-              <input type="radio" name="country" value={c} checked={on} onChange={() => onChange(c)} className="sr-only" />
+              <input type="radio" name="country" value={c} checked={on} onChange={() => onChange(c)} className="absolute inset-0 z-10 m-0 size-full cursor-pointer appearance-none opacity-0" />
               <span aria-hidden className={cx("flex flex-none items-center justify-center font-display font-bold", big ? "size-11 rounded-[14px] text-[15px]" : "size-[38px] rounded-xl text-sm", c === "uk" ? "bg-tint" : "bg-going-tint")}>
                 {SYMBOL[c]}
               </span>

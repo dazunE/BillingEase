@@ -265,7 +265,7 @@ export const FEATURES: { title: string; lead: Copy; columns: { key: "in" | "out"
   shared: [
     { icon: IC.chat, title: "Ask", body: { uk: "Plain answers with sources from gov.uk and HMRC. When it needs judgement, check with your accountant.", lk: "Plain answers with sources from the IRD and EPF rules. When it needs judgement, check with your practitioner." } },
     { icon: IC.person, title: { uk: "Your accountant, same books", lk: "Your practitioner, same books" }, body: { uk: "They see every quarter, send requests and file for you.", lk: "They see every period, send requests and get the year-end hand-off." } },
-    { icon: IC.shield, title: "Your books, kept safe", body: "An append-only ledger, and your data to export whenever you want it." },
+    { icon: IC.shield, title: "Your books, kept safe", body: "An append-only ledger: nothing is edited in place, corrections are recorded, and filed periods are locked." },
   ],
 };
 
