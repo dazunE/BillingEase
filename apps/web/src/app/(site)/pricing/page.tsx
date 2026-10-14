@@ -55,7 +55,7 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
                     <h2 id={`plan-${p.id}`} className="font-display text-[22px] font-bold tracking-[-0.02em]">
                       {p.name}
                     </h2>
-                    <span className={cx("whitespace-nowrap rounded-full px-3 py-[5px] text-xs font-bold", L.tag)}>{p.tag}</span>
+                    <span className={cx("max-w-[60%] rounded-full px-3 py-[5px] text-center text-xs font-bold", L.tag)}>{p.tag}</span>
                   </div>
                   <div className="flex flex-col gap-2">
                     <span className="flex flex-wrap items-baseline gap-2">

@@ -53,8 +53,7 @@ export function RoleTabs({ roles }: { roles: Role[] }) {
                 </svg>
               </span>
               <span className={yes ? "text-ink" : "text-ink2"}>
-                {yes ? "" : "Can’t: "}
-                {t}
+                {yes ? t : `Can’t ${t[0].toLowerCase()}${t.slice(1)}`}
                 <span className="sr-only">{yes ? " (allowed)" : ""}</span>
               </span>
             </li>

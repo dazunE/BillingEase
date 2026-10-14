@@ -12,7 +12,7 @@ export function PriceTags({ mid, right, note }: { mid: string; right: string; no
         <text x="30" y={len + 52} textAnchor="middle" className="font-hand" fontSize={big.length > 5 ? 20 : 28} fontWeight="700" fill="#18161F">
           {big}
         </text>
-        <text x="30" y={len + 78} textAnchor="middle" className="font-sans" fontSize="10" fontWeight="700" fill="#18161F">
+        <text x="30" y={len + 78} textAnchor="middle" className="font-sans" fontSize={small.length > 8 ? 7.5 : 10} fontWeight="700" fill="#18161F">
           {small}
         </text>
         {sub && (
@@ -31,7 +31,7 @@ export function PriceTags({ mid, right, note }: { mid: string; right: string; no
         <circle cx="30" cy="34" r="6" fill="#18161F" />
         <circle cx="350" cy="34" r="6" fill="#18161F" />
         {tag(70, 24, 44, 98, "#FFF6E0", "0s", "free", "FREE")}
-        {tag(160, 44, 56, 122, "#B9A3FF", "-1.2s", mid, "A MONTH", "placeholder")}
+        {tag(160, 44, 56, 122, "#B9A3FF", "-1.2s", mid, "A MONTH", "not final")}
         {tag(250, 28, 48, 106, "#FDE6D6", "-2.4s", right, "PER CLIENT")}
         <g transform="translate(316 226)">
           <g className={s.bob}>
