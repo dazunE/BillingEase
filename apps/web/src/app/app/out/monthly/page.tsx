@@ -3,11 +3,12 @@ import { formatDate, formatMoney, monthEnd } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { deleteMonthly, pauseMonthly } from "@/app/app/out/actions";
-import { Crumbs, Empty, HeroCard, Legend, SplitBar, StateBadge } from "@/components/out/bits";
+import { Empty, HeroCard, Legend, SplitBar, StateBadge } from "@/components/out/bits";
 import { EditMonthly, MonthlyForm, RecordMonthly } from "@/components/out/MonthlyForms";
 import { ActionButton } from "@/components/out/quick";
 import { SectionTitle, cx } from "@/components/ui";
 import { load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Every month" };
 
@@ -32,7 +33,7 @@ export default async function MonthlyPage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <Crumbs trail={[{ label: "Going out", href: "/app/out" }, { label: "Every month" }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: "Every month" }]} />
       <HeroCard label="Every month" amount={<>{fmt(t.perMonth)} <span className="text-base font-bold tracking-normal text-ink2">a month · {fmt(t.perMonth * 12)} a year</span></>}
         sub={<><SplitBar paid={t.recorded} toPay={t.toPay} /><Legend paid={t.recorded} toPay={t.toPay} currency={setup.currency} paidLabel={`recorded as paid in ${monthName}`} toPayLabel={`still to pay by ${formatDate(data.month.to)}`} /></>}>
         <p className="text-[15px] leading-relaxed">

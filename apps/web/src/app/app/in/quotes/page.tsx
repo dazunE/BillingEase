@@ -2,10 +2,11 @@ import { comingIn, type QuoteRow } from "@billingease/contracts";
 import { formatDate } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Chip, Crumbs, Empty, HeroCard, QuoteBadge, fmt } from "@/components/in/bits";
+import { AlsoIn, Chip, Empty, HeroCard, QuoteBadge, fmt } from "@/components/in/bits";
 import { ButtonLink, ICONS, Icon } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Quotes" };
 
@@ -34,7 +35,7 @@ export default async function QuotesPage() {
   ];
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Quotes" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Quotes" }]} />
       <HeroCard
         title="Quotes"
         intro="A price you send before the work starts. When your customer says yes, mark it accepted and turn it into an invoice in one step. Some apps call these estimates."

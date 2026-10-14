@@ -2,7 +2,7 @@ import { comingIn } from "@billingease/contracts";
 import { formatDate, rulesFor, today } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Crumbs, InvoiceBadge, Notice, Panel, fmt, fmt2 } from "@/components/in/bits";
+import { AlsoIn, InvoiceBadge, Notice, Panel, fmt, fmt2 } from "@/components/in/bits";
 import { DONE, invoicePreview } from "@/components/in/data";
 import { DocPreview } from "@/components/in/DocPreview";
 import { CreditNoteForm, PaymentForm, ReminderForm } from "@/components/in/forms";
@@ -10,6 +10,7 @@ import { Badge, Button, ButtonLink, Field, ICONS, Icon, Input } from "@/componen
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { creditNote, deleteInvoice, emailInvoice, issueInvoice, recordPayment, remind, voidInvoice, voidPayment } from "../../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Invoice" };
 
@@ -43,7 +44,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
 
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, isCredit ? { label: "Credit notes", href: "/app/in/repeating#credit-notes" } : { label: "All invoices", href: "/app/in/invoices" }, { label: name }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, isCredit ? { label: "Credit notes", href: "/app/in/repeating#credit-notes" } : { label: "All invoices", href: "/app/in/invoices" }, { label: name }]} />
       <Notice done={sp.done} error={sp.error} messages={DONE} />
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]">

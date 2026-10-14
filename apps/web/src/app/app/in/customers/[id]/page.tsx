@@ -1,13 +1,14 @@
 import { comingIn } from "@billingease/contracts";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Avatar, Crumbs, Empty, FREQ, InvoiceLine, Notice, Panel, QuoteBadge, fmt } from "@/components/in/bits";
+import { AlsoIn, Avatar, Empty, FREQ, InvoiceLine, Notice, Panel, QuoteBadge, fmt } from "@/components/in/bits";
 import { DONE } from "@/components/in/data";
 import { CustomerForm } from "@/components/in/forms";
 import { Badge, Button, ButtonLink, ICONS, Icon } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { archiveCustomer, saveCustomer } from "../../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Customer" };
 
@@ -23,7 +24,7 @@ export default async function CustomerPage({ params, searchParams }: { params: P
 
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Customers", href: "/app/in/customers" }, { label: c.name }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Customers", href: "/app/in/customers" }, { label: c.name }]} />
       <Notice done={sp.done} error={sp.error} messages={DONE} />
       <section className="flex flex-col gap-5 rounded-3xl border border-line bg-white p-[clamp(18px,3vw,32px)]">
         <div className="flex flex-wrap items-center justify-between gap-4">

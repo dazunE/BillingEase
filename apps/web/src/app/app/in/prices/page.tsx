@@ -1,12 +1,13 @@
 import { comingIn } from "@billingease/contracts";
 import { computeInvoice, formatMoney, rulesFor } from "@billingease/core";
 import type { Metadata } from "next";
-import { AlsoIn, Chip, Crumbs, Empty, HeroCard, Notice, Panel } from "@/components/in/bits";
+import { AlsoIn, Chip, Empty, HeroCard, Notice, Panel } from "@/components/in/bits";
 import { ItemForm } from "@/components/in/forms";
 import { Button, ICONS, Icon } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { archiveItem, saveItem } from "../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Products and services" };
 
@@ -23,7 +24,7 @@ export default async function PricesPage({ searchParams }: { searchParams: Promi
 
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Products and services" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Products and services" }]} />
       <Notice error={sp.error} />
       <HeroCard
         title="Products and services"

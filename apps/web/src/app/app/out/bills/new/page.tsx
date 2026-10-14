@@ -3,8 +3,8 @@ import { formatMoney } from "@billingease/core";
 import type { Metadata } from "next";
 import { BillForm } from "@/components/out/BillForm";
 import { BillsAside } from "@/components/out/BillsAside";
-import { Crumbs } from "@/components/out/bits";
 import { load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Enter a bill" };
 
@@ -13,7 +13,7 @@ export default async function NewBillPage({ searchParams }: { searchParams: Prom
   const [setup, bills, suppliers] = await Promise.all([load(goingOut.setup), load(goingOut.bills), load(goingOut.suppliers)]);
   return (
     <>
-      <Crumbs trail={[{ label: "Going out", href: "/app/out" }, { label: "Bills", href: "/app/out/bills" }, { label: "New bill" }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: "Bills", href: "/app/out/bills" }, { label: "New bill" }]} />
       <div className="grid items-start gap-6 lg:grid-cols-[300px_1fr]">
         <div className="order-last lg:order-none"><BillsAside bills={bills.bills} currency={setup.currency} /></div>
         <section className="rounded-3xl border border-line bg-white p-[clamp(18px,3vw,28px)]" aria-labelledby="new-bill-h">

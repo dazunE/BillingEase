@@ -4,11 +4,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { deleteExpense } from "@/app/app/out/actions";
-import { Avatar, Crumbs } from "@/components/out/bits";
+import { Avatar } from "@/components/out/bits";
 import { ExpenseForm } from "@/components/out/ExpenseForm";
 import { ActionButton, AttachmentList } from "@/components/out/quick";
 import { Badge, Card } from "@/components/ui";
 import { ApiFailure, load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Expense" };
 
@@ -25,7 +26,7 @@ export default async function ExpensePage({ params }: { params: Promise<{ id: st
 
   return (
     <>
-      <Crumbs trail={[{ label: "Going out", href: "/app/out" }, { label: e.payee }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: e.payee }]} />
 
       <Card className="flex flex-wrap items-center gap-x-6 gap-y-4 p-[clamp(20px,3vw,32px)]">
         <Avatar name={e.payee} className="size-16 rounded-2xl text-xl" />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ICONS, Icon, Input } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Search" };
 
@@ -22,6 +23,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const { results } = q.trim() ? await load(home.search, { query: { q } }) : { results: [] as SearchResult[] };
   const groups = (Object.keys(TYPES) as SearchResult["type"][]).map((t) => ({ t, items: results.filter((r) => r.type === t) })).filter((g) => g.items.length);
   return (
+    <>
+    <AppCrumbs trail={[{ label: "Search" }]} />
     <div className="mx-auto flex w-full max-w-[860px] flex-col gap-6">
       <div className="flex flex-col gap-3">
         <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold tracking-[-0.03em]">Search</h1>
@@ -63,5 +66,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         </div>
       )}
     </div>
+    </>
   );
 }

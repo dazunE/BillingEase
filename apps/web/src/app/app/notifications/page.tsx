@@ -6,6 +6,7 @@ import { ICONS, Icon, cx } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { markAllRead, toggleRead } from "./actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Notifications" };
 
@@ -18,6 +19,8 @@ export default async function NotificationsPage({ searchParams }: { searchParams
     ? ["Payments you record and invoices that go late", "Bills coming due, payroll and EPF and ETF dates", "VAT and SSCL return dates and income tax instalments"]
     : ["Payments you record and invoices that go late", "Bills coming due", "When a quarter closes and when its update is due"];
   return (
+    <>
+    <AppCrumbs trail={[{ label: "Notifications" }]} />
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
       <section aria-labelledby="nt-h" className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -81,5 +84,6 @@ export default async function NotificationsPage({ searchParams }: { searchParams
         <Link href="/app" className="min-h-11 content-center text-sm font-semibold underline underline-offset-4">Back to Home</Link>
       </aside>
     </div>
+    </>
   );
 }

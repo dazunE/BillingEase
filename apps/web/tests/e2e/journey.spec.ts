@@ -71,7 +71,7 @@ for (const [code, c] of Object.entries(COUNTRIES)) {
     await expect(page.getByText("Customer added")).toBeVisible();
 
     // An invoice, sent by email.
-    await openNew(page, /New invoice/);
+    await openNew(page, /Send a/);
     await page.getByRole("combobox", { name: "Customer", exact: true }).selectOption({ label: c.customer });
     await page.getByLabel("Line 1", { exact: true }).fill("Design work");
     await page.locator("li").filter({ has: page.getByLabel("Line 1", { exact: true }) }).getByLabel(/^Price/).fill(c.price);

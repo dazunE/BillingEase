@@ -9,6 +9,7 @@ import { ApiFailure, load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { Answer } from "./Answer";
 import { AskBox } from "./AskBox";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Ask" };
 
@@ -52,6 +53,8 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
   for (let i = 0; i < messages.length; i++) if (messages[i].role === "assistant") pairs.push({ q: messages[i - 1]?.content ?? "", a: messages[i] });
 
   return (
+    <>
+    <AppCrumbs trail={[{ label: "Ask" }]} />
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
       <section aria-labelledby="ask-h" className="flex min-w-0 flex-col gap-5">
         <div className="flex flex-col gap-2">
@@ -115,5 +118,6 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
         </section>
       </aside>
     </div>
+    </>
   );
 }

@@ -1,12 +1,12 @@
 import { comingIn } from "@billingease/contracts";
 import { invoiceTitle, today } from "@billingease/core";
 import type { Metadata } from "next";
-import { Crumbs } from "@/components/in/bits";
 import { editorBusiness, editorCustomers } from "@/components/in/data";
 import { DocEditor } from "@/components/in/DocEditor";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { saveInvoice } from "../../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "New invoice" };
 
@@ -22,7 +22,7 @@ export default async function NewInvoicePage({ searchParams }: { searchParams: P
   const now = today();
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "All invoices", href: "/app/in/invoices" }, { label: "New invoice" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "All invoices", href: "/app/in/invoices" }, { label: "New invoice" }]} />
       <div className="flex flex-col gap-2">
         <span className="flex items-center gap-2 text-sm font-bold text-ink2"><span className="size-2 rounded-full bg-coming" aria-hidden />{summary.numbers.invoice} · Not saved yet</span>
         <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold leading-[1.05] tracking-[-0.03em]">New {title}</h1>
