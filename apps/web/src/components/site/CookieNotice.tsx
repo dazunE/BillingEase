@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SITE_CONSENT_COOKIE } from "@/content/site/country";
 import { ROUTES } from "@/content/site/routes";
 import s from "./site.module.css";
@@ -21,6 +21,12 @@ export function setConsent(v: ConsentChoice) {
  */
 export function CookieNotice({ choice }: { choice: ConsentChoice | null }) {
   const [done, setDone] = useState(choice != null);
+  // A choice saved elsewhere (cookie settings on /legal/cookies) hides the notice too.
+  useEffect(() => {
+    const onChoice = () => setDone(true);
+    window.addEventListener("be:cookies", onChoice);
+    return () => window.removeEventListener("be:cookies", onChoice);
+  }, []);
   if (done) return null;
   const pickChoice = (v: ConsentChoice) => {
     setConsent(v);
