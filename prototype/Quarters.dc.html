@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Quarters</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.k-main{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:24px clamp(16px,4vw,40px) 64px;display:flex;flex-direction:column;gap:24px}
+.k-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0;box-sizing:border-box}
+.k-soft{background:#F7F6F9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.k-dark{background:#18161F;color:#FFFFFF;border-radius:24px;padding:clamp(22px,3vw,34px);display:flex;flex-wrap:wrap;gap:18px 32px;align-items:flex-end;justify-content:space-between;box-sizing:border-box}
+.k-eyebrow{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:700 15px DM Sans,sans-serif;color:#EEE8FF}
+.k-dot{width:10px;height:10px;border-radius:9999px;background:#B9A3FF;flex:none}
+.k-big{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.03em;color:#B9A3FF;font-variant-numeric:tabular-nums}
+.k-lead{margin:0;font-size:16px;line-height:1.5;color:#EEE8FF;max-width:620px}
+.k-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.k-h3{margin:0;font-size:15px;font-weight:700}
+.k-sub{font-size:13px;color:#5F5B68;line-height:1.45}
+.k-p{margin:0;font-size:14px;line-height:1.55;color:#47444F}
+.k-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;max-width:100%}
+.k-btn-dark{background:#18161F;color:#FFFFFF}.k-btn-dark:hover{color:#FFFFFF;background:#2E2B38}
+.k-btn-soft{background:rgba(24,22,31,0.07);color:#18161F}
+.k-btn-violet{background:#B9A3FF;color:#18161F}
+.k-btn-ghost{background:rgba(238,232,255,0.14);color:#FFFFFF}.k-btn-ghost:hover{color:#FFFFFF}
+.k-btn-sm{min-height:36px;padding:0 14px;font-size:13px}
+.k-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.k-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.4}
+.k-good{background:#E2F6D5;color:#2F5711}.k-attn{background:#FFF0B8;color:#6B5000}.k-late{background:#FBE3DF;color:#A8200D}.k-plain{background:#EFEDF3;color:#47444F}.k-violet{background:#EEE8FF;color:#18161F}.k-darktag{background:#18161F;color:#B9A3FF}
+.k-wrap{white-space:normal}
+.k-num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.k-tabs{display:flex;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;max-width:100%;overflow-x:auto;box-sizing:border-box;scrollbar-width:none}
+.k-tab{min-height:38px;padding:0 14px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.k-tab[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.k-input{min-height:44px;padding:0 12px;border:1px solid #CBC7D3;border-radius:12px;font:500 14px DM Sans,sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box;max-width:100%;min-width:0}
+.k-pre{margin:0;max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:#FFFFFF;border:1px solid #E2DFE8;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre}
+.k-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.k-li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:11px 0;border-top:1px solid #EFEDF3}
+.k-li:first-child{border-top:0}
+.k-cols{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.k-cols>*{flex:1 1 380px}
+.k-rowbtn{width:100%;display:flex;align-items:center;gap:10px 14px;padding:12px 4px;border:0;border-top:1px solid #EFEDF3;background:transparent;color:#18161F;text-align:left;font:500 14px DM Sans,sans-serif;cursor:pointer;box-sizing:border-box}
+.k-rowbtn:hover{background:#FBFAFC}
+.k-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px;border-top:2px solid #18161F;font-weight:700}
+.k-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F6F9}
+.k-icon{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none}
+.k-drill{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:6px 12px;border-radius:14px;background:#F7F6F9}
+.k-drill a,.k-drill span.k-dw{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:7px 0;font-size:13px;text-decoration:none;color:#18161F;border-top:1px solid #EAE7EF}
+.k-drill a:first-child,.k-drill span.k-dw:first-child{border-top:0}
+@media (max-width: 600px){.k-hide-sm{display:none!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+  <dc-import name="AppHeader"></dc-import>
+  <main class="k-main">
+    <dc-import name="AppCrumbs" area="keep" here="Quarters"></dc-import>
+
+    <!-- Not a UK business -->
+    <sc-if value="{{notUk}}" hint-placeholder-val="{{false}}">
+      <section class="k-card" aria-labelledby="na-h" style="max-width: 720px;">
+        <span class="k-tag k-plain" style="align-self: flex-start;">UK only</span>
+        <h1 id="na-h" class="k-h2">Quarters are for UK businesses</h1>
+        <p class="k-p">Making Tax Digital quarterly updates are a UK rule for sole traders and landlords. {{biz}} keeps its tax rhythm month by month instead: your VAT and SSCL periods are in Tax periods, and the year goes to TaxWise.lk at the end.</p>
+        <div class="k-btns">
+          <a class="k-btn k-btn-dark" href="TaxPeriods.dc.html">Open Tax periods</a>
+          <a class="k-btn k-btn-soft" href="ThreeHome.dc.html">Back to Home</a>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{uk}}" hint-placeholder-val="{{true}}">
+      <!-- Hero: the selected quarter -->
+      <section class="k-dark" aria-labelledby="q-h">
+        <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+          <h1 id="q-h" class="k-eyebrow"><span class="k-dot"></span>Making Tax Digital · {{yearLabel}} · {{q.label}}</h1>
+          <span class="k-big">{{q.range}}</span>
+          <p class="k-lead">{{hero.lead}}</p>
+          <div class="k-btns" style="margin-top: 4px;">
+            <span class="k-tag k-{{q.tone}}">{{q.statusLabel}}</span>
+            <span style="font-size: 13px; color: #EEE8FF;">{{hero.due}}</span>
+          </div>
+        </div>
+        <dl style="flex: 0 1 420px; min-width: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px;">
+          <sc-for list="{{hero.nums}}" as="n" hint-placeholder-count="3">
+            <div style="flex: 1 1 110px; min-width: 0; padding: 12px 14px; border-radius: 16px; background: rgba(238,232,255,0.1); display: flex; flex-direction: column; gap: 2px;">
+              <dt style="font-size: 12px; color: #EEE8FF;">{{n.label}}</dt>
+              <dd style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: {{n.color}}; font-variant-numeric: tabular-nums; white-space: nowrap;">{{n.value}}</dd>
+            </div>
+          </sc-for>
+        </dl>
+      </section>
+
+      <!-- The four quarters -->
+      <nav aria-label="Quarters of {{yearLabel}}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px;">
+        <sc-for list="{{tiles}}" as="t" hint-placeholder-count="4">
+          <a id="{{t.id}}" href="{{t.href}}" aria-current="{{t.cur}}" style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 20px; background: {{t.bg}}; border: {{t.border}}; text-decoration: none; color: #18161F; min-width: 0;">
+            <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px;">{{t.label}}</span>
+              <span class="k-tag k-{{t.tone}}">{{t.status}}</span>
+            </span>
+            <span style="font-size: 13px; color: #47444F;">{{t.range}}</span>
+            <span style="font-size: 12px; color: #5F5B68;">{{t.note}}</span>
+          </a>
+        </sc-for>
+      </nav>
+
+      <!-- Empty quarter -->
+      <sc-if value="{{noData}}" hint-placeholder-val="{{false}}">
+        <section class="k-card" aria-labelledby="nd-h">
+          <h2 id="nd-h" class="k-h2">{{empty.title}}</h2>
+          <p class="k-p">{{empty.body}}</p>
+          <div class="k-btns">
+            <a class="k-btn k-btn-dark" href="ThreeIn.dc.html#bill">Bill someone</a>
+            <a class="k-btn k-btn-soft" href="ThreeOut.dc.html#expense">Add an expense</a>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}">
+        <div class="k-cols">
+          <!-- Readiness checks -->
+          <section class="k-card" aria-labelledby="chk-h">
+            <div class="k-head">
+              <h2 id="chk-h" class="k-h2">Ready for {{prShort}}?</h2>
+              <span class="k-sub">{{checksNote}}</span>
+            </div>
+            <sc-if value="{{locked}}" hint-placeholder-val="{{false}}">
+              <p class="k-p" style="padding: 12px 14px; border-radius: 14px; background: #EEE8FF; color: #18161F;"><strong>Locked.</strong> {{lockText}}</p>
+            </sc-if>
+            <sc-for list="{{checks}}" as="c" hint-placeholder-count="3">
+              <div class="k-check">
+                <span class="k-icon" style="background: {{c.iconBg}};" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{c.iconFg}}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{c.icon}}"></path></svg></span>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+                  <span style="font-weight: 700; font-size: 15px;">{{c.text}}</span>
+                  <sc-if value="{{c.help}}" hint-placeholder-val="{{false}}"><span class="k-sub">{{c.help}}</span></sc-if>
+                  <!-- uncategorised items -->
+                  <sc-for list="{{c.items}}" as="it" hint-placeholder-count="0">
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E2DFE8;">
+                      <a href="{{it.href}}" style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; text-decoration: none;"><span style="font-weight: 700; font-size: 14px;">{{it.who}}</span><span class="k-sub">{{it.date}} · {{it.amount}}</span></a>
+                      <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                        <span class="k-sub" style="font-size: 12px;">HMRC category</span>
+                        <select class="k-input" onChange="{{it.pick}}" disabled="{{locked}}" aria-label="Category for {{it.who}}" style="width: 100%;">
+                          <option value="">Choose a category</option>
+                          <sc-for list="{{catOptions}}" as="o" hint-placeholder-count="6"><option value="{{o.id}}">{{o.name}}</option></sc-for>
+                        </select>
+                      </label>
+                    </div>
+                  </sc-for>
+                  <!-- gaps -->
+                  <sc-for list="{{c.gaps}}" as="g" hint-placeholder-count="0">
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E2DFE8;">
+                      <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{g.label}}</span><span class="k-sub">{{g.days}} days with no expenses or mileage recorded{{g.req}}</span></span>
+                      <div class="k-btns">
+                        <a class="k-btn k-btn-soft k-btn-sm" href="ThreeOut.dc.html#expense">Add an expense</a>
+                        <button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{g.none}}">There was no business</button>
+                      </div>
+                    </div>
+                  </sc-for>
+                  <!-- payments with no invoice -->
+                  <sc-for list="{{c.pays}}" as="p" hint-placeholder-count="0">
+                    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; padding: 10px 12px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E2DFE8;">
+                      <span style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{p.who}}</span><span class="k-sub">{{p.date}} · {{p.amount}}</span></span>
+                      <label style="flex: 2 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span class="k-sub" style="font-size: 12px;">What was it for?</span><input class="k-input" value="{{p.draft}}" onChange="{{p.type}}" placeholder="e.g. Deposit for the spring menu"></label>
+                      <button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{p.save}}">Save note</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </section>
+
+          <!-- Send to accountant -->
+          <section class="k-card" aria-labelledby="send-h">
+            <div class="k-head">
+              <h2 id="send-h" class="k-h2">{{send.title}}</h2>
+              <span class="k-tag k-{{q.tone}}">{{q.statusLabel}}</span>
+            </div>
+            <p class="k-p">{{send.body}}</p>
+            <sc-if value="{{send.warn}}" hint-placeholder-val="{{false}}">
+              <p class="k-p" style="padding: 10px 12px; border-radius: 12px; background: #FFF0B8; color: #6B5000;">{{send.warn}}</p>
+            </sc-if>
+            <div class="k-btns">
+              <sc-if value="{{send.canSend}}" hint-placeholder-val="{{true}}">
+                <button type="button" class="k-btn k-btn-dark" onClick="{{doSend}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7z"></path></svg>{{send.cta}}</button>
+              </sc-if>
+              <sc-if value="{{send.invite}}" hint-placeholder-val="{{false}}">
+                <a class="k-btn k-btn-dark" href="Accountant.dc.html">Link your accountant</a>
+              </sc-if>
+              <button type="button" class="k-btn k-btn-soft" onClick="{{toggleCsv}}" aria-expanded="{{csvOpen}}">{{csvLabel}}</button>
+              <sc-if value="{{send.canUnsend}}" hint-placeholder-val="{{false}}">
+                <button type="button" class="k-btn k-btn-soft" onClick="{{doUnsend}}">Take it back to change something</button>
+              </sc-if>
+            </div>
+            <sc-if value="{{csvOpen}}" hint-placeholder-val="{{false}}">
+              <div class="k-soft" style="border: 1px solid #E2DFE8;">
+                <div class="k-head" style="align-items: center;">
+                  <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{csvName}}</span><span class="k-sub">In {{prShort}}’s agreed layout: one row per HMRC category, then every entry.</span></span>
+                  <div class="k-btns">
+                    <button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{copyCsv}}">Copy CSV</button>
+                    <button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{toggleCsv}}">Close</button>
+                  </div>
+                </div>
+                <pre class="k-pre">{{csv}}</pre>
+              </div>
+            </sc-if>
+            <sc-if value="{{send.practiceSide}}" hint-placeholder-val="{{false}}">
+              <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 16px; border: 1.5px dashed #CBC7D3;">
+                <span style="font-weight: 700; font-size: 14px;">On {{prShort}}’s side</span>
+                <span class="k-sub">{{prFirst}} sees {{q.label}} as ready in the {{prTool}}, files it through their MTD software, then marks it filed here. That locks the quarter in your books.</span>
+                <div class="k-btns">
+                  <a class="k-btn k-btn-soft k-btn-sm" href="PracticeView.dc.html">See what {{prFirst}} sees</a>
+                  <button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{simFile}}">Mark filed, as {{prShort}}</button>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+        </div>
+
+        <!-- Quarter summary by HMRC category -->
+        <section class="k-card" aria-labelledby="sum-h">
+          <div class="k-head">
+            <h2 id="sum-h" class="k-h2">{{q.label}} by HMRC category</h2>
+            <span class="k-sub">Cash basis · {{q.range}} · tap a line to see its entries</span>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <span style="display: flex; justify-content: space-between; gap: 12px; padding: 0 4px 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5F5B68;"><span>Self-employment · {{seName}}</span><span>Amount</span></span>
+            <sc-for list="{{seRows}}" as="r" hint-placeholder-count="8">
+              <button type="button" class="k-rowbtn" aria-expanded="{{r.open}}" onClick="{{r.toggle}}">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
+                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 700;">{{r.name}}</span><sc-if value="{{r.badge}}" hint-placeholder-val="{{false}}"><span class="k-tag k-{{r.badgeTone}}" style="padding: 2px 8px; font-size: 11px;">{{r.badge}}</span></sc-if></span>
+                  <span class="k-sub" style="font-size: 12px;">{{r.official}}</span>
+                </span>
+                <span class="k-sub k-hide-sm" style="white-space: nowrap;">{{r.count}}</span>
+                <span class="k-num" style="min-width: 84px; text-align: right; color: {{r.color}};">{{r.amount}}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: rotate({{r.rot}}deg);"><path d="m9 6 6 6-6 6"></path></svg>
+              </button>
+              <sc-if value="{{r.open}}" hint-placeholder-val="{{false}}">
+                <div class="k-drill">
+                  <sc-for list="{{r.items}}" as="e" hint-placeholder-count="3">
+                    <sc-if value="{{e.href}}" hint-placeholder-val="{{true}}"><a href="{{e.href}}"><span style="min-width: 0;">{{e.date}} · <strong>{{e.who}}</strong> · {{e.what}}</span><span class="k-num">{{e.amount}}</span></a></sc-if>
+                    <sc-if value="{{e.nohref}}" hint-placeholder-val="{{false}}"><span class="k-dw"><span style="min-width: 0;">{{e.date}} · <strong>{{e.who}}</strong> · {{e.what}}</span><span class="k-num">{{e.amount}}</span></span></sc-if>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </sc-for>
+            <sc-for list="{{seTotals}}" as="t" hint-placeholder-count="3">
+              <div class="k-total" style="border-top: {{t.border}}; font-weight: {{t.weight}};"><span>{{t.label}}<span class="k-sub" style="display: block; font-weight: 400;">{{t.sub}}</span></span><span class="k-num">{{t.amount}}</span></div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{hasProp}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; margin-top: 8px;">
+              <span style="display: flex; justify-content: space-between; gap: 12px; padding: 0 4px 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5F5B68;"><span>UK property · {{propName}}</span><a href="Properties.dc.html" style="text-transform: none; letter-spacing: 0; font-weight: 600; color: #47444F;">Open the flat</a></span>
+              <sc-for list="{{propRows}}" as="r" hint-placeholder-count="4">
+                <button type="button" class="k-rowbtn" aria-expanded="{{r.open}}" onClick="{{r.toggle}}">
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
+                    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><span style="font-weight: 700;">{{r.name}}</span><sc-if value="{{r.badge}}" hint-placeholder-val="{{false}}"><span class="k-tag k-{{r.badgeTone}}" style="padding: 2px 8px; font-size: 11px;">{{r.badge}}</span></sc-if></span>
+                    <span class="k-sub" style="font-size: 12px;">{{r.official}}</span>
+                  </span>
+                  <span class="k-sub k-hide-sm" style="white-space: nowrap;">{{r.count}}</span>
+                  <span class="k-num" style="min-width: 84px; text-align: right; color: {{r.color}};">{{r.amount}}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: rotate({{r.rot}}deg);"><path d="m9 6 6 6-6 6"></path></svg>
+                </button>
+                <sc-if value="{{r.open}}" hint-placeholder-val="{{false}}">
+                  <div class="k-drill">
+                    <sc-for list="{{r.items}}" as="e" hint-placeholder-count="3">
+                      <a href="{{e.href}}"><span style="min-width: 0;">{{e.date}} · {{e.what}}</span><span class="k-num">{{e.amount}}</span></a>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </sc-for>
+              <sc-for list="{{propTotals}}" as="t" hint-placeholder-count="2">
+                <div class="k-total" style="border-top: {{t.border}}; font-weight: {{t.weight}};"><span>{{t.label}}<span class="k-sub" style="display: block; font-weight: 400;">{{t.sub}}</span></span><span class="k-num">{{t.amount}}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <p class="k-sub" style="margin: 0;">{{footNote}}</p>
+        </section>
+      </sc-if>
+    </sc-if>
+  </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: '', csvOpen: false, notes: {}, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  renderVals() {
+    const st = this.state;
+    const P = BE.pack();
+    const prof = BE.get('profile') || {};
+    if (!BE.is('uk')) return { notUk: true, uk: false, biz: prof.business || 'Your business', toast: st.toast };
+    const books = BE.books;
+    const W = (n) => BE.money(n, null, { whole: true });
+    const M = (n) => BE.money(n, null, { cents: true });
+    const pr = BE.practice ? BE.practice() : { has: false, short: 'your accountant', first: 'Your accountant', tool: '' };
+    const prShort = pr.has ? pr.short : 'your accountant';
+    const prFirst = pr.has ? (pr.first || pr.short) : 'Your accountant';
+    const qs = books.quarters();
+    const hash = (BE.hash() || '').toLowerCase();
+    const cur = P.currentQuarter || 'q3', last = P.lastQuarter || 'q2';
+    const empty = BE.isEmpty();
+    const sel = qs.some((x) => x.id === hash) ? hash : (empty ? cur : last);
+    const info = {};
+    qs.forEach((x) => { info[x.id] = books.quarter(x.id); });
+    const q = info[sel];
+    const STAT = {
+      filed: ['Filed', 'good'], sent: ['With ' + prShort, 'violet'], ready: ['Ready to send', 'attn'], open: ['Open', 'plain'], upcoming: ['Not started', 'plain']
+    };
+    const statusOf = (x) => {
+      if (x.status === 'ready' && !x.hasData) return ['Nothing recorded', 'plain'];
+      if (x.status === 'ready' && x.left) return ['To check', 'attn'];
+      return STAT[x.status];
+    };
+    const tiles = qs.map((x) => {
+      const i = info[x.id];
+      const s = statusOf(i);
+      const on = x.id === sel;
+      let note = '';
+      if (i.status === 'filed') note = 'Filed by ' + (i.filed.by || prShort) + ' on ' + i.filed.on;
+      else if (i.status === 'sent') note = 'Sent ' + i.sent + ' · they file by ' + x.due.replace(/ 20\d\d$/, '');
+      else if (i.status === 'ready') note = i.hasData ? (i.left ? i.left + ' check' + (i.left === 1 ? '' : 's') + ' left · due ' + x.due.replace(/ 20\d\d$/, '') : 'Ready to send by ' + x.due.replace(/ 20\d\d$/, '')) : 'Before you started keeping records here';
+      else if (i.status === 'open') note = 'Under way · due ' + x.due;
+      else note = 'Starts ' + x.from + (x.toD.getFullYear() > 2026 ? ' 2027' : '') + ' · due ' + x.due;
+      return { id: x.id, label: x.label, range: x.range, status: s[0], tone: s[1], note, href: '#' + x.id, cur: on ? 'page' : false,
+        bg: on ? '#FFFFFF' : '#FFFFFF', border: on ? '2px solid #18161F' : '1px solid #E2DFE8' };
+    });
+    const qStat = statusOf(q);
+    const sm = q.sum;
+    const hasProp = BE.all('properties').length > 0;
+    const propName = (BE.all('properties')[0] || {}).name || 'your property';
+    // Hero
+    const nums = [
+      { label: 'Income', value: W(q.income), color: '#FFFFFF' },
+      { label: 'Allowable expenses', value: W(sm.se.allowable), color: '#FFFFFF' },
+      { label: hasProp ? 'Profit (self-employment)' : 'Profit', value: W(sm.se.profit), color: '#B9A3FF' }
+    ];
+    if (hasProp) nums.push({ label: 'Rent', value: W(sm.prop.income), color: '#FFFFFF' });
+    let lead = '';
+    if (q.status === 'filed') lead = q.label + ' was filed with HMRC by ' + (q.filed.by || prShort) + ' on ' + q.filed.on + '. It’s locked in your books, so these figures stay as filed.';
+    else if (q.status === 'sent') lead = 'You sent ' + q.label + ' to ' + prShort + ' on ' + q.sent + '. They check it and file it with HMRC by ' + q.due + '.';
+    else if (q.status === 'ready' && q.hasData) lead = q.label + ' has closed. ' + (q.left ? 'Clear the ' + (q.left === 1 ? 'check' : q.left + ' checks') + ' below, then send it' : 'Everything checks out: send it') + ' to ' + prShort + ', who file it with HMRC by ' + q.due + '.';
+    else if (q.status === 'ready') lead = 'Nothing is recorded for ' + q.label + ' here. If you traded then, your accountant has those figures from your old records.';
+    else if (q.status === 'open') lead = q.label + ' is under way. Keep adding what comes in and goes out; it closes on ' + q.to + ' and ' + prShort + ' file it by ' + q.due + '.';
+    else lead = q.label + ' starts on ' + q.from + '. Nothing to do yet.';
+    const hero = { lead, nums: q.hasData ? nums : [], due: q.status === 'filed' ? 'HMRC deadline was ' + q.due : 'HMRC deadline ' + q.due + (q.dueDays != null && q.dueDays >= 0 && q.status !== 'upcoming' ? ' · ' + q.dueDays + ' days' : '') };
+
+    // Checks
+    const locked = q.locked;
+    const ok = { icon: 'm5 12 5 5 9-10', iconBg: '#E2F6D5', iconFg: '#2F5711' };
+    const bad = { icon: 'M12 7v6M12 17h.01', iconBg: '#FFF0B8', iconFg: '#6B5000' };
+    const catOptions = (BE.expenseCats ? BE.expenseCats() : (P.categories || [])).map((c) => ({ id: c.id, name: c.name }));
+    const checks = q.checks.map((c) => {
+      const o = Object.assign({ text: c.text, help: '', items: [], gaps: [], pays: [] }, c.ok ? ok : bad);
+      if (c.id === 'cats' && !c.ok) {
+        o.help = 'Pick the HMRC category for each. Plain names here; ' + prShort + ' sees HMRC’s.';
+        o.items = sm.se.unsorted.map((e) => ({ who: e.who, date: books.lbl(e.d), amount: M(e.amount), href: e.href || 'ThreeOut.dc.html',
+          pick: (ev) => {
+            const v = ev && ev.target ? ev.target.value : '';
+            if (!v || locked) return;
+            const c2 = books.catById(v);
+            books.setCategory(e.expId, v);
+            this.notify(e.who + ' sorted into ' + (c2 ? c2.name : 'a category') + ' · ' + q.label + ' updated');
+          } }));
+      }
+      if (c.id === 'gaps' && !c.ok) {
+        o.help = 'HMRC expects records for the whole quarter. Add anything you find, or tell ' + prShort + ' there was nothing.';
+        o.gaps = q.gaps.filter((g) => !g.ok).map((g) => ({ label: 'No records ' + g.label, days: g.days, req: q.req && q.req.status !== 'done' ? ' · ' + (q.req.from || prFirst) + ' asked about this' : '',
+          none: () => { if (locked) return; books.confirmGap(q.id, g.id, g.label); this.notify('Noted: no business ' + g.label + (q.req ? ' · ' + prShort + '’s request is done' : '')); } }));
+      }
+      if (c.id === 'income' && !c.ok) {
+        o.help = 'Money in without an invoice needs a short note so ' + prShort + ' know it’s business income.';
+        o.pays = q.noInvoice.map((e) => ({ who: e.who, date: books.lbl(e.d), amount: M(e.amount), draft: st.notes[e.payId] || '',
+          type: (ev) => { const v = ev.target.value; this.setState((s) => ({ notes: Object.assign({}, s.notes, { [e.payId]: v }) })); },
+          save: () => {
+            const v = String(st.notes[e.payId] || '').trim();
+            if (!v) { this.notify('Type what the payment was for first'); return; }
+            books.notePayment(e.payId, v); this.notify('Note saved on ' + e.who + '’s ' + M(e.amount));
+          } }));
+      }
+      return o;
+    });
+    const checksNote = q.left ? q.left + ' of 3 to clear' : 'All 3 clear';
+
+    // Send
+    const hasPractice = pr.has;
+    const send = { title: 'Send to ' + prShort, body: '', warn: '', cta: 'Send ' + q.label + ' to ' + prShort, canSend: false, canUnsend: false, invite: false, practiceSide: false };
+    if (q.status === 'filed') { send.title = 'Filed'; send.body = 'Filed by ' + (q.filed.by || prShort) + ' on ' + q.filed.on + '. Need to change something in ' + q.label + '? Ask ' + prShort + ' to reopen it.'; }
+    else if (q.status === 'sent') { send.title = 'Sent to ' + prShort; send.body = 'Sent ' + q.sent + (q.sentBy ? ' by ' + q.sentBy : '') + '. ' + prShort + ' have the totals by HMRC category and every entry. They file by ' + q.due + '.'; send.canUnsend = true; send.practiceSide = hasPractice; }
+    else if (q.status === 'ready') {
+      if (!hasPractice) { send.title = 'Your quarterly update'; send.body = 'Link your accountant and they can file ' + q.label + ' from these figures. Or copy the CSV for your own MTD software.'; send.invite = true; }
+      else { send.body = 'Sends ' + q.label + '’s totals by HMRC category and every entry to ' + (pr.contact || prShort) + ', and tells them it’s ready. They file it with HMRC by ' + q.due + '.'; send.canSend = q.hasData; if (q.left) send.warn = q.left + (q.left === 1 ? ' check is' : ' checks are') + ' still open. Clear ' + (q.left === 1 ? 'it' : 'them') + ' first, or send now and ' + prShort + ' will see what’s outstanding.'; }
+    }
+    else if (q.status === 'open') { send.title = 'When ' + q.label + ' closes'; send.body = q.label + ' closes on ' + q.to + '. Send it to ' + prShort + ' after that; they file by ' + q.due + '. You can preview the CSV any time.'; }
+    else { send.title = 'Later'; send.body = q.label + ' hasn’t started yet.'; }
+    const label = q.label;
+
+    // Summary rows
+    const mk = (r) => {
+      const isOpen = st.open === r.id + (r.prop ? '@p' : '');
+      const badge = r.id === 'unsorted' ? 'Needs a category' : r.id === 'capital' ? 'Capital allowance' : r.allowable === false ? 'Not allowable' : '';
+      return {
+        name: r.name, official: r.official, amount: (r.neg ? '−' : '') + M(r.amount), count: r.count + (r.count === 1 ? ' entry' : ' entries'), color: r.id === 'unsorted' ? '#A8200D' : '#18161F',
+        badge, badgeTone: r.id === 'unsorted' ? 'late' : 'plain', open: isOpen, rot: isOpen ? 90 : 0,
+        toggle: () => this.setState({ open: isOpen ? '' : r.id + (r.prop ? '@p' : '') }),
+        items: (r.items || []).map((e) => ({ date: books.lbl(e.d), who: e.who, what: e.what || '', amount: M(e.amount), href: e.href || false, nohref: !e.href }))
+      };
+    };
+    const seRows = [mk({ id: 'turnover', name: 'Your sales', official: 'Turnover', amount: sm.se.income, count: sm.se.incomeItems.length, items: sm.se.incomeItems, allowable: true })]
+      .concat(sm.se.rows.map((r) => mk(Object.assign({}, r, { neg: true }))));
+    const seTotals = [
+      { label: 'Allowable expenses', sub: 'Counted against your profit', amount: '−' + M(sm.se.allowable), border: '1px solid #E2DFE8', weight: 600 },
+      { label: 'Not counted against profit', sub: 'Client entertaining and equipment (your accountant claims capital allowances)', amount: M(sm.se.notAllowable), border: '1px solid #EFEDF3', weight: 400 },
+      { label: 'Profit for ' + label, sub: 'Income less allowable expenses', amount: M(sm.se.profit), border: '2px solid #18161F', weight: 700 }
+    ];
+    const propRows = [mk({ id: 'rent', prop: true, name: 'Rent', official: 'Total rents and other income from property', amount: sm.prop.income, count: sm.prop.incomeItems.length, items: sm.prop.incomeItems })]
+      .concat(sm.prop.rows.map((r) => mk(Object.assign({}, r, { prop: true, neg: true }))))
+      .concat([mk({ id: 'p-finance', prop: true, name: 'Mortgage interest', official: 'Residential property finance costs (20% tax credit, not deducted)', amount: sm.prop.finance, count: sm.prop.financeItems.length, items: sm.prop.financeItems, allowable: false })]);
+    propRows[propRows.length - 1].badge = 'Kept separate';
+    const propTotals = [{ label: 'Property profit for ' + label, sub: 'Rent less allowable costs, before the mortgage interest credit', amount: M(sm.prop.profit), border: '2px solid #18161F', weight: 700 }];
+
+    const csv = books.quarterCsv(q);
+    const csvName = (prof.business || 'Business').replace(/[^A-Za-z0-9]+/g, '-') + '-' + q.label + '-' + P.taxYear.label.replace('/', '-') + '.csv';
+    const noData = !q.hasData;
+    let emptyT = { title: 'Nothing recorded in ' + q.label + ' yet', body: 'As you bill customers, record payments and add expenses, ' + q.label + ' fills in by HMRC category here, with checks before it goes to your accountant.' };
+    if (q.status === 'upcoming') emptyT = { title: q.label + ' starts on ' + q.from, body: 'Nothing to do yet. Your current quarter is ' + (qs.find((x) => x.id === cur) || {}).label + '.' };
+    else if (q.status === 'ready') emptyT = { title: 'Nothing recorded for ' + q.label, body: 'You started keeping records here after ' + q.label + ' closed. If you traded then, your accountant files it from your old records.' };
+    return {
+      notUk: false, uk: true, biz: prof.business, yearLabel: P.taxYear.label,
+      q: Object.assign({}, q, { statusLabel: qStat[0], tone: qStat[1] }), hero, tiles,
+      hasData: !noData, noData, empty: emptyT,
+      checks, checksNote, catOptions, locked, lockText: 'Filed by ' + ((q.filed || {}).by || prShort) + ' on ' + ((q.filed || {}).on || '') + '. Categories and entries in ' + q.label + ' can’t change unless ' + prShort + ' reopen it.',
+      send, prShort, prFirst, prTool: pr.tool || 'practice workbench',
+      doSend: () => {
+        books.sendQuarter(q.id);
+        this.setState({ csvOpen: true });
+        this.notify(q.label + ' sent to ' + prShort + ' · income ' + W(q.income) + ', allowable expenses ' + W(sm.se.allowable));
+      },
+      doUnsend: () => { books.unsendQuarter(q.id); this.notify(q.label + ' is back with you. Send it again when you’re ready'); },
+      simFile: () => { if (BE.markFiled) BE.markFiled(q.id, q.label + ' update'); this.notify(q.label + ' marked filed by ' + prShort + ' · it’s locked in your books'); },
+      csvOpen: st.csvOpen, csvLabel: st.csvOpen ? 'Hide the CSV' : (q.status === 'open' ? 'Preview the CSV' : 'Show the CSV'), csv, csvName,
+      toggleCsv: () => this.setState({ csvOpen: !st.csvOpen }),
+      copyCsv: () => { books.copy(csv); this.notify('CSV copied · paste it into a spreadsheet or email it'); },
+      seName: prof.business || 'your business', seRows, seTotals, hasProp, propName, propRows, propTotals,
+      footNote: 'Expenses include staff costs from your payroll records and mileage at ' + Math.round(P.mileage.rate1 * 100) + 'p a mile. Figures are what you’ve recorded; ' + prShort + ' check them before filing.',
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

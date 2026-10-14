@@ -428,6 +428,13 @@
       vp.content = 'width=device-width, initial-scale=1';
       document.head.appendChild(vp);
     }
+    if (!document.querySelector('link[rel=icon]')) {
+      // The Equation mark: coming in (violet), going out (orange), yours to keep (white).
+      var ic = document.createElement('link');
+      ic.rel = 'icon';
+      ic.href = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#18161F"/><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"/><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"/><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"/></svg>');
+      document.head.appendChild(ic);
+    }
     var page = location.pathname.split('/').pop() || 'Main.dc.html';
     var host = document.createElement('div');
     host.id = 'dc-root';
@@ -438,10 +445,58 @@
       window.__dcRoot = inst;
     }).catch(function (e) {
       console.error('[dc] boot failed', e);
+      if (!/NotFound\.dc\.html$/.test(page) && /\(404\)/.test(String(e && e.message))) { location.replace('NotFound.dc.html#' + encodeURIComponent(page)); return; }
       host.textContent = 'Could not load this screen. Serve the prototype folder over HTTP (see README).';
     });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+  // The shared data store and the sample month load before any screen renders.
+  var DATA_FILES = ['store.js', 'data-country.js', 'site.js', 'site-content.js', 'data-home.js', 'data-in.js', 'data-sell.js', 'data-out.js', 'data-payroll.js', 'data-spend.js', 'data-books.js', 'data-practice.js', 'data-biz.js'];
+
+  function loadScript(src) {
+    return new Promise(function (resolve) {
+      var el = document.createElement('script');
+      el.src = src;
+      el.onload = resolve;
+      el.onerror = function () { console.error('[dc] could not load ' + src); resolve(); };
+      document.head.appendChild(el);
+    });
+  }
+
+  function rerender() {
+    if (window.__dcRoot) window.__dcRoot.render();
+  }
+
+  function start() {
+    var chain = Promise.resolve();
+    DATA_FILES.forEach(function (f) { chain = chain.then(function () { return loadScript(f); }); });
+    chain.then(function () {
+      // ?reset=1 puts the sample month back; ?start=empty starts a brand new business.
+      if (window.BE && (/[?&]reset=1\b/.test(location.search) || location.hash === '#reset')) {
+        window.BE.reset();
+        try { sessionStorage.setItem('be.flash', 'Sample data reset to 11 October 2026.'); } catch (e) { /* ignore */ }
+        history.replaceState(null, '', location.pathname + (location.hash === '#reset' ? '' : location.hash));
+      } else if (window.BE && /^#sample-(uk|lk)$/.test(location.hash)) {
+        // #sample-uk / #sample-lk open that country's sample business.
+        var c = location.hash.slice(8);
+        window.BE.startSample(c);
+        try { sessionStorage.setItem('be.flash', c === 'lk' ? 'Showing Serendib Design Studio, Colombo (Sri Lanka sample).' : 'Showing Harper Studio, Leeds (UK sample).'); } catch (e) { /* ignore */ }
+        history.replaceState(null, '', location.pathname);
+      } else if (window.BE && (/[?&]start=empty\b/.test(location.search) || location.hash === '#start-empty' || /^#start-empty-(uk|lk)$/.test(location.hash))) {
+        var ec = (location.hash.match(/^#start-empty-(uk|lk)$/) || [])[1];
+        window.BE.startEmpty(ec ? { country: ec } : undefined);
+        history.replaceState(null, '', location.pathname + (/^#start-empty/.test(location.hash) ? '' : location.hash));
+      }
+      window.addEventListener('be:change', rerender);
+      window.addEventListener('hashchange', function () {
+        // A reset link clicked while already on that screen only changes the hash.
+        if (/^#(reset|start-empty(-uk|-lk)?|sample-(uk|lk))$/.test(location.hash)) { location.reload(); return; }
+        rerender();
+      });
+      boot();
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();

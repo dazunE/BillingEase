@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Security and data</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus,.bz-in:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.bz-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:18px;min-width:0;box-sizing:border-box}
+.bz-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px 16px}
+.bz-head>div{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 260px}
+.bz-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em;line-height:1.2}
+.bz-h3{margin:0;font-size:15px;font-weight:700}
+.bz-sub{margin:0;font-size:14px;line-height:1.5;color:#47444F}
+.bz-mut{font-size:13px;color:#5F5B68;line-height:1.45}
+.bz-lbl{font-size:13px;font-weight:600;color:#18161F}
+.bz-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bz-in{min-height:44px;width:100%;box-sizing:border-box;padding:0 14px;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;font:400 15px 'DM Sans',sans-serif;color:#18161F}
+textarea.bz-in{padding:10px 14px;min-height:84px;resize:vertical;line-height:1.5}
+select.bz-in{cursor:pointer;padding-right:8px}
+.bz-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box;white-space:nowrap}
+.bz-btn2{background:rgba(24,22,31,0.07)}
+.bz-btnline{background:#FFFFFF;border:1px solid #18161F}
+.bz-btnink{background:#18161F;color:#FFFFFF}
+.bz-btnred{background:#A8200D;color:#FFFFFF}
+.bz-btn:disabled{background:#EFEDF3;color:#5F5B68;cursor:not-allowed;border-color:#EFEDF3}
+.bz-sm{min-height:36px;padding:0 14px;font-size:13px}
+.bz-link{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0;border:0;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.bz-link:disabled{color:#5F5B68;cursor:not-allowed;text-decoration:none}
+.bz-seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:#EFEDF3;padding:4px;border-radius:22px;max-width:100%;box-sizing:border-box}
+.bz-seg button{min-height:40px;padding:0 16px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer}
+.bz-seg button[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.bz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px}
+.bz-badge{display:inline-flex;align-items:center;gap:6px;min-height:24px;padding:0 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap}
+.bz-badge::before{content:"";width:6px;height:6px;border-radius:9999px;background:currentColor}
+.bz-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:#EEE8FF;font-size:13px;line-height:1.5;color:#18161F}
+.bz-note svg{flex:none;margin-top:1px}
+.bz-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:14px 0;border-top:1px solid #EFEDF3}
+.bz-av{width:40px;height:40px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none;font:700 14px 'DM Sans',sans-serif}
+.bz-tw{overflow-x:auto;border:1px solid #E2DFE8;border-radius:16px}
+.bz-tw table{border-collapse:collapse;width:100%;font-size:14px}
+.bz-tw th{text-align:left;font-size:12px;font-weight:600;color:#5F5B68;padding:10px 14px;background:#F7F6F9;white-space:nowrap}
+.bz-tw td{padding:12px 14px;border-top:1px solid #EFEDF3;vertical-align:top}
+.bz-nav a{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px;border-radius:16px;text-decoration:none;color:#18161F;box-sizing:border-box}
+.bz-nav a[aria-current="page"]{background:#18161F;color:#FFFFFF}
+.bz-nav a[aria-current="page"] .bz-navsub{color:#EEE8FF}
+.bz-nav a[aria-current="page"] svg{stroke:#B9A3FF}
+.bz-navsub{font-size:12px;color:#5F5B68;line-height:1.35}
+@media (min-width: 901px){.bz-side{position:sticky;top:16px}.bz-short{display:none}}
+@media (max-width: 900px){.bz-nav{flex-direction:row!important;overflow-x:auto;gap:6px!important;background:#EFEDF3;padding:4px;border-radius:9999px}.bz-nav a{min-height:40px;padding:0 14px;border-radius:9999px;white-space:nowrap;flex:1 0 auto;justify-content:center}.bz-nav svg,.bz-navsub,.bz-sidex,.bz-long{display:none!important}.bz-side{padding:0!important;background:transparent!important;border:0!important}}
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <dc-import name="AppHeader"></dc-import>
+
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 20px;">
+
+    <dc-import name="AppCrumbs" area="biz" here="Security and data"></dc-import>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+    <dc-import name="BizNav" current="security"></dc-import>
+
+    <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">Your business</span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Security and data</h1>
+        <p class="bz-sub" style="max-width: 620px;">How you sign in, where you&#39;re signed in, and what happens to {{bizName}}&#39;s data: bring it in, take it out, or close things down.</p>
+      </div>
+
+      <!-- Sign-in -->
+      <section class="bz-card" aria-labelledby="signin-h">
+        <div class="bz-head"><div><h2 id="signin-h" class="bz-h2">Signing in</h2><span class="bz-mut">{{email}}</span></div>
+          <span class="bz-badge" style="background: {{tfaBadgeBg}}; color: {{tfaBadgeFg}};">{{tfaBadge}}</span>
+        </div>
+
+        <!-- Password -->
+        <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;">
+            <span style="display: flex; flex-direction: column; gap: 2px;"><span class="bz-h3">Password</span><span class="bz-mut">{{pwChanged}}</span></span>
+            <sc-if value="{{pwClosed}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-btn2" onClick="{{openPw}}">Change password</button></sc-if>
+          </div>
+          <sc-if value="{{pw.open}}" hint-placeholder-val="{{false}}">
+            <div style="background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+              <sc-if value="{{pw.flag}}" hint-placeholder-val="{{false}}">
+                <div class="bz-note" style="background: #FBE3DF; color: #A8200D;"><span>Someone else tried your password. Pick a new one you don&#39;t use anywhere else, and turn on two-step sign-in below.</span></div>
+              </sc-if>
+              <div class="bz-grid">
+                <div class="bz-field"><label class="bz-lbl" for="pw-cur">Current password</label><input id="pw-cur" class="bz-in" type="password" autocomplete="current-password" value="{{pw.cur}}" onChange="{{setPwCur}}"></div>
+                <div class="bz-field"><label class="bz-lbl" for="pw-new">New password</label>
+                  <span style="display: flex; align-items: center; min-height: 44px; box-sizing: border-box; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; padding: 0 4px 0 14px;">
+                    <input id="pw-new" type="{{pw.type}}" autocomplete="new-password" value="{{pw.next}}" onChange="{{setPwNext}}" style="flex: 1; min-width: 0; min-height: 40px; border: 0; outline: 0; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                    <button type="button" class="bz-link" style="font-size: 13px; padding: 0 10px;" aria-pressed="{{pw.shown}}" onClick="{{togglePwShow}}">{{pw.showLabel}}</button>
+                  </span>
+                  <span style="display: flex; gap: 4px;" aria-hidden="true">
+                    <sc-for list="{{pw.bars}}" as="b" hint-placeholder-count="4"><span style="flex: 1; height: 6px; border-radius: 9999px; background: {{b.c}};"></span></sc-for>
+                  </span>
+                  <span class="bz-mut">Strength: <strong style="color: #18161F;">{{pw.strength}}</strong> · {{pw.tip}}</span>
+                </div>
+              </div>
+              <sc-if value="{{pw.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{pw.err}}</span></sc-if>
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F; cursor: pointer;"><input type="checkbox" checked="{{pw.others}}" onChange="{{togglePwOthers}}" style="width: 18px; height: 18px; margin: 0; accent-color: #18161F;">Sign out of my other devices</label>
+              <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <button type="button" class="bz-btn" onClick="{{savePw}}">Save new password</button>
+                <button type="button" class="bz-btn bz-btn2" onClick="{{closePw}}">Cancel</button>
+              </span>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- Two-step -->
+        <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;">
+            <span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 280px; min-width: 0;"><span class="bz-h3">Two-step sign-in</span><span class="bz-mut">{{tfaSub}}</span></span>
+            <sc-if value="{{tfa.off}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn" onClick="{{tfaStart}}">Turn on</button></sc-if>
+            <sc-if value="{{tfa.on}}" hint-placeholder-val="{{false}}">
+              <span style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{tfaShowCodes}}">{{tfa.codesBtn}}</button>
+                <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{tfaOff}}">Turn off</button>
+              </span>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{tfa.scan}}" hint-placeholder-val="{{false}}">
+            <div style="background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 16px;">
+              <span class="bz-mut" style="font-weight: 600;">Step 1 of 2 · Connect an authenticator app</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                <div role="img" aria-label="QR code for BillingEase, {{email}}" style="flex: none; width: 168px; height: 168px; box-sizing: border-box; padding: 10px; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 16px; display: grid; grid-template-columns: repeat(21, 1fr); grid-auto-rows: 1fr;">
+                  <sc-for list="{{qr}}" as="q" hint-placeholder-count="441"><span style="background: {{q}};"></span></sc-for>
+                </div>
+                <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+                  <ol style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; color: #47444F;">
+                    <li>Open an authenticator app like 1Password, Google Authenticator or Authy.</li>
+                    <li>Scan this code. Can&#39;t scan? Type the key: <strong style="color: #18161F; font-family: ui-monospace, monospace; letter-spacing: 0.04em;">JBSW Y3DP EHPK 3PXP</strong> <button type="button" class="bz-link" style="font-size: 13px; min-height: 24px;" onClick="{{copyKey}}">Copy</button></li>
+                    <li>Enter the 6-digit code it shows.</li>
+                  </ol>
+                  <div class="bz-field" style="max-width: 240px;">
+                    <label class="bz-lbl" for="tfa-code">6-digit code</label>
+                    <input id="tfa-code" class="bz-in" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" value="{{tfa.code}}" onChange="{{setTfaCode}}" style="font: 600 20px DM Sans, sans-serif; letter-spacing: 0.3em; border-color: {{tfa.border}};">
+                    <sc-if value="{{tfa.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{tfa.err}}</span></sc-if>
+                  </div>
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button type="button" class="bz-btn" onClick="{{tfaVerify}}">Verify and continue</button>
+                    <button type="button" class="bz-btn bz-btn2" onClick="{{tfaCancel}}">Cancel</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{tfa.codes}}" hint-placeholder-val="{{false}}">
+            <div style="background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+              <sc-if value="{{tfa.setup}}" hint-placeholder-val="{{false}}"><span class="bz-mut" style="font-weight: 600;">Step 2 of 2 · Save your backup codes</span></sc-if>
+              <span style="font-size: 14px; line-height: 1.5; color: #47444F;">If you lose your phone, each of these codes gets you in once. Keep them somewhere safe, like a password manager. We won&#39;t show them again unless you ask.</span>
+              <ul aria-label="Backup codes" style="margin: 0; padding: 14px; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px 16px; background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 14px; font: 600 15px ui-monospace, monospace; letter-spacing: 0.04em;">
+                <sc-for list="{{backup}}" as="c" hint-placeholder-count="10"><li>{{c}}</li></sc-for>
+              </ul>
+              <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{copyCodes}}">Copy codes</button>
+                <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{downloadCodes}}">Download .txt</button>
+                <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{newCodes}}">Make new codes</button>
+                <button type="button" class="bz-btn bz-sm" onClick="{{tfaDone}}">{{tfa.doneLabel}}</button>
+              </span>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <!-- Devices -->
+      <section class="bz-card" aria-labelledby="dev-h">
+        <div class="bz-head"><div><h2 id="dev-h" class="bz-h2">Where you&#39;re signed in</h2><span class="bz-mut">Don&#39;t recognise one? Sign it out and change your password.</span></div>
+          <sc-if value="{{hasOthers}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-btn2" onClick="{{signOutOthers}}">Sign out everywhere else</button></sc-if>
+        </div>
+        <div>
+          <sc-for list="{{devices}}" as="d" hint-placeholder-count="4">
+            <div class="bz-row">
+              <span style="width: 40px; height: 40px; border-radius: 12px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{d.icon}}"></path></svg></span>
+              <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">{{d.name}}</strong><span class="bz-mut">{{d.where}} · {{d.when}}</span></span>
+              <sc-if value="{{d.here}}" hint-placeholder-val="{{false}}"><span class="bz-badge" style="background: #E2F6D5; color: #2F5711;">This device</span></sc-if>
+              <sc-if value="{{d.other}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{d.out}}">Sign out</button></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Activity -->
+      <section class="bz-card" aria-labelledby="act-h">
+        <div class="bz-head"><div><h2 id="act-h" class="bz-h2">Recent sign-ins</h2><span class="bz-mut">The last 30 days. We email you when a new device signs in.</span></div></div>
+        <sc-if value="{{noActivity}}" hint-placeholder-val="{{false}}"><span class="bz-mut">Only today&#39;s sign-up so far. Sign-ins from new devices will show here.</span></sc-if>
+        <div>
+          <sc-for list="{{activity}}" as="a" hint-placeholder-count="5">
+            <div class="bz-row" style="align-items: flex-start;">
+              <span style="flex: 0 0 140px; font-size: 14px; font-weight: 600;">{{a.when}}</span>
+              <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px;">{{a.what}}</span><span class="bz-mut">{{a.where}} · {{a.how}}</span></span>
+              <span class="bz-badge" style="background: {{a.bg}}; color: {{a.fg}};">{{a.result}}</span>
+              <sc-if value="{{a.ask}}" hint-placeholder-val="{{false}}">
+                <span style="flex: 1 1 100%; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; background: #FBE3DF;">
+                  <span style="flex: 1 1 220px; font-size: 13px; color: #A8200D; font-weight: 600;">We blocked 3 wrong passwords from a device you haven&#39;t used. Was this you?</span>
+                  <button type="button" class="bz-btn bz-sm" style="background: #FFFFFF; color: #18161F;" onClick="{{a.mine}}">Yes, it was me</button>
+                  <button type="button" class="bz-btn bz-btnred bz-sm" onClick="{{a.notMine}}">No, secure my account</button>
+                </span>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Where your data lives -->
+      <section class="bz-card" aria-labelledby="loc-h">
+        <div class="bz-head"><div><h2 id="loc-h" class="bz-h2">Where your data lives</h2><span class="bz-mut">{{loc.sub}}</span></div>
+          <span class="bz-badge" style="background: #EEE8FF; color: #18161F;">{{loc.badge}}</span>
+        </div>
+        <div class="bz-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));">
+          <sc-for list="{{loc.facts}}" as="f" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9; border: 1px solid #E2DFE8;">
+              <span class="bz-lbl">{{f.label}}</span>
+              <span style="font-size: 14px; line-height: 1.5; color: #47444F;">{{f.text}}</span>
+              <span class="bz-mut" style="font-size: 12px;">{{f.small}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Import -->
+      <section class="bz-card" aria-labelledby="imp-h">
+        <div class="bz-head"><div><h2 id="imp-h" class="bz-h2">Bring your customers in</h2><span class="bz-mut">Moving from another app or a spreadsheet? Add a CSV with a name and an email column, one customer per row.</span></div></div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 18px; border: 2px dashed #CBC7D3; border-radius: 18px;">
+          <span style="width: 44px; height: 44px; border-radius: 12px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M12 18v-6M9 15l3-3 3 3"></path></svg></span>
+          <span style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">Choose a CSV file</strong><span class="bz-mut">The first row names the columns, like <strong style="color: #18161F;">name,email</strong>. Other columns are ignored.</span></span>
+          <label class="bz-btn" style="position: relative; overflow: hidden;">
+            Choose file
+            <input type="file" accept=".csv,text/csv" onChange="{{pickFile}}" aria-label="Choose a CSV file of customers" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+          </label>
+        </div>
+        <button type="button" class="bz-link" style="align-self: flex-start;" aria-expanded="{{pasteOpen}}" onClick="{{togglePaste}}">{{pasteLabel}}</button>
+        <sc-if value="{{pasteOpen}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #E2DFE8; border-radius: 16px;">
+            <label class="bz-lbl" for="imp-paste">CSV text</label>
+            <textarea id="imp-paste" class="bz-in" rows="4" value="{{paste}}" onInput="{{setPaste}}" style="font-family: ui-monospace, monospace; font-size: 13px;" placeholder="name,email"></textarea>
+            <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" class="bz-btn" onClick="{{usePaste}}">Add these customers</button>
+              <button type="button" class="bz-btn bz-btn2" onClick="{{fillExample}}">Fill in an example</button>
+            </span>
+          </div>
+        </sc-if>
+        <sc-if value="{{imp.err}}" hint-placeholder-val="{{false}}">
+          <div class="bz-note" role="status" style="background: #FBE3DF; color: #A8200D;"><span>{{imp.err}}</span></div>
+        </sc-if>
+        <sc-if value="{{imp.done}}" hint-placeholder-val="{{false}}">
+          <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px 18px; border-radius: 18px; background: #E2F6D5; color: #2F5711;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+            <span style="flex: 1 1 260px; min-width: 0; font-size: 14px; line-height: 1.5;"><strong>{{imp.title}}</strong> {{imp.detail}}</span>
+            <a href="SellCustomers.dc.html" class="bz-btn bz-sm">See customers</a>
+            <sc-if value="{{imp.canUndo}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-sm" style="background: rgba(47,87,17,0.12); color: #2F5711;" onClick="{{undoImport}}">Undo import</button></sc-if>
+          </div>
+        </sc-if>
+        <span class="bz-mut">Imported customers don’t change your three numbers. Money only moves when you bill them.</span>
+      </section>
+
+      <!-- Export -->
+      <section class="bz-card" aria-labelledby="export-h">
+        <div class="bz-head"><div><h2 id="export-h" class="bz-h2">Take your data out</h2><span class="bz-mut">It&#39;s yours. Each file is built from {{bizName}}&#39;s books right now and opens in any spreadsheet.</span></div></div>
+        <div>
+          <sc-for list="{{exports}}" as="r" hint-placeholder-count="3">
+            <div class="bz-row" style="padding: 12px 0;">
+              <span style="width: 10px; height: 10px; border-radius: 9999px; background: {{r.dot}}; flex: none;"></span>
+              <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">{{r.name}}</span><span class="bz-mut" style="font-size: 12px;">{{r.sub}}</span></span>
+              <span style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <button type="button" class="bz-btn bz-btn2 bz-sm" aria-label="{{r.showAria}}" aria-expanded="{{r.shown}}" onClick="{{r.show}}">{{r.showLabel}}</button>
+                <button type="button" class="bz-btn bz-sm" aria-label="{{r.aria}}" onClick="{{r.go}}">Download CSV</button>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{pv.on}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 10px; background: #F7F6F9; border: 1px solid #E2DFE8; border-radius: 18px; padding: 16px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><strong style="font-size: 14px; overflow-wrap: anywhere;">{{pv.file}}</strong><span class="bz-mut" style="font-size: 12px;">{{pv.meta}}</span></span>
+              <span style="display: flex; gap: 6px;">
+                <button type="button" class="bz-btn bz-sm" onClick="{{pv.copy}}">Copy CSV</button>
+                <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{pv.close}}">Close</button>
+              </span>
+            </div>
+            <pre aria-label="CSV contents" style="margin: 0; max-height: 260px; overflow: auto; padding: 12px 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E2DFE8; font: 12.5px/1.6 ui-monospace, monospace; white-space: pre; color: #18161F;">{{pv.text}}</pre>
+          </div>
+        </sc-if>
+      </section>
+
+      <!-- Close things down -->
+      <section class="bz-card" aria-labelledby="del-h">
+        <div class="bz-head"><div><h2 id="del-h" class="bz-h2">Close things down</h2><span class="bz-mut">One business per account, so closing the account closes {{bizName}}&#39;s books too. Nothing happens by accident: you type your name first.</span></div></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; align-items: start;">
+          <sc-for list="{{dels}}" as="d" hint-placeholder-count="2">
+            <div style="border: 1px solid #E2DFE8; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+              <strong style="font-size: 16px;">{{d.title}}</strong>
+              <ul style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: #47444F; display: flex; flex-direction: column; gap: 4px;">
+                <sc-for list="{{d.what}}" as="w" hint-placeholder-count="4"><li>{{w}}</li></sc-for>
+              </ul>
+              <sc-if value="{{d.idle}}" hint-placeholder-val="{{true}}">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+                  <sc-if value="{{d.can}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-btnline" style="border-color: #A8200D; color: #A8200D;" onClick="{{d.open}}">{{d.cta}}</button></sc-if>
+                  <a href="#export-h" style="font-size: 13px; font-weight: 600;">Export your data first</a>
+                </span>
+              </sc-if>
+              <sc-if value="{{d.confirming}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: #FBE3DF;">
+                  <span style="font-size: 13px; line-height: 1.5; color: #A8200D; font-weight: 600;">{{d.warn}}</span>
+                  <label class="bz-lbl" for="{{d.id}}">Type <strong>{{d.phrase}}</strong> to confirm</label>
+                  <input id="{{d.id}}" class="bz-in" type="text" autocomplete="off" value="{{d.typed}}" onInput="{{d.type}}" onChange="{{d.type}}">
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <sc-if value="{{d.blocked}}" hint-placeholder-val="{{true}}"><button type="button" class="bz-btn bz-btnred" disabled="{{true}}">{{d.confirmLabel}}</button></sc-if>
+                    <sc-if value="{{d.ready}}" hint-placeholder-val="{{false}}"><a href="{{d.href}}" class="bz-btn bz-btnred" onClick="{{d.confirm}}">{{d.confirmLabel}}</a></sc-if>
+                    <button type="button" class="bz-btn" style="background: #FFFFFF;" onClick="{{d.cancel}}">Keep it</button>
+                  </span>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+          <span style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span class="bz-h3">Reset sample data</span><span class="bz-mut">{{resetText}}</span></span>
+          <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <a href="ThreeHome.dc.html#reset" class="bz-btn bz-btn2">Reset sample data</a>
+            <a href="{{otherHref}}" class="bz-btn bz-btn2">{{otherLabel}}</a>
+          </span>
+        </div>
+      </section>
+    </div>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3050}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pw: { open: false, cur: '', next: '', show: false, others: true, tried: false, flag: false },
+      tfa: { stage: 'idle', code: '', tried: false }, codeSet: 0,
+      paste: '', pasteOpen: false, imp: null,
+      preview: null,
+      del: { acct: { stage: 'idle', typed: '' } },
+      toast: null
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  strength(v) {
+    if (!v || v.length < 8) return 0;
+    let n = 1;
+    if (v.length >= 12) n++;
+    if (/\d/.test(v) && /[a-zA-Z]/.test(v)) n++;
+    if (/[^a-zA-Z0-9]/.test(v)) n++;
+    return Math.min(4, n);
+  }
+  // ---- CSV helpers ----
+  parseCsv(text) {
+    const rows = []; let row = [], cell = '', q = false;
+    const t = String(text || '').replace(/^﻿/, '');
+    for (let i = 0; i < t.length; i++) {
+      const ch = t[i];
+      if (q) {
+        if (ch === '"' && t[i + 1] === '"') { cell += '"'; i++; } else if (ch === '"') q = false; else cell += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === ',' || ch === ';' || ch === '\t') { row.push(cell); cell = ''; }
+      else if (ch === '\n' || ch === '\r') { if (ch === '\r' && t[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+      else cell += ch;
+    }
+    if (cell || row.length) { row.push(cell); rows.push(row); }
+    return rows.map((r) => r.map((c) => c.trim())).filter((r) => r.some(Boolean));
+  }
+  importCustomers(text, file) {
+    const rows = this.parseCsv(text);
+    if (!rows.length) { this.setState({ imp: { err: (file || 'That text') + ' is empty. Add a row per customer, like: ' + (BE.is('lk') ? 'Lotus Ayurveda Spa,info@lotusayurveda.lk' : 'Calder Valley Yoga,hello@caldervalleyyoga.co.uk') } }); return; }
+    const head = rows[0].map((h) => h.toLowerCase());
+    let ni = head.findIndex((h) => /^(name|customer|company|business|client)/.test(h));
+    let ei = head.findIndex((h) => /e-?mail/.test(h));
+    let body = rows.slice(1);
+    if (ni < 0 && ei < 0) { ni = 0; ei = rows[0].findIndex((c) => c.indexOf('@') > 0); body = rows; }
+    if (ni < 0) ni = ei === 0 ? 1 : 0;
+    const p = BE.get('profile') || {};
+    const have = {};
+    BE.all('customers').forEach((c) => { have[String(c.name).toLowerCase()] = 1; if (c.email) have[String(c.email).toLowerCase()] = 1; });
+    const added = [], dupes = [], bad = [];
+    body.forEach((r, i) => {
+      const name = r[ni] || '', email = ei >= 0 ? (r[ei] || '') : '';
+      if (!name) { bad.push(i + 2); return; }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { bad.push(i + 2); return; }
+      if (have[name.toLowerCase()] || (email && have[email.toLowerCase()])) { dupes.push(name); return; }
+      have[name.toLowerCase()] = 1; if (email) have[email.toLowerCase()] = 1;
+      added.push({ id: BE.id('cust'), name, contact: '', email, phone: '', address: '', country: p.country || (BE.pack().name || ''), cur: BE.pack().currency || p.currency, tax: '', since: 'Imported ' + BE.today, paid: 0, note: '', invoices: [], quotes: [], recurring: [], credits: [], imported: true });
+    });
+    const src = file || 'the pasted rows';
+    if (!added.length) {
+      this.setState({ imp: { err: 'No customers added from ' + src + '. ' + (dupes.length ? dupes.length + ' already in your list. ' : '') + (bad.length ? bad.length + ' row' + (bad.length === 1 ? '' : 's') + ' without a name or with an email that doesn’t look right.' : '') + (dupes.length || bad.length ? '' : 'We couldn’t find a name column.') } });
+      return;
+    }
+    BE.change((data) => {
+      data.customers = (data.customers || []).concat(added);
+      BE._log(data, 'Imported ' + added.length + ' customer' + (added.length === 1 ? '' : 's') + ' from ' + src);
+    });
+    const names = added.slice(0, 3).map((c) => c.name).join(', ') + (added.length > 3 ? ' and ' + (added.length - 3) + ' more' : '');
+    this.setState({ paste: '', imp: {
+      done: true, ids: added.map((c) => c.id), title: 'Added ' + added.length + ' customer' + (added.length === 1 ? '' : 's') + ' from ' + src + '.',
+      detail: names + '.' + (dupes.length ? ' Skipped ' + dupes.length + ' already in your list.' : '') + (bad.length ? ' Skipped ' + bad.length + ' row' + (bad.length === 1 ? '' : 's') + ' with no name or a broken email (row ' + bad.join(', ') + ').' : '')
+    } });
+    this.notify('Added ' + added.length + ' customer' + (added.length === 1 ? '' : 's') + '. They’re in your customer list now.');
+  }
+  csv(rows) {
+    const esc = (v) => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    return rows.map((r) => r.map(esc).join(',')).join('\n') + '\n';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const p = BE.get('profile') || {};
+    const sec = BE.get('security') || {};
+    const sessions = BE.all('sessions');
+    const email = p.email || 'No email yet';
+    const setPw = (o) => this.setState({ pw: Object.assign({}, s.pw, o) });
+    const sc = this.strength(s.pw.next);
+    const LBL = ['Too short', 'Weak', 'Okay', 'Strong', 'Very strong'];
+    const COL = ['#A8200D', '#E0752D', '#C9A100', '#7A5AF8', '#2F5711'];
+    const pwErr = s.pw.tried ? (!s.pw.cur ? 'Enter your current password.' : (s.pw.next.length < 8 ? 'Your new password needs at least 8 characters.' : (sc < 2 ? 'Make it a little stronger: add length or mix in numbers and symbols.' : (s.pw.next === s.pw.cur ? 'Pick a password different from the one you have now.' : null)))) : null;
+    const pw = {
+      open: s.pw.open, cur: s.pw.cur, next: s.pw.next, others: s.pw.others, flag: s.pw.flag,
+      type: s.pw.show ? 'text' : 'password', showLabel: s.pw.show ? 'Hide' : 'Show', shown: s.pw.show ? 'true' : 'false',
+      bars: [1, 2, 3, 4].map((i) => ({ c: s.pw.next && sc >= i ? COL[sc] : (s.pw.next && i === 1 && sc === 0 ? COL[0] : '#E2DFE8') })),
+      strength: s.pw.next ? LBL[sc] : '—',
+      tip: sc >= 3 ? 'nice and long' : '12+ characters with a number and a symbol is best',
+      err: pwErr
+    };
+
+    // Two-step: on/off lives in the shared data; the setup steps are local.
+    const isOn = !!sec.twoStep;
+    const tStage = s.tfa.stage;
+    const setTfa = (o) => this.setState({ tfa: Object.assign({}, s.tfa, o) });
+    const codeOk = /^\d{6}$/.test(s.tfa.code);
+    const tfaErr = s.tfa.tried && !codeOk ? 'Enter the 6 digits from your app.' : null;
+    const tfa = {
+      off: !isOn && tStage === 'idle', scan: !isOn && tStage === 'scan', codes: tStage === 'codes' || (isOn && tStage === 'show'), on: isOn,
+      setup: tStage === 'codes', code: s.tfa.code, err: tfaErr, border: tfaErr ? '#A8200D' : '#CBC7D3',
+      codesBtn: isOn && tStage === 'show' ? 'Hide backup codes' : 'Backup codes', doneLabel: tStage === 'codes' ? 'I saved them, finish' : 'Done'
+    };
+    const qr = [];
+    const finder = (r, c) => {
+      const f = (r0, c0) => { const y = r - r0, x = c - c0; if (y < 0 || x < 0 || y > 6 || x > 6) return null; return (y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4)); };
+      const a = f(0, 0), b = f(0, 14), d = f(14, 0);
+      if (a !== null) return a; if (b !== null) return b; if (d !== null) return d;
+      if ((r === 7 && (c <= 7 || c >= 13)) || (c === 7 && (r <= 7 || r >= 13)) || (r === 13 && c <= 7) || (c === 13 && r <= 7)) return false;
+      return null;
+    };
+    for (let r = 0; r < 21; r++) for (let c = 0; c < 21; c++) {
+      const f = finder(r, c);
+      const on = f !== null ? f : (((r * 7 + c * 13 + r * c * 3) % 5) < 2) !== (((r + c) % 3) === 0);
+      qr.push(on ? '#18161F' : 'transparent');
+    }
+    const SETS = [
+      ['4KQ7-9MZD', 'H2XP-6TRA', 'W8NC-3JLV', 'B5FY-7QKE', 'R9DM-2UWS', 'T6GH-8PXN', 'L3VA-5ZCK', 'E7JR-4MBQ', 'Y2WT-9FDH', 'P8KS-6NLA'],
+      ['M3TX-8RQA', 'C9LV-2WHE', 'K6ZP-4DJN', 'F2BG-7YUS', 'Q8NH-3KTM', 'V5RD-9XCL', 'A7WJ-6PFE', 'N4SY-2GQB', 'U9EK-5MVD', 'G3HT-8ZRW']
+    ];
+    const copyText = (text, ok) => {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => this.notify(ok), () => this.notify('Your browser blocked copying. Select the text and copy it yourself.'));
+          return;
+        }
+      } catch (e) { /* fall through */ }
+      this.notify('Your browser blocked copying. Select the text and copy it yourself.');
+    };
+
+    const ICON = { laptop: 'M4 5h16v11H4zM2 19h20', phone: 'M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2', tablet: 'M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2', desktop: 'M4 5h16v11H4zM9 20h6M12 16v4' };
+    const devices = sessions.map((d) => Object.assign({}, d, { icon: ICON[d.kind] || ICON.laptop, here: !!d.here, other: !d.here, out: () => {
+      BE.change((data) => { data.sessions = data.sessions.filter((x) => x.id !== d.id); BE._log(data, 'Signed out ' + d.name.split(' · ')[0]); });
+      this.notify('Signed out of ' + d.name.split(' · ')[0] + '. It needs your password to get back in.');
+    } }));
+    const others = sessions.filter((d) => !d.here).length;
+
+    const lk = BE.is('lk');
+    const pack = BE.pack();
+    const ACT = (sec.recent || []).map((a) => Object.assign({}, a, { how: a.ok && /^Password/.test(a.how) ? (isOn ? 'Password and code' : 'Password') : a.how }));
+    const activity = ACT.map((a) => Object.assign({}, a, {
+      bg: a.ok ? '#E2F6D5' : '#FBE3DF', fg: a.ok ? '#2F5711' : '#A8200D',
+      result: !a.ok && sec.reviewed ? (sec.reviewed === 'mine' ? 'Blocked · you said it was you' : 'Blocked · secured') : a.result,
+      ask: !!a.ask && !sec.reviewed,
+      mine: () => { BE.patch('security', { reviewed: 'mine' }); this.notify('Thanks. We’ll trust that device next time.'); },
+      notMine: () => {
+        BE.change((data) => { data.security = Object.assign({}, data.security, { reviewed: 'not' }); data.sessions = (data.sessions || []).filter((x) => x.here); BE._log(data, 'Signed out every other device after a blocked sign-in'); });
+        this.setState({ pw: Object.assign({}, s.pw, { open: true, flag: true }) });
+        this.notify('Signed out everywhere else. Now choose a new password.');
+      }
+    }));
+
+    // Import
+    const imp = s.imp || {};
+    const EXAMPLE = lk
+      ? 'name,email\nLotus Ayurveda Spa,info@lotusayurveda.lk\nMirissa Surf Lodge,stay@mirissasurflodge.lk\nCeylon Cinnamon Traders (Pvt) Ltd,accounts@ceyloncinnamon.lk'
+      : 'name,email\nCalder Valley Yoga,hello@caldervalleyyoga.co.uk\nNorthern Quarter Ceramics,studio@nqceramics.co.uk\nDales Bike Hire,bookings@dalesbikehire.co.uk';
+
+    // Export: built from the shared data, right now. Amounts are in the business's own currency.
+    const cur = pack.currency || p.currency;
+    const invs = BE.all('invoices'), exps = BE.all('expenses'), custs = BE.all('customers'), bills = BE.all('bills');
+    const slug = String(p.business || 'billingease').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'billingease';
+    const day = '2026-10-11';
+    const amt = (n) => (Number(n) || 0).toFixed(2);
+    const FILES = {
+      invoices: { name: 'Invoices', dot: '#7A5AF8', file: slug + '-invoices-' + day + '.csv', n: invs.length,
+        rows: () => [['Number', 'Customer', 'What', 'Total (' + cur + ')', 'Tax (' + cur + ')', 'Paid (' + cur + ')', 'Still open (' + cur + ')', 'Status', 'Date', 'Due']].concat(invs.map((i) => [i.draft ? 'Draft' : i.num, i.who, i.what || '', amt(BE.invTotal(i)), amt(i.tax), amt(i.paid), amt(BE.invOpen(i)), BE.invStatus(i), i.issued || '', i.due || ''])) },
+      expenses: { name: 'Expenses', dot: '#E0752D', file: slug + '-expenses-' + day + '.csv', n: exps.length,
+        rows: () => [['Date', 'Paid to', 'Category', 'Amount (' + cur + ')', 'Paid with', 'Attachment', 'Note']].concat(exps.map((x) => [x.date, x.who, x.cat, amt(x.amount), x.how || '', (x.attachment || x.receipt) ? 'Yes' : 'No', x.note || ''])) },
+      bills: { name: 'Bills', dot: '#E0752D', file: slug + '-bills-' + day + '.csv', n: bills.length,
+        rows: () => [['Supplier', 'Bill number', 'What', 'Category', 'Amount (' + cur + ')', 'Paid (' + cur + ')', 'Due', 'Status']].concat(bills.map((b) => [b.who, b.num || '', b.what || '', b.cat || '', amt(b.amount), amt(b.paid), b.due || '', b.status || 'open'])) },
+      customers: { name: 'Customers', dot: '#18161F', file: slug + '-customers-' + day + '.csv', n: custs.length,
+        rows: () => [['Name', 'Contact', 'Email', 'Phone', lk ? 'TIN or VAT number' : 'VAT number']].concat(custs.map((c) => [c.name, c.contact || '', c.email || '', c.phone || '', c.tax || c.vat || c.tin || ''])) }
+    };
+    const exports = Object.keys(FILES).map((k) => {
+      const f = FILES[k];
+      const shown = s.preview === k;
+      return {
+        name: f.name, dot: f.dot,
+        sub: f.n ? f.n + ' ' + f.name.toLowerCase() + ' · ' + f.file : 'None yet: the file has just the column names',
+        shown: shown ? 'true' : 'false', showLabel: shown ? 'Hide' : 'Show', showAria: (shown ? 'Hide ' : 'Show ') + f.name.toLowerCase() + ' CSV',
+        aria: 'Download ' + f.name.toLowerCase() + ' as CSV',
+        show: () => this.setState({ preview: shown ? null : k }),
+        go: () => {
+          const text = this.csv(f.rows());
+          let ok = false;
+          try {
+            const url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+            const a = document.createElement('a');
+            a.href = url; a.download = f.file; a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 4000);
+            ok = true;
+          } catch (e) { ok = false; }
+          this.setState({ preview: k });
+          BE.log('Exported ' + f.name.toLowerCase() + ' (' + f.n + ' rows)');
+          this.notify((ok ? 'Downloaded ' + f.file : 'Download blocked here') + ' · ' + f.n + ' row' + (f.n === 1 ? '' : 's') + '. It’s also shown below to copy.');
+        }
+      };
+    });
+    const pf = s.preview && FILES[s.preview];
+    const pText = pf ? this.csv(pf.rows()) : '';
+    const pv = pf ? {
+      on: true, file: pf.file, text: pText, meta: pf.n + ' row' + (pf.n === 1 ? '' : 's') + ' plus a header · ' + pText.length.toLocaleString('en-US') + ' characters',
+      copy: () => copyText(pText, 'Copied ' + pf.file + ' (' + pf.n + ' rows). Paste it into any spreadsheet.'),
+      close: () => this.setState({ preview: null })
+    } : { on: false };
+
+    // Close things down: one business per account, so it's the account.
+    const bizName = p.business || 'Your business';
+    const t = BE.totals('month');
+    const openIn = invs.filter((i) => BE.invOpen(i) > 0).length;
+    const tm = BE.all('team').filter((m) => !(m.you || m.status === 'You'));
+    const noun = (pack.practitioner || {}).noun || 'accountant';
+    const D = {
+      acct: {
+        title: 'Delete your account', cta: 'Delete my account', phrase: p.owner && p.owner !== 'You' ? p.owner : 'delete my account', confirmLabel: 'Delete my account', href: 'ThreeLanding.dc.html', can: true,
+        warn: 'This erases ' + bizName + '’s books, invoices, expenses and customers from BillingEase right away, signs you out and takes you to the BillingEase front page. You can’t undo it.',
+        what: [
+          openIn ? openIn + ' unpaid invoice' + (openIn === 1 ? '' : 's') + ' (' + t.fmt.inExp + ' still to come in) stay with your customers, but you lose the record here.' : 'There are no unpaid invoices to worry about.',
+          tm.length ? tm.map((m) => String(m.name).split(/[\s,]+/)[0]).join(' and ') + ' lose access, including your ' + noun + '’s view of your books.' : 'Nobody else has access.',
+          lk ? 'Keep your records as long as the IRD requires: export them first.' : 'HMRC expects you to keep records for years: export them first.',
+          'You’re signed out everywhere' + (p.email ? ' and ' + p.email + ' can be used for a new account later.' : '.')
+        ]
+      }
+    };
+    const dels = Object.keys(D).map((k) => {
+      const st = s.del[k];
+      const setD = (o) => this.setState({ del: Object.assign({}, s.del, { [k]: Object.assign({}, st, o) }) });
+      const ready = st.typed.trim().toLowerCase() === D[k].phrase.toLowerCase();
+      return Object.assign({}, D[k], {
+        id: 'del-' + k, typed: st.typed, idle: st.stage === 'idle', confirming: st.stage === 'confirm',
+        blocked: !ready, ready,
+        open: () => setD({ stage: 'confirm', typed: '' }),
+        type: (e) => setD({ typed: e.target.value }),
+        cancel: () => setD({ stage: 'idle', typed: '' }),
+        confirm: () => {
+          BE.startEmpty();
+          try { sessionStorage.setItem('be.flash', 'Your account was deleted. Everything was erased.'); } catch (e) { /* ignore */ }
+        }
+      });
+    });
+
+    // Where the data lives, per country (spec section 12).
+    const loc = lk ? {
+      sub: 'Sri Lanka’s Personal Data Protection Act No. 9 of 2022 applies to your customers’ and staff details.',
+      badge: 'PDPA',
+      facts: [
+        { label: 'The law', text: 'Personal Data Protection Act (PDPA). Core duties for businesses like yours start on 1 Jan 2027.', small: 'We’ll be ready before then.' },
+        { label: 'Where it’s stored', text: 'Hosting region to be confirmed under the PDPA. We’ll tell you before 1 Jan 2027.', small: 'Any transfer abroad needs a lawful basis.' },
+        { label: 'How long we keep it', text: 'For as long as the IRD requires you to keep business records, then you choose.', small: 'Retention period to confirm with the IRD.' }
+      ]
+    } : {
+      sub: 'UK GDPR applies to your customers’ details and your payroll records.',
+      badge: 'UK GDPR',
+      facts: [
+        { label: 'The law', text: 'UK GDPR and the Data Protection Act 2018. BillingEase is registered with the ICO.', small: 'You control your data; we process it for you.' },
+        { label: 'Where it’s stored', text: 'On servers in the UK or the EU, never anywhere else without the right safeguards.', small: 'Encrypted in storage and on the way.' },
+        { label: 'How long we keep it', text: 'For as long as HMRC requires you to keep records for your business and lettings, then you choose.', small: 'Export any time below.' }
+      ]
+    };
+    const other = lk ? 'uk' : 'lk';
+    return {
+      bizName, loc, noActivity: !activity.length,
+      resetText: 'For this prototype only: puts ' + (lk ? 'Serendib Design Studio' : 'Harper Studio') + ' back exactly as it was on Sun 11 Oct 2026, undoing everything you’ve tried.',
+      otherHref: 'ThreeHome.dc.html#sample-' + other, otherLabel: lk ? 'Try the UK sample' : 'Try the Sri Lanka sample',
+      toast: s.toast, email,
+      pw, pwChanged: sec.pwChanged || 'Set when you signed up', pwClosed: !s.pw.open,
+      openPw: () => setPw({ open: true, cur: '', next: '', tried: false, show: false, flag: false }),
+      closePw: () => setPw({ open: false, tried: false, flag: false }),
+      setPwCur: (e) => setPw({ cur: e.target.value }),
+      setPwNext: (e) => setPw({ next: e.target.value }),
+      togglePwShow: () => setPw({ show: !s.pw.show }),
+      togglePwOthers: (e) => setPw({ others: e.target.checked }),
+      savePw: () => {
+        if (!s.pw.cur || s.pw.next.length < 8 || sc < 2 || s.pw.next === s.pw.cur) { setPw({ tried: true }); return; }
+        const n = others;
+        BE.change((data) => {
+          data.security = Object.assign({}, data.security, { pwChanged: 'Changed today, ' + BE.today });
+          if (s.pw.others) data.sessions = (data.sessions || []).filter((d) => d.here);
+          BE._log(data, 'Changed your password' + (s.pw.others && n ? ' and signed out ' + n + ' other device' + (n === 1 ? '' : 's') : ''));
+        });
+        this.setState({ pw: Object.assign({}, s.pw, { open: false, tried: false, cur: '', next: '', flag: false }) });
+        this.notify(s.pw.others && n ? 'Password changed. ' + n + ' other device' + (n === 1 ? ' was' : 's were') + ' signed out.' : 'Password changed');
+      },
+      tfa, qr, backup: SETS[s.codeSet],
+      tfaBadge: isOn ? 'Two-step sign-in on' : 'Two-step sign-in off', tfaBadgeBg: isOn ? '#E2F6D5' : '#FFF0B8', tfaBadgeFg: isOn ? '#2F5711' : '#6B5000',
+      tfaSub: isOn ? 'On · authenticator app · 10 backup codes' : 'Off. Turn it on so a stolen password alone can’t open your books or move money.',
+      tfaStart: () => setTfa({ stage: 'scan', code: '', tried: false }),
+      tfaCancel: () => setTfa({ stage: 'idle', code: '', tried: false }),
+      setTfaCode: (e) => setTfa({ code: e.target.value.replace(/\D/g, '').slice(0, 6) }),
+      tfaVerify: () => {
+        if (!codeOk) { setTfa({ tried: true }); return; }
+        BE.change((data) => { data.security = Object.assign({}, data.security, { twoStep: true }); BE._log(data, 'Turned on two-step sign-in'); });
+        setTfa({ stage: 'codes', tried: false });
+        this.notify('Two-step sign-in is on. Save your backup codes.');
+      },
+      tfaDone: () => setTfa({ stage: 'idle' }),
+      tfaShowCodes: () => setTfa({ stage: tStage === 'show' ? 'idle' : 'show' }),
+      tfaOff: () => {
+        BE.change((data) => { data.security = Object.assign({}, data.security, { twoStep: false }); BE._log(data, 'Turned off two-step sign-in'); });
+        setTfa({ stage: 'idle', code: '' });
+        this.notify('Two-step sign-in is off. Your password alone opens your books now.');
+      },
+      copyKey: () => copyText('JBSWY3DPEHPK3PXP', 'Setup key copied'),
+      copyCodes: () => copyText(SETS[s.codeSet].join('\n'), '10 backup codes copied'),
+      downloadCodes: () => {
+        try {
+          const url = URL.createObjectURL(new Blob(['BillingEase backup codes for ' + email + '\n\n' + SETS[s.codeSet].join('\n') + '\n'], { type: 'text/plain' }));
+          const a = document.createElement('a'); a.href = url; a.download = 'billingease-backup-codes.txt'; a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          this.notify('Downloaded billingease-backup-codes.txt');
+        } catch (e) { this.notify('Download blocked here. Use Copy codes instead.'); }
+      },
+      newCodes: () => { this.setState({ codeSet: 1 - s.codeSet }); this.notify('New codes made. The old ones no longer work.'); },
+      devices, hasOthers: others > 0,
+      signOutOthers: () => {
+        BE.change((data) => { data.sessions = (data.sessions || []).filter((d) => d.here); BE._log(data, 'Signed out ' + others + ' other device' + (others === 1 ? '' : 's')); });
+        this.notify('Signed out of ' + others + ' other device' + (others === 1 ? '' : 's') + '. Only this one is signed in now.');
+      },
+      activity,
+      imp: { err: imp.err || false, done: !!imp.done, title: imp.title || '', detail: imp.detail || '', canUndo: !!(imp.ids && imp.ids.length) },
+      paste: s.paste, pasteOpen: s.pasteOpen, pasteLabel: s.pasteOpen ? 'Hide the paste box' : 'Or paste the rows instead',
+      togglePaste: () => this.setState({ pasteOpen: !s.pasteOpen }),
+      setPaste: (e) => this.setState({ paste: e.target.value }),
+      fillExample: () => this.setState({ paste: EXAMPLE, imp: null }),
+      usePaste: () => {
+        if (!String(s.paste).trim()) { this.setState({ imp: { err: 'Paste some rows first, or choose “Fill in an example”.' } }); return; }
+        this.importCustomers(s.paste, null);
+      },
+      pickFile: (e) => {
+        const input = e.target;
+        const f = input.files && input.files[0];
+        if (!f) return;
+        if (!/\.csv$/i.test(f.name) && !/csv|text/.test(f.type || '')) { this.setState({ imp: { err: f.name + ' isn’t a CSV file. Save your spreadsheet as CSV and try again.' } }); input.value = ''; return; }
+        const r = new FileReader();
+        r.onload = () => { this.importCustomers(String(r.result || ''), f.name); input.value = ''; };
+        r.onerror = () => this.setState({ imp: { err: 'We couldn’t read ' + f.name + '. Try saving it again as CSV.' } });
+        r.readAsText(f);
+      },
+      undoImport: () => {
+        const ids = imp.ids || [];
+        BE.change((data) => { data.customers = (data.customers || []).filter((c) => ids.indexOf(c.id) < 0); BE._log(data, 'Undid the import of ' + ids.length + ' customers'); });
+        this.setState({ imp: null });
+        this.notify('Import undone. Those ' + ids.length + ' customers were removed.');
+      },
+      exports, pv,
+      dels
+    };
+  }
+}
+</script>
+</body>
+</html>

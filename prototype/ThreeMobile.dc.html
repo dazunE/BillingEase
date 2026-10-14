@@ -20,10 +20,21 @@ a{color:#18161F}a:hover{color:#000000}
   <!-- Header -->
   <header style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; background: #FFFFFF; border-bottom: 1px solid #E2DFE8;">
     <a href="ThreeHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-      <span style="width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+      <svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true" style="flex: none; display: block;"><rect width="48" height="48" rx="13" fill="#18161F"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg>
       <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">BillingEase</span>
     </a>
-    <button type="button" aria-label="Account: Maya Chen, Northwind Studio" onClick="{{account}}" style="width: 44px; height: 44px; border-radius: 9999px; border: 0; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; cursor: pointer;">MC</button>
+    <span style="display: flex; align-items: center; gap: 8px;">
+      <a href="Ask.dc.html" aria-label="Ask: AI answers about tax and your books" style="width: 44px; height: 44px; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; text-decoration: none; flex: none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"></path></svg>
+      </a>
+      <a href="Notifications.dc.html" aria-label="{{bellLabel}}" style="position: relative; width: 44px; height: 44px; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; text-decoration: none; flex: none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+        <sc-if value="{{unread}}" hint-placeholder-val="{{false}}">
+          <span aria-hidden="true" style="position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9999px; background: #E0752D; color: #FFFFFF; font: 700 11px DM Sans, sans-serif; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF;">{{unread}}</span>
+        </sc-if>
+      </a>
+      <a href="BizProfile.dc.html" aria-label="{{acctLabel}}" style="width: 44px; height: 44px; border-radius: 9999px; background: #18161F; color: #B9A3FF; font: 700 14px DM Sans, sans-serif; display: flex; align-items: center; justify-content: center; text-decoration: none; flex: none;">{{prof.initials}}</a>
+    </span>
   </header>
 
   <!-- Scrolling content -->
@@ -54,9 +65,47 @@ a{color:#18161F}a:hover{color:#000000}
     </sc-if>
 
     <sc-if value="{{onHome}}" hint-placeholder-val="{{true}}">
-      <section style="display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">Sunday, October 4 · Northwind Studio</span>
-        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.15; letter-spacing: -0.03em;">You&#39;re on track to keep <span style="background: #EEE8FF; border-radius: 10px; padding: 0 8px;">$8,407</span> this October.</h1>
+      <section style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #5F5B68;">Sunday 11 October · {{biz}}<span style="flex: none; white-space: nowrap; padding: 1px 8px; border-radius: 9999px; background: #EFEDF3; color: #18161F; font-size: 11px; font-weight: 700; line-height: 18px;">{{countryShort}}</span></span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.15; letter-spacing: -0.03em; overflow-wrap: anywhere;">{{p.sentenceA}} <span style="background: #EEE8FF; border-radius: 10px; padding: 0 8px; box-decoration-break: clone; -webkit-box-decoration-break: clone;">{{p.hl}}</span> {{p.sentenceB}}</h1>
+        <div role="group" aria-label="Period" style="display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+          <sc-for list="{{periods}}" as="pd" hint-placeholder-count="2">
+            <button type="button" aria-pressed="{{pd.pressed}}" onClick="{{pd.pick}}" style="flex: 1; min-height: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: {{pd.bg}}; color: {{pd.color}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{pd.label}}</button>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- The period card: UK quarter, Sri Lanka this month -->
+      <section aria-labelledby="pc-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 12px; font-weight: 600; color: #5F5B68;">{{pc.eyebrow}}</span>
+          <h2 id="pc-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">{{pc.title}}</h2>
+          <sc-if value="{{pc.chip}}" hint-placeholder-val="{{true}}">
+            <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{pc.chipBg}}; color: {{pc.chipFg}}; font-size: 12.5px; font-weight: 700;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{pc.chipFg}};"></span>{{pc.chip}}</span>
+          </sc-if>
+        </div>
+        <sc-if value="{{pc.hasStats}}" hint-placeholder-val="{{true}}">
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+            <sc-for list="{{pc.stats}}" as="s" hint-placeholder-count="3">
+              <span style="min-width: 0; padding: 8px 10px; border-radius: 12px; background: {{s.bg}}; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 11.5px; font-weight: 600; color: {{s.lc}};">{{s.label}}</span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; color: {{s.fg}}; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;">{{s.value}}</span>
+              </span>
+            </sc-for>
+          </div>
+        </sc-if>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px;">
+          <sc-for list="{{pc.rows}}" as="r" hint-placeholder-count="3">
+            <li>
+              <a href="{{r.href}}" style="display: flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; color: #18161F; font-size: 14px;">
+                <span style="width: 24px; height: 24px; border-radius: 9999px; background: {{r.bg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{r.fg}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.icon}}"></path></svg></span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: {{r.weight}};">{{r.text}}</span><sc-if value="{{r.sub}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #5F5B68;">{{r.sub}}</span></sc-if></span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m9 6 6 6-6 6"></path></svg>
+              </a>
+            </li>
+          </sc-for>
+        </ul>
+        <a href="{{pc.href}}" style="display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{pc.cta}}</a>
       </section>
 
       <!-- The equation, stacked -->
@@ -64,72 +113,137 @@ a{color:#18161F}a:hover{color:#000000}
         <a href="ThreeIn.dc.html" style="text-decoration: none; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
           <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
             <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Coming in</span>
-            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$24,850<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.in}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
           </span>
-          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: 50%; background: #7A5AF8;"></span><span style="width: 50%; background: #C9BCFB;"></span></span>
-          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">$12,400</strong> received</span><span><strong style="color: #18161F;">$12,450</strong> on the way</span></span>
+          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: {{p.inPaidPct}}%; background: #7A5AF8;"></span><span style="width: {{p.inExpPct}}%; background: #C9BCFB;"></span></span>
+          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">{{p.inPaid}}</strong> received</span><span><strong style="color: #18161F;">{{p.inExp}}</strong> on the way</span></span>
         </a>
         <span aria-hidden="true" style="align-self: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; line-height: 1; color: #5F5B68;">−</span>
         <a href="ThreeOut.dc.html" style="text-decoration: none; color: #18161F; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
           <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
             <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #E0752D;"></span>Going out</span>
-            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">$13,640<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{p.out}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
           </span>
-          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: 23%; background: #E0752D;"></span><span style="width: 77%; background: #F4C3A1;"></span></span>
-          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">$3,180</strong> paid</span><span><strong style="color: #18161F;">$10,460</strong> still to pay</span></span>
+          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: {{p.outPaidPct}}%; background: #E0752D;"></span><span style="width: {{p.outSchPct}}%; background: #F4C3A1;"></span></span>
+          <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #47444F;"><span><strong style="color: #18161F;">{{p.outPaid}}</strong> paid</span><span><strong style="color: #18161F;">{{p.outSch}}</strong> still to pay</span></span>
         </a>
         <span aria-hidden="true" style="align-self: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; line-height: 1; color: #5F5B68;">=</span>
         <a href="ThreeKeep.dc.html" style="text-decoration: none; color: #FFFFFF; background: #18161F; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
           <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
             <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #EEE8FF;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #B9A3FF;"></span>Yours to keep</span>
-            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">$8,407<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EEE8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+            <span style="display: flex; align-items: center; gap: 6px; font-family: Sora, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.03em; color: #B9A3FF; font-variant-numeric: tabular-nums;">{{p.keep}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EEE8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
           </span>
-          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;"><span style="width: 75%; background: #B9A3FF;"></span><span style="width: 25%; background: rgba(238,232,255,0.45);"></span></span>
-          <span style="font-size: 13px; color: #EEE8FF;">after <strong style="color: #FFFFFF;">$2,803</strong> set aside for tax</span>
+          <span style="display: flex; height: 8px; border-radius: 9999px; overflow: hidden; background: rgba(238,232,255,0.16); gap: 2px;"><span style="width: {{p.keepPct}}%; background: #B9A3FF;"></span><span style="width: {{p.taxPct}}%; background: rgba(238,232,255,0.45);"></span></span>
+          <span style="font-size: 13px; color: #EEE8FF; line-height: 1.4;">{{p.keepNoteA}} <strong style="color: #FFFFFF;">{{p.tax}}</strong> {{p.keepNoteB}}</span>
         </a>
       </section>
 
-      <!-- Needs you -->
-      <section aria-labelledby="needs-h" style="display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
-          <h2 id="needs-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Needs you <span style="color: #5F5B68; font-weight: 600;">{{openCount}}</span></h2>
-          <span style="font-size: 12px; color: #5F5B68;">Only what we can&#39;t do alone</span>
-        </div>
-        <sc-for list="{{tasks}}" as="t" hint-placeholder-count="3">
-          <sc-if value="{{t.open}}" hint-placeholder-val="{{true}}">
-            <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
-              <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <span style="width: 40px; height: 40px; border-radius: 12px; background: {{t.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+      <!-- Get started (new business) -->
+      <sc-if value="{{showStart}}" hint-placeholder-val="{{false}}">
+        <section aria-labelledby="start-h" style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+            <h2 id="start-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Get started <span style="color: #5F5B68; font-weight: 600;">{{check.done}} of {{check.total}}</span></h2>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column;">
+            <sc-for list="{{check.items}}" as="c" hint-placeholder-count="5">
+              <a href="{{c.href}}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 10px; border-radius: 14px; text-decoration: none; color: #18161F;">
+                <span style="width: 26px; height: 26px; box-sizing: border-box; border-radius: 9999px; border: {{c.ring}}; background: {{c.bg}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                  <sc-if value="{{c.done}}" hint-placeholder-val="{{false}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></sc-if>
                 </span>
-                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
-                  <span style="font-weight: 700; font-size: 15px;">{{t.title}}</span>
-                  <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{t.body}}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+                  <span style="font-weight: 700; font-size: 15px; text-decoration: {{c.strike}}; color: {{c.color}};">{{c.label}}</span>
+                  <span style="font-size: 12.5px; color: #5F5B68;">{{c.sub}}</span>
+                </span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m9 6 6 6-6 6"></path></svg>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+      <!-- Needs you -->
+      <sc-if value="{{showNeeds}}" hint-placeholder-val="{{true}}">
+        <section aria-labelledby="needs-h" style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+            <h2 id="needs-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Needs you <span style="color: #5F5B68; font-weight: 600;">{{openCount}}</span></h2>
+            <span style="font-size: 12px; color: #5F5B68;">Requests, late, due</span>
+          </div>
+          <sc-for list="{{tasks}}" as="t" hint-placeholder-count="3">
+            <sc-if value="{{t.open}}" hint-placeholder-val="{{true}}">
+              <article style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                  <span style="width: 40px; height: 40px; border-radius: 12px; background: {{t.tint}}; display: flex; align-items: center; justify-content: center; flex: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+                  </span>
+                  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                    <sc-if value="{{t.badge}}" hint-placeholder-val="{{false}}"><span style="align-self: flex-start; padding: 1px 8px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font-size: 11px; font-weight: 700; line-height: 18px;">{{t.badge}}</span></sc-if>
+                    <span style="font-weight: 700; font-size: 15px;">{{t.title}}</span>
+                    <span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{t.body}}</span>
+                  </div>
                 </div>
+                <div style="display: flex; gap: 8px;">
+                  <sc-if value="{{t.alt}}" hint-placeholder-val="{{true}}">
+                    <a href="{{t.altHref}}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.alt}}</a>
+                  </sc-if>
+                  <sc-if value="{{t.href}}" hint-placeholder-val="{{false}}">
+                    <a href="{{t.href}}" style="flex: 1.4; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.ctaShort}}</a>
+                  </sc-if>
+                  <sc-if value="{{t.isBtn}}" hint-placeholder-val="{{true}}">
+                    <button type="button" onClick="{{t.act}}" style="flex: 1.4; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{t.ctaShort}}</button>
+                  </sc-if>
+                </div>
+              </article>
+            </sc-if>
+            <sc-if value="{{t.done}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 10px 8px 10px 16px; border-radius: 20px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600; line-height: 1.35;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+                <span style="flex: 1; min-width: 0;">{{t.doneText}}</span>
+                <sc-if value="{{t.canUndo}}" hint-placeholder-val="{{false}}">
+                  <button type="button" onClick="{{t.undo}}" style="flex: none; min-height: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
+                </sc-if>
+                <sc-if value="{{t.viewDone}}" hint-placeholder-val="{{false}}">
+                  <a href="{{t.altHref}}" style="flex: none; display: inline-flex; align-items: center; min-height: 40px; padding: 0 10px; color: #2F5711; font-weight: 600; font-size: 13px;">View</a>
+                </sc-if>
               </div>
-              <div style="display: flex; gap: 8px;">
-                <a href="{{t.altHref}}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{t.alt}}</a>
-                <button type="button" onClick="{{t.act}}" style="flex: 1.4; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{t.cta}}</button>
-              </div>
-            </article>
-          </sc-if>
-          <sc-if value="{{t.done}}" hint-placeholder-val="{{false}}">
-            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 8px 10px 16px; border-radius: 20px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600; line-height: 1.35;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
-              <span style="flex: 1; min-width: 0;">{{t.doneText}}</span>
-              <button type="button" onClick="{{t.undo}}" style="flex: none; min-height: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #2F5711; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Undo</button>
+            </sc-if>
+          </sc-for>
+          <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
+            <div style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #B9A3FF;">All clear.</span>
+              <span style="font-size: 14px; color: #EEE8FF;">Nothing needs you today. No requests, nothing late, nothing due this week.</span>
             </div>
           </sc-if>
-        </sc-for>
-        <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
-          <div style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; color: #B9A3FF;">All clear.</span>
-            <span style="font-size: 14px; color: #EEE8FF;">Nothing needs you today. Your books are up to date.</span>
-          </div>
+        </section>
+      </sc-if>
+
+      <!-- Recent activity -->
+      <section aria-labelledby="recent-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="recent-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.02em;">Recent activity</h2>
+        <sc-if value="{{hasHandled}}" hint-placeholder-val="{{true}}">
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{handledShown}}" as="h" hint-placeholder-count="3">
+              <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.4;">
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: #CBC7D3; flex: none; margin-top: 6px;"></span>
+                <span style="display: flex; flex-direction: column; min-width: 0;"><span>{{h.t}}</span><span style="font-size: 12px; color: #5F5B68;">{{h.when}}</span></span>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{hasMoreHandled}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{toggleHandled}}" style="align-self: flex-start; min-height: 40px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">{{handledToggle}}</button>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{noHandled}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">What you and {{practice}} do shows up here: invoices sent, payments recorded, requests answered.</p>
         </sc-if>
       </section>
 
-      <a href="ThreeHome.dc.html" style="align-self: center; font-size: 14px; font-weight: 600;">Open the full home on the web</a>
+      <nav aria-label="More places" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; font-size: 14px; font-weight: 600;">
+        <a href="Notifications.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">{{notifLabel}}</a>
+        <a href="Help.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">Help</a>
+        <a href="Everything.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">Everything</a>
+        <a href="Accountant.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">{{acctWord}}</a>
+        <a href="ThreeHome.dc.html" style="min-height: 40px; display: inline-flex; align-items: center;">Full home on the web</a>
+      </nav>
     </sc-if>
   </main>
 
@@ -186,45 +300,151 @@ a{color:#18161F}a:hover{color:#000000}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { tab: 'home', sheet: false, done: {}, query: '', toast: null };
+    this.state = { tab: 'home', sheet: false, query: '', period: null, showAllHandled: false, toast: null };
   }
-  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
   renderVals() {
     const st = this.state;
-    const T = [
-      { id: 'late', icon: 'M12 8v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', tint: '#FBE3DF', title: 'Harbor & Pine Café is 32 days late', body: '$2,480 for August menu design. Two automatic reminders didn’t work, so a personal note might.', cta: 'Send a nudge', alt: 'See invoice', altHref: 'ThreeIn.dc.html', doneText: 'Nudge sent to Daniel at Harbor & Pine Café' },
-      { id: 'sort', icon: 'M4 6h16M4 12h10M4 18h6', tint: '#FFF0B8', title: '4 card charges need a category', body: 'Blue Bottle → Meals, Amazon → Office supplies, Uber → Travel, Canva → Software. Look right?', cta: 'Use these', alt: 'Review', altHref: 'ThreeOut.dc.html', doneText: '4 charges sorted. We’ll remember these next time.' },
-      { id: 'payroll', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8', tint: '#EEE8FF', title: 'Approve Friday’s payroll · $7,231', body: '3 people, paid Oct 9 by direct deposit. Payroll taxes are filed for you.', cta: 'Approve', alt: 'Review', altHref: 'ThreeOut.dc.html', doneText: 'Payroll approved. Jordan, Priya and Sam get paid Friday.' }
-    ];
-    const tasks = T.map((t) => {
-      const isDone = !!st.done[t.id];
-      return Object.assign({}, t, {
-        open: !isDone, done: isDone,
-        act: () => this.setState({ done: Object.assign({}, st.done, { [t.id]: true }) }),
-        undo: () => { const n = Object.assign({}, st.done); delete n[t.id]; this.setState({ done: n }); }
-      });
+    const prof = BE.get('profile') || {};
+    const pk = BE.pack();
+    const lk = BE.is('lk');
+    const empty = BE.isEmpty();
+    const pr = BE.practice();
+    const P = BE.homePeriods();
+    const period = P.some((x) => x[0] === st.period) ? st.period : P[0][0];
+    const t = BE.keepTotals(period);
+    const W = (n) => BE.money(n, null, { whole: true });
+    const ty = pk.taxYear ? pk.taxYear.label : '';
+    const taxWords = lk ? 'income tax' : 'Income Tax and NI';
+    const SENT = {
+      quarter: ['Q3 has just started. You’re on track to keep', 'so far this quarter.'],
+      month: ['You’re on track to keep', 'this October.'],
+      year: ['So far this ' + (lk ? 'year of assessment' : 'tax year') + ' you’ve kept', 'after ' + taxWords + '.']
+    };
+    let sA = SENT[period][0], hl = t.fmt.keep, sB = SENT[period][1];
+    if (t.in === 0 && t.out === 0) { const nm = prof.first && prof.first !== 'there' ? ', ' + prof.first : ''; sA = 'Welcome' + nm + '. Let’s get'; hl = !prof.business || prof.business === 'Your business' ? 'your business' : prof.business; sB = 'set up.'; }
+    else if (t.profit < 0) { sA = 'Going out is ahead of Coming in by'; hl = W(-t.profit); }
+    const inPaidPct = t.in > 0 ? t.inPaidPct : 0, outPaidPct = t.out > 0 ? t.outPaidPct : 0, keepPct = t.profit > 0 ? t.keepPct : 0;
+    const p = {
+      sentenceA: sA, hl, sentenceB: sB,
+      in: t.fmt.in, inPaid: t.fmt.inPaid, inExp: t.fmt.inExp, inPaidPct, inExpPct: t.in > 0 ? 100 - inPaidPct : 0,
+      out: t.fmt.out, outPaid: t.fmt.outPaid, outSch: t.fmt.outSch, outPaidPct, outSchPct: t.out > 0 ? 100 - outPaidPct : 0,
+      keep: t.fmt.keep, keepPct, taxPct: keepPct > 0 ? 100 - keepPct : 0,
+      tax: t.profit > 0 && t.tax > 0 ? t.fmt.tax : '',
+      keepNoteA: t.profit > 0 ? (t.tax > 0 ? 'after about' : 'No ' + taxWords + ' expected yet') : 'No profit yet, so no ' + taxWords,
+      keepNoteB: t.profit > 0 && t.tax > 0 ? taxWords + ' (estimate)' : ''
+    };
+    const periods = P.map(([k, label]) => ({ label: label.replace('This year of assessment', 'Year of assessment'), pressed: period === k ? 'true' : 'false', bg: period === k ? '#18161F' : 'transparent', color: period === k ? '#FFFFFF' : '#18161F', pick: () => this.setState({ period: k }) }));
+
+    // The period card
+    const ok = 'm5 12 5 5 9-10', warn = 'M12 7v6M12 17h.01', go = 'M5 12h14';
+    const row = (text, href, state, sub) => ({ text, href, sub: sub || false, icon: state === 'ok' ? ok : state === 'warn' ? warn : go, bg: state === 'ok' ? '#E2F6D5' : state === 'warn' ? '#FFF0B8' : '#EFEDF3', fg: state === 'ok' ? '#2F5711' : state === 'warn' ? '#6B5000' : '#18161F', weight: state === 'warn' ? 700 : 500 });
+    let pc;
+    if (!lk) {
+      const hq = BE.homeQuarter();
+      const L = hq.last, C = hq.cur;
+      pc = {
+        eyebrow: 'Making Tax Digital · ' + ty,
+        title: hq.empty ? C.label + ' is open: ' + C.from + ' – ' + C.to : L.label + ' has closed: ' + L.from + ' – ' + L.to,
+        chip: hq.empty ? 'First update due ' + C.due.replace(/ 20\d\d$/, '') : hq.filed ? 'Sent by ' + pr.short : (pr.has ? pr.short + ' file by ' : 'Update due ') + L.due.replace(/ 20\d\d$/, ''),
+        chipBg: hq.filed ? '#E2F6D5' : '#FFF0B8', chipFg: hq.filed ? '#2F5711' : '#6B5000',
+        stats: hq.empty ? [] : [
+          { label: 'Income', value: W(hq.income), bg: '#EEE8FF', fg: '#18161F', lc: '#47444F' },
+          { label: 'Expenses', value: W(hq.expenses), bg: '#FDE6D6', fg: '#18161F', lc: '#47444F' },
+          { label: 'Profit', value: W(hq.profit), bg: '#18161F', fg: '#B9A3FF', lc: '#EEE8FF' }
+        ],
+        rows: hq.empty ? [row('Record income and expenses as they happen', 'ThreeOut.dc.html#expense', 'go')] : hq.checks.filter((c) => !c.ok).map((c) => row(c.text, c.href || 'Quarters.dc.html', 'warn')).concat(hq.left ? [] : [row('Ready to send', 'Quarters.dc.html', 'ok')]),
+        href: 'Quarters.dc.html', cta: 'Open quarters'
+      };
+    } else {
+      const hm = BE.homeMonth();
+      const per = hm.period || {};
+      const rows = [];
+      if (prof.vatRegistered && !empty) rows.push(row((per.label || '').split(' ')[0] + ' VAT and SSCL return', 'TaxPeriods.dc.html', hm.filed ? 'ok' : 'warn', hm.filed ? 'Filed' : 'Due ' + String(per.due || '').replace(/ 20\d\d$/, '') + ' · ' + BE.inWords(hm.dueDays)));
+      else rows.push(row(prof.vatRegistered ? 'First VAT and SSCL period: October' : 'Not registered for VAT or SSCL', 'TaxPeriods.dc.html', 'go', prof.vatRegistered ? 'Due 20 Nov' : 'We warn you near the threshold'));
+      if (hm.hasPayroll) rows.push(row('October payroll · ' + hm.people + ' people', 'SpendPayroll.dc.html', hm.run ? 'warn' : 'ok', hm.run ? 'Run by ' + hm.payDue + ' · ' + BE.inWords(hm.payDays) : 'Paid'));
+      else rows.push(row('No employees yet', 'SpendPayroll.dc.html', 'go', 'Add them when you hire'));
+      pc = { eyebrow: 'October 2026 · ' + ty, title: 'This month', chip: false, chipBg: '', chipFg: '', stats: [], rows, href: hm.run ? 'SpendPayroll.dc.html' : 'TaxPeriods.dc.html', cta: hm.run ? 'Run payroll' : 'Open tax periods' };
+    }
+    pc.hasStats = pc.stats.length > 0;
+
+    const tasks = BE.homeNeeds().map((n) => {
+      let act = null, undo = null;
+      if (n.kind === 'request') {
+        act = () => { const r = BE.completeRequest(n.reqId); if (r) this.notify('Marked done · ' + pr.short + ' can see it'); };
+        undo = () => { BE.reopenRequest(n.reqId); this.notify('Request reopened'); };
+      }
+      if (n.kind === 'late') act = () => { const r = BE.nudgeInvoice(n.num); if (r) this.notify('Reminder sent to ' + r.to); };
+      if (n.kind === 'dues') act = () => { const tot = BE.payHomeDues(n.dueIds); if (tot) this.notify('Marked paid · ' + BE.money(tot, null, { whole: true })); };
+      if (n.kind === 'bill') act = () => { const b = BE.payBill(n.billId, null, 'Bank transfer'); if (b) this.notify('Marked paid · ' + BE.money(b.amount)); };
+      return Object.assign({}, n, { open: !n.done, href: n.href || false, isBtn: !!act, act, undo, canUndo: !!undo, viewDone: n.kind === 'late' || n.kind === 'bill', badge: n.badge || false });
     });
-    const openCount = tasks.filter((t) => t.open).length;
-    const verbs = [
-      { label: 'Bill someone', hint: 'Invoice a customer in one sentence', href: 'ThreeIn.dc.html', tint: '#EEE8FF', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-      { label: 'Record an expense', hint: 'Cash, card or a bill to pay later', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-      { label: 'Scan a receipt', hint: 'Snap it, we read it', href: 'MobileReceipt.dc.html', tint: '#FDE6D6', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7' },
-      { label: 'Pay someone', hint: 'A vendor, contractor or payroll', href: 'ThreeOut.dc.html', tint: '#FDE6D6', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' }
-    ];
-    const ALL = [
-      { t: 'Harbor & Pine Café', sub: 'INV-0142 · 32 days late', amt: '$2,480', href: 'ThreeIn.dc.html', dot: '#7A5AF8' },
-      { t: 'Atlas Freight Co.', sub: 'INV-0156 · due Oct 7', amt: '$6,300', href: 'ThreeIn.dc.html', dot: '#7A5AF8' },
-      { t: 'Lumen Dental Group', sub: 'INV-0163 · due Oct 20', amt: '$3,200', href: 'ThreeIn.dc.html', dot: '#7A5AF8' },
-      { t: 'Payroll for Oct 9', sub: 'Jordan, Priya and Sam', amt: '$7,231', href: 'ThreeOut.dc.html', dot: '#E0752D' },
-      { t: 'Local Print Shop', sub: 'Bill · due Oct 12', amt: '$640', href: 'ThreeOut.dc.html', dot: '#E0752D' },
-      { t: 'WeWork rent', sub: 'Paid Oct 1', amt: '$1,200', href: 'ThreeOut.dc.html', dot: '#E0752D' },
-      { t: 'Profit & Loss', sub: 'Report · How much did I make?', amt: '', href: 'ProfitLoss.dc.html', dot: '#18161F' }
-    ];
+    const openCount = tasks.filter((x) => x.open).length;
+    const check = BE.homeChecklist();
+    const showStart = empty && !check.all;
+    check.items = check.items.map((c) => Object.assign({}, c, {
+      ring: c.done ? '0' : '2px solid #CBC7D3', bg: c.done ? '#E2F6D5' : '#FFFFFF',
+      strike: c.done ? 'line-through' : 'none', color: c.done ? '#5F5B68' : '#18161F', sub: c.done ? 'Done' : c.hint
+    }));
+    const handled = BE.all('activity');
+
+    const I = {
+      invoice: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5',
+      expense: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6',
+      home: 'M4 11 12 4l8 7v9h-5v-6H9v6H4z',
+      car: 'M5 16h14v-4l-2-5H7l-2 5zM5 16v2M19 16v2M7.5 13h.01M16.5 13h.01',
+      bill: 'M3 6h18v12H3zM3 10h18M7 15h3',
+      people: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8'
+    };
+    const shows = (w, d) => (typeof BE.shows === 'function' ? BE.shows(w) : d);
+    const landlord = shows('landlord', prof.kind === 'both' || prof.kind === 'landlord');
+    const verbs = lk ? [
+      { label: prof.vatRegistered ? 'Send a tax invoice' : 'Send an invoice', hint: prof.vatRegistered ? 'VAT and SSCL on their own lines' : 'In rupees, in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: I.invoice },
+      { label: 'Record an expense', hint: 'Already paid', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: I.expense },
+      { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html#new', tint: '#FDE6D6', icon: I.bill },
+      { label: 'Run payroll', hint: 'EPF, ETF and APIT worked out', href: 'SpendPayroll.dc.html', tint: '#FDE6D6', icon: I.people }
+    ] : [
+      { label: 'Send an invoice', hint: 'In pounds, in one sentence', href: 'ThreeIn.dc.html#bill', tint: '#EEE8FF', icon: I.invoice },
+      { label: 'Record an expense', hint: 'Already paid, in an HMRC category', href: 'ThreeOut.dc.html#expense', tint: '#FDE6D6', icon: I.expense }
+    ].concat(landlord ? [{ label: 'Add a property cost', hint: 'Repairs, agent fees, mortgage interest', href: 'Properties.dc.html#cost', tint: '#FDE6D6', icon: I.home }] : []).concat([
+    ]).concat(shows('mileage', true) ? [{ label: 'Log a trip', hint: 'Business miles at 45p a mile', href: 'Mileage.dc.html#new', tint: '#FDE6D6', icon: I.car }] : []).concat([
+      { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html#new', tint: '#FDE6D6', icon: I.bill }
+    ]);
+
+    // Search over the shared data
+    const IN = '#7A5AF8', OUT = '#E0752D', INK = '#18161F';
+    const ALL = [];
+    BE.all('requests').forEach((r) => { if (r.status !== 'done' && (r.dir || 'in') === 'in') ALL.push({ t: r.title, sub: 'Request from ' + pr.short, amt: '', href: 'Accountant.dc.html', dot: INK, rank: 0 }); });
+    BE.all('invoices').forEach((i) => {
+      if (i.void) return;
+      const stt = BE.invStatus(i);
+      const sub = i.draft ? 'Draft · ' + (i.what || '') : stt === 'late' ? i.num + ' · ' + (-i.dueIn) + ' days late' : stt === 'paid' ? i.num + ' · paid' : i.num + ' · due ' + i.due;
+      ALL.push({ t: i.who, sub, amt: W(i.draft ? BE.invTotal(i) : (BE.invOpen(i) || BE.invTotal(i))), href: 'SellInvoices.dc.html#' + i.num, dot: IN, rank: stt === 'late' ? 0 : stt === 'paid' ? 3 : 1 });
+    });
+    BE.all('customers').forEach((c) => ALL.push({ t: c.name, sub: 'Customer · ' + (c.contact || c.email || ''), amt: '', href: 'SellCustomer.dc.html#' + c.id, dot: IN, rank: 4 }));
+    BE.all('bills').forEach((b) => { if (b.status !== 'paid') ALL.push({ t: b.who, sub: 'Bill · due ' + b.due, amt: W(b.amount - (b.paid || 0)), href: 'SpendBill.dc.html#' + b.id, dot: OUT, rank: 2 }); });
+    BE.all('expenses').forEach((x) => ALL.push({ t: x.who, sub: (x.cat || 'Needs a category') + ' · ' + x.date, amt: W(x.amount), href: 'SpendTransaction.dc.html#' + x.id, dot: OUT, rank: 3 }));
+    BE.all('employees').forEach((e) => ALL.push({ t: e.name, sub: (e.job ? e.job + ' · ' : '') + (lk ? 'Payroll' : 'Payroll records'), amt: '', href: 'SpendPayroll.dc.html', dot: OUT, rank: 5 }));
+    (lk ? [['Tax periods', 'VAT and SSCL returns', 'TaxPeriods.dc.html'], ['Payroll', 'EPF, ETF, APIT and payslips', 'SpendPayroll.dc.html']]
+      : [['Quarters', 'Making Tax Digital updates', 'Quarters.dc.html'], ['Properties', 'Flat rent and costs', 'Properties.dc.html'], ['Mileage', 'Business trips at 45p a mile', 'Mileage.dc.html']])
+      .concat([['Ask', 'AI answers about tax, with sources', 'Ask.dc.html'], ['Reports', 'Profit and loss and more', 'BooksReports.dc.html'], [lk ? 'Your tax practitioner' : 'Your accountant', pr.has ? pr.name : 'Link them', 'Accountant.dc.html'], ['Notifications', 'Requests, payments, dates', 'Notifications.dc.html'], ['Help', 'Answers, and talk to a person', 'Help.dc.html'], ['Everything BillingEase does', 'Every feature in plain words', 'Everything.dc.html']])
+      .forEach((x) => ALL.push({ t: x[0], sub: x[1], amt: '', href: x[2], dot: INK, rank: 6 }));
     const q = (st.query || '').trim().toLowerCase();
-    const results = q ? ALL.filter((r) => (r.t + ' ' + r.sub).toLowerCase().indexOf(q) >= 0) : ALL.slice(0, 5);
+    const results = q ? ALL.filter((r) => (r.t + ' ' + r.sub).toLowerCase().indexOf(q) >= 0).slice(0, 12)
+      : ALL.slice().sort((a, b) => a.rank - b.rank).slice(0, 6);
     const onHome = st.tab === 'home';
+    const unread = BE.unread();
     return {
-      tasks, openCount, allClear: openCount === 0, verbs,
+      prof, biz: prof.business || 'Your business', p, periods, pc, countryShort: pk.short || '',
+      unread: unread || false, bellLabel: unread ? 'Notifications, ' + unread + ' new' : 'Notifications',
+      acctLabel: 'Your business: ' + (prof.owner || '') + ', ' + (prof.business || ''),
+      tasks, openCount, check, showStart, showNeeds: !showStart, allClear: !showStart && openCount === 0, verbs,
+      handledShown: st.showAllHandled ? handled.slice(0, 12) : handled.slice(0, 3),
+      hasHandled: handled.length > 0, noHandled: handled.length === 0, hasMoreHandled: handled.length > 3,
+      handledToggle: st.showAllHandled ? 'Show less' : 'Show more',
+      toggleHandled: () => this.setState({ showAllHandled: !st.showAllHandled }),
+      practice: pr.has ? pr.short : 'your ' + pr.noun, acctWord: lk ? 'Practitioner' : 'Accountant',
+      notifLabel: unread ? 'Notifications (' + unread + ')' : 'Notifications',
       onHome, onSearch: !onHome,
       homePressed: onHome ? "true" : "false", searchPressed: onHome ? "false" : "true",
       homeFont: onHome ? '700 12px DM Sans, sans-serif' : '500 12px DM Sans, sans-serif',
@@ -234,13 +454,12 @@ class Component extends DCLogic {
       goSearch: () => this.setState({ tab: 'search', sheet: false }),
       query: st.query, setQuery: (e) => this.setState({ query: e.target.value }),
       results, noResults: results.length === 0,
-      resultsLabel: q ? results.length + (results.length === 1 ? ' match' : ' matches') : 'Recent',
+      resultsLabel: q ? results.length + (results.length === 1 ? ' match' : ' matches') : (ALL.length > 4 ? 'Worth a look' : 'Places to go'),
       sheetOpen: st.sheet,
       toggleSheet: () => this.setState({ sheet: !st.sheet }),
       closeSheet: () => this.setState({ sheet: false }),
-      plusLabel: st.sheet ? 'Close actions' : 'New: bill, expense, receipt or payment',
+      plusLabel: st.sheet ? 'Close actions' : 'New: ' + verbs.map((v) => v.label.toLowerCase()).join(', '),
       plusIcon: st.sheet ? 'M6 6l12 12M18 6 6 18' : 'M12 5v14M5 12h14',
-      account: () => this.notify('Account settings aren’t part of this prototype yet'),
       toast: st.toast
     };
   }

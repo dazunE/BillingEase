@@ -1,0 +1,45 @@
+# Runs BillingEase with PostgreSQL: docker compose up --build, then open http://localhost:3000
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: billingease
+      POSTGRES_PASSWORD: billingease
+      POSTGRES_DB: billingease
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U billingease"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DATABASE_URL: postgres://billingease:billingease@db:5432/billingease
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      API_INTERNAL_KEY: ${API_INTERNAL_KEY:-change-me-in-production}
+      POSTMARK_TOKEN: ${POSTMARK_TOKEN:-}
+      EMAIL_FROM: ${EMAIL_FROM:-BillingEase <hello@example.com>}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ASK_MODEL: ${ASK_MODEL:-claude-opus-5-5}
+      BILLINGEASE_TODAY: ${BILLINGEASE_TODAY:-}
+    volumes:
+      - files:/data/files
+    # Not published: only the web app talks to the API.
+    expose: ["4000"]
+
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    depends_on: [api]
+    environment:
+      API_URL: http://api:4000
+      API_INTERNAL_KEY: ${API_INTERNAL_KEY:-change-me-in-production}
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
+  files:

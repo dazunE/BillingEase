@@ -1,0 +1,386 @@
+<title>BillingEase MVP: UK and Sri Lanka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a two-country product spec. Contents rail beside one reading column; country tables run full column width and scroll on phones. */
+:root{
+  --ground:#F7F6F9;--paper:#FFFFFF;--ink:#18161F;--ink2:#47444F;--muted:#5F5B68;--line:#E2DFE8;--soft:#EFEDF3;
+  --violet:#B9A3FF;--accent:#6B4EE6;--wash:#EEE8FF;--orange:#B95618;--owash:#FDE6D6;--green:#2F5711;--gwash:#E2F6D5;--red:#A8200D;--rwash:#FBE3DF;
+  --uk:#2B4C9B;--ukwash:#E3EAF8;--lk:#8A5A00;--lkwash:#FFF0B8;
+  --display:Sora,"DM Sans",system-ui,sans-serif;--body:"DM Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#121017;--paper:#1B1922;--ink:#F3F1F7;--ink2:#CFCAD9;--muted:#A8A3B4;--line:#2E2B37;--soft:#24212C;--accent:#B9A3FF;--wash:#2A2440;--orange:#F0A06A;--owash:#3A2618;--green:#A6DB7E;--gwash:#1F2E16;--red:#F49A8B;--rwash:#3A1A15;--uk:#9DB6F0;--ukwash:#1C2540;--lk:#F2C14E;--lkwash:#33290E;color-scheme:dark}}
+:root[data-theme="dark"]{--ground:#121017;--paper:#1B1922;--ink:#F3F1F7;--ink2:#CFCAD9;--muted:#A8A3B4;--line:#2E2B37;--soft:#24212C;--accent:#B9A3FF;--wash:#2A2440;--orange:#F0A06A;--owash:#3A2618;--green:#A6DB7E;--gwash:#1F2E16;--red:#F49A8B;--rwash:#3A1A15;--uk:#9DB6F0;--ukwash:#1C2540;--lk:#F2C14E;--lkwash:#33290E;color-scheme:dark}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);margin:0}
+.page{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:40px 96px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;box-sizing:border-box}
+.rail{position:sticky;top:24px;align-self:start;display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 48px);overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;font:700 16px var(--display);letter-spacing:-.02em}
+.brand svg{width:28px;height:28px;flex:none}
+.rail ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.rail a{display:block;padding:6px 10px;border-radius:10px;color:var(--ink2);text-decoration:none;font-size:13.5px;line-height:1.35}
+.rail a:hover{background:var(--soft);color:var(--ink)}
+main{min-width:0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,4.6vw,50px)/1.04 var(--display);letter-spacing:-.035em;margin:10px 0 16px;text-wrap:balance;max-width:22ch}
+h2{font:700 clamp(22px,2.6vw,28px)/1.2 var(--display);letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance}
+h3{font:700 17px/1.3 var(--display);letter-spacing:-.01em;margin:22px 0 8px;display:flex;align-items:center;gap:8px}
+p,li{font-size:16px;line-height:1.62;color:var(--ink2);max-width:72ch}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+strong{color:var(--ink)}
+section{padding-top:40px;margin-top:40px;border-top:1px solid var(--line);scroll-margin-top:16px}
+.lead{font-size:18px;max-width:66ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.chip{display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border-radius:9999px;background:var(--paper);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink2)}
+.flag{display:inline-flex;align-items:center;padding:1px 9px;border-radius:9999px;font:700 11.5px var(--body);letter-spacing:.03em}
+.uk{background:var(--ukwash);color:var(--uk)}
+.lk{background:var(--lkwash);color:var(--lk)}
+.both{background:var(--wash);color:var(--accent)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:18px 0}
+.flow div{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.flow b{font:700 15px var(--display);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.flow span{font-size:14px;line-height:1.5;color:var(--ink2)}
+.tbl{overflow-x:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:16px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.45;min-width:680px}
+th{text-align:left;font:600 11.5px var(--body);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--soft);padding:10px 12px}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top;color:var(--ink2);font-variant-numeric:tabular-nums}
+td:first-child{color:var(--ink);font-weight:600}
+.tag{display:inline-block;padding:1px 9px;border-radius:9999px;font-size:12px;font-weight:700;white-space:nowrap}
+.keep{background:var(--gwash);color:var(--green)}
+.change{background:var(--wash);color:var(--accent)}
+.new{background:var(--owash);color:var(--orange)}
+.cut{background:var(--rwash);color:var(--red)}
+.note{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--violet);border-radius:12px;padding:14px 18px;margin:16px 0;max-width:72ch}
+.note p{margin:0}
+.warn{border-left-color:var(--orange)}
+.mocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:16px 0}
+.mock{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.mock .row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:12px;background:var(--soft);font-size:14px}
+.mock .row b{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.mock .cap{display:flex;align-items:center;gap:8px;font:600 11.5px var(--body);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.timeline{display:flex;flex-direction:column;margin:14px 0;max-width:820px}
+.timeline div{display:grid;grid-template-columns:140px minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.timeline b{font:700 14px var(--display);color:var(--ink)}
+.timeline span{font-size:15px;line-height:1.55;color:var(--ink2)}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:900px){.page{grid-template-columns:1fr;gap:20px}.rail{position:static;max-height:none}.rail ol{display:none}.timeline div{grid-template-columns:1fr;gap:4px}}
+</style>
+
+<div class="page">
+<aside class="rail" aria-label="Contents">
+  <span class="brand"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#18161F"/><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"/><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"/><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"/></svg>BillingEase MVP</span>
+  <ol>
+    <li><a href="#model">1. One product, two countries</a></li>
+    <li><a href="#matrix">2. Feature matrix by country</a></li>
+    <li><a href="#core">3. Shared core</a></li>
+    <li><a href="#uk">4. United Kingdom</a></li>
+    <li><a href="#lk">5. Sri Lanka</a></li>
+    <li><a href="#practice">6. Practitioner link</a></li>
+    <li><a href="#ask">7. Ask (AI answers)</a></li>
+    <li><a href="#cut">8. What comes out</a></li>
+    <li><a href="#screens">9. Screen by screen</a></li>
+    <li><a href="#country">10. How country rules work</a></li>
+    <li><a href="#site">11. Marketing site</a></li>
+    <li><a href="#compliance">12. Data and compliance</a></li>
+    <li><a href="#timeline">13. Timeline</a></li>
+    <li><a href="#decisions">14. Open decisions</a></li>
+    <li><a href="#verify">15. Facts to verify</a></li>
+  </ol>
+</aside>
+
+<main>
+  <span class="eyebrow">Product spec · draft 2 · 11 Oct 2026</span>
+  <h1>BillingEase MVP for the UK and Sri Lanka</h1>
+  <p class="lead">Manual-entry bookkeeping, invoicing and payroll for small businesses, with the country chosen at sign-up deciding the tax rules, reports, payroll depth and the accountant workflow. In the UK it is the client app for MTD-ready practices. In Sri Lanka it is the everyday books behind a TaxWise.lk return, sold through practitioners and direct.</p>
+  <div class="chips"><span class="chip">Manual entry</span><span class="chip">Country chosen at sign-up</span><span class="chip">No filing to HMRC or IRD in the MVP</span><span class="chip">UK payroll: records only</span><span class="chip">Sri Lanka payroll: full calculation</span><span class="chip">Year-end hand-off to TaxWise.lk</span></div>
+
+  <section id="model">
+    <h2>1. One product, two countries</h2>
+    <p>One codebase and one design. A business belongs to one country, chosen at sign-up, and a country pack switches the parts that differ: currency, tax year, tax rates, expense categories, invoice wording, payroll rules, reports and deadlines. Everything else (the three numbers, invoices, quotes, expenses, bills, the accountant link) is shared.</p>
+    <div class="flow">
+      <div><b><span class="flag uk">UK</span> Who it's for</b><span>Sole traders and landlords entering Making Tax Digital for Income Tax (£30k wave April 2027, £20k wave April 2028), sold mainly through accountants on the TaxWise practitioner tool.</span></div>
+      <div><b><span class="flag uk">UK</span> The job</b><span>Keep records in HMRC's categories every quarter; the practice files through its own software.</span></div>
+      <div><b><span class="flag lk">LK</span> Who it's for</b><span>Small businesses and sole proprietors, through TaxWise.lk practitioners and by direct sign-up.</span></div>
+      <div><b><span class="flag lk">LK</span> The job</b><span>Keep the books, issue Sri Lankan tax invoices, run payroll with EPF, ETF and APIT, and hand the year to TaxWise.lk for the income tax return.</span></div>
+    </div>
+    <div class="note"><p><strong>Why no filing in either country yet:</strong> HMRC has paused new MTD Income Tax software access until at least early 2027, and Sri Lanka's IRD e-invoicing link to RAMIS is still in pilot (from 1 May 2026, full rollout targeted for end-2026). Both filing links come later, once the books are in use.</p></div>
+  </section>
+
+  <section id="matrix">
+    <h2>2. Feature matrix by country</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Feature</th><th><span class="flag uk">UK</span></th><th><span class="flag lk">Sri Lanka</span></th></tr></thead>
+      <tbody>
+        <tr><td>Currency and tax year</td><td>£ · 6 April to 5 April</td><td>Rs (LKR) · year of assessment 1 April to 31 March</td></tr>
+        <tr><td>Business types at setup</td><td>Sole trader, landlord, or both</td><td>Sole proprietor, partnership, or company (books only; company tax stays with the practitioner)</td></tr>
+        <tr><td>Expense categories</td><td>HMRC self-employment and property categories (SA103F / SA105, MTD)</td><td>Categories that map to the business income schedule used in TaxWise.lk, plus capital items for allowances</td></tr>
+        <tr><td>Accounting basis</td><td>Cash basis by default, accruals optional</td><td>Accruals by default (invoices count when issued), cash view available</td></tr>
+        <tr><td>Periods on Home</td><td>MTD quarters (6 Apr–5 Jul, …) with readiness checks</td><td>Monthly VAT/SSCL periods if registered; quarterly income tax instalment dates</td></tr>
+        <tr><td>Invoices</td><td>£, VAT fields for VAT-registered clients (20%, 5%, 0%, exempt)</td><td>Rs, "Tax Invoice" format with TIN and VAT registration number, VAT 18%, SSCL 2.5% as a separate line, revised IRD invoice format</td></tr>
+        <tr><td>Indirect tax report</td><td>VAT summary per VAT quarter (filed by the practice's MTD VAT software)</td><td>VAT and SSCL summaries per period, ready to enter on the IRD return</td></tr>
+        <tr><td>Income tax estimate</td><td>Income Tax plus Class 4 NI, payments on account (31 Jan, 31 Jul)</td><td>Income tax on business profit using Sri Lankan rates and reliefs, quarterly instalments</td></tr>
+        <tr><td>Landlords</td><td>Landlord mode: properties, shares, finance costs kept apart, £1,000 allowance</td><td>Rent as an income line (rent income handled in the TaxWise.lk return)</td></tr>
+        <tr><td>Mileage</td><td>Mileage log at simplified rates</td><td>Not in MVP (vehicle costs entered as expenses)</td></tr>
+        <tr><td>Payroll</td><td><strong>Records only</strong>: enter pay runs from payroll software; costs post to the books. RTI stays in recognised software.</td><td><strong>Full calculation, no e-filing</strong>: EPF 8% + 12%, ETF 3%, APIT from tables, payslips, monthly EPF/ETF/APIT schedules to pay and file yourself</td></tr>
+        <tr><td>Getting paid</td><td>Record payments yourself (bank transfer, card machine, cash)</td><td>Record payments yourself (bank transfer, cheque, cash, LankaQR)</td></tr>
+        <tr><td>Bank statements</td><td>CSV import later; bank feeds via an aggregator after launch</td><td>CSV import with templates for the main banks; PDF statement reading later (no bank feeds exist)</td></tr>
+        <tr><td>Accountant link</td><td>Practice workbench (TaxWise UK): quarter status, requests, lock after filing</td><td>TaxWise.lk practitioner tool: client books, requests, year-end hand-off</td></tr>
+        <tr><td>Year-end hand-off</td><td>Final-declaration pack for the practice (first due 31 Jan 2028)</td><td>Business profit, capital allowances, VAT/SSCL and payroll totals sent into the TaxWise.lk income tax return</td></tr>
+        <tr><td>Reminders</td><td>Email</td><td>Email and WhatsApp (utility templates)</td></tr>
+        <tr><td>Language</td><td>English</td><td>English first; Sinhala and Tamil invoice templates next</td></tr>
+        <tr><td>Hosting</td><td>UK or EU region</td><td>Hosting decision under Sri Lanka's PDPA (core duties from 1 Jan 2027)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="core">
+    <h2>3. Shared core <span class="flag both">Both</span></h2>
+    <ul>
+      <li><strong>Three numbers:</strong> Coming in − Going out = Yours to keep, where "Yours to keep" is profit after the estimated tax for that country.</li>
+      <li><strong>Invoices and quotes:</strong> one-sentence composer, full editor, PDF, email, repeating drafts, money back (credit notes), record payments by hand, mark a quote accepted and turn it into an invoice.</li>
+      <li><strong>Expenses:</strong> manual entry, country categories, business-use percentage, attachments (photo or PDF, no automatic reading), every-month templates.</li>
+      <li><strong>Bills and suppliers:</strong> enter a bill, mark paid in full or part.</li>
+      <li><strong>Customers and products:</strong> customer list and detail, products and services with prices (no stock).</li>
+      <li><strong>Books:</strong> append-only ledger, categories, manual journal entries for practitioners, check against a bank statement by hand, CSV statement import.</li>
+      <li><strong>Reports:</strong> profit and loss, balance sheet, aged receivables and payables, tax summaries for the country, CSV export.</li>
+      <li><strong>Accountant link, Ask, notifications, help, security and data export.</strong></li>
+    </ul>
+  </section>
+
+  <section id="uk">
+    <h2>4. United Kingdom <span class="flag uk">UK</span></h2>
+    <p>Unchanged from draft 1 in substance; summarised here.</p>
+    <h3>Records in HMRC's categories</h3>
+    <ul>
+      <li>Expense categories map one-to-one to the self-employment boxes and MTD categories (cost of goods, staff costs, car, van and travel, premises, repairs, office costs, advertising and entertainment, interest, bank charges, bad debts, professional fees, depreciation (not allowable), other). Plain names on screen, HMRC names underneath.</li>
+      <li>Cash basis by default; allowable or not badges; business-use split; consolidated expenses for users under the VAT threshold; mileage log at 45p then 25p per mile.</li>
+    </ul>
+    <h3>MTD quarters</h3>
+    <ul>
+      <li>Quarter card on Home with income, expenses, gaps and the practice's filing date; readiness checks; quarter summary by category; "Send to accountant" with a CSV in the practice's agreed layout; lock once filed.</li>
+    </ul>
+    <h3>Landlord mode</h3>
+    <ul>
+      <li>Properties with ownership share, rent roll, property categories, residential finance costs kept separate for the basic-rate reduction, the £1,000 property allowance when it is better.</li>
+    </ul>
+    <h3>Payroll records</h3>
+    <ul>
+      <li>Employees and pay runs entered from the payroll software or a CSV; staff costs and the HMRC liability posted to the books; PAYE due on the 22nd as a reminder; a banner on every payroll screen: "Run payroll and report to HMRC through your payroll software."</li>
+    </ul>
+    <h3>Tax estimate</h3>
+    <ul>
+      <li>Income Tax (Scottish switch) plus Class 4 NI, landlord finance-cost reduction, other income added by the user, payments on account and a monthly set-aside.</li>
+    </ul>
+  </section>
+
+  <section id="lk">
+    <h2>5. Sri Lanka <span class="flag lk">LK</span></h2>
+    <div class="mocks">
+      <div class="mock" aria-label="Example Sri Lanka tax invoice totals">
+        <span class="cap"><span class="flag lk">LK</span> Example tax invoice totals</span>
+        <div class="row"><span>Design services</span><b>Rs 250,000.00</b></div>
+        <div class="row"><span>SSCL 2.5% (shown as a separate line, per the IRD format)</span><b>Rs 6,250.00</b></div>
+        <div class="row"><span>VAT 18%</span><b>Rs 46,125.00</b></div>
+        <div class="row"><span>Total</span><b>Rs 302,375.00</b></div>
+      </div>
+      <div class="mock" aria-label="Example Sri Lanka payslip">
+        <span class="cap"><span class="flag lk">LK</span> Example payslip, monthly salary Rs 200,000</span>
+        <div class="row"><span>EPF employee 8%</span><b>− Rs 16,000</b></div>
+        <div class="row"><span>APIT (from the current tables)</span><b>− calculated</b></div>
+        <div class="row"><span>Employer EPF 12% · ETF 3%</span><b>Rs 24,000 · Rs 6,000</b></div>
+        <div class="row"><span>Net pay</span><b>shown after APIT</b></div>
+      </div>
+    </div>
+    <p>The examples show layout only. How SSCL sits in the VAT base and the APIT figure must be confirmed against IRD guidance before build (see section 15).</p>
+
+    <h3>Tax invoices, VAT and SSCL</h3>
+    <ul>
+      <li>Business profile holds the TIN and VAT registration number; registered businesses issue invoices titled "Tax Invoice" in the revised IRD format that has been mandatory since 1 July 2026.</li>
+      <li>VAT at 18% by default, with zero-rated and exempt options, and 20.5% available for financial services from 1 July 2026.</li>
+      <li>SSCL at 2.5% as its own line and its own summary, because it is a separate levy with no input credit.</li>
+      <li>VAT and SSCL period summaries (output tax, input tax from recorded bills, net payable) laid out in the order of the IRD return, for the business or practitioner to enter. No RAMIS connection in the MVP.</li>
+      <li>Registration threshold reminder: BillingEase watches turnover and warns as it approaches the VAT threshold (the exact figure is disputed between LKR 60M and 36M a year; see section 15).</li>
+    </ul>
+
+    <h3>Payroll (full calculation, no e-filing)</h3>
+    <ul>
+      <li><strong>Employees:</strong> name, NIC, EPF number, start date, basic salary, fixed allowances, bank details for the payment list.</li>
+      <li><strong>Monthly pay run:</strong> earnings (basic, allowances, overtime), EPF employee 8% and employer 12% and ETF 3% on EPF-liable earnings, APIT from the current tax tables (personal relief of LKR 1.8M a year since 1 April 2025), net pay.</li>
+      <li><strong>Payslips:</strong> PDF in English, emailed or downloaded; Sinhala and Tamil later.</li>
+      <li><strong>Schedules to file yourself:</strong> monthly EPF and ETF contribution schedules (C-form style), APIT schedule, bank salary transfer list. Each pay run posts salaries, EPF, ETF and APIT liabilities to the books.</li>
+      <li><strong>Reminders:</strong> contribution and APIT payment dates on Home.</li>
+      <li><strong>Year-end:</strong> APIT totals per employee and employer certificates for the TaxWise.lk return.</li>
+      <li><strong>Label:</strong> "BillingEase calculates payroll. Pay EPF, ETF and APIT and file returns through the EPF, ETF and IRD channels."</li>
+    </ul>
+
+    <h3>Income tax estimate and TaxWise.lk hand-off</h3>
+    <ul>
+      <li>"Yours to keep" estimates income tax on business profit for the year of assessment using the current rates and reliefs, and shows quarterly instalment dates.</li>
+      <li>At year end, "Send to TaxWise.lk" moves business income, expenses by schedule line, capital allowance items, VAT/SSCL totals and payroll totals into the user's TaxWise.lk return, or into the practitioner's file for that client.</li>
+      <li>Users who also use TaxWise.lk sign in once; the two products share the account.</li>
+    </ul>
+
+    <h3>Getting paid and bank statements</h3>
+    <ul>
+      <li>Record payments by hand: bank transfer, cheque (with cheque number and date), cash, LankaQR.</li>
+      <li>CSV statement import with saved column templates for the main banks; PDF statement reading after launch. Sri Lanka has no open banking rail, so no bank feeds.</li>
+      <li>PayHere payment links can come after the MVP; it is the CBSL-approved payment aggregator.</li>
+    </ul>
+
+    <h3>Two channels</h3>
+    <ul>
+      <li><strong>Through practitioners:</strong> a TaxWise.lk practitioner invites clients; the practitioner sees every client's books, sends requests and receives the year-end hand-off.</li>
+      <li><strong>Direct:</strong> a business signs up alone, keeps its books and runs payroll, and can buy a TaxWise.lk return or invite a practitioner at any time.</li>
+    </ul>
+  </section>
+
+  <section id="practice">
+    <h2>6. Practitioner link <span class="flag both">Both</span></h2>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th><span class="flag uk">UK</span></th><th><span class="flag lk">Sri Lanka</span></th></tr></thead>
+      <tbody>
+        <tr><td>Practitioner side</td><td>TaxWise UK practice workbench (new name pending)</td><td>TaxWise.lk practitioner tool</td></tr>
+        <tr><td>Rhythm</td><td>Quarterly: MTD updates, then the final declaration</td><td>Monthly VAT/SSCL and payroll, yearly income tax return</td></tr>
+        <tr><td>What the practitioner sees</td><td>Quarter status, readiness checks, totals by HMRC category, all entries</td><td>Monthly VAT/SSCL position, payroll schedules, year-to-date profit, all entries</td></tr>
+        <tr><td>Requests to the client</td><td colspan="2">"Please add records for 12–25 September" appears on the client's Home and clears when done</td></tr>
+        <tr><td>Lock</td><td>Quarter locked when filed</td><td>Period locked when the VAT/SSCL return is filed; year locked after hand-off</td></tr>
+        <tr><td>Branding</td><td colspan="2">Client sees the practice name and logo</td></tr>
+      </tbody>
+    </table></div>
+    <p>The interface to both practitioner tools is the same small API (clients, periods, totals, requests, hand-off), with a country field deciding the period type and the totals layout.</p>
+  </section>
+
+  <section id="ask">
+    <h2>7. Ask (AI answers) <span class="flag both">Both</span></h2>
+    <ul>
+      <li>The TaxWise AI engine answers in the app, grounded per country: HMRC manuals, gov.uk and UK legislation for the UK; the Inland Revenue Act, IRD guidance and gazettes, and EPF/ETF rules for Sri Lanka.</li>
+      <li>Clearly marked as AI, cites its sources, never files anything, and offers "Ask your accountant" when the question needs judgement. In the UK it follows HMRC's January 2026 guidance on generative AI in tax software.</li>
+    </ul>
+  </section>
+
+  <section id="cut">
+    <h2>8. What comes out of the current design <span class="flag both">Both</span></h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Remove</th><th>Replaced by</th></tr></thead>
+      <tbody>
+        <tr><td>Bank and card feeds, sorting imported charges</td><td>Manual entry and CSV statement import</td></tr>
+        <tr><td>Online payments, payouts, fees, disputes, card on file</td><td>Record a payment yourself (PayHere and Stripe links later)</td></tr>
+        <tr><td>Paying bills from the app</td><td>Mark a bill paid</td></tr>
+        <tr><td>Receipt reading, auto-matching, email-in address</td><td>Attach a photo or PDF</td></tr>
+        <tr><td>US sales tax, US payroll, 1099s and W-9s</td><td>UK VAT, Sri Lanka VAT and SSCL; UK payroll records; Sri Lanka payroll calculation</td></tr>
+        <tr><td>Multi-currency, exchange rates, gains and losses</td><td>Home currency only; a foreign invoice is recorded in £ or Rs with a note</td></tr>
+        <tr><td>Stock and cost of goods, billable time</td><td>Products and services with prices</td></tr>
+        <tr><td>"Handled for you" automation</td><td>A plain activity list</td></tr>
+        <tr><td>"Viewed by customer", online quote acceptance</td><td>Mark sent, mark accepted</td></tr>
+        <tr><td>Subscription detection, "Unused?" flags</td><td>Every-month templates the user sets up</td></tr>
+        <tr><td>Several businesses under one sign-in</td><td>One business per account</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="screens">
+    <h2>9. Screen by screen</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Screen</th><th>Status</th><th><span class="flag uk">UK</span></th><th><span class="flag lk">Sri Lanka</span></th></tr></thead>
+      <tbody>
+        <tr><td>Sign up, setup</td><td><span class="tag change">Change</span></td><td>Country first; sole trader, landlord or both; VAT registered; quarter type; cash or accruals; accountant</td><td>Country first; business type; TIN; VAT and SSCL registration; employees yes/no; practitioner or direct; link TaxWise.lk account</td></tr>
+        <tr><td>Home</td><td><span class="tag change">Change</span></td><td>Quarter card, numbers in £ after tax and NI</td><td>This month's VAT/SSCL and payroll card, numbers in Rs after income tax</td></tr>
+        <tr><td>Invoices, editor, quotes, customers</td><td><span class="tag keep">Keep</span></td><td>£, UK VAT fields</td><td>Rs, Tax Invoice format, VAT and SSCL lines, cheque details on payments</td></tr>
+        <tr><td>Expenses, bills, suppliers, every month</td><td><span class="tag change">Change</span></td><td>HMRC categories, business-use %</td><td>Schedule-line categories, input VAT on bills</td></tr>
+        <tr><td>Quarters</td><td><span class="tag new">New</span></td><td>MTD quarters</td><td>Not shown</td></tr>
+        <tr><td>Tax periods</td><td><span class="tag new">New</span></td><td>VAT summary for VAT-registered clients</td><td>VAT and SSCL periods with return-ordered summaries</td></tr>
+        <tr><td>Properties, mileage</td><td><span class="tag new">New</span></td><td>Shown</td><td>Not shown</td></tr>
+        <tr><td>Payroll</td><td><span class="tag change">Change</span></td><td>Records only</td><td>Employees, pay runs, payslips, EPF/ETF/APIT schedules</td></tr>
+        <tr><td>Yours to keep, reports</td><td><span class="tag change">Change</span></td><td>Income Tax + NI estimate, quarter and property summaries</td><td>Income tax estimate, VAT/SSCL and payroll reports, year-end hand-off</td></tr>
+        <tr><td>Your accountant</td><td><span class="tag new">New</span></td><td>Practice link</td><td>Practitioner link and TaxWise.lk connection</td></tr>
+        <tr><td>Ask</td><td><span class="tag new">New</span></td><td>UK sources</td><td>Sri Lankan sources</td></tr>
+        <tr><td>Getting paid online, receipt reading, currencies, stock and time</td><td><span class="tag cut">Remove</span></td><td colspan="2">See section 8</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="country">
+    <h2>10. How country rules work</h2>
+    <ul>
+      <li>Each country is a <strong>country pack</strong>: currency and formats, tax year, categories and their mapping, tax rates with start and end dates, invoice template rules, payroll rules and tables, deadline calendar, report layouts, Ask sources.</li>
+      <li>Rates and thresholds live in dated data tables, never in code, so a gazette or Budget change is a data update. Sri Lanka changed VAT, SSCL and APIT rules several times in 2024–2026; the UK changes bands every April.</li>
+      <li>Screens check the pack to show or hide features (landlord mode, mileage, quarters, VAT/SSCL periods, payroll depth).</li>
+      <li>A business's country is fixed after sign-up; moving country means a new business.</li>
+      <li>Adding a third country later means a new pack plus its practitioner channel.</li>
+    </ul>
+  </section>
+
+  <section id="site">
+    <h2>11. Marketing site</h2>
+    <ul>
+      <li>Country chosen from the first visit (from the browser locale, changeable in the header): billingease.co.uk style UK pages and Sri Lanka pages, or one domain with /uk and /lk.</li>
+      <li><strong>UK:</strong> MTD for Income Tax explained, For landlords, For accountants as the lead page, Ask, pricing in £ with a per-client practice price.</li>
+      <li><strong>Sri Lanka:</strong> VAT, SSCL and tax invoices explained, Payroll with EPF/ETF/APIT, For practitioners, "Works with TaxWise.lk", pricing in Rs for direct sign-ups and practitioners.</li>
+      <li>Drop or hide: Outside the US, Shops and makers (stock), the US-oriented Teams page, Switch to BillingEase until import exists, partner tiers until set, unverified security certifications.</li>
+    </ul>
+  </section>
+
+  <section id="compliance">
+    <h2>12. Data and compliance</h2>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th><span class="flag uk">UK</span></th><th><span class="flag lk">Sri Lanka</span></th></tr></thead>
+      <tbody>
+        <tr><td>Privacy law</td><td>UK GDPR; ICO registration</td><td>Personal Data Protection Act No. 9 of 2022; core controller and processor duties from 1 Jan 2027</td></tr>
+        <tr><td>Hosting and transfers</td><td>UK or EU region; Sri Lankan team access under an IDTA or UK Addendum with a transfer risk assessment</td><td>Decide region and cross-border transfer basis under the PDPA</td></tr>
+        <tr><td>Security baseline</td><td>Cyber Essentials before launch</td><td>Same controls; document them for practitioners</td></tr>
+        <tr><td>Filing on users' behalf</td><td>None in the MVP, so no tax-adviser registration</td><td>None in the MVP; practitioners file</td></tr>
+        <tr><td>Estimates and AI</td><td colspan="2">Clear terms, "estimate" labels, professional indemnity cover</td></tr>
+        <tr><td>Record retention</td><td>As HMRC requires for the self-employed and landlords</td><td>As the IRD requires (to confirm)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="timeline">
+    <h2>13. Timeline</h2>
+    <div class="timeline">
+      <div><b>Oct–Dec 2026</b><span>Shared core, country-pack structure, both packs' categories and rates. Sri Lanka invoices with VAT and SSCL and payroll calculation. UK quarters and accountant link. Clear the name in both countries.</span></div>
+      <div><b>Jan 2027</b><span><span class="flag lk">LK</span> Launch, timed with PDPA duties from 1 January, through TaxWise.lk practitioners and direct sign-ups. CSV import for the main banks.</span></div>
+      <div><b>Jan–Mar 2027</b><span><span class="flag uk">UK</span> Private beta with two or three partner practices alongside the workbench. Landlord mode, mileage.</span></div>
+      <div><b>Apr 2027</b><span><span class="flag uk">UK</span> Public launch for the £30k MTD wave. <span class="flag lk">LK</span> First full year of assessment in the app; payroll year-end certificates.</span></div>
+      <div><b>Mid 2027</b><span><span class="flag lk">LK</span> First year-end hand-off into TaxWise.lk returns. RAMIS e-invoicing integration once the IRD API is stable. Sinhala and Tamil invoices and payslips. PayHere links.</span></div>
+      <div><b>Jan 2028</b><span><span class="flag uk">UK</span> First MTD final declarations (31 January): final-declaration pack for practices.</span></div>
+      <div><b>Apr 2028</b><span><span class="flag uk">UK</span> £20k wave; direct MTD filing if HMRC access is granted; director-company bundle and an RTI payroll decision.</span></div>
+    </div>
+  </section>
+
+  <section id="decisions">
+    <h2>14. Open decisions</h2>
+    <ol>
+      <li><strong>Name.</strong> Trademark checks for "BillingEase" in the UK, EU and Sri Lanka, and whether the UK practice tool and BillingEase share one brand.</li>
+      <li><strong>Pricing.</strong> UK: per-client practice price and a direct price. Sri Lanka: direct monthly price in Rs, a practitioner price, and a bundle with a TaxWise.lk return.</li>
+      <li><strong>Sri Lanka companies.</strong> Books only for companies in the MVP, or also corporate income tax figures for the practitioner.</li>
+      <li><strong>Payroll edge cases in Sri Lanka.</strong> Which allowances count for EPF, bonuses and arrears, terminal benefits (gratuity) records.</li>
+      <li><strong>Export formats.</strong> Which filing software the first UK practices use; which bank CSV formats to support first in Sri Lanka.</li>
+      <li><strong>Hosting.</strong> One region for both countries, or separate regions.</li>
+    </ol>
+  </section>
+
+  <section id="verify">
+    <h2>15. Facts to verify before build</h2>
+    <h3><span class="flag lk">LK</span> Sri Lanka</h3>
+    <ul>
+      <li>VAT registration threshold (sources conflict: LKR 60M or 36M a year) and the quarterly test.</li>
+      <li>Whether SSCL is included in the VAT base on a tax invoice, and the exact revised invoice fields required since 1 July 2026.</li>
+      <li>RAMIS e-invoicing API status, technical spec and which businesses must connect, and when.</li>
+      <li>Current APIT tables, tax rates and reliefs for 2026/27 and the treatment of allowances and bonuses.</li>
+      <li>EPF/ETF contribution base, return formats, payment and filing deadlines, and any e-return channel.</li>
+      <li>Income tax instalment dates and rates for individuals and partnerships, and business income schedule lines in the return.</li>
+      <li>Record retention period and PDPA cross-border transfer rules.</li>
+    </ul>
+    <h3><span class="flag uk">UK</span> United Kingdom</h3>
+    <ul>
+      <li>MTD quarterly deadlines and the calendar-quarter election; MTD self-employment and property category names for 2026/27.</li>
+      <li>Consolidated-expenses rule and the VAT registration threshold.</li>
+      <li>2026/27 Income Tax bands (including Scottish), Class 4 NI, payments on account tests.</li>
+      <li>Simplified expense rates, trading and property allowances, cash basis rules for landlords.</li>
+      <li>Record-keeping periods; RTI and payslip rules that payroll records must not appear to replace.</li>
+    </ul>
+  </section>
+</main>
+</div>

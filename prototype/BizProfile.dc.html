@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Business profile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus,.bz-in:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.bz-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:18px;min-width:0;box-sizing:border-box}
+.bz-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px 16px}
+.bz-head>div{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 260px}
+.bz-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em;line-height:1.2}
+.bz-h3{margin:0;font-size:15px;font-weight:700}
+.bz-sub{margin:0;font-size:14px;line-height:1.5;color:#47444F}
+.bz-mut{font-size:13px;color:#5F5B68;line-height:1.45}
+.bz-lbl{font-size:13px;font-weight:600;color:#18161F}
+.bz-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bz-in{min-height:44px;width:100%;box-sizing:border-box;padding:0 14px;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;font:400 15px 'DM Sans',sans-serif;color:#18161F}
+textarea.bz-in{padding:10px 14px;min-height:84px;resize:vertical;line-height:1.5}
+select.bz-in{cursor:pointer;padding-right:8px}
+.bz-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box;white-space:nowrap}
+.bz-btn2{background:rgba(24,22,31,0.07)}
+.bz-btnline{background:#FFFFFF;border:1px solid #18161F}
+.bz-btnink{background:#18161F;color:#FFFFFF}
+.bz-btnred{background:#A8200D;color:#FFFFFF}
+.bz-btn:disabled{background:#EFEDF3;color:#5F5B68;cursor:not-allowed;border-color:#EFEDF3}
+.bz-sm{min-height:36px;padding:0 14px;font-size:13px}
+.bz-link{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0;border:0;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.bz-link:disabled{color:#5F5B68;cursor:not-allowed;text-decoration:none}
+.bz-seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:#EFEDF3;padding:4px;border-radius:22px;max-width:100%;box-sizing:border-box}
+.bz-seg button{min-height:40px;padding:0 16px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px 'DM Sans',sans-serif;cursor:pointer}
+.bz-seg button[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.bz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px}
+.bz-badge{display:inline-flex;align-items:center;gap:6px;min-height:24px;padding:0 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap}
+.bz-badge::before{content:"";width:6px;height:6px;border-radius:9999px;background:currentColor}
+.bz-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:#EEE8FF;font-size:13px;line-height:1.5;color:#18161F}
+.bz-note svg{flex:none;margin-top:1px}
+.bz-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:14px 0;border-top:1px solid #EFEDF3}
+.bz-av{width:40px;height:40px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none;font:700 14px 'DM Sans',sans-serif}
+.bz-tw{overflow-x:auto;border:1px solid #E2DFE8;border-radius:16px}
+.bz-tw table{border-collapse:collapse;width:100%;font-size:14px}
+.bz-tw th{text-align:left;font-size:12px;font-weight:600;color:#5F5B68;padding:10px 14px;background:#F7F6F9;white-space:nowrap}
+.bz-tw td{padding:12px 14px;border-top:1px solid #EFEDF3;vertical-align:top}
+.bz-nav a{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px;border-radius:16px;text-decoration:none;color:#18161F;box-sizing:border-box}
+.bz-nav a[aria-current="page"]{background:#18161F;color:#FFFFFF}
+.bz-nav a[aria-current="page"] .bz-navsub{color:#EEE8FF}
+.bz-nav a[aria-current="page"] svg{stroke:#B9A3FF}
+.bz-navsub{font-size:12px;color:#5F5B68;line-height:1.35}
+@media (min-width: 901px){.bz-side{position:sticky;top:16px}.bz-short{display:none}}
+@media (max-width: 900px){.bz-nav{flex-direction:row!important;overflow-x:auto;gap:6px!important;background:#EFEDF3;padding:4px;border-radius:9999px}.bz-nav a{min-height:40px;padding:0 14px;border-radius:9999px;white-space:nowrap;flex:1 0 auto;justify-content:center}.bz-nav svg,.bz-navsub,.bz-sidex,.bz-long{display:none!important}.bz-side{padding:0!important;background:transparent!important;border:0!important}}
+.bz-sw{position:relative;flex:none;width:52px;height:30px;border:0;border-radius:9999px;background:#CBC7D3;cursor:pointer;padding:0;transition:background .15s}
+.bz-sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:9999px;background:#FFFFFF;box-shadow:0 1px 3px rgba(24,22,31,0.25);transition:left .15s}
+.bz-sw[aria-checked="true"]{background:#18161F}
+.bz-sw[aria-checked="true"]::after{left:25px;background:#B9A3FF}
+.bz-sw:focus-visible,.bz-seg button:focus-visible{outline:3px solid #7A5AF8;outline-offset:2px}
+.bz-off{font-size:11.5px;color:#5F5B68;font-weight:400}
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 20px;">
+
+    <dc-import name="AppCrumbs" area="biz" here="Business profile"></dc-import>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+    <dc-import name="BizNav" current="profile"></dc-import>
+
+    <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 14px; font-weight: 600; color: #5F5B68;">Your business</span>
+        <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">Business profile</h1>
+        <p class="bz-sub" style="max-width: 640px;">Who {{bizName}} is, how it&#39;s registered for tax, and what your customers see on invoices. Saving updates it everywhere; anything already sent stays as it was.</p>
+      </div>
+
+      <!-- Who you are -->
+      <section class="bz-card" aria-labelledby="who-h">
+        <div class="bz-head"><div><h2 id="who-h" class="bz-h2">Who you are</h2><span class="bz-mut">Shown at the top of every invoice and quote you send.</span></div></div>
+        <div class="bz-grid">
+          <div class="bz-field"><label class="bz-lbl" for="bp-name">Business name</label><input id="bp-name" class="bz-in" type="text" value="{{s.business}}" onChange="{{on.business}}" aria-invalid="{{err.nameInvalid}}" style="border-color: {{err.nameBorder}};"><sc-if value="{{err.name}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{err.name}}</span></sc-if><span class="bz-mut">What customers know you as</span></div>
+          <div class="bz-field"><label class="bz-lbl" for="bp-legal">Legal name</label><input id="bp-legal" class="bz-in" type="text" value="{{s.legal}}" onChange="{{on.legal}}"><span class="bz-mut">{{c.legalHint}}</span></div>
+        </div>
+        <div class="bz-grid">
+          <div class="bz-field"><label class="bz-lbl" for="bp-owner">Owner</label><input id="bp-owner" class="bz-in" type="text" value="{{s.owner}}" onChange="{{on.owner}}"><span class="bz-mut">Your name, as it appears in the menu and on emails</span></div>
+          <div class="bz-field"><label class="bz-lbl" for="bp-email">Email</label><input id="bp-email" class="bz-in" type="email" value="{{s.email}}" onChange="{{on.email}}" aria-invalid="{{err.emailInvalid}}" style="border-color: {{err.emailBorder}};"><sc-if value="{{err.email}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{err.email}}</span></sc-if><span class="bz-mut">Customers reply here. You sign in with it too.</span></div>
+          <div class="bz-field"><label class="bz-lbl" for="bp-phone">Phone</label><input id="bp-phone" class="bz-in" type="tel" placeholder="{{c.phonePh}}" value="{{s.phone}}" onChange="{{on.phone}}"></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+          <span class="bz-h3">Address</span>
+          <div class="bz-field"><label class="bz-lbl" for="bp-street">{{c.streetLabel}}</label><input id="bp-street" class="bz-in" type="text" placeholder="{{c.streetPh}}" value="{{s.street}}" onChange="{{on.street}}"></div>
+          <div class="bz-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));">
+            <div class="bz-field"><label class="bz-lbl" for="bp-city">{{c.townLabel}}</label><input id="bp-city" class="bz-in" type="text" placeholder="{{c.townPh}}" value="{{s.town}}" onChange="{{on.town}}"></div>
+            <div class="bz-field"><label class="bz-lbl" for="bp-region">{{c.regionLabel}} <span class="bz-off">optional</span></label><input id="bp-region" class="bz-in" type="text" placeholder="{{c.regionPh}}" value="{{s.region}}" onChange="{{on.region}}"></div>
+            <div class="bz-field"><label class="bz-lbl" for="bp-postal">{{c.postalLabel}}</label><input id="bp-postal" class="bz-in" type="text" placeholder="{{c.postalPh}}" value="{{s.postal}}" onChange="{{on.postal}}"></div>
+          </div>
+          <span class="bz-mut">On invoices: <strong style="color: #18161F;">{{addrLine}}</strong></span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 14px 16px; border-radius: 18px; background: #F7F6F9; border: 1px solid #E2DFE8;">
+          <span style="width: 44px; height: 44px; border-radius: 12px; background: #18161F; color: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none; font: 700 14px Sora, sans-serif;">{{c.short}}</span>
+          <span style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;"><strong style="font-size: 15px;">Country: {{c.name}}</strong><span class="bz-badge" style="background: #EFEDF3; color: #47444F;">Fixed</span></span>
+            <span class="bz-mut">Set at sign-up; a business in another country is a new account.</span>
+            <span class="bz-mut">{{c.facts}}</span>
+          </span>
+          <a href="AuthSignUp.dc.html" style="font-size: 13px; font-weight: 600;">Start a business in another country</a>
+        </div>
+      </section>
+
+      <!-- Tax and registration -->
+      <section class="bz-card" aria-labelledby="tax-h">
+        <div class="bz-head"><div><h2 id="tax-h" class="bz-h2">Tax and registration</h2><span class="bz-mut">{{c.taxSub}}</span></div></div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+          <span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 220px; min-width: 0;"><span id="q-kind" class="bz-h3">What kind of business is it?</span><span class="bz-mut">{{kindHint}}</span></span>
+          <div role="group" aria-labelledby="q-kind" class="bz-seg">
+            <sc-for list="{{kinds}}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for>
+          </div>
+        </div>
+
+        <div class="bz-grid">
+          <div class="bz-field"><label class="bz-lbl" for="bp-taxid">{{c.taxIdLabel}} <span class="bz-off">· {{c.taxIdLong}}</span></label><input id="bp-taxid" class="bz-in" type="text" inputmode="numeric" placeholder="{{c.taxIdPh}}" value="{{taxIdVal}}" onChange="{{setTaxId}}" aria-invalid="{{err.taxIdInvalid}}" style="border-color: {{err.taxIdBorder}};"><sc-if value="{{err.taxId}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{err.taxId}}</span></sc-if><span class="bz-mut">{{c.taxIdHint}}</span></div>
+          <div class="bz-field">
+            <span class="bz-lbl" id="q-basis">How you count income <span class="bz-off">· accounting basis</span></span>
+            <div role="group" aria-labelledby="q-basis" class="bz-seg" style="align-self: flex-start;">
+              <sc-for list="{{bases}}" as="o" hint-placeholder-count="2"><button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for>
+            </div>
+            <span class="bz-mut">{{basisHint}}</span>
+          </div>
+        </div>
+
+        <!-- VAT (both) and SSCL (Sri Lanka) -->
+        <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+            <span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 220px; min-width: 0;"><span id="q-vat" class="bz-h3">Registered for VAT?</span><span class="bz-mut">{{vatHint}}</span></span>
+            <div role="group" aria-labelledby="q-vat" class="bz-seg">
+              <sc-for list="{{vatOpts}}" as="o" hint-placeholder-count="2"><button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for>
+            </div>
+          </div>
+          <sc-if value="{{s.vatRegistered}}" hint-placeholder-val="{{false}}">
+            <div class="bz-field" style="max-width: 360px;"><label class="bz-lbl" for="bp-vatno">{{c.vatIdLabel}}</label><input id="bp-vatno" class="bz-in" type="text" placeholder="{{c.vatPh}}" value="{{s.vatNo}}" onChange="{{on.vatNo}}" aria-invalid="{{err.vatInvalid}}" style="border-color: {{err.vatBorder}};"><sc-if value="{{err.vat}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 600; color: #A8200D;">{{err.vat}}</span></sc-if><span class="bz-mut">Printed on every {{c.vatInvoiceTitleLc}}.</span></div>
+          </sc-if>
+          <sc-if value="{{isLK}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 220px; min-width: 0;"><span id="q-sscl" class="bz-h3">Registered for SSCL?</span><span class="bz-mut">{{ssclHint}}</span></span>
+              <div role="group" aria-labelledby="q-sscl" class="bz-seg">
+                <sc-for list="{{ssclOpts}}" as="o" hint-placeholder-count="2"><button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- UK: MTD quarters and the Scottish switch -->
+        <sc-if value="{{isUK}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #EFEDF3; padding-top: 16px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 220px; min-width: 0;"><span id="q-qtr" class="bz-h3">Your quarters <span class="bz-off">· MTD update periods</span></span><span class="bz-mut">{{qtrHint}}</span></span>
+              <div role="group" aria-labelledby="q-qtr" class="bz-seg">
+                <sc-for list="{{qtrOpts}}" as="o" hint-placeholder-count="2"><button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for>
+              </div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;">
+              <span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 220px; min-width: 0;"><span id="q-scot" class="bz-h3">Scottish taxpayer</span><span class="bz-mut">{{scotHint}}</span></span>
+              <button type="button" class="bz-sw" role="switch" aria-labelledby="q-scot" aria-checked="{{scotOn}}" onClick="{{toggleScot}}"></button>
+            </div>
+          </div>
+        </sc-if>
+        <div class="bz-note">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8h.01M11 12h1v5h1M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path></svg>
+          <span>{{taxNote}} <a href="Accountant.dc.html" style="font-weight: 600;">{{acctLink}}</a></span>
+        </div>
+      </section>
+
+      <!-- Invoices and branding -->
+      <section class="bz-card" aria-labelledby="brand-h">
+        <div class="bz-head"><div><h2 id="brand-h" class="bz-h2">Invoices and branding</h2><span class="bz-mut">Defaults for every new invoice and quote. You can still change them on each one.</span></div></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start;">
+          <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+
+            <div class="bz-field">
+              <span class="bz-lbl">Logo</span>
+              <sc-if value="{{logoOn}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px; border: 1px solid #E2DFE8; border-radius: 16px;">
+                  <sc-if value="{{logoMark}}" hint-placeholder-val="{{true}}">
+                    <span style="width: 52px; height: 52px; border-radius: 14px; background: {{s.accent}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none; font: 700 24px Sora, sans-serif;">{{logoInitial}}</span>
+                  </sc-if>
+                  <sc-if value="{{logoWord}}" hint-placeholder-val="{{false}}">
+                    <span style="height: 52px; padding: 0 14px; border-radius: 14px; border: 2px solid {{s.accent}}; color: {{s.accent}}; display: flex; align-items: center; flex: none; box-sizing: border-box; font: 800 14px Sora, sans-serif; letter-spacing: 0.14em; overflow-wrap: anywhere;">{{logoWordText}}</span>
+                  </sc-if>
+                  <span style="flex: 1 1 120px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px; overflow-wrap: anywhere;">{{logoFile}}</span><span class="bz-mut">{{logoMeta}}</span></span>
+                  <span style="display: flex; gap: 6px;">
+                    <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{replaceLogo}}">Replace</button>
+                    <button type="button" class="bz-btn bz-btn2 bz-sm" onClick="{{removeLogo}}">Remove</button>
+                  </span>
+                </div>
+              </sc-if>
+              <sc-if value="{{logoOff}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px; border: 2px dashed #CBC7D3; border-radius: 16px;">
+                  <span style="width: 44px; height: 44px; border-radius: 12px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"></path></svg></span>
+                  <span style="flex: 1 1 160px; min-width: 0;" class="bz-mut">PNG, JPG or SVG, at least 200 px wide. Without one, invoices show your business name.</span>
+                  <button type="button" class="bz-btn bz-sm" onClick="{{uploadLogo}}">Choose an image</button>
+                </div>
+              </sc-if>
+            </div>
+
+            <div class="bz-field">
+              <span class="bz-lbl" id="acc-l">Accent colour</span>
+              <div role="group" aria-labelledby="acc-l" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <sc-for list="{{accents}}" as="a" hint-placeholder-count="6">
+                  <button type="button" aria-pressed="{{a.on}}" aria-label="{{a.name}}" title="{{a.name}}" onClick="{{a.pick}}" style="width: 40px; height: 40px; border-radius: 9999px; border: 3px solid {{a.ring}}; background: {{a.hex}}; box-shadow: inset 0 0 0 2px #FFFFFF; cursor: pointer; padding: 0;"></button>
+                </sc-for>
+              </div>
+              <span class="bz-mut">Used on invoices, quotes and emails. The app itself keeps its own colours.</span>
+            </div>
+
+            <div class="bz-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));">
+              <div class="bz-field"><label class="bz-lbl" for="bp-prefix">Invoice numbers start with</label><input id="bp-prefix" class="bz-in" type="text" value="{{s.prefix}}" onChange="{{on.prefix}}"><span class="bz-mut">Next one: <strong style="color: #18161F;">{{pv.number}}</strong></span></div>
+              <div class="bz-field"><label class="bz-lbl" for="bp-terms">Payment terms</label>
+                <select id="bp-terms" class="bz-in" value="{{s.terms}}" onChange="{{on.terms}}">
+                  <option value="0">Due on receipt</option>
+                  <option value="7">7 days</option>
+                  <option value="14">14 days</option>
+                  <option value="30">30 days</option>
+                  <option value="45">45 days</option>
+                  <option value="60">60 days</option>
+                </select>
+              </div>
+            </div>
+
+            <sc-if value="{{isLK}}" hint-placeholder-val="{{false}}">
+              <div class="bz-field"><label class="bz-lbl" for="bp-invlang">Invoice language</label>
+                <select id="bp-invlang" class="bz-in" value="{{s.invLang}}" onChange="{{on.invLang}}">
+                  <option value="en">English</option>
+                  <option value="si" disabled>Sinhala (coming soon)</option>
+                  <option value="ta" disabled>Tamil (coming soon)</option>
+                </select>
+                <span class="bz-mut">English for now. Sinhala and Tamil invoice and payslip templates come next.</span>
+              </div>
+            </sc-if>
+
+            <div class="bz-field"><label class="bz-lbl" for="bp-note">Note at the bottom of invoices</label><textarea id="bp-note" class="bz-in" placeholder="{{c.notePh}}" value="{{s.note}}" onChange="{{on.note}}"></textarea></div>
+
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-top: 14px; border-top: 1px solid #EFEDF3;">
+              <span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 200px; min-width: 0;"><span class="bz-h3" id="q-remind">{{remind.title}}</span><span class="bz-mut">{{remind.hint}}</span></span>
+              <sc-if value="{{isLK}}" hint-placeholder-val="{{false}}">
+                <button type="button" class="bz-sw" role="switch" aria-labelledby="q-remind" aria-checked="{{remind.on}}" onClick="{{toggleWa}}"></button>
+              </sc-if>
+            </div>
+            <span class="bz-mut">Line items, discounts and {{c.taxWord}} are set on each invoice. <a href="SellInvoice.dc.html" style="font-weight: 600;">Open the invoice editor</a></span>
+          </div>
+
+          <!-- Live invoice preview -->
+          <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+            <span class="bz-lbl">Live preview <span style="font-weight: 400; color: #5F5B68;">· what {{pv.who}} would see</span></span>
+            <div aria-label="Invoice preview" style="border: 1px solid #E2DFE8; border-radius: 18px; overflow: hidden; background: #FFFFFF; box-shadow: 0 8px 24px rgba(24,22,31,0.06);">
+              <div style="height: 8px; background: {{s.accent}};"></div>
+              <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                  <div style="display: flex; gap: 12px; align-items: flex-start; min-width: 0; flex: 1 1 180px;">
+                    <sc-if value="{{logoMark}}" hint-placeholder-val="{{true}}">
+                      <span style="width: 40px; height: 40px; border-radius: 11px; background: {{s.accent}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none; font: 700 19px Sora, sans-serif;">{{logoInitial}}</span>
+                    </sc-if>
+                    <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; font-size: 12px; color: #47444F; line-height: 1.45;">
+                      <sc-if value="{{logoWord}}" hint-placeholder-val="{{false}}">
+                        <span style="align-self: flex-start; margin-bottom: 4px; padding: 3px 8px; border-radius: 8px; border: 2px solid {{s.accent}}; color: {{s.accent}}; font: 800 11px Sora, sans-serif; letter-spacing: 0.14em; overflow-wrap: anywhere;">{{logoWordText}}</span>
+                      </sc-if>
+                      <strong style="font-size: 14px; color: #18161F; overflow-wrap: anywhere;">{{s.business}}</strong>
+                      <sc-for list="{{pv.addr}}" as="l" hint-placeholder-count="3"><span>{{l}}</span></sc-for>
+                      <span>{{s.phone}}</span>
+                    </span>
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+                    <span style="font: 700 20px Sora, sans-serif; letter-spacing: -0.02em; color: {{s.accent}};">{{pv.word}}</span>
+                    <span style="font-size: 13px; font-weight: 600;">{{pv.number}}</span>
+                  </div>
+                </div>
+                <sc-if value="{{pv.ids}}" hint-placeholder-val="{{false}}">
+                  <span style="font-size: 11.5px; color: #47444F; line-height: 1.5;">{{pv.ids}}</span>
+                </sc-if>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; font-size: 12px; padding: 12px 0; border-top: 1px solid #EFEDF3; border-bottom: 1px solid #EFEDF3;">
+                  <span style="display: flex; flex-direction: column;"><span style="color: #5F5B68;">Bill to</span><strong style="overflow-wrap: anywhere;">{{pv.who}}</strong></span>
+                  <span style="display: flex; flex-direction: column;"><span style="color: #5F5B68;">Date</span><strong>{{pv.issued}}</strong></span>
+                  <span style="display: flex; flex-direction: column;"><span style="color: #5F5B68;">Due</span><strong>{{pv.due}}</strong></span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+                  <sc-for list="{{pv.lines}}" as="l" hint-placeholder-count="3">
+                    <span style="display: flex; justify-content: space-between; gap: 12px; color: {{l.fg}};"><span style="min-width: 0;">{{l.label}}</span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{l.amount}}</span></span>
+                  </sc-for>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 12px; border-radius: 12px; background: #F7F6F9;">
+                  <span style="font-size: 13px; font-weight: 600;">Amount due</span>
+                  <span style="font: 700 20px Sora, sans-serif; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap;">{{pv.total}}</span>
+                </div>
+                <sc-if value="{{pv.ird}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; color: #6B5000;">{{pv.ird}}</span></sc-if>
+                <span style="font-size: 12px; color: #47444F; line-height: 1.5;">{{pv.footer}}</span>
+                <span style="font-size: 11px; color: #5F5B68;">{{pv.legalLine}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What BillingEase shows you -->
+      <section class="bz-card" aria-labelledby="show-h">
+        <div class="bz-head">
+          <div><h2 id="show-h" class="bz-h2">What BillingEase shows you</h2><span class="bz-mut">Set by your country and the answers above. Hiding never deletes anything.</span></div>
+          <span class="bz-badge" style="background: #EEE8FF; color: #18161F;">{{shownCount}}</span>
+        </div>
+        <sc-if value="{{showDiff}}" hint-placeholder-val="{{false}}">
+          <div class="bz-note" role="status" style="background: #FFF0B8; color: #6B5000;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v5M12 16h.01M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path></svg>
+            <span>{{showDiff}}</span>
+          </div>
+        </sc-if>
+        <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 8px;">
+          <sc-for list="{{features}}" as="f" hint-placeholder-count="6">
+            <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 16px; border: 1px solid {{f.border}}; background: {{f.bg}};">
+              <span style="width: 10px; height: 10px; border-radius: 9999px; background: {{f.dot}}; flex: none; margin-top: 6px;"></span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <sc-if value="{{f.on}}" hint-placeholder-val="{{true}}"><a href="{{f.href}}" style="font-weight: 600; font-size: 14px;">{{f.name}}</a></sc-if>
+                <sc-if value="{{f.off}}" hint-placeholder-val="{{false}}"><span style="font-weight: 600; font-size: 14px; color: #5F5B68;">{{f.name}}</span></sc-if>
+                <span class="bz-mut" style="font-size: 12px;">{{f.why}}</span>
+              </span>
+              <sc-if value="{{f.sw}}" hint-placeholder-val="{{false}}">
+                <button type="button" class="bz-sw" role="switch" aria-label="{{f.swLabel}}" aria-checked="{{f.onStr}}" onClick="{{f.toggle}}"></button>
+              </sc-if>
+              <sc-if value="{{f.fixed}}" hint-placeholder-val="{{true}}">
+                <span class="bz-badge" style="background: {{f.badgeBg}}; color: {{f.badgeFg}};">{{f.badge}}</span>
+              </sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <sc-if value="{{dirty}}" hint-placeholder-val="{{false}}">
+        <div role="region" aria-label="Unsaved changes" style="position: sticky; bottom: 16px; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 12px 12px 12px 20px; border-radius: 28px; background: #18161F; color: #FFFFFF; box-shadow: 0 10px 30px rgba(24,22,31,0.25);">
+          <span style="font-weight: 600; font-size: 14px;">{{dirtyText}}</span>
+          <span style="display: flex; gap: 8px;">
+            <button type="button" class="bz-btn bz-sm" style="background: rgba(255,255,255,0.12); color: #FFFFFF;" onClick="{{discard}}">Discard</button>
+            <button type="button" class="bz-btn bz-sm" onClick="{{save}}">Save changes</button>
+          </span>
+        </div>
+      </sc-if>
+    </div>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    // d holds unsaved edits; everything else comes from the shared profile.
+    this.state = { d: {}, tried: false, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3600); }
+
+  renderVals() {
+    const st = this.state;
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const saved = BE.profile();
+    const s = Object.assign({}, saved, st.d);
+    const dirtyKeys = Object.keys(st.d).filter((k) => JSON.stringify(st.d[k]) !== JSON.stringify(saved[k]));
+    const dirty = dirtyKeys.length > 0;
+    const edit = (o) => this.setState({ d: Object.assign({}, st.d, o) });
+    const on = {};
+    ['business', 'legal', 'owner', 'email', 'phone', 'street', 'town', 'region', 'postal', 'prefix', 'terms', 'note', 'vatNo', 'invLang'].forEach((k) => { on[k] = (e) => edit({ [k]: e.target.value }); });
+    const fx = pack.features || {};
+    const vatStd = ((pack.vatRates || []).find((r) => r.id === 'std') || { rate: lk ? 0.18 : 0.2 }).rate;
+    const pct = (r) => Math.round(r * 1000) / 10 + '%';
+    const q = (pack.quarters || []).find((x) => x.id === pack.lastQuarter);
+    const prac = saved.practice;
+    const noun = (pack.practitioner || {}).noun || 'accountant';
+
+    // Country wording: everything here comes from the pack or this table, never mixed.
+    const c = lk ? {
+      name: pack.name || 'Sri Lanka', short: 'LK', legalHint: 'As registered with the IRD, e.g. “Ayesha Fernando trading as …”',
+      phonePh: '011 234 5678', streetLabel: 'Street address', streetPh: 'No. 42, Galle Road', townLabel: 'City or town', townPh: 'Colombo 03', regionLabel: 'Province', regionPh: 'Western Province', postalLabel: 'Postal code', postalPh: '00300',
+      taxSub: 'What the IRD knows you by. It goes on your Tax Invoices and into your TaxWise.lk return.',
+      taxIdLabel: pack.taxIdLabel || 'TIN', taxIdLong: 'Taxpayer Identification Number', taxIdPh: '123 456 789', taxIdHint: 'On every Tax Invoice and your income tax return', taxDigits: 9,
+      vatIdLabel: pack.vatIdLabel || 'VAT registration number', vatPh: '123456789-7000', vatInvoiceTitleLc: 'Tax Invoice', taxWord: 'VAT',
+      notePh: 'Bank details for transfers, or who to make cheques payable to'
+    } : {
+      name: pack.name || 'United Kingdom', short: 'UK', legalHint: 'Your own name if you’re a sole trader, e.g. “Ellie Harper trading as …”',
+      phonePh: '0113 496 0000', streetLabel: 'Street address', streetPh: '14 Call Lane', townLabel: 'Town or city', townPh: 'Leeds', regionLabel: 'County', regionPh: 'West Yorkshire', postalLabel: 'Postcode', postalPh: 'LS1 6DT',
+      taxSub: 'What HMRC knows you by. Your accountant uses these when they file your quarterly updates.',
+      taxIdLabel: pack.taxIdLabel || 'UTR', taxIdLong: 'Unique Taxpayer Reference', taxIdPh: '12345 67890', taxIdHint: 'From HMRC when you registered for Self Assessment. Not printed on invoices.', taxDigits: 10,
+      vatIdLabel: pack.vatIdLabel || 'VAT number', vatPh: 'GB 123 4567 89', vatInvoiceTitleLc: 'VAT invoice', taxWord: 'VAT',
+      notePh: 'Bank details for transfers: name, sort code, account number'
+    };
+    const ty = pack.taxYear || {};
+    c.facts = [pack.currency === 'LKR' ? 'Sri Lankan rupees (Rs)' : 'Pounds sterling (£)', (lk ? 'Year of assessment ' : 'Tax year ') + (ty.start || '').replace(/ \d{4}$/, '') + ' to ' + (ty.end || '').replace(/ \d{4}$/, ''), 'Dates like ' + BE.today + ' 2026'].join(' · ');
+
+    // Business type
+    const KINDS = lk
+      ? [['sole-proprietor', 'Sole proprietor'], ['partnership', 'Partnership'], ['company', 'Company']]
+      : [['sole-trader', 'Sole trader'], ['landlord', 'Landlord'], ['both', 'Both']];
+    const kinds = KINDS.map(([v, l]) => ({ label: l, on: s.kind === v, pick: () => edit({ kind: v }) }));
+    const kindHint = lk
+      ? (s.kind === 'company' ? 'Books only for companies: company income tax stays with your ' + noun + '.' : (s.kind === 'partnership' ? 'Books for the partnership; each partner’s share goes into their own return.' : 'You and the business are one for tax: profit goes on your own return.'))
+      : (s.kind === 'both' ? 'Self-employment and property income, each in its own HMRC categories.' : (s.kind === 'landlord' ? 'Property income only: rent, property costs and finance costs.' : 'Self-employment income in HMRC’s categories.'));
+
+    // Basis
+    const BASES = lk ? [['accrual', 'When invoiced'], ['cash', 'When paid']] : [['cash', 'When paid'], ['accruals', 'When invoiced']];
+    const isCash = s.basis === 'cash';
+    const bases = BASES.map(([v, l]) => ({ label: l, on: (s.basis === v) || (v === 'accruals' && s.basis === 'accrual') || (v === 'accrual' && s.basis === 'accruals'), pick: () => edit({ basis: v }) }));
+    const basisHint = lk
+      ? (isCash ? 'Cash view: income counts when it’s paid. Your return still uses accruals.' : 'Accruals (the default): income counts when you issue the invoice.')
+      : (isCash ? 'Cash basis (the default): income counts when the money arrives.' : 'Traditional accounting (accruals): income counts when you invoice.');
+
+    // VAT and SSCL
+    const vatOpts = [[true, 'Yes'], [false, 'No']].map(([v, l]) => ({ label: l, on: !!s.vatRegistered === v, pick: () => edit({ vatRegistered: v }) }));
+    const ssclOpts = [[true, 'Yes'], [false, 'No']].map(([v, l]) => ({ label: l, on: !!s.ssclRegistered === v, pick: () => edit({ ssclRegistered: v }) }));
+    const thr = BE.money(pack.vatThreshold || 0);
+    const vatHint = s.vatRegistered
+      ? (lk ? 'VAT ' + pct(vatStd) + ' on your invoices, titled “' + pack.vatInvoiceTitle + '” in the IRD format.' : 'VAT ' + pct(vatStd) + ' on your invoices, titled “' + pack.vatInvoiceTitle + '”. Your accountant files the VAT return.')
+      : (lk ? 'You must register once turnover passes about ' + thr + ' a year (figure to confirm with the IRD). We warn you as you get close.' : 'You must register once your turnover passes ' + thr + ' in any 12 months. We warn you as you get close.');
+    const ssclHint = s.ssclRegistered ? 'SSCL ' + pct(pack.sscl || 0.025) + ' shows as its own line on invoices and its own summary each period.' : 'Social Security Contribution Levy. Turn on if the IRD registered you for it.';
+
+    // UK quarters and Scotland
+    const qtrOpts = [['standard', 'Standard'], ['calendar', 'Calendar']].map(([v, l]) => ({ label: l, on: (s.quarterType || 'standard') === v, pick: () => edit({ quarterType: v }) }));
+    const qtrHint = (s.quarterType === 'calendar' ? 'Calendar quarters: 1 Apr–30 Jun, 1 Jul–30 Sep, and so on.' : 'Standard quarters: 6 Apr–5 Jul, 6 Jul–5 Oct, and so on.') + (q ? ' ' + q.label + ' is due ' + q.due + '.' : '');
+    const scotHint = s.scottish ? 'On: your Income Tax estimate uses Scottish rates and bands.' : 'Turn on if you live in Scotland. Your Income Tax estimate then uses Scottish rates and bands.';
+    const taxNote = prac
+      ? (lk ? prac.name + ' file your returns from these details. Change something they rely on and they see it on their side.' : prac.name + ' file your quarterly updates from these details. Change something they rely on and they see it on their side.')
+      : (lk ? 'BillingEase never files anything with the IRD. Your ' + noun + ', or your TaxWise.lk return, does that.' : 'BillingEase never files anything with HMRC. Your accountant does that from your records.');
+    const acctLink = prac ? 'Your ' + noun : 'Add your ' + noun;
+
+    // Tax ID
+    const taxKey = lk ? 'tin' : 'utr';
+    const taxIdVal = s[taxKey] || '';
+    const digits = String(taxIdVal).replace(/\D/g, '').length;
+
+    // Invoice preview: your latest real invoice, or a placeholder for a new business.
+    const sample = BE.all('invoices').filter((i) => !i.draft && !i.void)[0];
+    let maxN = 0;
+    BE.all('invoices').forEach((i) => { const m = String(i.num || '').match(/(\d+)$/); if (m) maxN = Math.max(maxN, +m[1]); });
+    const nextNum = (s.prefix || '') + String(maxN + 1).padStart(4, '0');
+    const sub = sample ? BE.invSubtotal(sample) : (lk ? 250000 : 1000);
+    const lines = [{ label: sample ? (sample.what || (sample.lines && sample.lines[0] && sample.lines[0].name) || 'Work') : 'What you did for them', amount: BE.money(sub, null, { cents: true }), fg: '#18161F' }];
+    let total = sub, ird = false;
+    if (lk && s.vatRegistered) {
+      const sscl = s.ssclRegistered ? Math.round(sub * (pack.sscl || 0.025) * 100) / 100 : 0;
+      if (sscl) lines.push({ label: 'SSCL ' + pct(pack.sscl || 0.025), amount: BE.money(sscl, null, { cents: true }), fg: '#47444F' });
+      const vat = Math.round((sub + sscl) * vatStd * 100) / 100;
+      lines.push({ label: 'VAT ' + pct(vatStd), amount: BE.money(vat, null, { cents: true }), fg: '#47444F' });
+      total = sub + sscl + vat;
+      if (sscl) ird = 'VAT is worked out on the amount plus SSCL. To confirm with the IRD.';
+    } else if (lk && s.ssclRegistered) {
+      const sscl = Math.round(sub * (pack.sscl || 0.025) * 100) / 100;
+      lines.push({ label: 'SSCL ' + pct(pack.sscl || 0.025), amount: BE.money(sscl, null, { cents: true }), fg: '#47444F' });
+      total = sub + sscl;
+    } else if (!lk && s.vatRegistered) {
+      const vat = Math.round(sub * vatStd * 100) / 100;
+      lines.push({ label: 'VAT ' + pct(vatStd), amount: BE.money(vat, null, { cents: true }), fg: '#47444F' });
+      total = sub + vat;
+    }
+    const termsN = Number(s.terms) || 0;
+    const addrLines = lk
+      ? [s.street, [s.town, s.postal].filter(Boolean).join(' '), s.region].filter(Boolean)
+      : [s.street, s.town, [s.region, String(s.postal || '').toUpperCase()].filter(Boolean).join(' ')].filter(Boolean);
+    const ids = lk
+      ? [s.tin ? 'TIN ' + s.tin : '', s.vatRegistered && s.vatNo ? 'VAT Reg. No. ' + s.vatNo : ''].filter(Boolean).join(' · ')
+      : (s.vatRegistered && s.vatNo ? 'VAT number ' + s.vatNo : '');
+    const pv = {
+      word: s.vatRegistered ? pack.vatInvoiceTitle : pack.invoiceTitle,
+      who: sample ? sample.who : 'Your first customer',
+      number: nextNum, issued: BE.today + ' 2026', due: termsN ? BE.inDays(termsN) + (termsN > 80 ? ' 2027' : ' 2026') : 'On receipt',
+      addr: addrLines.length ? addrLines : ['Your address'],
+      ids: ids || false, lines, total: BE.money(total, null, { cents: true }), ird,
+      footer: [termsN ? 'Please pay within ' + termsN + ' days.' : 'Due on receipt.', s.note].filter(Boolean).join(' '),
+      legalLine: s.legal || 'Add your legal name above to show it here'
+    };
+    const addrLine = addrLines.join(', ') || 'Add your address above';
+
+    // Reminders
+    const remind = lk
+      ? { title: 'WhatsApp reminders', hint: s.whatsapp ? 'On: customers get a polite WhatsApp nudge 3 days before and on the due date, as well as email.' : 'Off: reminders go by email only.', on: s.whatsapp ? 'true' : 'false' }
+      : { title: 'Reminders by email', hint: 'Customers get a polite email 3 days before and on the due date.', on: 'true' };
+
+    // Branding
+    const ACC = [['Violet', '#7A5AF8'], ['Ink', '#18161F'], ['Forest', '#2F5711'], ['Ocean', '#1F5E91'], ['Rust', '#B4471C'], ['Plum', '#8E2D6B']];
+    const accents = ACC.map(([name, hex]) => ({ name, hex, on: s.accent === hex, ring: s.accent === hex ? '#18161F' : '#FFFFFF', pick: () => edit({ accent: hex }) }));
+    const bizName = s.business || 'Your business';
+    const words = bizName.replace(/[^A-Za-z0-9 ]/g, ' ').trim() || 'Logo';
+    const slug = words.toLowerCase().split(/\s+/)[0] || 'logo';
+
+    // What BillingEase shows you: the pack's features, switched by the profile.
+    const showsFor = (x) => {
+      const r = {};
+      r.quarters = !!fx.quarters;
+      r.landlord = !!fx.landlord && (x.kind === 'landlord' || x.kind === 'both');
+      r.mileage = !!fx.mileage && x.mileage !== false && x.kind !== 'landlord';
+      r.taxPeriods = !!fx.taxPeriods && (!!x.vatRegistered || (!!fx.sscl && !!x.ssclRegistered));
+      r.payroll = !!fx.payroll && x.payroll !== false;
+      r.whatsapp = !!fx.whatsapp && !!x.whatsapp;
+      r.acct = true;
+      return r;
+    };
+    const ITEMS = [
+      fx.quarters ? { k: 'quarters', name: 'MTD quarters', href: 'Quarters.dc.html', dot: '#18161F', yes: 'Every UK business in Making Tax Digital', no: '' } : null,
+      fx.landlord ? { k: 'landlord', name: 'Properties', href: 'Properties.dc.html', dot: '#7A5AF8', yes: 'Because you let property · rent, costs, finance costs', no: 'Hidden: you’re a sole trader only. Choose Landlord or Both above.' } : null,
+      fx.mileage ? { k: 'mileage', name: 'Mileage log', href: 'Mileage.dc.html', dot: '#E0752D', sw: 'mileage', yes: 'Business miles at ' + Math.round(((pack.mileage || {}).rate1 || 0.45) * 100) + 'p, then ' + Math.round(((pack.mileage || {}).rate2 || 0.25) * 100) + 'p', no: s.kind === 'landlord' ? 'Hidden for landlord-only businesses' : 'Hidden. Switch on if you drive for work.' } : null,
+      fx.taxPeriods ? { k: 'taxPeriods', name: lk ? 'VAT and SSCL periods' : 'VAT summary', href: 'TaxPeriods.dc.html', dot: '#18161F', yes: lk ? 'Monthly summaries in the order of the IRD return' : 'Per VAT quarter, for your accountant’s VAT software', no: lk ? 'Hidden until you register for VAT or SSCL above' : 'Hidden until you register for VAT above' } : null,
+      fx.payroll ? { k: 'payroll', name: lk ? 'Payroll with EPF, ETF and APIT' : 'Payroll records', href: 'SpendPayroll.dc.html', dot: '#E0752D', sw: 'payroll', yes: lk ? 'Pay runs, payslips and the schedules to pay and file' : 'Pay runs from your payroll software; PAYE reminder on the ' + ((pack.payroll || {}).payeDueDay || 22) + 'nd', no: 'Hidden. Switch on when you have staff.' } : null,
+      fx.whatsapp ? { k: 'whatsapp', name: 'WhatsApp reminders', href: 'SellInvoices.dc.html', dot: '#7A5AF8', sw: 'whatsapp', yes: 'Customers get due-date nudges on WhatsApp too', no: 'Hidden. Reminders go by email only.' } : null,
+      { k: 'acct', name: lk ? 'Your tax practitioner and TaxWise.lk' : 'Your accountant', href: 'Accountant.dc.html', dot: '#B9A3FF', yes: prac ? 'Linked to ' + prac.name : 'Not linked yet · invite them any time', no: '' }
+    ].filter(Boolean);
+    const now = showsFor(s), before = showsFor(saved);
+    const features = ITEMS.map((it) => {
+      const shown = now[it.k];
+      return {
+        name: it.name, href: it.href, on: shown, off: !shown, dot: shown ? it.dot : '#CBC7D3',
+        why: shown ? it.yes : it.no,
+        sw: !!it.sw && !(it.k === 'mileage' && s.kind === 'landlord'), fixed: !it.sw || (it.k === 'mileage' && s.kind === 'landlord'),
+        onStr: shown ? 'true' : 'false', swLabel: 'Show ' + it.name,
+        toggle: () => edit({ [it.sw]: !shown }),
+        badge: shown ? 'Shown' : 'Hidden', badgeBg: shown ? '#E2F6D5' : '#EFEDF3', badgeFg: shown ? '#2F5711' : '#47444F',
+        border: shown ? '#E2DFE8' : '#EFEDF3', bg: shown ? '#FFFFFF' : '#F7F6F9'
+      };
+    });
+    const appear = ITEMS.filter((it) => now[it.k] && !before[it.k]).map((it) => it.name);
+    const disappear = ITEMS.filter((it) => !now[it.k] && before[it.k]).map((it) => it.name);
+    const join = (a) => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+    const diffText = (appear.length ? 'Appears: ' + join(appear) + '. ' : '') + (disappear.length ? 'Hidden: ' + join(disappear) + '. ' : '');
+    const showDiff = diffText ? 'When you save. ' + diffText + 'Hiding never deletes anything; switch back any time and it all returns.' : false;
+
+    // Validation
+    const errs = {
+      name: !String(s.business || '').trim() ? 'Your business needs a name.' : false,
+      email: s.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s.email).trim()) ? 'That doesn’t look like an email address.' : false,
+      taxId: taxIdVal && digits !== c.taxDigits ? 'A ' + c.taxIdLabel + ' has ' + c.taxDigits + ' digits. This one has ' + digits + '.' : false,
+      vat: s.vatRegistered && !String(s.vatNo || '').trim() && st.d.vatRegistered === true ? 'Add your ' + c.vatIdLabel + '. It must be on every ' + c.vatInvoiceTitleLc + '.' : false
+    };
+    const show = (e) => (st.tried || dirty) && e;
+    const err = {};
+    ['name', 'email', 'taxId', 'vat'].forEach((k) => { err[k] = show(errs[k]); err[k + 'Invalid'] = errs[k] ? 'true' : 'false'; err[k + 'Border'] = show(errs[k]) ? '#A8200D' : '#CBC7D3'; });
+    err.vatInvalid = err.vatInvalid; err.vatBorder = err.vatBorder;
+    const firstErr = errs.name || errs.email || errs.taxId || errs.vat;
+
+    return {
+      s, c, on, pv, accents, features, kinds, kindHint, bases, basisHint, vatOpts, ssclOpts, vatHint, ssclHint, qtrOpts, qtrHint, scotHint, taxNote, acctLink, remind, addrLine, err,
+      toast: st.toast, isUK: !lk, isLK: lk, taxIdVal,
+      bizName: saved.business || 'Your business',
+      scotOn: s.scottish ? 'true' : 'false',
+      toggleScot: () => edit({ scottish: !s.scottish }),
+      toggleWa: () => edit({ whatsapp: !s.whatsapp }),
+      setTaxId: (e) => edit({ [taxKey]: e.target.value }),
+      shownCount: features.filter((f) => f.on).length + ' of ' + features.length + ' shown', showDiff,
+      logoOn: !!s.logo, logoOff: !s.logo, logoMark: s.logo === 1, logoWord: s.logo === 2,
+      logoInitial: bizName.charAt(0).toUpperCase(), logoWordText: words.split(/\s+/)[0].toUpperCase(),
+      logoFile: s.logo === 2 ? slug + '-wordmark.svg' : slug + '-mark.png', logoMeta: s.logo === 2 ? '6 KB · uploaded just now' : '24 KB · 512 × 512 px',
+      replaceLogo: () => { edit({ logo: s.logo === 1 ? 2 : 1 }); this.notify('Logo replaced. The preview shows the new one; save to use it.'); },
+      removeLogo: () => { edit({ logo: 0 }); this.notify('Logo removed. Invoices will show your business name instead.'); },
+      uploadLogo: () => { edit({ logo: 1 }); this.notify(slug + '-mark.png added. Save to use it on invoices.'); },
+      dirty, dirtyText: dirtyKeys.length === 1 ? 'You have 1 unsaved change' : 'You have ' + dirtyKeys.length + ' unsaved changes',
+      discard: () => { this.setState({ d: {}, tried: false }); this.notify('Changes discarded'); },
+      save: () => {
+        if (firstErr) { this.setState({ tried: true }); this.notify(firstErr); return; }
+        const patch = Object.assign({}, st.d);
+        const nxt = Object.assign({}, saved, patch);
+        patch.business = String(nxt.business).trim();
+        patch.city = nxt.town || '';
+        patch.initials = BE.initials(nxt.owner) || BE.initials(patch.business);
+        patch.first = String(nxt.owner || '').split(/\s+/)[0] || 'there';
+        if (patch.basis === 'accruals' && lk) patch.basis = 'accrual';
+        if (patch.basis === 'accrual' && !lk) patch.basis = 'accruals';
+        const renamed = patch.business !== saved.business;
+        BE.change((data) => {
+          data.profile = Object.assign({}, data.profile, patch);
+          // You, on the people list, follow the profile.
+          data.team = (data.team || []).map((m) => (m.you || m.status === 'You') ? Object.assign({}, m, { name: nxt.owner, email: nxt.email || m.email }) : m);
+          BE._log(data, 'Updated the business profile' + (renamed ? ': now called ' + patch.business : ''));
+        });
+        this.setState({ d: {}, tried: false });
+        this.notify((renamed ? 'Saved. You’re now ' + patch.business + ' everywhere, including new invoices.' : 'Business profile saved. Every screen uses it from now on.') + (diffText ? ' ' + diffText : ''));
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

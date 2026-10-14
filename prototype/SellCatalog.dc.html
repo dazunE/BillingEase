@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Products and services</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+@media (max-width: 640px){.be-hide-sm{display:none!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <dc-import name="AppCrumbs" area="in" here="Products and services"></dc-import>
+
+    <!-- Title -->
+    <section aria-labelledby="c-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="c-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span>Products and services</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">Your prices, saved once. Pick them when you write a quote or an invoice and the price{{taxIntro}} fills itself in.</p>
+        <sc-if value="{{hasItems}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{tiles}}" as="t" hint-placeholder-count="3">
+              <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #F7F6F9; border: 1px solid #E2DFE8; font-size: 13px; color: #47444F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{t.dot}};"></span>{{t.label}} <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{t.value}}</strong></span>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">{{taxHint}}</p>
+        <button type="button" aria-expanded="{{form.addOpen}}" onClick="{{openAdd}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Add a price
+        </button>
+      </div>
+    </section>
+
+    <!-- Add or edit -->
+    <sc-if value="{{form.open}}" hint-placeholder-val="{{false}}">
+      <section id="item-form" aria-labelledby="f-h" style="background: #FFFFFF; border: 2px solid #7A5AF8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+        <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><h2 id="f-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">{{form.title}}</h2><span style="font-size: 14px; color: #47444F;">{{form.sub}}</span></span>
+            <button type="button" aria-label="Close" onClick="{{closeForm}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span id="kind-l" style="font-size: 13px; font-weight: 600;">It’s a</span>
+            <div role="group" aria-labelledby="kind-l" style="align-self: flex-start; display: flex; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+              <sc-for list="{{form.kinds}}" as="k" hint-placeholder-count="2">
+                <button type="button" aria-pressed="{{k.on}}" onClick="{{k.pick}}" style="min-height: 36px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{k.bg}}; color: {{k.fg}}; font: 600 13px DM Sans, sans-serif; cursor: pointer;">{{k.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+            <label style="flex: 2 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Name, as it appears on invoices</span>
+              <input class="be-field" type="text" placeholder="{{form.namePh}}" value="{{form.name}}" onChange="{{setName}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid {{form.nameBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+            </label>
+            <label style="flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">{{form.priceLabel}}</span>
+              <span style="display: flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 0 0 12px; box-sizing: border-box; border: 1px solid {{form.priceBorder}}; border-radius: 10px; background: #FFFFFF; font-size: 15px; color: #47444F;">{{sym}}<input class="be-field" type="text" inputmode="decimal" aria-label="Price" placeholder="0" value="{{form.price}}" onChange="{{setPrice}}" style="flex: 1 1 auto; width: 60px; min-width: 0; min-height: 42px; box-sizing: border-box; padding: 0 10px 0 2px; border: 0; border-radius: 10px; background: transparent; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+            </label>
+            <label style="flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Per</span>
+              <select class="be-field" value="{{form.unit}}" onChange="{{setUnit}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                <sc-for list="{{form.units}}" as="u" hint-placeholder-count="6"><option value="{{u}}">{{u}}</option></sc-for>
+              </select>
+            </label>
+          </div>
+          <sc-if value="{{form.vatOn}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 24px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
+              <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600;">VAT rate</span>
+                <select class="be-field" value="{{form.vat}}" onChange="{{setVat}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                  <sc-for list="{{vatRates}}" as="vr" hint-placeholder-count="3"><option value="{{vr.id}}">{{vr.label}}</option></sc-for>
+                </select>
+              </label>
+              <sc-if value="{{form.ssclShow}}" hint-placeholder-val="{{false}}">
+                <div style="flex: 1 1 220px; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px;">
+                  <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">SSCL {{form.ssclPct}} applies</span><span style="font-size: 12px; color: #5F5B68;">Social Security Contribution Levy</span></span>
+                  <button type="button" role="switch" aria-checked="{{form.sscl}}" aria-label="SSCL applies" onClick="{{toggleSscl}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{form.ssclBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{form.ssclLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{form.errOn}}" hint-placeholder-val="{{false}}">
+            <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
+              <sc-for list="{{form.errs}}" as="er" hint-placeholder-count="1"><span>{{er}}</span></sc-for>
+            </div>
+          </sc-if>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <button type="button" onClick="{{saveForm}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">{{form.btn}}</button>
+            <button type="button" onClick="{{closeForm}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+          </div>
+        </div>
+        <aside aria-label="On an invoice" style="flex: 1 1 260px; min-width: 0; background: #F7F6F9; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 13px; font-weight: 600; color: #47444F;">On an invoice, one {{form.unit}}</span>
+          <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px;"><span style="min-width: 0; overflow-wrap: anywhere;">{{form.pvName}}</span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{form.pvPrice}}</span></span>
+          <sc-for list="{{form.pvRows}}" as="pr" hint-placeholder-count="2">
+            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #47444F;"><span>{{pr.label}}</span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{pr.amount}}</span></span>
+          </sc-for>
+          <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 8px; border-top: 1px solid #E2DFE8;"><span style="font-weight: 600; font-size: 14px;">Customer pays</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{form.pvTotal}}</span></span>
+          <sc-if value="{{form.hasNote}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #5F5B68; line-height: 1.45;">{{form.note}}</span></sc-if>
+        </aside>
+      </section>
+    </sc-if>
+
+    <!-- Empty -->
+    <sc-if value="{{noItems}}" hint-placeholder-val="{{false}}">
+      <section aria-label="Nothing saved yet" style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 14px;">
+        <span style="width: 48px; height: 48px; border-radius: 16px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"></path></svg></span>
+        <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">No prices saved yet</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 560px;">Save what you charge for, like a day rate or a design package, and pick it when you write a quote or invoice.</p>
+        <button type="button" onClick="{{openAdd}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Add your first price</button>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{hasItems}}" hint-placeholder-val="{{true}}">
+      <!-- Toolbar -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;">
+        <div role="group" aria-label="Show" style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
+            <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{c.label}} <span style="min-width: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 9999px; background: {{c.countBg}}; font-size: 12px; line-height: 20px; text-align: center;">{{c.count}}</span></button>
+          </sc-for>
+        </div>
+        <label style="flex: 1 1 220px; max-width: 360px; min-width: 0; margin-left: auto; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; box-sizing: border-box; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search products and services</span>
+          <input type="search" placeholder="Search by name" value="{{q}}" onChange="{{setQ}}" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 14px DM Sans, sans-serif; color: #18161F;">
+        </label>
+      </div>
+
+      <!-- List -->
+      <section aria-labelledby="l-h" style="display: flex; flex-direction: column; gap: 10px;">
+        <h2 id="l-h" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Your prices</h2>
+        <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; gap: 2px;">
+          <div aria-hidden="true" class="be-hide-sm" style="display: flex; gap: 12px; padding: 8px 14px 4px 64px; font-size: 12px; font-weight: 600; color: #5F5B68;">
+            <span style="flex: 1;">Name</span><sc-if value="{{showTax}}" hint-placeholder-val="{{true}}"><span style="width: 150px; text-align: right;">{{colTax}}</span></sc-if><span style="width: 84px; text-align: right;">Price</span><span style="width: 128px;"></span>
+          </div>
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 6px; border-radius: 14px; background: {{r.bg}};">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 14px;">
+                <span style="width: 38px; height: 38px; border-radius: 12px; background: {{r.iconBg}}; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.icon}}"></path></svg></span>
+                <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                  <span style="font-weight: 700; font-size: 15px;">{{r.name}}</span>
+                  <span style="font-size: 13px; color: #5F5B68;">{{r.meta}}</span>
+                </span>
+                <span style="flex: 0 1 420px; min-width: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 12px; margin-left: auto;">
+                <sc-if value="{{showTax}}" hint-placeholder-val="{{true}}"><span style="flex: 0 1 150px; min-width: 140px; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 13px; color: #47444F; text-align: right;">{{r.tax}}<span style="font-size: 11px; color: #5F5B68;">{{r.taxSub}}</span></span></sc-if>
+                <span style="flex: 0 0 auto; min-width: 84px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px;"><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums;">{{r.price}}</span><span style="font-size: 11px; color: #5F5B68;">{{r.per}}</span></span>
+                <span style="flex: none; display: flex; justify-content: flex-end; gap: 6px;">
+                  <button type="button" aria-label="{{r.editLabel}}" onClick="{{r.edit}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Edit</button>
+                  <button type="button" aria-label="{{r.delLabel}}" aria-expanded="{{r.deleting}}" onClick="{{r.askDelete}}" style="min-height: 40px; padding: 0 10px; border: 0; border-radius: 9999px; background: transparent; color: #A8200D; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Remove</button>
+                </span>
+                </span>
+              </div>
+              <sc-if value="{{r.deleting}}" hint-placeholder-val="{{false}}">
+                <div role="alertdialog" aria-label="{{r.delLabel}}" style="margin: 0 10px 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 16px; border-radius: 16px; background: #FBE3DF;">
+                  <span style="flex: 1 1 260px; min-width: 0; font-size: 14px; line-height: 1.45;">{{r.delText}}</span>
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button type="button" onClick="{{r.confirmDelete}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #A8200D; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Remove it</button>
+                    <button type="button" onClick="{{cancelDelete}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep</button>
+                  </span>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+            <div style="padding: 20px 16px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+              <span style="font-size: 14px; color: #47444F;">{{emptyText}}</span>
+              <button type="button" onClick="{{clearQ}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Show everything</button>
+            </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{hasNote}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #5F5B68; padding: 0 6px;">{{note}}</span></sc-if>
+      </section>
+    </sc-if>
+
+    <nav aria-label="Related" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Also in Coming in:</span>
+      <a href="SellQuotes.dc.html" style="font-weight: 600;">Quotes</a>
+      <a href="SellInvoice.dc.html" style="font-weight: 600;">Full invoice editor</a>
+      <a href="SellInvoices.dc.html" style="font-weight: 600;">All invoices</a>
+      <a href="SellRecurring.dc.html" style="font-weight: 600;">Repeating invoices</a>
+    </nav>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { toast: null, filter: 'all', q: '', form: null, errs: [], del: null, flash: null, dismissed: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  blank(kind) { return { mode: 'add', id: null, kind: kind || 'service', name: '', price: '', unit: kind === 'product' ? 'item' : 'job', vat: 'std', sscl: true }; }
+  // The form is open from state, or from the address (#add).
+  form() {
+    const st = this.state;
+    if (st.form) return st.form;
+    if (BE.hash() === 'add' && st.dismissed !== 'add') return this.blank('service');
+    return null;
+  }
+  renderVals() {
+    const st = this.state;
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const money = (n) => BE.money(n);
+    const vatOn = BE.vatOn(), ssclOn = BE.ssclOn();
+    const sym = String(pack.symbol || '£') + (lk ? ' ' : '');
+    const vatRates = (pack.vatRates || []).filter((r) => r.id !== 'outside');
+    const rateOf = (id) => vatRates.find((r) => r.id === (id || 'std')) || vatRates[0] || { label: '', rate: 0 };
+    const short = (r) => String(r.label || '').replace(/ \(.*\)$/, '');
+    const items = BE.catalog();
+    const invoices = BE.all('invoices').filter((i) => !i.void);
+    const usedOn = (name) => invoices.filter((i) => (i.lines || []).some((l) => l.name === name)).length;
+    const taxFor = (x) => BE.calcTax([{ qty: 1, rate: Number(x.price) || 0, vat: x.vat || 'std', sscl: x.sscl === false ? false : undefined }], 0);
+
+    // list
+    const FILT = { all: () => true, service: (x) => x.kind === 'service', product: (x) => x.kind === 'product' };
+    const chips = [['all', 'Everything'], ['service', 'Services'], ['product', 'Products']].map(([k, label]) => {
+      const on = st.filter === k;
+      return { label, count: items.filter(FILT[k]).length, on, bg: on ? '#18161F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#18161F', border: on ? '#18161F' : '#E2DFE8', countBg: on ? 'rgba(255,255,255,0.18)' : '#EFEDF3',
+        pick: () => this.setState({ filter: k }) };
+    });
+    const q = st.q.trim().toLowerCase();
+    const list = items.filter(FILT[st.filter] || FILT.all).filter((x) => !q || x.name.toLowerCase().indexOf(q) >= 0);
+    const F = this.form();
+    const RT = { hourly: 'hour', daily: 'day', monthly: 'month' };
+    const rows = list.map((x) => {
+      const t = taxFor(x);
+      const n = usedOn(x.name);
+      const unit = x.unit || RT[x.rt] || 'item';
+      const editing = !!F && F.mode === 'edit' && F.id === x.id;
+      const coll = x.kind === 'product' ? 'products' : 'services';
+      return {
+        name: x.name, meta: (x.kind === 'product' ? 'Product' : 'Service') + ' · ' + (n ? 'on ' + n + (n === 1 ? ' invoice' : ' invoices') : 'not used yet'),
+        icon: x.kind === 'product' ? 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8' : 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z',
+        iconBg: x.kind === 'product' ? '#FDE6D6' : '#EEE8FF',
+        tax: vatOn ? 'VAT ' + short(rateOf(x.vat)) + (ssclOn && x.sscl !== false ? ' · SSCL ' + ((pack.sscl || 0) * 100) + '%' : '') : (ssclOn && x.sscl !== false ? 'SSCL ' + ((pack.sscl || 0) * 100) + '%' : 'No VAT'),
+        taxSub: t.tax ? money(t.total) + ' with tax' : '',
+        price: money(x.price), per: 'per ' + unit,
+        bg: editing || st.del === x.id || st.flash === x.id ? '#EEE8FF' : 'transparent',
+        editLabel: 'Edit ' + x.name, delLabel: 'Remove ' + x.name, deleting: st.del === x.id,
+        delText: 'Remove ' + x.name + ' from your prices? ' + (n ? 'The ' + n + (n === 1 ? ' invoice' : ' invoices') + ' that use it stay as they are.' : 'Nothing else changes.'),
+        edit: () => this.setState({ del: null, errs: [], form: { mode: 'edit', id: x.id, kind: x.kind, name: x.name, price: String(x.price), unit, vat: x.vat || 'std', sscl: x.sscl !== false } }),
+        askDelete: () => this.setState({ del: st.del === x.id ? null : x.id, form: null }),
+        confirmDelete: () => { BE.remove(coll, x.id); BE.log('Removed ' + x.name + ' from products and services'); this.setState({ del: null }); this.notify(x.name + ' removed. Invoices that used it don’t change.'); }
+      };
+    });
+    const services = items.filter((x) => x.kind === 'service'), products = items.filter((x) => x.kind === 'product');
+    const avgDay = services.find((x) => (x.unit || RT[x.rt]) === 'day');
+    const tiles = [
+      { label: 'Services', value: String(services.length), dot: '#7A5AF8' },
+      { label: 'Products', value: String(products.length), dot: '#E0752D' }
+    ].concat(avgDay ? [{ label: 'Day rate', value: money(avgDay.price), dot: '#2F5711' }] : []);
+
+    // form
+    const setF = (patch) => this.setState({ form: Object.assign({}, this.form() || this.blank(), patch), errs: [] });
+    const UNITS = ['job', 'hour', 'day', 'page', 'month', 'item', 'label', 'sign', 'SKU', 'image', 'set', 'box', 'run', 'workshop'];
+    let formVals = { open: false, addOpen: false, kinds: [], units: [], errs: [], pvRows: [] };
+    if (F) {
+      const price = BE.num(F.price);
+      const t = BE.calcTax([{ qty: 1, rate: price, vat: F.vat, sscl: F.sscl ? undefined : false }], 0);
+      formVals = {
+        open: true, addOpen: F.mode === 'add', title: F.mode === 'add' ? 'Add a price' : 'Edit ' + F.name,
+        sub: F.mode === 'add' ? 'It shows up when you add lines to a quote or invoice.' : 'Changes apply to new quotes and invoices. Ones already sent keep their price.',
+        kinds: [['service', 'Service'], ['product', 'Product']].map(([k, label]) => ({ label, on: F.kind === k, bg: F.kind === k ? '#18161F' : 'transparent', fg: F.kind === k ? '#FFFFFF' : '#18161F', pick: () => setF({ kind: k }) })),
+        name: F.name, price: F.price, unit: F.unit, vat: F.vat, sscl: !!F.sscl,
+        units: UNITS.indexOf(F.unit) >= 0 ? UNITS : UNITS.concat([F.unit]),
+        namePh: lk ? (F.kind === 'product' ? 'e.g. Printed brochures (500)' : 'e.g. Logo design') : (F.kind === 'product' ? 'e.g. Business cards (250)' : 'e.g. Logo design'),
+        priceLabel: vatOn || ssclOn ? 'Price before tax' : 'Price',
+        nameBorder: st.errs.length && !String(F.name).trim() ? '#A8200D' : '#CBC7D3', priceBorder: st.errs.length && !(price > 0) ? '#A8200D' : '#CBC7D3',
+        vatOn, ssclShow: ssclOn, ssclPct: ((pack.sscl || 0) * 100) + '%', ssclBg: F.sscl ? '#7A5AF8' : '#CBC7D3', ssclLeft: F.sscl ? '25px' : '3px',
+        pvName: String(F.name).trim() || 'Your item', pvPrice: money(price),
+        pvRows: BE.taxRows(t).map((r) => ({ label: r.label, amount: r.amount })), pvTotal: BE.money(t.total, null, { cents: t.total % 1 !== 0 }),
+        hasNote: !!(lk && ssclOn && pack.ssclNote) || !vatOn, note: lk && ssclOn ? pack.ssclNote : (lk ? 'You’re not VAT registered, so no VAT is added.' : 'You’re not VAT registered, so no VAT is added. If you register, set a VAT rate on each price.'),
+        btn: F.mode === 'add' ? 'Save price' : 'Save changes',
+        errs: st.errs, errOn: st.errs.length > 0
+      };
+    }
+    const saveForm = () => {
+      const f = this.form();
+      if (!f) return;
+      const name = String(f.name || '').trim(), price = Math.round(BE.num(f.price) * 100) / 100;
+      const errs = [];
+      if (!name) errs.push('Give it a name, as it should read on an invoice.');
+      if (!(price > 0)) errs.push('Add a price above ' + sym.trim() + ' 0.');
+      if (items.some((x) => x.id !== f.id && x.name.toLowerCase() === name.toLowerCase())) errs.push(name + ' is already in your list.');
+      if (errs.length) { this.setState({ errs }); return; }
+      const rt = { hour: 'hourly', day: 'daily', month: 'monthly' }[f.unit] || 'flat';
+      const data = { name, price, unit: f.unit, vat: f.vat || 'std' };
+      if (f.kind === 'service') data.rt = rt;
+      if (lk) data.sscl = !!f.sscl;
+      const coll = f.kind === 'product' ? 'products' : 'services';
+      if (f.mode === 'add') {
+        const it = BE.add(coll, Object.assign({ id: BE.id(f.kind === 'product' ? 'prd' : 'svc') }, data), { end: true });
+        BE.log('Added ' + name + ' at ' + BE.money(price) + ' per ' + f.unit + ' to products and services');
+        this.setState({ form: null, errs: [], filter: 'all', q: '', flash: it.id, dismissed: BE.hash() === 'add' ? 'add' : st.dismissed });
+        this.notify(name + ' saved · ' + BE.money(price) + ' per ' + f.unit);
+      } else {
+        const old = items.find((x) => x.id === f.id);
+        if (old && old.kind !== f.kind) { BE.remove(old.kind === 'product' ? 'products' : 'services', f.id); BE.add(coll, Object.assign({ id: f.id }, data), { end: true }); }
+        else BE.update(coll, f.id, data);
+        this.setState({ form: null, errs: [], flash: f.id });
+        this.notify(name + ' updated · new quotes and invoices use ' + BE.money(price));
+      }
+    };
+    return {
+      toast: st.toast, sym, vatRates,
+      taxIntro: vatOn ? (ssclOn ? ', SSCL and VAT' : ' and VAT rate') : (ssclOn ? ' and SSCL' : ''),
+      taxHint: lk ? (vatOn ? 'You’re VAT and SSCL registered, so each price shows its VAT rate and whether SSCL applies.' : 'Prices are in rupees. Tax is added on invoices if you register for VAT or SSCL.')
+        : (vatOn ? 'You’re VAT registered, so each price has a VAT rate: standard 20%, reduced 5%, zero-rated or exempt.' : 'Prices are in pounds. You’re not VAT registered, so no VAT is added.'),
+      showTax: vatOn || ssclOn,
+      colTax: vatOn ? 'VAT' + (ssclOn ? ' and SSCL' : '') : (ssclOn ? 'SSCL' : 'Tax'),
+      hasItems: items.length > 0, noItems: items.length === 0 && !(F && F.mode === 'add'),
+      tiles, chips, rows, noRows: rows.length === 0,
+      emptyText: q ? 'Nothing matches “' + st.q.trim() + '”.' : 'Nothing in this group yet.',
+      q: st.q, setQ: (e) => this.setState({ q: e.target.value }), clearQ: () => this.setState({ q: '', filter: 'all' }),
+      form: formVals, saveForm,
+      hasNote: lk && ssclOn, note: pack.ssclNote || '',
+      openAdd: () => { if (F && F.mode === 'add') { this.notify('The new price form is open below'); return; } this.setState({ form: this.blank(st.filter === 'product' ? 'product' : 'service'), errs: [], del: null, flash: null }); },
+      closeForm: () => this.setState({ form: null, errs: [], dismissed: BE.hash() === 'add' ? 'add' : st.dismissed }),
+      cancelDelete: () => this.setState({ del: null }),
+      setName: (e) => setF({ name: e.target.value }), setPrice: (e) => setF({ price: e.target.value }), setUnit: (e) => setF({ unit: e.target.value }),
+      setVat: (e) => setF({ vat: e.target.value }), toggleSscl: () => { const f = this.form() || this.blank(); setF({ sscl: !f.sscl }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

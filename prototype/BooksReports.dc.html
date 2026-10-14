@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Reports</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.k-main{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:24px clamp(16px,4vw,40px) 64px;display:flex;flex-direction:column;gap:24px}
+.k-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0;box-sizing:border-box}
+.k-soft{background:#F7F6F9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.k-dark{background:#18161F;color:#FFFFFF;border-radius:24px;padding:clamp(22px,3vw,34px);display:flex;flex-wrap:wrap;gap:18px 32px;align-items:flex-end;justify-content:space-between;box-sizing:border-box}
+.k-eyebrow{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:700 15px DM Sans,sans-serif;color:#EEE8FF}
+.k-dot{width:10px;height:10px;border-radius:9999px;background:#B9A3FF;flex:none}
+.k-big{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.03em;color:#B9A3FF;font-variant-numeric:tabular-nums}
+.k-lead{margin:0;font-size:16px;line-height:1.5;color:#EEE8FF;max-width:620px}
+.k-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.k-h3{margin:0;font-size:15px;font-weight:700}
+.k-sub{font-size:13px;color:#5F5B68;line-height:1.45}
+.k-p{margin:0;font-size:14px;line-height:1.55;color:#47444F}
+.k-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;max-width:100%}
+.k-btn-dark{background:#18161F;color:#FFFFFF}.k-btn-dark:hover{color:#FFFFFF;background:#2E2B38}
+.k-btn-soft{background:rgba(24,22,31,0.07);color:#18161F}
+.k-btn-violet{background:#B9A3FF;color:#18161F}
+.k-btn-ghost{background:rgba(238,232,255,0.14);color:#FFFFFF}.k-btn-ghost:hover{color:#FFFFFF}
+.k-btn-sm{min-height:36px;padding:0 14px;font-size:13px}
+.k-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.k-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.4}
+.k-good{background:#E2F6D5;color:#2F5711}.k-attn{background:#FFF0B8;color:#6B5000}.k-late{background:#FBE3DF;color:#A8200D}.k-plain{background:#EFEDF3;color:#47444F}.k-violet{background:#EEE8FF;color:#18161F}.k-darktag{background:#18161F;color:#B9A3FF}
+.k-wrap{white-space:normal}
+.k-num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.k-tabs{display:flex;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;max-width:100%;overflow-x:auto;box-sizing:border-box;scrollbar-width:none}
+.k-tab{min-height:38px;padding:0 14px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.k-tab[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.k-input{min-height:44px;padding:0 12px;border:1px solid #CBC7D3;border-radius:12px;font:500 14px DM Sans,sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box;max-width:100%;min-width:0}
+.k-pre{margin:0;max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:#FFFFFF;border:1px solid #E2DFE8;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre}
+.k-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.k-li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:11px 0;border-top:1px solid #EFEDF3}
+.k-li:first-child{border-top:0}
+.k-cols{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.k-cols>*{flex:1 1 380px}
+.k-rowbtn{width:100%;display:flex;align-items:center;gap:10px 14px;padding:12px 4px;border:0;border-top:1px solid #EFEDF3;background:transparent;color:#18161F;text-align:left;font:500 14px DM Sans,sans-serif;cursor:pointer;box-sizing:border-box}
+.k-rowbtn:hover{background:#FBFAFC}
+.k-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px;border-top:2px solid #18161F;font-weight:700}
+.k-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F6F9}
+.k-icon{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none}
+.k-drill{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:6px 12px;border-radius:14px;background:#F7F6F9}
+.k-drill a,.k-drill span.k-dw{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:7px 0;font-size:13px;text-decoration:none;color:#18161F;border-top:1px solid #EAE7EF}
+.k-drill a:first-child,.k-drill span.k-dw:first-child{border-top:0}
+@media (max-width: 600px){.k-hide-sm{display:none!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+  <dc-import name="AppHeader"></dc-import>
+  <main class="k-main">
+    <dc-import name="AppCrumbs" area="keep" here="Reports"></dc-import>
+
+    <section class="k-dark" aria-labelledby="rp-h">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="rp-h" class="k-eyebrow"><span class="k-dot"></span>Reports · {{biz}}</h1>
+        <span class="k-big">{{hero.big}}</span>
+        <p class="k-lead">{{hero.lead}}</p>
+      </div>
+      <dl style="flex: 0 1 420px; min-width: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px;">
+        <sc-for list="{{hero.nums}}" as="n" hint-placeholder-count="3">
+          <div style="flex: 1 1 110px; min-width: 0; padding: 12px 14px; border-radius: 16px; background: rgba(238,232,255,0.1); display: flex; flex-direction: column; gap: 2px;">
+            <dt style="font-size: 12px; color: #EEE8FF;">{{n.label}}</dt>
+            <dd style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: {{n.color}}; font-variant-numeric: tabular-nums; white-space: nowrap;">{{n.value}}</dd>
+          </div>
+        </sc-for>
+      </dl>
+    </section>
+
+    <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
+      <section class="k-card" aria-labelledby="em-h">
+        <h2 id="em-h" class="k-h2">Your reports fill in as you work</h2>
+        <p class="k-p">{{emptyText}}</p>
+        <div class="k-btns"><a class="k-btn k-btn-dark" href="ThreeIn.dc.html#bill">Bill someone</a><a class="k-btn k-btn-soft" href="ThreeOut.dc.html#expense">Add an expense</a></div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{hasData}}" hint-placeholder-val="{{true}}">
+      <div role="group" aria-label="Reports" class="k-tabs" style="align-self: flex-start;">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="6">
+          <button type="button" class="k-tab" aria-pressed="{{t.on}}" onClick="{{t.pick}}">{{t.label}}</button>
+        </sc-for>
+      </div>
+
+      <section id="{{r.id}}" class="k-card" aria-labelledby="r-h">
+        <div class="k-head" style="align-items: center;">
+          <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <h2 id="r-h" class="k-h2">{{r.title}}</h2>
+            <span class="k-sub">{{r.sub}}</span>
+          </div>
+          <sc-if value="{{r.hasPeriods}}" hint-placeholder-val="{{true}}">
+            <div role="group" aria-label="Period" class="k-tabs">
+              <sc-for list="{{r.periods}}" as="pp" hint-placeholder-count="3"><button type="button" class="k-tab" aria-pressed="{{pp.on}}" onClick="{{pp.pick}}" style="min-height: 34px; font-size: 13px;">{{pp.label}}</button></sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-for list="{{r.blocks}}" as="b" hint-placeholder-count="2">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <sc-if value="{{b.title}}" hint-placeholder-val="{{true}}">
+              <div class="k-head" style="padding: 8px 0 2px;"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5F5B68;">{{b.title}}</span><sc-if value="{{b.link}}" hint-placeholder-val="{{false}}"><a href="{{b.link}}" style="font-size: 13px; font-weight: 600; color: #47444F;">{{b.linkText}}</a></sc-if></div>
+            </sc-if>
+            <div style="overflow-x: auto; max-width: 100%;">
+              <table style="width: 100%; min-width: {{b.minW}}; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums;">
+                <thead><tr>
+                  <sc-for list="{{b.cols}}" as="c" hint-placeholder-count="2"><th scope="col" style="text-align: {{c.align}}; padding: 6px 8px; font-size: 12px; font-weight: 600; color: #5F5B68; border-bottom: 1px solid #E2DFE8; white-space: nowrap;">{{c.label}}</th></sc-for>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{b.rows}}" as="row" hint-placeholder-count="5">
+                    <tr style="background: {{row.bg}};">
+                      <th scope="row" style="text-align: left; padding: 9px 8px; border-top: {{row.border}}; font-weight: {{row.weight}}; vertical-align: top;">
+                        <sc-if value="{{row.href}}" hint-placeholder-val="{{false}}"><a href="{{row.href}}" style="text-decoration: none;">{{row.label}}</a></sc-if>
+                        <sc-if value="{{row.nohref}}" hint-placeholder-val="{{true}}"><span>{{row.label}}</span></sc-if>
+                        <sc-if value="{{row.sub}}" hint-placeholder-val="{{true}}"><span style="display: block; font-size: 12px; font-weight: 400; color: #5F5B68;">{{row.sub}}</span></sc-if>
+                      </th>
+                      <sc-for list="{{row.cells}}" as="cell" hint-placeholder-count="1"><td style="text-align: right; padding: 9px 8px; border-top: {{row.border}}; font-weight: {{row.weight}}; white-space: nowrap; vertical-align: top; color: {{row.color}};">{{cell}}</td></sc-for>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <sc-if value="{{b.note}}" hint-placeholder-val="{{false}}"><span class="k-sub">{{b.note}}</span></sc-if>
+          </div>
+        </sc-for>
+
+        <div class="k-btns" style="padding-top: 4px;">
+          <button type="button" class="k-btn k-btn-soft" onClick="{{toggleCsv}}" aria-expanded="{{csvOpen}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>{{csvLabel}}</button>
+          <sc-for list="{{r.links}}" as="l" hint-placeholder-count="1"><a class="k-btn k-btn-soft" href="{{l.href}}">{{l.label}}</a></sc-for>
+        </div>
+        <sc-if value="{{csvOpen}}" hint-placeholder-val="{{false}}">
+          <div class="k-soft" style="border: 1px solid #E2DFE8;">
+            <div class="k-head" style="align-items: center;">
+              <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{csvName}}</span><span class="k-sub">Copy it into a spreadsheet, or send it to {{prShort}}.</span></span>
+              <div class="k-btns"><button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{copyCsv}}">Copy CSV</button><button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{toggleCsv}}">Close</button></div>
+            </div>
+            <pre class="k-pre">{{csv}}</pre>
+          </div>
+        </sc-if>
+      </section>
+      <p class="k-sub" style="margin: 0;">{{foot}}</p>
+    </sc-if>
+  </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: null, per: 'year', csvOpen: false, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  renderVals() {
+    const st = this.state;
+    const P = BE.pack();
+    const lk = BE.is('lk');
+    const books = BE.books;
+    const prof = BE.get('profile') || {};
+    const W = (n) => BE.money(n, null, { whole: true });
+    const M = (n) => BE.money(n, null, { cents: true });
+    const pr = BE.practice ? BE.practice() : { has: false, short: 'your accountant' };
+    const prShort = pr.has ? pr.short : (lk ? 'your tax practitioner' : 'your accountant');
+    const yr = books.yearRange();
+    const hasData = books.ledger().length > 0 || BE.all('invoices').length > 0;
+    const t = BE.keepTotals ? BE.keepTotals('year') : BE.totals('year');
+    const bal = books.balance();
+    const TABS = [['profit', 'Profit and loss'], ['balance', 'Balance sheet'], ['owed', 'Owed to you'], ['owe', 'Bills to pay']]
+      .concat(lk ? [['vat', 'VAT and SSCL'], ['payroll', 'Payroll']] : [['quarters', 'Quarters'], ['property', 'Property']]);
+    const hash = BE.hash();
+    const tab = st.tab || (TABS.some((x) => x[0] === hash) ? hash : 'profit');
+    const col = (label, align) => ({ label, align: align || 'right' });
+    const R = (label, cells, o) => Object.assign({ label, cells, sub: '', href: false, nohref: true, weight: 400, border: '1px solid #EFEDF3', bg: 'transparent', color: '#18161F' }, o || {});
+    const link = (o, href) => Object.assign(o, { href: href || false, nohref: !href });
+    const total = (label, cells, o) => R(label, cells, Object.assign({ weight: 700, border: '2px solid #18161F' }, o || {}));
+    let r = { id: tab, title: '', sub: '', blocks: [], links: [], hasPeriods: false, periods: [] };
+    let csvRows = [];
+    const catLabel = (row) => ({ label: row.name, sub: row.official });
+
+    if (tab === 'profit') {
+      const q2 = lk ? { from: new Date(2026, 6, 1), to: new Date(2026, 8, 30), label: 'Jul – Sep' } : (() => { const q = books.quarters().find((x) => x.id === P.lastQuarter); return { from: q.fromD, to: q.toD, label: q.label + ' (' + q.range + ')' }; })();
+      const PER = { month: { from: new Date(2026, 9, 1), to: BE.todayDate, label: 'October so far' }, last: q2, year: { from: yr.from, to: BE.todayDate, label: yr.label + ' so far' } };
+      const per = PER[st.per] ? st.per : 'year';
+      const pp = PER[per];
+      const sm = books.pl(pp.from, pp.to);
+      const basis = books.basis();
+      r.title = 'Profit and loss';
+      r.sub = pp.label + ' · ' + (basis === 'cash' ? 'cash basis: money in and out when it moves' : 'accruals: invoices and bills when they’re dated') + ' · in ' + (lk ? 'the lines of the income tax return' : 'HMRC’s categories');
+      r.hasPeriods = true;
+      r.periods = [['month', 'October'], ['last', lk ? 'Jul – Sep' : P.lastQuarter.toUpperCase()], ['year', yr.label]].map(([k, l]) => ({ label: l, on: per === k, pick: () => { if (per !== k) this.setState({ per: k, csvOpen: false }); } }));
+      const allowRows = sm.se.rows.filter((x) => x.allowable);
+      const notRows = sm.se.rows.filter((x) => !x.allowable);
+      const seRows = [R(lk ? 'Sales and services' : 'Your sales', [M(sm.se.income)], { sub: lk ? 'Gains and profits from business' : 'Turnover', weight: 600 })]
+        .concat(sm.se.other ? [R('Other business income', [M(sm.se.other)])] : [])
+        .concat(allowRows.map((x) => R(x.name, ['−' + M(x.amount)], { sub: x.official, color: x.id === 'unsorted' ? '#A8200D' : '#18161F' })))
+        .concat([total('Profit', [M(sm.se.profit)], { sub: (lk ? 'Business income' : 'Income') + ' less allowable costs' })]);
+      r.blocks.push({ title: lk ? 'Business income' : 'Self-employment', cols: [col('', 'left'), col('Amount')], rows: seRows, minW: '320px', note: '' });
+      if (notRows.length) r.blocks.push({ title: 'Not counted against profit', cols: [col('', 'left'), col('Amount')], rows: notRows.map((x) => R(x.name, [M(x.amount)], { sub: x.official })), minW: '320px', note: lk ? 'Equipment is claimed as capital allowances in the return; entertainment is restricted.' : 'Equipment goes to ' + prShort + ' for capital allowances; client entertaining isn’t allowable.' });
+      let propProfit = 0;
+      if (!lk && BE.all('properties').length) {
+        propProfit = sm.prop.profit;
+        r.blocks.push({ title: 'UK property', link: 'Properties.dc.html', linkText: 'Open the flat', cols: [col('', 'left'), col('Amount')], minW: '320px',
+          rows: [R('Rent', [M(sm.prop.income)], { sub: 'Total rents and other income from property', weight: 600 })].concat(sm.prop.rows.map((x) => R(x.name, ['−' + M(x.amount)], { sub: x.official }))).concat([total('Property profit', [M(sm.prop.profit)])]),
+          note: 'Mortgage interest of ' + M(sm.prop.finance) + ' is kept separate: it earns a 20% tax credit instead of being deducted.' });
+      }
+      r.blocks.push({ title: '', cols: [col('', 'left'), col('')], minW: '320px', rows: [total('Total profit for ' + pp.label, [M(sm.se.profit + propProfit)], { bg: '#EEE8FF', border: '0' })], note: sm.se.unsorted.length ? sm.se.unsorted.length + ' item' + (sm.se.unsorted.length === 1 ? ' isn’t' : 's aren’t') + ' sorted yet; they’re counted as costs until they are.' : '' });
+      r.links = [{ label: 'See the ' + taxWord(lk) + ' estimate', href: 'ThreeKeep.dc.html#estimate' }];
+      csvRows = [['Profit and loss', prof.business || '', pp.label, basis], [], ['Section', 'Line', 'Official name', 'Amount']];
+      csvRows.push([lk ? 'Business income' : 'Self-employment', lk ? 'Sales and services' : 'Your sales', lk ? 'Gains and profits from business' : 'Turnover', sm.se.income.toFixed(2)]);
+      sm.se.rows.forEach((x) => csvRows.push([x.allowable ? 'Costs' : 'Not allowable', x.name, x.official, (-x.amount).toFixed(2)]));
+      csvRows.push(['', 'Profit', '', sm.se.profit.toFixed(2)]);
+      if (!lk && BE.all('properties').length) { csvRows.push(['UK property', 'Rent', 'Total rents and other income from property', sm.prop.income.toFixed(2)]); sm.prop.rows.forEach((x) => csvRows.push(['UK property', x.name, x.official, (-x.amount).toFixed(2)])); csvRows.push(['UK property', 'Mortgage interest (separate)', 'Residential property finance costs', sm.prop.finance.toFixed(2)]); }
+    } else if (tab === 'balance') {
+      r.title = 'Balance sheet';
+      r.sub = 'What ' + (prof.business || 'the business') + ' owns and owes today, ' + BE.today + ' 2026';
+      const blk = (title, list, tot, totLabel) => ({ title, cols: [col('', 'left'), col('Amount')], minW: '320px', rows: list.map((x) => R(x.label, [M(x.amount)], { sub: x.formal })).concat([total(totLabel, [M(tot)])]) });
+      r.blocks = [blk('What you own', bal.own, bal.tOwn, 'Total you own'), blk('What you owe', bal.owe, bal.tOwe, 'Total you owe'),
+        blk('What’s yours', bal.eq, bal.tEq, 'Yours (own less owe)')];
+      r.blocks[2].note = 'Always balances: what you own, less what you owe, is yours. Cash starts from your bank balance on 1 Oct plus what’s been recorded since.';
+      csvRows = [['Balance sheet', prof.business || '', BE.today + ' 2026'], [], ['Section', 'Line', 'Official name', 'Amount']];
+      [['Own', bal.own], ['Owe', bal.owe], ['Equity', bal.eq]].forEach(([s, l]) => l.forEach((x) => csvRows.push([s, x.label, x.formal, x.amount.toFixed(2)])));
+    } else if (tab === 'owed' || tab === 'owe') {
+      const a = books.aged(tab === 'owed' ? 'in' : 'out');
+      r.title = tab === 'owed' ? 'Money owed to you' : 'Bills you owe';
+      r.sub = (tab === 'owed' ? 'Aged receivables' : 'Aged payables') + ' · by how late, today';
+      r.blocks.push({ title: 'By age', cols: [col('', 'left'), col('Count'), col('Amount')], minW: '320px', rows: a.buckets.map((b) => R(b.label, [String(b.items.length), M(b.amount)], { color: b.id === 'cur' ? '#18161F' : b.amount ? '#A8200D' : '#18161F' })).concat([total('Total', [String(a.buckets.reduce((x, b) => x + b.items.length, 0)), M(a.total)])]) });
+      const items = [].concat(...a.buckets.map((b) => b.items.map((i) => Object.assign({ bucket: b.label }, i))));
+      r.blocks.push({ title: tab === 'owed' ? 'Invoices' : 'Bills', cols: [col(tab === 'owed' ? 'Customer' : 'Supplier', 'left'), col('Due'), col('Open')], minW: '420px',
+        rows: items.length ? items.map((i) => link(R(i.who, [i.due + (i.dueIn < 0 ? ' · ' + (-i.dueIn) + 'd late' : ''), M(i.amount)], { sub: i.what, color: i.dueIn < 0 ? '#A8200D' : '#18161F' }), i.href)) : [R(tab === 'owed' ? 'Nobody owes you anything right now' : 'No bills to pay', ['', ''])] });
+      r.links = [{ label: tab === 'owed' ? 'All invoices' : 'All bills', href: tab === 'owed' ? 'SellInvoices.dc.html' : 'ThreeOut.dc.html' }];
+      csvRows = [[r.title, prof.business || '', BE.today + ' 2026'], [], ['Who', 'What', 'Due', 'Age', 'Open']];
+      items.forEach((i) => csvRows.push([i.who, i.what, i.due, i.bucket, i.amount.toFixed(2)]));
+    } else if (tab === 'quarters') {
+      const qs = books.quarters().map((q) => books.quarter(q.id));
+      r.title = 'Quarter summary';
+      r.sub = 'Making Tax Digital quarters for ' + yr.label + ' · self-employment in HMRC’s categories';
+      const cats = {};
+      qs.forEach((q) => q.sum.se.rows.forEach((x) => { cats[x.id] = cats[x.id] || x; }));
+      const STAT = { filed: 'Filed', sent: 'Sent', ready: 'To send', open: 'Open', upcoming: '—' };
+      const cell = (q, f) => q.hasData ? f(q) : '—';
+      const rows = [R('Status', qs.map((q) => STAT[q.status]), { weight: 600 }), R('Your sales', qs.map((q) => cell(q, (x) => W(x.sum.se.income))), { sub: 'Turnover', weight: 600 })]
+        .concat(Object.keys(cats).map((k) => R(cats[k].name, qs.map((q) => { const x = q.sum.se.rows.find((y) => y.id === k); return x ? W(x.amount) : '—'; }), { sub: cats[k].official + (cats[k].allowable ? '' : ' · not allowable') })))
+        .concat([total('Profit', qs.map((q) => cell(q, (x) => W(x.sum.se.profit))))]);
+      r.blocks.push({ title: '', cols: [col('', 'left')].concat(qs.map((q) => col(q.label))), rows, minW: '560px', note: 'Staff costs come from your payroll records; Car, van and travel includes mileage.' });
+      r.links = [{ label: 'Open Quarters', href: 'Quarters.dc.html' }];
+      csvRows = [['Quarter summary', prof.business || '', yr.label], [], ['Line', 'Official name'].concat(qs.map((q) => q.label))];
+      csvRows.push(['Your sales', 'Turnover'].concat(qs.map((q) => q.sum.se.income.toFixed(2))));
+      Object.keys(cats).forEach((k) => csvRows.push([cats[k].name, cats[k].official].concat(qs.map((q) => { const x = q.sum.se.rows.find((y) => y.id === k); return x ? x.amount.toFixed(2) : '0.00'; }))));
+      csvRows.push(['Profit', ''].concat(qs.map((q) => q.sum.se.profit.toFixed(2))));
+    } else if (tab === 'property') {
+      const qs = books.quarters().map((q) => books.quarter(q.id));
+      const yt = BE.propertyTotals ? BE.propertyTotals() : { income: 0, costs: 0, finance: 0, allowance: 1000, allowanceBetter: false };
+      r.title = 'Property summary';
+      r.sub = (BE.all('properties')[0] || {}).name ? (BE.all('properties')[0].name + ', ' + BE.all('properties')[0].area + ' · your share') : 'Your let property';
+      const cats = {};
+      qs.forEach((q) => q.sum.prop.rows.forEach((x) => { cats[x.id] = cats[x.id] || x; }));
+      const rows = [R('Rent', qs.map((q) => q.sum.prop.income ? W(q.sum.prop.income) : '—'), { sub: 'Total rents and other income from property', weight: 600 })]
+        .concat(Object.keys(cats).map((k) => R(cats[k].name, qs.map((q) => { const x = q.sum.prop.rows.find((y) => y.id === k); return x ? W(x.amount) : '—'; }), { sub: cats[k].official })))
+        .concat([total('Property profit', qs.map((q) => q.sum.prop.income || q.sum.prop.costs ? W(q.sum.prop.profit) : '—')), R('Mortgage interest (kept separate)', qs.map((q) => q.sum.prop.finance ? W(q.sum.prop.finance) : '—'), { sub: 'Residential property finance costs: 20% tax credit' })]);
+      r.blocks.push({ title: 'By quarter', cols: [col('', 'left')].concat(qs.map((q) => col(q.label))), rows, minW: '560px' });
+      r.blocks.push({ title: 'Costs or the £' + (yt.allowance || 1000).toLocaleString('en-GB') + ' property allowance', cols: [col('', 'left'), col(yr.label + ' so far')], minW: '320px',
+        rows: [R('Your allowable costs', [M(yt.costs)]), R('The property allowance instead', [M(Math.min(yt.allowance || 1000, yt.income))]), total(yt.allowanceBetter ? 'The allowance is better' : 'Your actual costs are better', [''])],
+        note: yt.allowanceBetter ? 'Claiming the allowance means you can’t also claim costs or the mortgage interest credit. Ask ' + prShort + '.' : 'Keep claiming your actual costs (and the mortgage interest credit).' });
+      r.links = [{ label: 'Open the flat', href: 'Properties.dc.html' }];
+      csvRows = [['Property summary', prof.business || '', yr.label], [], ['Line', 'Official name'].concat(qs.map((q) => q.label))];
+      csvRows.push(['Rent', 'Total rents and other income from property'].concat(qs.map((q) => q.sum.prop.income.toFixed(2))));
+      Object.keys(cats).forEach((k) => csvRows.push([cats[k].name, cats[k].official].concat(qs.map((q) => { const x = q.sum.prop.rows.find((y) => y.id === k); return x ? x.amount.toFixed(2) : '0.00'; }))));
+      csvRows.push(['Mortgage interest', 'Residential property finance costs'].concat(qs.map((q) => q.sum.prop.finance.toFixed(2))));
+    } else if (tab === 'vat') {
+      const ps = books.periods().map((p) => books.period(p.id));
+      r.title = 'VAT and SSCL summary';
+      r.sub = prof.vatRegistered ? 'Month by month · output from tax invoices, input from suppliers’ tax invoices' : 'You’re not registered for VAT or SSCL';
+      const STAT = { filed: 'Filed', due: 'Due', open: 'Open', upcoming: '—' };
+      if (prof.vatRegistered) {
+        r.blocks.push({ title: '', cols: [col('', 'left')].concat(ps.map((p) => col(p.short))), minW: '520px', rows: [
+          R('Status', ps.map((p) => STAT[p.status] + (p.status === 'due' ? ' ' + String(p.due).replace(/ 20\d\d$/, '') : '')), { weight: 600 }),
+          R('Taxable supplies', ps.map((p) => W(p.value)), { sub: 'Value before SSCL and VAT' }),
+          R('Output VAT', ps.map((p) => W(p.output))), R('Input VAT', ps.map((p) => '−' + W(p.input))),
+          R('VAT payable', ps.map((p) => W(p.net)), { weight: 600 }), R('SSCL', ps.map((p) => p.ssclOn ? W(p.sscl) : '—'), { sub: '2.5%, no input credit' }),
+          total('To pay the IRD', ps.map((p) => W(p.total)))
+        ], note: 'How SSCL sits in the VAT base is to confirm with IRD.' });
+        csvRows = [['VAT and SSCL summary', prof.business || '', 'TIN ' + (prof.tin || '')], [], ['Period', 'Status', 'Taxable supplies', 'Output VAT', 'Input VAT', 'VAT payable', 'SSCL', 'Total']];
+        ps.forEach((p) => csvRows.push([p.label, STAT[p.status], p.value.toFixed(2), p.output.toFixed(2), p.input.toFixed(2), p.net.toFixed(2), p.sscl.toFixed(2), p.total.toFixed(2)]));
+      } else {
+        r.blocks.push({ title: '', cols: [col('', 'left'), col('Amount')], minW: '320px', rows: [R('Turnover so far this year of assessment', [W(books.turnover().total)])], note: 'Tax periods tracks it against the VAT threshold.' });
+        csvRows = [['Turnover', books.turnover().total]];
+      }
+      r.links = [{ label: 'Open Tax periods', href: 'TaxPeriods.dc.html' }];
+    } else if (tab === 'payroll') {
+      const ytd = BE.payrollYtd ? BE.payrollYtd() : [];
+      const sum = (k) => ytd.reduce((a, x) => a + (x[k] || 0), 0);
+      r.title = 'Payroll summary';
+      r.sub = yr.label + ' so far · runs approved or paid · EPF 8% and 12%, ETF 3%, APIT from the tables';
+      r.blocks.push({ title: '', cols: [col('Employee', 'left'), col('Months'), col('Gross pay'), col('EPF 8%'), col('APIT'), col('Net pay'), col('EPF 12%'), col('ETF 3%')], minW: '760px',
+        rows: ytd.length ? ytd.map((x) => link(R(x.name, [String(x.months), W(x.gross), W(x.epfEe), W(x.apit), W(x.net), W(x.epfEr), W(x.etf)]), 'SpendPayroll.dc.html'))
+          .concat([total('Total', ['', W(sum('gross')), W(sum('epfEe')), W(sum('apit')), W(sum('net')), W(sum('epfEr')), W(sum('etf'))])]) : [R('No pay runs yet', ['', '', '', '', '', '', ''])],
+        note: 'These totals go to TaxWise.lk at the year end, with each employee’s APIT for their certificate.' });
+      r.links = [{ label: 'Open Payroll', href: 'SpendPayroll.dc.html' }];
+      csvRows = [['Payroll summary', prof.business || '', yr.label + ' so far'], [], ['Employee', 'Months', 'Gross', 'EPF 8%', 'APIT', 'Net', 'EPF 12%', 'ETF 3%']];
+      ytd.forEach((x) => csvRows.push([x.name, x.months, x.gross, x.epfEe, x.apit, x.net, x.epfEr, x.etf]));
+    }
+    const csv = books.csv(csvRows);
+    const csvName = (prof.business || 'Business').replace(/[^A-Za-z0-9]+/g, '-') + '-' + r.title.replace(/[^A-Za-z0-9]+/g, '-') + '.csv';
+    function taxWord(l) { return l ? 'income tax' : 'Income Tax and NI'; }
+    const hero = {
+      big: W(t.profit), lead: hasData ? 'Profit for ' + yr.label + ' so far (' + yr.from.getDate() + ' ' + books.MON[yr.from.getMonth()] + ' to today), counting money on the way as on Home. The reports below read the same entries' + (books.basis() === 'cash' ? ', on the cash basis.' : '.') : 'Nothing recorded yet. Profit and loss, the balance sheet and your ' + (lk ? 'VAT, SSCL and payroll' : 'quarter') + ' summaries build themselves as you work.',
+      nums: [{ label: 'Coming in', value: W(t.in), color: '#FFFFFF' }, { label: 'Going out', value: W(t.out), color: '#FFFFFF' }, { label: 'Yours to keep', value: W(t.keep), color: '#B9A3FF' }]
+    };
+    return {
+      biz: prof.business || 'Your business', hero, hasData, isEmpty: !hasData, emptyText: 'When you bill customers and record what you spend, profit and loss, the balance sheet and money owed fill in here, in ' + (lk ? 'the lines of the income tax return' : 'HMRC’s categories') + '.',
+      tabs: TABS.map(([k, l]) => ({ label: l, on: tab === k, pick: () => { if (tab !== k) { this.setState({ tab: k, csvOpen: false }); } } })),
+      r, prShort, csv, csvName, csvOpen: st.csvOpen, csvLabel: st.csvOpen ? 'Hide the CSV' : 'Export CSV',
+      toggleCsv: () => this.setState({ csvOpen: !st.csvOpen }),
+      copyCsv: () => { books.copy(csv); this.notify(r.title + ' CSV copied'); },
+      foot: 'Figures are what you’ve recorded, on ' + (books.basis() === 'cash' ? 'the cash basis' : 'accruals') + '. ' + (pr.has ? prShort + ' can see the same reports.' : ''),
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

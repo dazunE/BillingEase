@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Quotes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-qrow:hover{border-color:#7A5AF8!important}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+    <dc-import name="AppCrumbs" area="in" here="Quotes"></dc-import>
+
+    <!-- Title -->
+    <section aria-labelledby="q-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="q-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span>Quotes</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">A price you send before the work starts. When your customer says yes, mark it accepted and turn it into an invoice in one step. <span style="color: #5F5B68;">Some apps call these estimates.</span></p>
+        <sc-if value="{{hasQuotes}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{tiles}}" as="t" hint-placeholder-count="3">
+              <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #F7F6F9; border: 1px solid #E2DFE8; font-size: 13px; color: #47444F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{t.dot}};"></span>{{t.label}} <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{t.value}}</strong></span>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">Quotes don’t count in Coming in. The moment you invoice an accepted quote, it’s added as money on the way.</p>
+        <button type="button" onClick="{{newQuote}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          New quote
+        </button>
+      </div>
+    </section>
+
+    <!-- Just sent -->
+    <sc-if value="{{justSent.on}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 18px; border-radius: 20px; background: #E2F6D5; color: #2F5711; font-size: 14px; font-weight: 600;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="m5 12 5 5 9-10"></path></svg>
+        <span style="flex: 1 1 240px; min-width: 0;">{{justSent.text}}</span>
+        <a href="{{justSent.href}}" style="color: #2F5711; font-weight: 700;">Open {{justSent.num}}</a>
+        <button type="button" aria-label="Dismiss" onClick="{{dismissSent}}" style="width: 36px; height: 36px; flex: none; border: 0; border-radius: 9999px; background: rgba(47,87,17,0.1); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      </div>
+    </sc-if>
+
+    <!-- Composer -->
+    <sc-if value="{{c.open}}" hint-placeholder-val="{{false}}">
+      <section id="composer" aria-labelledby="comp-h" style="background: #FFFFFF; border: 2px solid #7A5AF8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start;">
+        <div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px 16px;">
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+              <h2 id="comp-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em;">{{c.heading}}</h2>
+              <span style="font-size: 14px; color: #47444F;">Pick from your products and services or type your own. Nothing goes out until you press Send.</span>
+            </div>
+            <button type="button" aria-label="Close the quote composer" onClick="{{closeComposer}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+            <label style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">Customer</span>
+              <select class="be-field" value="{{c.who}}" onChange="{{setWho}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid {{c.whoBorder}}; border-radius: 10px; background: #FFFFFF; color: #18161F; font: 400 15px DM Sans, sans-serif; cursor: pointer;">
+                <option value="">Choose a customer</option>
+                <sc-for list="{{customers}}" as="cu" hint-placeholder-count="9">
+                  <option value="{{cu.name}}">{{cu.label}}</option>
+                </sc-for>
+                <option value="__new">Someone new…</option>
+              </select>
+            </label>
+            <label style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600;">What it’s for</span>
+              <input class="be-field" type="text" placeholder="{{c.titlePh}}" value="{{c.title}}" onChange="{{setTitle}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+            </label>
+          </div>
+          <sc-if value="{{c.isNewCust}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 14px; padding: 14px; border-radius: 16px; background: #F7F6F9;">
+              <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600;">Their business or name</span>
+                <input class="be-field" type="text" placeholder="{{c.namePh}}" value="{{c.newName}}" onChange="{{setNewName}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+              </label>
+              <label style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600;">Email</span>
+                <input class="be-field" type="email" placeholder="name@company.com" value="{{c.newEmail}}" onChange="{{setNewEmail}}" style="min-height: 44px; box-sizing: border-box; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+              </label>
+              <span style="flex: 1 1 100%; font-size: 13px; color: #5F5B68;">We’ll add them to your customers when you save.</span>
+            </div>
+          </sc-if>
+
+          <!-- Lines -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 13px; font-weight: 600;">Lines</span>
+            <sc-if value="{{c.noLines}}" hint-placeholder-val="{{false}}">
+              <span style="padding: 14px 16px; border-radius: 14px; background: #F7F6F9; font-size: 14px; color: #47444F;">{{c.noLinesText}}</span>
+            </sc-if>
+            <sc-for list="{{c.lines}}" as="ln" hint-placeholder-count="2">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 10px 12px; border-radius: 14px; background: #F7F6F9;">
+                <input class="be-field" type="text" aria-label="Line description" placeholder="Description" value="{{ln.name}}" onChange="{{ln.setName}}" style="flex: 1 1 200px; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #47444F;">
+                  <input class="be-field" type="text" inputmode="decimal" aria-label="{{ln.qtyLabel}}" value="{{ln.qty}}" onChange="{{ln.setQty}}" style="width: 64px; min-height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">{{ln.unit}} ×
+                </span>
+                <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: #47444F;">{{c.sym}}<input class="be-field" type="text" inputmode="decimal" aria-label="Rate" value="{{ln.rate}}" onChange="{{ln.setRate}}" style="width: 90px; min-height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;"></span>
+                <span style="margin-left: auto; min-width: 84px; text-align: right; font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums;">{{ln.amount}}</span>
+                <button type="button" aria-label="{{ln.removeLabel}}" onClick="{{ln.remove}}" style="width: 40px; height: 40px; flex: none; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+              </div>
+            </sc-for>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px;">
+              <sc-if value="{{hasCatalog}}" hint-placeholder-val="{{true}}"><span style="font-size: 13px; color: #5F5B68;">Add from your products and services</span></sc-if>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <sc-for list="{{catalog}}" as="ci" hint-placeholder-count="9">
+                  <button type="button" onClick="{{ci.add}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid #E2DFE8; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 500 13px DM Sans, sans-serif; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{ci.label}} <span style="color: #5F5B68;">{{ci.price}}</span></button>
+                </sc-for>
+                <button type="button" onClick="{{addBlank}}" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 0; border-radius: 9999px; background: transparent; color: #18161F; font: 600 13px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Type your own line</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expiry -->
+          <div style="display: flex; flex-wrap: wrap; gap: 16px 32px; padding-top: 14px; border-top: 1px solid #EFEDF3;">
+            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Expires</span><span style="font-size: 13px; color: #5F5B68;">Optional. After this the price no longer holds.</span></span>
+                <button type="button" role="switch" aria-checked="{{c.expOn}}" aria-label="Quote expires" onClick="{{toggleExp}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{c.expBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{c.expLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
+              </div>
+              <sc-if value="{{c.expOn}}" hint-placeholder-val="{{true}}">
+                <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #47444F;">
+                  <span>After</span>
+                  <select class="be-field" aria-label="Expires after" value="{{c.expDays}}" onChange="{{setExpDays}}" style="min-height: 40px; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; color: #18161F; font: 400 14px DM Sans, sans-serif;">
+                    <option value="14">14 days</option>
+                    <option value="30">30 days</option>
+                    <option value="60">60 days</option>
+                  </select>
+                  <span>· {{c.expDate}}</span>
+                </label>
+              </sc-if>
+            </div>
+            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #5F5B68; line-height: 1.45;">
+              <span style="font-size: 14px; font-weight: 600; color: #18161F;">When they answer</span>
+              <span>Open the quote and mark it accepted or declined. Accepted quotes become an invoice in one step.</span>
+            </div>
+          </div>
+
+          <!-- More options -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button type="button" aria-expanded="{{c.moreOpen}}" onClick="{{toggleMore}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.moreIcon}}"></path></svg>
+              More options
+            </button>
+            <sc-if value="{{c.moreOpen}}" hint-placeholder-val="{{false}}">
+              <label style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600;">Message to your customer</span>
+                <textarea class="be-field" rows="3" value="{{c.note}}" onChange="{{setNote}}" placeholder="A short note that appears above the price" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+              </label>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{c.hasErrors}}" hint-placeholder-val="{{false}}">
+            <div role="alert" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">
+              <sc-for list="{{c.errors}}" as="er" hint-placeholder-count="1"><span>{{er}}</span></sc-for>
+            </div>
+          </sc-if>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+            <button type="button" onClick="{{sendQuote}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 16px DM Sans, sans-serif; cursor: pointer;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg>
+              {{c.sendLabel}}
+            </button>
+            <button type="button" onClick="{{saveDraft}}" style="min-height: 48px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Save as draft</button>
+          </div>
+        </div>
+
+        <!-- Composer totals -->
+        <aside aria-label="Quote total" style="flex: 1 1 280px; min-width: 0; background: #F7F6F9; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-size: 13px; font-weight: 600; color: #47444F;">{{c.numLabel}}</span>
+          <sc-for list="{{c.sums}}" as="s" hint-placeholder-count="2">
+            <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #47444F;"><span style="display: flex; flex-direction: column; min-width: 0;"><span>{{s.label}}</span><sc-if value="{{s.hasSub}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #5F5B68;">{{s.sub}}</span></sc-if></span><span style="font-variant-numeric: tabular-nums; color: #18161F; white-space: nowrap;">{{s.value}}</span></span>
+          </sc-for>
+          <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 10px; border-top: 1px solid #E2DFE8;"><span style="font-weight: 600;">Total</span><span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{c.total}}</span></span>
+          <span style="display: flex; gap: 8px; align-items: flex-start; margin-top: 6px; padding: 12px; border-radius: 14px; background: #EEE8FF; font-size: 13px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 5px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{c.feed}}</span></span>
+        </aside>
+      </section>
+    </sc-if>
+
+    <!-- Empty business -->
+    <sc-if value="{{noQuotes}}" hint-placeholder-val="{{false}}">
+      <section aria-label="No quotes yet" style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 14px;">
+        <span style="width: 48px; height: 48px; border-radius: 16px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4zM8 9h8M8 12h5"></path></svg></span>
+        <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;">No quotes yet</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 560px;">Quotes you send will show here, with whether the customer accepted or declined them. You mark that yourself when they tell you.</p>
+        <button type="button" onClick="{{newQuote}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Write your first quote</button>
+      </section>
+    </sc-if>
+
+    <!-- List -->
+    <sc-if value="{{hasQuotes}}" hint-placeholder-val="{{true}}">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px 24px; align-items: start;">
+        <sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+          <section aria-label="{{g.label}}" style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+            <h2 style="margin: 0; display: flex; align-items: baseline; gap: 8px; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">{{g.label}} <span style="color: #5F5B68; font-weight: 600; font-size: 15px;">{{g.count}}</span></h2>
+            <sc-if value="{{g.empty}}" hint-placeholder-val="{{false}}">
+              <span style="padding: 14px 16px; border-radius: 16px; border: 1px dashed #CBC7D3; font-size: 14px; color: #5F5B68;">{{g.emptyText}}</span>
+            </sc-if>
+            <sc-for list="{{g.items}}" as="q" hint-placeholder-count="1">
+              <a class="be-qrow" href="{{q.href}}" aria-current="{{q.cur}}" style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 18px; border: {{q.border}}; background: {{q.bg}}; color: #18161F; text-decoration: none; font-size: 14px;">
+                <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; width: 100%;">
+                  <span style="font-weight: 700; font-size: 15px; min-width: 0;">{{q.who}}</span>
+                  <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap;">{{q.total}}</span>
+                </span>
+                <span style="color: #47444F;">{{q.title}} · {{q.num}}</span>
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{q.pbg}}; color: {{q.pfg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{q.pfg}};"></span>{{q.status}}</span>
+                  <span style="font-size: 13px; color: #5F5B68;">{{q.meta}}</span>
+                </span>
+              </a>
+            </sc-for>
+          </section>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <nav aria-label="Related" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Also in Coming in:</span>
+      <a href="SellInvoices.dc.html" style="font-weight: 600;">All invoices</a>
+      <a href="SellCustomers.dc.html" style="font-weight: 600;">Customers</a>
+      <a href="SellRecurring.dc.html" style="font-weight: 600;">Repeating invoices and money back</a>
+      <a href="SellCatalog.dc.html" style="font-weight: 600;">Products and services</a>
+    </nav>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1108}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { toast: null, seq: 100, c: { open: false }, dismissed: null, justSent: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  blank(cu) {
+    return { open: true, editId: null, who: cu ? cu.name : '', title: '', lines: [], expOn: true, expDays: '30', note: '', moreOpen: false, errors: [], newName: '', newEmail: '' };
+  }
+  fromQuote(q, editId) {
+    let n = 0;
+    return { open: true, editId, who: q.who, title: q.title, lines: (q.lines || []).map((l) => ({ id: 'l' + (++n), name: l.name, kind: l.kind || 'service', unit: l.unit || 'jobs', qty: String(l.qty), rate: String(l.rate), vat: l.vat })),
+      expOn: true, expDays: '30', note: q.note || '', moreOpen: !!q.note, errors: [], newName: '', newEmail: '' };
+  }
+  // The composer: open from state, or from the address (#new, #new=<customer id>, #edit=<quote>).
+  comp() {
+    const st = this.state, h = BE.hash();
+    if (st.c && st.c.open) return st.c;
+    if (!h || st.dismissed === h) return null;
+    let m = h.match(/^new(?:=(.+))?$/);
+    if (m) return this.blank(m[1] ? BE.find('customers', m[1]) : null);
+    m = h.match(/^edit=(.+)$/);
+    if (m) { const q = BE.find('quotes', m[1], 'num'); if (q && ['draft', 'waiting', 'changes'].indexOf(q.state) >= 0) return this.fromQuote(q, q.num); }
+    return null;
+  }
+  renderVals() {
+    const st = this.state;
+    const h = BE.hash();
+    const money = BE.money, num = BE.num;
+    const usd = (n) => BE.money(n, null, { whole: true });
+    const profile = BE.get('profile') || {};
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const quotes = BE.all('quotes');
+    const custs = BE.all('customers').slice().sort((a, b) => a.name.localeCompare(b.name));
+    const unitOf = (l) => num(l.qty) === 1 ? String(l.unit || '').replace(/s$/, '') : l.unit;
+
+    // ---------- list ----------
+    const PILL = {
+      waiting: { bg: '#E1EEF8', fg: '#1F5E91' }, changes: { bg: '#FFF0B8', fg: '#6B5000' }, draft: { bg: '#EFEDF3', fg: '#47444F' },
+      accepted: { bg: '#E2F6D5', fg: '#2F5711' }, declined: { bg: '#FBE3DF', fg: '#A8200D' }
+    };
+    const statusOf = (q) => q.state === 'waiting' ? 'Sent ' + q.sent
+      : q.state === 'changes' ? 'Asked for changes' : q.state === 'draft' ? 'Draft'
+      : q.state === 'accepted' ? (q.invoice ? 'Accepted · invoiced' : 'Accepted ' + q.accepted) : 'Declined';
+    const metaOf = (q) => q.state === 'waiting' || q.state === 'changes' ? (q.expires ? 'Expires ' + q.expires : 'No expiry')
+      : q.state === 'draft' ? 'Not sent yet' : q.state === 'accepted' ? (q.invoice ? 'Became ' + q.invoice : 'Ready to invoice') : (q.reason ? '“' + q.reason + '”' : 'No reason given');
+    const item = (q) => {
+      const t = BE.quoteTotals(q), on = q.num === h || (st.justSent && st.justSent.num === q.num), p = PILL[q.state] || PILL.draft;
+      return {
+        num: q.num, who: q.who, title: q.title, total: money(t.total), status: statusOf(q), meta: metaOf(q), pbg: p.bg, pfg: p.fg,
+        href: 'SellQuote.dc.html#' + q.num, cur: q.num === h ? 'true' : false,
+        bg: on ? '#EEE8FF' : '#FFFFFF', border: on ? '2px solid #7A5AF8' : '1px solid #E2DFE8'
+      };
+    };
+    const G = [
+      { k: ['waiting', 'changes'], label: 'Waiting for an answer', empty: 'Quotes you’ve sent show up here until the customer answers.' },
+      { k: ['draft'], label: 'Drafts', empty: 'Quotes you’ve started but not sent.' },
+      { k: ['accepted'], label: 'Accepted', empty: 'Accepted quotes wait here until you invoice them.' },
+      { k: ['declined'], label: 'Declined', empty: 'Nothing declined. Reasons customers give will show here.' }
+    ];
+    const groups = G.map((g) => {
+      const items = quotes.filter((q) => g.k.indexOf(q.state) >= 0).map(item);
+      return { label: g.label, count: items.length, items, empty: items.length === 0, emptyText: g.empty };
+    });
+    const sumUsd = (f) => quotes.filter(f).reduce((a, q) => a + BE.quoteTotals(q).total, 0);
+    const tiles = [
+      { label: 'Waiting', value: usd(sumUsd((q) => q.state === 'waiting' || q.state === 'changes')), dot: '#7A5AF8' },
+      { label: 'Drafts', value: usd(sumUsd((q) => q.state === 'draft')), dot: '#C9BCFB' },
+      { label: 'Ready to invoice', value: usd(sumUsd((q) => q.state === 'accepted' && !q.invoice)), dot: '#2F5711' }
+    ];
+
+    // ---------- composer ----------
+    const c = this.comp() || { open: false };
+    const setC = (patch) => this.setState({ c: Object.assign({}, this.comp() || this.blank(null), patch) });
+    const isNewCust = c.who === '__new';
+    const custOf = (name) => custs.find((x) => x.name === name);
+    const cur = profile.currency || pack.currency;
+    const lines = c.lines || [];
+    const ct = BE.quoteTotals({ who: isNewCust ? '' : c.who, lines });
+    const lineIx = (id, patch) => { const cc = this.comp(); setC({ lines: cc.lines.map((l) => l.id === id ? Object.assign({}, l, patch) : l), errors: [] }); };
+    const nextNum = c.editId || BE.nextNumber('Q');
+    const CAT = BE.catalog().map((x) => ({ name: x.name, kind: x.kind, unit: String(x.unit || 'job').replace(/s$/, '') + 's', price: x.price, vat: x.vat }));
+    const conv = (price) => price;
+    const composer = {
+      open: !!c.open, heading: c.editId ? 'Finish ' + c.editId : 'New quote', who: c.who || '', title: c.title || '', note: c.note || '', sym: String(pack.symbol || '£') + (lk ? ' ' : ''),
+      titlePh: lk ? 'e.g. Spice gift set labels' : 'e.g. Brewery tour leaflet', namePh: lk ? 'e.g. Ceylon Crafts (Pvt) Ltd' : 'e.g. Headingley Florist',
+      whoBorder: (c.errors || []).length && !c.who ? '#A8200D' : '#CBC7D3',
+      isNewCust, newName: c.newName || '', newEmail: c.newEmail || '',
+      noLines: lines.length === 0, noLinesText: CAT.length ? 'Add a line from your products and services below, or type your own.' : 'Type your first line below. Prices you save in Products and services show up here as one-tap lines.',
+      lines: lines.map((l) => ({
+        name: l.name, qty: l.qty, rate: l.rate, unit: unitOf(l), qtyLabel: 'Quantity in ' + l.unit, removeLabel: 'Remove ' + (l.name || 'line'),
+        amount: money(num(l.qty) * num(l.rate)),
+        setName: (e) => lineIx(l.id, { name: e.target.value }), setQty: (e) => lineIx(l.id, { qty: e.target.value }), setRate: (e) => lineIx(l.id, { rate: e.target.value }),
+        remove: () => { const cc = this.comp(); setC({ lines: cc.lines.filter((x) => x.id !== l.id) }); }
+      })),
+      expOn: c.expOn !== false, expBg: c.expOn !== false ? '#7A5AF8' : '#CBC7D3', expLeft: c.expOn !== false ? '25px' : '3px', expDays: c.expDays || '30', expDate: 'until ' + BE.inDays(+(c.expDays || 30)),
+      moreOpen: !!c.moreOpen, moreIcon: c.moreOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
+      errors: c.errors || [], hasErrors: (c.errors || []).length > 0,
+      numLabel: nextNum + (c.who && !isNewCust ? ' · ' + c.who : isNewCust && c.newName ? ' · ' + c.newName : ''),
+      sums: [{ label: ct.calc.vatOn || ct.calc.ssclOn ? 'Value of supply' : 'Lines', value: money(ct.sub), hasSub: false, sub: '' }].concat(BE.taxRows(ct.calc).map((r) => ({ label: r.label, sub: r.sub, hasSub: true, value: r.amount }))),
+      total: money(ct.total),
+      feed: ct.total > 0 ? 'Sending doesn’t change Coming in. If they accept and you invoice it, ' + money(ct.total) + ' is added.' : 'Quotes don’t count in Coming in until they become invoices.',
+      sendLabel: ct.total > 0 ? 'Send quote · ' + money(ct.total) : 'Send quote'
+    };
+    const customers = custs.map((x) => ({ name: x.name, label: x.name }));
+    const catalog = CAT.map((it) => ({
+      label: it.name, price: money(conv(it.price)),
+      add: () => {
+        const cc = this.comp() || this.blank(null);
+        const id = 'l' + (this.state.seq + 1);
+        this.setState({ seq: this.state.seq + 1 });
+        setC({ lines: cc.lines.concat([{ id, name: it.name, kind: it.kind, unit: it.unit, qty: it.unit === 'hours' ? '10' : '1', rate: String(conv(it.price)), vat: it.vat }]), errors: [] });
+      }
+    }));
+    const validate = (forSend) => {
+      const errs = [];
+      if (!c.who) errs.push('Choose who the quote is for.');
+      if (isNewCust && !String(c.newName || '').trim()) errs.push('Add the new customer’s name.');
+      if (isNewCust && forSend && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(c.newEmail || '').trim())) errs.push('Add an email like name@company.com so the quote reaches them.');
+      if (forSend && !String(c.title || '').trim()) errs.push('Say what it’s for, in a few words.');
+      if (forSend && lines.length === 0) errs.push('Add at least one line.');
+      if (lines.some((l) => !String(l.name).trim())) errs.push('Every line needs a description.');
+      if (forSend && lines.length && !(ct.total > 0)) errs.push('The total needs to be above zero.');
+      return errs;
+    };
+    const commit = (state) => {
+      let who = c.who;
+      if (isNewCust) {
+        who = String(c.newName).trim();
+        if (!BE.find('customers', who, 'name')) BE.addCustomer({ name: who, email: String(c.newEmail || '').trim() });
+      }
+      const qn = c.editId || BE.nextNumber('Q');
+      const existing = BE.find('quotes', qn, 'num');
+      const base = {
+        num: qn, who, title: String(c.title || '').trim() || 'Untitled quote', cur, note: String(c.note || '').trim(),
+        lines: lines.map((l) => { const o = { name: String(l.name).trim(), kind: l.kind || 'service', unit: l.unit || 'jobs', qty: num(l.qty), rate: num(l.rate) }; if (l.vat) o.vat = l.vat; return o; }),
+        state, created: existing ? existing.created : BE.today,
+        sent: state === 'waiting' ? BE.today : '', expires: state === 'waiting' && c.expOn !== false ? BE.inDays(+(c.expDays || 30)) : '',
+        changeNote: ''
+      };
+      if (existing) BE.update('quotes', qn, base, 'num'); else BE.add('quotes', base);
+      if (state === 'waiting') BE.log('Emailed quote ' + qn + ' to ' + who + ' · ' + money(BE.quoteTotals(base).total));
+      this.setState({ c: { open: false }, dismissed: h || null, justSent: { num: qn, state } });
+      return { qn, who };
+    };
+    const sendQuote = () => {
+      const errs = validate(true);
+      if (errs.length) { setC({ errors: errs }); return; }
+      const r = commit('waiting');
+      this.notify(r.qn + ' sent to ' + r.who + '. Coming in is unchanged until it’s invoiced.');
+    };
+    const saveDraft = () => {
+      const errs = validate(false);
+      if (errs.length) { setC({ errors: errs }); return; }
+      const r = commit('draft');
+      this.notify(r.qn + ' saved as a draft');
+    };
+    const js = st.justSent && BE.find('quotes', st.justSent.num, 'num');
+    const justSent = js ? { on: true, num: js.num, href: 'SellQuote.dc.html#' + js.num,
+      text: js.state === 'draft' ? js.num + ' is saved as a draft for ' + js.who + '. Nothing has gone out yet.' : js.num + ' is emailed to ' + js.who + '. When they say yes, open it and mark it accepted.' } : { on: false };
+
+    return {
+      tiles, groups, hasQuotes: quotes.length > 0, noQuotes: quotes.length === 0 && !c.open,
+      c: composer, customers, catalog, hasCatalog: catalog.length > 0, justSent,
+      toast: st.toast,
+      dismissSent: () => this.setState({ justSent: null }),
+      newQuote: () => { if (c.open && !c.editId) { this.notify('Your new quote is open below'); return; } this.setState({ c: this.blank(null), justSent: null }); },
+      closeComposer: () => this.setState({ c: { open: false }, dismissed: h || null }),
+      setWho: (e) => setC({ who: e.target.value, errors: [] }),
+      setNewName: (e) => setC({ newName: e.target.value }),
+      setNewEmail: (e) => setC({ newEmail: e.target.value }),
+      setTitle: (e) => setC({ title: e.target.value }),
+      setNote: (e) => setC({ note: e.target.value }),
+      setExpDays: (e) => setC({ expDays: e.target.value }),
+      toggleExp: () => setC({ expOn: c.expOn === false }),
+      toggleMore: () => setC({ moreOpen: !c.moreOpen }),
+      addBlank: () => { const id = 'l' + (st.seq + 1); this.setState({ seq: st.seq + 1 }); setC({ lines: lines.concat([{ id, name: '', kind: 'service', unit: 'jobs', qty: '1', rate: '' }]) }); },
+      sendQuote, saveDraft
+    };
+  }
+}
+</script>
+</body>
+</html>

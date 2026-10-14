@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Bank check</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.k-main{max-width:1200px;margin:0 auto;box-sizing:border-box;padding:24px clamp(16px,4vw,40px) 64px;display:flex;flex-direction:column;gap:24px}
+.k-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0;box-sizing:border-box}
+.k-soft{background:#F7F6F9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.k-dark{background:#18161F;color:#FFFFFF;border-radius:24px;padding:clamp(22px,3vw,34px);display:flex;flex-wrap:wrap;gap:18px 32px;align-items:flex-end;justify-content:space-between;box-sizing:border-box}
+.k-eyebrow{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:700 15px DM Sans,sans-serif;color:#EEE8FF}
+.k-dot{width:10px;height:10px;border-radius:9999px;background:#B9A3FF;flex:none}
+.k-big{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.03em;color:#B9A3FF;font-variant-numeric:tabular-nums}
+.k-lead{margin:0;font-size:16px;line-height:1.5;color:#EEE8FF;max-width:620px}
+.k-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.k-h3{margin:0;font-size:15px;font-weight:700}
+.k-sub{font-size:13px;color:#5F5B68;line-height:1.45}
+.k-p{margin:0;font-size:14px;line-height:1.55;color:#47444F}
+.k-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;max-width:100%}
+.k-btn-dark{background:#18161F;color:#FFFFFF}.k-btn-dark:hover{color:#FFFFFF;background:#2E2B38}
+.k-btn-soft{background:rgba(24,22,31,0.07);color:#18161F}
+.k-btn-violet{background:#B9A3FF;color:#18161F}
+.k-btn-ghost{background:rgba(238,232,255,0.14);color:#FFFFFF}.k-btn-ghost:hover{color:#FFFFFF}
+.k-btn-sm{min-height:36px;padding:0 14px;font-size:13px}
+.k-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.k-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.4}
+.k-good{background:#E2F6D5;color:#2F5711}.k-attn{background:#FFF0B8;color:#6B5000}.k-late{background:#FBE3DF;color:#A8200D}.k-plain{background:#EFEDF3;color:#47444F}.k-violet{background:#EEE8FF;color:#18161F}.k-darktag{background:#18161F;color:#B9A3FF}
+.k-wrap{white-space:normal}
+.k-num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.k-tabs{display:flex;gap:4px;background:#EFEDF3;padding:4px;border-radius:9999px;max-width:100%;overflow-x:auto;box-sizing:border-box;scrollbar-width:none}
+.k-tab{min-height:38px;padding:0 14px;border:0;border-radius:9999px;background:transparent;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.k-tab[aria-pressed="true"]{background:#18161F;color:#FFFFFF}
+.k-input{min-height:44px;padding:0 12px;border:1px solid #CBC7D3;border-radius:12px;font:500 14px DM Sans,sans-serif;background:#FFFFFF;color:#18161F;box-sizing:border-box;max-width:100%;min-width:0}
+.k-pre{margin:0;max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:#FFFFFF;border:1px solid #E2DFE8;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre}
+.k-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.k-li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:11px 0;border-top:1px solid #EFEDF3}
+.k-li:first-child{border-top:0}
+.k-cols{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.k-cols>*{flex:1 1 380px}
+.k-rowbtn{width:100%;display:flex;align-items:center;gap:10px 14px;padding:12px 4px;border:0;border-top:1px solid #EFEDF3;background:transparent;color:#18161F;text-align:left;font:500 14px DM Sans,sans-serif;cursor:pointer;box-sizing:border-box}
+.k-rowbtn:hover{background:#FBFAFC}
+.k-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px;border-top:2px solid #18161F;font-weight:700}
+.k-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F6F9}
+.k-icon{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex:none}
+.k-drill{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:6px 12px;border-radius:14px;background:#F7F6F9}
+.k-drill a,.k-drill span.k-dw{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:7px 0;font-size:13px;text-decoration:none;color:#18161F;border-top:1px solid #EAE7EF}
+.k-drill a:first-child,.k-drill span.k-dw:first-child{border-top:0}
+@media (max-width: 600px){.k-hide-sm{display:none!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+  <dc-import name="AppHeader"></dc-import>
+  <main class="k-main">
+    <dc-import name="AppCrumbs" area="keep" here="Bank check"></dc-import>
+
+    <section class="k-dark" aria-labelledby="bc-h">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="bc-h" class="k-eyebrow"><span class="k-dot"></span>Bank check · {{hero.eyebrow}}</h1>
+        <span class="k-big">{{hero.big}}</span>
+        <p class="k-lead">{{hero.lead}}</p>
+      </div>
+      <sc-if value="{{hasAcct}}" hint-placeholder-val="{{true}}">
+        <dl style="flex: 0 1 440px; min-width: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px;">
+          <sc-for list="{{hero.nums}}" as="n" hint-placeholder-count="3">
+            <div style="flex: 1 1 120px; min-width: 0; padding: 12px 14px; border-radius: 16px; background: rgba(238,232,255,0.1); display: flex; flex-direction: column; gap: 2px;">
+              <dt style="font-size: 12px; color: #EEE8FF;">{{n.label}}</dt>
+              <dd style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; color: {{n.color}}; font-variant-numeric: tabular-nums; white-space: nowrap;">{{n.value}}</dd>
+            </div>
+          </sc-for>
+        </dl>
+      </sc-if>
+    </section>
+
+    <!-- New business: name the account -->
+    <sc-if value="{{noAcct}}" hint-placeholder-val="{{false}}">
+      <section class="k-card" aria-labelledby="na-h" style="max-width: 720px;">
+        <h2 id="na-h" class="k-h2">Check your books against a bank statement</h2>
+        <p class="k-p">There are no bank feeds: once a month you tick what’s on your statement against what you’ve recorded, or import the statement as a CSV. Start with the account you use for the business.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+          <label style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Account name</span><input class="k-input" value="{{acctDraft}}" onChange="{{typeAcct}}" placeholder="{{acctHint}}"></label>
+          <label style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Balance at the start of September</span><input class="k-input" value="{{openDraft}}" onChange="{{typeOpen}}" inputmode="decimal" placeholder="0.00"></label>
+          <button type="button" class="k-btn k-btn-dark" onClick="{{startAcct}}">Start with September</button>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{hasAcct}}" hint-placeholder-val="{{true}}">
+      <div class="k-cols">
+        <!-- Statement balance + finish -->
+        <section class="k-card" aria-labelledby="st-h" style="flex-grow: 2;">
+          <div class="k-head"><h2 id="st-h" class="k-h2">Your {{b.short}} statement</h2><span class="k-tag k-{{status.tone}}">{{status.label}}</span></div>
+          <span class="k-sub">{{b.acct}} · {{b.month}}</span>
+          <div style="display: flex; flex-direction: column;">
+            <div class="k-li"><span>Balance at the start</span><span class="k-num">{{nums.opening}}</span></div>
+            <div class="k-li"><span>Ticked money in and out</span><span class="k-num">{{nums.cleared}}</span></div>
+            <div class="k-li"><span><strong>Your books say</strong></span><span class="k-num">{{nums.books}}</span></div>
+          </div>
+          <label style="display: flex; flex-direction: column; gap: 4px;">
+            <span class="k-sub" style="font-weight: 600; color: #47444F;">Closing balance on your statement</span>
+            <span style="display: flex; gap: 8px; flex-wrap: wrap;"><input class="k-input" style="flex: 1 1 140px;" value="{{endDraft}}" onChange="{{typeEnd}}" inputmode="decimal" disabled="{{b.done}}" aria-label="Closing balance on your statement"><button type="button" class="k-btn k-btn-soft" onClick="{{saveEnd}}" disabled="{{b.done}}">Update</button></span>
+          </label>
+          <div style="padding: 14px 16px; border-radius: 16px; background: {{status.bg}}; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; align-items: baseline;">
+            <span style="font-weight: 700;">{{status.diffLabel}}</span>
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; font-variant-numeric: tabular-nums;">{{nums.diff}}</span>
+          </div>
+          <span class="k-sub">{{status.help}}</span>
+          <div class="k-btns" style="margin-top: auto;">
+            <sc-if value="{{canFinish}}" hint-placeholder-val="{{false}}"><button type="button" class="k-btn k-btn-dark" onClick="{{finish}}">Finish {{b.short}}</button></sc-if>
+            <sc-if value="{{b.done}}" hint-placeholder-val="{{false}}"><button type="button" class="k-btn k-btn-dark" onClick="{{nextMonth}}">Start {{nextName}}</button></sc-if>
+          </div>
+        </section>
+
+        <!-- Import -->
+        <section id="import" class="k-card" aria-labelledby="im-h" style="flex-grow: 3;">
+          <div class="k-head"><h2 id="im-h" class="k-h2">Import a statement</h2><span class="k-sub">CSV from your online banking</span></div>
+          <p class="k-p">{{imp.intro}}</p>
+          <label style="display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Saved layout</span>
+            <select class="k-input" value="{{tplId}}" onChange="{{pickTpl}}">
+              <sc-for list="{{tpls}}" as="t" hint-placeholder-count="3"><option value="{{t.id}}">{{t.label}}</option></sc-for>
+            </select>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 4px;"><span class="k-sub" style="font-weight: 600; color: #47444F;">Paste the CSV</span>
+            <textarea class="k-input" style="min-height: 110px; padding: 10px 12px; font: 12px/1.5 ui-monospace, Menlo, monospace; resize: vertical;" value="{{csvText}}" onChange="{{typeCsv}}" placeholder="Date,Description,Amount,Balance"></textarea>
+          </label>
+          <div class="k-btns">
+            <label class="k-btn k-btn-soft" style="cursor: pointer;"><input type="file" accept=".csv,text/csv,text/plain" onChange="{{pickFile}}" style="position: absolute; width: 1px; height: 1px; opacity: 0;">Choose a CSV file</label>
+            <button type="button" class="k-btn k-btn-soft" onClick="{{useSample}}">Use a sample statement</button>
+            <button type="button" class="k-btn k-btn-dark" onClick="{{readCsv}}">Read it</button>
+          </div>
+          <sc-if value="{{imp.ready}}" hint-placeholder-val="{{false}}">
+            <div class="k-soft" style="border: 1px solid #E2DFE8; gap: 12px;">
+              <span class="k-h3">Match the columns · {{imp.count}} rows</span>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 8px;">
+                <sc-for list="{{imp.maps}}" as="m" hint-placeholder-count="5">
+                  <label style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="k-sub" style="font-size: 12px;">{{m.label}}</span>
+                    <select class="k-input" value="{{m.value}}" onChange="{{m.pick}}" style="width: 100%;">
+                      <option value="">Not in this file</option>
+                      <sc-for list="{{imp.headers}}" as="h" hint-placeholder-count="4"><option value="{{h}}">{{h}}</option></sc-for>
+                    </select>
+                  </label>
+                </sc-for>
+              </div>
+              <div style="overflow-x: auto;">
+                <table style="width: 100%; min-width: 420px; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums;">
+                  <thead><tr><th style="text-align: left; padding: 6px; color: #5F5B68; font-size: 12px;">Date</th><th style="text-align: left; padding: 6px; color: #5F5B68; font-size: 12px;">Description</th><th style="text-align: right; padding: 6px; color: #5F5B68; font-size: 12px;">Amount</th></tr></thead>
+                  <tbody><sc-for list="{{imp.preview}}" as="p" hint-placeholder-count="4"><tr><td style="padding: 6px; border-top: 1px solid #EAE7EF; white-space: nowrap;">{{p.date}}</td><td style="padding: 6px; border-top: 1px solid #EAE7EF;">{{p.desc}}</td><td style="padding: 6px; border-top: 1px solid #EAE7EF; text-align: right; white-space: nowrap; color: {{p.color}};">{{p.amount}}</td></tr></sc-for></tbody>
+                </table>
+              </div>
+              <span class="k-sub">{{imp.warn}}</span>
+              <div class="k-btns"><button type="button" class="k-btn k-btn-dark" onClick="{{doImport}}">Import {{imp.count}} lines</button><button type="button" class="k-btn k-btn-soft" onClick="{{clearImport}}">Start again</button></div>
+            </div>
+          </sc-if>
+        </section>
+      </div>
+
+      <!-- Statement lines not in the books -->
+      <sc-if value="{{hasExtra}}" hint-placeholder-val="{{false}}">
+        <section class="k-card" aria-labelledby="ex-h">
+          <div class="k-head"><h2 id="ex-h" class="k-h2">On the statement, not in your books</h2><span class="k-sub">{{extraNote}}</span></div>
+          <ul class="k-list">
+            <sc-for list="{{extra}}" as="x" hint-placeholder-count="2">
+              <li class="k-li">
+                <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{x.name}}</span><span class="k-sub">{{x.date}} · {{x.sub}}</span></span>
+                <span style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end;">
+                  <span class="k-num" style="color: {{x.color}};">{{x.amount}}</span>
+                  <sc-if value="{{x.open}}" hint-placeholder-val="{{true}}"><button type="button" class="k-btn k-btn-dark k-btn-sm" onClick="{{x.add}}">{{x.addLabel}}</button><button type="button" class="k-btn k-btn-soft k-btn-sm" onClick="{{x.ignore}}">Not for the books</button></sc-if>
+                  <sc-if value="{{x.closed}}" hint-placeholder-val="{{false}}"><span class="k-tag k-{{x.tone}}">{{x.state}}</span></sc-if>
+                </span>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+      </sc-if>
+
+      <!-- Tick list -->
+      <section class="k-card" aria-labelledby="tk-h">
+        <div class="k-head"><h2 id="tk-h" class="k-h2">Tick what’s on your statement</h2><span class="k-sub">{{tickNote}}</span></div>
+        <sc-if value="{{hasLines}}" hint-placeholder-val="{{true}}">
+          <ul class="k-list">
+            <sc-for list="{{lines}}" as="l" hint-placeholder-count="8">
+              <li class="k-li" style="flex-wrap: nowrap;">
+                <label style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <input type="checkbox" checked="{{l.cleared}}" onChange="{{l.toggle}}" disabled="{{b.done}}" style="width: 20px; height: 20px; margin: 0; flex: none; accent-color: #18161F;" aria-label="Ticked: {{l.name}}">
+                  <span style="min-width: 0; display: flex; flex-direction: column;"><span style="font-weight: 600; font-size: 14px;">{{l.name}}</span><span class="k-sub">{{l.date}} · {{l.sub}}</span></span>
+                </label>
+                <span class="k-num" style="color: {{l.color}};">{{l.amount}}</span>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-if>
+        <sc-if value="{{noLines}}" hint-placeholder-val="{{false}}"><p class="k-p">Nothing recorded in this account for {{b.month}} yet. Import the statement above, or record what came in and went out first.</p></sc-if>
+        <details style="border-top: 1px solid #EFEDF3; padding-top: 12px;">
+          <summary style="cursor: pointer; font-weight: 600; font-size: 14px;">Add a line from the statement by hand</summary>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin-top: 10px;">
+            <label style="flex: 0 1 110px; display: flex; flex-direction: column; gap: 2px;"><span class="k-sub" style="font-size: 12px;">Date</span><input class="k-input" value="{{man.date}}" onChange="{{man.typeDate}}" placeholder="30 Sep"></label>
+            <label style="flex: 2 1 180px; display: flex; flex-direction: column; gap: 2px;"><span class="k-sub" style="font-size: 12px;">Description</span><input class="k-input" value="{{man.desc}}" onChange="{{man.typeDesc}}" placeholder="As on the statement"></label>
+            <label style="flex: 1 1 110px; display: flex; flex-direction: column; gap: 2px;"><span class="k-sub" style="font-size: 12px;">Amount (− for money out)</span><input class="k-input" value="{{man.amount}}" onChange="{{man.typeAmt}}" inputmode="decimal" placeholder="-64.00"></label>
+            <button type="button" class="k-btn k-btn-dark" onClick="{{man.add}}">Add line</button>
+          </div>
+        </details>
+      </section>
+
+      <sc-if value="{{hasPast}}" hint-placeholder-val="{{true}}">
+        <section class="k-card" aria-labelledby="hi-h">
+          <h2 id="hi-h" class="k-h2">Checked before</h2>
+          <ul class="k-list">
+            <sc-for list="{{past}}" as="p" hint-placeholder-count="2">
+              <li class="k-li"><span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 14px;">{{p.month}}</span><span class="k-sub">{{p.acct}} · by {{p.who}} on {{p.when}}</span></span><span class="k-num">{{p.bal}}</span></li>
+            </sc-for>
+          </ul>
+        </section>
+      </sc-if>
+    </sc-if>
+  </main>
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { endDraft: null, csvText: '', tplId: null, parsed: null, map: null, acctDraft: '', openDraft: '', man: { date: '', desc: '', amount: '' }, toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3000); }
+  renderVals() {
+    const st = this.state;
+    const lk = BE.is('lk');
+    const books = BE.books;
+    const prof = BE.get('profile') || {};
+    const M = (n) => BE.money(n, null, { cents: true });
+    const sign = (n) => (n > 0 ? '+' : '') + M(n);
+    const r2 = (n) => Math.round(n * 100) / 100;
+    const b = Object.assign({ lines: [], extra: [], opening: 0, ending: null }, BE.get('bank') || {});
+    const hasAcct = !!b.acct;
+    const cleared = r2(b.lines.filter((l) => l.cleared).reduce((a, l) => a + l.amount, 0));
+    const booksBal = r2((Number(b.opening) || 0) + cleared);
+    const hasEnd = b.ending != null && b.ending !== '';
+    const diff = hasEnd ? r2(Number(b.ending) - booksBal) : null;
+    const save = (fn) => BE.change((s) => { const nb = JSON.parse(JSON.stringify(s.bank || b)); nb.lines = nb.lines || []; nb.extra = nb.extra || []; fn(nb, s); s.bank = nb; });
+    const status = b.done ? { label: 'Checked', tone: 'good', bg: '#E2F6D5', diffLabel: 'Matched on ' + b.doneOn, help: 'All done for ' + b.month + '. Start the next month when its statement arrives.' }
+      : !hasEnd ? { label: 'Needs the statement', tone: 'attn', bg: '#FFF0B8', diffLabel: 'Type the closing balance', help: 'Copy the closing balance from your statement, then tick each line that’s on it.' }
+      : diff === 0 ? { label: 'Balanced', tone: 'good', bg: '#E2F6D5', diffLabel: 'Difference', help: 'Your books and the statement agree. Finish to record the check.' }
+      : { label: 'To check', tone: 'attn', bg: '#FFF0B8', diffLabel: 'Difference to find', help: diff < 0 ? 'The statement has less than your books: something you ticked isn’t on it, or a payment out is missing from your books.' : 'The statement has more than your books: a line on the statement isn’t ticked, or money in is missing from your books.' };
+    const tpls = books.templates();
+    const tplId = st.tplId || (tpls[0] || {}).id;
+    const tpl = tpls.find((t) => t.id === tplId) || tpls[0] || { map: {} };
+    // Import preview
+    const imp = { intro: lk ? 'Choose your bank’s saved layout (templates for Commercial Bank, Sampath, HNB, BOC and People’s Bank are being confirmed), paste or choose the CSV, then check the columns.' : 'Download September as a CSV from your online banking, paste it or choose the file, then check the columns.', ready: false };
+    let rowsOut = [];
+    if (st.parsed && st.parsed.length > 1) {
+      const headers = st.parsed[0];
+      const map = st.map || {};
+      const ix = (k) => headers.indexOf(map[k]);
+      rowsOut = st.parsed.slice(1).map((r) => {
+        const amt = ix('amount') >= 0 ? books.csvNum(r[ix('amount')]) : r2((ix('in') >= 0 ? books.csvNum(r[ix('in')]) : 0) - (ix('out') >= 0 ? books.csvNum(r[ix('out')]) : 0));
+        const d = ix('date') >= 0 ? books.csvDate(r[ix('date')]) : null;
+        return { d, date: d ? books.lbl(d) : (r[ix('date')] || ''), desc: ix('desc') >= 0 ? r[ix('desc')] : '', amount: amt, balance: ix('balance') >= 0 && r[ix('balance')] !== '' ? books.csvNum(r[ix('balance')]) : null };
+      }).filter((r) => r.amount);
+      const maps = [['date', 'Date'], ['desc', 'Description'], ['amount', 'Amount (+/−)'], ['in', 'Money in'], ['out', 'Money out'], ['balance', 'Balance']].map(([k, l]) => ({ label: l, value: map[k] || '', pick: (ev) => { const v = ev.target.value; this.setState((s) => ({ map: Object.assign({}, s.map || {}, { [k]: v }) })); } }));
+      Object.assign(imp, { ready: true, headers, maps, count: rowsOut.length, preview: rowsOut.slice(0, 6).map((r) => ({ date: r.date, desc: r.desc, amount: sign(r.amount), color: r.amount < 0 ? '#18161F' : '#2F5711' })),
+        warn: !rowsOut.length ? 'No amounts found: check the Amount, or Money in and Money out, columns.' : (map.balance ? 'The last balance becomes your statement’s closing balance. ' : '') + 'Lines that match an entry by amount get ticked; the rest are listed for you to add or leave out.' });
+    }
+    const readCsv = () => {
+      const p = books.parseCsv(st.csvText);
+      if (p.length < 2) { this.notify('Paste a CSV with a header row and at least one line'); return; }
+      const headers = p[0];
+      const map = {};
+      Object.keys(tpl.map || {}).forEach((k) => { const want = String(tpl.map[k]).toLowerCase(); const h = headers.find((x) => x.toLowerCase() === want); if (h) map[k] = h; });
+      // Fall back to guessing from the header names
+      const guess = (k, re) => { if (!map[k]) { const h = headers.find((x) => re.test(x)); if (h) map[k] = h; } };
+      guess('date', /date/i); guess('desc', /desc|narr|partic|detail|payee/i); guess('balance', /bal/i);
+      if (!map.amount && !map.in && !map.out) { guess('in', /deposit|credit|paid in|money in/i); guess('out', /withdraw|debit|paid out|money out/i); guess('amount', /amount|value/i); }
+      this.setState({ parsed: p, map });
+      this.notify('Read ' + (p.length - 1) + ' lines · check the columns, then import');
+    };
+    const doImport = () => {
+      if (!rowsOut.length) { this.notify('Nothing to import yet'); return; }
+      let ticked = 0, already = 0, added = 0, endBal = null;
+      save((nb) => {
+        const used = {};
+        rowsOut.forEach((r) => {
+          const cand = nb.lines.filter((l) => !used[l.id] && Math.abs(l.amount - r.amount) < 0.005).sort((a, c) => (a.cleared === c.cleared ? 0 : a.cleared ? 1 : -1))[0];
+          if (cand) { used[cand.id] = true; if (cand.cleared) already++; else { cand.cleared = true; ticked++; } }
+          else { nb.extra.push({ id: BE.id('st'), date: r.date, iso: r.d ? books.isoOf(r.d) : '', name: r.desc || 'Statement line', amount: r.amount, state: 'open', from: 'import' }); added++; }
+          if (r.balance != null) endBal = r.balance;
+        });
+        if (endBal != null) nb.ending = endBal;
+        nb.imported = { on: BE.today, rows: rowsOut.length, layout: tpl.name || 'CSV' };
+      });
+      BE.log('Imported ' + rowsOut.length + ' statement lines for ' + (b.month || 'the statement') + ' · ' + ticked + ' ticked, ' + added + ' not in the books');
+      this.setState({ parsed: null, csvText: '', endDraft: null });
+      this.notify(rowsOut.length + ' lines read · ' + ticked + ' ticked' + (already ? ', ' + already + ' already ticked' : '') + (added ? ', ' + added + ' not in your books' : ''));
+    };
+    const extra = (b.extra || []).map((x) => {
+      const isIn = x.amount > 0;
+      return { name: x.name, date: x.date, sub: x.from === 'import' ? 'From the imported statement' : 'Added by hand', amount: sign(x.amount), color: isIn ? '#2F5711' : '#18161F',
+        open: x.state === 'open', closed: x.state !== 'open', state: x.state === 'added' ? 'Added to your books' : 'Left out', tone: x.state === 'added' ? 'good' : 'plain',
+        addLabel: isIn ? 'Add as money in' : 'Add as an expense',
+        add: () => {
+          const d = books.dOf(x.iso || x.date);
+          const off = d ? Math.round((d - BE.todayDate) / 86400000) : 0;
+          if (isIn) {
+            BE.add('payments', { id: BE.id('pay'), inv: '', who: x.name, amount: x.amount, orig: x.amount, how: 'Bank transfer', date: d ? books.lbl(d) : BE.today, iso: d ? books.isoOf(d) : '', inMonth: !!(d && d.getMonth() === 9), manual: true, note: '', cur: prof.currency });
+          } else if (BE.recordExpense) {
+            BE.recordExpense({ who: x.name, amount: -x.amount, catId: null, how: 'Bank transfer', dayOffset: off, note: 'From the ' + (b.month || '') + ' bank statement' });
+          } else {
+            BE.addExpense({ who: x.name, amount: -x.amount, cat: '', date: x.date });
+          }
+          save((nb) => { nb.extra = nb.extra.map((y) => y.id === x.id ? Object.assign(y, { state: 'added' }) : y); nb.lines.push({ id: BE.id('bl'), date: x.date, name: x.name, sub: isIn ? 'Money in, added from the statement' : 'Not sorted yet', amount: x.amount, cleared: true }); });
+          this.notify(x.name + ' ' + M(Math.abs(x.amount)) + ' added to your books' + (isIn ? ' · add a note on Quarters if it has no invoice' : ' · give it a category on Going out'));
+        },
+        ignore: () => { save((nb) => { nb.extra = nb.extra.map((y) => y.id === x.id ? Object.assign(y, { state: 'ignored' }) : y); }); this.notify(x.name + ' left out of the books'); }
+      };
+    });
+    const lines = b.lines.slice().map((l) => ({ name: l.name, sub: l.sub || '', date: l.date, cleared: !!l.cleared, amount: sign(l.amount), color: l.amount > 0 ? '#2F5711' : '#18161F',
+      toggle: () => { save((nb) => { nb.lines = nb.lines.map((y) => y.id === l.id ? Object.assign(y, { cleared: !y.cleared }) : y); }); this.notify((l.cleared ? 'Unticked ' : 'Ticked ') + l.name + ' ' + M(Math.abs(l.amount))); } }));
+    const tickedN = b.lines.filter((l) => l.cleared).length;
+    const endDraft = st.endDraft != null ? st.endDraft : (hasEnd ? String(Number(b.ending).toFixed(2)) : '');
+    const nextIdx = BE.MON.indexOf(String(b.month).split(' ')[0].slice(0, 3));
+    const FULL = books.FULL;
+    const nextName = nextIdx >= 0 ? FULL[(nextIdx + 1) % 12] : 'next month';
+    const man = Object.assign({}, st.man, {
+      typeDate: (e) => this.setState((s) => ({ man: Object.assign({}, s.man, { date: e.target.value }) })),
+      typeDesc: (e) => this.setState((s) => ({ man: Object.assign({}, s.man, { desc: e.target.value }) })),
+      typeAmt: (e) => this.setState((s) => ({ man: Object.assign({}, s.man, { amount: e.target.value }) })),
+      add: () => {
+        const amt = books.csvNum(st.man.amount);
+        if (!amt || !String(st.man.desc).trim()) { this.notify('Add a description and an amount (− for money out)'); return; }
+        save((nb) => { nb.extra.push({ id: BE.id('st'), date: st.man.date || BE.today, iso: '', name: st.man.desc.trim(), amount: amt, state: 'open', from: 'hand' }); });
+        this.setState({ man: { date: '', desc: '', amount: '' } });
+        this.notify('Added ' + st.man.desc.trim() + ' · add it to your books or leave it out');
+      }
+    });
+    const hero = !hasAcct ? { eyebrow: 'no account yet', big: 'Start here', lead: 'Tick your bank statement against your books once a month, so ' + (lk ? 'your practitioner' : 'your accountant') + ' knows nothing is missing.', nums: [] }
+      : { eyebrow: b.month + ' · ' + b.acct, big: b.done ? 'Checked' : !hasEnd ? 'Add the balance' : diff === 0 ? 'Balanced' : M(Math.abs(diff)) + ' to find',
+        lead: b.done ? b.month + ' matched your statement on ' + b.doneOn + '.' : tickedN + ' of ' + b.lines.length + ' entries ticked. ' + (diff === 0 ? 'Everything adds up: finish to record it.' : 'Tick what’s on the statement, or import it, until the difference is zero.'),
+        nums: [{ label: 'Statement says', value: hasEnd ? M(b.ending) : '—', color: '#FFFFFF' }, { label: 'Your books say', value: M(booksBal), color: '#FFFFFF' }, { label: 'Difference', value: diff == null ? '—' : M(diff), color: diff === 0 ? '#B9A3FF' : '#FDE6D6' }] };
+    return {
+      hero, hasAcct, noAcct: !hasAcct, b, status, nums: { opening: M(b.opening || 0), cleared: sign(cleared), books: M(booksBal), diff: diff == null ? '—' : M(diff) },
+      acctDraft: st.acctDraft, openDraft: st.openDraft, acctHint: lk ? 'e.g. Commercial Bank current account' : 'e.g. Business current account',
+      typeAcct: (e) => this.setState({ acctDraft: e.target.value }), typeOpen: (e) => this.setState({ openDraft: e.target.value }),
+      startAcct: () => {
+        const name = String(st.acctDraft || '').trim() || (lk ? 'Business current account' : 'Business current account');
+        save((nb) => Object.assign(nb, { acct: name, month: 'September 2026', short: 'September', opening: books.csvNum(st.openDraft), ending: null, done: false, lines: [], extra: [] }));
+        BE.log('Set up the bank check for ' + name);
+        this.notify(name + ' ready · import September’s statement or add lines by hand');
+      },
+      endDraft, typeEnd: (e) => this.setState({ endDraft: e.target.value }),
+      saveEnd: () => { const v = String(st.endDraft == null ? endDraft : st.endDraft).trim(); if (!v) { this.notify('Type the closing balance from your statement'); return; } const n = books.csvNum(v); save((nb) => { nb.ending = n; }); this.setState({ endDraft: null }); this.notify('Statement closing balance set to ' + M(n)); },
+      canFinish: !b.done && diff === 0,
+      finish: () => {
+        save((nb, s) => { nb.done = true; nb.doneOn = BE.today; s.reconciles = [{ id: BE.id('rc'), month: nb.month, acct: nb.acct, when: BE.today, who: (s.profile || {}).owner || '', bal: Number(nb.ending) }].concat(s.reconciles || []); });
+        BE.log('Checked ' + b.month + ' against the ' + b.acct + ' statement · ' + M(b.ending));
+        this.notify(b.month + ' checked · books match the statement at ' + M(b.ending));
+      },
+      nextName, nextMonth: () => {
+        const entries = [];
+        BE.all('payments').forEach((p) => { if (p.inMonth) entries.push({ id: BE.id('bl'), date: p.date, name: p.who, sub: p.inv ? 'Paid ' + p.inv : 'Money in', amount: p.amount, cleared: false }); });
+        BE.all('expenses').forEach((x) => { if (x.inMonth && x.how !== 'Cash' && x.kind !== 'personal') entries.push({ id: BE.id('bl'), date: x.date, name: x.who, sub: x.cat || '', amount: -x.amount, cleared: false }); });
+        save((nb) => Object.assign(nb, { month: nextName + ' 2026', short: nextName, opening: Number(nb.ending) || 0, ending: null, done: false, doneOn: '', extra: [], imported: null, lines: entries }));
+        this.setState({ endDraft: null });
+        this.notify(nextName + ' started · ' + entries.length + ' entries from your books to tick');
+      },
+      tpls: tpls.map((t) => ({ id: t.id, label: t.name + ' · ' + t.cols })), tplId,
+      pickTpl: (e) => this.setState({ tplId: e.target.value, parsed: null }),
+      csvText: st.csvText, typeCsv: (e) => this.setState({ csvText: e.target.value }),
+      pickFile: (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        const rd = new FileReader();
+        rd.onload = () => { this.setState({ csvText: String(rd.result || ''), parsed: null }); this.notify(f.name + ' loaded · press Read it'); };
+        rd.readAsText(f);
+      },
+      useSample: () => { this.setState({ csvText: books.sampleCsv(), parsed: null, tplId: tpls[0] ? tpls[0].id : null }); this.notify('Sample ' + (b.short || '') + ' statement pasted · press Read it'); },
+      readCsv, imp, doImport, clearImport: () => this.setState({ parsed: null, map: null }),
+      extra, hasExtra: extra.length > 0, extraNote: extra.filter((x) => x.open).length + ' to decide',
+      lines, hasLines: lines.length > 0, noLines: !lines.length, tickNote: tickedN + ' of ' + lines.length + ' ticked · from your books for ' + b.month,
+      man,
+      past: BE.all('reconciles').map((r) => ({ month: r.month, acct: r.acct, who: r.who, when: r.when, bal: typeof r.bal === 'number' ? M(r.bal) : r.bal })), hasPast: BE.all('reconciles').length > 0,
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

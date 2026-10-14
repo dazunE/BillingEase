@@ -1,0 +1,734 @@
+<title>BillingEase Build Risks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a research memo. Sticky contents rail on wide screens, one 70ch reading column, wide tables scroll in their own box. */
+:root{--ground:#F7F6F9;--paper:#FFFFFF;--ink:#18161F;--ink2:#47444F;--muted:#5F5B68;--line:#E2DFE8;--soft:#EFEDF3;--violet:#B9A3FF;--accent:#6B4EE6;--wash:#EEE8FF;--orange:#C9601C;--owash:#FDE6D6;--display:Sora,"DM Sans",system-ui,sans-serif;--body:"DM Sans",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#121017;--paper:#1B1922;--ink:#F3F1F7;--ink2:#CFCAD9;--muted:#A8A3B4;--line:#2E2B37;--soft:#24212C;--accent:#B9A3FF;--wash:#2A2440;--orange:#F0A06A;--owash:#3A2618;color-scheme:dark}}
+:root[data-theme="dark"]{--ground:#121017;--paper:#1B1922;--ink:#F3F1F7;--ink2:#CFCAD9;--muted:#A8A3B4;--line:#2E2B37;--soft:#24212C;--accent:#B9A3FF;--wash:#2A2440;--orange:#F0A06A;--owash:#3A2618;color-scheme:dark}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);margin:0}
+.page{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:40px 96px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:48px;box-sizing:border-box}
+.rail{position:sticky;top:24px;align-self:start;display:flex;flex-direction:column;gap:16px;max-height:calc(100vh - 48px);overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;font:700 16px var(--display);letter-spacing:-.02em}
+.brand svg{width:28px;height:28px}
+.rail ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.rail a{display:flex;gap:10px;padding:7px 10px;border-radius:10px;color:var(--ink2);text-decoration:none;font-size:13.5px;line-height:1.35}
+.rail a span{font:600 11px var(--display);color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}
+.rail a:hover{background:var(--soft);color:var(--ink)}
+.rail .note{font-size:12.5px;color:var(--muted);line-height:1.5;border-top:1px solid var(--line);padding-top:12px}
+article{min-width:0}article>p,article>ul,article>ol,article>h2,article>h3,article>blockquote,article>h1,.caveat{max-width:74ch}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,5vw,54px)/1.02 var(--display);letter-spacing:-.035em;margin:10px 0 18px;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.chip{display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border-radius:9999px;background:var(--paper);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink2)}
+.caveat{background:var(--owash);border-radius:16px;padding:14px 18px;font-size:14.5px;line-height:1.5;margin:0 0 28px}
+article p,article li{font-size:16.5px;line-height:1.65;color:var(--ink2)}
+article strong{color:var(--ink)}
+article h2{font:700 clamp(22px,2.6vw,28px)/1.2 var(--display);letter-spacing:-.02em;margin:56px 0 14px;padding-top:24px;border-top:1px solid var(--line);text-wrap:balance;scroll-margin-top:16px}
+article h3{font:700 18px/1.3 var(--display);letter-spacing:-.01em;margin:32px 0 10px;scroll-margin-top:16px}
+article a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}
+article ul,article ol{padding-left:22px}
+.tbl{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:16px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.45;min-width:640px}
+th{text-align:left;font:600 12px var(--body);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--soft);padding:10px 12px;vertical-align:bottom}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top;color:var(--ink2);font-variant-numeric:tabular-nums}
+td:first-child{color:var(--ink);font-weight:600}
+.est{display:inline-block;padding:0 6px;border-radius:6px;background:var(--wash);color:var(--accent);font-size:.78em;font-weight:700;vertical-align:1px}
+blockquote{margin:20px 0;padding:12px 18px;border-left:3px solid var(--violet);background:var(--paper);border-radius:0 12px 12px 0}
+code{font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:5px}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:900px){.page{grid-template-columns:1fr;gap:24px}.rail{position:static;max-height:none}.rail ol{display:none}}
+</style>
+<div class="page">
+<aside class="rail" aria-label="Contents">
+<span class="brand"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#18161F"/><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"/><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"/><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"/></svg>BillingEase</span>
+<ol><li><a href="#five-money-moving-features-carry-most-of-the-launch-risk"><span>01</span>Five money-moving features carry most of the launch risk</a></li><li><a href="#payments-stripe-connect-covers-six-markets-while-india-and-s"><span>02</span>Payments: Stripe Connect covers six markets, while India and Sri Lanka need local aggregators</a></li><li><a href="#payroll-is-the-deepest-liability-trap-and-only-four-markets-"><span>03</span>Payroll is the deepest liability trap, and only four markets have embeddable engines</a></li><li><a href="#sales-tax-vat-and-e-invoicing-a-us-engine-an-mtd-integration"><span>04</span>Sales tax, VAT and e-invoicing: a US engine, an MTD integration and Peppol partners</a></li><li><a href="#bank-feeds-aggregators-exist-everywhere-except-sri-lanka-but"><span>05</span>Bank feeds: aggregators exist everywhere except Sri Lanka, but none publishes simple prices</a></li><li><a href="#the-accounting-core-is-where-billingease-should-spend-its-ow"><span>06</span>The accounting core is where BillingEase should spend its own engineering</a></li><li><a href="#what-is-possible-at-launch-in-each-country"><span>07</span>What is possible at launch in each country</a></li><li><a href="#unit-costs-stay-small-next-to-payments-economics-and-fixed-c"><span>08</span>Unit costs stay small next to payments economics and fixed compliance spend</a></li><li><a href="#build-order-core-first-then-money-rails-by-market-readiness"><span>09</span>Build order: core first, then money rails by market readiness</a></li><li><a href="#figures-to-re-check-on-live-vendor-and-regulator-pages"><span>10</span>Figures to re-check on live vendor and regulator pages</a></li><li><a href="#conclusion"><span>11</span>Conclusion</a></li></ol>
+<p class="note">Figures marked <span class="est">est.</span> are estimates with no source behind them. Everything else is cited inline.</p>
+</aside>
+<article>
+<span class="eyebrow">Research · build planning · October 2026</span>
+<h1>Buy the money rails, build the ledger</h1>
+<div class="meta"><span class="chip">US</span><span class="chip">UK and EU</span><span class="chip">Canada and Australia</span><span class="chip">India, Sri Lanka, Singapore</span><span class="chip">Build vs buy</span></div>
+<p class="caveat"><strong>Before budgeting:</strong> the research could only read search-result summaries, not vendor pages. Re-check every price on the live page; the last section lists the figures that conflict or rest on weak sources.</p>
+<p>The hard parts of BillingEase are not invoices, quotes or reports. They are the five features that move money or file with a government: <strong>payroll, online payments and bill pay, US sales tax filing, mandatory e-invoicing, and bank feeds</strong>. Licensing, personal liability and monthly rule changes make each of them hard, more than the code does. Each one can be bought from a licensed vendor in the US, UK, Canada, Australia and Singapore. Coverage is patchy in India and the EU and almost absent in Sri Lanka, so what BillingEase can offer at launch differs sharply by country. The recommended plan has four parts. First, build in-house the accounting core: an append-only Postgres ledger, multi-currency handling, single-rate VAT/GST logic, receipt capture, the HMRC Making Tax Digital (MTD) integration and accountant workflows. Second, buy everything regulated: Stripe Connect with hosted checkout and Stripe bearing losses, embedded payroll partners, bank-data aggregators, a US tax engine plus a filing partner, and Peppol access points. Third, launch first in the <strong>US, UK and Canada</strong>. Fourth, add Australia and Singapore next, and India, Sri Lanka and the EU (beyond basic invoicing) only once local partners are signed. Wave proves the business model: free software funded by payments and payroll revenue. It also shows the scale involved. Wave had over 200 staff when H&amp;R Block bought it in 2019 (<a href="https://glenbrook.com/payments_news/hr-block-acquires-wave-financial-for-398m/" target="_blank" rel="noopener">Glenbrook</a>), and it still limited full-service payroll tax filing to a subset of US states for years (<a href="https://fitsmallbusiness.com/wave-payroll-review/" target="_blank" rel="noopener">FitSmallBusiness</a>). One caveat runs through this report: the researchers could read only search-result snippets, not the vendor pages themselves, so <strong>every price below must be re-checked on the live vendor page</strong> before it goes into a budget.</p>
+<p><strong>How to read this report.</strong> A figure followed by an inline citation is sourced. Most sources are vendor pages, regulators or third-party aggregators seen as search snippets, and weak sources are named as such. A figure tagged <strong><span class="est">est.</span></strong> is an engineering or commercial estimate made by the research team or by this report. No source backs it; it is an informed guess. Facts the researchers knew from background but could not confirm appear only in the re-check list at the end, never as findings.</p>
+<h2 id="five-money-moving-features-carry-most-of-the-launch-risk">Five money-moving features carry most of the launch risk</h2><p>Ranking the eleven hard areas by in-house build difficulty and regulatory exposure gives a clear split. The top five involve licences, government filings or legal liability, and a small team should buy all five. The bottom six are ordinary engineering work that BillingEase should own, because they are the product and every vendor that sells them adds lock-in without removing the work.</p>
+<div class="tbl"><table><thead><tr>
+<th>Rank</th>
+<th>Area</th>
+<th>Build-in-house difficulty</th>
+<th>Main reason it is hard</th>
+<th>Launch approach</th>
+<th>Effort with the recommended approach</th>
+</tr>
+</thead><tbody><tr>
+<td>1</td>
+<td>Payroll (tax filing and paying employees)</td>
+<td>Extreme</td>
+<td>Multi-state tax content. The employer stays liable for late deposits (US late-deposit penalties of 2–15%, plus a 100% personal penalty on unpaid withheld tax). Moving payroll money raises money-transmitter licensing questions.</td>
+<td>Embed a partner in the US, CA, UK and AU. Elsewhere, import payroll journals or offer a calculator only.</td>
+<td>About 1–3 months per partner <span class="est">est.</span>. A directory cites about 4 weeks for Gusto; FreshBooks took about 3 months from announcement to launch.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Online payments, payouts and bill pay</td>
+<td>Extreme if you hold funds; low with a platform</td>
+<td>Money-transmitter licences, EU/UK payment-institution licences, the RBI aggregator licence in India and the MAS licence in Singapore. Chargeback and negative-balance liability. Card-data security (PCI) scope.</td>
+<td>Stripe Connect with hosted checkout. Razorpay in India, PayHere in Sri Lanka, HitPay as a Singapore option. Defer bill pay.</td>
+<td>Weeks to a few months per provider <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>3</td>
+<td>US sales tax: nexus, rates, filing</td>
+<td>Very high</td>
+<td>Economic-nexus thresholds change every year, and rates are set address by address. Filing in each state costs $48–75 per return even through vendors.</td>
+<td>Wave-style user-entered rates at launch, then Stripe Tax, TaxJar or Numeral</td>
+<td>About 1–2 months to integrate an engine <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Mandatory e-invoicing (EU, India, Singapore, Sri Lanka)</td>
+<td>High</td>
+<td>Certified networks and clearance APIs. Mandates take effect between 2026 and 2031. Per-invoice fines (France: €50).</td>
+<td>Partner with a Peppol access point, a French accredited platform, or an Indian GST intermediary (GSP/ASP)</td>
+<td>About 1–2 months for Peppol and 2–3 months for India <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Bank and card feeds</td>
+<td>High</td>
+<td>Consent renewal every 90 days (UK) or 180 days (EU). Bank connections break. Sri Lanka has no open-banking rail, and India&#39;s account-aggregator connections have success-rate problems.</td>
+<td>Buy an aggregator per market. Build file import (CSV, PDF) everywhere.</td>
+<td>MVP about 2 engineers × 6–10 weeks, then 3–6 months of hardening <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Ledger correctness and multi-currency</td>
+<td>Medium-high</td>
+<td>Entries must never be edited in place. Period locks, per-country charts of accounts, rounding, official tax exchange rates, revaluation.</td>
+<td>Build on Postgres</td>
+<td>About 2–3 senior engineers × 3–4 months, plus 4–6 engineer-weeks for FX <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Security, SOC 2 and privacy/retention</td>
+<td>Medium</td>
+<td>3–12 month audit observation window. India and Sri Lanka privacy laws take effect in 2027. GDPR erasure conflicts with 6–8 year tax retention.</td>
+<td>Compliance platform plus an auditor; buy authentication</td>
+<td>SOC 2: 3–6 months prep plus 3–12 months observation</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Receipt capture and transaction categorisation</td>
+<td>Medium</td>
+<td>Extraction accuracy, review UX, learning from user corrections</td>
+<td>Build on a cheap LLM or document API</td>
+<td>About 2–3 engineer-months plus 4–8 engineer-weeks <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Data migration and accountant workflows</td>
+<td>Medium</td>
+<td>Xero and Intuit now meter their APIs. Wave offers files only.</td>
+<td>Build CSV import plus API importers</td>
+<td>About 6–10 plus 4–6 engineer-weeks <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Email deliverability and WhatsApp/SMS reminders</td>
+<td>Low-medium</td>
+<td>Gmail/Yahoo sender rules; per-message WhatsApp pricing</td>
+<td>Build on SES, Postmark or Resend and a WhatsApp business provider</td>
+<td>About 2–4 plus 2–3 weeks <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Marketing website</td>
+<td>Low</td>
+<td>SEO content is ongoing work; cookie consent</td>
+<td>Next.js plus a headless CMS</td>
+<td>About 4–8 weeks <span class="est">est.</span></td>
+</tr>
+</tbody></table></div><p>The ordering follows one rule. The more an area makes BillingEase responsible for other people&#39;s money or tax obligations, the higher it ranks. That is also why the recommended approach changes so sharply at rank 6.</p>
+<h2 id="payments-stripe-connect-covers-six-markets-while-india-and-s">Payments: Stripe Connect covers six markets, while India and Sri Lanka need local aggregators</h2><h3 id="why-it-is-hard-and-where-the-licensing-line-sits">Why it is hard, and where the licensing line sits</h3><p>Invoice payments look like a checkout button. The difficulty is that the moment BillingEase takes possession or control of a customer&#39;s money, it becomes a regulated money transmitter. In the US, FinCEN&#39;s payment-processor exemption requires four conditions. The business must facilitate purchases or bill payments, settle only through systems that admit BSA-regulated institutions, and hold a formal agreement with the seller (<a href="https://gunster.com/alerts/fincen-on-currency-transporters-and-payment-processors/" target="_blank" rel="noopener">Gunster</a>). The states are a separate layer: money transmission needs a licence in 49 states plus DC, with Montana the exception (<a href="https://wiki.private.law/en/msb-license-usa.md" target="_blank" rel="noopener">private.law</a>). The &quot;agent of payee&quot; exemption that payment facilitators rely on is recognised in only about half of the states (<a href="https://www.venable.com/money-transmission-in-the-payment-facilitator-model-06-27-2018/" target="_blank" rel="noopener">Venable, 2018</a>). California&#39;s financial regulator has ruled that a payment processing service did not qualify (<a href="https://dfpi.ca.gov/rules-enforcement/laws-and-regulations/opinion-letters-by-law-subject/opinion-letter-payment-processing-service-not-exempt-as-agent-of-payee-or-factoring" target="_blank" rel="noopener">CA DFPI</a>). In the UK and EU, the PSD2 &quot;commercial agent&quot; exclusion now covers only agents acting for one side of a transaction, which shuts out two-sided platforms. Such a platform needs its own payment-institution or e-money licence, or a licensed provider such as Stripe Connect that takes regulatory responsibility (<a href="https://www.womblebonddickinson.com/uk/insights/articles-and-briefings/how-uk-law-changing-under-psd2" target="_blank" rel="noopener">Womble Bond Dickinson</a>; <a href="https://ryftpay.com/blog/impact-of-psd2-law-on-marketplaces-and-digital-platforms" target="_blank" rel="noopener">Ryft</a>).</p>
+<p>The Asian markets are stricter. India&#39;s RBI Payment Aggregator Directions of 15 September 2025 require <strong>₹15 crore net worth at application, rising to ₹25 crore by the end of the third year</strong>. Non-bank aggregators had to apply by 31 December 2025 (<a href="https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=12896" target="_blank" rel="noopener">RBI</a>; <a href="https://inc42.com/buzz/rbi-issues-new-master-directions-for-payment-aggregators" target="_blank" rel="noopener">Inc42</a>). Singapore&#39;s Payment Services Act licenses &quot;merchant acquisition service&quot; <strong>whether or not the provider ever holds the money</strong> (<a href="https://www.duanemorris.com/alerts/singapore_payment_services_act_what_you_should_do_comply_0220.html" target="_blank" rel="noopener">Duane Morris</a>). Even a non-custodial integration there should get a counsel check. Sri Lanka regulates aggregators under CBSL General Direction No. 1 of 2018, and PayHere was the first gateway approved under it (<a href="https://www.ft.lk/Financial-Services/PayHere-payment-aggregator-platform-Long-awaited-breakthrough-for-Sri-Lankan-businesses/42-674482" target="_blank" rel="noopener">Daily FT</a>).</p>
+<p>Card-data security (PCI DSS) is the final constraint. A merchant qualifies for the lightest self-assessment form (SAQ A) only if every element of the payment page comes from a PCI-compliant provider. Mixing in any self-hosted element moves it to SAQ A-EP (<a href="https://www.pcisecuritystandards.org/faqs/if-a-merchant-s-e-commerce-implementation-meets-the-criteria-that-all-elements-of-payment-pages-originate-from-a-pci-dss-compliant-service-provider-is-the-merchant-eligible-to-complete-saq-a-or-saq-a-ep/" target="_blank" rel="noopener">PCI SSC</a>). So the invoice pay page should use Stripe Checkout or Stripe-hosted elements, never a home-built card field.</p>
+<h3 id="vendors-and-prices-by-market">Vendors and prices by market</h3><p><strong>Stripe Connect</strong> is the only provider in the notes that covers the US, UK, EU, Canada, Australia and Singapore on one connected-account model, and it has two pricing modes. In mode A, &quot;Stripe handles pricing&quot;, Stripe bills the businesses directly and the platform pays no Connect fees (<a href="https://stripe.com/fr-us/connect/pricing" target="_blank" rel="noopener">Stripe</a>). In mode B, &quot;You handle pricing&quot;, the platform sets its own rate and pays <strong>$2 per monthly active account plus 0.25% + 25¢ per payout</strong>. Instant payouts cost 1% and cross-border payouts 0.25% (<a href="https://stripe.com/it-us/connect/pricing" target="_blank" rel="noopener">Stripe US</a>). An account counts as active only in months when it receives a payout (<a href="https://drop-desk.com/blog/guides/stripe-fees-for-marketplace-operators/" target="_blank" rel="noopener">drop-desk</a>). The loss-bearer choice matters most. In Stripe&#39;s account configuration, <code>losses_collector</code> set to <code>stripe</code> or <code>application</code> decides who absorbs negative balances. Choosing <code>application</code> also makes the platform the fee collector, and <strong>the setting cannot be changed after the account is created</strong> (<a href="https://docs.stripe.com/connect/accounts-v2/connected-account-configuration" target="_blank" rel="noopener">Stripe docs</a>).</p>
+<p>Stripe India has been <strong>invite-only for new accounts since May 2024</strong> (<a href="https://support.stripe.com/questions/moving-to-invite-only-in-india" target="_blank" rel="noopener">Stripe support</a>), and a secondary source says it lacks UPI and wallets (<a href="https://payglocal.in/blog/using-stripe-payment-gateway-india" target="_blank" rel="noopener">PayGlocal</a>). India therefore needs <strong>Razorpay Route</strong>, which splits funds to sellers or sub-accounts. Under the 2025 RBI directions, though, a business must meet minimum turnover thresholds to get or keep Route access (<a href="https://razorpay.com/docs/payments/settlements/direct/route" target="_blank" rel="noopener">Razorpay docs</a>). For Singapore, <strong>HitPay</strong> charges 0.65% + S$0.30 on PayNow online transactions of S$100 and above, 2.8% + S$0.50 on domestic cards and 3.65% + S$0.50 on international cards (<a href="https://hitpayapp.com/pricing/sg" target="_blank" rel="noopener">HitPay</a>). HitPay says it holds a MAS Major Payment Institution licence, which has not been checked against the MAS register. Sri Lanka&#39;s <strong>PayHere</strong> charged 2.9–3.9% in 2019 (<a href="https://readme.lk/internet-payment-gateways-in-sri-lanka-2019/" target="_blank" rel="noopener">readme.lk</a>); that figure is dated, and no current price or platform-split support was found. <strong>Adyen for Platforms</strong> is a poor launch fit, with a reported minimum monthly invoice of about $120 and typical volumes of $1M+ a year (<a href="https://costbench.com/compare/adyen-vs-stripe/" target="_blank" rel="noopener">costbench</a>). For bank debits, <strong>GoCardless</strong> UK charges 1% + 20p capped at £4 on its Standard plan (<a href="https://dodopayments.com/blogs/gocardless-alternatives/" target="_blank" rel="noopener">dodopayments</a>). Its USD pricing is quoted inconsistently (<a href="https://erpresearch.com/erp-add-ons/billing-subscriptions/gocardless/pricing" target="_blank" rel="noopener">erpresearch</a>; <a href="https://toolradar.com/tools/gocardless/pricing" target="_blank" rel="noopener">toolradar</a>).</p>
+<p>The competitor benchmark is consistent. <strong>Wave charges 2.9% + 60¢</strong> on cards and 1% (minimum $1) on ACH (<a href="https://support.waveapps.com/hc/en-us/articles/218323823" target="_blank" rel="noopener">Wave support</a>). FreshBooks charges 2.9% + 30¢ on domestic consumer cards (<a href="https://paymentreview.com/reviews/freshbooks-payments/" target="_blank" rel="noopener">paymentreview</a>), and Xero passes through Stripe and GoCardless rather than processing payments itself (<a href="https://feeflowcalculator.com/xero-payments" target="_blank" rel="noopener">feeflowcalculator</a>). Wave&#39;s model is to fund free software with payments and payroll fees. H&amp;R Block bought it for <strong>$405M in cash and expected $40–45M of FY2020 revenue</strong> (<a href="https://www.sec.gov/Archives/edgar/data/12659/000157484219000017/form8-k06x11x19nazarexexhi.htm" target="_blank" rel="noopener">H&amp;R Block 8-K</a>; <a href="https://betakit.com/?p=197829" target="_blank" rel="noopener">BetaKit</a>). Other sources put the price at about US$398M (<a href="https://glenbrook.com/payments_news/hr-block-acquires-wave-financial-for-398m/" target="_blank" rel="noopener">Glenbrook</a>).</p>
+<h3 id="the-margin-trap-in-quot-you-handle-pricing-quot">The margin trap in &quot;you handle pricing&quot;</h3><p>Stripe&#39;s sourced fee schedule shows that copying Wave&#39;s price on Stripe&#39;s mode B does not obviously make money at small-business volumes (est., this report&#39;s arithmetic). Take a business invoicing $5,000 a month as ten $500 invoices, paid out in four payouts. Charging Wave&#39;s 2.9% + 60¢ against Stripe&#39;s 2.9% + 30¢ cost earns <strong>$3.00</strong> of spread. Mode B costs <strong>$15.50</strong>: $2 account fee, plus 0.25% of $5,000 ($12.50), plus four 25¢ payout fees. The 0.25% payout fee scales with volume while a fixed-fee markup does not, so a profitable mode-B price needs a percentage markup of roughly 0.3% or more, or negotiated Stripe rates. Wave&#39;s actual cost basis is unknown. The practical consequence is to <strong>launch on mode A, which carries no platform fees and keeps Stripe as loss-bearer</strong>, accept little payments revenue at first, and negotiate mode B or a revenue share once volume gives leverage. No official partner revenue-share schedule was found for any provider, so those terms will be negotiated.</p>
+<h3 id="build-vs-buy-side-by-side">Build vs buy, side by side</h3><div class="tbl"><table><thead><tr>
+<th>Option</th>
+<th>Licences BillingEase needs</th>
+<th>Loss and KYC liability</th>
+<th>Time and cost</th>
+<th>Fit</th>
+</tr>
+</thead><tbody><tr>
+<td>Stripe Connect, mode A (hosted checkout)</td>
+<td>None in Stripe markets; Stripe holds the licences</td>
+<td>Stripe collects KYC and bears losses</td>
+<td>Weeks to months <span class="est">est.</span>; no platform fees (<a href="https://stripe.com/fr-us/connect/pricing" target="_blank" rel="noopener">Stripe</a>)</td>
+<td><strong>Launch: US, UK, EU, CA, AU, SG</strong></td>
+</tr>
+<tr>
+<td>Stripe Connect, mode B</td>
+<td>None</td>
+<td>Platform is likely to bear negative balances, so it needs reserves and dispute operations <span class="est">est.</span></td>
+<td>$2 per active account plus 0.25% + 25¢ per payout (<a href="https://stripe.com/it-us/connect/pricing" target="_blank" rel="noopener">Stripe</a>)</td>
+<td>Once volume justifies it</td>
+</tr>
+<tr>
+<td>Local aggregators (Razorpay Route, PayHere, HitPay)</td>
+<td>None; they are licensed by the RBI, CBSL and MAS</td>
+<td>Provider terms (not researched)</td>
+<td>Separate integration for each (est. 1–2 months each)</td>
+<td>India, Sri Lanka, optionally SG</td>
+</tr>
+<tr>
+<td>ISO (card-processing reseller)</td>
+<td>Card-network registration</td>
+<td>Partial</td>
+<td>About 3–6 months, $50K–200K (<a href="https://convesio.com/knowledgebase/article/how-to-start-credit-card-processing-company/" target="_blank" rel="noopener">Convesio</a>)</td>
+<td>Not recommended</td>
+</tr>
+<tr>
+<td>Full payment facilitator (PayFac)</td>
+<td>Sponsor bank, network registration, PCI as a service provider</td>
+<td><strong>Full liability for sub-merchants</strong> (<a href="https://convesio.com/knowledgebase/article/how-to-start-credit-card-processing-company/" target="_blank" rel="noopener">Convesio</a>)</td>
+<td>12–24 months, $2M–10M+. About $600K of staffing and at least $50K for PCI (<a href="https://staxpayments.com/blog/becoming-your-own-payment-facilitator" target="_blank" rel="noopener">Stax</a>). About $5K a year per card network and over $50K a year for PCI (<a href="https://www.tilled.com/blog/the-day-to-day-of-operating-as-a-payment-facilitator" target="_blank" rel="noopener">Tilled</a>).</td>
+<td>Revisit above roughly $100M a year of volume (est., a judgement call)</td>
+</tr>
+<tr>
+<td>Direct acquiring</td>
+<td>All of the above, plus acquiring</td>
+<td>Full</td>
+<td>2–5 years (<a href="https://convesio.com/knowledgebase/article/how-to-start-credit-card-processing-company/" target="_blank" rel="noopener">Convesio</a>)</td>
+<td>No</td>
+</tr>
+</tbody></table></div><p><strong>Bill pay is a different and riskier product</strong>, because it debits the business and pays vendors, which is classic money transmission. Airwallex sells bill pay and programmatic payouts (<a href="https://airwallex.com/llms.txt" target="_blank" rel="noopener">Airwallex</a>), but no prices were found for Airwallex, Routable, Wise Platform or Stripe Treasury. Xero&#39;s <strong>$2.5B upfront acquisition of Melio</strong>, which processed more than $30B and earned $153M of revenue in the year to March 2025 (<a href="https://www.cpapracticeadvisor.com/2025/10/15/xero-acquires-payments-platform-melio-for-2-5b/170967/" target="_blank" rel="noopener">CPA Practice Advisor</a>), shows the prize is real. It also shows that incumbents buy this capability rather than build it. Defer bill pay to phase 3 and run it through a licensed partner. Payment reconciliation (gross amount to the invoice, fee to expense, net to a clearing account, payout to the bank) is in-house work built on provider webhooks: about 3–5 engineer-weeks <span class="est">est.</span>.</p>
+<h2 id="payroll-is-the-deepest-liability-trap-and-only-four-markets-">Payroll is the deepest liability trap, and only four markets have embeddable engines</h2><h3 id="why-payroll-ranks-hardest">Why payroll ranks hardest</h3><p>Payroll pairs heavy tax content with liability that falls on the employer. In the US, late federal deposits draw <strong>2% (1–5 days), 5% (6–15 days) or 10% (more than 15 days)</strong>, rising to 15% after IRS notices (<a href="https://www.irs.gov/payments/failure-to-deposit-penalty" target="_blank" rel="noopener">IRS</a>). The Trust Fund Recovery Penalty can reach <strong>100% of unpaid withheld tax and is assessed on individuals personally</strong> (<a href="https://www.paylocity.com/resources/tax-compliance/payroll-tax-penalties/" target="_blank" rel="noopener">Paylocity</a>). A standard reporting agent, authorised on IRS Form 8655, files and deposits for the employer but takes on <strong>no liability</strong>. It must remind clients at least quarterly that they remain liable (<a href="https://www.irs.gov/ru/newsroom/picking-the-right-third-party-payroll-service-provider-helps-protect-businesses" target="_blank" rel="noopener">IRS</a>; <a href="https://adp.com/tools-and-resources/~/media/Eye%20on%20Washington/EOW%20LU%20IRS%20Disclosures%20082112.ashx" target="_blank" rel="noopener">ADP</a>). Liability shifts only under a Section 3504 agent (Form 2678) or a certified PEO (<a href="https://irs.gov/zh-hant/newsroom/picking-the-right-third-party-payroll-service-provider-helps-protect-businesses" target="_blank" rel="noopener">IRS</a>). Moving wages raises the same money-transmitter question as payments. California exempts delivering wages and paying payroll taxes, but its regulator found licensing applied to a provider that pooled client funds (<a href="https://dfpi.ca.gov/rules-enforcement/laws-and-regulations/opinion-letters-by-law-subject/mta-payroll-processing/" target="_blank" rel="noopener">CA DFPI</a>). Minnesota exempts payroll processors outright (<a href="https://www.revisor.mn.gov/statutes/cite/53B.29/pdf" target="_blank" rel="noopener">Minn. Stat. 53B.29</a>). Canada is stricter on timing: late remittances cost <strong>3–10%, up to 20% for repeat failures, even if the payment was started on time</strong> (<a href="https://taxtips.ca/smallbusiness/latepayrollremittance.htm" target="_blank" rel="noopener">TaxTips.ca</a>).</p>
+<p>The evidence for buying is indirect but consistent. FreshBooks announced Gusto-powered US payroll in October 2023 and launched it in January 2024, for US customers only (<a href="https://freshbooks.com/press/releases/freshbooks-to-leverage-gusto-to-power-upcoming-embedded-payroll-service" target="_blank" rel="noopener">FreshBooks</a>). Xero has run native payroll only in AU, NZ and the UK, and has used Gusto in the US since 2018 (<a href="https://www.hr.software/reviews/xero-payroll" target="_blank" rel="noopener">hr.software</a>). Wave long offered full-service tax filing in only 14 states (<a href="https://fitsmallbusiness.com/wave-payroll-review/" target="_blank" rel="noopener">FitSmallBusiness</a>), though one aggregator says signups after April 2025 get every state (<a href="https://explore.softwarefinder.com/hr/wave-payroll" target="_blank" rel="noopener">Software Finder</a>). No source puts a number on an in-house US build. The research team&#39;s judgement is &quot;multiple years with a dedicated tax-content team&quot; <span class="est">est.</span>.</p>
+<h3 id="market-by-market">Market by market</h3><p>In the <strong>US</strong>, Gusto Embedded, Check, Salsa, Zeal and Rollfi all cover 50 states, and none publishes a partner rate card (<a href="https://sourceforge.net/software/embedded-payroll/" target="_blank" rel="noopener">SourceForge</a>; <a href="https://www.openbankingtracker.com/embedded-finance/category/payroll" target="_blank" rel="noopener">Open Banking Tracker</a>). One third-party benchmark puts embedded payroll at <strong>$35–70 per company per month plus $6–10 per employee</strong>, with the platform keeping about two-thirds (<a href="https://fintechspecs.com/blog/best-embedded-payroll-api-vertical-saas/" target="_blank" rel="noopener">FintechSpecs</a>). Retail prices sit close to that range: Wave charges $40/month + $6/person for full service (<a href="https://www.WaveApps.com/payroll" target="_blank" rel="noopener">Wave</a>), and QuickBooks Payroll Core about $50 + $6.50 (low-quality sources) (<a href="https://www.dancingnumbers.com/quickbooks-payroll-subscription" target="_blank" rel="noopener">Dancing Numbers</a>). It is unclear whether the $35–70 benchmark is a wholesale or a retail price. If it is wholesale, unit margins at Wave&#39;s price are thin. Get quotes before modelling revenue. A third-party directory reports that Gusto partners can go live &quot;in as little as four weeks&quot; with pre-built flows (<a href="https://openbankingtracker.com/embedded-finance/gusto-embedded" target="_blank" rel="noopener">Open Banking Tracker</a>).</p>
+<p><strong>Canada</strong> has a single integration path through <strong>Salsa (US + Canada)</strong> or <strong>Nmbr</strong> (Canada only, CAD $7.6M raised) (<a href="https://www.salsa.dev/" target="_blank" rel="noopener">Salsa</a>; <a href="https://www.businesswire.com/news/home/20240924021989/en/Nmbr-Secures-CAD-$7.6-Million-to-Bring-Embedded-Payroll-to-Canada" target="_blank" rel="noopener">BusinessWire</a>). Wave&#39;s Canadian payroll does not support Quebec (<a href="https://www.ledgerlogic.ca/tools/payroll" target="_blank" rel="noopener">LedgerLogic</a>), and leaving Quebec out at launch is a precedent BillingEase can follow. The <strong>UK</strong> is the most tractable non-US market. HMRC&#39;s Real Time Information system is one central channel, and employer National Insurance has been 15% since April 2025 (<a href="https://taxsummaries.pwc.com/united-kingdom/individual/other-taxes" target="_blank" rel="noopener">PwC</a>). HMRC-recognised payroll APIs exist: Staffology exposes payment-submission (FPS) creation and the XML before it is filed (<a href="https://app.staffology.co.uk/api/docs/guides/payrun/fps" target="_blank" rel="noopener">Staffology</a>), and Moonworkers prices per payslip (<a href="https://www.moonworkers.co.uk/blog/payroll-rest-api" target="_blank" rel="noopener">Moonworkers</a>). <strong>Australia</strong> requires reporting every pay event to the tax office (Single Touch Payroll), and from <strong>1 July 2026 &quot;Payday Super&quot; requires superannuation to reach the fund within 7 days of each payday</strong> (<a href="https://www.ato.gov.au/businesses-and-organisations/super-for-employers/paying-super-on-payday/single-touch-payroll-reporting-under-payday-super" target="_blank" rel="noopener">ATO</a>). Pay rules under the industry awards make an in-house engine unrealistic. Employment Hero (formerly KeyPay) is the white-label engine behind more than 750 partners (<a href="https://employmenthero.com/blog/keypay-becomes-employment-hero/" target="_blank" rel="noopener">Employment Hero</a>; <a href="https://www.keypay.com.au/feature/integration" target="_blank" rel="noopener">KeyPay</a>).</p>
+<p>The other markets have no embeddable engine. The <strong>EU</strong> has no single payroll: even PayFit runs native payroll only in France, Spain and the UK (<a href="https://www.hr.software/reviews/payfit" target="_blank" rel="noopener">hr.software</a>), so the realistic product is importing payroll journals from DATEV, Silae or PayFit. <strong>India</strong> layers central schemes (provident fund 12% + 12%, ESI 0.75% + 3.25%) over state professional tax (<a href="https://www.wisemonk.io/blogs/payroll-compliance-in-india" target="_blank" rel="noopener">Wisemonk</a>), and RazorpayX Payroll sells at <strong>₹150 per extra employee per month</strong> (<a href="https://razorpay.com/payroll//pricing" target="_blank" rel="noopener">Razorpay</a>). No embedded API was found and local pricing leaves little room, so sync payroll journals from local providers. <strong>Sri Lanka</strong> is simple to calculate: provident fund (EPF) 8% employee + 12% employer, trust fund (ETF) 3% employer (<a href="https://www.playroll.com/payroll/sri-lanka" target="_blank" rel="noopener">Playroll</a>), and personal relief raised to LKR 1.8M from April 2025 (<a href="https://sl-salary-cal.vercel.app/report.html" target="_blank" rel="noopener">sl-salary-cal</a>). There is no filing API, so build a calculator, payslips and schedules, and leave filing manual. <strong>Singapore</strong> is rules-driven: CPF is 37% for employees aged 55 and under, with an ordinary wage ceiling of S$8,000 from 2026 (<a href="https://www.harvestaccounting.com.sg/post/cpf-contribution-rates-singapore-employer-guide" target="_blank" rel="noopener">Harvest Accounting</a>), and the skills levy is 0.25% capped at S$11.25 (<a href="https://slasify.com/en/blog/employer-contribution-in-singapore" target="_blank" rel="noopener">Slasify</a>). No payroll API provider was identified, so a calculation-only in-house build is plausible.</p>
+<div class="tbl"><table><thead><tr>
+<th>Market</th>
+<th>Buy (embed)</th>
+<th>Build</th>
+<th>Recommendation</th>
+<th>Launch effort</th>
+</tr>
+</thead><tbody><tr>
+<td>US</td>
+<td>Gusto Embedded, Check, Salsa, Rollfi, Zeal; price by quote</td>
+<td>Multi-year; reporting-agent status in every state, ACH sponsor bank, licensing analysis, SOC 1 <span class="est">est.</span></td>
+<td><strong>Embed</strong></td>
+<td>About 1–3 months with pre-built UI, 3–6 months native <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>Canada</td>
+<td>Salsa, Nmbr</td>
+<td>Federal remittances plus Quebec&#39;s separate regime</td>
+<td><strong>Embed, excluding Quebec</strong></td>
+<td>About 1–3 months <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>UK</td>
+<td>Staffology, PayRun.io, Moonworkers</td>
+<td>HMRC recognition, annual rate changes, statutory pay, pensions <span class="est">est.</span></td>
+<td><strong>Embed API</strong></td>
+<td>About 2–3 months <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>Australia</td>
+<td>Employment Hero white-label</td>
+<td>Payroll reporting certification, awards, Payday Super</td>
+<td><strong>White-label</strong></td>
+<td>Partner terms unknown</td>
+</tr>
+<tr>
+<td>EU</td>
+<td>No unified API</td>
+<td>Per-country, multi-year</td>
+<td><strong>Import journals only</strong></td>
+<td>About 2–4 weeks per connector <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>India</td>
+<td>No embed API found</td>
+<td>Provident fund, ESI, professional tax, tax withholding; 2026 form changes</td>
+<td><strong>Import journals only</strong></td>
+<td>Same</td>
+</tr>
+<tr>
+<td>Sri Lanka</td>
+<td>None</td>
+<td>Small calculation scope</td>
+<td><strong>Build a calculator; manual filing</strong></td>
+<td>About 4–6 weeks <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>Singapore</td>
+<td>None identified</td>
+<td>CPF age bands and ceilings, skills levy, annual income reporting</td>
+<td><strong>Build calculation only</strong></td>
+<td>About 6–8 weeks <span class="est">est.</span></td>
+</tr>
+</tbody></table></div><h2 id="sales-tax-vat-and-e-invoicing-a-us-engine-an-mtd-integration">Sales tax, VAT and e-invoicing: a US engine, an MTD integration and Peppol partners</h2><h3 id="us-sales-tax-is-a-moving-target-that-every-competitor-buys-o">US sales tax is a moving target that every competitor buys or skips</h3><p>Economic nexus, the post-Wayfair rule that makes out-of-state sellers collect tax once sales pass a state&#39;s threshold, keeps shifting. <strong>Sixteen states had dropped the 200-transaction test by 1 January 2026</strong> (<a href="https://www.avalara.com/blog/en/north-america/2025/06/states-eliminating-economic-nexus-transaction-thresholds.html" target="_blank" rel="noopener">Avalara</a>). Kentucky followed on 1 August 2026 (<a href="https://beancount.io/blog/2026/07/16/kentucky-drops-200-transaction-sales-tax-threshold-guide" target="_blank" rel="noopener">beancount.io</a>), and Connecticut still requires both tests together (<a href="https://trykintsugi.com/sales-tax-guides/usa/economic-nexus" target="_blank" rel="noopener">Kintsugi</a>). Wave makes no attempt at this. Users type in each rate and Wave books a liability account (<a href="https://support.waveapps.com/hc/en-us/articles/360039628292-How-sales-tax-is-tracked-and-calculated-in-Wave" target="_blank" rel="noopener">Wave help</a>), with no nexus tracking or multistate filing (<a href="https://www.commenda.io/integrations/wave/sales-tax-and-global-vat-software-for-wave" target="_blank" rel="noopener">Commenda</a>). QuickBooks Online calculates rates from business and customer addresses (<a href="https://cleverence.com/articles/quickbooks-documentation/set-up-and-use-automated-sales-tax-in-quickbooks-online-4382" target="_blank" rel="noopener">Cleverence</a>). <strong>Wave parity is therefore cheap; QuickBooks parity is a vendor contract.</strong></p>
+<div class="tbl"><table><thead><tr>
+<th>Option</th>
+<th>Price (sourced, mostly third-party)</th>
+<th>Fit</th>
+</tr>
+</thead><tbody><tr>
+<td>User-entered rates plus a liability report (Wave model)</td>
+<td>Engineering only, about 2–3 weeks <span class="est">est.</span></td>
+<td><strong>Launch</strong></td>
+</tr>
+<tr>
+<td>Stripe Tax</td>
+<td>0.5% per transaction where registered; the UK &quot;Complete&quot; plan from £70/month (<a href="https://erpresearch.com/erp-add-ons/tax-compliance/stripe-tax/pricing" target="_blank" rel="noopener">erpresearch</a>)</td>
+<td>Calculation add-on, natural with Stripe Connect</td>
+</tr>
+<tr>
+<td>TaxJar</td>
+<td>$39–99/month; automatic filing <strong>rose to $50–55 per filing in Feb 2026</strong> (<a href="https://trykintsugi.com/blog/top-4-tax-jar-alternatives-for-seamless-sales-tax-management" target="_blank" rel="noopener">Kintsugi</a>)</td>
+<td>Filing for multistate sellers</td>
+</tr>
+<tr>
+<td>Numeral</td>
+<td>$75 per return, $150 per state registration, no monthly fee (<a href="https://salestaxpricingindex.org/calculator" target="_blank" rel="noopener">salestaxpricingindex</a>)</td>
+<td>Cheapest filing per return</td>
+</tr>
+<tr>
+<td>Avalara</td>
+<td>About $69/month entry plus $48 per filing and $403 per registration; mid-market $7.4K–18K+ a year (<a href="https://salestaxpricingindex.org/avalara-pricing" target="_blank" rel="noopener">salestaxpricingindex</a>)</td>
+<td>Larger customers</td>
+</tr>
+<tr>
+<td>Build a rooftop-level rate and taxability engine</td>
+<td>Thousands of jurisdictions and monthly rate changes <span class="est">est.</span></td>
+<td><strong>Not viable</strong> for a small team</td>
+</tr>
+</tbody></table></div><p>A comparison site models 50K orders in 10 states at <strong>about $9K a year on Numeral, $22K on TaxJar, $27K on Anrok and $44K+ on Avalara</strong> (<a href="https://salestaxpricingindex.org/calculator" target="_blank" rel="noopener">salestaxpricingindex</a>). Filing is the expensive part, so it should be a paid add-on passed through to the merchant.</p>
+<h3 id="the-uk-39-s-mtd-for-income-tax-is-an-opportunity-not-just-a-">The UK&#39;s MTD for Income Tax is an opportunity, not just a compliance cost</h3><p>UK VAT returns must go through HMRC&#39;s MTD API. <strong>Software suppliers carry the legal duty to send fraud-prevention headers</strong>, and HMRC grants production credentials for MTD Income Tax only to software that meets its transaction-monitoring rules (<a href="https://assets.publishing.service.gov.uk/media/65c4d38bcc433b0011a90a6b/240207_Updated_Draft_TxM_Commissioners_Directions_FINAL.odt" target="_blank" rel="noopener">HMRC directions</a>). HMRC certifies software directly rather than intermediaries, so this is a build, at about 1–3 months for MTD VAT including recognition <span class="est">est.</span>. The commercial point matters more. <strong>MTD for Income Tax began on 6 April 2026 for sole traders and landlords with qualifying income above £50,000, falling to £30,000 in 2027 and £20,000 in 2028</strong> (<a href="https://www.gov.uk/government/news/one-year-until-making-tax-digital-for-income-tax-launches" target="_blank" rel="noopener">GOV.UK</a>). Each step-down creates a wave of sole traders who must buy quarterly-update software, which is exactly Wave&#39;s customer profile. MTD for Corporation Tax will not go ahead (<a href="https://www.sage.com/en-gb/blog/making-tax-digital-thresholds-vat-itsa-corporation-tax/" target="_blank" rel="noopener">Sage</a>).</p>
+<h3 id="eu-singapore-india-and-sri-lanka-mandates-bunch-up-between-2">EU, Singapore, India and Sri Lanka mandates bunch up between 2026 and 2031</h3><p>E-invoicing is what makes localisation hard. In Europe, <strong>Belgium has required Peppol for domestic B2B invoices since 1 January 2026</strong> (<a href="https://www.spscommerce.com/community/articles/e-invoicing-mandates-in-europe-the-2026-business-guide" target="_blank" rel="noopener">SPS Commerce</a>). Poland&#39;s KSeF clearance system covers all VAT payers from April 2026 and micro-businesses from January 2027 (<a href="https://www.invoicenavigator.eu/answers/eu-e-invoicing-requirements-2026" target="_blank" rel="noopener">invoicenavigator</a>). France has required every business to receive e-invoices since 1 September 2026, and SMEs must issue them from 1 September 2027 through an accredited platform (<em>plateforme agréée</em>), with <strong>€50 fines per non-compliant invoice</strong> (<a href="https://softco.com/blog/france-e-invoicing-2026-september-update/" target="_blank" rel="noopener">SoftCo</a>; <a href="https://www.banqup.com/resources/blog/france-approves-finance-act-2026-confirms-e-invoicing-and-e-reporting-rules" target="_blank" rel="noopener">Banqup</a>). Germany requires receiving now and issuing from 2027 (turnover above €800K) and 2028 (everyone), and it does not mandate Peppol (<a href="https://e-invoicing.org/germany/" target="_blank" rel="noopener">e-invoicing.org</a>). The EU&#39;s ViDA package adds intra-EU digital reporting from July 2030 (<a href="https://originstamp.com/en/blog/reader/eu-e-invoicing-mandates-timeline-2026-2030" target="_blank" rel="noopener">originstamp</a>).</p>
+<p>Elsewhere, <strong>Singapore&#39;s GST InvoiceNow (Peppol)</strong> has applied to all new voluntary GST registrants since 1 April 2026. It extends to existing businesses in tiers from April 2028 (supplies of S$200K or less) to April 2031 (above S$4M) (<a href="https://www.iras.gov.sg/taxes/goods-services-tax-(gst)/gst-invoicenow-requirement" target="_blank" rel="noopener">IRAS</a>). <strong>India</strong> requires a registration number (IRN) from the government invoice portal for businesses with turnover above ₹5 crore, and an invoice without one is invalid (<a href="https://www.e-invoice.app/guides/india-e-invoicing" target="_blank" rel="noopener">e-invoice.app</a>). The GSTR-3B monthly return is now hard-locked to auto-populated figures (<a href="https://www.ey.com/en_in/technical/alerts-hub/2024/10/gstn-issues-advisory-on-hard-locking-of-auto-populated-values-in-form-gstr-3b" target="_blank" rel="noopener">EY India</a>). Most Indian SMBs fall below the ₹5 crore line (<a href="https://tallysolutions.com/accounting/e-invoicing-rules-in-india/" target="_blank" rel="noopener">Tally</a>), so India&#39;s launch blocker is the scope of GST returns, not e-invoicing. <strong>Sri Lanka</strong> began piloting invoice submission from business software to the revenue department&#39;s RAMIS system in May 2026, mandated a revised VAT invoice format from 1 July 2026 (<a href="https://www.vatupdate.com/2026/05/14/sri-lanka-unveils-major-vat-reforms-targeting-digital-services-non-residents-and-compliance-measures/" target="_blank" rel="noopener">VATupdate</a>), and moved its VAT registration threshold during the year, with sources conflicting on the new figure (<a href="https://trykintsugi.com/sales-tax-guides/apac/sri-lanka" target="_blank" rel="noopener">Kintsugi</a>). Canada has no e-invoicing, and Australia&#39;s Peppol remains voluntary for B2B (<a href="https://www.fiscal-requirements.com/news/4462-australias-e-invoicing-mandate-a-concise-overview" target="_blank" rel="noopener">fiscal-requirements</a>).</p>
+<div class="tbl"><table><thead><tr>
+<th>Requirement</th>
+<th>Buy or partner</th>
+<th>Build</th>
+<th>Recommendation</th>
+</tr>
+</thead><tbody><tr>
+<td>Single-rate VAT/GST logic (UK, CA, AU, SG, LK, India&#39;s GST splits)</td>
+<td>Engines are overkill</td>
+<td>About 2–6 engineer-weeks per country <span class="est">est.</span></td>
+<td><strong>Build</strong>, with data-driven rate tables</td>
+</tr>
+<tr>
+<td>HMRC MTD VAT and Income Tax</td>
+<td>n/a; HMRC certifies software directly</td>
+<td>About 1–3 months for VAT <span class="est">est.</span>; Income Tax is larger</td>
+<td><strong>Build</strong></td>
+</tr>
+<tr>
+<td>Peppol (Belgium, SG InvoiceNow, AU optional)</td>
+<td>Access-point API such as Storecove, Pagero or Banqup; prices not found</td>
+<td>Becoming an access point takes 6+ months <span class="est">est.</span></td>
+<td><strong>Partner</strong>, about 1–2 months <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>France accredited platform, Poland KSeF</td>
+<td>Accredited platform partner</td>
+<td>Accreditation or a separate clearance API</td>
+<td><strong>Partner</strong> for France before Sept 2027; <strong>skip Poland</strong></td>
+</tr>
+<tr>
+<td>India e-invoice portal and returns</td>
+<td>GST intermediary (GSP/ASP)</td>
+<td>Needs GSP licensing</td>
+<td><strong>Partner</strong>, about 2–3 months <span class="est">est.</span></td>
+</tr>
+<tr>
+<td>Sri Lanka RAMIS</td>
+<td>None identified</td>
+<td>Pilot API that is still changing</td>
+<td><strong>Defer</strong>; ship the revised invoice format</td>
+</tr>
+</tbody></table></div><h2 id="bank-feeds-aggregators-exist-everywhere-except-sri-lanka-but">Bank feeds: aggregators exist everywhere except Sri Lanka, but none publishes simple prices</h2><h3 id="why-feeds-are-hard-even-when-bought">Why feeds are hard even when bought</h3><p>Feeds fail operationally rather than legally. UK rules require the data provider to reconfirm consent with the customer <strong>every 90 days</strong>, and the EU requires strong authentication <strong>every 180 days</strong> (<a href="https://www.openbanking.org.uk/news/fca-update-guidance-on-90-day-strong-customer-authentication/" target="_blank" rel="noopener">Open Banking Ltd</a>; <a href="https://www.vixio.com/insights/pc-90-becomes-180-eba-makes-key-sca-change" target="_blank" rel="noopener">Vixio</a>). Yapily treats communicating these reconfirmations as the app&#39;s job (<a href="https://yapily.com/blog/how-to-communicate-90-day-reauthentication-changes-to-your-customers" target="_blank" rel="noopener">Yapily</a>). India&#39;s industry body Sahamati ran a dedicated session in September 2025 on improving account-aggregator success rates (<a href="https://sahamati.org.in/wp-content/uploads/2025/10/Pragati-Session-__-Strategies-to-boost-AA-success-rates-__-10th-Sept-2025-__-Website-Update-1.pdf" target="_blank" rel="noopener">Sahamati</a>). No published breakage or connection-success rates were found for any aggregator, so connection health, re-link prompts and a file-import fallback should be first-class features.</p>
+<p>US regulation is in flux. The CFPB&#39;s Section 1033 open-banking rule is <strong>under a preliminary injunction</strong>, its April 2026 compliance date passed unenforced (<a href="https://www.cozen.com/news-resources/publications/2026/section-1033-compliance-date-open-banking-rule-enjoined-and-under-reconsideration" target="_blank" rel="noopener">Cozen O&#39;Connor</a>), and a reconsideration proposal went to OMB review in August 2026 (<a href="https://www.consumerfinancemonitor.com/2026/08/06/cfpb-sends-new-section-1033-open-banking-proposal-to-oira-for-review/" target="_blank" rel="noopener">Consumer Finance Monitor</a>). Meanwhile banks have started charging aggregators for data: JPMorgan&#39;s contracts covered more than 95% of the data pulled from its systems by November 2025 (<a href="https://paymentexpert.com/2025/11/17/jpmorgan-chase-to-charge-fintechs-for-customer-data-access/" target="_blank" rel="noopener">PaymentExpert</a>). Budget for aggregator price rises at renewal. Canada published proposed consumer-driven banking regulations on 27 June 2026, under Bank of Canada oversight (<a href="https://www.bennettjones.com/Insights/Blogs/2026/07/Canada-Advances-Consumer-Driven-Banking-Framework-with-Proposed-Regulations" target="_blank" rel="noopener">Bennett Jones</a>), so credential-based aggregators remain the path for now. Sri Lanka&#39;s open-banking framework has not progressed beyond a 2020 consultation (<a href="https://www.cbsl.gov.lk/sites/default/files/cbslweb_documents/press/notices/notice_20200302_PSD_developing_an_open_banking_framework_for_sri_lanka_e-merged.pdf" target="_blank" rel="noopener">CBSL</a>).</p>
+<h3 id="vendors-and-prices-by-market">Vendors and prices by market</h3><div class="tbl"><table><thead><tr>
+<th>Market</th>
+<th>Aggregator(s)</th>
+<th>Sourced price signal</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td>US</td>
+<td>Plaid (MX, Finicity, Akoya unverified)</td>
+<td>Quote-based; <strong>median contract about $9K a year</strong>, range $3.25K–220K (<a href="https://www.vendr.com/marketplace/plaid" target="_blank" rel="noopener">Vendr</a>)</td>
+<td>Unofficial per-link estimates of $0.30–2.00 conflict (<a href="https://www.fintegrationfs.com/post/how-much-does-plaid-integration-cost-in-the-us" target="_blank" rel="noopener">fintegrationfs</a>)</td>
+</tr>
+<tr>
+<td>UK and EU</td>
+<td>TrueLayer, Yapily, Tink</td>
+<td>Sales-led; free sandboxes (<a href="https://www.rfp.wiki/vendors/yapily/truelayer" target="_blank" rel="noopener">rfp.wiki</a>)</td>
+<td>The free GoCardless Bank Account Data service is <strong>reportedly closed to new signups</strong> (one blog only) (<a href="https://dev.to/johnfrandsen/gocardless-bank-account-data-alternatives-what-to-use-when-signups-are-disabled-326d" target="_blank" rel="noopener">dev.to</a>)</td>
+</tr>
+<tr>
+<td>Canada</td>
+<td>Flinks (unverified), plus PDF and CSV import</td>
+<td>None found</td>
+<td>Xero offers PDF statement import in the US and Canada (<a href="https://brandfolder.xero.com/8HSCTPAX/at/wns3crfcc83cp8fsxfqm4g58/PDF_Statement_Import_US_and_CA.pdf" target="_blank" rel="noopener">Xero</a>)</td>
+</tr>
+<tr>
+<td>Australia</td>
+<td>Basiq</td>
+<td><strong>AUD 0.50 per user per month plus a platform fee, 12-month minimum</strong>; the alternate page shows a minimum of AUD 500/month (<a href="https://basiq.io/pricing" target="_blank" rel="noopener">Basiq</a>; <a href="https://new.basiq.io/pricing.html" target="_blank" rel="noopener">new.basiq.io</a>)</td>
+<td>The clearest public price in any market; Basiq&#39;s pages conflict on add-ons</td>
+</tr>
+<tr>
+<td>India</td>
+<td>Account aggregators such as Setu</td>
+<td>Negotiated; about INR 3 lakh–2 crore a year (unverified) (<a href="https://productgrowth.in/tools/banking-api/setu/" target="_blank" rel="noopener">productgrowth.in</a>)</td>
+<td>Apps receive data as a registered data user via a licensed aggregator; success rates are a known problem</td>
+</tr>
+<tr>
+<td>Singapore</td>
+<td>Finverse (business accounts, 6 countries), direct bank feeds</td>
+<td>Not found (<a href="https://www.provenir.com/finverse/" target="_blank" rel="noopener">Provenir</a>)</td>
+<td>SGFinDex is consumer-only. Xero relies on deals such as DBS&#39;s (<a href="https://finovate.com/?p=62256" target="_blank" rel="noopener">Finovate</a>)</td>
+</tr>
+<tr>
+<td>Sri Lanka</td>
+<td><strong>None found</strong></td>
+<td>—</td>
+<td>Ship CSV, PDF and email-in statement import</td>
+</tr>
+</tbody></table></div><p>Owning the rails does not pay at BillingEase&#39;s scale. Becoming a UK account-information provider with EU passporting means roughly 2–4 compliance and security staff ($300K–700K a year) and 6–12 months of authorisation, and it breaks even against an aggregator only at about 100K+ connected businesses in a single market <span class="est">est.</span>. Direct US bank integrations are impractical given thousands of institutions and the new bank data fees. The effort to buy is about 2 engineers × 6–10 weeks for an MVP in one market, 3–6 more months of hardening, and 3–6 weeks for each extra aggregator <span class="est">est.</span>.</p>
+<h2 id="the-accounting-core-is-where-billingease-should-spend-its-ow">The accounting core is where BillingEase should spend its own engineering</h2><h3 id="ledger-and-multi-currency-build-because-no-vendor-sells-book">Ledger and multi-currency: build, because no vendor sells bookkeeping</h3><p>Hosted and open-source ledgers solve a different problem. Modern Treasury enforces double-entry, auditability and immutability: a correction reverses the original and reposts it rather than editing it (<a href="https://moderntreasury.com/journal/enforcing-immutability-in-your-double-entry-ledger" target="_blank" rel="noopener">Modern Treasury</a>). Formance and TigerBeetle are foundations rather than finished ledger products, and a comparison notes that Modern Treasury needs &quot;heavier lifting to deliver full bookkeeping&quot; (<a href="https://fintechspecs.com/blog/best-fintech-ledger-tools-startups/" target="_blank" rel="noopener">fintechspecs</a>). None of them provides accrual and cash reports, localised charts of accounts or accountant workflows. Accrual matters legally too: India&#39;s Companies Act s.128 requires books on an accrual, double-entry basis (<a href="https://www.advocatekhoj.com/library/bareacts/companies2013/128.php" target="_blank" rel="noopener">advocatekhoj</a>). The recommendation is an append-only Postgres ledger with balanced-journal constraints, period locks with accountant overrides, and an audit log. That takes about 2–3 senior engineers × 3–4 months, and a hosted ledger would save only 4–6 weeks of it <span class="est">est.</span>. Per-country chart-of-accounts templates take about 1–2 accountant-weeks each <span class="est">est.</span>.</p>
+<p>Multi-currency is harder than calling an FX API, because tax authorities name their own rates. <strong>HMRC publishes monthly rates that traders must use for VAT returns</strong> (<a href="https://www.gov.uk/hmrc-internal-manuals/corporate-finance-manual/cfm12070" target="_blank" rel="noopener">HMRC CFM12070</a>). The CRA accepts Bank of Canada rates (<a href="https://www.canada.ca/en/services/taxes/excise-taxes-duties-and-levies/digital-services-tax/rate-exchange.html" target="_blank" rel="noopener">Canada.ca</a>). Under EU VAT law the rate is the member state&#39;s market rate or the ECB rate (<a href="https://www.legislation.gov.uk/eudr/2006/112/article/91/2011-01-01/data.xht" target="_blank" rel="noopener">Directive 2006/112/EC Art. 91</a>), and Germany uses monthly rates published by its finance ministry (<a href="https://stripe.com/resources/more/invoicing-in-foreign-currencies-from-germany" target="_blank" rel="noopener">Stripe</a>). The ledger must therefore store several rate sources per date, record which one each transaction used, and post realised and unrealised gains automatically. That is about 4–6 engineer-weeks <span class="est">est.</span>.</p>
+<h3 id="receipts-categorisation-security-messaging-and-migration-are">Receipts, categorisation, security, messaging and migration are buildable</h3><p><strong>Receipt capture</strong> is now cheap. AWS Textract&#39;s expense analysis and Azure&#39;s prebuilt receipt models cost <strong>about $10 per 1,000 pages</strong> (<a href="https://wring.co/blog/aws-textract-pricing-guide" target="_blank" rel="noopener">wring.co</a>; <a href="https://docs.litellm.ai/docs/providers/azure_document_intelligence" target="_blank" rel="noopener">LiteLLM docs</a>). Mistral OCR is listed at $1–2 per 1,000 pages (<a href="https://aiproductivity.ai/blog/best-ai-ocr-tools/" target="_blank" rel="noopener">aiproductivity.ai</a>). Specialist vendors cost more: Mindee is €44–584 a month with €0.035–0.05 overage per credit (<a href="https://docs.mindee.com/account-management/plans" target="_blank" rel="noopener">Mindee</a>), and Veryfi has a minimum of about $500/month (<a href="https://erpresearch.com/erp-add-ons/ocr/veryfi/pricing" target="_blank" rel="noopener">erpresearch</a>). LLMs compete on accuracy: one benchmark reported a 97% receipt success rate for Claude 3.5 Sonnet (<a href="https://research.aimultiple.com/receipt-ocr" target="_blank" rel="noopener">AIMultiple</a>). The recommended design is a cheap model first, confidence scoring, user confirmation and an email-in address, at about 2–3 engineer-months <span class="est">est.</span>. <strong>Categorisation</strong> follows the same pattern: per-business rules, then an LLM fallback that learns from corrections, at about 4–8 engineer-weeks <span class="est">est.</span>. Ntropy offers 2,000 free test transactions but no public rate (<a href="https://ntropy.com/txen" target="_blank" rel="noopener">Ntropy</a>).</p>
+<p><strong>Security and privacy</strong> set dates the launch plan must respect. A first SOC 2 Type II audit needs <strong>3–6 months of preparation plus a 3–12 month observation window</strong>. A lean first year costs about $15K–50K, or $75K–150K+ with consultants; most of these sources are vendor-affiliated (<a href="https://guptadeepak.com/guides/soc-2-for-startups/" target="_blank" rel="noopener">guptadeepak</a>; <a href="https://www.startupdefense.io/soc-2-costs-for-startups-complete-breakdown-and-budget-guide" target="_blank" rel="noopener">startupdefense</a>). <strong>Sri Lanka&#39;s data protection law (PDPA) imposes controller and processor obligations from 1 January 2027</strong> (<a href="https://www.ft.lk/front-page/Data-protection-compliance-regime-takes-effect-on-1-Jan-2027/44-795776" target="_blank" rel="noopener">FT.lk</a>). <strong>India&#39;s DPDP core obligations apply from about 13 May 2027</strong>, with sources disagreeing by a day (<a href="https://www.azbpartners.com/bank/indias-digital-personal-data-protection-act-phased-rollout-and-key-compliance-milestones/" target="_blank" rel="noopener">AZB Partners</a>). Retention runs from 5 years in Australia (<a href="https://www.ato.gov.au/businesses-and-organisations/preparing-lodging-and-paying/record-keeping-for-business/overview-of-record-keeping-rules-for-business/records-to-keep-longer-than-five-years" target="_blank" rel="noopener">ATO</a>) and 6 years at the CRA (<a href="https://www.montrealfinancial.ca/blog/how-long-to-keep-your-business-documents-according-to-cra" target="_blank" rel="noopener">Montreal Financial</a>) to 8 years under India&#39;s Companies Act (<a href="https://tallysolutions.com/accounting/mandatory-accounting-records-companies-act/" target="_blank" rel="noopener">Tally</a>). Default to 8 years, and handle erasure requests by restricting the data and keeping it until retention ends.</p>
+<p><strong>Email</strong> has to meet the Gmail/Yahoo bulk-sender rules: SPF, DKIM, DMARC, one-click unsubscribe and a spam rate below 0.3% (<a href="https://bird.com/docs/knowledge-base/deliverability/gmail-yahoo-requirements" target="_blank" rel="noopener">Bird</a>). It costs $0.10 per 1,000 on SES and $15–18 per 10K on Postmark (<a href="https://costbench.com/compare/amazon-ses-vs-resend/" target="_blank" rel="noopener">costbench</a>; <a href="https://automationatlas.io/answers/postmark-pricing-explained-2026/" target="_blank" rel="noopener">automationatlas</a>). <strong>WhatsApp</strong> has charged per template message since July 2025, about ₹0.13 for an Indian utility message such as a payment reminder (<a href="https://developers.facebook.com/docs/whatsapp/pricing" target="_blank" rel="noopener">Meta</a>; <a href="https://support.myoperator.com/portal/en/kb/articles/whatsapp-has-shifted-to-per-message-pricing-effective-july-1-2025-based-on-message-categories-and-your-recipient-s-country-in-india-there-are-three-paid-categories" target="_blank" rel="noopener">MyOperator</a>), and it is the right reminder channel for India and Sri Lanka.</p>
+<p><strong>Migration</strong> got more expensive in 2026. Since 2 March 2026 Xero has charged app partners by connections and data egress, and its Journals endpoint requires the <strong>Advanced tier at about $895/month</strong> (<a href="https://developer.xero.com/pricing" target="_blank" rel="noopener">Xero</a>; <a href="https://docs.codat.io/updates/260116-xero-pricing" target="_blank" rel="noopener">Codat</a>). Intuit has metered QuickBooks read calls since July 2025, from a free 500K-credit tier up to $4,500/month (<a href="https://www.apideck.com/blog/quickbooks-api-pricing-and-the-intuit-app-partner-program" target="_blank" rel="noopener">Apideck</a>). CSV import of contacts, items, opening balances and trial balances is the universal fallback, and the only route for Wave users. The <strong>marketing site</strong> is the easy part: Next.js with Sanity (free, then $15 per seat) or Payload (self-hosted for $20–50/month) (<a href="https://colorwhistle.com/sanity-contentful-payload/" target="_blank" rel="noopener">colorwhistle</a>), with Contentful&#39;s jump to about $300/month as the cost to avoid (<a href="https://dev.to/nayankyada/contentful-pricing-2026-free-tier-limits-the-300-cliff-and-enterprise-3gii" target="_blank" rel="noopener">dev.to</a>).</p>
+<h2 id="what-is-possible-at-launch-in-each-country">What is possible at launch in each country</h2><p>The matrix below shows what BillingEase can offer on day one in each market if it follows the buy decisions above. &quot;Launch&quot; means a vendor or in-house build path is identified and ready. &quot;Partial&quot; means a path exists but is gated, unverified or degraded. &quot;Manual&quot; means file import, calculator-only or user-entered data. &quot;Defer&quot; means no launch path. All eight markets can launch the core (invoices, quotes, ledger, reports, receipt capture, multi-currency, teams, CSV import) because that is in-house work.</p>
+<div class="tbl"><table><thead><tr>
+<th>Capability</th>
+<th>US</th>
+<th>UK</th>
+<th>EU</th>
+<th>Canada</th>
+<th>Australia</th>
+<th>India</th>
+<th>Sri Lanka</th>
+<th>Singapore</th>
+</tr>
+</thead><tbody><tr>
+<td>Card payments on invoices</td>
+<td><strong>Launch</strong> (Stripe Connect)</td>
+<td><strong>Launch</strong> (Stripe)</td>
+<td><strong>Launch</strong> (Stripe)</td>
+<td><strong>Launch</strong> (Stripe)</td>
+<td><strong>Launch</strong> (Stripe)</td>
+<td>Partial (Razorpay Route, turnover-gated; Stripe invite-only)</td>
+<td>Partial (PayHere merchant accounts; split payments unverified)</td>
+<td><strong>Launch</strong> (Stripe or HitPay)</td>
+</tr>
+<tr>
+<td>Bank debit and local rails</td>
+<td><strong>Launch</strong> (ACH)</td>
+<td><strong>Launch</strong> (GoCardless Bacs)</td>
+<td><strong>Launch</strong> (GoCardless SEPA)</td>
+<td><strong>Launch</strong> (GoCardless PAD)</td>
+<td><strong>Launch</strong> (GoCardless BECS)</td>
+<td>Partial (UPI via local aggregator, to confirm)</td>
+<td>Defer</td>
+<td><strong>Launch</strong> (PayNow via HitPay)</td>
+</tr>
+<tr>
+<td>Bank and card feeds</td>
+<td><strong>Launch</strong> (Plaid; price by quote)</td>
+<td><strong>Launch</strong> (TrueLayer, Yapily, Tink)</td>
+<td><strong>Launch</strong> (same; 180-day consent renewal)</td>
+<td>Partial (Flinks unverified; PDF/CSV)</td>
+<td><strong>Launch</strong> (Basiq)</td>
+<td>Partial (account aggregator; success-rate issues)</td>
+<td>Manual (CSV/PDF/email-in)</td>
+<td>Partial (Finverse; some banks need file import)</td>
+</tr>
+<tr>
+<td>Payroll with tax filing</td>
+<td><strong>Launch</strong> (embed Gusto, Check, Salsa)</td>
+<td><strong>Launch</strong> (Staffology or PayRun.io API)</td>
+<td>Defer (journal import only)</td>
+<td><strong>Launch</strong> (Salsa or Nmbr, excluding Quebec)</td>
+<td>Partial (Employment Hero; terms unknown)</td>
+<td>Manual (journal import)</td>
+<td>Manual (calculator, manual filing)</td>
+<td>Manual (calculator in-house)</td>
+</tr>
+<tr>
+<td>Sales tax / VAT / GST calculation</td>
+<td>Partial (user rates; engine add-on)</td>
+<td><strong>Launch</strong> (build)</td>
+<td><strong>Launch</strong> (build rates; OSS unverified)</td>
+<td><strong>Launch</strong> (build GST/HST/PST/QST)</td>
+<td><strong>Launch</strong> (build GST/BAS)</td>
+<td><strong>Launch</strong> (build GST splits)</td>
+<td><strong>Launch</strong> (build VAT plus SSCL; volatile)</td>
+<td><strong>Launch</strong> (build)</td>
+</tr>
+<tr>
+<td>Tax filing and e-invoicing</td>
+<td>Partial (filing via TaxJar or Numeral, paid add-on)</td>
+<td><strong>Launch</strong> (MTD VAT build; Income Tax next)</td>
+<td>Partial (Peppol partner needed now for Belgium; France 2027)</td>
+<td>Manual (reports; no e-invoicing)</td>
+<td>Manual (BAS report; Peppol optional)</td>
+<td>Defer (GSP needed; IRN only above ₹5 crore)</td>
+<td>Partial (revised invoice format; RAMIS pilot)</td>
+<td>Partial (InvoiceNow access point for new registrants)</td>
+</tr>
+<tr>
+<td>Bill pay and vendor payouts</td>
+<td>Defer (licensed partner)</td>
+<td>Defer</td>
+<td>Defer</td>
+<td>Defer</td>
+<td>Defer</td>
+<td>Defer</td>
+<td>Defer</td>
+<td>Defer</td>
+</tr>
+<tr>
+<td>Privacy deadline to plan for</td>
+<td>State laws (not researched)</td>
+<td>UK GDPR</td>
+<td>GDPR</td>
+<td>PIPEDA (not researched)</td>
+<td>Privacy Act (not researched)</td>
+<td><strong>DPDP, May 2027</strong></td>
+<td><strong>PDPA, 1 Jan 2027</strong></td>
+<td>PDPA (not researched)</td>
+</tr>
+</tbody></table></div><p>The matrix shows a split. The US, UK, Canada and Australia have a buyable path for almost every row, so BillingEase can match Wave or exceed it there on day one. India and Sri Lanka can launch only as invoicing and bookkeeping products with partial payments and manual feeds and payroll. The EU sits in between: the core works, but Belgium already needs Peppol and France will from 2027.</p>
+<h2 id="unit-costs-stay-small-next-to-payments-economics-and-fixed-c">Unit costs stay small next to payments economics and fixed compliance spend</h2><p>The table below scales the sourced unit prices to 1K, 10K and 100K active businesses. The <strong>usage assumptions are this report&#39;s estimates</strong> and are stated in each row; the unit prices carry the citations given earlier. Figures are monthly, before volume discounts, which no vendor publishes.</p>
+<div class="tbl"><table><thead><tr>
+<th>Cost line (monthly)</th>
+<th>Assumption <span class="est">est.</span></th>
+<th>1K businesses</th>
+<th>10K businesses</th>
+<th>100K businesses</th>
+</tr>
+</thead><tbody><tr>
+<td>Bank feeds, generic aggregator</td>
+<td>1.5 accounts per business at $0.50–1.50 per account</td>
+<td>$750–2.3K</td>
+<td>$7.5K–23K</td>
+<td>$75K–225K</td>
+</tr>
+<tr>
+<td>Bank feeds, Basiq list price (AU)</td>
+<td>AUD 0.50 per user, minimum AUD 500, plus platform fee</td>
+<td>AUD 500 (minimum)</td>
+<td>AUD 5K</td>
+<td>AUD 50K</td>
+</tr>
+<tr>
+<td>Receipt OCR, Textract or Azure</td>
+<td>20 pages per business at about $0.01</td>
+<td>$200</td>
+<td>$2K</td>
+<td>$20K</td>
+</tr>
+<tr>
+<td>Receipt OCR, Mistral OCR</td>
+<td>20 pages at $1–2 per 1,000</td>
+<td>$20–40</td>
+<td>$200–400</td>
+<td>$2K–4K</td>
+</tr>
+<tr>
+<td>Receipt OCR, Mindee</td>
+<td>20 credits at €0.035–0.05 overage</td>
+<td>about €0.7K–1K</td>
+<td>about €7K</td>
+<td>about €70K</td>
+</tr>
+<tr>
+<td>Email, SES or Postmark Platform</td>
+<td>30 emails per business</td>
+<td>$3 (SES) or about $42</td>
+<td>$30 or about $370</td>
+<td>$300 or about $3.6K</td>
+</tr>
+<tr>
+<td>WhatsApp reminders, India</td>
+<td>10 utility templates per business at ₹0.13</td>
+<td>₹1.3K</td>
+<td>₹13K</td>
+<td>₹130K</td>
+</tr>
+<tr>
+<td>Stripe Connect mode B platform fees</td>
+<td>30% of businesses paid out each month; $5K volume in 4 payouts ($15.50 each)</td>
+<td>$4.7K</td>
+<td>$47K</td>
+<td>$465K</td>
+</tr>
+<tr>
+<td>Stripe Connect mode A platform fees</td>
+<td>—</td>
+<td>$0</td>
+<td>$0</td>
+<td>$0</td>
+</tr>
+</tbody></table></div><p>Three conclusions follow. First, <strong>bank feeds are the largest variable data cost</strong>, and they scale linearly with every business that connects. A free tier will need limits, such as on the number of accounts connected or how often feeds refresh. Second, receipt capture with a commodity or LLM model is a rounding error, which makes it a good feature to give away. Third, <strong>mode B Connect fees exceed every other line</strong>. They pay off only if BillingEase&#39;s markup beats roughly 0.3% of volume, which supports starting on mode A.</p>
+<p>Fixed costs sit beside these. A first SOC 2 runs about $15K–50K at the lean end (<a href="https://www.startupdefense.io/soc-2-costs-for-startups-complete-breakdown-and-budget-guide" target="_blank" rel="noopener">startupdefense</a>). Xero API access for migrations costs $152–895/month (<a href="https://developer.xero.com/pricing" target="_blank" rel="noopener">Xero</a>), and Intuit&#39;s paid tiers start at $300/month (<a href="https://www.apideck.com/blog/quickbooks-api-pricing-and-the-intuit-app-partner-program" target="_blank" rel="noopener">Apideck</a>). Plaid&#39;s median contract is about $9K a year (<a href="https://www.vendr.com/marketplace/plaid" target="_blank" rel="noopener">Vendr</a>), and Basiq requires a 12-month minimum term. People cost the most. An MVP team of 5–8 costs about $0.8–1.5M a year in the US or UK, or $0.25–0.5M with an India or Sri Lanka team <span class="est">est.</span>.</p>
+<p>On the revenue side, payroll shows the model Wave runs <span class="est">est.</span>. At a 5% payroll attach rate, four employees per company and Wave&#39;s $40 + $6 retail price, 10K businesses yield about $32K a month of payroll revenue. The platform keeps about two-thirds if the third-party revenue-split benchmark holds (<a href="https://fintechspecs.com/blog/best-embedded-payroll-api-vertical-saas/" target="_blank" rel="noopener">FintechSpecs</a>). Payments and payroll fund the free tier, and feeds and support costs eat into it.</p>
+<h2 id="build-order-core-first-then-money-rails-by-market-readiness">Build order: core first, then money rails by market readiness</h2><p>The order follows two constraints: what can be bought in each market, and the dependencies between features (the ledger before reconciliation, payments before bill pay). All timings are estimates.</p>
+<p><strong>Phase 1, about months 0–6, US, UK and Canada.</strong> Build the ledger, invoices and quotes, multi-currency with official rates, user-entered tax rates, receipt capture, CSV import from Wave, QuickBooks and Xero, email delivery, MFA and role-based access, and the marketing site. Integrate Stripe Connect on mode A with hosted checkout, which keeps BillingEase in SAQ A and has Stripe bearing losses. Add Plaid in the US and a UK aggregator, and start SOC 2 preparation on day one so the observation window runs in parallel. These three markets come first for three reasons: every row of the matrix has a vendor; Canada is Wave&#39;s home market; and UK MTD for Income Tax creates a forced-buying moment for sole traders in 2026–2028.</p>
+<p><strong>Phase 2, about months 6–12.</strong> Add the HMRC MTD VAT and Income Tax integrations. Embed payroll through Salsa, which covers the US and Canada with one partner (excluding Quebec), or through Gusto Embedded or Check. Offer a US sales-tax engine and filing as a paid add-on. Add GoCardless bank debits, plus Australia with Stripe, Basiq and an Employment Hero conversation. Australia waits until phase 2 because Payday Super and awards make its payroll the hardest of the four embeddable markets.</p>
+<p><strong>Phase 3, about months 12–18.</strong> Launch Singapore (Stripe or HitPay, Finverse plus file import, an InvoiceNow access point, a CPF calculator), and the EU with a Peppol access-point partner, starting where Peppol is mandatory or Germany&#39;s XRechnung applies. UK payroll can arrive here through Staffology or PayRun.io if UK demand is strong. Sign a French accredited-platform partner before France&#39;s SME issuance date of September 2027.</p>
+<p><strong>Phase 4, about months 12–24, India and Sri Lanka.</strong> Launch India with Razorpay, a GST intermediary for returns and e-invoicing, an account-aggregator feed and DPDP compliance by May 2027. Launch Sri Lanka with PayHere, CSV/PDF/email-in statements, a payroll calculator, data-driven VAT and SSCL tables, and PDPA compliance by 1 January 2027. <strong>Bill pay comes last</strong>, through a licensed partner.</p>
+<p>There is a case for a different order. An India or Sri Lanka engineering team costs a third or less of a US one <span class="est">est.</span>, and both markets favour WhatsApp-first, invoicing-led products that BillingEase could ship without payroll or feeds. The case against is commercial. In India, local payroll at ₹100–150 per employee and entrenched local products such as Zoho Books and Tally, mentioned in the notes as setting market expectations, leave little room for a payments-funded free tier. In Sri Lanka there are no feeds, card fees are high and the tax rules are still moving. Building there is sensible; launching there first is not.</p>
+<h2 id="figures-to-re-check-on-live-vendor-and-regulator-pages">Figures to re-check on live vendor and regulator pages</h2><p>The researchers worked from search snippets, so the figures below are the most likely to be stale, conflicting or misattributed. Each should be confirmed before it reaches a budget or contract.</p>
+<div class="tbl"><table><thead><tr>
+<th>Figure</th>
+<th>Problem</th>
+<th>Check at</th>
+</tr>
+</thead><tbody><tr>
+<td>Stripe Connect mode B ($2 per account; 0.25% + 25¢ per payout); US card 2.9% + 30¢; ACH 0.8% capped at $5</td>
+<td>ACH figure from one third-party table; Stripe pages read only as snippets</td>
+<td>stripe.com/connect/pricing, stripe.com/pricing</td>
+</tr>
+<tr>
+<td>Stripe India invite-only status; UPI support</td>
+<td>Stripe planned to widen access by H2 2025, unconfirmed</td>
+<td>support.stripe.com</td>
+</tr>
+<tr>
+<td>GoCardless USD pricing (0.5% + $0.05 vs 1% + $0.20)</td>
+<td>Sources conflict; page revised several times in 2026</td>
+<td>gocardless.com/pricing</td>
+</tr>
+<tr>
+<td>Adyen for Platforms minimums (about $120/month, $1M+ volume)</td>
+<td>Comparison-site estimates</td>
+<td>Adyen sales</td>
+</tr>
+<tr>
+<td>HitPay rates and MAS licence PS20200643</td>
+<td>Licence self-reported</td>
+<td>hitpayapp.com, MAS register</td>
+</tr>
+<tr>
+<td>PayHere pricing (2.9–3.9%) and split support</td>
+<td>Pricing from 2019</td>
+<td>payhere.lk</td>
+</tr>
+<tr>
+<td>Razorpay Route turnover thresholds</td>
+<td>Thresholds not quoted</td>
+<td>razorpay.com/docs</td>
+</tr>
+<tr>
+<td>Plaid median $9K a year; per-link $0.30–2.00</td>
+<td>Unofficial estimates</td>
+<td>Plaid sales</td>
+</tr>
+<tr>
+<td>Basiq AUD 0.50 per user; AUD 500 minimum; enrichment AUD 0.10 vs 0.25</td>
+<td>Basiq&#39;s own pages conflict</td>
+<td>basiq.io/pricing</td>
+</tr>
+<tr>
+<td>GoCardless Bank Account Data closed to new signups</td>
+<td>One developer blog</td>
+<td>gocardless.com</td>
+</tr>
+<tr>
+<td>Embedded payroll benchmark ($35–70 + $6–10 per employee; 2/3 platform share)</td>
+<td>Unclear whether wholesale or retail; third-party source</td>
+<td>Gusto Embedded, Check, Salsa quotes</td>
+</tr>
+<tr>
+<td>Wave tax-service states (14 vs all states after April 2025)</td>
+<td>Sources conflict</td>
+<td>waveapps.com/payroll</td>
+</tr>
+<tr>
+<td>QuickBooks Payroll ($50 + $6.50; possible 2026 rises)</td>
+<td>Low-quality sources</td>
+<td>quickbooks.intuit.com</td>
+</tr>
+<tr>
+<td>Stripe Tax (0.5% vs $0.50 per call vs about $90/month tier)</td>
+<td>Sources conflict</td>
+<td>stripe.com/tax/pricing</td>
+</tr>
+<tr>
+<td>TaxJar AutoFile $50–55; Avalara $48 per filing and $403 per registration</td>
+<td>Aggregator data</td>
+<td>taxjar.com, avalara.com</td>
+</tr>
+<tr>
+<td>Belgium Peppol grace period (3 vs 6 months); German issuance details</td>
+<td>Sources conflict</td>
+<td>Belgian FPS Finance; BMF</td>
+</tr>
+<tr>
+<td>Sri Lanka VAT threshold (LKR 60M vs 36M); digital-services VAT start (April vs July 2026)</td>
+<td>Sources conflict</td>
+<td>ird.gov.lk</td>
+</tr>
+<tr>
+<td>India provident-fund wage ceiling (₹15K vs ₹25K); Form 24Q replaced by Form 138</td>
+<td>Single sources</td>
+<td>epfindia.gov.in, incometax.gov.in</td>
+</tr>
+<tr>
+<td>Payday Super &quot;7 days&quot; (calendar vs business days)</td>
+<td>Sources conflict</td>
+<td>ato.gov.au</td>
+</tr>
+<tr>
+<td>UK employer NI threshold freeze (until 2028 vs 2030/31)</td>
+<td>Sources conflict</td>
+<td>gov.uk</td>
+</tr>
+<tr>
+<td>Mindee page-to-credit mapping; Veryfi per-document price</td>
+<td>Mapping unconfirmed; sources conflict</td>
+<td>mindee.com, veryfi.com</td>
+</tr>
+<tr>
+<td>Xero API tiers ($22, $152, $895); Intuit credit tiers</td>
+<td>Snippets and third-party summaries</td>
+<td>developer.xero.com, developer.intuit.com</td>
+</tr>
+<tr>
+<td>India DPDP core date (12, 13 or 14 May 2027)</td>
+<td>Sources differ</td>
+<td>Gazette of India</td>
+</tr>
+<tr>
+<td>SOC 2 cost ranges</td>
+<td>Mostly vendor-affiliated</td>
+<td>Auditor quotes</td>
+</tr>
+<tr>
+<td>Wave acquisition price ($405M vs about $398M)</td>
+<td>Sources differ</td>
+<td>H&amp;R Block 8-K</td>
+</tr>
+</tbody></table></div><p>Several questions had no source at all and need targeted follow-up before contracts are signed: partner pricing for Gusto Embedded, Check, Staffology, Employment Hero, Nmbr and Salsa; Peppol access-point per-document fees; Flinks coverage and price; chargeback fees; US state payroll-provider registration and bonding; SOC 1 expectations for payroll; and business-account and business-card coverage at each aggregator.</p>
+<h2 id="conclusion">Conclusion</h2><p>The research changes what &quot;hard&quot; means for BillingEase. The engineering-heavy pieces (ledger, multi-currency, receipts, categorisation, migration) are well understood and cost a few engineer-months each. The real constraints are legal and commercial. The loss-bearer setting on each Stripe account is permanent. A Wave-style fixed-fee markup does not cover Stripe&#39;s percentage payout fee. Employers stay liable for payroll deposits a partner makes. And the 2026–2031 e-invoicing timetable will force Peppol and French accredited-platform partnerships whether or not BillingEase targets those countries early. The decisions that matter most are contract terms (who bears losses, who pays penalties caused by provider error, volume discounts on feeds), so legal and partnership work should start in parallel with phase 1 engineering, not after it.</p>
+<p>The second change is in how to sequence markets. The useful question is how much of the product can be bought in each country, not how big the country is. On that measure the US, UK and Canada are nearly complete on day one. Australia and Singapore are close behind. India, Sri Lanka and most of the EU will run as invoicing-and-bookkeeping products with manual payroll and feeds for a long time. They need positioning, pricing and support cost models built for a lighter product rather than a cut-down Wave clone. And UK MTD for Income Tax, with its £50K, £30K and £20K steps, is the clearest near-term growth opening for a product of this kind.</p>
+
+</article>
+</div>

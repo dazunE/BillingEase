@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · All invoices</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+@media (max-width: 640px){.be-hide-sm{display:none!important}}
+.be-show-sm{display:none}@media (max-width: 640px){.be-show-sm{display:inline!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 28px;">
+
+    <dc-import name="AppCrumbs" area="in" mid="{{crumb.mid}}" mid-href="SellInvoices.dc.html" here="{{crumb.here}}"></dc-import>
+
+    <!-- Title -->
+    <section aria-labelledby="iv-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px;">
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h1 id="iv-h" style="margin: 0; display: flex; align-items: center; gap: 10px; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.03em;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8; flex: none;"></span>All invoices</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #47444F; max-width: 620px;">{{intro}}</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{tiles}}" as="t" hint-placeholder-count="3">
+            <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; background: #F7F6F9; border: 1px solid #E2DFE8; font-size: 13px; color: #47444F;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{t.dot}};"></span>{{t.label}} <strong style="color: #18161F; font-variant-numeric: tabular-nums;">{{t.value}}</strong></span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #47444F;">{{introSide}}</p>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;">
+          <a href="SellInvoice.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New invoice
+          </a>
+          <a href="ThreeIn.dc.html#bill" style="font-size: 14px; font-weight: 600;">Or bill someone in one sentence</a>
+        </div>
+      </div>
+    </section>
+
+    <sc-if value="{{noInv}}" hint-placeholder-val="{{false}}">
+      <section aria-label="No invoices yet" style="background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 14px;">
+        <span style="width: 48px; height: 48px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5"></path></svg></span>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F; max-width: 560px;">No invoices yet. Every invoice you send or start will be listed here, with where it stands and what to do next.</p>
+        <a href="ThreeIn.dc.html#bill" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none;">Bill someone</a>
+      </section>
+    </sc-if>
+    <sc-if value="{{hasInv}}" hint-placeholder-val="{{true}}">
+    <!-- Toolbar -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;">
+      <div role="group" aria-label="Show invoices" style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="5">
+          <button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 9999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{c.label}} <span style="min-width: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 9999px; background: {{c.countBg}}; font-size: 12px; line-height: 20px; text-align: center;">{{c.count}}</span></button>
+        </sc-for>
+      </div>
+      <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end;">
+        <label style="flex: 1 1 200px; max-width: 340px; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; box-sizing: border-box; border: 1px solid #CBC7D3; border-radius: 9999px; background: #FFFFFF;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search invoices</span>
+          <input type="search" placeholder="Customer, number or what it’s for" value="{{q}}" onChange="{{setQ}}" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 14px DM Sans, sans-serif; color: #18161F;">
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #47444F;">Sort
+          <select class="be-field" value="{{sort}}" onChange="{{setSort}}" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 500 14px DM Sans, sans-serif; color: #18161F; cursor: pointer;">
+            <option value="due">Due date</option>
+            <option value="amount">Amount, largest first</option>
+            <option value="who">Customer, A to Z</option>
+            <option value="num">Newest first</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <!-- List -->
+      <section aria-labelledby="ivl-h" style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+        <h2 id="ivl-h" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">{{listTitle}}</h2>
+        <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; gap: 2px;">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+            <a href="{{r.href}}" aria-current="{{r.sel}}" style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; padding: 12px 14px; border-radius: 14px; background: {{r.bg}}; color: #18161F; font: 400 14px DM Sans, sans-serif; text-decoration: none;">
+              <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; width: 100%;">
+                <span style="font-weight: 700; font-size: 15px; min-width: 0;">{{r.who}}</span>
+                <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; text-decoration: {{r.strike}};">{{r.amount}}</span>
+              </span>
+              <span style="display: flex; justify-content: space-between; gap: 12px; width: 100%; color: #47444F;">
+                <span style="min-width: 0;">{{r.num}} · {{r.what}}</span>
+                <span style="font-size: 12px; color: #5F5B68; white-space: nowrap;">{{r.sub}}</span>
+              </span>
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; background: {{r.pbg}}; color: {{r.pfg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.pfg}};"></span>{{r.status}}</span>
+                <span style="font-size: 13px; color: #5F5B68;">{{r.due}}</span>
+              </span>
+            </a>
+          </sc-for>
+          <sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+            <div style="padding: 20px 16px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+              <span style="font-size: 14px; color: #47444F;">{{emptyText}}</span>
+              <sc-if value="{{hasQ}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{clearQ}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 13px DM Sans, sans-serif; cursor: pointer;">Clear search</button></sc-if>
+            </div>
+          </sc-if>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; padding: 4px 6px 0;">
+          <span style="font-size: 13px; color: #5F5B68;">{{totalNote}}</span>
+          <span style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 13px; font-weight: 600; color: #47444F;">{{totalLabel}}</span><strong style="font-family: Sora, sans-serif; font-size: 18px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{totalValue}}</strong></span>
+        </div>
+      </section>
+
+      <!-- Detail -->
+      <sc-if value="{{noSel}}" hint-placeholder-val="{{false}}">
+        <section style="flex: 1.3 1 440px; min-width: 0; background: #FFFFFF; border: 1px dashed #CBC7D3; border-radius: 24px; padding: 28px; font-size: 15px; color: #47444F;">Pick an invoice on the left to see its lines, history and what you can do with it.</section>
+      </sc-if>
+      <sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+        <section aria-labelledby="ivd-h" style="flex: 1.3 1 440px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: clamp(18px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 16px;">
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+              <span style="font-size: 13px; color: #5F5B68;">{{d.num}} · {{d.title}}</span>
+              <h2 id="ivd-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em;"><a href="{{d.custHref}}" style="text-decoration: none;">{{d.who}}</a></h2>
+              <span style="font-size: 14px; color: #47444F;">{{d.what}}</span>
+            </div>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; background: {{d.pbg}}; color: {{d.pfg}}; font-size: 12px; font-weight: 600; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{d.pfg}};"></span>{{d.status}}</span>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; padding: 16px 18px; border-radius: 18px; background: #F7F6F9;">
+            <span style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 13px; font-weight: 600; color: #47444F;">{{d.bigLabel}}</span>
+              <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 3.6vw, 40px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{d.big}}</span>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px; text-align: right; font-size: 13px; color: #47444F;">
+              <span><strong style="color: #18161F;">{{d.dueText}}</strong></span>
+              <span>{{d.issued}}</span>
+            </span>
+          </div>
+
+
+          <!-- Lines -->
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <h3 style="margin: 0; font-size: 14px; font-weight: 700;">What’s on it</h3>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; min-width: 290px; border-collapse: collapse; font-size: 14px;">
+                <thead><tr style="color: #5F5B68; font-size: 12px; text-align: left;"><th scope="col" style="padding: 0 0 8px; font-weight: 600;">Line</th><th scope="col" style="padding: 0 0 8px; font-weight: 600; text-align: right;">Qty</th><th scope="col" style="padding: 0 0 8px; font-weight: 600; text-align: right;">Rate</th><th scope="col" style="padding: 0 0 8px; font-weight: 600; text-align: right;">Amount</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{d.lines}}" as="dl" hint-placeholder-count="2">
+                    <tr style="border-top: 1px solid #EFEDF3;"><td style="padding: 10px 8px 10px 0;">{{dl.name}}<sc-if value="{{dl.hasVat}}" hint-placeholder-val="{{false}}"><span style="display: block; font-size: 12px; color: #5F5B68;">{{dl.vat}}</span></sc-if></td><td style="padding: 10px 0; text-align: right; white-space: nowrap; color: #47444F;">{{dl.qty}}</td><td style="padding: 10px 0 10px 12px; text-align: right; white-space: nowrap; color: #47444F; font-variant-numeric: tabular-nums;">{{dl.rate}}</td><td style="padding: 10px 0 10px 12px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;">{{dl.amount}}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 8px; border-top: 1px solid #E2DFE8;">
+              <sc-for list="{{d.sums}}" as="s" hint-placeholder-count="2">
+                <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: {{s.fg}}; font-weight: {{s.w}};"><span style="display: flex; flex-direction: column; min-width: 0;"><span>{{s.label}}</span><sc-if value="{{s.hasSub}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #5F5B68; font-weight: 400;">{{s.sub}}</span></sc-if></span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{s.value}}</span></span>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <h3 style="margin: 0; font-size: 14px; font-weight: 700;">What’s happened</h3>
+            <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+              <sc-for list="{{d.events}}" as="ev" hint-placeholder-count="3">
+                <li style="display: flex; gap: 12px; align-items: stretch;">
+                  <span style="display: flex; flex-direction: column; align-items: center; width: 12px; flex: none;">
+                    <span style="width: 10px; height: 10px; margin-top: 5px; border-radius: 9999px; background: {{ev.dot}}; border: 2px solid {{ev.ring}}; box-sizing: border-box; flex: none;"></span>
+                    <span style="flex: 1; width: 2px; background: {{ev.line}};"></span>
+                  </span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding-bottom: 12px; font-size: 14px; color: {{ev.fg}};"><span>{{ev.label}}</span><span style="font-size: 13px; color: #5F5B68; white-space: nowrap;">{{ev.date}}</span></span>
+                </li>
+              </sc-for>
+            </ol>
+          </div>
+
+          <span style="display: flex; gap: 8px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #EEE8FF; font-size: 14px; line-height: 1.45;"><span style="width: 8px; height: 8px; margin-top: 6px; flex: none; border-radius: 9999px; background: #7A5AF8;"></span><span>{{d.feed}}</span></span>
+
+          <!-- Actions -->
+          <sc-if value="{{d.isOpen}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <button type="button" aria-expanded="{{payOpen}}" onClick="{{openPay}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Record a payment</button>
+              <button type="button" onClick="{{remind}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">{{d.remindLabel}}</button>
+              <sc-if value="{{d.wa}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{remindWa}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">WhatsApp reminder</button></sc-if>
+              <a href="{{d.editHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Edit</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{d.isDraft}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <button type="button" onClick="{{sendDraft}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg>{{d.sendLabel}}</button>
+              <a href="{{d.editHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Finish in the editor</a>
+              <button type="button" onClick="{{deleteDraft}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Delete draft</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{d.isPaid}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <a href="{{d.backHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{d.backLabel}}</a>
+              <a href="{{d.copyHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">Copy into a new invoice</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{d.isVoid}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <button type="button" onClick="{{unvoid}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Undo void</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{d.hasFiles}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; padding-top: 12px; border-top: 1px solid #EFEDF3;">
+              <button type="button" aria-expanded="{{pdfOpen}}" onClick="{{download}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>See the PDF</button>
+              <button type="button" aria-expanded="{{emailOpen}}" onClick="{{openEmail}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0; border: 0; background: transparent; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6"></path></svg>Email the PDF</button>
+              <sc-if value="{{d.canVoid}}" hint-placeholder-val="{{true}}">
+                <button type="button" aria-expanded="{{voidOpen}}" onClick="{{openVoid}}" style="margin-left: auto; min-height: 40px; padding: 0; border: 0; background: transparent; color: #A8200D; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Void invoice</button>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <!-- Record payment -->
+          <sc-if value="{{payOpen}}" hint-placeholder-val="{{false}}">
+            <div id="record-payment" style="display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 18px; border: 2px solid #7A5AF8;">
+              <span style="display: flex; flex-direction: column; gap: 2px;"><strong style="font-size: 15px;">Record a payment</strong><span style="font-size: 13px; color: #5F5B68;">{{payIntro}}</span></span>
+              <div role="group" aria-label="Full or part" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <button type="button" aria-pressed="{{p.isFull}}" onClick="{{payFull}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{p.fullBorder}}; background: {{p.fullBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">In full · {{p.leftText}}</button>
+                <button type="button" aria-pressed="{{p.isPart}}" onClick="{{payPart}}" style="min-height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid {{p.partBorder}}; background: {{p.partBg}}; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Part of it</button>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px;">
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Amount ({{d.sym}})
+                  <input class="be-field" type="text" inputmode="decimal" value="{{p.amt}}" onChange="{{setPAmt}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; font-variant-numeric: tabular-nums;">
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Received on
+                  <select class="be-field" value="{{p.date}}" onChange="{{setPDate}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                    <sc-for list="{{payDates}}" as="pd" hint-placeholder-count="4"><option value="{{pd.value}}">{{pd.label}}</option></sc-for>
+                  </select>
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">How they paid
+                  <select class="be-field" value="{{p.how}}" onChange="{{setPHow}}" style="min-height: 44px; width: 100%; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; background: #FFFFFF; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                    <sc-for list="{{payMethods}}" as="pm" hint-placeholder-count="4"><option value="{{pm}}">{{pm}}</option></sc-for>
+                  </select>
+                </label>
+              </div>
+              <sc-if value="{{p.isCheque}}" hint-placeholder-val="{{false}}">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px; padding: 14px; border-radius: 14px; background: #F7F6F9;">
+                  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Cheque number
+                    <input class="be-field" type="text" inputmode="numeric" placeholder="e.g. 004512" value="{{p.chqNo}}" onChange="{{setPChqNo}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                  </label>
+                  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Date on the cheque
+                    <input class="be-field" type="text" placeholder="e.g. 9 Oct" value="{{p.chqDate}}" onChange="{{setPChqDate}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                  </label>
+                  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Bank and branch
+                    <input class="be-field" type="text" placeholder="{{p.bankPh}}" value="{{p.chqBank}}" onChange="{{setPChqBank}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                  </label>
+                </div>
+              </sc-if>
+              <sc-if value="{{p.hasRef}}" hint-placeholder-val="{{false}}">
+                <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">{{p.refLabel}} <span style="font-weight: 400; color: #5F5B68;">optional</span>
+                  <input class="be-field" type="text" value="{{p.ref}}" onChange="{{setPRef}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+                </label>
+              </sc-if>
+              <sc-if value="{{pErrOn}}" hint-placeholder-val="{{false}}"><span role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{pErr}}</span></sc-if>
+              <span style="font-size: 13px; color: #47444F;">{{payHint}}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button type="button" onClick="{{savePay}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Save payment</button>
+                <button type="button" onClick="{{closePanel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- PDF preview -->
+          <sc-if value="{{pdfOpen}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 18px; background: #EFEDF3;">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;">
+                <strong style="font-size: 15px;">{{d.num}}.pdf</strong>
+                <span style="font-size: 13px; color: #47444F;">This is the PDF your customer gets</span>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 12px; padding: clamp(16px, 3vw, 28px); display: flex; flex-direction: column; gap: 16px; box-shadow: 0 1px 2px rgba(24,22,31,0.06);">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                  <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                    <span style="display: flex; align-items: center; gap: 8px;"><svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true" style="flex: none; display: block;"><rect width="48" height="48" rx="13" fill="#18161F"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg><span style="font-weight: 700; font-size: 15px;">{{pdf.biz}}</span></span>
+                    <span style="font-size: 12px; color: #5F5B68;">{{pdf.bizLine}}</span>
+                    <sc-for list="{{pdf.seller}}" as="sf" hint-placeholder-count="0"><span style="font-size: 12px; color: #47444F;">{{sf.label}}: <strong>{{sf.value}}</strong></span></sc-for>
+                  </span>
+                  <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 12px; color: #5F5B68; text-align: right;"><strong style="font-family: Sora, sans-serif; color: #18161F; font-size: 16px; letter-spacing: -0.01em;">{{pdf.title}}</strong><span>No. <strong style="color: #18161F; font-size: 14px;">{{d.num}}</strong></span></span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; font-size: 13px;">
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 12px; color: #5F5B68;">{{pdf.billTo}}</span><strong>{{d.who}}</strong><span style="color: #47444F; overflow-wrap: anywhere;">{{pdf.custLine}}</span><sc-for list="{{pdf.buyer}}" as="bf" hint-placeholder-count="0"><span style="color: #47444F;">{{bf.label}}: {{bf.value}}</span></sc-for></span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; color: #47444F;"><sc-for list="{{pdf.dates}}" as="pdt" hint-placeholder-count="2"><span>{{pdt}}</span></sc-for></span>
+                </div>
+                <div style="display: flex; flex-direction: column; border-top: 1px solid #EFEDF3;">
+                  <sc-for list="{{d.lines}}" as="pl" hint-placeholder-count="2">
+                    <div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #EFEDF3; font-size: 13px;"><span style="display: flex; flex-direction: column; min-width: 0;"><span>{{pl.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{pl.qty}} × {{pl.rate}}{{pl.vatPdf}}</span></span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{pl.amount}}</span></div>
+                  </sc-for>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <sc-for list="{{d.sums}}" as="ps" hint-placeholder-count="2">
+                    <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: {{ps.fg}}; font-weight: {{ps.w}};"><span style="display: flex; flex-direction: column; min-width: 0;"><span>{{ps.label}}</span><sc-if value="{{ps.hasSub}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; color: #5F5B68; font-weight: 400;">{{ps.sub}}</span></sc-if></span><span style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{ps.value}}</span></span>
+                  </sc-for>
+                </div>
+                <span style="font-size: 12px; line-height: 1.5; color: #47444F; padding-top: 10px; border-top: 1px solid #EFEDF3;">{{pdf.payNote}}</span>
+                <sc-if value="{{pdf.hasNote}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; color: #5F5B68;">{{pdf.note}}</span></sc-if>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button type="button" onClick="{{openEmail}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Email it</button>
+                <button type="button" onClick="{{closePanel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Close</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- Email PDF -->
+          <sc-if value="{{emailOpen}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 18px; border: 2px solid #7A5AF8;">
+              <strong style="font-size: 15px;">Email {{d.num}}.pdf</strong>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">To
+                <input class="be-field" type="email" value="{{m.to}}" onChange="{{setMTo}}" style="min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F;">
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Message
+                <textarea class="be-field" rows="3" value="{{m.msg}}" onChange="{{setMMsg}}" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+              </label>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <span style="font-size: 14px; min-width: 0; overflow-wrap: anywhere;">{{m.me}}</span>
+                <button type="button" role="switch" aria-checked="{{m.cc}}" aria-label="Send me a copy" onClick="{{toggleCc}}" style="position: relative; width: 52px; height: 30px; flex: none; border: 0; border-radius: 9999px; background: {{m.ccBg}}; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{m.ccLeft}}; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF;"></span></button>
+              </div>
+              <sc-if value="{{mErrOn}}" hint-placeholder-val="{{false}}"><span role="alert" style="padding: 10px 14px; border-radius: 14px; background: #FBE3DF; color: #A8200D; font-size: 14px; font-weight: 600;">{{mErr}}</span></sc-if>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button type="button" onClick="{{sendEmail}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Send email</button>
+                <button type="button" onClick="{{closePanel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Cancel</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- Void -->
+          <sc-if value="{{voidOpen}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 18px; background: #FBE3DF;">
+              <strong style="font-size: 15px; color: #A8200D;">Void {{d.num}}?</strong>
+              <span style="font-size: 14px; line-height: 1.5;">{{voidText}}</span>
+              <sc-if value="{{d.voidBlocked}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                  <a href="{{d.backHref}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: #FFFFFF; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{d.backLabel}} instead</a>
+                  <button type="button" onClick="{{closePanel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Close</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{d.voidOk}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                  <button type="button" onClick="{{doVoid}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #A8200D; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Void invoice</button>
+                  <button type="button" onClick="{{closePanel}}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep it</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </section>
+      </sc-if>
+    </div>
+
+    </sc-if>
+
+    <nav aria-label="Also in Coming in" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 8px; border-top: 1px solid #E2DFE8; font-size: 14px; color: #47444F;">
+      <span>Also in Coming in:</span>
+      <a href="SellCustomers.dc.html" style="font-weight: 600;">Customers</a>
+      <a href="SellQuotes.dc.html" style="font-weight: 600;">Quotes</a>
+      <a href="SellRecurring.dc.html" style="font-weight: 600;">Repeating invoices and money back</a>
+      <a href="SellCatalog.dc.html" style="font-weight: 600;">Products and services</a>
+    </nav>
+
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1506}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      toast: null, filter: 'unpaid', filterHash: null, q: '', sort: 'due', panel: null, panelFor: null, payHash: null,
+      p: { amt: '', date: BE.today, how: 'Bank transfer', chqNo: '', chqDate: '', chqBank: '', ref: '', part: false }, pErr: '',
+      m: { to: '', msg: '', cc: true }, mErr: ''
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  componentDidMount() {
+    this._scroll = () => { if (/^pay=/.test(BE.hash())) setTimeout(() => { const el = document.getElementById('record-payment'); if (el) el.scrollIntoView({ block: 'center' }); }, 80); };
+    this._scroll();
+    window.addEventListener('hashchange', this._scroll);
+  }
+  renderVals() {
+    const st = this.state;
+    const profile = BE.get('profile') || {};
+    const pack = BE.pack();
+    const lk = BE.is('lk');
+    const fmt = (n) => BE.money(n);
+    const fmt2 = (n) => BE.money(n, null, { cents: true });
+    const w = (n) => BE.money(n, null, { whole: true });
+    const invs = BE.all('invoices');
+    const rawHash = BE.hash();
+    const hashPay = /^pay=/.test(rawHash) ? rawHash.slice(4) : '';
+    const hash = hashPay || rawHash;
+    const sub = (v) => BE.invSubtotal(v);
+    const total = (v) => BE.invTotal(v);
+    const left = (v) => BE.invOpen(v);
+    const kind = (v) => { const k = BE.invStatus(v); return k === 'part' ? 'open' : k; };
+    const PILL = {
+      late: { bg: '#FBE3DF', fg: '#A8200D' }, soon: { bg: '#FFF0B8', fg: '#6B5000' }, part: { bg: '#E1EEF8', fg: '#1F5E91' },
+      sent: { bg: '#EFEDF3', fg: '#47444F' }, paid: { bg: '#E2F6D5', fg: '#2F5711' },
+      draft: { bg: '#EFEDF3', fg: '#47444F' }, void: { bg: '#EFEDF3', fg: '#5F5B68' }
+    };
+    const status = (v) => {
+      const k = kind(v);
+      if (k === 'void') return { t: 'Void', p: 'void' };
+      if (k === 'draft') return { t: 'Draft', p: 'draft' };
+      if (k === 'paid') return { t: 'Paid', p: 'paid' };
+      if (k === 'late') return { t: (-v.dueIn) + (v.dueIn === -1 ? ' day late' : ' days late'), p: 'late' };
+      if (v.dueIn <= 7) return { t: v.dueIn === 0 ? 'Due today' : 'Due in ' + v.dueIn + (v.dueIn === 1 ? ' day' : ' days'), p: 'soon' };
+      if (v.paid > 0) return { t: 'Part paid', p: 'part' };
+      return { t: 'Sent', p: 'sent' };
+    };
+    const voidOn = (v) => { const e = (v.events || []).filter((x) => x.label === 'Voided').pop(); return e ? e.date : BE.today; };
+    const dueText = (v) => {
+      const k = kind(v);
+      if (k === 'draft') return 'Not sent yet';
+      if (k === 'void') return 'Voided ' + voidOn(v);
+      if (k === 'paid') return 'Paid ' + (v.paidOn || v.due);
+      if (k === 'late') return 'Was due ' + v.due;
+      return 'Due ' + v.due;
+    };
+    const FILT = {
+      unpaid: (v) => ['open', 'late'].indexOf(kind(v)) >= 0, late: (v) => kind(v) === 'late',
+      draft: (v) => kind(v) === 'draft', paid: (v) => kind(v) === 'paid', all: () => true
+    };
+    // A link to #HS-… (or #pay=HS-…) picks the filter that contains it (until you pick another filter).
+    const hashInv = invs.find((x) => x.num === hash) || null;
+    let filter = st.filter;
+    if (hashInv && st.filterHash !== rawHash) {
+      const k = kind(hashInv);
+      filter = k === 'draft' ? 'draft' : k === 'paid' ? 'paid' : k === 'void' ? 'all' : 'unpaid';
+    }
+    const CH = [['unpaid', 'Unpaid'], ['late', 'Late'], ['draft', 'Drafts'], ['paid', 'Paid'], ['all', 'All']];
+    const chips = CH.map(([k, label]) => {
+      const on = filter === k;
+      return { label, count: invs.filter(FILT[k]).length, on, bg: on ? '#18161F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#18161F', border: on ? '#18161F' : '#E2DFE8', countBg: on ? 'rgba(255,255,255,0.18)' : '#EFEDF3',
+        pick: () => this.setState({ filter: k, filterHash: rawHash, panel: null, payHash: rawHash }) };
+    });
+    const q = st.q.trim().toLowerCase();
+    let list = invs.filter(FILT[filter]).filter((v) => !q || (v.who + ' ' + v.num + ' ' + v.what + (v.draft ? ' draft' : '')).toLowerCase().indexOf(q) >= 0);
+    const S = {
+      due: (a, b) => a.dueIn - b.dueIn, amount: (a, b) => total(b) - total(a),
+      who: (a, b) => a.who.localeCompare(b.who), num: (a, b) => (b.draft ? 1 : 0) - (a.draft ? 1 : 0) || b.num.localeCompare(a.num)
+    };
+    list = list.slice().sort(S[st.sort]);
+    const v = list.find((x) => x.num === hash) || list[0] || null;
+    const rows = list.map((x) => {
+      const s = status(x), p = PILL[s.p], k = kind(x), on = !!v && x.num === v.num;
+      const showAmt = k === 'paid' || k === 'draft' || k === 'void' ? total(x) : left(x);
+      return {
+        who: x.who, num: x.draft ? 'Draft' : x.num, what: x.what, amount: fmt(showAmt), strike: k === 'void' ? 'line-through' : 'none',
+        sub: x.paid > 0 && k === 'open' ? 'of ' + fmt(total(x)) : (x.vatOn ? BE.invTitle(x) : ''),
+        status: s.t, pbg: p.bg, pfg: p.fg, due: dueText(x), sel: on ? 'true' : false, bg: on ? '#EEE8FF' : '#FFFFFF',
+        href: 'SellInvoices.dc.html#' + x.num
+      };
+    });
+    const sumOf = (fn) => list.reduce((a, x) => a + fn(x), 0);
+    const TL = {
+      unpaid: ['Left to collect', sumOf(left), list.length + ' unpaid'],
+      late: ['Late', sumOf(left), list.length + ' late, from earlier months'],
+      draft: ['Drafts', sumOf(total), list.length + (list.length === 1 ? ' draft' : ' drafts') + ', not counted anywhere yet'],
+      paid: ['Paid', sumOf((x) => x.paid), list.length + ' paid'],
+      all: ['Billed', sumOf((x) => (x.void ? 0 : total(x))), list.length + ' invoices']
+    }[filter];
+    const EMPTY = { unpaid: 'Nothing left to collect. Nice.', late: 'Nobody is late. Anyone who is shows up here.', draft: 'No drafts. Invoices you start but don’t send wait here.', paid: 'Nothing paid yet.', all: 'No invoices yet.' };
+
+    const unpaidAll = invs.filter(FILT.unpaid), lateAll = invs.filter(FILT.late);
+    const paidMonth = BE.all('payments').filter((p) => p.inMonth).reduce((a, p) => a + p.amount, 0);
+    const tiles = [
+      { label: 'Left to collect', value: w(unpaidAll.reduce((a, x) => a + left(x), 0)), dot: '#7A5AF8' },
+      { label: 'Late', value: w(lateAll.reduce((a, x) => a + left(x), 0)), dot: '#A8200D' },
+      { label: 'Paid this month', value: w(paidMonth), dot: '#2F5711' }
+    ];
+
+    // credit notes applied to an invoice
+    const creditLabel = (x) => {
+      const cn = BE.all('creditNotes').find((c) => c.inv === x.num);
+      const word = lk ? 'Credit note' : 'Money back';
+      if (cn) return word + ', ' + cn.num + (cn.reason ? ' · ' + cn.reason.toLowerCase() : '');
+      const m = JSON.stringify(x.events || []).match(/CN-\d+/);
+      return word + (m ? ', ' + m[0] : '');
+    };
+    const rateLabel = (id) => { const r = (pack.vatRates || []).find((x) => x.id === (id || 'std')); return r ? r.label.replace(/ \(.*\)$/, '') : ''; };
+
+    // detail
+    let d = {}, voidText = '', pdf = {};
+    const hasSel = !!v;
+    if (v) {
+      const k = kind(v), s = status(v), p = PILL[s.p], t = total(v), lf = left(v);
+      const tx = BE.invTax(v);
+      const unit = (l) => (Number(l.qty) === 1 ? String(l.unit || '').replace(/s$/, '') : (l.unit || ''));
+      const lines = (v.lines || []).map((l) => ({ name: l.name, qty: l.qty + ' ' + unit(l), rate: fmt(l.rate), amount: fmt(l.qty * l.rate),
+        hasVat: !!v.vatOn, vat: v.vatOn ? 'VAT ' + rateLabel(l.vat) : '', vatPdf: v.vatOn ? ' · VAT ' + rateLabel(l.vat) : '' }));
+      const sums = [{ label: v.vatOn || v.ssclOn ? 'Value of supply' : 'Subtotal', value: fmt2(sub(v) + (Number(v.discount) || 0)), fg: '#47444F', w: 400 }];
+      if (v.discount) sums.push({ label: 'Discount', value: '−' + fmt2(v.discount), fg: '#47444F', w: 400 });
+      BE.taxRows(tx).forEach((r) => sums.push({ label: r.label, sub: r.sub, hasSub: true, value: r.amount, fg: '#47444F', w: 400 }));
+      if (!v.vatOn && !v.ssclOn && v.tax) sums.push({ label: 'Tax', value: fmt2(v.tax), fg: '#47444F', w: 400 });
+      if (v.credit) sums.push({ label: creditLabel(v), value: '−' + fmt2(v.credit), fg: '#47444F', w: 400 });
+      sums.push({ label: v.vatOn ? 'Total including ' + (v.ssclOn ? 'SSCL and VAT' : 'VAT') : 'Total', value: fmt2(t), fg: '#18161F', w: 700 });
+      if (v.paid > 0 && k !== 'paid') sums.push({ label: 'Paid so far', value: '−' + fmt2(v.paid), fg: '#2F5711', w: 600 });
+      if (v.paid > 0 && k !== 'paid') sums.push({ label: 'Left to pay', value: fmt2(lf), fg: '#18161F', w: 700 });
+      sums.forEach((x) => { if (!x.hasSub) { x.hasSub = false; x.sub = ''; } });
+      const evs = v.events || [];
+      const done = evs.filter((e) => !e.todo), todo = (k === 'open' || k === 'late') ? evs.filter((e) => e.todo) : [];
+      const evList = done.concat(todo);
+      const col = (e) => /^Paid|^Part paid|payment/i.test(e.label) ? '#2F5711' : /Voided/.test(e.label) ? '#A8200D' : '#7A5AF8';
+      const events = evList.map((e, i) => ({
+        label: e.label, date: e.todo ? (e.date === BE.today ? 'Later today' : e.date) : e.date, fg: e.todo ? '#5F5B68' : '#18161F',
+        dot: e.todo ? '#FFFFFF' : col(e), ring: e.todo ? '#CBC7D3' : col(e),
+        line: i === evList.length - 1 ? 'transparent' : '#E2DFE8'
+      }));
+      const pays = BE.all('payments').filter((x) => x.inv === v.num && x.inMonth);
+      let feed;
+      if (k === 'draft') feed = 'Drafts don’t count anywhere yet. Sending it adds ' + fmt(t) + ' to Coming in as money on the way.';
+      else if (k === 'void') feed = 'Voided invoices don’t count. ' + (v.inMonth ? 'It came off this month’s Coming in.' : 'It wasn’t in this month’s Coming in, so nothing changed there.') + ' The number stays in your records.';
+      else if (k === 'paid') feed = pays.length ? 'Paid this month, so ' + w(pays.reduce((a, x) => a + x.amount, 0)) + ' is in Coming in as received.' : 'Paid in an earlier month. It’s in your records for ' + (lk ? 'the year of assessment.' : 'the quarter it was paid in.');
+      else if (k === 'late') feed = 'From an earlier month, so it’s not in this month’s Coming in. When they pay, record it and ' + w(lf) + ' lands as received this month.';
+      else if (!v.inMonth) feed = 'Due next month, so it isn’t in this month’s Coming in yet.';
+      else feed = 'Counted in Coming in as ' + w(lf) + ' on the way. When ' + v.who + ' pays, record it and it moves to received.';
+      voidText = v.paid > 0
+        ? 'This invoice already has a payment, so it can’t be voided. ' + (lk ? 'Issue a credit note instead' : 'Give the money back instead') + ' and we’ll keep both on record.'
+        : 'The invoice no longer counts. ' + (v.inMonth ? w(lf) + ' comes off Coming in.' : 'It isn’t in this month’s Coming in, so that stays the same.') + ' The number stays in your records' + (lk && v.vatOn ? ', and your ' + pack.practitioner.noun + ' sees it in the VAT period.' : '.');
+      d = {
+        num: v.draft ? 'Draft' : v.num, title: BE.invTitle(v), who: v.who, what: v.what, status: s.t, pbg: p.bg, pfg: p.fg, sym: String(pack.symbol || '£').trim(),
+        custHref: BE.customerHref(v.who), editHref: 'SellInvoice.dc.html#' + v.num, copyHref: 'SellInvoice.dc.html#copy=' + v.num,
+        backHref: 'SellRecurring.dc.html#back=' + v.num, backLabel: lk ? 'Issue a credit note' : 'Give money back',
+        bigLabel: k === 'paid' ? 'Paid' : k === 'draft' || k === 'void' ? 'Total' : v.paid > 0 ? 'Left to pay' : 'Amount due',
+        big: fmt2(k === 'paid' || k === 'draft' || k === 'void' ? t : lf),
+        dueText: dueText(v), issued: v.draft ? 'Started ' + v.issued : 'Sent ' + v.issued + (v.from ? ' · from ' + v.from : '') + (v.repeat ? ' · repeats monthly' : ''),
+        lines, sums, events, feed,
+        isOpen: k === 'open' || k === 'late', isDraft: k === 'draft', isPaid: k === 'paid', isVoid: k === 'void',
+        hasFiles: k !== 'draft' && k !== 'void', canVoid: k === 'open' || k === 'late',
+        voidBlocked: v.paid > 0, voidOk: !(v.paid > 0),
+        remindLabel: 'Email a reminder', wa: !!(pack.features && pack.features.whatsapp),
+        sendLabel: 'Send now · ' + fmt(BE.calcTax(v.lines, v.discount).total - (Number(v.credit) || 0))
+      };
+      const c = BE.customerOf(v.who);
+      const addr = [profile.street, profile.town, profile.postal].filter(Boolean).join(', ') || profile.city || '';
+      const pm = BE.receiveMethods();
+      pdf = {
+        biz: profile.business || 'Your business', bizLine: [addr, profile.phone, profile.email].filter(Boolean).join(' · '),
+        title: BE.invTitle(v), seller: v.vatOn || lk ? BE.sellerFields() : [], buyer: BE.buyerFields(c),
+        billTo: lk && v.vatOn ? 'Purchaser' : 'Bill to',
+        custLine: [c && c.address, v.email].filter(Boolean).join(' · '),
+        dates: lk
+          ? ['Date of invoice: ' + v.issued, 'Date of delivery: ' + (v.delivered || v.issued), dueText(v), 'Mode of payment: ' + (v.paidHow || pm.slice(0, 2).join(' or ').toLowerCase().replace(/^./, (x) => x.toUpperCase()))]
+          : ['Date: ' + v.issued + (v.vatOn ? ' (tax point)' : ''), dueText(v)],
+        payNote: profile.note || 'Please pay by ' + pm[0].toLowerCase() + ', quoting ' + v.num + '.',
+        hasNote: lk && v.ssclOn, note: lk && v.ssclOn ? (pack.ssclNote || '') : ''
+      };
+    }
+    const panelOn = (name) => !!v && st.panel === name && st.panelFor === v.num;
+    // #pay=HS-… opens Record a payment for that invoice
+    const payFromHash = !!(v && hashPay && hashPay === v.num && st.payHash !== rawHash && kind(v) !== 'paid' && kind(v) !== 'draft' && kind(v) !== 'void');
+    const methods = BE.receiveMethods();
+    const pState = payFromHash ? { amt: String(left(v)), date: BE.today, how: methods[0], chqNo: '', chqDate: '', chqBank: '', ref: '', part: false } : st.p;
+    const payOpen = payFromHash || panelOn('pay');
+    const setP = (patch) => this.setState({ p: Object.assign({}, pState, patch), pErr: '', panel: 'pay', panelFor: v && v.num, payHash: rawHash });
+    const pAmt = BE.num(pState.amt);
+    const lfv = v ? left(v) : 0;
+    const isCheque = /cheque/i.test(pState.how);
+    const isPart = !!pState.part || (pAmt > 0 && pAmt < lfv);
+    const payDates = [0, 1, 2, 3, 4, 5, 6].map((i) => { const lbl = BE.inDays(-i); return { value: lbl, label: i === 0 ? 'Today, ' + lbl : lbl }; });
+    const goTo = (num) => { try { history.replaceState(null, '', '#' + num); } catch (e) { /* ignore */ } };
+    const p = Object.assign({}, pState, {
+      isCheque, hasRef: !isCheque && pState.how !== 'Cash',
+      refLabel: pState.how === 'LankaQR' ? 'LankaQR reference' : pState.how === 'Card machine' ? 'Card machine receipt number' : 'Bank reference',
+      bankPh: lk ? 'e.g. Sampath Bank, Galle' : 'e.g. Barclays, Leeds',
+      isFull: !isPart, isPart, leftText: fmt2(lfv),
+      fullBg: !isPart ? '#EEE8FF' : '#FFFFFF', fullBorder: !isPart ? '#7A5AF8' : '#CBC7D3',
+      partBg: isPart ? '#EEE8FF' : '#FFFFFF', partBorder: isPart ? '#7A5AF8' : '#CBC7D3'
+    });
+    return {
+      crumb: { mid: v ? 'All invoices' : '', here: v ? d.num : 'All invoices' },
+      intro: invs.length ? 'Every invoice you’ve sent, started or been paid for. Pick one to see where it stands, record a payment or send a reminder.' : 'Invoices you send, start or get paid for, all in one list.',
+      introSide: 'Invoices due this month make up the money on the way in Coming in. Late ones and ones due next month are listed here too, but aren’t counted until you record the payment.',
+      hasInv: invs.length > 0, noInv: invs.length === 0,
+      tiles: invs.length ? tiles : [], chips, rows, noRows: rows.length === 0, emptyText: q ? 'No invoices match “' + st.q.trim() + '”.' : EMPTY[filter], hasQ: !!q,
+      clearQ: () => this.setState({ q: '' }),
+      listTitle: CH.find((c) => c[0] === filter)[1] + ' invoices',
+      totalNote: TL[2], totalLabel: TL[0], totalValue: fmt(TL[1]),
+      q: st.q, setQ: (e) => this.setState({ q: e.target.value }),
+      sort: st.sort, setSort: (e) => this.setState({ sort: e.target.value }),
+      hasSel, noSel: !hasSel, d, voidText, pdf, payDates, payMethods: methods,
+      payOpen, emailOpen: panelOn('email'), voidOpen: panelOn('void'), pdfOpen: panelOn('pdf'),
+      p, pErr: st.pErr, pErrOn: !!st.pErr,
+      payIntro: 'In full or part. Use the day it reached your bank' + (lk ? ' or the day you got the cheque' : '') + '; it counts as received in Coming in.',
+      m: Object.assign({}, st.m, { ccBg: st.m.cc ? '#7A5AF8' : '#CBC7D3', ccLeft: st.m.cc ? '25px' : '3px', me: 'Send me a copy' + (profile.email ? ' at ' + profile.email : '') }), mErr: st.mErr, mErrOn: !!st.mErr,
+      payHint: v ? (pAmt > 0 && pAmt < lfv ? 'That leaves ' + fmt2(Math.round((lfv - pAmt) * 100) / 100) + ' still to pay. The invoice shows as part paid.' : 'Recording it in full marks ' + v.num + ' paid.') : '',
+      closePanel: () => this.setState({ panel: null, pErr: '', mErr: '', payHash: rawHash }),
+      openPay: () => this.setState({ panel: payOpen ? null : 'pay', panelFor: v && v.num, payHash: rawHash, pErr: '', p: { amt: v ? String(left(v)) : '', date: BE.today, how: methods[0], chqNo: '', chqDate: '', chqBank: '', ref: '', part: false } }),
+      payFull: () => setP({ amt: String(lfv), part: false }),
+      payPart: () => setP({ amt: pAmt > 0 && pAmt < lfv ? pState.amt : '', part: true }),
+      openEmail: () => this.setState({ panel: panelOn('email') ? null : 'email', panelFor: v && v.num, payHash: rawHash, mErr: '', m: { to: v ? v.email || '' : '', msg: v ? 'Hello, here’s ' + v.num + ' as a PDF. Thank you, ' + (profile.first || profile.owner || '') : '', cc: true } }),
+      openVoid: () => this.setState({ panel: panelOn('void') ? null : 'void', panelFor: v && v.num, payHash: rawHash }),
+      download: () => { if (!v) return; const open = panelOn('pdf'); this.setState({ panel: open ? null : 'pdf', panelFor: v.num, payHash: rawHash }); if (!open) this.notify(v.num + '.pdf is ready · shown below'); },
+      setPAmt: (e) => setP({ amt: e.target.value }),
+      setPDate: (e) => setP({ date: e.target.value }),
+      setPHow: (e) => setP({ how: e.target.value }),
+      setPChqNo: (e) => setP({ chqNo: e.target.value }),
+      setPChqDate: (e) => setP({ chqDate: e.target.value }),
+      setPChqBank: (e) => setP({ chqBank: e.target.value }),
+      setPRef: (e) => setP({ ref: e.target.value }),
+      setMTo: (e) => this.setState({ m: Object.assign({}, this.state.m, { to: e.target.value }), mErr: '' }),
+      setMMsg: (e) => this.setState({ m: Object.assign({}, this.state.m, { msg: e.target.value }) }),
+      toggleCc: () => this.setState({ m: Object.assign({}, st.m, { cc: !st.m.cc }) }),
+      remind: () => { if (!v) return; BE.remindInvoice(v.num, 'Reminder emailed by you', 'Emailed a reminder to ' + v.who + ' for ' + v.num); this.notify('Reminder emailed to ' + v.who + ' for ' + v.num); },
+      remindWa: () => { if (!v) return; BE.remindInvoice(v.num, 'Reminder sent on WhatsApp by you', 'Sent a WhatsApp reminder to ' + v.who + ' for ' + v.num); this.notify('WhatsApp reminder sent to ' + v.who + ' for ' + v.num); },
+      savePay: () => {
+        if (!v) return;
+        const a = Math.round(pAmt * 100) / 100, lf = left(v);
+        if (!(a > 0)) { this.setState({ pErr: 'Enter the amount you received.', p: pState, panel: 'pay', panelFor: v.num, payHash: rawHash }); return; }
+        if (a > lf) { this.setState({ pErr: 'That’s more than the ' + fmt2(lf) + ' left on this invoice.', p: pState, panel: 'pay', panelFor: v.num, payHash: rawHash }); return; }
+        if (isCheque && !pState.chqNo.trim()) { this.setState({ pErr: 'Add the cheque number so you and your ' + pack.practitioner.noun + ' can match it to the bank.', p: pState, panel: 'pay', panelFor: v.num, payHash: rawHash }); return; }
+        const full = a >= lf;
+        goTo(v.num);
+        this.setState({ panel: null, pErr: '', filter: full ? 'paid' : filter, filterHash: v.num, payHash: v.num });
+        BE.recordPayment(v.num, a, pState.how, { date: pState.date, chequeNo: pState.chqNo.trim(), chequeDate: pState.chqDate.trim(), chequeBank: pState.chqBank.trim(), ref: pState.ref.trim() });
+        this.notify('Recorded ' + fmt2(a) + ' from ' + v.who + (isCheque ? ' (cheque ' + pState.chqNo.trim() + ')' : '') + (full ? ' · ' + v.num + ' is paid' : ' · ' + fmt2(Math.round((lf - a) * 100) / 100) + ' left') + ' · added to received in Coming in');
+      },
+      sendEmail: () => {
+        if (!v) return;
+        const to = st.m.to.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { this.setState({ mErr: 'Enter an email address like name@company.com.' }); return; }
+        BE.remindInvoice(v.num, 'PDF emailed to ' + to, 'Emailed ' + v.num + '.pdf to ' + v.who);
+        this.setState({ panel: null, mErr: '' });
+        this.notify('Emailed ' + v.num + '.pdf to ' + to + (st.m.cc ? ' · copy to you' : ''));
+      },
+      doVoid: () => {
+        if (!v) return;
+        const off = v.inMonth ? left(v) : 0;
+        goTo(v.num);
+        this.setState({ panel: null, filter: 'all', filterHash: v.num, payHash: v.num });
+        BE.voidInvoice(v.num);
+        BE.log('Voided ' + v.num + ' for ' + v.who);
+        this.notify(v.num + ' voided' + (off ? ' · ' + w(off) + ' off Coming in' : ''));
+      },
+      unvoid: () => {
+        if (!v) return;
+        BE.update('invoices', v.num, (x) => ({ void: false, events: (x.events || []).filter((e) => e.label !== 'Voided') }), 'num');
+        this.notify(v.num + ' is back on' + (v.inMonth ? ' · ' + w(total(v) - (v.paid || 0)) + ' back in Coming in' : ''));
+      },
+      sendDraft: () => {
+        if (!v) return;
+        const n = BE.sendDraft(v.num);
+        const inv = BE.find('invoices', n, 'num');
+        this.setState({ filter: 'unpaid', filterHash: '#' });
+        try { location.hash = n; } catch (e) { /* ignore */ }
+        this.notify(n + ' sent to ' + v.who + ' · ' + w(inv ? total(inv) : 0) + ' added to Coming in');
+      },
+      deleteDraft: () => { if (!v) return; BE.remove('invoices', v.num, 'num'); BE.log('Deleted a draft for ' + v.who); this.notify('Draft for ' + v.who + ' deleted'); },
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

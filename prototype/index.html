@@ -2,108 +2,245 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BillingEase prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BillingEase Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap">
 <style>
-  body { margin: 0; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif; }
-  main { max-width: 1120px; margin: 0 auto; padding: 56px 16px 80px; display: flex; flex-direction: column; gap: 40px; }
+  /* Layout: one column of steps in the order a new customer meets them; each step is a wrap of screen chips. */
+  :root {
+    --ground: #F7F6F9; --card: #FFFFFF; --ink: #18161F; --muted: #5F5B68; --line: #E2DFE8;
+    --violet: #B9A3FF; --violet-ink: #7A5AF8; --violet-wash: #EEE8FF; --orange: #E0752D; --orange-wash: #FDE6D6;
+    --display: Sora, "DM Sans", system-ui, sans-serif; --body: "DM Sans", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); }
+  main { max-width: 1120px; margin: 0 auto; padding-block: 48px 80px; padding-inline: 16px; display: flex; flex-direction: column; gap: 40px; box-sizing: border-box; }
   .brand { display: flex; align-items: center; gap: 10px; }
-  .tile { width: 32px; height: 32px; border-radius: 10px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; }
-  .word { font-family: Sora, DM Sans, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
-  h1 { margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 800; font-size: clamp(40px, 6vw, 72px); line-height: 0.95; letter-spacing: -0.04em; }
-  p.lead { margin: 0; font-size: 18px; line-height: 1.55; color: #47444F; max-width: 640px; }
-  .start { align-self: flex-start; display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; border-radius: 9999px; background: #B9A3FF; color: #18161F; font-weight: 600; font-size: 16px; text-decoration: none; }
-  section { display: flex; flex-direction: column; gap: 14px; }
-  h2 { margin: 0; font-family: Sora, DM Sans, sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.02em; }
-  ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-  li a { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 52px; padding: 0 18px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; color: #18161F; font-weight: 600; font-size: 15px; text-decoration: none; }
-  li a:hover { border-color: #18161F; }
-  li a span { font-size: 12px; font-weight: 500; color: #5F5B68; }
+  .tile { width: 32px; height: 32px; border-radius: 10px; background: var(--violet); display: flex; align-items: center; justify-content: center; }
+  .word { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
+  .intro { display: flex; flex-direction: column; gap: 18px; }
+  h1 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(38px, 6vw, 68px); line-height: 0.98; letter-spacing: -0.04em; text-wrap: balance; }
+  .eq { font-family: var(--display); font-weight: 700; font-size: clamp(16px, 2.2vw, 20px); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .eq b { font-weight: 700; padding: 4px 12px; border-radius: 9999px; }
+  .eq .in { background: var(--violet-wash); } .eq .out { background: var(--orange-wash); } .eq .keep { background: var(--ink); color: var(--violet); }
+  p.lead { margin: 0; font-size: 17px; line-height: 1.55; color: #47444F; max-width: 660px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; border-radius: 9999px; font-weight: 600; font-size: 15px; text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: var(--card); }
+  .btn.primary { background: var(--violet); border-color: var(--violet); }
+  .btn:hover { border-color: var(--ink); }
+  .btn:focus-visible, li a:focus-visible { outline: 3px solid var(--violet-ink); outline-offset: 2px; }
+  .note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); max-width: 660px; }
+  section { display: flex; flex-direction: column; gap: 12px; }
+  h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+  h2 .dot { width: 10px; height: 10px; border-radius: 9999px; background: var(--ink); }
+  section p { margin: 0; font-size: 14.5px; color: var(--muted); max-width: 660px; }
+  ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  li a { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 58px; padding: 6px 18px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); color: var(--ink); font-weight: 600; font-size: 15px; text-decoration: none; box-sizing: border-box; }
+  li a:hover { border-color: var(--ink); }
+  li a span { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+  li a.new::after { content: "New"; align-self: flex-start; margin-top: 4px; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 9999px; background: var(--violet-wash); color: var(--ink); }
+  .try { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .try ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5; }
+  .samples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+  .sample { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .sample h3 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+  .sample .sym { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 14px; flex: none; }
+  .sample p { margin: 0; font-size: 14.5px; line-height: 1.5; color: #47444F; }
+  .sample .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+  .facts { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; color: #47444F; }
+  .facts li::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: var(--ink); margin-right: 8px; vertical-align: middle; }
+  .current { display: none; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; color: #47444F; padding: 10px 14px; border-radius: 16px; background: var(--violet-wash); max-width: 660px; box-sizing: border-box; }
+  .current.on { display: flex; }
+  .tag { font-style: normal; align-self: flex-start; margin-top: 4px; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 9999px; }
+  .tag.uk { background: var(--violet-wash); color: var(--ink); }
+  .tag.lk { background: var(--orange-wash); color: var(--ink); }
+  .tag.new { background: var(--ink); color: #FFFFFF; }
+  li a .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  li a .tags .tag { margin-top: 2px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); align-items: center; }
+  .legend .tag { margin: 0; }
+  .muted h2 { color: #47444F; }
+  .muted li a { background: transparent; }
 </style>
 </head>
 <body>
 <main>
   <div class="brand">
-    <span class="tile"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 11 5h8l-6 14z" fill="#18161F"></path></svg></span>
+    <svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true" style="flex: none; display: block;"><rect width="48" height="48" rx="13" fill="#18161F"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg>
     <span class="word">BillingEase</span>
   </div>
-  <h1>Clickable prototype</h1>
-  <p class="lead">Every screen links to the others. Start on the landing page and click through sign-up, or jump straight to any screen below.</p>
-  <a class="start" href="ThreeLanding.dc.html">Start on the landing page</a>
 
+  <div class="intro">
+    <h1>Bookkeeping for the UK and Sri Lanka, clickable end to end</h1>
+    <div class="eq" aria-label="Coming in minus Going out equals Yours to keep"><b class="in">Coming in</b>−<b class="out">Going out</b>=<b class="keep">Yours to keep</b></div>
+    <p class="lead">One app, two countries. A business picks its country when it signs up, and that decides the currency, the tax year, the expense categories, invoice wording, payroll and what your accountant sees. Every screen shares one set of data: add an invoice and it shows in the list, on the customer and in your three numbers.</p>
+    <div class="actions">
+      <a class="btn primary" href="ThreeHome.dc.html#sample-uk">Open the UK sample</a>
+      <a class="btn primary" href="ThreeHome.dc.html#sample-lk">Open the Sri Lanka sample</a>
+      <a class="btn" href="ThreeHome.dc.html#start-empty-uk">Start empty (UK)</a>
+      <a class="btn" href="ThreeHome.dc.html#start-empty-lk">Start empty (Sri Lanka)</a>
+      <a class="btn" href="AuthSignUp.dc.html">Sign up as a new business</a>
+    </div>
+    <p class="current" id="current" role="status"></p>
+    <p class="note">Today in the prototype is Sunday 11 October 2026. What you change is saved in this browser only. Opening a sample puts it back to the start; “Reset sample data” in the account menu does the same for the country you’re in. The screen map below opens screens in whichever business you opened last.</p>
+  </div>
+
+  <div class="samples">
+    <div class="sample">
+      <h3><span class="sym" style="background: var(--violet-wash)">£</span>Harper Studio · Leeds</h3>
+      <p>Ellie Harper, a sole trader graphic designer who also lets one flat in Headingley. Not VAT registered, cash basis, standard quarters. Her practice is Dale &amp; Shaw Accountants.</p>
+      <ul class="facts">
+        <li>Q2 (6 Jul–5 Oct) has just closed; Dale &amp; Shaw file it by 7 Nov</li>
+        <li>Two practice requests open, one gap in the records</li>
+        <li>Payroll records for one part-time assistant</li>
+      </ul>
+      <div class="acts"><a class="btn primary" href="ThreeHome.dc.html#sample-uk">Open the UK sample</a><a class="btn" href="Quarters.dc.html#sample-uk">Go to the quarter</a></div>
+    </div>
+    <div class="sample">
+      <h3><span class="sym" style="background: var(--orange-wash)">Rs</span>Serendib Design Studio · Colombo 03</h3>
+      <p>Ayesha Fernando, sole proprietor of a design studio with five employees. VAT (18%) and SSCL registered, accrual basis, linked to TaxWise.lk. Her practitioner is Jayasinghe &amp; Co.</p>
+      <ul class="facts">
+        <li>September VAT and SSCL return due 20 Oct</li>
+        <li>October payroll with EPF, ETF and APIT to run by 31 Oct</li>
+        <li>Two practitioner requests open</li>
+      </ul>
+      <div class="acts"><a class="btn primary" href="ThreeHome.dc.html#sample-lk">Open the Sri Lanka sample</a><a class="btn" href="TaxPeriods.dc.html#sample-lk">Go to VAT and SSCL</a></div>
+    </div>
+  </div>
+
+  <div class="try">
+    <h2>Try the full flow</h2>
+    <ol>
+      <li>Sign up, pick the UK or Sri Lanka, answer the setup questions, and choose the sample business or start empty.</li>
+      <li>Send an invoice from <strong>New</strong>. Watch Coming in grow, then find it in All invoices and on the customer. In Sri Lanka it’s a Tax Invoice with VAT and SSCL lines.</li>
+      <li>Add an expense with an attachment, mark a bill paid. UK: check the quarter’s readiness and send it to your accountant. Sri Lanka: run October payroll and open a payslip.</li>
+      <li>Answer a request from your accountant, see what they see, and ask a tax question.</li>
+      <li>Sign out and back in, or accept an accountant invite as a new client.</li>
+    </ol>
+  </div>
+
+  <div class="legend"><span>Screen map</span><em class="tag uk">UK only</em><em class="tag lk">Sri Lanka only</em><em class="tag new">New</em><span>Screens without a tag work in both countries and change with the country.</span></div>
   <section>
-    <h2>Three numbers concept <span style="font-family: DM Sans, sans-serif; font-size: 14px; font-weight: 500; color: #5F5B68; letter-spacing: 0;">(current)</span></h2>
+    <h2><span class="dot"></span>Get started</h2>
     <ul>
-      <li><a href="ThreeLanding.dc.html">Landing page</a></li>
-      <li><a href="ThreeHome.dc.html">App home</a></li>
+      <li><a href="AuthSignUp.dc.html">Create an account<span>Country first, then name, business and email</span></a></li>
+      <li><a href="SetupProfile.dc.html">Set up your business<span>Questions per country, then sample or empty</span></a></li>
+      <li><a href="AuthSignIn.dc.html">Sign in</a></li>
+      <li><a href="AuthRecover.dc.html#forgot">Reset password</a></li>
+      <li><a href="AuthRecover.dc.html#verify">Verify your email</a></li>
+      <li><a href="AuthRecover.dc.html#invite">Accountant invite<span>Join as the practice’s or practitioner’s client</span></a></li>
+      <li><a href="NotFound.dc.html">Page not found</a></li>
+    </ul>
+  </section>
+  <section>
+    <h2><span class="dot"></span>Home</h2>
+    <ul>
+      <li><a href="ThreeHome.dc.html">Home: your three numbers<span>Quarter card (UK) · VAT, SSCL and payroll card (Sri Lanka)</span></a></li>
+      <li><a href="ThreeMobile.dc.html">Home on a phone<span>390 × 844</span></a></li>
+      <li><a href="Notifications.dc.html">Notifications</a></li>
+      <li><a href="Help.dc.html">Help</a></li>
+      <li><a href="Everything.dc.html">Everything BillingEase does</a></li>
+    </ul>
+  </section>
+  <section>
+    <h2><span class="dot" style="background: var(--violet-ink)"></span>Coming in</h2>
+    <ul>
       <li><a href="ThreeIn.dc.html">Coming in</a></li>
+      <li><a href="SellInvoices.dc.html">All invoices<span>VAT invoices (UK) · Tax Invoices (Sri Lanka)</span></a></li>
+      <li><a href="SellInvoice.dc.html">Detailed invoice</a></li>
+      <li><a href="SellQuotes.dc.html">Quotes</a></li>
+      <li><a href="SellQuote.dc.html">A quote</a></li>
+      <li><a href="SellRecurring.dc.html">Repeating invoices and money back</a></li>
+      <li><a href="SellCustomers.dc.html">Customers</a></li>
+      <li><a href="SellCustomer.dc.html">A customer</a></li>
+      <li><a href="SellCatalog.dc.html">Products and services</a></li>
+    </ul>
+  </section>
+  <section>
+    <h2><span class="dot" style="background: var(--orange)"></span>Going out</h2>
+    <ul>
       <li><a href="ThreeOut.dc.html">Going out</a></li>
-      <li><a href="ThreeKeep.dc.html">Yours to keep</a></li>
-      <li><a href="ThreeMobile.dc.html">Mobile home <span>390 × 844</span></a></li>
+      <li><a href="SpendTransaction.dc.html">An expense, in detail<span>With its attachment</span></a></li>
+      <li><a href="SpendBill.dc.html">Bills<span>Input VAT on bills (Sri Lanka)</span></a></li>
+      <li><a href="SpendEveryMonth.dc.html">Every month</a></li>
+      <li><a href="SpendVendors.dc.html">Suppliers</a></li>
+      <li><a href="SpendVendor.dc.html">A supplier</a></li>
     </ul>
   </section>
   <section>
-    <h2>Theme options</h2>
+    <h2><span class="dot"></span>Tax and reports</h2>
     <ul>
-      <li><a href="ThemePreview.dc.html">A · Forest &amp; Lime <span>previous</span></a></li>
-      <li><a href="ThemeCoral.dc.html">B · Midnight &amp; Coral</a></li>
-      <li><a href="ThemePlum.dc.html">C · Plum &amp; Saffron</a></li>
-      <li><a href="ThemeCobalt.dc.html">D · Cobalt</a></li>
-      <li><a href="ThemeViolet.dc.html">E · Graphite &amp; Violet <span>applied</span></a></li>
+      <li><a href="ThreeKeep.dc.html">Yours to keep<span>Income Tax and NI (UK) · income tax (Sri Lanka)</span></a></li>
+      <li><a href="Quarters.dc.html">MTD quarters<span>Readiness checks, send to your accountant</span><span class="tags"><em class="tag uk">UK only</em><em class="tag new">New</em></span></a></li>
+      <li><a href="TaxPeriods.dc.html">Tax periods<span>VAT summary (UK) · VAT and SSCL periods (Sri Lanka)</span><span class="tags"><em class="tag new">New</em></span></a></li>
+      <li><a href="Properties.dc.html">Properties<span>Rent, costs, mortgage interest kept apart</span><span class="tags"><em class="tag uk">UK only</em><em class="tag new">New</em></span></a></li>
+      <li><a href="Mileage.dc.html">Mileage<span>45p, then 25p a mile</span><span class="tags"><em class="tag uk">UK only</em><em class="tag new">New</em></span></a></li>
+      <li><a href="SpendPayroll.dc.html">Payroll<span>Records only (UK) · EPF, ETF and APIT (Sri Lanka)</span></a></li>
+      <li><a href="Payslip.dc.html">A payslip<span class="tags"><em class="tag lk">Sri Lanka only</em><em class="tag new">New</em></span></a></li>
+      <li><a href="BooksReports.dc.html">Reports</a></li>
+      <li><a href="BooksTax.dc.html">Tax and year-end</a></li>
+      <li><a href="BooksReconcile.dc.html">Check against your bank statement</a></li>
+      <li><a href="BooksCategories.dc.html">Categories<span>Plain names, official names underneath</span></a></li>
     </ul>
   </section>
   <section>
-    <h2>v1 · Marketing &amp; accounts</h2>
+    <h2><span class="dot"></span>Your accountant</h2>
     <ul>
-      <li><a href="Main.dc.html">Landing page</a></li>
-      <li><a href="SignUp.dc.html">Sign up</a></li>
-      <li><a href="SignIn.dc.html">Sign in</a></li>
-      <li><a href="Onboarding.dc.html">Business setup wizard</a></li>
+      <li><a href="Accountant.dc.html">Your accountant<span>Practice (UK) · tax practitioner and TaxWise.lk (Sri Lanka)</span><span class="tags"><em class="tag new">New</em></span></a></li>
+      <li><a href="PracticeView.dc.html">What your accountant sees<span>A preview of the TaxWise practitioner tool</span><span class="tags"><em class="tag new">New</em></span></a></li>
+      <li><a href="Ask.dc.html">Ask<span>AI answers from each country’s tax sources</span><span class="tags"><em class="tag new">New</em></span></a></li>
     </ul>
   </section>
   <section>
-    <h2>v1 · Sales &amp; payments</h2>
+    <h2><span class="dot"></span>Your business</h2>
+    <p>From the account menu under the avatar in the top right.</p>
     <ul>
-      <li><a href="Dashboard.dc.html">Dashboard</a></li>
-      <li><a href="Invoices.dc.html">Invoices</a></li>
-      <li><a href="InvoiceEditor.dc.html">New invoice</a></li>
-      <li><a href="Estimates.dc.html">Estimates</a></li>
-      <li><a href="Payments.dc.html">Payments</a></li>
-      <li><a href="Customers.dc.html">Customers</a></li>
-      <li><a href="Products.dc.html">Products &amp; services</a></li>
+      <li><a href="BizProfile.dc.html">Business profile</a></li>
+      <li><a href="BizTeam.dc.html">People and access</a></li>
+      <li><a href="BizSecurity.dc.html">Security and your data</a></li>
     </ul>
   </section>
-  <section>
-    <h2>v1 · Purchases &amp; accounting</h2>
+  <section class="muted">
+    <h2><span class="dot" style="background: var(--line)"></span>Marketing website (US version, being reworked)</h2>
+    <p>The public site from before the change of direction. It still describes the US product and will be rewritten for the UK and Sri Lanka.</p>
     <ul>
-      <li><a href="Bills.dc.html">Bills</a></li>
-      <li><a href="Receipts.dc.html">Receipts</a></li>
-      <li><a href="Vendors.dc.html">Vendors</a></li>
-      <li><a href="Transactions.dc.html">Transactions</a></li>
-      <li><a href="Reconciliation.dc.html">Reconciliation</a></li>
-      <li><a href="ChartOfAccounts.dc.html">Chart of accounts</a></li>
-    </ul>
-  </section>
-  <section>
-    <h2>v1 · Payroll &amp; reports</h2>
-    <ul>
-      <li><a href="Payroll.dc.html">Run payroll</a></li>
-      <li><a href="Employees.dc.html">Employees</a></li>
-      <li><a href="TaxFilings.dc.html">Tax filings</a></li>
-      <li><a href="Reports.dc.html">Reports</a></li>
-      <li><a href="ProfitLoss.dc.html">Profit &amp; Loss</a></li>
-    </ul>
-  </section>
-  <section>
-    <h2>Mobile app <span style="font-family: DM Sans, sans-serif; font-size: 14px; font-weight: 500; color: #5F5B68; letter-spacing: 0;">(390 × 844)</span></h2>
-    <ul>
-      <li><a href="MobileHome.dc.html">Home</a></li>
-      <li><a href="MobileReceipt.dc.html">Scan receipt</a></li>
-      <li><a href="MobileInvoice.dc.html">Invoice detail</a></li>
+      <li><a href="ThreeLanding.dc.html">Home (landing page)</a></li>
+      <li><a href="SiteFeatures.dc.html">Features</a></li>
+      <li><a href="SiteComingIn.dc.html">Coming in</a></li>
+      <li><a href="SiteGoingOut.dc.html">Going out</a></li>
+      <li><a href="SiteKeep.dc.html">Yours to keep</a></li>
+      <li><a href="SitePricing.dc.html">Pricing</a></li>
+      <li><a href="SiteFreelancers.dc.html">Freelancers and services</a></li>
+      <li><a href="SiteShops.dc.html">Shops and makers</a></li>
+      <li><a href="SiteTeams.dc.html">Teams</a></li>
+      <li><a href="SiteGlobal.dc.html">Outside the US</a></li>
+      <li><a href="SiteSecurity.dc.html">Security</a></li>
+      <li><a href="SiteChangelog.dc.html">What’s new</a></li>
+      <li><a href="SiteGuides.dc.html">Guides</a></li>
+      <li><a href="SiteHelp.dc.html">Help center</a></li>
+      <li><a href="SiteSwitch.dc.html">Switch to BillingEase</a></li>
+      <li><a href="SitePartners.dc.html">For accountants</a></li>
+      <li><a href="SiteAbout.dc.html">About</a></li>
+      <li><a href="SiteCareers.dc.html">Careers</a></li>
+      <li><a href="SitePress.dc.html">Press</a></li>
+      <li><a href="SiteContact.dc.html">Contact sales</a></li>
+      <li><a href="SiteLegal.dc.html#privacy">Privacy, terms, cookies</a></li>
     </ul>
   </section>
 </main>
+<script>
+  // Say which business the screen map opens (the store lives in this browser).
+  try {
+    var raw = localStorage.getItem('billingease.prototype.v2');
+    var st = raw ? JSON.parse(raw) : null;
+    if (st && st._country) {
+      var p = st.profile || {};
+      var el = document.getElementById('current');
+      el.textContent = 'Open now: ' + (p.business || 'Your business') + ' · ' + (st._country === 'lk' ? 'Sri Lanka' : 'United Kingdom') + (st._mode === 'empty' ? ' · started empty' : ' · sample');
+      el.className = 'current on';
+    }
+  } catch (e) { /* storage blocked: the note stays hidden */ }
+</script>
 </body>
 </html>

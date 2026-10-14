@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Help</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-search::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.be-q:hover{background:#F7F6F9}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+    <dc-import name="AppCrumbs" area="home" here="Help"></dc-import>
+
+    <section aria-labelledby="help-h" style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 720px;">
+        <h1 id="help-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.03em;">How can we help, {{first}}?</h1>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #47444F;">Short answers about using BillingEase, each with a link to the place where you do it. For tax questions, try <a href="Ask.dc.html" style="font-weight: 600;">Ask</a>.</p>
+      </div>
+      <label style="display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 0 18px; border-radius: 9999px; border: 1px solid #CBC7D3; background: #FFFFFF; max-width: 720px; box-sizing: border-box;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none;"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"></path></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search help</span>
+        <input class="be-field be-search" type="search" value="{{query}}" onChange="{{setQuery}}" placeholder="{{searchHint}}" style="flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; border-radius: 8px; background: transparent; font: 400 16px DM Sans, sans-serif; color: #18161F;">
+        <sc-if value="{{hasQuery}}" hint-placeholder-val="{{false}}">
+          <button type="button" onClick="{{clearQuery}}" aria-label="Clear search" style="width: 36px; height: 36px; flex: none; border: 0; border-radius: 9999px; background: #EFEDF3; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+        </sc-if>
+      </label>
+      <div role="group" aria-label="Topics" style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <sc-for list="{{topics}}" as="tp" hint-placeholder-count="6">
+          <button type="button" aria-pressed="{{tp.pressed}}" onClick="{{tp.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid {{tp.border}}; border-radius: 9999px; background: {{tp.bg}}; color: {{tp.color}}; font: 600 14px DM Sans, sans-serif; cursor: pointer;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{tp.dot}};"></span>{{tp.label}}</button>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section aria-labelledby="ans-h" style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+        <h2 id="ans-h" style="margin: 0; font-size: 14px; font-weight: 600; color: #5F5B68;" aria-live="polite">{{status}}</h2>
+        <sc-if value="{{hasResults}}" hint-placeholder-val="{{true}}">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 8px; display: flex; flex-direction: column; gap: 2px;">
+            <sc-for list="{{answers}}" as="a" hint-placeholder-count="7">
+              <div style="border-radius: 16px; background: {{a.bg}};">
+                <button type="button" class="be-q" aria-expanded="{{a.expanded}}" onClick="{{a.toggle}}" style="width: 100%; display: flex; align-items: center; gap: 14px; min-height: 60px; padding: 10px 14px; border: 0; border-radius: 16px; background: transparent; color: #18161F; font: inherit; text-align: left; cursor: pointer;">
+                  <span style="width: 10px; height: 10px; box-sizing: border-box; border-radius: 9999px; background: {{a.dot}}; border: {{a.dotBorder}}; flex: none;"></span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-weight: 700; font-size: 16px; line-height: 1.35;">{{a.q}}</span>
+                    <span style="font-size: 13px; color: #5F5B68;">{{a.area}}</span>
+                  </span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{a.chev}}"></path></svg>
+                </button>
+                <sc-if value="{{a.open}}" hint-placeholder-val="{{false}}">
+                  <div style="padding: 0 18px 18px 38px; display: flex; flex-direction: column; gap: 10px;">
+                    <sc-for list="{{a.body}}" as="para" hint-placeholder-count="2">
+                      <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #2E2B36;">{{para}}</p>
+                    </sc-for>
+                    <sc-if value="{{a.live}}" hint-placeholder-val="{{false}}">
+                      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 12px 14px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 13.5px; font-weight: 600;">
+                        <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #7A5AF8;"></span>{{n.in}}</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">−</span>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>{{n.out}}</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">=</span>
+                        <span>{{n.profit}} profit</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">−</span>
+                        <span>{{n.tax}} for tax</span>
+                        <span aria-hidden="true" style="color: #5F5B68;">=</span>
+                        <span style="padding: 2px 10px; border-radius: 9999px; background: #18161F; color: #B9A3FF;">{{n.keep}} yours to keep</span>
+                      </div>
+                    </sc-if>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 2px;">
+                      <sc-for list="{{a.links}}" as="l" hint-placeholder-count="2">
+                        <a href="{{l.href}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border-radius: 9999px; background: {{l.bg}}; color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">{{l.label}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+          <div style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+            <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">No answer for “{{query}}” yet</span>
+            <span style="font-size: 15px; color: #47444F; max-width: 440px; line-height: 1.5;">Ask a person below and we&#39;ll write back, or look through every feature.</span>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 4px;">
+              <button type="button" onClick="{{askAbout}}" style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Ask a person about this</button>
+              <a href="Everything.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 9999px; background: rgba(24,22,31,0.07); color: #18161F; font-weight: 600; font-size: 14px; text-decoration: none;">See everything BillingEase does</a>
+            </div>
+          </div>
+        </sc-if>
+        <p style="margin: 4px 0 0; font-size: 14px; color: #47444F;">Looking for a feature rather than an answer? <a href="Everything.dc.html" style="font-weight: 600;">Everything BillingEase does</a> lists them all in plain words.</p>
+      </section>
+
+      <!-- Talk to a person -->
+      <section aria-labelledby="ask-h" style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 id="ask-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">Talk to a person</h2>
+          <span style="font-size: 14px; color: #47444F; line-height: 1.45;">A real person reads every question. We usually reply within one working day.</span>
+        </div>
+        <sc-if value="{{sent}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 16px; background: #E2F6D5; color: #2F5711;">
+            <span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>We got your question</span>
+            <span style="font-size: 14px; line-height: 1.45;">We&#39;ll reply to {{sentTo}}. You&#39;ll also see it in Notifications.</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 14px; font-weight: 600;">
+              <a href="Notifications.dc.html" style="color: #2F5711;">Open notifications</a>
+              <button type="button" onClick="{{askAgain}}" style="min-height: 32px; padding: 0; border: 0; background: transparent; color: #2F5711; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Ask something else</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{notSent}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Your name
+              <input class="be-field" type="text" value="{{f.name}}" onChange="{{setName}}" autocomplete="name" style="min-height: 44px; padding: 0 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; box-sizing: border-box; width: 100%;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Email for the reply
+              <input class="be-field" type="email" value="{{f.email}}" onChange="{{setEmail}}" autocomplete="email" aria-invalid="{{err.emailBad}}" style="min-height: 44px; padding: 0 12px; border: 1px solid {{err.emailBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; box-sizing: border-box; width: 100%;">
+              <sc-if value="{{err.email}}" hint-placeholder-val="{{false}}"><span style="font-weight: 600; font-size: 13px; color: #A8200D;">{{err.email}}</span></sc-if>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What it&#39;s about
+              <select class="be-field" value="{{f.topic}}" onChange="{{setTopic}}" style="min-height: 44px; padding: 0 10px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; box-sizing: border-box; width: 100%;">
+                <sc-for list="{{topicOpts}}" as="o" hint-placeholder-count="5"><option value="{{o}}">{{o}}</option></sc-for>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Your question
+              <textarea class="be-field" rows="5" value="{{f.msg}}" onChange="{{setMsg}}" aria-invalid="{{err.msgBad}}" placeholder="Tell us what you were trying to do and what happened." style="padding: 10px 12px; border: 1px solid {{err.msgBorder}}; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; background: #FFFFFF; resize: vertical; box-sizing: border-box; width: 100%;"></textarea>
+              <sc-if value="{{err.msg}}" hint-placeholder-val="{{false}}"><span style="font-weight: 600; font-size: 13px; color: #A8200D;">{{err.msg}}</span></sc-if>
+            </label>
+            <button type="button" onClick="{{send}}" style="align-self: flex-start; min-height: 46px; padding: 0 22px; border: 0; border-radius: 9999px; background: #B9A3FF; color: #18161F; font: 600 15px DM Sans, sans-serif; cursor: pointer;">Send question</button>
+            <span style="font-size: 12.5px; color: #5F5B68; line-height: 1.45;">Or write to help@billingease.com. We never ask for your password.</span>
+          </div>
+        </sc-if>
+      </section>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const p = BE.get('profile') || {};
+    this.state = {
+      query: '', topic: 'all', open: { numbers: true }, toast: null, sent: null, tried: false,
+      f: { name: p.owner && p.owner !== 'You' ? p.owner : '', email: p.email || '', topic: 'Something else', msg: '' }
+    };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  renderVals() {
+    const st = this.state;
+    const prof = BE.get('profile') || {};
+    const lk = BE.is('lk');
+    const pk = BE.pack();
+    const prc = BE.practice();
+    const pr = prc.has ? prc.short : 'your ' + prc.noun;
+    const t = BE.keepTotals(BE.homePeriod());
+    const hasNums = t.in !== 0 || t.out !== 0;
+    const taxWords = lk ? 'income tax' : 'Income Tax and National Insurance';
+    const AREAS = {
+      start: { label: 'Basics', dot: '#B9A3FF', border: '0' },
+      in: { label: 'Coming in', dot: '#7A5AF8', border: '0' },
+      out: { label: 'Going out', dot: '#E0752D', border: '0' },
+      keep: { label: 'Tax and your books', dot: '#18161F', border: '2px solid #B9A3FF' },
+      biz: { label: 'Your business', dot: '#CBC7D3', border: '0' },
+      proto: { label: 'This prototype', dot: '#FFF0B8', border: '1px solid #6B5000' }
+    };
+    const common = [
+      { id: 'numbers', g: 'start', q: 'How do the three numbers work?', live: true, kw: 'coming in going out yours to keep profit equation home numbers keep estimate',
+        body: ['Coming in is money customers paid you plus what’s on the way from invoices that aren’t late. Going out is what you’ve paid plus bills' + (lk ? ', payroll' : '') + ' and every-month costs still to pay.',
+          'Coming in minus Going out is your profit. Yours to keep is what’s left after an estimate of ' + taxWords + ' for the ' + (lk ? 'year of assessment' : 'tax year') + ' ' + (pk.taxYear ? pk.taxYear.label : '') + '.' + (hasNums ? ' Here’s ' + (lk ? 'October' : 'this quarter') + ' so far:' : ' They start at ' + BE.money(0) + ' and fill in as you bill and spend.')],
+        links: [['Open Yours to keep', 'ThreeKeep.dc.html'], ['Back to Home', 'ThreeHome.dc.html']] },
+      { id: 'paid', g: 'in', q: 'How do I record that a customer paid?', kw: 'paid payment record bank transfer cash cheque lankaqr card machine getting paid',
+        body: ['Open the invoice and choose Record a payment. Pick how they paid: ' + (lk ? 'bank transfer, cheque (with its number and date), cash or LankaQR' : 'bank transfer, card machine or cash') + '. The amount moves from on the way to received in Coming in.',
+          'BillingEase doesn’t take payments online yet, so nothing is matched for you: recording it takes a few seconds.'],
+        links: [['All invoices', 'SellInvoices.dc.html']] },
+      { id: 'late', g: 'in', q: 'A customer is paying late. What happens?', kw: 'late overdue reminder nudge unpaid chase whatsapp',
+        body: ['A late invoice shows in Needs you on Home. Send a short personal reminder by email' + (lk ? ' or WhatsApp' : '') + ' in one tap.',
+          'Late invoices aren’t counted in Coming in until they’re paid, so your numbers stay honest.'],
+        links: [['All invoices', 'SellInvoices.dc.html'], ['Needs you on Home', 'ThreeHome.dc.html']] },
+      { id: 'quotes', g: 'in', q: 'Can I send a price before I invoice?', kw: 'quote estimate proposal accept',
+        body: ['Yes. Send a quote; when the customer says yes, mark it accepted and turn it into an invoice in one tap. Quotes don’t count in Coming in until you invoice them.'],
+        links: [['Send a quote', 'SellQuotes.dc.html#new']] },
+      { id: 'attach', g: 'out', q: 'What do I do with receipts?', kw: 'receipt receipts photo pdf attach attachment upload',
+        body: ['Attach a photo or PDF to the expense or bill. BillingEase keeps it with the record for ' + pr + ' to see; it doesn’t read the receipt for you, so type the amount and pick the category.'],
+        links: [['Record an expense', 'ThreeOut.dc.html#expense']] },
+      { id: 'bills', g: 'out', q: 'What’s the difference between an expense and a bill?', kw: 'bill expense payable pay later supplier',
+        body: ['An expense is already paid. A bill is something you’ll pay later; it counts as still to pay in Going out until you mark it paid, in full or in parts. You pay it from your bank as usual.' + (lk ? ' Enter the VAT on a supplier’s tax invoice and it counts as input VAT.' : '')],
+        links: [['Enter a bill', 'SpendBill.dc.html#new'], ['Going out', 'ThreeOut.dc.html']] }
+    ];
+    const uk = [
+      { id: 'cats', g: 'out', q: 'Which category does an expense go in?', kw: 'category categories hmrc box allowable sa103 expense',
+        body: ['Categories follow HMRC’s self-employment boxes, with plain names on top and HMRC’s name underneath, for example Car, van and travel (Car, van and travel expenses). Some, like client entertaining, are marked not allowable.',
+          'Not sure? Ask explains the rules with sources, or leave it for ' + pr + ' to check.'],
+        links: [['Categories', 'BooksCategories.dc.html'], ['Ask', 'Ask.dc.html#expenses']] },
+      { id: 'quarters', g: 'keep', q: 'How do Making Tax Digital quarters work here?', kw: 'mtd making tax digital quarter quarterly update hmrc readiness checks send',
+        body: ['Each quarter (6 Apr–5 Jul, 6 Jul–5 Oct, 6 Oct–5 Jan, 6 Jan–5 Apr) we total your records in HMRC’s categories and check for gaps and uncategorised items. ' + (prc.has ? pr + ' send the update from their software' : 'Your accountant sends the update') + '; BillingEase doesn’t file with HMRC.',
+          'Once a quarter is sent it’s locked, so nothing changes by accident.'],
+        links: [['Quarters', 'Quarters.dc.html']] },
+      { id: 'landlord', g: 'keep', q: 'How do I keep my rental property separate?', kw: 'landlord property rent flat mortgage interest letting agent',
+        body: ['Properties keeps rent and costs for each property apart from your trade, in HMRC’s property categories. Mortgage interest has its own category because it gets a 20% tax reduction rather than being deducted.'],
+        links: [['Properties', 'Properties.dc.html'], ['Add a property cost', 'Properties.dc.html#cost']] },
+      { id: 'mileage', g: 'out', q: 'How do I claim business mileage?', kw: 'mileage miles trip car van 45p',
+        body: ['Log each business trip in Mileage. It’s claimed at 45p a mile for the first 10,000 miles in the tax year and 25p after, under Car, van and travel.'],
+        links: [['Mileage', 'Mileage.dc.html'], ['Log a trip', 'Mileage.dc.html#new']] },
+      { id: 'payroll', g: 'out', q: 'Does BillingEase run my payroll?', kw: 'payroll paye rti employee wages staff',
+        body: ['No. In the UK BillingEase keeps payroll records: enter each pay run from your payroll software and the staff costs and what you owe HMRC go into your books. Run payroll and report to HMRC (RTI) through your payroll software.'],
+        links: [['Payroll records', 'SpendPayroll.dc.html']] },
+      { id: 'settax', g: 'keep', q: 'How is the tax estimate worked out?', kw: 'income tax national insurance class 4 estimate set aside payments on account',
+        body: ['We take this tax year’s profit so far, scale it to a full year and apply the ' + (pk.taxYear ? pk.taxYear.label : '') + ' Income Tax bands and Class 4 National Insurance. It’s an estimate: ' + pr + ' work out the real figure.',
+          'Payments on account (31 January and 31 July) show on Yours to keep when your bill is over £1,000.'],
+        links: [['Yours to keep', 'ThreeKeep.dc.html'], ['Ask about payments on account', 'Ask.dc.html#poa']] },
+      { id: 'vat', g: 'keep', q: 'I’m VAT registered. Where’s my VAT?', kw: 'vat return summary quarter registered',
+        body: ['Turn on VAT in your business profile. Invoices then show VAT, and Tax periods totals it for each VAT quarter for ' + pr + ' to file through their MTD for VAT software.'],
+        links: [['VAT summary', 'TaxPeriods.dc.html'], ['Business profile', 'BizProfile.dc.html']] }
+    ];
+    const lkA = [
+      { id: 'taxinv', g: 'in', q: 'How do I send a tax invoice with VAT and SSCL?', kw: 'tax invoice vat sscl 18 levy format tin',
+        body: ['If you’re VAT registered, every invoice is titled Tax Invoice and shows your TIN and VAT registration number. SSCL at 2.5% is its own line, then VAT at 18%. How SSCL sits in the VAT base is still to confirm with the IRD.'],
+        links: [['Send a tax invoice', 'ThreeIn.dc.html#bill'], ['Ask about it', 'Ask.dc.html#invoice']] },
+      { id: 'periods', g: 'keep', q: 'How do VAT and SSCL returns work here?', kw: 'vat sscl return period monthly ird ramis output input',
+        body: ['Tax periods totals each month: output VAT on your tax invoices, input VAT on suppliers’ bills, and SSCL, in the order of the IRD return. ' + (prc.has ? pr + ' enter it on the return' : 'You enter it on the IRD return') + '; BillingEase doesn’t file with the IRD yet.',
+          'Once a month is filed it’s locked, so nothing changes by accident.'],
+        links: [['Tax periods', 'TaxPeriods.dc.html']] },
+      { id: 'payroll', g: 'out', q: 'How does payroll work?', kw: 'payroll salary epf etf apit payslip employees',
+        body: ['Each month, run payroll: EPF 8% and 12%, ETF 3% and APIT from the current tables are worked out for every employee, with payslips and the schedules you need.',
+          'You pay salaries, EPF, ETF and APIT yourself, and file through the EPF, ETF and IRD channels.'],
+        links: [['Payroll', 'SpendPayroll.dc.html'], ['Ask about APIT', 'Ask.dc.html#apit']] },
+      { id: 'cats', g: 'out', q: 'Which category does an expense go in?', kw: 'category categories schedule return expense',
+        body: ['Categories match the lines of the business income schedule used in your TaxWise.lk return, for example Rent and rates or Electricity, water and phone. Equipment is a capital item for allowances.'],
+        links: [['Categories', 'BooksCategories.dc.html']] },
+      { id: 'settax', g: 'keep', q: 'How is the income tax estimate worked out?', kw: 'income tax estimate instalments relief',
+        body: ['We take this year of assessment’s profit so far, scale it to a full year, take off the personal relief and apply the current rates. Quarterly instalment dates show on Yours to keep. It’s an estimate: ' + pr + ' work out the real figure.'],
+        links: [['Yours to keep', 'ThreeKeep.dc.html'], ['Ask about instalments', 'Ask.dc.html#instalments']] },
+      { id: 'taxwise', g: 'keep', q: 'What happens at the year end?', kw: 'year end taxwise taxwise.lk return hand off march',
+        body: ['After 31 March, Send to TaxWise.lk moves your income, expenses by schedule line, capital items, VAT and SSCL totals and payroll totals into your income tax return, or to ' + pr + '’s file for you.'],
+        links: [['Your tax practitioner', 'Accountant.dc.html']] }
+    ];
+    const tail = [
+      { id: 'accountant', g: 'biz', q: lk ? 'What can my tax practitioner see and do?' : 'What can my accountant see and do?', kw: 'accountant practitioner practice access requests see',
+        body: [(prc.has ? pr : 'They') + ' see your books, ' + (lk ? 'VAT and SSCL periods and payroll' : 'quarters and readiness checks') + ', and can add adjusting entries. They send you requests, which show in Needs you on Home. They can’t move money, send invoices in your name or change how you sign in.'],
+        links: [[lk ? 'Your tax practitioner' : 'Your accountant', 'Accountant.dc.html'], ['What they see', 'PracticeView.dc.html']] },
+      { id: 'export', g: 'biz', q: 'Can I take my data out?', kw: 'export download csv spreadsheet data import leave',
+        body: ['Yes, any time. Security and your data shows each export as a table you can copy into a spreadsheet: invoices, expenses, customers and the full books.'],
+        links: [['Security and your data', 'BizSecurity.dc.html'], ['All reports', 'BooksReports.dc.html']] },
+      { id: 'reset', g: 'proto', q: 'How do I reset or switch this prototype?', kw: 'reset prototype sample data start over empty demo switch country uk sri lanka',
+        body: ['Everything you do here is saved in this browser so it carries across screens. Reset the sample to go back to ' + (lk ? 'Serendib Design Studio' : 'Harper Studio') + ' on Sunday 11 October, or switch to the ' + (lk ? 'UK' : 'Sri Lanka') + ' sample.',
+          'Or start empty to see what a brand new business looks like. These are also in the menu under your initials.'],
+        links: [['Reset sample data', 'ThreeHome.dc.html#reset'], ['Switch to the ' + (lk ? 'UK' : 'Sri Lanka') + ' sample', 'ThreeHome.dc.html#sample-' + (lk ? 'uk' : 'lk')], ['Start empty', 'ThreeHome.dc.html#start-empty-' + (lk ? 'lk' : 'uk')]] }
+    ];
+    const A = common.concat(lk ? lkA : uk).concat(tail);
+    const q = st.query.trim().toLowerCase();
+    const words = q.split(/\s+/).filter(Boolean);
+    const match = (a) => words.every((w) => (a.q + ' ' + a.kw + ' ' + a.body.join(' ')).toLowerCase().indexOf(w) >= 0);
+    const list = A.filter((a) => (st.topic === 'all' || a.g === st.topic) && match(a));
+    const answers = list.map((a) => {
+      const open = words.length ? (st.open[a.id] !== false && (list.length <= 2 || !!st.open[a.id])) : !!st.open[a.id];
+      const AR = AREAS[a.g];
+      return {
+        q: a.q, area: AR.label, dot: AR.dot, dotBorder: AR.border, body: a.body, live: !!a.live && hasNums,
+        links: a.links.map((l, i) => ({ label: l[0], href: l[1], bg: i === 0 ? '#B9A3FF' : 'rgba(24,22,31,0.07)' })),
+        open, expanded: open ? 'true' : 'false', bg: open ? '#F7F6F9' : 'transparent', chev: open ? 'm6 15 6-6 6 6' : 'm6 9 6 6 6-6',
+        toggle: () => this.setState({ open: Object.assign({}, st.open, { [a.id]: !open }) })
+      };
+    });
+    const topics = [['all', 'All', '#18161F', '0']].concat(Object.keys(AREAS).map((k) => [k, AREAS[k].label, AREAS[k].dot, AREAS[k].border])).map(([id, label, dot]) => {
+      const on = st.topic === id;
+      return { label, dot: id === 'all' ? (on ? '#B9A3FF' : '#18161F') : dot, pressed: on ? 'true' : 'false', border: on ? '#18161F' : '#CBC7D3', bg: on ? '#18161F' : '#FFFFFF', color: on ? '#FFFFFF' : '#18161F', pick: () => this.setState({ topic: id }) };
+    });
+
+    // Talk to a person
+    const f = st.f;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim());
+    const msgOk = f.msg.trim().length >= 10;
+    const err = {
+      email: st.tried && !emailOk ? (f.email.trim() ? 'That email doesn’t look right.' : 'Add an email so we can reply.') : false,
+      msg: st.tried && !msgOk ? 'Tell us a little more (at least a sentence).' : false
+    };
+    err.emailBad = err.email ? 'true' : 'false'; err.msgBad = err.msg ? 'true' : 'false';
+    err.emailBorder = err.email ? '#A8200D' : '#CBC7D3'; err.msgBorder = err.msg ? '#A8200D' : '#CBC7D3';
+    const setF = (k) => (e) => this.setState({ f: Object.assign({}, st.f, { [k]: e.target.value }) });
+    const n = {
+      in: t.fmt.in, out: t.fmt.out, profit: t.fmt.profit, tax: t.fmt.tax, keep: t.fmt.keep
+    };
+    return {
+      searchHint: BE.is('lk') ? 'Ask in your own words: “cheque”, “APIT”, “VAT”' : 'Ask in your own words: “mileage”, “quarter”, “export”',
+      first: prof.first && prof.first !== 'there' ? prof.first : 'there', n,
+      query: st.query, hasQuery: st.query.length > 0,
+      setQuery: (e) => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      topics, answers, hasResults: answers.length > 0, noResults: answers.length === 0,
+      status: words.length ? answers.length + (answers.length === 1 ? ' answer' : ' answers') + ' for “' + st.query.trim() + '”' : answers.length + ' common questions',
+      askAbout: () => this.setState({ f: Object.assign({}, st.f, { msg: st.f.msg || 'I was looking for help with “' + st.query.trim() + '”. ' }) , sent: null }),
+      f, err, sent: !!st.sent, notSent: !st.sent, sentTo: st.sent || '',
+      topicOpts: ['Something else', 'Invoices and payments', 'Expenses and bills', 'Payroll', BE.is('lk') ? 'VAT, SSCL and income tax' : 'Quarters and tax', BE.is('lk') ? 'My tax practitioner' : 'My accountant', 'My account'],
+      setName: setF('name'), setEmail: setF('email'), setTopic: setF('topic'), setMsg: setF('msg'),
+      send: () => {
+        if (!emailOk || !msgOk) { this.setState({ tried: true }); this.notify('Check the highlighted fields'); return; }
+        const email = f.email.trim();
+        BE.notify('We got your question', f.topic + ': “' + f.msg.trim().slice(0, 70) + (f.msg.trim().length > 70 ? '…' : '') + '” · we’ll reply to ' + email + ' within a working day', 'Help.dc.html');
+        this.setState({ sent: email, tried: false, f: Object.assign({}, st.f, { msg: '' }) });
+        this.notify('Question sent. We’ll reply to ' + email);
+      },
+      askAgain: () => this.setState({ sent: null }),
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Your accountant</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#18161F}a:hover{color:#000000}
+.be-field:focus{outline:2px solid #7A5AF8;outline-offset:1px}
+.be-in{min-height:44px;box-sizing:border-box;padding:0 12px;border:1px solid #CBC7D3;border-radius:10px;background:#FFFFFF;font:400 15px DM Sans,sans-serif;color:#18161F;width:100%}
+.be-lab{flex:1 1 200px;min-width:0;display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+.be-p{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:9999px;background:#B9A3FF;color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.be-s{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;background:rgba(24,22,31,0.07);color:#18161F;font:600 14px DM Sans,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.be-d{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:9999px;background:#A8200D;color:#FFFFFF;font:600 14px DM Sans,sans-serif;cursor:pointer;white-space:nowrap}
+.be-card{background:#FFFFFF;border:1px solid #E2DFE8;border-radius:24px;padding:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:16px;min-width:0}
+.be-h2{margin:0;font-family:Sora,sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.02em}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F6F9; color: #18161F; font-family: DM Sans, system-ui, sans-serif;">
+
+  <dc-import name="AppHeader"></dc-import>
+
+  <main style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 24px clamp(16px, 4vw, 40px) 64px; display: flex; flex-direction: column; gap: 24px;">
+    <dc-import name="AppCrumbs" area="biz" here="{{title}}"></dc-import>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <h1 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.03em;">{{title}}</h1>
+      <p style="margin: 0; font-size: 15px; color: #47444F; line-height: 1.5; max-width: 720px;">{{intro}}</p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+        <!-- Linked practice -->
+        <sc-if value="{{linked}}" hint-placeholder-val="{{true}}">
+          <section aria-label="{{firm.name}}" class="be-card">
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+              <span style="width: 56px; height: 56px; border-radius: 16px; background: #18161F; color: #B9A3FF; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; flex: none;">{{firm.initials}}</span>
+              <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
+                  <h2 class="be-h2">{{firm.name}}</h2>
+                  <span style="display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 9999px; background: #E2F6D5; color: #2F5711; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #2F5711;"></span>Linked</span>
+                </span>
+                <span style="font-size: 15px; color: #47444F;">{{firm.contactLine}}</span>
+                <span style="font-size: 14px; color: #5F5B68;">{{firm.since}}</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <a href="mailto:{{firm.email}}" class="be-s">{{firm.email}}</a>
+              <sc-if value="{{firm.hasPhone}}" hint-placeholder-val="{{true}}"><a href="tel:{{firm.tel}}" class="be-s">{{firm.phone}}</a></sc-if>
+            </div>
+            <sc-if value="{{modeNone}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; border-top: 1px solid #E2DFE8;">
+                <button type="button" class="be-s" onClick="{{startChange}}">Change {{noun}}</button>
+                <button type="button" class="be-s" onClick="{{startRemove}}" style="color: #A8200D;">Remove access</button>
+              </div>
+            </sc-if>
+
+            <!-- Remove access, confirm in place -->
+            <sc-if value="{{modeRemove}}" hint-placeholder-val="{{false}}">
+              <div role="group" aria-label="Remove access" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; background: #FBE3DF;">
+                <strong style="font-size: 15px; color: #18161F;">Remove {{firm.name}}&#39;s access?</strong>
+                <span style="font-size: 14px; line-height: 1.5; color: #18161F;">{{removeText}}</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <button type="button" class="be-d" onClick="{{confirmRemove}}">Remove access</button>
+                  <button type="button" class="be-s" onClick="{{cancelMode}}" style="background: #FFFFFF;">Keep them</button>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Change accountant -->
+            <sc-if value="{{modeChange}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid #E2DFE8;">
+                <strong style="font-size: 16px;">Change to a different {{noun}}</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                  <label class="be-lab">Their email<input class="be-in be-field" type="email" placeholder="name@practice.co.uk" value="{{form.email}}" onChange="{{form.setEmail}}"></label>
+                  <label class="be-lab">Firm name (optional)<input class="be-in be-field" type="text" placeholder="e.g. Aire &amp; Wharfe Accountants" value="{{form.firm}}" onChange="{{form.setFirm}}"></label>
+                </div>
+                <sc-if value="{{form.err}}" hint-placeholder-val="{{false}}"><p role="alert" style="margin: 0; font-size: 14px; color: #A8200D; font-weight: 600;">{{form.err}}</p></sc-if>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <button type="button" class="be-p" onClick="{{reviewChange}}">Continue</button>
+                  <button type="button" class="be-s" onClick="{{cancelMode}}">Cancel</button>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{modeConfirmChange}}" hint-placeholder-val="{{false}}">
+              <div role="group" aria-label="Confirm change" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; background: #FFF0B8;">
+                <strong style="font-size: 15px;">Invite {{form.who}} and remove {{firm.name}}?</strong>
+                <span style="font-size: 14px; line-height: 1.5;">{{firm.name}} loses access now. {{form.who}} gets an email invite and sees your books once they accept. Filed periods stay locked.</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <button type="button" class="be-p" onClick="{{confirmInvite}}">Send invite and switch</button>
+                  <button type="button" class="be-s" onClick="{{backToForm}}" style="background: #FFFFFF;">Back</button>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+        </sc-if>
+
+        <!-- Invite pending -->
+        <sc-if value="{{invited}}" hint-placeholder-val="{{false}}">
+          <section class="be-card" aria-label="Invite sent">
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+              <span style="width: 56px; height: 56px; border-radius: 16px; background: #FFF0B8; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6"></path></svg></span>
+              <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;">
+                  <h2 class="be-h2">{{firm.name}}</h2>
+                  <span style="display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 9999px; background: #FFF0B8; color: #6B5000; font-size: 12px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #6B5000;"></span>Invite sent</span>
+                </span>
+                <span style="font-size: 15px; color: #47444F; line-height: 1.5;">We emailed {{firm.email}} on {{firm.invitedOn}}. They&#39;ll see your books once they accept, and you&#39;ll get a notification.</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+              <button type="button" class="be-s" onClick="{{resend}}">Resend invite</button>
+              <button type="button" class="be-s" onClick="{{cancelInvite}}" style="color: #A8200D;">Cancel invite</button>
+              <button type="button" onClick="{{acceptAsThem}}" style="min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: #47444F; font: 600 14px DM Sans, sans-serif; text-decoration: underline; cursor: pointer;">Prototype: accept as them</button>
+            </div>
+          </section>
+        </sc-if>
+
+        <!-- No accountant yet -->
+        <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+          <section class="be-card" aria-labelledby="inv-h">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <h2 id="inv-h" class="be-h2">{{inviteTitle}}</h2>
+              <p style="margin: 0; font-size: 15px; color: #47444F; line-height: 1.5;">{{inviteText}}</p>
+            </div>
+            <sc-if value="{{modeNone}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                <label class="be-lab">Their email<input class="be-in be-field" type="email" placeholder="{{emailHint}}" value="{{form.email}}" onChange="{{form.setEmail}}"></label>
+                <label class="be-lab">Firm name (optional)<input class="be-in be-field" type="text" value="{{form.firm}}" onChange="{{form.setFirm}}"></label>
+              </div>
+              <sc-if value="{{form.err}}" hint-placeholder-val="{{false}}"><p role="alert" style="margin: 0; font-size: 14px; color: #A8200D; font-weight: 600;">{{form.err}}</p></sc-if>
+              <div><button type="button" class="be-p" onClick="{{reviewInvite}}">Continue</button></div>
+            </sc-if>
+            <sc-if value="{{modeConfirmInvite}}" hint-placeholder-val="{{false}}">
+              <div role="group" aria-label="Confirm invite" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; background: #EEE8FF;">
+                <strong style="font-size: 15px;">Invite {{form.who}}?</strong>
+                <span style="font-size: 14px; line-height: 1.5;">They&#39;ll be able to see your books and every entry, send you requests, and mark periods filed. They can&#39;t sign in as you or send invoices in your name.</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <button type="button" class="be-p" onClick="{{confirmInvite}}">Send invite</button>
+                  <button type="button" class="be-s" onClick="{{backToForm}}" style="background: #FFFFFF;">Back</button>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+
+          <sc-if value="{{showFinder}}" hint-placeholder-val="{{false}}">
+            <section class="be-card" aria-labelledby="fp-h">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <h2 id="fp-h" class="be-h2">Find a practitioner</h2>
+                <p style="margin: 0; font-size: 15px; color: #47444F; line-height: 1.5;">Tax practitioners on TaxWise.lk who take on small businesses. They file your VAT, SSCL and income tax; BillingEase keeps the books they work from.</p>
+              </div>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{finder}}" as="p" hint-placeholder-count="3">
+                  <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 16px; background: #F7F6F9;">
+                    <span style="width: 40px; height: 40px; border-radius: 12px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; font-family: Sora, sans-serif; font-weight: 700; font-size: 14px; flex: none;">{{p.initials}}</span>
+                    <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                      <strong style="font-size: 15px;">{{p.name}}</strong>
+                      <span style="font-size: 13px; color: #47444F;">{{p.line}}</span>
+                    </span>
+                    <button type="button" class="be-s" onClick="{{p.pick}}" style="background: #FFFFFF; border: 1px solid #E2DFE8;">Invite</button>
+                  </li>
+                </sc-for>
+              </ul>
+            </section>
+          </sc-if>
+        </sc-if>
+
+        <!-- Requests -->
+        <section class="be-card" aria-labelledby="rq-h">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px;">
+            <h2 id="rq-h" class="be-h2">Requests</h2>
+            <span style="font-size: 14px; color: #47444F;">{{reqSummary}}</span>
+          </div>
+          <sc-if value="{{hasOpen}}" hint-placeholder-val="{{true}}">
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{openReqs}}" as="r" hint-placeholder-count="2">
+                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px; border-radius: 18px; background: #FFF8DA;">
+                  <span style="width: 40px; height: 40px; border-radius: 12px; background: #FFF0B8; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg></span>
+                  <span style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                    <strong style="font-size: 15px; line-height: 1.35;">{{r.title}}</strong>
+                    <sc-if value="{{r.detail}}" hint-placeholder-val="{{true}}"><span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{r.detail}}</span></sc-if>
+                    <span style="font-size: 13px; color: #5F5B68;">{{r.meta}}</span>
+                  </span>
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <sc-if value="{{r.href}}" hint-placeholder-val="{{true}}"><a href="{{r.href}}" class="be-s" style="background: #FFFFFF;">{{r.cta}}</a></sc-if>
+                    <button type="button" class="be-p" onClick="{{r.done}}">Done</button>
+                  </span>
+                </li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <sc-if value="{{noOpen}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; font-size: 15px; color: #47444F;">{{noOpenText}}</p>
+          </sc-if>
+          <sc-if value="{{hasAsked}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #E2DFE8;">
+              <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">You asked</span>
+              <sc-for list="{{askedReqs}}" as="r" hint-placeholder-count="1">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 14px;">
+                  <span style="min-width: 0;">{{r.title}}</span>
+                  <span style="display: inline-flex; align-items: center; min-height: 22px; padding: 0 9px; border-radius: 9999px; background: #E1EEF8; color: #1F5E91; font-size: 12px; font-weight: 600;">Waiting for a reply</span>
+                  <span style="font-size: 13px; color: #5F5B68;">{{r.meta}}</span>
+                </span>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{hasDone}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #E2DFE8;">
+              <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">Done</span>
+              <sc-for list="{{doneReqs}}" as="r" hint-placeholder-count="1">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 14px; color: #47444F;">
+                  <span style="width: 18px; height: 18px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+                  <span style="text-decoration: line-through; min-width: 0;">{{r.title}}</span><span style="color: #5F5B68;">{{r.meta}}</span>
+                </span>
+              </sc-for>
+            </div>
+          </sc-if>
+        </section>
+
+        <!-- Messages -->
+        <section class="be-card" aria-labelledby="ms-h">
+          <h2 id="ms-h" class="be-h2">Messages</h2>
+          <sc-if value="{{hasMsgs}}" hint-placeholder-val="{{true}}">
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;">
+              <sc-for list="{{msgs}}" as="m" hint-placeholder-count="2">
+                <li style="display: flex; justify-content: {{m.justify}};">
+                  <div style="max-width: min(560px, 88%); display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: 18px; background: {{m.bg}}; color: {{m.fg}};">
+                    <span style="font-size: 12px; font-weight: 600; color: {{m.sub}};">{{m.who}} · {{m.when}}</span>
+                    <span style="font-size: 15px; line-height: 1.5;">{{m.text}}</span>
+                  </div>
+                </li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <sc-if value="{{noMsgs}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; font-size: 15px; color: #47444F;">{{noMsgsText}}</p>
+          </sc-if>
+          <sc-if value="{{canMessage}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+              <label style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Message {{firm.contactFirst}}
+                <textarea class="be-field" rows="2" placeholder="Write a message" value="{{draft}}" onChange="{{setDraft}}" style="box-sizing: border-box; width: 100%; min-height: 64px; padding: 10px 12px; border: 1px solid #CBC7D3; border-radius: 10px; font: 400 15px DM Sans, sans-serif; color: #18161F; resize: vertical;"></textarea>
+              </label>
+              <button type="button" class="be-p" onClick="{{send}}">Send</button>
+            </div>
+          </sc-if>
+        </section>
+      </div>
+
+      <!-- Side -->
+      <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+        <section aria-labelledby="see-h" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 id="see-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">What they can see</h2>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px;">
+            <sc-for list="{{access}}" as="a" hint-placeholder-count="4">
+              <li style="display: flex; align-items: center; gap: 12px; padding: 8px 0;">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 14px; font-weight: 600;">{{a.label}}</span>
+                  <span style="font-size: 13px; color: #5F5B68;">{{a.note}}</span>
+                </span>
+                <sc-if value="{{a.fixed}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 600; color: #2F5711; background: #E2F6D5; padding: 3px 9px; border-radius: 9999px;">Always</span></sc-if>
+                <sc-if value="{{a.toggleable}}" hint-placeholder-val="{{true}}">
+                  <button type="button" role="switch" aria-checked="{{a.checked}}" aria-label="{{a.aria}}" onClick="{{a.toggle}}" style="flex: none; width: 48px; height: 28px; border: 0; border-radius: 9999px; background: {{a.track}}; position: relative; cursor: pointer; padding: 0;"><span style="position: absolute; top: 3px; left: {{a.knob}}; width: 22px; height: 22px; border-radius: 9999px; background: #FFFFFF;"></span></button>
+                </sc-if>
+              </li>
+            </sc-for>
+          </ul>
+          <div style="padding-top: 10px; border-top: 1px solid #E2DFE8; display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 13px; font-weight: 600; color: #5F5B68;">They can&#39;t</span>
+            <sc-for list="{{cannot}}" as="c" hint-placeholder-count="3">
+              <span style="display: flex; gap: 8px; font-size: 13px; color: #47444F; line-height: 1.4;"><span aria-hidden="true" style="color: #A8200D; font-weight: 700;">×</span>{{c}}</span>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- TaxWise.lk -->
+        <sc-if value="{{lk}}" hint-placeholder-val="{{false}}">
+          <section aria-labelledby="tw-h" style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;">
+              <h2 id="tw-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">TaxWise.lk</h2>
+              <span style="display: inline-flex; align-items: center; gap: 6px; min-height: 24px; padding: 0 10px; border-radius: 9999px; background: {{tw.pillBg}}; color: {{tw.pillFg}}; font-size: 12px; font-weight: 600;">{{tw.status}}</span>
+            </span>
+            <sc-if value="{{tw.linked}}" hint-placeholder-val="{{true}}">
+              <span style="font-size: 14px; color: #E2DFE8; line-height: 1.5;">Signed in as {{tw.account}} · linked {{tw.since}}</span>
+              <span style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.08);">
+                <span style="font-size: 12px; font-weight: 600; color: #C9C5D1;">Last hand-off</span>
+                <span style="font-size: 14px;">{{tw.last}}</span>
+              </span>
+              <span style="font-size: 13px; color: #C9C5D1; line-height: 1.45;">{{tw.year}}</span>
+              <sc-if value="{{tw.confirmOff}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{tw.askUnlink}}" style="align-self: flex-start; min-height: 40px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.3); border-radius: 9999px; background: transparent; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Unlink</button>
+              </sc-if>
+              <sc-if value="{{tw.confirmOn}}" hint-placeholder-val="{{false}}">
+                <span style="font-size: 14px; line-height: 1.5; color: #FFFFFF;">Unlink TaxWise.lk? Your books stay here; the year-end hand-off won&#39;t go to your return until you link again.</span>
+                <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <button type="button" class="be-d" onClick="{{tw.unlink}}" style="min-height: 40px;">Unlink</button>
+                  <button type="button" onClick="{{tw.keep}}" style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: #FFFFFF; color: #18161F; font: 600 14px DM Sans, sans-serif; cursor: pointer;">Keep linked</button>
+                </span>
+              </sc-if>
+            </sc-if>
+            <sc-if value="{{tw.unlinked}}" hint-placeholder-val="{{false}}">
+              <span style="font-size: 14px; color: #E2DFE8; line-height: 1.5;">Link your TaxWise.lk account so the year&#39;s profit, capital allowances, VAT, SSCL and payroll totals go straight into your income tax return.</span>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #FFFFFF;">TaxWise.lk email<input class="be-in be-field" type="email" value="{{tw.email}}" onChange="{{tw.setEmail}}"></label>
+              <button type="button" class="be-p" onClick="{{tw.link}}" style="align-self: flex-start;">Link TaxWise.lk</button>
+            </sc-if>
+          </section>
+        </sc-if>
+
+        <section aria-labelledby="pv-h" style="background: #EEE8FF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+          <h2 id="pv-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em;">See it from their side</h2>
+          <p style="margin: 0; font-size: 14px; color: #18161F; line-height: 1.5;">A preview of {{tool}}: your {{periodWord}} status, totals by category and the requests they send.</p>
+          <a href="PracticeView.dc.html" class="be-p" style="align-self: flex-start; background: #18161F; color: #FFFFFF;">Open the preview</a>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" aria-live="polite" style="position: fixed; pointer-events: none; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 20px 12px 14px; border-radius: 9999px; background: #18161F; color: #FFFFFF; font: 600 14px DM Sans, sans-serif; box-shadow: 0 6px 20px rgba(24,22,31,0.22);">
+      <span style="width: 24px; height: 24px; border-radius: 9999px; background: #B9A3FF; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+      <span>{{toast}}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mode: null, form: { email: '', firm: '', err: '' }, draft: '', twConfirm: false, twEmail: '', toast: null };
+  }
+  notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const st = this.state;
+    const pack = BE.pack();
+    const pr = pack.practitioner || { noun: 'accountant', tool: 'TaxWise', practice: 'practice' };
+    const lk = BE.is('lk');
+    const prof = BE.get('profile') || {};
+    const pd = BE.get('practice') || {};
+    const pp = prof.practice || null;
+    const invited = !!pp && (pd.status === 'invited' || pp.status === 'invited');
+    const linked = !!pp && !invited;
+    const none = !pp;
+    const noun = pr.noun;
+    const firmName = pp ? (pp.name || pp.email) : '';
+    const contact = pp ? (pp.contact || '') : '';
+    const contactFirst = contact ? contact.split(/\s+/)[0] : (firmName || 'them');
+    const reqs = BE.all('requests');
+    const isDone = (r) => r.status === 'done' || !!r.done;
+    const incoming = reqs.filter((r) => (r.dir || 'in') === 'in');
+    const asked = reqs.filter((r) => r.dir === 'out' && !isDone(r));
+    const open = incoming.filter((r) => !isDone(r));
+    const done = incoming.filter(isDone);
+    const msgs = BE.all('practiceMessages');
+    const form = st.form;
+    const setForm = (patch) => this.setState({ form: Object.assign({}, form, patch, { err: '' }) });
+    const who = form.firm.trim() || form.email.trim();
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
+    const domainName = (email) => { const d = (email.split('@')[1] || '').split('.')[0]; return d ? d.charAt(0).toUpperCase() + d.slice(1) : email; };
+    const mode = st.mode;
+
+    const invite = () => {
+      const email = form.email.trim();
+      const name = form.firm.trim() || domainName(email);
+      const pick = (BE.LK_PRACTITIONERS || []).filter((x) => x.email === email)[0];
+      const old = pp ? pp.name : '';
+      BE.change((s) => {
+        s.profile = Object.assign({}, s.profile, { practice: { name, contact: pick ? pick.contact : '', email, status: 'invited', invited: BE.today } });
+        s.practice = Object.assign({}, s.practice, { status: 'invited', invitedOn: BE.today, since: '', phone: '', city: pick ? pick.city : '' });
+        BE._log(s, (old ? 'Removed ' + old + ' and invited ' : 'Invited ') + name + ' (' + email + ') as your ' + noun);
+      });
+      this.setState({ mode: null, form: { email: '', firm: '', err: '' } });
+      this.notify('Invite sent to ' + email + (old ? ' · ' + old + ' no longer has access' : ''));
+    };
+
+    const access = (pd.access || []).map((a) => ({
+      label: a.label, note: a.note, fixed: !!a.fixed, toggleable: !a.fixed,
+      checked: a.on ? 'true' : 'false', track: a.on ? '#18161F' : '#CBC7D3', knob: a.on ? '23px' : '3px',
+      aria: a.label,
+      toggle: () => {
+        BE.change((s) => { s.practice = Object.assign({}, s.practice, { access: (s.practice.access || []).map((x) => x.id === a.id ? Object.assign({}, x, { on: !x.on }) : x) }); BE._log(s, (a.on ? 'Stopped sharing ' : 'Shared ') + a.label.toLowerCase() + ' with ' + (firmName || 'your ' + noun)); });
+        this.notify((a.on ? 'Hidden from ' : 'Shared with ') + (firmName || 'your ' + noun) + ': ' + a.label.toLowerCase());
+      }
+    }));
+
+    const twLinked = !!prof.taxwiseLinked;
+    const tw = pd.taxwise || (twLinked ? { account: prof.email || '', since: 'when you signed up', lastHandoff: 'Nothing sent yet', yearHandoff: 'The 2026/27 year goes to your TaxWise.lk return after 31 Mar 2027' } : null);
+    const intro = lk
+      ? 'The firm that files your VAT, SSCL and income tax. They work from your books in TaxWise.lk, send you requests here, and lock each period once it is filed.'
+      : 'The practice that sends your quarterly updates to HMRC. They work from your books in the ' + pr.tool + ', send you requests here, and lock each quarter once it is filed.';
+
+    return {
+      title: lk ? 'Your tax practitioner' : 'Your accountant',
+      intro, noun, lk, tool: pr.tool, periodWord: lk ? 'VAT and SSCL' : 'quarter',
+      linked, invited, none,
+      firm: {
+        name: firmName, initials: BE.initials(firmName || 'A'), email: pp ? pp.email : '',
+        contactLine: contact ? contact + (pd.role ? ', ' + pd.role : '') + (pd.city ? ' · ' + pd.city : '') : (pd.city || ''),
+        since: pd.since ? 'Linked since ' + pd.since + ' through the ' + pr.tool : 'Linked through the ' + pr.tool,
+        phone: pd.phone || '', tel: String(pd.phone || '').replace(/\s+/g, ''), hasPhone: !!pd.phone,
+        invitedOn: pd.invitedOn || (pp && typeof pp.invited === 'string' ? pp.invited : '') || BE.today, contactFirst
+      },
+      modeNone: !mode, modeRemove: mode === 'remove', modeChange: mode === 'change', modeConfirmChange: mode === 'confirmChange', modeConfirmInvite: mode === 'confirmInvite',
+      removeText: firmName + ' stops seeing your books straight away and can’t send requests. Periods they already filed stay locked, and your records stay with you.',
+      startChange: () => this.setState({ mode: 'change', form: { email: '', firm: '', err: '' } }),
+      startRemove: () => this.setState({ mode: 'remove' }),
+      cancelMode: () => this.setState({ mode: null }),
+      backToForm: () => this.setState({ mode: none ? null : 'change' }),
+      confirmRemove: () => {
+        BE.change((s) => {
+          s.profile = Object.assign({}, s.profile, { practice: null });
+          s.practice = Object.assign({}, s.practice, { status: 'none', since: '' });
+          BE._log(s, 'Removed ' + firmName + '’s access to your books');
+        });
+        this.setState({ mode: null });
+        this.notify(firmName + ' no longer has access');
+      },
+      form: {
+        email: form.email, firm: form.firm, err: form.err, who,
+        setEmail: (e) => setForm({ email: e.target.value }), setFirm: (e) => setForm({ firm: e.target.value })
+      },
+      reviewChange: () => { if (!validEmail) { this.setState({ form: Object.assign({}, form, { err: 'Enter their email address.' }) }); return; } this.setState({ mode: 'confirmChange' }); },
+      reviewInvite: () => { if (!validEmail) { this.setState({ form: Object.assign({}, form, { err: 'Enter their email address.' }) }); return; } this.setState({ mode: 'confirmInvite' }); },
+      confirmInvite: invite,
+      resend: () => { BE.log('Resent the invite to ' + (pp && pp.email)); this.notify('Invite sent again to ' + (pp && pp.email)); },
+      cancelInvite: () => {
+        BE.change((s) => { s.profile = Object.assign({}, s.profile, { practice: null }); s.practice = Object.assign({}, s.practice, { status: 'none' }); BE._log(s, 'Cancelled the invite to ' + (pp && pp.email)); });
+        this.notify('Invite to ' + (pp && pp.email) + ' cancelled');
+      },
+      acceptAsThem: () => {
+        BE.change((s) => {
+          s.practice = Object.assign({}, s.practice, { status: 'linked', since: BE.today });
+          s.profile = Object.assign({}, s.profile, { practice: Object.assign({}, s.profile.practice, { status: 'linked' }) });
+          BE._log(s, firmName + ' accepted your invite');
+          BE._notify(s, firmName + ' accepted your invite', 'They can now see your books and send you requests.', 'Accountant.dc.html');
+        });
+        this.notify(firmName + ' accepted · they can see your books now');
+      },
+      inviteTitle: lk ? 'Invite your tax practitioner' : 'Invite your accountant',
+      inviteText: prof.practitioner === 'own'
+        ? 'You chose to do your own tax with TaxWise.lk. That’s fine: your books feed your return directly. If you want a practitioner later, invite one here or pick one below.'
+        : lk
+        ? 'Working with a practitioner? Invite them and they’ll see your books in TaxWise.lk. Or keep going on your own and hand the year to your TaxWise.lk return yourself.'
+        : 'If your practice uses the ' + pr.tool + ', invite them here and they’ll see your quarters, send requests and file for you.',
+      emailHint: lk ? 'name@firm.lk' : 'name@practice.co.uk',
+      showFinder: lk && none && !mode,
+      finder: (BE.LK_PRACTITIONERS || []).map((p) => ({
+        name: p.name, initials: BE.initials(p.name), line: p.contact + ' · ' + p.city + ' · ' + p.note,
+        pick: () => this.setState({ mode: 'confirmInvite', form: { email: p.email, firm: p.name, err: '' } })
+      })),
+
+      reqSummary: open.length ? open.length + ' open' : done.length ? 'All done' : '',
+      hasOpen: open.length > 0, noOpen: !open.length,
+      noOpenText: none ? 'Once you link a ' + noun + ', anything they need from you shows here and on Home.' : done.length ? 'Nothing open. Requests you finish clear from Home too.' : 'No requests right now. When ' + contactFirst + ' needs something, it shows here and on Home.',
+      openReqs: open.map((r) => ({
+        title: r.title || 'Request', detail: r.body || r.detail || '', href: r.href || '', cta: r.cta || 'Go to it',
+        meta: 'From ' + (r.from || contact || firmName || 'your ' + noun) + (r.created || r.asked ? ' · ' + (r.created || r.asked) : ''),
+        done: () => {
+          const title = r.title || 'Request';
+          if (typeof BE.completeRequest === 'function') BE.completeRequest(r.id);
+          else BE.update('requests', r.id, { status: 'done', doneOn: BE.today });
+          BE.add('practiceMessages', { from: 'me', who: prof.owner || 'You', when: BE.today, text: 'Done: ' + title }, { end: true });
+          this.notify('Done · cleared from Home and ' + contactFirst + ' can see it');
+        }
+      })),
+      hasAsked: asked.length > 0,
+      askedReqs: asked.map((r) => ({ title: r.title || 'Question', meta: 'You asked ' + (r.created || '') })),
+      hasDone: done.length > 0,
+      doneReqs: done.slice(0, 5).map((r) => ({ title: r.title || r.t || r.label || 'Request', meta: r.doneOn ? 'done ' + r.doneOn : 'done' })),
+
+      hasMsgs: msgs.length > 0, noMsgs: !msgs.length,
+      noMsgsText: none ? 'Messages with your ' + noun + ' appear here once they’re linked.' : 'No messages yet. Ask ' + contactFirst + ' anything about your books.',
+      msgs: msgs.map((mm) => ({
+        who: mm.who, when: mm.when, text: mm.text, justify: mm.from === 'me' ? 'flex-end' : 'flex-start',
+        bg: mm.from === 'me' ? '#18161F' : '#EFEDF3', fg: mm.from === 'me' ? '#FFFFFF' : '#18161F', sub: mm.from === 'me' ? '#C9C5D1' : '#5F5B68'
+      })),
+      canMessage: !none,
+      draft: st.draft,
+      setDraft: (e) => this.setState({ draft: e.target.value }),
+      send: () => {
+        const text = (st.draft || '').trim();
+        if (!text) { this.notify('Write a message first'); return; }
+        BE.add('practiceMessages', { from: 'me', who: prof.owner || 'You', when: BE.today, text }, { end: true });
+        this.setState({ draft: '' });
+        this.notify('Sent to ' + contactFirst);
+      },
+
+      access, cannot: pd.cannot || [],
+      tw: {
+        linked: twLinked, unlinked: !twLinked,
+        status: twLinked ? 'Linked' : 'Not linked', pillBg: twLinked ? '#E2F6D5' : 'rgba(255,255,255,0.14)', pillFg: twLinked ? '#2F5711' : '#FFFFFF',
+        account: tw ? tw.account : '', since: tw ? tw.since : '', last: tw ? tw.lastHandoff : '', year: tw ? tw.yearHandoff : '',
+        confirmOn: st.twConfirm, confirmOff: !st.twConfirm,
+        askUnlink: () => this.setState({ twConfirm: true }),
+        keep: () => this.setState({ twConfirm: false }),
+        unlink: () => {
+          BE.change((s) => { s.profile = Object.assign({}, s.profile, { taxwiseLinked: false }); s.practice = Object.assign({}, s.practice, { taxwise: null }); BE._log(s, 'Unlinked TaxWise.lk'); });
+          this.setState({ twConfirm: false });
+          this.notify('TaxWise.lk unlinked · your books stay here');
+        },
+        email: st.twEmail || prof.email || '',
+        setEmail: (e) => this.setState({ twEmail: e.target.value }),
+        link: () => {
+          const email = (st.twEmail || prof.email || '').trim();
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { this.notify('Enter the email you use for TaxWise.lk'); return; }
+          BE.change((s) => {
+            s.profile = Object.assign({}, s.profile, { taxwiseLinked: true });
+            s.practice = Object.assign({}, s.practice, { taxwise: { account: email, since: BE.today, lastHandoff: 'Nothing sent yet', yearHandoff: 'The 2026/27 year goes to your TaxWise.lk return after 31 Mar 2027' } });
+            BE._log(s, 'Linked TaxWise.lk (' + email + ')');
+          });
+          this.notify('TaxWise.lk linked as ' + email);
+        }
+      },
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
