@@ -13,6 +13,7 @@ export function CashJar({
   line = "#18161F",
   taxPct = "25%",
   label,
+  sym = "$",
   className,
 }: {
   /** Rendered width in px (it still shrinks to fit its container). */
@@ -25,6 +26,12 @@ export function CashJar({
   taxPct?: string;
   /** Accessible name. Without one the illustration is decorative (aria-hidden). */
   label?: string;
+  /**
+   * Currency symbol drawn on the notes: "£" in the UK, "Rs" in Sri Lanka
+   * (COUNTRY_META[country].sym from "@/content/site/country"). Defaults to "$"
+   * so older callers render as before; always pass it on new screens.
+   */
+  sym?: string;
   className?: string;
 }) {
   const clipId = "cj" + useId().replace(/[^a-zA-Z0-9_-]/g, "");
@@ -54,7 +61,7 @@ export function CashJar({
       <g clipPath={`url(#${clipId})`}>
         <g className={styles.settle}>
           {PILE.map(([x, y, r, fill]) => (
-            <Bill key={`${x}-${y}`} transform={`translate(${x} ${y}) rotate(${r})`} fill={fill} />
+            <Bill key={`${x}-${y}`} transform={`translate(${x} ${y}) rotate(${r})`} fill={fill} sym={sym} />
           ))}
           <Coin x={52} y={150} />
           <Coin x={140} y={158} />
@@ -76,7 +83,7 @@ export function CashJar({
           to keep
         </text>
         {amount && (
-          <text x="100" y="163" textAnchor="middle" className="font-display" fontSize="12" fontWeight="700" fill="#5B3FD6">
+          <text x="100" y="163" textAnchor="middle" className="font-display" fontSize={amount.length > 10 ? 10 : 12} fontWeight="700" fill="#5B3FD6">
             {amount}
           </text>
         )}
@@ -104,8 +111,8 @@ export function CashJar({
         <g className={`${styles.spin} ${styles.bill}`}>
           <rect width="58" height="28" rx="3" fill="#B6E0AE" stroke="#18161F" strokeWidth="1.8" />
           <circle cx="29" cy="14" r="7" fill="#D3EDCE" stroke="#4F7F49" strokeWidth="1.2" />
-          <text x="29" y="18" textAnchor="middle" className="font-display" fontSize="9" fontWeight="800" fill="#2F5711">
-            $
+          <text x="29" y={sym.length > 1 ? 16.5 : 18} textAnchor="middle" className="font-display" fontSize={sym.length > 1 ? 6 : 9} fontWeight="800" fill="#2F5711">
+            {sym}
           </text>
         </g>
       </g>
@@ -149,14 +156,14 @@ const PILE: [number, number, number, string][] = [
   [60, 138, -3, "#9DCF95"],
 ];
 
-function Bill({ transform, fill }: { transform: string; fill: string }) {
+function Bill({ transform, fill, sym }: { transform: string; fill: string; sym: string }) {
   return (
     <g transform={transform}>
       <rect width="96" height="46" rx="4" fill={fill} stroke="#18161F" strokeWidth="2" />
       <rect x="6" y="6" width="84" height="34" rx="2" fill="none" stroke="#4F7F49" strokeWidth="1.3" />
       <circle cx="48" cy="23" r="11" fill="#D3EDCE" stroke="#4F7F49" strokeWidth="1.3" />
-      <text x="48" y="28" textAnchor="middle" className="font-display" fontSize="14" fontWeight="800" fill="#2F5711">
-        $
+      <text x="48" y={sym.length > 1 ? 26.5 : 28} textAnchor="middle" className="font-display" fontSize={sym.length > 1 ? 9.5 : 14} fontWeight="800" fill="#2F5711">
+        {sym}
       </text>
     </g>
   );

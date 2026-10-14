@@ -16,6 +16,7 @@ export async function createBusiness(_: FormState, fd: FormData): Promise<FormSt
         kind: (v.kind || (country === "uk" ? "sole_trader" : "sole_proprietor")) as "sole_trader",
         name: v.name ?? "",
         ownerName: v.ownerName ?? "",
+        town: blankToNull(v.town),
         taxId: blankToNull(v.taxId),
         vatRegistered: checked(v.vatRegistered),
         vatNumber: blankToNull(v.vatNumber),

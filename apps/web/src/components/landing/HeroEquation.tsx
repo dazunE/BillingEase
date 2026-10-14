@@ -1,16 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { CashJar } from "@/components/CashJar";
 import { cx } from "@/components/ui";
-import { BIZ, BIZ_KEYS, dollars, L_ICONS } from "./data";
+import { COUNTRY_META, pick } from "@/content/site/country";
+import { HERO, KEEP_PANEL_NOTE, PANELS } from "@/content/site/home";
+import { pct } from "./data";
 import s from "./landing.module.css";
 import { useSample } from "./SampleProvider";
 
 type Key = "in" | "out" | "keep";
 
 const RING: Record<Key, string> = { in: "0 0 0 3px #7A5AF8", out: "0 0 0 3px #E0752D", keep: "0 0 0 3px #F7F6F9, 0 0 0 6px #7A5AF8" };
-const pct = (a: number, t: number) => Math.max(2, Math.round((a / t) * 100));
+const DOT: Record<Key, string> = { in: "bg-coming", out: "bg-going", keep: "bg-violet" };
+const TINT: Record<Key, string> = { in: "bg-tint", out: "bg-going-tint", keep: "bg-tint" };
 
 function Chevron({ open, color = "#18161F" }: { open: boolean; color?: string }) {
   return (
@@ -20,54 +24,24 @@ function Chevron({ open, color = "#18161F" }: { open: boolean; color?: string })
   );
 }
 
-/** The live sample equation: business switcher, the three numbers, and what sits behind the chosen one. */
+/**
+ * The live sample equation (prototype ThreeLanding hero): "Try a business"
+ * chips for the visitor's country, the three numbers, and what sits behind
+ * the chosen one.
+ */
 export function HeroEquation() {
-  const { biz, setBiz, b, n, roll } = useSample();
+  const { country, list, key, setKey, b, n, fmt, roll } = useSample();
   const [open, setOpen] = useState<Key | null>(null);
   const toggle = (k: Key) => setOpen((o) => (o === k ? null : k));
   const hint = (k: Key) => (open === k ? "Showing what’s behind it" : "What’s behind this");
-  const e = b.ex;
   const sc = b.scene;
-
-  const panels = {
-    in: {
-      name: "Coming in",
-      dot: "bg-coming",
-      tint: "bg-tint",
-      lead: "Getting paid, without chasing anyone.",
-      items: [
-        { icon: L_ICONS.doc, title: "Invoices in a sentence", tag: "Invoicing", ex: e.inv },
-        { icon: L_ICONS.card, title: "Paid online", tag: "Card or bank transfer", ex: e.pay },
-        { icon: L_ICONS.bell, title: "Reminders that send themselves", tag: "Automatic reminders", ex: e.rem },
-      ],
-    },
-    out: {
-      name: "Going out",
-      dot: "bg-going",
-      tint: "bg-going-tint",
-      lead: "Every dollar out, sorted and on time.",
-      items: [
-        { icon: L_ICONS.bill, title: "Bills to pay", tag: "Bills and vendors", ex: e.bills },
-        { icon: L_ICONS.cam, title: "Receipts, scanned", tag: "Snap or forward by email", ex: e.rcpt },
-        { icon: L_ICONS.sort, title: "Card charges, sorted", tag: "Bank and card feeds", ex: e.cards },
-        { icon: L_ICONS.people, title: "Payroll", tag: "Direct deposit and filings", ex: e.payroll },
-      ],
-    },
-    keep: {
-      name: "Yours to keep",
-      dot: "bg-violet",
-      tint: "bg-tint",
-      lead: "What’s left after tax, so you can actually spend it.",
-      items: [
-        { icon: L_ICONS.safe, title: "Tax set aside for you", tag: "25% of profit, you can change it", ex: e.tax },
-        { icon: L_ICONS.chart, title: "Reports for your accountant", tag: "The full books, one click away", ex: e.rep },
-      ],
-    },
-  } as const;
-  const panel = open ? panels[open] : null;
+  const sym = COUNTRY_META[country].sym;
+  const taxPct = `${Math.round((n.tax / n.profit) * 100)}%`;
+  const panel = open ? PANELS[open] : null;
 
   const cardBase = cx(s.eqCard, "flex min-w-0 flex-[1_1_260px] cursor-pointer flex-col gap-3.5 rounded-3xl border p-[26px] text-left");
   const op = "flex flex-none items-center justify-center px-0.5 font-display text-[40px] font-bold text-muted max-[900px]:h-[22px] max-[900px]:basis-full max-[900px]:text-[28px]";
+  const big = cx("whitespace-nowrap font-display font-bold leading-none tracking-[-0.035em] tabular", country === "lk" ? "text-[clamp(30px,2.9vw,40px)]" : "text-[clamp(40px,4.6vw,60px)]");
 
   return (
     <div className="flex flex-col gap-[18px]">
@@ -75,40 +49,45 @@ export function HeroEquation() {
         <span id="biz-l" className="text-sm font-semibold text-muted">
           Try a business
         </span>
-        <div role="group" aria-labelledby="biz-l" className="flex flex-wrap gap-1 rounded-full bg-surface p-1">
-          {BIZ_KEYS.map((k) => (
+        <div role="group" aria-labelledby="biz-l" className="flex flex-wrap justify-center gap-1 rounded-full bg-surface p-1">
+          {list.map((x) => (
             <button
-              key={k}
+              key={x.key}
               type="button"
-              aria-pressed={biz === k}
-              onClick={() => setBiz(k)}
-              className={cx("min-h-10 rounded-full px-4 text-sm font-semibold", biz === k ? "bg-ink text-white" : "text-ink hover:bg-white")}
+              aria-pressed={key === x.key}
+              onClick={() => setKey(x.key)}
+              className={cx("min-h-11 rounded-full px-4 text-sm font-semibold", key === x.key ? "bg-ink text-white" : "text-ink hover:bg-white")}
             >
-              {BIZ[k].label}
+              {x.label}
             </button>
           ))}
         </div>
       </div>
 
       <div role="group" aria-label="Sample three numbers" className="flex flex-col gap-2.5">
-        <span className="text-center text-[13px] text-muted">{b.caption}</span>
+        <span className="text-balance text-center text-[13px] text-muted">
+          {b.caption} · {HERO.sampleNote} ·{" "}
+          <Link href={b.more.href} className="font-semibold text-ink underline underline-offset-[3px]">
+            {b.more.label}
+          </Link>
+        </span>
         <div className="flex flex-wrap items-stretch gap-3">
           <button type="button" aria-expanded={open === "in"} aria-controls="behind" onClick={() => toggle("in")} className={cx(cardBase, "border-line bg-white")} style={{ boxShadow: open === "in" ? RING.in : "none" }}>
             <span className="flex items-center gap-2 text-[15px] font-bold">
               <span className="size-2.5 rounded-full bg-coming" />
               Coming in
             </span>
-            <span className="font-display text-[clamp(40px,4.6vw,60px)] font-bold leading-none tracking-[-0.035em] tabular">{roll(n.inT)}</span>
+            <span className={big}>{roll(n.inT)}</span>
             <span className="flex h-2.5 w-full gap-0.5 overflow-hidden rounded-full bg-surface" aria-hidden>
               <span className="bg-coming" style={{ width: `${pct(b.inPaid, n.inT)}%` }} />
               <span className="bg-coming-light" style={{ width: `${100 - pct(b.inPaid, n.inT)}%` }} />
             </span>
             <span className="flex w-full flex-wrap justify-between gap-x-3 gap-y-1 text-[13px] text-ink2">
               <span>
-                <strong className="text-ink">{dollars(b.inPaid)}</strong> received
+                <strong className="text-ink">{fmt(b.inPaid)}</strong> received
               </span>
               <span>
-                <strong className="text-ink">{dollars(b.inExp)}</strong> on the way
+                <strong className="text-ink">{fmt(b.inExp)}</strong> still owed
               </span>
             </span>
             <span className="flex items-center gap-1.5 text-[13px] font-semibold">
@@ -124,17 +103,17 @@ export function HeroEquation() {
               <span className="size-2.5 rounded-full bg-going" />
               Going out
             </span>
-            <span className="font-display text-[clamp(40px,4.6vw,60px)] font-bold leading-none tracking-[-0.035em] tabular">{roll(n.outT)}</span>
+            <span className={big}>{roll(n.outT)}</span>
             <span className="flex h-2.5 w-full gap-0.5 overflow-hidden rounded-full bg-surface" aria-hidden>
               <span className="bg-going" style={{ width: `${pct(b.outPaid, n.outT)}%` }} />
               <span className="bg-going-light" style={{ width: `${100 - pct(b.outPaid, n.outT)}%` }} />
             </span>
             <span className="flex w-full flex-wrap justify-between gap-x-3 gap-y-1 text-[13px] text-ink2">
               <span>
-                <strong className="text-ink">{dollars(b.outPaid)}</strong> paid
+                <strong className="text-ink">{fmt(b.outPaid)}</strong> paid
               </span>
               <span>
-                <strong className="text-ink">{dollars(b.outSch)}</strong> still to pay
+                <strong className="text-ink">{fmt(b.outSch)}</strong> still to pay
               </span>
             </span>
             <span className="flex items-center gap-1.5 text-[13px] font-semibold">
@@ -150,13 +129,13 @@ export function HeroEquation() {
               <span className="size-2.5 rounded-full bg-violet" />
               Yours to keep
             </span>
-            <span className="font-display text-[clamp(40px,4.6vw,60px)] font-bold leading-none tracking-[-0.035em] text-violet tabular">{roll(n.keep)}</span>
+            <span className={cx(big, "text-violet")}>{roll(n.keep)}</span>
             <span className="flex h-2.5 w-full gap-0.5 overflow-hidden rounded-full bg-tint/15" aria-hidden>
               <span className="bg-violet" style={{ width: `${pct(n.keep, n.profit)}%` }} />
               <span className="bg-tint/45" style={{ width: `${100 - pct(n.keep, n.profit)}%` }} />
             </span>
             <span className="text-[13px] text-tint">
-              after <strong className="text-white">{dollars(n.tax)}</strong> set aside for tax
+              after <strong className="text-white">{fmt(n.tax)}</strong> estimated {country === "uk" ? "Income Tax and NI" : "income tax"}
             </span>
             <span className="flex items-center gap-1.5 text-[13px] font-semibold text-tint">
               {hint("keep")}
@@ -172,12 +151,12 @@ export function HeroEquation() {
             <div className="flex items-start justify-between gap-4">
               <div className="flex min-w-0 flex-col gap-1.5">
                 <span className="flex items-center gap-2 text-[13px] font-bold text-muted">
-                  <span className={cx("size-2.5 rounded-full", panel.dot)} />
+                  <span className={cx("size-2.5 rounded-full", DOT[open])} />
                   Behind {panel.name}
                 </span>
-                <h2 className="font-display text-[clamp(20px,2.2vw,26px)] font-bold leading-tight tracking-[-0.02em]">{panel.lead}</h2>
+                <h2 className="font-display text-[clamp(20px,2.2vw,26px)] font-bold leading-tight tracking-[-0.02em]">{pick(panel.lead, country)}</h2>
               </div>
-              <button type="button" aria-label="Close" onClick={() => setOpen(null)} className="flex size-10 flex-none items-center justify-center rounded-full bg-ink/[0.07] hover:bg-ink/[0.11]">
+              <button type="button" aria-label="Close" onClick={() => setOpen(null)} className="flex size-11 flex-none items-center justify-center rounded-full bg-ink/[0.07] hover:bg-ink/[0.11]">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
                   <path d="M6 6l12 12M18 6 6 18" />
                 </svg>
@@ -193,9 +172,9 @@ export function HeroEquation() {
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
-                  <span className={cx(s.paper, "relative box-border flex h-32 w-[150px] flex-col gap-2 rounded-xl border border-line bg-white p-3.5")}>
-                    <span className="flex justify-between text-[10px] font-bold">
-                      <span>INVOICE</span>
+                  <span className={cx(s.paper, "relative box-border flex h-32 w-[160px] flex-col gap-2 rounded-xl border border-line bg-white p-3.5")}>
+                    <span className="flex justify-between gap-2 text-[10px] font-bold">
+                      <span>{country === "lk" && sc.inv.startsWith("TI") ? "TAX INVOICE" : "INVOICE"}</span>
                       <span className="text-muted">{sc.inv}</span>
                     </span>
                     <span className="h-1.5 w-4/5 rounded bg-surface" />
@@ -218,51 +197,58 @@ export function HeroEquation() {
                       <span className="h-1 rounded-sm bg-surface" />
                       <span className="h-1 w-[70%] rounded-sm bg-surface" />
                       <span className="h-1 rounded-sm bg-surface" />
-                      <span className="mt-auto text-right font-display text-[13px] font-bold">{sc.vamt}</span>
-                      <span className={cx(s.scan, "absolute inset-x-0 top-[10%] h-[3px] bg-coming shadow-[0_0_12px_3px_rgba(122,90,248,0.55)]")} />
+                      <span className="mt-auto text-right font-display text-[12px] font-bold">{sc.vamt}</span>
+                      {/* camera flash: the photo is taken, not read */}
+                      <span className={cx(s.flash, "absolute inset-0 bg-white")} />
                     </span>
                   </span>
                   <span className="flex flex-col gap-2.5">
                     <span className={cx(s.pop, "inline-flex h-[34px] items-center gap-2 rounded-full border border-line bg-white px-3.5 text-[13px] font-semibold")}>
                       <span className="size-2 rounded-full bg-going" />
-                      Read: {sc.vendor} · {sc.vamt}
+                      Expense: {sc.vendor} · {sc.vamt}
                     </span>
-                    <span className={cx(s.pop2, "inline-flex h-[34px] items-center gap-2 rounded-full bg-going-tint px-3.5 text-[13px] font-semibold")}>Filed under {sc.category}</span>
+                    <span className={cx(s.pop2, "inline-flex h-[34px] items-center gap-2 rounded-full bg-going-tint px-3.5 text-[13px] font-semibold")}>Category: {sc.category}</span>
                     <span className={cx(s.pop2, "inline-flex h-[34px] items-center gap-2 rounded-full bg-pos-bg px-3.5 text-[13px] font-semibold text-pos")} style={{ animationDelay: "0.4s" }}>
-                      Matched to your card charge
+                      Photo attached
                     </span>
                   </span>
                 </>
               )}
               {open === "keep" && (
                 <>
-                  <CashJar size={320} amount={dollars(n.keep)} />
+                  <CashJar size={320} amount={fmt(n.keep)} sym={sym} taxPct={taxPct} />
                   <span className="flex max-w-[280px] flex-col gap-2.5">
-                    <span className="font-hand text-[26px] font-bold leading-[1.1]">Every payment, split as it lands.</span>
-                    <span className="text-sm leading-normal text-ink2">Three coins in the jar are yours. One goes in the envelope for tax, so tax time is never a surprise.</span>
+                    <span className="font-hand text-[26px] font-bold leading-[1.1]">{KEEP_PANEL_NOTE.hand}</span>
+                    <span className="text-sm leading-normal text-ink2">{pick(KEEP_PANEL_NOTE.body, country)}</span>
                   </span>
                 </>
               )}
             </div>
             <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] gap-3">
               {panel.items.map((it) => (
-                <div key={it.title} className="flex flex-col gap-2.5 rounded-[18px] bg-bg p-[18px]">
-                  <span className={cx("flex size-10 items-center justify-center rounded-xl", panel.tint)}>
+                <div key={it.ex} className="flex flex-col gap-2.5 rounded-[18px] bg-bg p-[18px]">
+                  <span className={cx("flex size-10 items-center justify-center rounded-xl", TINT[open])}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={it.icon} />
                     </svg>
                   </span>
                   <span className="flex flex-col gap-0.5">
-                    <span className="text-base font-bold">{it.title}</span>
-                    <span className="text-xs text-muted">{it.tag}</span>
+                    <span className="text-base font-bold">{pick(it.title, country)}</span>
+                    <span className="text-xs text-muted">{pick(it.tag, country)}</span>
                   </span>
-                  <span className="text-sm leading-normal text-ink2">{it.ex}</span>
+                  <span className="text-sm leading-normal text-ink2">{b.ex[it.ex]}</span>
                 </div>
               ))}
             </div>
+            <Link href={panel.href} className="inline-flex min-h-8 items-center gap-1.5 self-start text-sm font-bold underline decoration-[1.5px] underline-offset-4">
+              More about {panel.name}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </Link>
           </div>
         ) : (
-          <p className="text-center text-sm text-muted">Tap any number to see what BillingEase does behind it.</p>
+          <p className="text-center text-sm text-muted">{HERO.tapHint}</p>
         )}
       </div>
     </div>

@@ -1,17 +1,21 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { BIZ, dollars, sampleNumbers, type BizKey } from "./data";
+import { money, type SiteCountry } from "@/content/site/country";
+import { SAMPLES, sampleNumbers } from "@/content/site/samples";
 
-type Ctx = { biz: BizKey; setBiz: (k: BizKey) => void; tw: number };
-const SampleCtx = createContext<Ctx>({ biz: "studio", setBiz: () => {}, tw: 1 });
+type Ctx = { country: SiteCountry; key: string; setKey: (k: string) => void; tw: number };
+const SampleCtx = createContext<Ctx>({ country: "uk", key: "", setKey: () => {}, tw: 1 });
 
 /**
- * Which sample business the landing page shows, plus a 0→1 tween so the
- * numbers roll up from zero when the page opens or the business changes.
+ * Which sample business the home page shows (from the country's list in
+ * content/site/samples.ts), plus a 0→1 tween so the numbers roll up from zero
+ * when the page opens or the business changes.
  */
-export function SampleProvider({ children }: { children: ReactNode }) {
-  const [biz, setBizState] = useState<BizKey>("studio");
+export function SampleProvider({ country, children }: { country: SiteCountry; children: ReactNode }) {
+  const first = SAMPLES[country][0].key;
+  const [key, setKeyState] = useState(first);
+  const [forCountry, setForCountry] = useState(country);
   const [tw, setTw] = useState(1);
   const raf = useRef(0);
 
@@ -28,27 +32,36 @@ export function SampleProvider({ children }: { children: ReactNode }) {
     raf.current = requestAnimationFrame(step);
   }, []);
 
+  // Country switched: start again with that country's first business.
+  if (forCountry !== country) {
+    setForCountry(country);
+    setKeyState(first);
+  }
+
   useEffect(() => {
     countUp();
     return () => cancelAnimationFrame(raf.current);
-  }, [countUp]);
+  }, [countUp, country]);
 
-  const setBiz = useCallback(
-    (k: BizKey) => {
-      if (k === biz) return;
-      setBizState(k);
+  const setKey = useCallback(
+    (k: string) => {
+      if (k === key) return;
+      setKeyState(k);
       countUp();
     },
-    [biz, countUp],
+    [key, countUp],
   );
 
-  return <SampleCtx.Provider value={{ biz, setBiz, tw }}>{children}</SampleCtx.Provider>;
+  return <SampleCtx.Provider value={{ country, key, setKey, tw }}>{children}</SampleCtx.Provider>;
 }
 
 export function useSample() {
-  const { biz, setBiz, tw } = useContext(SampleCtx);
-  const n = sampleNumbers(biz);
+  const { country, key, setKey, tw } = useContext(SampleCtx);
+  const list = SAMPLES[country];
+  const b = list.find((x) => x.key === key) ?? list[0];
+  const n = sampleNumbers(b);
   const ease = 1 - Math.pow(1 - tw, 3);
-  const roll = (v: number) => dollars(v * ease);
-  return { biz, setBiz, b: BIZ[biz], n, roll, done: tw >= 1 };
+  const fmt = (v: number) => money(v, country);
+  const roll = (v: number) => money(v * ease, country);
+  return { country, list, key: b.key, setKey, b, n, fmt, roll, done: tw >= 1 };
 }
