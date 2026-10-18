@@ -4,11 +4,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { archiveSupplier } from "@/app/app/out/actions";
-import { Avatar, Crumbs, DueBadge, Empty } from "@/components/out/bits";
+import { Avatar, DueBadge, Empty } from "@/components/out/bits";
 import { ActionButton } from "@/components/out/quick";
 import { SupplierForm } from "@/components/out/SupplierForm";
 import { Badge, ButtonLink, Card, ICONS, Icon } from "@/components/ui";
 import { ApiFailure, load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Supplier" };
 
@@ -34,7 +35,7 @@ export default async function SupplierPage({ params }: { params: Promise<{ id: s
 
   return (
     <>
-      <Crumbs trail={[{ label: "Going out", href: "/app/out" }, { label: "Suppliers", href: "/app/out/suppliers" }, { label: s.name }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: "Suppliers", href: "/app/out/suppliers" }, { label: s.name }]} />
       <Card className="flex flex-wrap items-start gap-x-6 gap-y-5 p-[clamp(20px,3vw,32px)]">
         <Avatar name={s.name} className="size-14 text-lg" />
         <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-2">

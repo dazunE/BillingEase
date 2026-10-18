@@ -2,13 +2,13 @@ import { comingIn } from "@billingease/contracts";
 import { today } from "@billingease/core";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { Crumbs } from "@/components/in/bits";
 import { editorBusiness, editorCustomers } from "@/components/in/data";
 import { DocEditor } from "@/components/in/DocEditor";
 import { lineFromStored } from "@/components/in/lines";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { saveInvoice } from "../../../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Edit draft invoice" };
 
@@ -21,7 +21,7 @@ export default async function EditInvoicePage({ params, searchParams }: { params
   const [customers, items, summary] = await Promise.all([load(comingIn.listCustomers, { query: { archived: "all" } }), load(comingIn.listItems), load(comingIn.summary)]);
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "All invoices", href: "/app/in/invoices" }, { label: "Edit draft" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "All invoices", href: "/app/in/invoices" }, { label: "Edit draft" }]} />
       <div className="flex flex-col gap-2">
         <span className="flex items-center gap-2 text-sm font-bold text-ink2"><span className="size-2 rounded-full bg-coming" aria-hidden />Draft · becomes {summary.numbers.invoice} when you send it</span>
         <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold leading-[1.05] tracking-[-0.03em]">Edit draft for {inv.customer.name}</h1>

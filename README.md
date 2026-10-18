@@ -4,7 +4,7 @@ Bookkeeping, invoicing and payroll you enter by hand, for two countries: sole tr
 
 | Folder | What it is |
 |---|---|
-| [`apps/web`](apps/web) | The web app: Next.js 16. Pages and server actions; it only talks to the API. |
+| [`apps/web`](apps/web) | The web app: Next.js 16. The marketing site (`src/app/(site)`, with a UK / Sri Lanka switch), sign-up and setup, and the app itself (`src/app/app`). It only talks to the API. |
 | [`apps/api`](apps/api) | The API: Fastify 5. Every read and write, the ledger, PDFs, email, files, Ask, background jobs. |
 | [`packages/core`](packages/core) | Money, dates, the UK and Sri Lanka rules, invoice tax (VAT, SSCL) and ledger postings. Pure TypeScript with tests. |
 | [`packages/db`](packages/db) | PostgreSQL schema (Drizzle), migrations and ledger posting. |
@@ -26,7 +26,7 @@ With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, s
 
 ## Try it locally
 
-1. `npm install`, then `npm run dev` and open http://localhost:3000.
+1. `npm install`, then `npm run dev` and open http://localhost:3000: the marketing site. Use the UK / Sri Lanka switch in the header to see each country's pages, then **Start free**.
 2. **Create an account**, choosing the **United Kingdom** or **Sri Lanka**. Try both: use a second email (or a private window) for the other country.
 3. **Set up the business.** Say yes to VAT (and SSCL in Sri Lanka) to see VAT invoices and Tax Invoices.
 4. **New → Add a customer**, then **New → New invoice**: two lines, *Save and send*. Download the PDF from the invoice page.

@@ -2,11 +2,12 @@ import { goingOut, type MoneyOutItem } from "@billingease/contracts";
 import { daysBetween, formatDate, formatMoney, monthLabel } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Avatar, byMonth, Crumbs, DueBadge, Empty, HeroCard, Legend, SplitBar, ToolCard } from "@/components/out/bits";
+import { Avatar, byMonth, DueBadge, Empty, HeroCard, Legend, SplitBar, ToolCard } from "@/components/out/bits";
 import { ExpensePanel } from "@/components/out/ExpensePanel";
 import { QuickPay, QuickSort } from "@/components/out/quick";
 import { Badge, ButtonLink, ICONS, Icon, SectionTitle, cx } from "@/components/ui";
 import { load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Going out" };
 
@@ -85,7 +86,7 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <Crumbs trail={[{ label: "Going out" }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out" }]} />
 
       <HeroCard
         label={<>Going out {periodWord}</>}

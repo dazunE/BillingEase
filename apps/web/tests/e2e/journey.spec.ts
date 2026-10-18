@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
  * The first-month journey in each country, through the real web app and API:
@@ -22,6 +22,12 @@ const COUNTRIES = {
   },
 } as const;
 
+/** Clicks Continue through setup's steps until the target shows. */
+async function continueUntil(page: Page, target: Locator) {
+  for (let i = 0; i < 6 && !(await target.isVisible()); i++) await page.getByRole("button", { name: "Continue" }).click();
+  await expect(target).toBeVisible();
+}
+
 async function openNew(page: Page, item: RegExp) {
   await page.locator("header summary", { hasText: "New" }).click();
   await page.locator("header a", { hasText: item }).click();
@@ -43,11 +49,16 @@ for (const [code, c] of Object.entries(COUNTRIES)) {
 
     // Set up: VAT registered (and SSCL in Sri Lanka).
     await page.waitForURL(/\/setup/);
+    // Setup asks one step at a time: the business, what it is, then tax registration, then a check.
     await page.getByLabel("Business name").fill(c.business);
-    await page.locator("input[name=vatRegistered][value=on]").check();
+    const vatYes = page.locator("input[name=vatRegistered][value=on]");
+    await continueUntil(page, vatYes);
+    await vatYes.check();
     await page.getByLabel(c.vatLabel).fill(c.vatNumber);
     if (code === "lk") await page.locator("input[name=ssclRegistered][value=on]").check();
-    await page.getByRole("button", { name: "Set up my books" }).click();
+    const setUp = page.getByRole("button", { name: "Set up my books" });
+    await continueUntil(page, setUp);
+    await setUp.click();
     await page.waitForURL(/\/app$/);
     await expect(page.locator("header")).toContainText(c.business);
 
@@ -60,7 +71,7 @@ for (const [code, c] of Object.entries(COUNTRIES)) {
     await expect(page.getByText("Customer added")).toBeVisible();
 
     // An invoice, sent by email.
-    await openNew(page, /New invoice/);
+    await openNew(page, /Send a/);
     await page.getByRole("combobox", { name: "Customer", exact: true }).selectOption({ label: c.customer });
     await page.getByLabel("Line 1", { exact: true }).fill("Design work");
     await page.locator("li").filter({ has: page.getByLabel("Line 1", { exact: true }) }).getByLabel(/^Price/).fill(c.price);

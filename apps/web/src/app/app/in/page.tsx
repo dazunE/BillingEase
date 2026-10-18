@@ -2,12 +2,13 @@ import { comingIn } from "@billingease/contracts";
 import { formatDate, monthLabel } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Avatar, Crumbs, Dot, Empty, InvoiceBadge, InvoiceLine, Legend, SplitBar, ToolCard, fmt } from "@/components/in/bits";
+import { AlsoIn, Avatar, Dot, Empty, InvoiceBadge, InvoiceLine, Legend, SplitBar, ToolCard, fmt } from "@/components/in/bits";
 import { ReminderForm } from "@/components/in/forms";
 import { Badge, ButtonLink, ICONS, Icon, SectionTitle, cx } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { remind } from "./actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Coming in" };
 
@@ -22,7 +23,7 @@ export default async function ComingInPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in" }]} />
 
       <section className="flex flex-wrap items-end gap-x-8 gap-y-5 rounded-3xl border border-line bg-white p-[clamp(20px,3vw,32px)]">
         <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-3.5">

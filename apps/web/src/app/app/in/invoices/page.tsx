@@ -1,10 +1,11 @@
 import { comingIn } from "@billingease/contracts";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Chip, Crumbs, Empty, HeroCard, InvoiceLine, Tabs, fmt } from "@/components/in/bits";
+import { AlsoIn, Chip, Empty, HeroCard, InvoiceLine, Tabs, fmt } from "@/components/in/bits";
 import { Button, ButtonLink, Field, ICONS, Icon, Input, Select } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "All invoices" };
 
@@ -37,7 +38,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "All invoices" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "All invoices" }]} />
       <HeroCard
         title="All invoices"
         intro="Every invoice you've sent, started or been paid for. Pick one to see where it stands, record a payment or send a reminder."

@@ -1,7 +1,7 @@
 import { comingIn } from "@billingease/contracts";
 import { formatDate, today } from "@billingease/core";
 import type { Metadata } from "next";
-import { AlsoIn, Crumbs, Empty, FREQ, InvoiceLine, Notice, Panel, fmt } from "@/components/in/bits";
+import { AlsoIn, Empty, FREQ, InvoiceLine, Notice, Panel, fmt } from "@/components/in/bits";
 import { DONE, editorBusiness, editorCustomers } from "@/components/in/data";
 import { DocEditor } from "@/components/in/DocEditor";
 import { lineFromStored } from "@/components/in/lines";
@@ -9,6 +9,7 @@ import { Badge, Button } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { deleteRecurring, pauseRecurring, runRecurring, saveRecurring } from "../../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Repeating invoice" };
 
@@ -20,7 +21,7 @@ export default async function RepeatingDetailPage({ params, searchParams }: { pa
   const cur = b.currency;
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Repeating", href: "/app/in/repeating" }, { label: r.name }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Repeating", href: "/app/in/repeating" }, { label: r.name }]} />
       <Notice done={sp.done} error={sp.error} messages={DONE} />
       <section className="flex flex-wrap items-end justify-between gap-4 rounded-3xl border border-line bg-white p-[clamp(18px,3vw,28px)]">
         <div className="flex min-w-0 flex-col gap-1">

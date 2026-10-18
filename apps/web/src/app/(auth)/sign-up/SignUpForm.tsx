@@ -2,54 +2,70 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { Button, Field, Input, cx } from "@/components/ui";
+import { Button } from "@/components/ui";
+import { AuthFrame, AuthTitle, FormError } from "@/components/auth/Frame";
+import { AuthField, CountryCards, FieldError, PasswordField } from "@/components/auth/fields";
+import { HowItWorks } from "@/components/auth/panels";
+import type { Cty } from "@/components/auth/country";
 import { signUp } from "../actions";
-import { FormError } from "../AuthShell";
 
-const COUNTRIES = [
-  { id: "uk", name: "United Kingdom", line: "Sole traders and landlords. Pounds, MTD quarters, VAT.", flag: "UK" },
-  { id: "lk", name: "Sri Lanka", line: "Rupees, Tax Invoices with VAT and SSCL, full payroll.", flag: "LK" },
-];
+const COUNTRIES = {
+  uk: { name: "United Kingdom", line: "Pounds · HMRC · MTD" },
+  lk: { name: "Sri Lanka", line: "Rupees · IRD · EPF and ETF" },
+};
 
-export function SignUpForm({ initialCountry }: { initialCountry?: string }) {
+export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
   const [state, action, pending] = useActionState(signUp, undefined);
   const v = state?.values ?? {};
-  const [country, setCountry] = useState(v.country ?? initialCountry ?? "");
-  return (
+  const e = state?.errors ?? {};
+  const [country, setCountry] = useState<Cty | "">((v.country as Cty) || initialCountry || "");
+  const [password, setPassword] = useState("");
+  const [shown, setShown] = useState(false);
+  const side: Cty = country || "uk";
+
+  const card = (
     <form action={action} className="flex flex-col gap-5" noValidate>
+      <AuthTitle title="Create your account." lead="Free to start. Setup takes about three minutes, and you can send an invoice today." />
+      <CountryCards
+        legend="Where is your business?"
+        value={country}
+        onChange={setCountry}
+        names={COUNTRIES}
+        error={e.country}
+        hint="It sets your currency, tax year and tax rules, and can’t change later."
+      />
+      <AuthField label="Your name" name="name" autoComplete="name" defaultValue={v.name} error={e.name} required />
+      <AuthField label="Work email" name="email" type="email" autoComplete="email" defaultValue={v.email} error={e.email} required
+        hint="Customers see this address on your invoices. You can change it later." />
+      <PasswordField label="Password" name="password" autoComplete="new-password" meter value={password} onValue={setPassword} shown={shown} onShown={setShown} error={e.password} />
+
+      <div className="flex flex-col gap-1.5">
+        <span className="flex items-start gap-2.5 text-sm leading-[1.45] text-ink2">
+          <input id="su-terms" type="checkbox" name="terms" defaultChecked={v.terms === "on"} aria-invalid={e.terms ? true : undefined}
+            className="mt-px size-[18px] flex-none cursor-pointer accent-ink" />
+          <span>
+            <label htmlFor="su-terms" className="cursor-pointer">I agree to the</label>{" "}
+            <Link href="/legal/terms" target="_blank" rel="noopener" className="font-semibold text-ink underline underline-offset-[3px]">Terms<span className="sr-only"> (opens in a new tab)</span></Link>{" "}
+            and{" "}
+            <Link href="/legal/privacy" target="_blank" rel="noopener" className="font-semibold text-ink underline underline-offset-[3px]">Privacy notice<span className="sr-only"> (opens in a new tab)</span></Link>.
+          </span>
+        </span>
+        {e.terms && <FieldError>{e.terms}</FieldError>}
+      </div>
+
       <FormError message={state?.message} />
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1.5 text-[13px] font-semibold">Where is your business?</legend>
-        <div className="grid gap-2.5 sm:grid-cols-2">
-          {COUNTRIES.map((c) => (
-            <label key={c.id} className={cx("flex cursor-pointer flex-col gap-1 rounded-2xl border p-4 transition-colors", country === c.id ? "border-ink bg-tint" : "border-line bg-white hover:border-input")}>
-              <span className="flex items-center gap-2">
-                <input type="radio" name="country" value={c.id} checked={country === c.id} onChange={() => setCountry(c.id)} className="accent-[#18161F]" />
-                <span className="text-[15px] font-semibold">{c.name}</span>
-              </span>
-              <span className="text-[13px] leading-snug text-muted">{c.line}</span>
-            </label>
-          ))}
-        </div>
-        {state?.errors?.country && <span className="text-xs font-semibold text-late">{state.errors.country}</span>}
-        <span className="text-xs text-muted">This decides your currency, tax rules and forms. It can&apos;t be changed later.</span>
-      </fieldset>
-      <Field label="Your name" error={state?.errors?.name}>
-        <Input name="name" autoComplete="name" defaultValue={v.name} required />
-      </Field>
-      <Field label="Email" error={state?.errors?.email}>
-        <Input name="email" type="email" autoComplete="email" defaultValue={v.email} required />
-      </Field>
-      <Field label="Password" hint="At least 10 characters" error={state?.errors?.password}>
-        <Input name="password" type="password" autoComplete="new-password" required minLength={10} />
-      </Field>
-      <label className="flex items-start gap-2.5 text-sm">
-        <input type="checkbox" name="terms" defaultChecked={v.terms === "on"} className="mt-0.5 size-4 accent-[#18161F]" />
-        <span>I agree to the <Link href="/legal/terms" className="underline">terms</Link> and <Link href="/legal/privacy" className="underline">privacy notice</Link>.</span>
-      </label>
-      {state?.errors?.terms && <span className="-mt-3 text-xs font-semibold text-late">{state.errors.terms}</span>}
-      <Button disabled={pending}>{pending ? "Creating your account…" : "Create account"}</Button>
-      <p className="text-center text-sm text-ink2">Already have an account? <Link href="/sign-in" className="font-semibold underline">Sign in</Link></p>
+      <Button disabled={pending} className="min-h-12">{pending ? "Creating your account…" : "Create account"}</Button>
+      <Link href="/sign-in" className="self-center text-sm font-semibold underline underline-offset-2">I already have an account</Link>
     </form>
+  );
+
+  return (
+    <AuthFrame
+      country={side}
+      variant="signup"
+      topLink={<>Have an account? <Link href="/sign-in" className="font-semibold text-ink underline underline-offset-2">Sign in</Link></>}
+      card={card}
+      aside={<HowItWorks country={side} picked={!!country} />}
+    />
   );
 }

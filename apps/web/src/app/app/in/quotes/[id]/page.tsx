@@ -2,13 +2,14 @@ import { comingIn } from "@billingease/contracts";
 import { formatDate } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Crumbs, Notice, Panel, QuoteBadge, fmt2 } from "@/components/in/bits";
+import { AlsoIn, Notice, Panel, QuoteBadge, fmt2 } from "@/components/in/bits";
 import { DONE, quotePreview } from "@/components/in/data";
 import { DocPreview } from "@/components/in/DocPreview";
 import { Button, ButtonLink, Field, ICONS, Icon, Input } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { convertQuote, decideQuote, deleteQuote, sendQuote } from "../../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Quote" };
 
@@ -24,7 +25,7 @@ export default async function QuotePage({ params, searchParams }: { params: Prom
 
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Quotes", href: "/app/in/quotes" }, { label: name }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Quotes", href: "/app/in/quotes" }, { label: name }]} />
       <Notice done={sp.done} error={sp.error} messages={DONE} />
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]">
         <div className="order-2 min-w-0 lg:order-1"><DocPreview d={quotePreview(q, b)} /></div>

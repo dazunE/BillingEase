@@ -2,10 +2,11 @@ import { goingOut } from "@billingease/contracts";
 import { formatMoney } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Avatar, Crumbs, Empty, HeroCard } from "@/components/out/bits";
+import { Avatar, Empty, HeroCard } from "@/components/out/bits";
 import { SupplierForm } from "@/components/out/SupplierForm";
 import { ButtonLink, ICONS, Icon, Input, cx } from "@/components/ui";
 import { load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Suppliers" };
 
@@ -26,7 +27,7 @@ export default async function SuppliersPage({ searchParams }: { searchParams: Pr
 
   return (
     <>
-      <Crumbs trail={[{ label: "Going out", href: "/app/out" }, { label: "Suppliers" }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: "Suppliers" }]} />
       <HeroCard label={<>Who you pay <span className="text-xs font-semibold text-muted">Suppliers</span></>} amount={fmt(data.paidThisYear)}
         sub={<span className="text-sm text-ink2">Paid to {data.suppliers.length} supplier{data.suppliers.length === 1 ? "" : "s"} this tax year ({data.taxYear}){data.openBills ? ` · ${fmt(data.owed)} in ${data.openBills} open bill${data.openBills === 1 ? "" : "s"}` : ""}</span>}>
         <p className="text-[15px] leading-relaxed">Everyone the business pays, with their usual category, what you owe them and what you&apos;ve paid this tax year.</p>

@@ -1,12 +1,14 @@
 "use client";
 
 import { CashJar } from "@/components/CashJar";
+import { COUNTRY_META } from "@/content/site/country";
+import { HERO } from "@/content/site/home";
 import s from "./landing.module.css";
 import { useSample } from "./SampleProvider";
 
-/** Money flowing in from customers, out to bills and team, and settling in the jar. Decorative. */
+/** Money flowing in from customers, out to bills and costs, and settling in the jar. Decorative; follows the sample business. */
 export function HeroScene() {
-  const { b, n, roll } = useSample();
+  const { b, n, roll, country } = useSample();
   const ins = b.scene.ins;
   const outs = b.scene.outs;
   return (
@@ -20,7 +22,7 @@ export function HeroScene() {
         ))}
       </div>
       <div className="flex min-w-[70px] flex-[1_1_120px] flex-col gap-2.5 overflow-hidden px-1.5">
-        <span className="text-center text-[11px] font-bold tracking-[0.02em] text-muted">FROM CUSTOMERS</span>
+        <span className="text-center text-[11px] font-bold tracking-[0.02em] text-muted">{HERO.flowIn}</span>
         {ins.map(([, name, amt], i) => (
           <span key={name} className="relative block h-[34px]">
             <span className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-coming-light" />
@@ -34,10 +36,10 @@ export function HeroScene() {
         ))}
       </div>
       <div className="flex min-w-[150px] flex-[0_1_380px] flex-col items-center">
-        <CashJar size={380} amount={roll(n.keep)} />
+        <CashJar size={380} amount={roll(n.keep)} sym={COUNTRY_META[country].sym} taxPct={`${Math.round((n.tax / n.profit) * 100)}%`} />
       </div>
       <div className="flex min-w-[70px] flex-[1_1_120px] flex-col gap-2.5 overflow-hidden px-1.5">
-        <span className="text-center text-[11px] font-bold tracking-[0.02em] text-muted">TO BILLS &amp; TEAM</span>
+        <span className="text-center text-[11px] font-bold tracking-[0.02em] text-muted">{HERO.flowOut}</span>
         {outs.map(([name, amt], i) => (
           <span key={name} className="relative block h-[34px]">
             <span className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-going-light" />

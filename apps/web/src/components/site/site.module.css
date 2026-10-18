@@ -1,0 +1,36 @@
+/* Marketing site animations (prototype SiteNav / SiteFooter / ThreeLanding). Scoped by CSS modules. */
+@keyframes panelIn { from { opacity: 0; transform: translate(-50%, -6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes strip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes coin { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes q { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes swing { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+
+.hd { transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+.panel { transform: translateX(-50%); animation: panelIn 0.18s ease-out; }
+.mob { animation: fade 0.2s ease-out; }
+.strip { animation: strip 4s ease-in-out infinite; }
+.feat { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.feat:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(24, 22, 31, 0.1); }
+.cookie { animation: up 0.35s ease-out; }
+.coin { animation: coin 3.6s ease-in-out infinite; }
+.q { animation: q 3.4s ease-in-out infinite; }
+.c { transform-box: fill-box; transform-origin: center; }
+.pivot { transform-box: fill-box; transform-origin: 50% 0; }
+.swing { animation: swing 3.2s ease-in-out infinite; }
+
+/* Cards that lift on hover (who-it's-for, plans, feature links). */
+.lift { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.lift:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(24, 22, 31, 0.08); }
+.lift:hover .go { gap: 10px; }
+.go { transition: gap 0.2s ease; }
+
+.more { text-decoration-color: currentColor; }
+.more:hover { text-decoration-color: #7a5af8; }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel, .mob, .strip, .feat, .cookie, .coin, .q, .swing, .lift, .go { animation: none !important; transition: none !important; }
+  .feat:hover, .lift:hover { transform: none; }
+  .panel { transform: translateX(-50%); }
+}

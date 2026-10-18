@@ -1,0 +1,54 @@
+/* Product pages (features, coming in, going out, yours to keep, pricing, switch, security).
+   Ports the prototype's sx-/s3- keyframes. Global reduced-motion rules in globals.css stop them all. */
+@keyframes rowin { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: none; } }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(47, 87, 17, 0.45); } 70%, 100% { box-shadow: 0 0 0 8px rgba(47, 87, 17, 0); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes stamp { 0%, 40% { opacity: 0; transform: rotate(-14deg) scale(2.2); } 50% { opacity: 1; transform: rotate(-14deg) scale(1); } 90% { opacity: 1; transform: rotate(-14deg) scale(1); } 100% { opacity: 0; transform: rotate(-14deg) scale(1); } }
+@keyframes coin { 0% { transform: translateX(-90px); opacity: 0; } 12% { opacity: 1; } 45% { transform: translateX(0); opacity: 1; } 55%, 100% { transform: translateX(0); opacity: 0; } }
+@keyframes tag { 0%, 20% { opacity: 0; transform: scale(0.8); } 30%, 100% { opacity: 1; transform: none; } }
+@keyframes grow { 0% { width: 0; } 35%, 100% { width: var(--w, 75%); } }
+@keyframes growTax { 0%, 35% { width: 0; } 55%, 100% { width: var(--w, 25%); } }
+@keyframes light { 0%, 100% { background: #47444f; } 20%, 40% { background: #b9a3ff; } }
+@keyframes ring { 0%, 100% { transform: rotate(0); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-12deg); } 30% { transform: rotate(8deg); } 40% { transform: rotate(0); } }
+@keyframes pop { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: none; } }
+@keyframes swing { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes box { 0% { transform: translateX(0); opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateX(110px); opacity: 0; } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes orbit { to { transform: rotate(360deg); } }
+@keyframes shackle { 0%, 20%, 100% { transform: translateY(0); } 30%, 60% { transform: translateY(-14px); } 70% { transform: translateY(0); } }
+@keyframes glow { 0%, 25%, 100% { opacity: 0; } 35%, 90% { opacity: 1; } }
+@keyframes write { 0%, 10% { stroke-dashoffset: 60; } 40%, 100% { stroke-dashoffset: 0; } }
+
+.rowin { animation: rowin 0.5s ease-out; }
+.pulse { animation: pulse 1.6s ease-out infinite; }
+.float { animation: float 5s ease-in-out infinite; }
+.stamp { animation: stamp 5s ease-out infinite; }
+.stamp4 { animation: stamp 4s ease-out infinite; }
+.coin { animation: coin 4s ease-in-out infinite; }
+.tag { animation: tag 4s ease-out infinite; }
+.tagShort { animation: tag 3.6s ease-out infinite; }
+.grow { animation: grow 4s ease-out infinite; }
+.growTax { animation: growTax 4s ease-out infinite; }
+.light { animation: light 3.6s ease-in-out infinite; }
+.ring { animation: ring 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.pop { animation: pop 0.4s ease-out; }
+.swing { animation: swing 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 0; }
+.bob { animation: bob 3.4s ease-in-out infinite; }
+.box { animation: box 4.2s ease-in-out infinite; }
+.blink { animation: blink 2.4s ease-in-out infinite; }
+.orbit { animation: orbit 40s linear infinite; transform-box: view-box; transform-origin: 210px 180px; }
+.shackle { animation: shackle 6s ease-in-out infinite; }
+.glow { animation: glow 6s ease-in-out infinite; }
+.write { stroke-dasharray: 60; animation: write 4s ease-out infinite; }
+
+/* Comparison table on /pricing: sticky first column, scrolls sideways on phones. */
+.tblwrap { position: relative; overflow-x: auto; border: 1px solid #e2dfe8; border-radius: 24px; background: #ffffff; }
+.tbl { width: 100%; min-width: 640px; border-collapse: separate; border-spacing: 0; font-size: 15px; }
+.tbl th, .tbl td { padding: 14px 16px; border-bottom: 1px solid #efedf3; text-align: center; vertical-align: middle; }
+.tbl th[scope="row"] { text-align: left; position: sticky; left: 0; background: #ffffff; z-index: 1; box-shadow: 1px 0 0 #efedf3; }
+.tbl thead th { position: sticky; top: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rowin, .pulse, .float, .stamp, .stamp4, .coin, .tag, .tagShort, .grow, .growTax, .light, .ring, .pop, .swing, .bob, .box, .blink, .orbit, .shackle, .glow, .write { animation: none !important; }
+}

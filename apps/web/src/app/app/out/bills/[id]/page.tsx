@@ -5,10 +5,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { voidBill } from "@/app/app/out/actions";
 import { BillsAside } from "@/components/out/BillsAside";
-import { Crumbs, DueBadge, Legend, SplitBar } from "@/components/out/bits";
+import { DueBadge, Legend, SplitBar } from "@/components/out/bits";
 import { PayBillForm } from "@/components/out/PayBillForm";
 import { ActionButton, AttachmentList } from "@/components/out/quick";
 import { ApiFailure, load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Bill" };
 
@@ -26,7 +27,7 @@ export default async function BillPage({ params }: { params: Promise<{ id: strin
 
   return (
     <>
-      <Crumbs trail={[{ label: "Going out", href: "/app/out" }, { label: "Bills", href: "/app/out/bills" }, { label: b.supplierName }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: "Bills", href: "/app/out/bills" }, { label: b.supplierName }]} />
       <div className="grid items-start gap-6 lg:grid-cols-[300px_1fr]">
         <div className="order-last lg:order-none"><BillsAside bills={bills.bills} currentId={b.id} currency={setup.currency} /></div>
         <article className="flex flex-col gap-6 rounded-3xl border border-line bg-white p-[clamp(18px,3vw,28px)]">

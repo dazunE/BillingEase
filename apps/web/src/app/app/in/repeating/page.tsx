@@ -2,11 +2,12 @@ import { comingIn } from "@billingease/contracts";
 import { formatDate } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Crumbs, Empty, FREQ, HeroCard, fmt } from "@/components/in/bits";
+import { AlsoIn, Empty, FREQ, HeroCard, fmt } from "@/components/in/bits";
 import { Badge, Button, ButtonLink, ICONS, Icon, SectionTitle } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { pauseRecurring, runRecurring } from "../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Repeating invoices and credit notes" };
 
@@ -17,7 +18,7 @@ export default async function RepeatingPage() {
   const active = recurring.filter((r) => r.active).length;
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Repeating and credit notes" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Repeating and credit notes" }]} />
       <HeroCard
         title="Repeating invoices"
         intro="Retainers and regular work that bill on the same day each time. By default each run makes a draft for you to check and send; you can choose to have it sent on the day instead."

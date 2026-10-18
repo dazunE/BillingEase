@@ -2,10 +2,11 @@ import { goingOut } from "@billingease/contracts";
 import { formatDate, formatMoney } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Avatar, Crumbs, DueBadge, Empty, HeroCard } from "@/components/out/bits";
+import { Avatar, DueBadge, Empty, HeroCard } from "@/components/out/bits";
 import { QuickPay } from "@/components/out/quick";
 import { ButtonLink, ICONS, Icon, cx } from "@/components/ui";
 import { load } from "@/lib/api";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Bills" };
 
@@ -28,7 +29,7 @@ export default async function BillsPage({ searchParams }: { searchParams: Promis
 
   return (
     <>
-      <Crumbs trail={[{ label: "Going out", href: "/app/out" }, { label: "Bills" }]} />
+      <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: "Bills" }]} />
       <HeroCard label="Bills to pay" amount={fmt(t.open)}
         sub={<span className="text-sm text-ink2">{t.openCount} bill{t.openCount === 1 ? "" : "s"}{t.overdueCount ? ` · ${t.overdueCount} late (${fmt(t.overdue)})` : ""}{show === "open" && next ? ` · next due ${formatDate(next.dueDate)}: ${next.supplierName} ${fmt(next.left)}` : ""}</span>}>
         <p className="text-[15px] leading-relaxed">

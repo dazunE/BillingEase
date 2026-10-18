@@ -1,13 +1,14 @@
 import { comingIn } from "@billingease/contracts";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlsoIn, Avatar, Chip, Crumbs, Empty, HeroCard, Notice, Tabs, fmt } from "@/components/in/bits";
+import { AlsoIn, Avatar, Chip, Empty, HeroCard, Notice, Tabs, fmt } from "@/components/in/bits";
 import { DONE } from "@/components/in/data";
 import { CustomerForm } from "@/components/in/forms";
 import { Badge, Button, ICONS, Icon, Input } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { saveCustomer } from "../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Customers" };
 
@@ -31,7 +32,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
 
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Customers" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Customers" }]} />
       <Notice done={sp.done} error={sp.error} messages={DONE} />
       <HeroCard
         title="Customers"

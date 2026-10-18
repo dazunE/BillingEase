@@ -1,12 +1,12 @@
 import { comingIn } from "@billingease/contracts";
 import { today } from "@billingease/core";
 import type { Metadata } from "next";
-import { Crumbs } from "@/components/in/bits";
 import { editorBusiness, editorCustomers } from "@/components/in/data";
 import { DocEditor } from "@/components/in/DocEditor";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 import { saveRecurring } from "../../actions";
+import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "New repeating invoice" };
 
@@ -17,7 +17,7 @@ export default async function NewRepeatingPage({ searchParams }: { searchParams:
   const now = today();
   return (
     <>
-      <Crumbs trail={[{ label: "Coming in", href: "/app/in" }, { label: "Repeating", href: "/app/in/repeating" }, { label: "New" }]} />
+      <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Repeating", href: "/app/in/repeating" }, { label: "New" }]} />
       <div className="flex flex-col gap-2">
         <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold leading-[1.05] tracking-[-0.03em]">New repeating invoice</h1>
         <p className="max-w-[640px] text-ink2">The same invoice on a schedule. Each run makes a draft for you to check and send, unless you choose to send it on the day.</p>
