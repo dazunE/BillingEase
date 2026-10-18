@@ -86,6 +86,19 @@ export const AgentUsage = z.object({
   monthlyBudgetMicros: z.number().int().nullable(),
 });
 
+/** A photo or PDF sent to the capture agent, and how far it has got. */
+export const Capture = z.object({
+  id: z.string(),
+  attachmentId: z.string(),
+  filename: z.string(),
+  mime: z.string(),
+  status: z.enum(["queued", "reading", "done", "failed"]),
+  error: z.string().nullable(),
+  proposalId: z.string().nullable(),
+  createdAt: z.string(),
+});
+export type Capture = z.infer<typeof Capture>;
+
 export const agents = {
   proposals: endpoint({
     method: "GET", path: "/proposals",
@@ -104,6 +117,10 @@ export const agents = {
     body: z.object({ reason: z.string().trim().max(500).optional().nullable() }),
     response: Proposal,
   }),
+  /** Multipart: one photo or PDF in `file`. The capture agent reads it in the background. */
+  upload: endpoint({ method: "POST", path: "/capture", response: Capture }),
+  captures: endpoint({ method: "GET", path: "/capture", response: z.object({ captures: z.array(Capture) }) }),
+  retryCapture: endpoint({ method: "POST", path: "/capture/:id/retry", response: Capture }),
   runs: endpoint({ method: "GET", path: "/agents/runs", response: z.object({ runs: z.array(AgentRun) }) }),
   run: endpoint({ method: "GET", path: "/agents/runs/:id", response: z.object({ run: AgentRun, steps: z.array(AgentStep) }) }),
   usage: endpoint({

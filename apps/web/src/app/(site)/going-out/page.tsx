@@ -42,9 +42,9 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
             <span className="flex flex-col">
               <span className="font-display text-[40px] font-bold tracking-[-0.03em] tabular-nums text-[#B4501A]">0</span>
               <span className="text-[13px] leading-[1.45] text-muted">
-                receipts read
+                entries added
                 <br />
-                or guessed
+                without your OK
               </span>
             </span>
           </div>

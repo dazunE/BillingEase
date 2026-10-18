@@ -7,6 +7,7 @@ import { ago } from "@/components/home/format";
 import { Badge, cx } from "@/components/ui";
 import { ApiFailure, call, load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
+import { CaptureBox } from "./CaptureBox";
 import { ProposalCard } from "./ProposalCard";
 
 export const metadata: Metadata = { title: "For you to check" };
@@ -24,7 +25,9 @@ export default async function CheckPage({ searchParams }: { searchParams: Promis
   const { business } = await requireBusiness();
   const sp = await searchParams;
   const show = sp.show === "decided" ? "decided" : "pending";
-  const [list, done] = await Promise.all([load(agents.proposals, { query: { status: show } }), justDecided(sp.done)]);
+  const [list, done, captures, usage] = await Promise.all([
+    load(agents.proposals, { query: { status: show } }), justDecided(sp.done), load(agents.captures), load(agents.usage),
+  ]);
   const rules = rulesFor(business.country);
   const categories = rules.categories.map((c) => ({ id: c.id, name: c.name }));
   return (
@@ -52,10 +55,12 @@ export default async function CheckPage({ searchParams }: { searchParams: Promis
           </div>
         )}
 
+        {show === "pending" && <CaptureBox captures={captures.captures} setUp={usage.setUp} />}
+
         {list.proposals.length === 0 ? (
           <div className="flex flex-col items-start gap-2 rounded-3xl border border-dashed border-input p-6">
             <span className="font-display text-lg font-bold">{show === "pending" ? "Nothing to check" : "Nothing decided yet"}</span>
-            <span className="text-sm text-ink2">When an agent drafts an expense or a bill for you, it waits here for you to approve.</span>
+            <span className="text-sm text-ink2">{show === "pending" ? "Add a photo or PDF of a receipt or bill above, and the draft waits here for you." : "Approved and turned-down drafts show here."}</span>
           </div>
         ) : show === "pending" ? (
           <ul aria-label="Waiting for you" className="flex flex-col gap-3">

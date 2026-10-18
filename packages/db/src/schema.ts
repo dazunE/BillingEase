@@ -561,13 +561,16 @@ export const monthlyCosts = pgTable(
   (t) => [index("monthly_costs_business").on(t.businessId), check("monthly_costs_day", sql`${t.dayOfMonth} between 1 and 28`), check("monthly_costs_amount", sql`${t.amount} > 0`)],
 );
 
-/** A photo or PDF kept with an expense, a bill or the business (no reading or matching). */
+/**
+ * A photo or PDF kept with an expense, a bill or the business. A "capture" is one sent for the
+ * capture agent to read: it moves to the expense or bill when the proposal is approved.
+ */
 export const attachments = pgTable(
   "attachments",
   {
     id: id(),
     businessId: businessId(),
-    ownerType: text("owner_type").$type<"expense" | "bill" | "invoice" | "business">().notNull(),
+    ownerType: text("owner_type").$type<"expense" | "bill" | "invoice" | "business" | "capture">().notNull(),
     ownerId: uuid("owner_id").notNull(),
     storageKey: text("storage_key").notNull(),
     filename: text("filename").notNull(),
@@ -857,4 +860,45 @@ export const agentEvals = pgTable(
     runAt: createdAt(),
   },
   (t) => [index("agent_evals_agent").on(t.agent, t.country, t.runAt)],
+);
+
+export type CaptureStatus = "queued" | "reading" | "done" | "failed";
+export type CaptureFields = {
+  kind: "receipt" | "bill";
+  supplierName: string | null;
+  date: string | null;
+  dueDate: string | null;
+  reference: string | null;
+  currency: string | null;
+  total: number | null;
+  vat: number;
+  sscl: number;
+  paymentMethod: string | null;
+  categoryId: string | null;
+  lines: { description: string; net: number; vat: number; categoryId: string | null }[];
+  confidence: number;
+  checks: string[];
+};
+
+/** What the capture agent read from a photo or PDF, and the proposal it made. */
+export const documentExtractions = pgTable(
+  "document_extractions",
+  {
+    id: id(),
+    businessId: businessId(),
+    attachmentId: uuid("attachment_id").notNull().references(() => attachments.id, { onDelete: "cascade" }),
+    runId: uuid("run_id").references(() => agentRuns.id, { onDelete: "set null" }),
+    status: text("status").$type<CaptureStatus>().notNull().default("queued"),
+    fields: jsonb("fields").$type<CaptureFields>(),
+    model: text("model"),
+    error: text("error"),
+    proposalId: uuid("proposal_id").references(() => proposals.id, { onDelete: "set null" }),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index("document_extractions_business").on(t.businessId, t.createdAt),
+    check("document_extractions_status", sql`${t.status} in ('queued','reading','done','failed')`),
+  ],
 );

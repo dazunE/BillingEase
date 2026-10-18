@@ -37,3 +37,8 @@ export async function rejectProposal(_: FormState, fd: FormData): Promise<FormSt
   revalidatePath("/app", "layout");
   redirect(`/app/check?done=${v.id}`);
 }
+
+export async function retryCapture(fd: FormData) {
+  await call(agents.retryCapture, { params: { id: String(fd.get("id") ?? "") } });
+  revalidatePath("/app/check");
+}

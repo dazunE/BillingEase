@@ -343,10 +343,10 @@ export const FEATURES_WORKS = {
       {
         id: "files",
         label: "Paperwork",
-        note: "Receipts are attached as they are. BillingEase doesn’t read or scan them: you type the total once.",
+        note: "Snap a receipt or a supplier’s bill and BillingEase reads it, then drafts the entry for you to check. Nothing goes in until you approve it.",
         items: [
           ["PDF", "Invoices and quotes", "Download or email as PDF", "#EEE8FF"],
-          ["IMG", "Receipt photos", "Attached to the expense", "#FDE6D6"],
+          ["IMG", "Receipt photos", "Read for you to check, then kept with the expense", "#FDE6D6"],
           ["PDF", "Supplier bills", "Attached as a PDF", "#E2F6D5"],
           ["P", "Payroll software", "Pay runs entered from it", "#FFF0B8"],
         ],
@@ -378,10 +378,10 @@ export const FEATURES_WORKS = {
       {
         id: "files",
         label: "Paperwork",
-        note: "Receipts are attached as they are. BillingEase doesn’t read or scan them: you type the total once.",
+        note: "Snap a receipt or a supplier’s bill and BillingEase reads it, then drafts the entry for you to check. Nothing goes in until you approve it.",
         items: [
           ["PDF", "Tax Invoices and quotes", "Download or email as PDF", "#EEE8FF"],
-          ["IMG", "Receipt photos", "Attached to the expense", "#FDE6D6"],
+          ["IMG", "Receipt photos", "Read for you to check, then kept with the expense", "#FDE6D6"],
           ["PDF", "Payslips", "Emailed or downloaded", "#E2F6D5"],
           ["S", "EPF, ETF and APIT schedules", "Ready to pay and file", "#FFF0B8"],
         ],

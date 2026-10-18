@@ -67,7 +67,7 @@ Put a long page's copy in `src/content/site/<page>.ts` (ask the owner of `conten
 | Facts | `COUNTRY_META[country]`: `name`, `short`, `sym` (£ / Rs), `currency`, `taxYear`, `yearWord` |
 | Switch | `<CountrySwitch />` (segmented), `variant="menu"` (header), `tone="dark"`, `short` |
 
-The switch sets the `be_site_country` cookie and refreshes, so server components re-render. Never claim anything in the "Not offered" list of the site brief (bank feeds, card payments, receipt reading, multi-currency, stock, time tracking, US, filing to HMRC/IRD). Wherever a tax rate appears, add `<RatesNote country={country} />`.
+The switch sets the `be_site_country` cookie and refreshes, so server components re-render. Never claim anything in the "Not offered" list of the site brief (bank feeds, card payments, multi-currency, stock, time tracking, US, filing to HMRC/IRD). Receipt reading exists (Capture), always as a draft the owner approves: say so whenever it is mentioned. Wherever a tax rate appears, add `<RatesNote country={country} />`.
 
 ## Blocks (`@/components/site`)
 

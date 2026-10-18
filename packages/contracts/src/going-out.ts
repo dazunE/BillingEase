@@ -129,6 +129,8 @@ export const Expense = z.object({
   monthlyCostId: z.string().nullable(),
   attachmentCount: z.number().int(),
   createdByName: z.string().nullable(),
+  /** manual, or agent when an approved proposal (e.g. Capture) made it. */
+  createdVia: z.enum(["manual", "agent", "api"]),
   createdAt: z.string(),
 });
 export type Expense = z.infer<typeof Expense>;

@@ -1,7 +1,7 @@
 import { goingOut, type Endpoint, type Proposal, type ProposalKind } from "@billingease/contracts";
 import type { Exec } from "@billingease/db";
-import { bills, expenses, proposals, users, type ProposalSource } from "@billingease/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { attachments, bills, expenses, proposals, users, type ProposalSource } from "@billingease/db/schema";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { logActivity, notify } from "../../lib/activity";
 import type { BizCtx } from "../../lib/context";
@@ -133,6 +133,12 @@ export async function approve(app: FastifyInstance, req: FastifyRequest, ctx: Bi
     await tx.update(proposals).set({ status: "applied", appliedTable: k.table, appliedId, payload, edits: edits ?? (edited ? {} : null) }).where(eq(proposals.id, p.id));
     const table = k.table === "expenses" ? expenses : bills;
     await tx.update(table).set({ createdVia: "agent", proposalId: p.id }).where(and(eq(table.id, appliedId), eq(table.businessId, ctx.business.id)));
+    // The photo or PDF it was read from now belongs to the new expense or bill.
+    const files = p.sources.filter((s) => s.kind === "attachment" && s.id).map((s) => s.id!);
+    if (files.length) {
+      await tx.update(attachments).set({ ownerType: k.table === "expenses" ? "expense" : "bill", ownerId: appliedId })
+        .where(and(inArray(attachments.id, files), eq(attachments.businessId, ctx.business.id), eq(attachments.ownerType, "capture")));
+    }
     await logActivity(tx, ctx.business.id, `${ctx.user.name} approved ${agentName(p.agent)}'s ${k.noun}: ${p.title}`, { actorId: ctx.user.id, link: k.href(appliedId) });
   });
   return loadProposal(ctx, id);

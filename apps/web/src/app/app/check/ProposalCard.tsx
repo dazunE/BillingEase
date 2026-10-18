@@ -30,7 +30,12 @@ export function ProposalCard({ p, currency, categories }: { p: Proposal; currenc
         {conf != null && <Badge tone={conf >= 85 ? "pos" : conf >= 60 ? "due" : "late"}>{conf >= 85 ? "Sure" : conf >= 60 ? "Fairly sure" : "Not sure"} · {conf}%</Badge>}
       </div>
       {p.sources.length > 0 && (
-        <p className="text-xs text-muted">From: {p.sources.map((s) => s.label + (s.page ? ` (page ${s.page})` : "")).join(" · ")}</p>
+        <p className="flex flex-wrap gap-x-3 text-xs text-muted">
+          <span>From:</span>
+          {p.sources.map((s, i) => s.kind === "attachment" && s.id
+            ? <a key={i} href={`/app/out/attachments/${s.id}`} target="_blank" rel="noreferrer" className="font-semibold text-ink underline underline-offset-2">{s.label} (open)</a>
+            : <span key={i}>{s.label}{s.page ? ` (page ${s.page})` : ""}</span>)}
+        </p>
       )}
 
       <form action={approve} className="flex flex-col gap-4" noValidate>

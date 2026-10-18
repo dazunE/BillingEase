@@ -88,7 +88,7 @@ export function expenseOut(b: BusinessRow, e: ExpenseRow, extra: { attachmentCou
     gross: e.gross, vat: e.vat, bizPct: e.bizPct, businessShare: businessShare(e.gross, e.bizPct),
     method: e.method, chequeNumber: e.chequeNumber, chequeDate: e.chequeDate, chequeBank: e.chequeBank,
     note: e.note, monthlyCostId: e.monthlyCostId,
-    attachmentCount: extra.attachmentCount ?? 0, createdByName: extra.createdByName ?? null,
+    attachmentCount: extra.attachmentCount ?? 0, createdByName: extra.createdByName ?? null, createdVia: e.createdVia,
     createdAt: e.createdAt.toISOString(),
   };
 }
