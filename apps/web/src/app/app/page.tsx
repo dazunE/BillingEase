@@ -1,4 +1,4 @@
-import { home } from "@billingease/contracts";
+import { agents, home } from "@billingease/contracts";
 import { rulesFor } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { PeriodCard } from "@/components/home/PeriodCard";
 import { Deadlines, FirstSteps, RecentActivity } from "@/components/home/Sidebar";
 import { ThreeNumbers } from "@/components/home/ThreeNumbers";
 import { cx } from "@/components/ui";
-import { load } from "@/lib/api";
+import { ApiFailure, call, load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Home" };
@@ -19,7 +19,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const { me, business } = await requireBusiness();
   const { period } = await searchParams;
   const key = PERIODS.find((p) => p === period);
-  const s = await load(home.summary, { query: { period: key } });
+  const [s, waiting] = await Promise.all([load(home.summary, { query: { period: key } }), pendingCount()]);
   const rules = rulesFor(business.country);
   const first = me.user.name.split(/\s+/)[0];
   const practitioner = rules.wording.practitionerNoun;
@@ -48,6 +48,16 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </nav>
       </section>
 
+      {waiting > 0 && (
+        <Link href="/app/check" className="flex flex-wrap items-center justify-between gap-3 rounded-[20px] bg-tint px-5 py-4 hover:bg-[#e6ddff]">
+          <span className="flex flex-col gap-0.5">
+            <strong className="text-[15px]">{waiting === 1 ? "1 thing" : `${waiting} things`} for you to check</strong>
+            <span className="text-sm text-ink2">The AI drafted {waiting === 1 ? "it" : "them"}. Nothing goes into your books until you approve.</span>
+          </span>
+          <span className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-[15px] font-semibold text-white">Check now</span>
+        </Link>
+      )}
+
       {s.periodCard && <PeriodCard card={s.periodCard} currency={s.currency} practitioner={practitioner} />}
 
       <ThreeNumbers s={s} country={business.country} practitioner={practitioner} />
@@ -68,6 +78,15 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </nav>
     </>
   );
+}
+
+async function pendingCount() {
+  try {
+    return (await call(agents.proposals, { query: { status: "pending" } })).pending;
+  } catch (err) {
+    if (err instanceof ApiFailure) return 0;
+    throw err;
+  }
 }
 
 function Mark({ children }: { children: React.ReactNode }) {

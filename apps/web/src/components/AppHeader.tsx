@@ -51,6 +51,8 @@ export async function AppHeader({ userName, email, business }: { userName: strin
   const account: Item[] = [
     { label: "Business profile", hint: lk ? "Name, TIN, VAT and SSCL" : "Name, UTR and VAT", href: "/app/settings/business" },
     { label: "Notifications", hint: count ? `${count} new` : "Nothing new", href: "/app/notifications" },
+    { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
+    { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
     { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/features" },
     { label: "Help", hint: "Answers, and talk to a person", href: "/help" },
   ];

@@ -22,7 +22,7 @@ npm run dev
 # web app on http://localhost:3000 (the API runs on :4000); Ctrl+C stops both
 ```
 
-With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, so there is nothing else to install. Emails are kept in the `outbox_emails` table instead of being sent until `POSTMARK_TOKEN` is set. Ask needs `ANTHROPIC_API_KEY`. All settings are in [`.env.example`](.env.example).
+With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, so there is nothing else to install. Emails are kept in the `outbox_emails` table instead of being sent until `POSTMARK_TOKEN` is set. Ask and the agents need Gemini on Vertex AI (`GOOGLE_CLOUD_PROJECT`, signed in with `gcloud auth application-default login`). All settings are in [`.env.example`](.env.example).
 
 ## Try it locally
 
@@ -33,7 +33,7 @@ With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, s
 5. On the invoice, **Record a payment** (in Sri Lanka try a cheque, with its number and bank).
 6. **New → Record an expense** and **New → Add a bill**; pay the bill in part, then the rest.
 7. Back on **Home**, the three numbers have moved (without VAT and SSCL). Try the period switch, search and notifications.
-8. **Ask** says it isn't set up until you set `ANTHROPIC_API_KEY` before `npm run dev`.
+8. **Ask** says it isn't set up until Vertex AI is: run `gcloud auth application-default login`, then start with `GOOGLE_CLOUD_PROJECT=<your project> npm run dev`. Every question shows in **Account → AI and agents** with its cost; anything an agent drafts waits in **For you to check** until you approve it.
 
 Emails you send are kept in the database (`outbox_emails`), not sent. To start again from an empty database, stop the app and delete `apps/api/.data/pglite`. To see the app on a fixed date, start it with `BILLINGEASE_TODAY=2026-10-11 npm run dev`.
 

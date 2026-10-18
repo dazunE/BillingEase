@@ -7,13 +7,14 @@ import { bills, customers, expenses, invoices, receipts, suppliers } from "@bill
 import { buildApp } from "../src/app";
 import { loadConfig } from "../src/config";
 import { createServices } from "../src/services";
-import type { AskClient } from "../src/services/ask-client";
+import type { Models } from "../src/agents/platform/models";
 
-/** A fresh API on an in-memory database, with an optional (fake) Ask client. */
-export async function homeTestApp(opts: { ask?: AskClient | null } = {}) {
+/** A fresh API on an in-memory database, with optional (fake) models for Ask and the agents. */
+export async function homeTestApp(opts: { models?: Models | null; config?: (c: ReturnType<typeof loadConfig>) => ReturnType<typeof loadConfig> } = {}) {
   const h = await connect({ pgliteDir: "memory://" });
-  const config = { ...loadConfig({ NODE_ENV: "test" }), storage: { dir: mkdtempSync(path.join(tmpdir(), "be-files-")) } };
-  const services = createServices(config, { transport: null, ask: opts.ask ?? null });
+  const base = { ...loadConfig({ NODE_ENV: "test" }), storage: { dir: mkdtempSync(path.join(tmpdir(), "be-files-")) } };
+  const config = opts.config ? opts.config(base) : base;
+  const services = createServices(config, { transport: null, models: opts.models ?? null });
   const app = await buildApp({ db: h.db, config, services, logger: false });
   return { app, db: h.db, close: async () => { await app.close(); await h.close(); } };
 }

@@ -53,13 +53,18 @@ A draft invoice posts nothing. Voiding a sent invoice reverses its entry.
 
 ## Background jobs
 
-`apps/api/src/jobs.ts` runs jobs on timers in the API process: email delivery, repeating invoices. Each job claims rows in the database, so it is safe to run on more than one instance.
+`apps/api/src/jobs.ts` runs jobs on timers in the API process: email delivery, repeating invoices, and the agent queue. Each job claims rows in the database, so it is safe to run on more than one instance. Agent work goes in the `jobs` table (`agents/platform/queue.ts`): claimed with `FOR UPDATE SKIP LOCKED`, retried with back-off, deduplicated per business and agent, and requeued if a worker dies.
 
 ## Email, files, Ask
 
 - **Email** is queued in `outbox_emails` inside the transaction that caused it and delivered after commit. Without `POSTMARK_TOKEN` it is kept, never sent.
 - **Files** (attachments) go through the `Storage` interface: local disk now, S3-compatible later.
-- **Ask** calls the Claude API (`@anthropic-ai/sdk`) from the API with tools that read this business's books and a fixed list of official sources per country. Answers are labelled as AI and say to check with the accountant.
+- **AI** runs on Gemini through Vertex AI, with agents built on Google's Agent Development Kit (`@google/adk`, pinned). Everything ADK touches sits in `apps/api/src/agents/platform`:
+  - `models.ts`: a model per tier (`deep`, `fast`, `lite`), set in config because Google retires versions; tests pass a scripted model.
+  - `runner.ts`: runs one agent for one business, records the run (`agent_runs`), writes every model and tool call to `agent_steps` through an ADK plugin, and stops at the business's monthly budget.
+  - `session-service.ts`: ADK sessions in our Postgres (`agent_sessions`, `agent_events`), scoped to one business.
+  - `proposals.ts`: agents never change the books. They make proposals (the body of an existing endpoint); approving one calls that endpoint as the person approving, so validation, roles, locked periods and the ledger apply as for a person's own entry. Database triggers keep proposals final once decided and agent history append-only.
+- **Ask** is the first agent: read-only tools on this business's books and a fixed list of official sources per country. Answers are labelled as AI and say to check with the accountant.
 
 ## Running it
 

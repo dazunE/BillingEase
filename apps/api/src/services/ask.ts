@@ -1,9 +1,13 @@
-import type { BetaContentBlockParam, BetaMessageParam, BetaTool, BetaToolResultBlockParam } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import { formatDate, rulesFor, type CountryCode } from "@billingease/core";
-import type { Exec } from "@billingease/db";
+import type { Db } from "@billingease/db";
 import type { BusinessRow } from "../lib/context";
-import type { AskClient, AskResponse } from "./ask-client";
-import { askTools, findTool, type Source } from "./ask-tools";
+import { LlmAgent, type BaseLlm } from "@google/adk";
+import { JsonTool } from "../agents/platform/tools";
+import { agentDef, registerAgent, type AgentDef } from "../agents/platform/registry";
+import { runAgent } from "../agents/platform/runner";
+import type { Config } from "../config";
+import type { Services } from ".";
+import { askTools, type Source } from "./ask-tools";
 
 export const MAX_ROUNDS = 6;
 export const refusalAnswer = (country: CountryCode) => `I can't help with that one. Ask your ${rulesFor(country).wording.practitionerNoun}, who can look at it with you.`;
@@ -76,20 +80,50 @@ export function tidySources(text: string, sources: Source[]): { text: string; so
   return { text: fixed.replace(/ +([.,;])/g, "$1").trim(), sources: out };
 }
 
-function textOf(r: AskResponse): string {
-  return r.content.filter((b) => b.type === "text").map((b) => (b as { text: string }).text).join("\n\n").trim();
+/** Ask, as an agent on the platform: Gemini (deep tier) with read-only tools on the books. */
+export const ASK_AGENT: AgentDef = registerAgent({
+  id: "ask",
+  name: "Ask",
+  description: "Answers questions about your books and tax, with sources.",
+  version: "2",
+  tier: "deep",
+  countries: ["uk", "lk"],
+  maxModelCalls: MAX_ROUNDS,
+  proposes: [],
+  build: () => {
+    throw new Error("Ask is built per question by runAsk");
+  },
+});
+
+function askAgent(b: BusinessRow, db: Db, today: string, cite: (s: Omit<Source, "n">) => number): AgentDef {
+  return {
+    ...agentDef("ask")!,
+    build: (_ctx, model: BaseLlm) => new LlmAgent({
+      name: "ask",
+      description: ASK_AGENT.description,
+      model,
+      // A function, so ADK doesn't treat braces in the text as state placeholders.
+      instruction: () => systemPrompt(b.country),
+      tools: askTools(b.country).map((t) => new JsonTool({ name: t.name, description: t.description, input: t.input, schema: t.schema, run: (input) => t.run(input as never, { db, business: b, today, cite }) })),
+      disallowTransferToParent: true,
+      disallowTransferToPeers: true,
+    }),
+  };
 }
 
 export async function runAsk(opts: {
-  client: AskClient;
-  db: Exec;
+  db: Db;
+  config: Config;
+  services: Services;
   business: BusinessRow;
+  user: { id: string; name: string };
   today: string;
+  threadId: string;
+  /** Earlier turns, when the thread started before Ask kept its own sessions. */
   history: { role: "user" | "assistant"; content: string }[];
   question: string;
-}): Promise<AskResult> {
-  const { client, business: b } = opts;
-  const tools = askTools(b.country);
+}): Promise<AskResult & { runId: string }> {
+  const b = opts.business;
   const sources: Source[] = [];
   const cite = (s: Omit<Source, "n">) => {
     const same = sources.find((x) => x.title === s.title && x.url === s.url);
@@ -98,53 +132,23 @@ export async function runAsk(opts: {
     sources.push({ ...s, n });
     return n;
   };
-  const toolCtx = { db: opts.db, business: b, today: opts.today, cite };
-
-  const turns = [...opts.history, { role: "user" as const, content: opts.question }];
-  const messages: BetaMessageParam[] = turns.map((t, i) => ({ role: t.role, content: i === 0 ? `${contextNote(b, opts.today)}\n\n${t.content}` : t.content }));
-  const toolParams: BetaTool[] = tools.map((t) => ({ name: t.name, description: t.description, input_schema: t.schema as BetaTool["input_schema"] }));
-
-  let model = client.model;
-  for (let round = 0; round < MAX_ROUNDS; round++) {
-    const res = await client.create({
-      model: client.model,
-      max_tokens: 4000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      output_config: { effort: "low" },
-      system: [{ type: "text", text: systemPrompt(b.country), cache_control: { type: "ephemeral" } }],
-      tools: toolParams,
-      messages,
-    });
-    model = res.model || model;
-    if (res.stop_reason === "refusal") return { answer: refusalAnswer(b.country), sources: [], model, refused: true };
-    if (res.stop_reason !== "tool_use") {
-      const tidy = tidySources(textOf(res) || "I couldn't put an answer together. Try asking another way.", sources);
-      return { answer: tidy.text, sources: tidy.sources, model, refused: false };
-    }
-    messages.push({ role: "assistant", content: res.content as BetaContentBlockParam[] });
-    const results: BetaToolResultBlockParam[] = [];
-    for (const block of res.content) {
-      if (block.type !== "tool_use") continue;
-      const def = findTool(tools, block.name);
-      if (!def) {
-        results.push({ type: "tool_result", tool_use_id: block.id, is_error: true, content: `There is no tool called ${block.name}.` });
-        continue;
-      }
-      const parsed = def.input.safeParse(block.input ?? {});
-      if (!parsed.success) {
-        results.push({ type: "tool_result", tool_use_id: block.id, is_error: true, content: `Invalid input: ${parsed.error.issues.map((i) => `${i.path.join(".") || "input"}: ${i.message}`).join("; ")}` });
-        continue;
-      }
-      try {
-        const out = await def.run(parsed.data as never, toolCtx);
-        results.push({ type: "tool_result", tool_use_id: block.id, content: JSON.stringify(out) });
-      } catch (err) {
-        results.push({ type: "tool_result", tool_use_id: block.id, is_error: true, content: `The tool failed: ${(err as Error).message}` });
-      }
-    }
-    messages.push({ role: "user", content: results });
+  const def = askAgent(b, opts.db, opts.today, cite);
+  const earlier = opts.history.length
+    ? `Earlier in this conversation:\n${opts.history.map((t) => `${t.role === "user" ? "Owner" : "You"}: ${t.content}`).join("\n")}\n\n`
+    : "";
+  const first = `${contextNote(b, opts.today)}\n\n${earlier}${opts.question}`;
+  const r = await runAgent({
+    db: opts.db, config: opts.config, services: opts.services, def, business: b, user: opts.user, trigger: "user",
+    input: { question: opts.question.slice(0, 500) }, sessionId: opts.threadId,
+    // A new thread gets the business facts; a follow-up only today's date.
+    message: (fresh) => (fresh ? first : `<context>\nToday is ${formatDate(opts.today, { year: true })} (${opts.today}).\n</context>\n\n${opts.question}`),
+  });
+  const model = r.model ?? def.id;
+  if (r.blocked) return { answer: refusalAnswer(b.country), sources: [], model, refused: true, runId: r.runId };
+  if (!r.text) {
+    const tidy = tidySources(`That needed more looking up than I can do in one go. Try a narrower question, or ask your ${rulesFor(b.country).wording.practitionerNoun}.`, sources);
+    return { answer: tidy.text, sources: tidy.sources, model, refused: false, runId: r.runId };
   }
-  const tidy = tidySources(`That needed more looking up than I can do in one go. Try a narrower question, or ask your ${rulesFor(b.country).wording.practitionerNoun}.`, sources);
-  return { answer: tidy.text, sources: tidy.sources, model, refused: false };
+  const tidy = tidySources(r.text, sources);
+  return { answer: tidy.text, sources: tidy.sources, model, refused: false, runId: r.runId };
 }

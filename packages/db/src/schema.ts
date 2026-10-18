@@ -410,6 +410,9 @@ export const receipts = pgTable(
     receivedOn: date("received_on").notNull(),
     reference: text("reference"),
     ...cheque,
+    // manual | agent | api: how the row was made; proposal_id when an approved proposal made it.
+    createdVia: text("created_via").$type<"manual" | "agent" | "api">().notNull().default("manual"),
+    proposalId: uuid("proposal_id"),
     journalEntryId: uuid("journal_entry_id"),
     voidedAt: timestamp("voided_at", { withTimezone: true }),
     createdAt: createdAt(),
@@ -460,6 +463,9 @@ export const expenses = pgTable(
     ...cheque,
     note: text("note"),
     monthlyCostId: uuid("monthly_cost_id"),
+    // manual | agent | api: how the row was made; proposal_id when an approved proposal made it.
+    createdVia: text("created_via").$type<"manual" | "agent" | "api">().notNull().default("manual"),
+    proposalId: uuid("proposal_id"),
     journalEntryId: uuid("journal_entry_id"),
     createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
     createdAt: createdAt(),
@@ -489,6 +495,9 @@ export const bills = pgTable(
     total: money("total").notNull(),
     paid: money("paid").notNull().default(0),
     status: text("status").$type<(typeof BILL_STATUSES)[number]>().notNull().default("unpaid"),
+    // manual | agent | api: how the row was made; proposal_id when an approved proposal made it.
+    createdVia: text("created_via").$type<"manual" | "agent" | "api">().notNull().default("manual"),
+    proposalId: uuid("proposal_id"),
     journalEntryId: uuid("journal_entry_id"),
     voidedAt: timestamp("voided_at", { withTimezone: true }),
     createdAt: createdAt(),
@@ -523,6 +532,9 @@ export const billPayments = pgTable(
     method: text("method").notNull(),
     ...cheque,
     reference: text("reference"),
+    // manual | agent | api: how the row was made; proposal_id when an approved proposal made it.
+    createdVia: text("created_via").$type<"manual" | "agent" | "api">().notNull().default("manual"),
+    proposalId: uuid("proposal_id"),
     journalEntryId: uuid("journal_entry_id"),
     voidedAt: timestamp("voided_at", { withTimezone: true }),
     createdAt: createdAt(),
@@ -576,6 +588,8 @@ export const activity = pgTable(
     id: id(),
     businessId: businessId(),
     actorId: uuid("actor_id").references(() => users.id, { onDelete: "set null" }),
+    // user | agent | api_client | practice; actor_id is the user who acted or approved.
+    actorKind: text("actor_kind").$type<"user" | "agent" | "api_client" | "practice">().notNull().default("user"),
     message: text("message").notNull(),
     link: text("link"),
     // clock_timestamp (not now()) so several entries in one transaction keep their order
@@ -637,7 +651,210 @@ export const askMessages = pgTable(
     content: text("content").notNull(),
     sources: jsonb("sources").$type<AskSource[]>().notNull().default([]),
     model: text("model"),
+    runId: uuid("run_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`clock_timestamp()`),
   },
   (t) => [index("ask_messages_thread").on(t.threadId, t.createdAt), index("ask_messages_business").on(t.businessId, t.createdAt)],
+);
+
+// ---------------------------------------------------------------------------
+// Agents: runs, their ADK sessions and steps, proposals waiting for a person, usage
+
+/** Durable background work. Workers claim rows with FOR UPDATE SKIP LOCKED. */
+export type JobStatus = "queued" | "running" | "done" | "failed";
+export const jobs = pgTable(
+  "jobs",
+  {
+    id: id(),
+    queue: text("queue").notNull(),
+    businessId: uuid("business_id").references(() => businesses.id, { onDelete: "cascade" }),
+    payload: jsonb("payload").$type<Record<string, unknown>>().notNull().default({}),
+    // At most one queued or running job per key (e.g. one run per business per agent).
+    dedupeKey: text("dedupe_key"),
+    status: text("status").$type<JobStatus>().notNull().default("queued"),
+    runAt: timestamp("run_at", { withTimezone: true }).notNull().defaultNow(),
+    attempts: integer("attempts").notNull().default(0),
+    maxAttempts: integer("max_attempts").notNull().default(3),
+    lockedBy: text("locked_by"),
+    lockedAt: timestamp("locked_at", { withTimezone: true }),
+    error: text("error"),
+    createdAt: createdAt(),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("jobs_due").on(t.status, t.runAt),
+    uniqueIndex("jobs_dedupe_open").on(t.dedupeKey).where(sql`${t.status} in ('queued','running') and ${t.dedupeKey} is not null`),
+    check("jobs_status", sql`${t.status} in ('queued','running','done','failed')`),
+  ],
+);
+
+/** Per business: which agents are on, and the monthly spend cap (in micro-units of USD). */
+export const agentSettings = pgTable(
+  "agent_settings",
+  {
+    businessId: businessId(),
+    agent: text("agent").notNull(),
+    enabled: boolean("enabled").notNull().default(true),
+    // Cost cap per calendar month, in millionths of a US dollar (Vertex AI bills in USD).
+    monthlyBudgetMicros: bigint("monthly_budget_micros", { mode: "number" }),
+    autoRules: jsonb("auto_rules").$type<Record<string, unknown>>().notNull().default({}),
+    updatedAt: updatedAt(),
+  },
+  (t) => [primaryKey({ columns: [t.businessId, t.agent] })],
+);
+
+export type AgentTrigger = "user" | "schedule" | "event" | "api" | "practice";
+export type AgentRunStatus = "queued" | "running" | "done" | "failed" | "stopped";
+export const agentRuns = pgTable(
+  "agent_runs",
+  {
+    id: id(),
+    businessId: businessId(),
+    agent: text("agent").notNull(),
+    version: text("version").notNull(),
+    trigger: text("trigger").$type<AgentTrigger>().notNull(),
+    startedByUserId: uuid("started_by_user_id").references(() => users.id, { onDelete: "set null" }),
+    apiClientId: uuid("api_client_id"),
+    practiceId: uuid("practice_id"),
+    status: text("status").$type<AgentRunStatus>().notNull().default("queued"),
+    input: jsonb("input").$type<Record<string, unknown>>().notNull().default({}),
+    output: jsonb("output").$type<Record<string, unknown>>(),
+    model: text("model"),
+    tokensIn: integer("tokens_in").notNull().default(0),
+    tokensOut: integer("tokens_out").notNull().default(0),
+    costMicros: bigint("cost_micros", { mode: "number" }).notNull().default(0),
+    error: text("error"),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("agent_runs_business").on(t.businessId, t.createdAt),
+    check("agent_runs_status", sql`${t.status} in ('queued','running','done','failed','stopped')`),
+    check("agent_runs_trigger", sql`${t.trigger} in ('user','schedule','event','api','practice')`),
+  ],
+);
+
+/** One ADK session per run, kept by our own session service (tenancy checks, works on PGlite). */
+export const agentSessions = pgTable(
+  "agent_sessions",
+  {
+    id: text("id").primaryKey(),
+    appName: text("app_name").notNull(),
+    userId: text("user_id").notNull(),
+    businessId: businessId(),
+    runId: uuid("run_id").references(() => agentRuns.id, { onDelete: "cascade" }),
+    state: jsonb("state").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("agent_sessions_user").on(t.appName, t.userId, t.updatedAt)],
+);
+
+/** ADK events of a session, in order. Append-only. */
+export const agentEvents = pgTable(
+  "agent_events",
+  {
+    sessionId: text("session_id").notNull().references(() => agentSessions.id, { onDelete: "cascade" }),
+    seq: integer("seq").notNull(),
+    author: text("author"),
+    event: jsonb("event").$type<Record<string, unknown>>().notNull(),
+    at: timestamp("at", { withTimezone: true }).notNull().default(sql`clock_timestamp()`),
+  },
+  (t) => [primaryKey({ columns: [t.sessionId, t.seq] })],
+);
+
+/** Every model call and tool call of a run, with tokens and time. */
+export const agentSteps = pgTable(
+  "agent_steps",
+  {
+    id: id(),
+    runId: uuid("run_id").notNull().references(() => agentRuns.id, { onDelete: "cascade" }),
+    businessId: businessId(),
+    seq: integer("seq").notNull(),
+    kind: text("kind").$type<"model" | "tool">().notNull(),
+    name: text("name").notNull(),
+    input: jsonb("input").$type<unknown>(),
+    output: jsonb("output").$type<unknown>(),
+    tokensIn: integer("tokens_in").notNull().default(0),
+    tokensOut: integer("tokens_out").notNull().default(0),
+    costMicros: bigint("cost_micros", { mode: "number" }).notNull().default(0),
+    ms: integer("ms").notNull().default(0),
+    error: text("error"),
+    at: timestamp("at", { withTimezone: true }).notNull().default(sql`clock_timestamp()`),
+  },
+  (t) => [uniqueIndex("agent_steps_run_seq").on(t.runId, t.seq), check("agent_steps_kind", sql`${t.kind} in ('model','tool')`)],
+);
+
+export const PROPOSAL_STATUSES = ["pending", "applying", "applied", "rejected", "expired", "failed"] as const;
+export type ProposalStatus = (typeof PROPOSAL_STATUSES)[number];
+export type ProposalSource = { kind: "attachment" | "statement_line" | "invoice" | "bill" | "expense" | "note"; id?: string; label: string; page?: number };
+
+/** Something an agent wants to do. Nothing happens until a person approves it. */
+export const proposals = pgTable(
+  "proposals",
+  {
+    id: id(),
+    businessId: businessId(),
+    runId: uuid("run_id").references(() => agentRuns.id, { onDelete: "set null" }),
+    agent: text("agent").notNull(),
+    // What it would do, e.g. "expense.create"; payload is that endpoint's body.
+    kind: text("kind").notNull(),
+    payload: jsonb("payload").$type<Record<string, unknown>>().notNull(),
+    title: text("title").notNull(),
+    summary: text("summary").notNull(),
+    // 0–100
+    confidence: integer("confidence"),
+    sources: jsonb("sources").$type<ProposalSource[]>().notNull().default([]),
+    status: text("status").$type<ProposalStatus>().notNull().default("pending"),
+    proposedByKind: text("proposed_by_kind").$type<"agent" | "api_client" | "practice">().notNull().default("agent"),
+    // What a person changed before approving, as {field: [before, after]}.
+    edits: jsonb("edits").$type<Record<string, [unknown, unknown]>>(),
+    decidedByUserId: uuid("decided_by_user_id").references(() => users.id, { onDelete: "set null" }),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    reason: text("reason"),
+    appliedTable: text("applied_table"),
+    appliedId: uuid("applied_id"),
+    error: text("error"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("proposals_business_status").on(t.businessId, t.status, t.createdAt),
+    check("proposals_status", sql`${t.status} in ('pending','applying','applied','rejected','expired','failed')`),
+    check("proposals_confidence", sql`${t.confidence} is null or ${t.confidence} between 0 and 100`),
+  ],
+);
+
+/** Spend per business per month and agent, kept up to date as steps are recorded. */
+export const usageMonthly = pgTable(
+  "usage_monthly",
+  {
+    businessId: businessId(),
+    // First day of the month
+    month: date("month").notNull(),
+    agent: text("agent").notNull(),
+    runs: integer("runs").notNull().default(0),
+    tokensIn: bigint("tokens_in", { mode: "number" }).notNull().default(0),
+    tokensOut: bigint("tokens_out", { mode: "number" }).notNull().default(0),
+    costMicros: bigint("cost_micros", { mode: "number" }).notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.businessId, t.month, t.agent] })],
+);
+
+/** Results of an agent's eval set on a model: a release is switched on only when it passes. */
+export const agentEvals = pgTable(
+  "agent_evals",
+  {
+    id: id(),
+    agent: text("agent").notNull(),
+    version: text("version").notNull(),
+    country: text("country").$type<"uk" | "lk">().notNull(),
+    model: text("model").notNull(),
+    evalSet: text("eval_set").notNull(),
+    score: jsonb("score").$type<Record<string, unknown>>().notNull(),
+    passed: boolean("passed").notNull(),
+    runAt: createdAt(),
+  },
+  (t) => [index("agent_evals_agent").on(t.agent, t.country, t.runAt)],
 );
