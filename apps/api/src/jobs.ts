@@ -1,5 +1,6 @@
 import { hostname } from "node:os";
 import type { FastifyInstance } from "fastify";
+import { scanForLate } from "./agents/chaser";
 import { drain, requeueStale } from "./agents/platform/queue";
 import { runDueRecurring } from "./services/recurring-run";
 
@@ -15,6 +16,7 @@ export const JOBS: Job[] = [
   { name: "repeating-invoices", everyMs: 10 * 60_000, run: (app) => runDueRecurring(app.be.db, app.be.services) },
   // Agent work waits in the jobs table, so it survives a restart and runs on one instance.
   { name: "agent-queue", everyMs: 2_000, run: (app) => drain(app, `${hostname()}:${process.pid}`, 5) },
+  { name: "chaser-scan", everyMs: 6 * 60 * 60_000, run: (app) => scanForLate(app) },
   { name: "agent-queue-stale", everyMs: 5 * 60_000, run: (app) => requeueStale(app.be.db) },
 ];
 

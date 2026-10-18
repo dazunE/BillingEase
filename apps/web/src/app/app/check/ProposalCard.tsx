@@ -3,7 +3,7 @@
 import type { Proposal } from "@billingease/contracts";
 import { formatMoney, type Currency } from "@billingease/core";
 import { useActionState, useState } from "react";
-import { Badge, Button, Field, Input, Select } from "@/components/ui";
+import { Badge, Button, Field, Input, Select, Textarea } from "@/components/ui";
 import { approveProposal, rejectProposal } from "./actions";
 
 const amount = (minor: unknown) => (typeof minor === "number" ? (minor / 100).toFixed(2).replace(/\.00$/, "") : "");
@@ -54,6 +54,17 @@ export function ProposalCard({ p, currency, categories }: { p: Proposal; currenc
               </Select>
             </Field>
           </div>
+        ) : p.kind === "invoice.remind" ? (
+          <Field label={pay.email ? "The email they'll get" : "The WhatsApp message"} error={e.message}>
+            <Textarea name="message" rows={7} defaultValue={v.message ?? String(pay.message ?? "")} />
+          </Field>
+        ) : p.kind === "receipt.create" || p.kind === "bill_payment.create" ? (
+          <dl className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
+            <dt className="text-muted">{p.kind === "receipt.create" ? "Received" : "Paid"}</dt>
+            <dd>{formatMoney(Number(pay.amount ?? 0), currency)} on {String(pay.receivedOn ?? pay.paidOn ?? "")}</dd>
+            <dt className="text-muted">How</dt><dd>{String(pay.method ?? "")}</dd>
+            {pay.reference ? <><dt className="text-muted">Reference</dt><dd className="[overflow-wrap:anywhere]">{String(pay.reference)}</dd></> : null}
+          </dl>
         ) : (
           <dl className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
             <dt className="text-muted">From</dt><dd>{String(pay.supplierName ?? "Saved supplier")}</dd>
@@ -65,7 +76,7 @@ export function ProposalCard({ p, currency, categories }: { p: Proposal; currenc
         )}
         {(approved?.message ?? p.error) && <p role="alert" className="text-sm font-semibold text-late">{approved?.message ?? `Last try: ${p.error} Change it and approve again, or turn it down.`}</p>}
         <div className="flex flex-wrap items-center gap-2">
-          <Button type="submit" disabled={busy}>{approving ? "Adding…" : "Approve and add"}</Button>
+          <Button type="submit" disabled={busy}>{approving ? "Working…" : p.kind === "invoice.remind" ? (pay.email ? "Approve and send" : "Approve") : p.kind === "receipt.create" || p.kind === "bill_payment.create" ? "Approve and record" : "Approve and add"}</Button>
           {!declining && <Button type="button" variant="secondary" disabled={busy} onClick={() => setDeclining(true)}>Turn down</Button>}
         </div>
       </form>

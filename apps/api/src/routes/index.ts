@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { agentRoutes } from "./agents";
 import { askRoutes } from "./ask";
 import { captureRoutes } from "./capture";
+import { statementRoutes } from "./statements";
 import { authRoutes } from "./auth";
 import { businessRoutes } from "./business";
 import { comingInRoutes } from "./coming-in";
@@ -18,4 +19,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await askRoutes(app);
   await agentRoutes(app);
   await captureRoutes(app);
+  await statementRoutes(app);
 }

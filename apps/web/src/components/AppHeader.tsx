@@ -29,6 +29,7 @@ function verbs(b: Business): Item[] {
       ? { label: b.vatRegistered ? "Send a tax invoice" : "Send an invoice", hint: b.vatRegistered ? "With VAT and SSCL on their own lines" : "In rupees", href: "/app/in/invoices/new", icon: ICONS.doc, tint: "bg-tint" }
       : { label: b.vatRegistered ? "Send a VAT invoice" : "Send an invoice", hint: b.vatRegistered ? "In pounds, with VAT" : "In pounds", href: "/app/in/invoices/new", icon: ICONS.doc, tint: "bg-tint" },
     { label: "Snap a receipt or bill", hint: "A photo or PDF: BillingEase reads it for you to check", href: "/app/check#capture", icon: ICONS.camera, tint: "bg-going-tint" },
+    { label: "Upload a bank statement", hint: "Any bank's CSV or PDF: matched to your books", href: "/app/statements", icon: ICONS.bank, tint: "bg-going-tint" },
     { label: "Record an expense", hint: lk ? "Already paid: cash, cheque or transfer" : "Already paid, in an HMRC category", href: "/app/out#expense", icon: ICONS.bill, tint: "bg-going-tint" },
     { label: "Enter a bill", hint: "Something you’ll pay later", href: "/app/out/bills/new", icon: BILL, tint: "bg-going-tint" },
     { label: "Write a quote", hint: "A price before you start", href: "/app/in/quotes/new", icon: ICONS.doc, tint: "bg-tint" },

@@ -18,6 +18,10 @@ export async function approveProposal(_: FormState, fd: FormData): Promise<FormS
     if (vat === null) return { message: "Some details need fixing.", errors: { vat: "Enter an amount like 8 or 0" }, values: v };
     Object.assign(payload, { spentOn: v.spentOn, payee: v.payee, categoryId: v.categoryId || null, gross, vat });
   }
+  if (v.kind === "invoice.remind") {
+    if (!v.message?.trim()) return { message: "Some details need fixing.", errors: { message: "Write the reminder, or turn it down" }, values: v };
+    payload.message = v.message.trim();
+  }
   try {
     await call(agents.approve, { params: { id: v.id }, body: Object.keys(payload).length ? { payload } : {} });
   } catch (err) {
@@ -41,4 +45,20 @@ export async function rejectProposal(_: FormState, fd: FormData): Promise<FormSt
 export async function retryCapture(fd: FormData) {
   await call(agents.retryCapture, { params: { id: String(fd.get("id") ?? "") } });
   revalidatePath("/app/check");
+}
+
+/** Approves several drafts as they stand: the sure ones from a statement. */
+export async function approveMany(fd: FormData) {
+  const ids = String(fd.get("ids") ?? "").split(",").filter(Boolean);
+  const back = String(fd.get("back") ?? "/app/check");
+  if (ids.length) await call(agents.approveMany, { body: { ids } });
+  revalidatePath("/app", "layout");
+  redirect(back.startsWith("/app/") ? back : "/app/check");
+}
+
+/** Drafts reminders for late invoices now. */
+export async function runChaser() {
+  await call(agents.runChaser, { body: {} });
+  revalidatePath("/app/check");
+  redirect("/app/check?chasing=1");
 }

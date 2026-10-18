@@ -3,7 +3,10 @@ import { today } from "@billingease/core";
 import { agentRuns, agentSettings, agentSteps, proposals, usageMonthly, users } from "@billingease/db/schema";
 import { and, asc, count, desc, eq, inArray, ne } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
+import { CHASER_QUEUE } from "../agents/chaser";
 import { approve, expireOld, loadProposal, reject, toProposal } from "../agents/platform/proposals";
+import { enqueue } from "../agents/platform/queue";
+import { AppError } from "../lib/errors";
 import { agentDef, agentName, allAgents } from "../agents/platform/registry";
 import { monthOf } from "../agents/platform/runner";
 import { notFound } from "../lib/errors";
@@ -28,6 +31,27 @@ export async function agentRoutes(app: FastifyInstance) {
   route(app, agents.approve, async ({ params, body, ctx, req }) => {
     const r = await approve(app, req, ctx, params.id, body.payload);
     return toProposal(r.p, r.decidedBy);
+  });
+
+  route(app, agents.approveMany, async ({ body, ctx, req }) => {
+    let approved = 0;
+    const failed: { id: string; title: string; message: string }[] = [];
+    for (const id of body.ids) {
+      try {
+        await approve(app, req, ctx, id);
+        approved++;
+      } catch (err) {
+        const title = await loadProposal(ctx, id).then((r) => r.p.title, () => "That one");
+        failed.push({ id, title, message: (err as Error).message });
+      }
+    }
+    return { approved, failed };
+  });
+
+  route(app, agents.runChaser, async ({ ctx }) => {
+    if (!ctx.services.models) throw new AppError(503, "ai_not_set_up", "Drafting reminders needs Vertex AI, which isn't set up on this BillingEase yet.");
+    const job = await enqueue(ctx.db, { queue: CHASER_QUEUE, businessId: ctx.business.id, payload: { businessId: ctx.business.id, userId: ctx.user.id }, dedupeKey: `chaser:${ctx.business.id}:now` });
+    return { queued: !!job };
   });
 
   route(app, agents.reject, async ({ params, body, ctx }) => {

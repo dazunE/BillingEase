@@ -7,6 +7,7 @@ import { ago } from "@/components/home/format";
 import { Badge, cx } from "@/components/ui";
 import { ApiFailure, call, load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
+import { runChaser } from "./actions";
 import { CaptureBox } from "./CaptureBox";
 import { ProposalCard } from "./ProposalCard";
 
@@ -21,7 +22,7 @@ const DONE: Record<string, { label: string; tone: "pos" | "neutral" | "late" }> 
 };
 
 /** Everything the agents want to add, waiting for a person. Nothing reaches the books until approved. */
-export default async function CheckPage({ searchParams }: { searchParams: Promise<{ show?: string; done?: string }> }) {
+export default async function CheckPage({ searchParams }: { searchParams: Promise<{ show?: string; done?: string; chasing?: string }> }) {
   const { business } = await requireBusiness();
   const sp = await searchParams;
   const show = sp.show === "decided" ? "decided" : "pending";
@@ -49,13 +50,26 @@ export default async function CheckPage({ searchParams }: { searchParams: Promis
 
         {done && (
           <div role="status" className={cx("flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl px-5 py-4 text-[15px]", done.status === "applied" ? "bg-pos-bg" : "bg-surface")}>
-            <strong>{done.status === "applied" ? "Approved and added to your books:" : "Turned down, nothing was added:"}</strong>
+            <strong>{done.status === "applied" ? (done.kind === "invoice.remind" ? "Approved:" : "Approved and added to your books:") : "Turned down, nothing was added:"}</strong>
             <span>{done.title}</span>
+            {done.result?.whatsappUrl && <a href={done.result.whatsappUrl} target="_blank" rel="noreferrer" className="font-semibold underline underline-offset-4">Open WhatsApp to send it</a>}
             {done.appliedHref && <Link href={done.appliedHref} className="font-semibold underline underline-offset-4">See it</Link>}
           </div>
         )}
 
         {show === "pending" && <CaptureBox captures={captures.captures} setUp={usage.setUp} />}
+
+        {show === "pending" && (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <Link href="/app/statements" className="min-h-11 content-center font-semibold underline underline-offset-4">Upload a bank statement</Link>
+            {usage.setUp && (
+              <form action={runChaser}>
+                <button className="min-h-11 font-semibold underline underline-offset-4">Draft reminders for late invoices</button>
+              </form>
+            )}
+            {sp.chasing && <span role="status" className="text-muted">Looking for late invoices… refresh in a moment.</span>}
+          </div>
+        )}
 
         {list.proposals.length === 0 ? (
           <div className="flex flex-col items-start gap-2 rounded-3xl border border-dashed border-input p-6">

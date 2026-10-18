@@ -570,7 +570,7 @@ export const attachments = pgTable(
   {
     id: id(),
     businessId: businessId(),
-    ownerType: text("owner_type").$type<"expense" | "bill" | "invoice" | "business" | "capture">().notNull(),
+    ownerType: text("owner_type").$type<"expense" | "bill" | "invoice" | "business" | "capture" | "statement">().notNull(),
     ownerId: uuid("owner_id").notNull(),
     storageKey: text("storage_key").notNull(),
     filename: text("filename").notNull(),
@@ -803,6 +803,8 @@ export const proposals = pgTable(
     agent: text("agent").notNull(),
     // What it would do, e.g. "expense.create"; payload is that endpoint's body.
     kind: text("kind").notNull(),
+    // The invoice or bill the endpoint acts on (its :id), for kinds like "receipt.create".
+    targetId: uuid("target_id"),
     payload: jsonb("payload").$type<Record<string, unknown>>().notNull(),
     title: text("title").notNull(),
     summary: text("summary").notNull(),
@@ -818,6 +820,8 @@ export const proposals = pgTable(
     reason: text("reason"),
     appliedTable: text("applied_table"),
     appliedId: uuid("applied_id"),
+    // What the endpoint said when it was applied, when it's worth showing (e.g. a WhatsApp link).
+    result: jsonb("result").$type<Record<string, unknown>>(),
     error: text("error"),
     expiresAt: timestamp("expires_at", { withTimezone: true }),
     createdAt: createdAt(),
@@ -900,5 +904,64 @@ export const documentExtractions = pgTable(
   (t) => [
     index("document_extractions_business").on(t.businessId, t.createdAt),
     check("document_extractions_status", sql`${t.status} in ('queued','reading','done','failed')`),
+  ],
+);
+
+export type StatementStatus = "queued" | "reading" | "matching" | "done" | "failed";
+
+/** A bank statement the owner uploaded (CSV or PDF): not a feed. */
+export const bankStatements = pgTable(
+  "bank_statements",
+  {
+    id: id(),
+    businessId: businessId(),
+    attachmentId: uuid("attachment_id").notNull().references(() => attachments.id, { onDelete: "cascade" }),
+    status: text("status").$type<StatementStatus>().notNull().default("queued"),
+    format: text("format").$type<"csv" | "pdf">().notNull(),
+    // How the CSV columns were read: by the header, or by the model.
+    readBy: text("read_by").$type<"header" | "model">(),
+    accountLabel: text("account_label"),
+    periodFrom: date("period_from"),
+    periodTo: date("period_to"),
+    openingBalance: money("opening_balance"),
+    closingBalance: money("closing_balance"),
+    lineCount: integer("line_count").notNull().default(0),
+    // Running balances that don't follow from the lines (a sign of a misread line).
+    balanceProblems: integer("balance_problems").notNull().default(0),
+    error: text("error"),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("bank_statements_business").on(t.businessId, t.createdAt), check("bank_statements_status", sql`${t.status} in ('queued','reading','matching','done','failed')`)],
+);
+
+export type StatementLineStatus = "unmatched" | "matched" | "proposed" | "ignored";
+
+/** One line of a statement: money in is positive, money out negative. Never edited after import. */
+export const bankStatementLines = pgTable(
+  "bank_statement_lines",
+  {
+    id: id(),
+    statementId: uuid("statement_id").notNull().references(() => bankStatements.id, { onDelete: "cascade" }),
+    businessId: businessId(),
+    seq: integer("seq").notNull(),
+    date: date("date").notNull(),
+    description: text("description").notNull(),
+    amount: money("amount").notNull(),
+    balance: money("balance"),
+    reference: text("reference"),
+    status: text("status").$type<StatementLineStatus>().notNull().default("unmatched"),
+    matchedTable: text("matched_table"),
+    matchedId: uuid("matched_id"),
+    proposalId: uuid("proposal_id"),
+    categoryId: text("category_id"),
+    note: text("note"),
+  },
+  (t) => [
+    uniqueIndex("bank_statement_lines_seq").on(t.statementId, t.seq),
+    index("bank_statement_lines_business_date").on(t.businessId, t.date),
+    check("bank_statement_lines_status", sql`${t.status} in ('unmatched','matched','proposed','ignored')`),
+    check("bank_statement_lines_amount", sql`${t.amount} <> 0`),
   ],
 );
