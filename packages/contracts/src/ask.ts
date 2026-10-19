@@ -23,7 +23,7 @@ export const AskThread = z.object({ id: z.string(), title: z.string(), lastAt: z
 export type AskThread = z.infer<typeof AskThread>;
 
 export const ask = {
-  /** Answers a question with the Claude API. 503 ask_not_set_up when there's no API key. */
+  /** Answers a question with Gemini on Vertex AI. 503 ask_not_set_up when Vertex AI isn't configured. */
   ask: endpoint({
     method: "POST", path: "/ask",
     body: z.object({

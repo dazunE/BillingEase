@@ -16,7 +16,7 @@ export const GO_HERO = {
     uk: "Add an expense in seconds with the photo or PDF attached. Pick the category once, in plain words, and it lands in the right HMRC box for the quarter. Bills, every-month costs and payroll records sit alongside.",
     lk: "Add an expense in seconds with the photo or PDF attached. Pick the category once and it lands on the right line for your return, with input VAT counted on Tax Invoices. Bills, every-month costs and payroll sit alongside.",
   } satisfies Copy,
-  small: "Attachments on every plan. BillingEase doesn’t read receipts: you type the total once.",
+  small: "Attachments on every plan. Snap a receipt and BillingEase drafts the expense; nothing goes in until you approve it.",
 };
 
 export type SampleExpense = { vendor: string; total: number; date: string; cat: string; box: string; inputVat?: number; use?: number };
@@ -166,7 +166,7 @@ export const GO_QUOTES = {
 
 export const GO_FAQ: ByCountry<{ q: string; a: string }[]> = {
   uk: [
-    { q: "Does BillingEase read my receipts?", a: "No. You attach the photo or PDF and type the total once. Nothing is scanned or guessed, so what’s in your books is exactly what you entered." },
+    { q: "Does BillingEase read my receipts?", a: "If you want it to. Send a photo or PDF of a receipt or a supplier’s bill and BillingEase reads it with AI, checks that the amounts add up, and drafts the expense or bill for you. It waits in For you to check: nothing goes into your books until you approve it, and you can change any detail first. Or type it in yourself, as before." },
     { q: "Does it connect to my bank or cards?", a: "No. There are no bank or card feeds. You add expenses and bills yourself; most sole traders and landlords have a handful a week." },
     { q: "Which categories does it use?", a: "HMRC’s self-employment and property categories, the ones MTD quarterly updates use, with plain names on screen. Your accountant sees HMRC’s names underneath." },
     { q: "Can I pay bills from BillingEase?", a: "No. Pay from your bank as you do today, then mark the bill paid in full or in part. Going out stays right either way." },
@@ -174,7 +174,7 @@ export const GO_FAQ: ByCountry<{ q: string; a: string }[]> = {
     { q: "Can I log mileage?", a: "Yes. Log business miles and the allowance is added at the simplified rates. Rates are checked against gov.uk before launch." },
   ],
   lk: [
-    { q: "Does BillingEase read my receipts?", a: "No. You attach the photo or PDF and type the total once. Nothing is scanned or guessed, so what’s in your books is exactly what you entered." },
+    { q: "Does BillingEase read my receipts?", a: "If you want it to. Send a photo or PDF of a receipt or a supplier’s bill and BillingEase reads it with AI, checks that the amounts add up, and drafts the expense or bill for you. It waits in For you to check: nothing goes into your books until you approve it, and you can change any detail first. Or type it in yourself, as before." },
     { q: "Does it connect to my bank?", a: "No. Sri Lanka has no bank feeds, so you add expenses and bills yourself. Importing a bank statement from a CSV file is planned, not available yet." },
     { q: "How is input VAT handled?", a: "When a supplier gives you a Tax Invoice, enter its VAT and it’s counted as input VAT in that period’s VAT summary. SSCL has no input credit, so it isn’t counted back." },
     { q: "What does payroll work out?", a: "Earnings, EPF at 8% for the employee and 12% for you, ETF at 3%, and APIT from the current tables, then net pay and a payslip. You also get the monthly EPF, ETF and APIT schedules and a bank salary list." },

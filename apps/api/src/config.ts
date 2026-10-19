@@ -1,3 +1,6 @@
+/** deep: hardest reasoning (Ask, reviews) · fast: reading documents · lite: quick checks. */
+export type ModelTier = "deep" | "fast" | "lite";
+
 /** Settings from the environment. See .env.example at the repo root. */
 export type Config = {
   env: "development" | "test" | "production";
@@ -13,7 +16,19 @@ export type Config = {
     postmarkToken: string | null;
   };
   storage: { dir: string };
-  ask: { apiKey: string | null; model: string };
+  /**
+   * Gemini on Vertex AI, for Ask and the agents. Null when GOOGLE_CLOUD_PROJECT isn't set:
+   * Ask and the agents then say they aren't set up. Model IDs are config, not code, because
+   * Google retires model versions on a schedule.
+   */
+  ai: {
+    vertex: { project: string; location: string } | null;
+    models: Record<ModelTier, string>;
+    /** Price per million tokens in micro-dollars, [input, output]. Set from the Vertex AI price list. */
+    prices: Record<ModelTier, [number, number]>;
+    /** Default monthly cap per business, in micro-dollars. */
+    monthlyBudgetMicros: number;
+  };
   sessionDays: number;
 };
 
@@ -33,7 +48,28 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       postmarkToken: env.POSTMARK_TOKEN ?? null,
     },
     storage: { dir: env.STORAGE_DIR ?? ".data/files" },
-    ask: { apiKey: env.ANTHROPIC_API_KEY ?? null, model: env.ASK_MODEL ?? "claude-opus-5-5" },
+    ai: {
+      vertex: env.GOOGLE_CLOUD_PROJECT ? { project: env.GOOGLE_CLOUD_PROJECT, location: env.GOOGLE_CLOUD_LOCATION ?? "europe-west2" } : null,
+      models: {
+        deep: env.AI_MODEL_DEEP ?? "gemini-4-argon",
+        fast: env.AI_MODEL_FAST ?? "gemini-3.8-flash",
+        lite: env.AI_MODEL_LITE ?? "gemini-3.5-flash-lite",
+      },
+      // Placeholders until set from the Vertex AI price list for the chosen region.
+      prices: {
+        deep: price(env.AI_PRICE_DEEP, [2, 12]),
+        fast: price(env.AI_PRICE_FAST, [0.3, 2.5]),
+        lite: price(env.AI_PRICE_LITE, [0.1, 0.4]),
+      },
+      monthlyBudgetMicros: Math.round(Number(env.AI_MONTHLY_BUDGET_USD ?? 5) * 1_000_000),
+    },
     sessionDays: Number(env.SESSION_DAYS ?? 30),
   };
+}
+
+/** "0.3,2.5" (US dollars per million input, output tokens) → micro-dollars per million. */
+function price(v: string | undefined, fallback: [number, number]): [number, number] {
+  const parts = v?.split(",").map(Number);
+  const [i, o] = parts?.length === 2 && parts.every((n) => Number.isFinite(n) && n >= 0) ? parts : fallback;
+  return [Math.round(i * 1_000_000), Math.round(o * 1_000_000)];
 }

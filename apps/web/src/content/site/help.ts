@@ -180,8 +180,8 @@ export const HELP: HelpAnswer[] = [
     popular: true,
     q: "How do I record an expense?",
     a: {
-      uk: "Press New, then Record an expense. Add the amount, the date, the supplier and the category (in HMRC’s categories), and the business share if you use it partly for yourself. Attach a photo or PDF of the receipt. BillingEase keeps the file with the expense; it doesn’t read receipts for you.",
-      lk: "Press New, then Record an expense. Add the amount, the date, the supplier and the category, and attach a photo or PDF of the receipt. BillingEase keeps the file with the expense; it doesn’t read receipts for you.",
+      uk: "Press New, then Record an expense. Add the amount, the date, the supplier and the category (in HMRC’s categories), and the business share if you use it partly for yourself. Attach a photo or PDF of the receipt and BillingEase keeps the file with the expense. Or press New, then Snap a receipt or bill: BillingEase reads it and drafts the expense for you to check and approve.",
+      lk: "Press New, then Record an expense. Add the amount, the date, the supplier and the category, and attach a photo or PDF of the receipt. Or press New, then Snap a receipt or bill: BillingEase reads it and drafts the expense for you to check and approve.",
     },
     link: { label: "Open Going out", href: APP.out },
     words: "expense receipt cost spend record photo pdf attach category",
