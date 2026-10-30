@@ -43,12 +43,14 @@ export function as(app: FastifyInstance, token?: string, businessId?: string) {
 
 let n = 0;
 /** Signs up a new user and sets up a business in a country. */
-export async function signUpWithBusiness(app: FastifyInstance, country: "uk" | "lk", extra: Record<string, unknown> = {}) {
+export async function signUpWithBusiness(app: FastifyInstance, country: "uk" | "lk" | "us", extra: Record<string, unknown> = {}) {
   n++;
   const s = await as(app).post("/auth/sign-up", { name: "Test Owner", email: `owner${n}@example.com`, password: "correct horse battery" });
   const token = s.body.token as string;
   const body = country === "uk"
     ? { country, kind: "sole_trader", name: "Harper Studio", ownerName: "Ellie Harper", vatRegistered: false, ...extra }
+    : country === "us"
+    ? { country, kind: "sole_proprietor", name: "Harbor Lane LLC", ownerName: "Jordan Lee", taxId: "12-3456789", vatRegistered: false, ...extra }
     : { country, kind: "sole_proprietor", name: "Serendib Design Studio", ownerName: "Ayesha Fernando", taxId: "104563218", vatRegistered: true, vatNumber: "104563218-7000", ssclRegistered: true, ...extra };
   const b = await as(app, token).post("/businesses", body);
   if (b.status !== 200) throw new Error(JSON.stringify(b.body));

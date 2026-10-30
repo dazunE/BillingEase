@@ -13,7 +13,7 @@ function periodOf(ctx: BizCtx, key?: PeriodKey) {
   const b = ctx.business;
   const now = today();
   const all = periodsFor({ country: b.country, quarterType: b.quarterType }, now);
-  const keys: PeriodKey[] = b.country === "uk" ? ["month", "quarter", "year"] : ["month", "year"];
+  const keys: PeriodKey[] = b.country === "lk" ? ["month", "year"] : ["month", "quarter", "year"];
   const k = key && keys.includes(key) ? key : all.default;
   return { now, key: k, period: all[k], periods: keys.map((x) => ({ key: x, label: all[x].label })) };
 }

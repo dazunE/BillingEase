@@ -126,7 +126,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             {inv.receipts.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2.5">
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="font-semibold">{fmt2(r.amount, cur)} by {r.method === "Cheque" && r.chequeNumber ? `cheque ${r.chequeNumber}` : r.method.toLowerCase()}</span>
+                  <span className="font-semibold">{fmt2(r.amount, cur)} by {r.method === "Cheque" && r.chequeNumber ? `cheque ${r.chequeNumber}` : (r.method === r.method.toUpperCase() ? r.method : r.method.toLowerCase())}</span>
                   <span className="text-sm text-muted">
                     {formatDate(r.receivedOn, { year: true })}
                     {r.chequeBank ? ` · ${r.chequeBank}` : ""}{r.chequeDate ? ` · dated ${formatDate(r.chequeDate, { year: true })}` : ""}{r.reference ? ` · ${r.reference}` : ""}

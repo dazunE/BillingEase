@@ -37,7 +37,7 @@ export default async function MonthlyPage({ searchParams }: { searchParams: Prom
       <HeroCard label="Every month" amount={<>{fmt(t.perMonth)} <span className="text-base font-bold tracking-normal text-ink2">a month · {fmt(t.perMonth * 12)} a year</span></>}
         sub={<><SplitBar paid={t.recorded} toPay={t.toPay} /><Legend paid={t.recorded} toPay={t.toPay} currency={setup.currency} paidLabel={`recorded as paid in ${monthName}`} toPayLabel={`still to pay by ${formatDate(data.month.to)}`} /></>}>
         <p className="text-[15px] leading-relaxed">
-          {setup.country === "uk" ? "Desk rent, phone and software" : "Rent, utilities and services"} you pay every month. Set each one up once; on the day, record the payment and it moves to paid in its category. Until then it counts as still to pay.
+          {setup.country === "lk" ? "Rent, utilities and services" : "Desk rent, phone and software"} you pay every month. Set each one up once; on the day, record the payment and it moves to paid in its category. Until then it counts as still to pay.
         </p>
       </HeroCard>
 

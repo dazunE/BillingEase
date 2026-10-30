@@ -16,10 +16,11 @@ import { createBusiness } from "./actions";
  * Every step stays in the form (hidden), so the one action gets every field at the end.
  */
 
-const KIND_DEFAULT: Record<Cty, string> = { uk: "sole_trader", lk: "sole_proprietor" };
+const KIND_DEFAULT: Record<Cty, string> = { uk: "sole_trader", lk: "sole_proprietor", us: "sole_proprietor" };
 const STEPS: Record<Cty, string[]> = {
   uk: ["Your business", "What you do", "VAT", "Quarters", "Check"],
   lk: ["Your business", "Business type", "Tax registration", "Check"],
+  us: ["Your business", "LLC type", "Tax ID", "Check"],
 };
 /** Which step asks for each field, to go back to it when the API refuses one. */
 const FIELD_STEP: Record<string, number> = { country: 1, name: 1, ownerName: 1, town: 1, kind: 2, taxId: 3, vatRegistered: 3, vatNumber: 3, ssclRegistered: 3, quarterType: 4, basis: 4 };
@@ -27,6 +28,7 @@ const FIELD_STEP: Record<string, number> = { country: 1, name: 1, ownerName: 1, 
 const COUNTRIES = {
   uk: { name: "United Kingdom", line: "Pounds · MTD quarters · HMRC categories" },
   lk: { name: "Sri Lanka", line: "Rupees · Tax Invoices · EPF, ETF and APIT" },
+  us: { name: "United States", line: "Dollars · IRS Schedule C · LLCs" },
 };
 
 const I = {
@@ -64,6 +66,7 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
   }
 
   const lk = a.country === "lk";
+  const us = a.country === "us";
   const r = rulesFor(a.country);
   const names = STEPS[a.country];
   const N = names.length;
@@ -135,10 +138,12 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
 
   const fmt0 = money(0, a.country);
   const quarters = { standard: quarterSpans("standard"), calendar: quarterSpans("calendar") };
-  const KIND_NAME: Record<string, string> = { sole_trader: "Sole trader", landlord: "Landlord", both: "Sole trader and landlord", sole_proprietor: "Sole proprietor", partnership: "Partnership" };
+  const KIND_NAME: Record<string, string> = us
+    ? { sole_proprietor: "Single-member LLC", partnership: "Multi-member LLC" }
+    : { sole_trader: "Sole trader", landlord: "Landlord", both: "Sole trader and landlord", sole_proprietor: "Sole proprietor", partnership: "Partnership" };
 
   // The picture beside each question.
-  const pic: StepPic = step === 1 ? "biz" : step === 2 ? "kind" : step === 3 ? "tax" : !lk && step === 4 ? "cal" : "done";
+  const pic: StepPic = step === 1 ? "biz" : step === 2 ? "kind" : step === 3 ? "tax" : a.country === "uk" && step === 4 ? "cal" : "done";
 
   const head = (title: string, help: ReactNode) => (
     <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -146,15 +151,17 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
         <h1 className="font-display text-[clamp(28px,3.6vw,40px)] font-bold leading-[1.1] tracking-[-0.03em]">{title}</h1>
         <p className="text-base leading-normal text-ink2">{help}</p>
       </div>
-      <StepArt pic={pic} country={a.country} kind={a.kind} stamp={lk ? "TIN" : "VAT"} />
+      <StepArt pic={pic} country={a.country} kind={a.kind} stamp={lk ? "TIN" : us ? "EIN" : "VAT"} />
     </div>
   );
 
   const summary: { k: string; v: string; s: number }[] = [
     { k: "Business", v: `${a.name.trim() || "Your business"} · ${a.town.trim() ? `${a.town.trim()}, ` : ""}${r.name}`, s: 1 },
     { k: "You", v: `${a.ownerName.trim() || "You"}${email ? ` · ${email}` : ""}`, s: 1 },
-    { k: lk ? "Business type" : "What you do", v: KIND_NAME[a.kind] ?? a.kind, s: 2 },
-    ...(lk
+    { k: lk ? "Business type" : us ? "LLC type" : "What you do", v: KIND_NAME[a.kind] ?? a.kind, s: 2 },
+    ...(us
+      ? [{ k: "Tax", v: `${a.taxId.trim() ? `EIN ${a.taxId.trim()} · ` : ""}No sales tax on invoices`, s: 3 }]
+      : lk
       ? [{ k: "Tax", v: `${a.taxId.trim() ? `TIN ${a.taxId.trim()} · ` : ""}VAT ${a.vat ? "yes" : "no"}${a.vat && a.vatNumber.trim() ? ` (${a.vatNumber.trim()})` : ""} · SSCL ${a.sscl ? "yes" : "no"}`, s: 3 }]
       : [
           { k: "VAT", v: a.vat ? `VAT registered${a.vatNumber.trim() ? ` · ${a.vatNumber.trim()}` : ""}` : "Not VAT registered", s: 3 },
@@ -209,23 +216,25 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
             <CountryCards big legend="Country" value={picked ? a.country : ""} onChange={pickCountry} names={COUNTRIES} error={errors.country}
               hint={initialCountry ? "From your sign-up. Change it here if that was a slip; it can’t change once you start." : undefined} />
             <SetupField id="sp-name" label="Business name" name="name" big value={a.name} onChange={(x) => setA({ ...a, name: x })} error={errors.name}
-              placeholder={lk ? "e.g. Serendib Design Studio" : "e.g. Harper Studio"} autoComplete="organization"
+              placeholder={lk ? "e.g. Serendib Design Studio" : us ? "e.g. Harbor Lane LLC" : "e.g. Harper Studio"} autoComplete="organization"
               hint="It goes at the top of your invoices and quotes. Your own name is fine if you trade as yourself." />
             <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] gap-4">
               <SetupField id="sp-owner" label="Your name" name="ownerName" value={a.ownerName} onChange={(x) => setA({ ...a, ownerName: x })} error={errors.ownerName} autoComplete="name"
                 hint="Shown as the owner on your business profile." />
               <SetupField id="sp-town" label="Town or city" optional name="town" value={a.town} onChange={(x) => setA({ ...a, town: x })} error={errors.town}
-                placeholder={lk ? "e.g. Colombo 03" : "e.g. Leeds"} autoComplete="address-level2" hint="Shown under your business name on invoices." />
+                placeholder={lk ? "e.g. Colombo 03" : us ? "e.g. Wilmington, DE" : "e.g. Leeds"} autoComplete="address-level2" hint="Shown under your business name on invoices." />
             </div>
             <div className="flex flex-col gap-3.5 rounded-[20px] border border-line bg-white px-5 py-[18px]">
               <span className="text-[13px] font-bold text-ink2">Set for you from {r.name}</span>
               <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] gap-3">
                 <Fact k="Currency" v={`${r.currency} · ${money(1250, a.country)}`} />
                 <Fact k={lk ? "Year of assessment" : "Tax year"} v={yearSpan(a.country)} />
-                <Fact k="Tax on sales" v={lk ? "VAT and SSCL" : "VAT"} />
+                <Fact k="Tax on sales" v={lk ? "VAT and SSCL" : us ? "None" : "VAT"} />
               </div>
               <span className="text-sm leading-normal text-ink2">
-                {lk
+                {us
+                  ? `Expenses go into the IRS’s Schedule C lines. Invoices go out without sales tax, which suits states like Delaware that have none. The tax set-aside on Home isn’t worked out for US businesses yet. ${ratesNote("us")}`
+                  : lk
                   ? `Registered businesses issue ${r.wording.vatInvoiceTitle}s with VAT at ${vatRate("lk")} and SSCL as its own line. Employees are paid with EPF, ETF and APIT worked out for you. ${ratesNote("lk")}`
                   : "Expenses go into HMRC’s categories and add up by quarter for Making Tax Digital. VAT applies only if you’re registered."}
               </span>
@@ -234,11 +243,18 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
 
           {/* 2 · What you do / business type */}
           <div hidden={step !== 2} className="flex flex-col gap-[22px]">
-            {lk
+            {us
+              ? head("What kind of LLC is it?", "The IRS taxes an LLC by its owners unless it chooses to be taxed as a corporation. Ask your accountant if you made that choice.")
+              : lk
               ? head("What kind of business is it?", `This sets how your profit is taxed and what your ${r.wording.practitionerNoun} hands over to ${r.wording.practitionerTool} at year end.`)
               : head("What do you do?", "This decides which HMRC pages your records fill: self-employment, UK property, or both.")}
-            <div role="radiogroup" aria-label={lk ? "Business type" : "What you do"} className="flex flex-col gap-2.5">
-              {(lk
+            <div role="radiogroup" aria-label={lk ? "Business type" : us ? "LLC type" : "What you do"} className="flex flex-col gap-2.5">
+              {(us
+                ? [
+                    { id: "sole_proprietor", title: "Single-member LLC", ex: "You own it yourself. The profit goes on your own return.", official: "Disregarded entity: Schedule C (Form 1040)", icon: I.person, tint: "bg-tint" },
+                    { id: "partnership", title: "Multi-member LLC", ex: "Two or more members sharing the profit.", official: "Partnership: Form 1065 and K-1s", icon: I.team, tint: "bg-going-tint" },
+                  ]
+                : lk
                 ? [
                     { id: "sole_proprietor", title: "Sole proprietor", ex: "You own it yourself, even with staff. The profit goes on your own income tax return.", official: "Individual: business income", icon: I.person, tint: "bg-tint" },
                     { id: "partnership", title: "Partnership", ex: "Two or more partners sharing the profit.", official: "Partnership", icon: I.team, tint: "bg-going-tint" },
@@ -257,7 +273,13 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
 
           {/* 3 · Tax registration */}
           <div hidden={step !== 3} className="flex flex-col gap-[22px]">
-            {lk ? (
+            {us ? (
+              <>
+                {head("Your tax ID", "Invoices go out without sales tax. Add your EIN if customers ask for it on a W-9.")}
+                <BoxField id="sp-ein" label={`${r.wording.taxIdLabel} (optional)`} name="taxId" value={a.taxId} onChange={(x) => setA({ ...a, taxId: x })} error={errors.taxId} placeholder="12-3456789"
+                  hint="Your Employer Identification Number, on the IRS letter you got when the LLC was set up. Add it later if it isn’t to hand." />
+              </>
+            ) : lk ? (
               <>
                 {head("Your tax registrations", "These decide what your invoices show and which VAT and SSCL periods appear under Yours to keep.")}
                 <BoxField id="sp-tin" label={`${r.wording.taxIdLabel} (optional)`} name="taxId" value={a.taxId} onChange={(x) => setA({ ...a, taxId: x })} error={errors.taxId} placeholder="123 456 789" inputMode="numeric"
@@ -289,7 +311,7 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
           </div>
 
           {/* 4 · Quarters (UK) */}
-          {!lk && (
+          {a.country === "uk" && (
             <div hidden={step !== 4} className="flex flex-col gap-[22px]">
               {head("How do your quarters run?", "Making Tax Digital asks for an update every quarter. Your accountant can tell you which you use; most people keep the standard dates.")}
               <div className="flex flex-col gap-2.5">
@@ -312,7 +334,7 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
               </div>
             </div>
           )}
-          {lk && <input type="hidden" name="basis" value="accrual" />}
+          {a.country !== "uk" && <input type="hidden" name="basis" value={r.defaultBasis} />}
 
           {/* What that answer changed */}
           {note && step > 1 && !last && (
@@ -329,7 +351,7 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
                 <span className="inline-flex items-center gap-2 self-start rounded-full bg-pos-bg px-3 py-1 text-[13px] font-semibold text-pos"><span className="size-1.5 rounded-full bg-pos" />Ready to set up</span>
                 <h1 className="font-display text-[clamp(30px,4vw,44px)] font-bold leading-[1.1] tracking-[-0.03em]">Here&apos;s your BillingEase</h1>
                 <p className="text-base leading-normal text-ink2">
-                  Three numbers on your home, with {lk ? "Sri Lankan" : "UK"} tax rules behind them and only the features that fit how {a.name.trim() || "your business"} works.
+                  Three numbers on your home, with {{ uk: "UK", lk: "Sri Lankan", us: "US" }[a.country]} tax rules behind them and only the features that fit how {a.name.trim() || "your business"} works.
                   {hidden ? ` ${hidden} more features stay out of sight until you need them.` : ""}
                 </p>
               </div>

@@ -76,10 +76,10 @@ export function ExpenseForm({ setup, suppliers, expense, onSaved, autoFocus }: {
           <MoneyInput currency={setup.currency} name="gross" value={gross} onChange={(x) => setGross(x.target.value)} autoFocus={autoFocus} aria-invalid={!!e.gross} />
         </Field>
         <Field label="Paid to" error={e.payee}>
-          <Input name="payee" list="out-suppliers" defaultValue={v.payee ?? expense?.payee} placeholder={setup.country === "uk" ? "e.g. Royal Mail, LNER" : "e.g. Keells Super, Ceypetco"} autoComplete="off" aria-invalid={!!e.payee} />
+          <Input name="payee" list="out-suppliers" defaultValue={v.payee ?? expense?.payee} placeholder={{ uk: "e.g. Royal Mail, LNER", lk: "e.g. Keells Super, Ceypetco", us: "e.g. Staples, Delta" }[setup.country]} autoComplete="off" aria-invalid={!!e.payee} />
         </Field>
         <Field label="What for (optional)" error={e.note}>
-          <Input name="note" defaultValue={v.note ?? expense?.note ?? ""} placeholder={setup.country === "uk" ? "e.g. Train to a client in York" : "e.g. Fuel for the van"} />
+          <Input name="note" defaultValue={v.note ?? expense?.note ?? ""} placeholder={{ uk: "e.g. Train to a client in York", lk: "e.g. Fuel for the van", us: "e.g. Flight to a client in Chicago" }[setup.country]} />
         </Field>
         <Field label="When" error={e.spentOn}>
           <Input type="date" name="spentOn" defaultValue={v.spentOn ?? expense?.spentOn ?? today} max="2100-12-31" />
@@ -140,7 +140,7 @@ export function ExpenseForm({ setup, suppliers, expense, onSaved, autoFocus }: {
         )}
         {!expense && (
           <FilePicker file={file} onFile={setFile} error={fileError}
-            hint={setup.country === "uk" ? "A photo or PDF, kept with your books. HMRC can ask to see it." : "A photo or PDF of the bill or receipt, kept with your books for your tax practitioner."} />
+            hint={{ uk: "A photo or PDF, kept with your books. HMRC can ask to see it.", lk: "A photo or PDF of the bill or receipt, kept with your books for your tax practitioner.", us: "A photo or PDF, kept with your books. The IRS can ask to see it." }[setup.country]} />
         )}
       </div>
       {expense && fileError && <p className="text-sm font-semibold text-late">{fileError}</p>}

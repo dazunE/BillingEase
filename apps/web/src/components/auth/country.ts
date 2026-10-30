@@ -1,13 +1,13 @@
-import { formatDate, formatMoney, rulesFor, today, type CountryCode } from "@billingease/core";
+import { COUNTRY_CODES, formatDate, formatMoney, rulesFor, today, type CountryCode } from "@billingease/core";
 
 /** What the signed-out pages say about each country, worded from the real rules in @billingease/core. */
 export type Cty = CountryCode;
 
 export function isCty(v: unknown): v is Cty {
-  return v === "uk" || v === "lk";
+  return COUNTRY_CODES.includes(v as Cty);
 }
 
-export const SYMBOL: Record<Cty, string> = { uk: "£", lk: "Rs" };
+export const SYMBOL: Record<Cty, string> = { uk: "£", lk: "Rs", us: "$" };
 
 /** Whole-unit amount in the country's currency, e.g. "£2,400" or "Rs 640,000". */
 export function money(units: number, c: Cty) {
@@ -65,5 +65,5 @@ export function sampleDocs(c: Cty, variant: "a" | "b") {
 
 /** Rates on these pages are illustrative until the rules are checked. */
 export function ratesNote(c: Cty) {
-  return rulesFor(c).verified ? "" : c === "lk" ? "Rates are checked against ird.gov.lk before launch." : "Rates are checked against gov.uk before launch.";
+  return rulesFor(c).verified ? "" : `Rates are checked against ${{ uk: "gov.uk", lk: "ird.gov.lk", us: "irs.gov" }[c]} before launch.`;
 }

@@ -2,6 +2,7 @@
 
 import { useId, useState, type ComponentProps, type ReactNode } from "react";
 import { cx } from "@/components/ui";
+import { COUNTRY_CODES } from "@billingease/core";
 import { SYMBOL, type Cty } from "./country";
 
 /** Form pieces in the signed-out pages' style: a label, the control, then a hint or an error. */
@@ -152,7 +153,7 @@ export function CountryCards({
     <fieldset className="flex min-w-0 flex-col gap-1.5">
       <legend className={cx("mb-1.5 font-semibold", big ? "text-sm" : "text-[13px]")}>{legend}</legend>
       <div className={cx("grid gap-2", big ? "grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] gap-2.5" : "grid-cols-[repeat(auto-fit,minmax(min(100%,170px),1fr))]")}>
-        {(["uk", "lk"] as const).map((c) => {
+        {COUNTRY_CODES.map((c) => {
           const on = value === c;
           return (
             <label
@@ -164,7 +165,7 @@ export function CountryCards({
               )}
             >
               <input type="radio" name="country" value={c} checked={on} onChange={() => onChange(c)} className="absolute inset-0 z-10 m-0 size-full cursor-pointer appearance-none opacity-0" />
-              <span aria-hidden className={cx("flex flex-none items-center justify-center font-display font-bold", big ? "size-11 rounded-[14px] text-[15px]" : "size-[38px] rounded-xl text-sm", c === "uk" ? "bg-tint" : "bg-going-tint")}>
+              <span aria-hidden className={cx("flex flex-none items-center justify-center font-display font-bold", big ? "size-11 rounded-[14px] text-[15px]" : "size-[38px] rounded-xl text-sm", c === "lk" ? "bg-going-tint" : "bg-tint")}>
                 {SYMBOL[c]}
               </span>
               <span className="flex min-w-0 flex-col gap-px">

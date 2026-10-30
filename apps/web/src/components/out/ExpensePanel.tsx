@@ -55,8 +55,8 @@ export function ExpensePanel({ setup, suppliers }: { setup: OutSetup; suppliers:
           <div className="flex flex-col gap-1">
             <h2 id="expense-h" className="font-display text-[22px] font-bold tracking-[-0.02em]">Record an expense</h2>
             <p className="text-sm text-ink2">
-              {setup.country === "uk"
-                ? "Money you've already paid by bank, card or cash. It goes into Going out as paid, in the HMRC category your accountant files."
+              {setup.country !== "lk"
+                ? `Money you've already paid by bank, card or cash. It goes into Going out as paid, in the ${setup.country === "us" ? "Schedule C line" : "HMRC category"} your accountant files.`
                 : "Money you've already paid by bank transfer, cheque or cash. It goes into Going out as paid, in the category your tax practitioner uses for your return."}
             </p>
           </div>

@@ -6,6 +6,7 @@ export type OfficialSource = { id: string; topic: OfficialTopic; title: string; 
 export const OFFICIAL_TOPICS = [
   "mtd", "expenses", "vat", "property", "mileage", "working_from_home", "self_assessment", "income_tax", "national_insurance", "records",
   "sscl", "epf", "etf", "apit",
+  "llc", "self_employment_tax",
 ] as const;
 export type OfficialTopic = (typeof OFFICIAL_TOPICS)[number];
 
@@ -41,7 +42,18 @@ const LK: OfficialSource[] = [
   { id: "lk-etf", topic: "etf", title: "Employees' Trust Fund Board", url: "https://www.etfb.lk/", about: "ETF contributions: 3% from the employer" },
 ];
 
-export const OFFICIAL_SOURCES: Record<CountryCode, OfficialSource[]> = { uk: UK, lk: LK };
+const US: OfficialSource[] = [
+  { id: "us-smllc", topic: "llc", title: "IRS · Single member limited liability companies", url: "https://www.irs.gov/businesses/small-businesses-self-employed/single-member-limited-liability-companies", about: "How a single-member LLC is taxed by default (a disregarded entity) and the choice to be taxed as a corporation" },
+  { id: "us-llc", topic: "llc", title: "IRS · Limited liability company (LLC)", url: "https://www.irs.gov/businesses/small-businesses-self-employed/limited-liability-company-llc", about: "Default tax treatment of single- and multi-member LLCs, and entity classification elections" },
+  { id: "us-de-llc-tax", topic: "llc", title: "Delaware Division of Corporations · Annual franchise taxes", url: "https://corp.delaware.gov/paytaxes/", about: "The annual LLC tax paid to Delaware and its due date" },
+  { id: "us-ein", topic: "records", title: "IRS · Employer identification number", url: "https://www.irs.gov/businesses/small-businesses-self-employed/employer-id-numbers", about: "Who needs an EIN and how to get one" },
+  { id: "us-schedule-c", topic: "expenses", title: "IRS · About Schedule C (Form 1040)", url: "https://www.irs.gov/forms-pubs/about-schedule-c-form-1040", about: "Profit or loss from a business: the expense lines a single-member LLC reports" },
+  { id: "us-estimated", topic: "self_assessment", title: "IRS · Estimated taxes", url: "https://www.irs.gov/businesses/small-businesses-self-employed/estimated-taxes", about: "Who pays estimated tax, the quarterly deadlines, and penalties" },
+  { id: "us-se-tax", topic: "self_employment_tax", title: "IRS · Self-employment tax (Social Security and Medicare)", url: "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes", about: "The self-employment tax rate and who pays it" },
+  { id: "us-records", topic: "records", title: "IRS · Recordkeeping", url: "https://www.irs.gov/businesses/small-businesses-self-employed/recordkeeping", about: "What business records to keep and for how long" },
+];
+
+export const OFFICIAL_SOURCES: Record<CountryCode, OfficialSource[]> = { uk: UK, lk: LK, us: US };
 
 export function topicsFor(country: CountryCode): OfficialTopic[] {
   return [...new Set(OFFICIAL_SOURCES[country].map((s) => s.topic))];

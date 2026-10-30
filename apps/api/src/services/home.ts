@@ -9,13 +9,12 @@ import { comingIn, goingOut } from "./summary";
 const n = (v: unknown) => Number(v ?? 0);
 export const ESTIMATE_WORDING = "Estimate · your accountant confirms the final figure";
 
-/** The period options Home switches between: UK quarter and tax year, Sri Lanka month and year of assessment. */
+/** The period options Home switches between: UK and US quarter and tax year, Sri Lanka month and year of assessment. */
 export function periodOptions(b: BusinessRow, today: string): { key: PeriodKey; label: string; period: Period }[] {
   const p = periodsFor({ country: b.country, quarterType: b.quarterType }, today);
-  const yearWord = b.country === "uk" ? "This tax year" : "This year of assessment";
-  return b.country === "uk"
-    ? [{ key: "quarter", label: "This quarter", period: p.quarter }, { key: "year", label: yearWord, period: p.year }]
-    : [{ key: "month", label: "This month", period: p.month }, { key: "year", label: yearWord, period: p.year }];
+  return b.country === "lk"
+    ? [{ key: "month", label: "This month", period: p.month }, { key: "year", label: "This year of assessment", period: p.year }]
+    : [{ key: "quarter", label: "This quarter", period: p.quarter }, { key: "year", label: "This tax year", period: p.year }];
 }
 
 /**
@@ -171,7 +170,11 @@ async function needsYou(db: Exec, b: BusinessRow, today: string): Promise<NeedsI
     out.push({
       id: "tax-id", kind: "tax_id", tone: "neutral", amount: null,
       title: `Add your ${rules.wording.taxIdLabel}`,
-      body: b.country === "uk" ? "Your Unique Taxpayer Reference is on letters from HMRC. Your accountant needs it to file." : "Your Taxpayer Identification Number from the Inland Revenue Department goes on Tax Invoices and returns.",
+      body: {
+        uk: "Your Unique Taxpayer Reference is on letters from HMRC. Your accountant needs it to file.",
+        lk: "Your Taxpayer Identification Number from the Inland Revenue Department goes on Tax Invoices and returns.",
+        us: "Your Employer Identification Number is on the IRS letter you got when the LLC was set up. Customers may ask for it on a W-9.",
+      }[b.country],
       href: "/app/settings/business", cta: `Add ${rules.wording.taxIdLabel}`,
     });
   }
@@ -179,7 +182,8 @@ async function needsYou(db: Exec, b: BusinessRow, today: string): Promise<NeedsI
     out.push({ id: "vat-number", kind: "vat_number", tone: "neutral", amount: null, title: `Add your ${rules.wording.vatIdLabel}`, body: `It's printed on every ${rules.wording.vatInvoiceTitle}.`, href: "/app/settings/business", cta: "Add it" });
   }
 
-  if (!b.vatRegistered) {
+  // No threshold (US: no sales tax set up) means no warning.
+  if (!b.vatRegistered && rules.vatThreshold > 0) {
     const from = addDays(addMonths(today, -12), 1);
     const sign = sql`case when ${invoices.kind} = 'credit_note' then -1 else 1 end`;
     const [t] = await db.select({ sum: sql<string>`coalesce(sum(${invoices.net} * ${sign}), 0)` }).from(invoices)
@@ -218,7 +222,7 @@ function deadlines(b: BusinessRow, today: string, instalments: { due: string; am
     detail: `About ${formatMoney(i.amount, b.currency, { decimals: "never" })} on this year's estimate`,
   }));
   const year = rules.taxYearOf(today);
-  list.push({ date: year.to, label: b.country === "uk" ? `Tax year ${year.label} ends` : `Year of assessment ${year.label} ends`, detail: "Your books for the year close on this date" });
+  list.push({ date: year.to, label: b.country === "lk" ? `Year of assessment ${year.label} ends` : `Tax year ${year.label} ends`, detail: "Your books for the year close on this date" });
   return list.filter((d) => d.date >= today).sort((a, z) => a.date.localeCompare(z.date)).slice(0, 6)
     .map((d) => ({ ...d, daysAway: daysBetween(today, d.date) }));
 }
@@ -255,7 +259,7 @@ export async function homeSummary(db: Exec, b: BusinessRow, key: PeriodKey | und
     firstSteps: [
       { id: "invoice", label: b.country === "lk" && b.vatRegistered ? "Send your first Tax Invoice" : "Create your first invoice", hint: "Bill a customer for work you've done", href: "/app/in/invoices/new", done: ni > 0 },
       { id: "expense", label: "Record an expense", hint: "Something you've paid for the business", href: "/app/out#expense", done: ne_ + nb > 0 },
-      { id: "tax-id", label: `Add your ${rules.wording.taxIdLabel}`, hint: b.country === "uk" ? "Your Unique Taxpayer Reference, from HMRC" : "Your Taxpayer Identification Number, from the IRD", href: "/app/settings/business", done: !!b.taxId },
+      { id: "tax-id", label: `Add your ${rules.wording.taxIdLabel}`, hint: { uk: "Your Unique Taxpayer Reference, from HMRC", lk: "Your Taxpayer Identification Number, from the IRD", us: "Your Employer Identification Number, from the IRS" }[b.country], href: "/app/settings/business", done: !!b.taxId },
     ],
   };
 }

@@ -7,7 +7,7 @@ import { Avatar, dueText } from "./bits";
 const TONE: Record<string, string> = { overdue: "text-late", due_soon: "text-due", paid: "text-pos", void: "text-muted", due: "text-ink2" };
 
 /** "Your bills": open ones first, then the last few paid. */
-export function BillsAside({ bills, currentId, currency }: { bills: Bill[]; currentId?: string; currency: "GBP" | "LKR" }) {
+export function BillsAside({ bills, currentId, currency }: { bills: Bill[]; currentId?: string; currency: "GBP" | "LKR" | "USD" }) {
   const list = [...bills.filter((b) => b.status === "unpaid" || b.status === "part_paid"), ...bills.filter((b) => b.status === "paid").slice(0, 4)];
   return (
     <aside className="flex flex-col gap-3" aria-labelledby="your-bills">

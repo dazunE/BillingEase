@@ -26,7 +26,7 @@ export function idOr404(id: string | undefined, what = "That"): string {
 export const invoiceLink = (id: string) => `/app/in/invoices/${id}`;
 export const quoteLink = (id: string) => `/app/in/quotes/${id}`;
 export const newToken = () => randomBytes(18).toString("base64url");
-export const money = (b: { currency: "GBP" | "LKR" }, minor: number) => formatMoney(minor, b.currency, { decimals: "always" });
+export const money = (b: { currency: "GBP" | "LKR" | "USD" }, minor: number) => formatMoney(minor, b.currency, { decimals: "always" });
 
 export function taxContext(b: BusinessRow) {
   return { country: b.country, vatRegistered: b.vatRegistered, ssclRegistered: b.country === "lk" && b.ssclRegistered };
@@ -314,7 +314,7 @@ export async function recordPayment(
   const paid = inv.paid + p.amount;
   const status = statusFor({ total: inv.total, paid, credited: inv.credited });
   await tx.update(invoices).set({ paid, status, updatedAt: new Date() }).where(and(eq(invoices.id, inv.id), eq(invoices.businessId, b.id)));
-  const how = cheque && p.chequeNumber ? `cheque ${p.chequeNumber}` : p.method.toLowerCase();
+  const how = cheque && p.chequeNumber ? `cheque ${p.chequeNumber}` : (p.method === p.method.toUpperCase() ? p.method : p.method.toLowerCase());
   await logActivity(tx, b.id, `${money(b, p.amount)} received from ${c.name} for ${inv.number} by ${how}${status === "paid" ? ", now paid in full" : ""}`, { actorId: userId, link: invoiceLink(inv.id) });
   return rec.id;
 }

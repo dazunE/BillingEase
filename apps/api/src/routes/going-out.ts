@@ -27,7 +27,7 @@ export async function goingOutRoutes(app: FastifyInstance) {
         vatRegistered: b.vatRegistered,
         hasProperty: hasProperty(b),
         businessUse: b.country === "uk",
-        categorySource: b.country === "uk" ? "HMRC self-employment categories" : "Lines from the business income schedule",
+        categorySource: { uk: "HMRC self-employment categories", lk: "Lines from the business income schedule", us: "IRS Schedule C lines" }[b.country],
         vatRates: rules.vatRates,
         defaultVatBps: rules.vatRates.find((r) => r.id === rules.defaultVatRateId)?.bps ?? 0,
         today: today(),

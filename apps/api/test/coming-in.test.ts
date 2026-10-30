@@ -430,3 +430,51 @@ describe("repeating invoice dates", () => {
     expect(advance("2027-02-28", "monthly")).toBe("2027-03-28");
   });
 });
+
+describe("US invoices (Delaware LLC, no sales tax)", () => {
+  it("sets up in dollars, issues an invoice with no tax and takes a payment", async () => {
+    const { api, business, token } = await signUpWithBusiness(t.app, "us");
+    expect(business).toMatchObject({ country: "us", currency: "USD", vatRegistered: false, ssclRegistered: false });
+    // Sales tax registration isn't offered for US businesses yet.
+    expect((await api.patch("/business", { vatRegistered: true, vatNumber: "123" })).status).toBe(400);
+
+    const c = await customer(api, { name: "Acme Corp", email: "ap@acme.example", address: "1 Market St, Wilmington, DE 19801" });
+    const draft = await api.post("/invoices", { customerId: c.id, issueDate: "2026-10-08", lines: [{ description: "Consulting", quantityMilli: 10000, unitPrice: 15000 }] });
+    expect(draft.status).toBe(200);
+    expect(draft.body).toMatchObject({ total: 150000, vat: 0, sscl: 0, dueDate: "2026-11-07", title: "Invoice" });
+
+    const issued = await api.post(`/invoices/${draft.body.id}/issue`, { email: true });
+    expect(issued.status).toBe(200);
+    // Nothing UK or Sri Lankan in what the customer gets.
+    const notUs = /VAT|HMRC|UTR|\bTIN\b|Sri Lanka|SSCL|£|Rs /;
+    const sent = t.sent.find((m) => m.subject === `Invoice ${issued.body.number} from Harbor Lane LLC`)!;
+    expect(sent.text).toContain("$1,500.00");
+    expect(sent.text).not.toMatch(notUs);
+    const pdf = await pdfBytes(token, business.id, `/invoices/${draft.body.id}/pdf`);
+    expect(pdf.statusCode).toBe(200);
+    const raw = pdf.rawPayload.toString("latin1");
+    expect(raw).toContain(issued.body.number);
+
+    expect((await api.post(`/invoices/${draft.body.id}/payments`, { amount: 150000, receivedOn: "2026-10-09", method: "ACH" })).status).toBe(200);
+    await balanced(business.id);
+    let bal = await balances(business.id);
+    expect(bal["1000"]).toBe(150000);
+    expect(bal["4000"]).toBe(-150000);
+
+    // Going out, in Schedule C lines: an expense on a card and a bill paid by check.
+    const setup = await api.get("/out/categories");
+    expect(setup.body.categorySource).toBe("IRS Schedule C lines");
+    expect((await api.post("/out/expenses", { spentOn: "2026-10-09", payee: "Staples", categoryId: "supplies", gross: 4500, method: "Card" })).status).toBe(200);
+    const bill = await api.post("/out/bills", { supplierName: "Delaware Division of Corporations", billDate: "2026-10-02", dueDate: "2026-10-16", lines: [{ description: "Annual LLC tax", categoryId: "licenses", net: 30000 }] });
+    expect(bill.status).toBe(200);
+    expect((await api.post(`/out/bills/${bill.body.id}/payments`, { amount: 30000, paidOn: "2026-10-10", method: "Check" })).status).toBe(200);
+    await balanced(business.id);
+    bal = await balances(business.id);
+    expect(bal["6100"]).toBe(4500); // supplies
+    expect(bal["6110"]).toBe(30000); // taxes and licenses
+    expect(bal["1000"]).toBe(150000 - 30000);
+
+    // Adding the EIN later clears it from Needs you.
+    expect((await api.patch("/business", { taxId: "12-3456789", ssclRegistered: false })).status).toBe(200);
+  });
+});

@@ -15,7 +15,7 @@ function Bar({ parts, track = "bg-surface" }: { parts: { pct: number; className:
 const pct = (part: number, total: number) => (total > 0 ? Math.round((part / total) * 100) : 0);
 
 /** Coming in − Going out = Yours to keep, as three big cards. */
-export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; country: "uk" | "lk"; practitioner: string }) {
+export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; country: "uk" | "lk" | "us"; practitioner: string }) {
   const m = (n: number) => whole(n, s.currency);
   const { comingIn: i, goingOut: o, tax } = s;
   const profit = i.total - o.total;
@@ -55,7 +55,7 @@ export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; cou
               <span><strong className="text-ink">{m(o.paid)}</strong> paid</span>
               <span><strong className="text-ink">{m(o.toPay)}</strong> still to pay</span>
             </span>
-          ) : <span className="text-[13px] text-ink2">{country === "lk" ? "Expenses, bills and payroll add up here." : "Expenses, bills and property costs add up here."}</span>}
+          ) : <span className="text-[13px] text-ink2">{{ uk: "Expenses, bills and property costs add up here.", lk: "Expenses, bills and payroll add up here.", us: "Expenses and bills add up here." }[country]}</span>}
         </Link>
         <div aria-hidden className={op}>=</div>
         <div className={`${card} bg-ink text-white`}>
@@ -63,7 +63,9 @@ export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; cou
           <span className="tabular font-display text-[clamp(30px,3.6vw,44px)] font-bold tracking-[-0.03em] text-violet [overflow-wrap:anywhere]" data-testid="keep">{m(s.keep)}</span>
           <Bar track="bg-tint/15" parts={[{ pct: profit > 0 ? pct(s.keep, profit) : 0, className: "bg-violet" }, { pct: profit > 0 ? pct(tax.share, profit) : 0, className: "bg-tint/45" }]} />
           <span className="text-[13px] leading-[1.45] text-tint">
-            {profit > 0
+            {country === "us"
+              ? <>Before tax. BillingEase doesn&apos;t estimate US tax yet, so ask your accountant what to set aside.</>
+              : profit > 0
               ? tax.share > 0
                 ? <>after about <strong className="text-white">{m(tax.share)}</strong> {taxWords} set aside for this period, from an estimate of {m(tax.yearEstimate)} for {tax.taxYear}.</>
                 : <>No {taxWords} expected on this yet.</>
@@ -73,12 +75,12 @@ export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; cou
             <details className="text-[13px] text-tint">
               <summary className="min-h-9 cursor-pointer font-semibold text-white">How the estimate works</summary>
               <ul className="mt-1 flex flex-col gap-1">
-                <li>{(country === "uk" ? "Tax year" : "Year of assessment")} {tax.taxYear} profit so far {m(tax.yearToDateProfit)}, about {m(tax.projectedProfit)} over a full year.</li>
+                <li>{(country === "lk" ? "Year of assessment" : "Tax year")} {tax.taxYear} profit so far {m(tax.yearToDateProfit)}, about {m(tax.projectedProfit)} over a full year.</li>
                 {tax.lines.map((l) => <li key={l.label} className="flex justify-between gap-3"><span>{l.label} <span className="opacity-75">· {l.note}</span></span><span className="tabular">{m(l.amount)}</span></li>)}
               </ul>
             </details>
           )}
-          <span className="mt-auto text-xs text-tint/80">{tax.wording.replace("your accountant", `your ${practitioner}`)}{tax.verified ? "" : " · rates to be checked"}</span>
+          {country !== "us" && <span className="mt-auto text-xs text-tint/80">{tax.wording.replace("your accountant", `your ${practitioner}`)}{tax.verified ? "" : " · rates to be checked"}</span>}
         </div>
       </div>
     </section>
