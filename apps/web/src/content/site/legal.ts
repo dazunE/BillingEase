@@ -81,10 +81,10 @@ export const LEGAL: Record<LegalDoc, LegalDocument> = {
         id: "service",
         h: "What BillingEase does, and doesn’t",
         blocks: [
-          p("BillingEase records the sales, costs, payments and payroll you enter, works out totals and estimates, and produces invoices, quotes, payslips and summaries. It doesn’t connect to your bank, take card payments, read receipts, or file anything with HMRC, the Inland Revenue Department, the EPF or the ETF."),
+          p("BillingEase records the sales, costs, payments and payroll you enter, works out totals and estimates, and produces invoices, quotes, payslips and summaries. It reads receipts and bills only when you send them to be read, and adds nothing to your books until you approve it. It doesn’t connect to your bank, take card payments, or file anything with HMRC, the Inland Revenue Department, the EPF or the ETF."),
           list(
             ["Not tax or legal advice.", "Guides, estimates and Ask’s answers are general information. Yours to keep is an estimate. Rates are kept up to date as best we can, but you or your accountant must check figures before relying on them."],
-            ["Ask uses AI.", "Its answers can be wrong. It lists its sources so you can check them, and it never files or sends anything."],
+            ["Ask and Capture use AI.", "Ask’s answers can be wrong; it lists its sources so you can check them. What Capture reads from a receipt or bill is a draft for you to check. Neither files or sends anything, and nothing goes into your books until you approve it."],
             ["Payroll.", "In the UK, BillingEase keeps payroll records you enter from your payroll software; it doesn’t run payroll or report to HMRC. In Sri Lanka it calculates pay, EPF, ETF and APIT; you pay and file them yourself."],
           ),
         ],
@@ -218,7 +218,7 @@ export const LEGAL: Record<LegalDoc, LegalDocument> = {
           list(
             ["You,", "and anyone you give access to, such as your accountant or tax practitioner."],
             ["Your customers,", "who see the invoices, quotes and reminders you send them."],
-            ["Our service providers,", "who host the service, deliver email and, when you use Ask, answer questions with an AI model. They act on our instructions under written contracts. The current list is in the data processing terms."],
+            ["Our service providers,", "who host the service, deliver email and, when you use Ask or send a receipt or bill to be read, run the AI model (Google’s Gemini, on Vertex AI). They act on our instructions under written contracts. The current list is in the data processing terms."],
             ["Authorities,", "only when the law requires it."],
           ),
           p("Nobody at BillingEase looks at your books unless you ask us to help with something specific, or the law requires it."),
@@ -355,7 +355,7 @@ export const LEGAL: Record<LegalDoc, LegalDocument> = {
           list(
             ["Hosting and storage:", "to be decided (a UK or EU region for UK businesses; a PDPA-compliant choice for Sri Lankan businesses)."],
             ["Email delivery:", "a transactional email provider that sends the invoices and reminders you ask us to send."],
-            ["AI answers (Ask):", "an AI model provider that receives the question and the relevant parts of your books when you use Ask."],
+            ["AI (Ask and Capture):", "Google Cloud (Gemini on Vertex AI), which receives the question and the relevant parts of your books when you use Ask, and the photo or PDF when you send a receipt or bill to be read. It doesn’t use them to train its models."],
           ),
           p("We’ll give notice before adding or replacing a sub-processor, so you can object."),
         ],

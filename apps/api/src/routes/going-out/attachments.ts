@@ -41,11 +41,11 @@ async function checkOwner(db: Exec, businessId: string, ownerType: "expense" | "
 async function attachmentRow(db: Exec, businessId: string, id: string) {
   if (!/^[0-9a-f-]{36}$/i.test(id)) throw notFound("That file");
   const [a] = await db.select().from(attachments).where(and(eq(attachments.id, id), eq(attachments.businessId, businessId)));
-  if (!a || (a.ownerType !== "expense" && a.ownerType !== "bill")) throw notFound("That file");
+  if (!a || (a.ownerType !== "expense" && a.ownerType !== "bill" && a.ownerType !== "capture")) throw notFound("That file");
   return a;
 }
 
-const safeName = (s: string) => s.replace(/[\r\n"\\/]/g, "").replace(/[^\x20-\x7e]/g, "_").slice(0, 150) || "file";
+export const safeName = (s: string) => s.replace(/[\r\n"\\/]/g, "").replace(/[^\x20-\x7e]/g, "_").slice(0, 150) || "file";
 
 export async function attachmentRoutes(app: FastifyInstance) {
   // Only this area takes uploads: photos and PDFs up to 10 MB, one file at a time.

@@ -31,7 +31,7 @@ export const PRESS = {
     { k: "Countries", v: "United Kingdom and Sri Lanka, chosen at sign-up" },
     { k: "In the UK", v: "Sole traders and landlords, mainly through accountants" },
     { k: "In Sri Lanka", v: "Small businesses, through tax practitioners and direct" },
-    { k: "What it doesn’t do", v: "Bank feeds, online card payments, receipt reading or filing to HMRC or the IRD" },
+    { k: "What it doesn’t do", v: "Bank feeds, online card payments, or filing to HMRC or the IRD" },
     { k: "Pricing", v: "A free plan; paid prices are still being set" },
   ],
 };

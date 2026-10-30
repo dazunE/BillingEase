@@ -21,6 +21,13 @@ export type ChangeEntry = {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "capture-agent",
+    date: "2026-10-18",
+    tag: "New",
+    title: "Snap a receipt or bill: BillingEase reads it for you to check",
+    body: "Send a photo or PDF of a receipt or a supplier’s bill and BillingEase reads it, checks that the amounts and the VAT (and SSCL in Sri Lanka) add up, and drafts the expense or bill. It waits in For you to check until you approve it, and you can change any detail first. Ask now runs on Google’s Gemini, and you can see what the AI costs your business each month.",
+  },
+  {
     id: "site-two-countries",
     date: "2026-10-14",
     tag: "New",

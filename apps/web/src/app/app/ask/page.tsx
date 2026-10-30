@@ -74,7 +74,7 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
         {!setUp && (
           <div role="status" className="flex flex-col gap-1 rounded-2xl bg-due-bg px-5 py-4 text-due" data-testid="ask-not-set-up">
             <strong>Ask isn&apos;t set up yet</strong>
-            <span className="text-sm">It needs a Claude API key on the BillingEase server. Your books are fine; ask whoever runs BillingEase for you to add one. Until then, your {practitioner} is the person to ask.</span>
+            <span className="text-sm">It needs Vertex AI on the BillingEase server. Your books are fine; ask whoever runs BillingEase for you to set it up. Until then, your {practitioner} is the person to ask.</span>
           </div>
         )}
 

@@ -23,11 +23,18 @@ services:
       API_INTERNAL_KEY: ${API_INTERNAL_KEY:-change-me-in-production}
       POSTMARK_TOKEN: ${POSTMARK_TOKEN:-}
       EMAIL_FROM: ${EMAIL_FROM:-BillingEase <hello@example.com>}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ASK_MODEL: ${ASK_MODEL:-claude-opus-5-5}
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-}
+      GOOGLE_CLOUD_LOCATION: ${GOOGLE_CLOUD_LOCATION:-europe-west2}
+      # A service account key mounted below (or workload identity where hosted).
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:+/run/secrets/gcp.json}
+      AI_MODEL_DEEP: ${AI_MODEL_DEEP:-gemini-4-argon}
+      AI_MODEL_FAST: ${AI_MODEL_FAST:-gemini-3.8-flash}
+      AI_MODEL_LITE: ${AI_MODEL_LITE:-gemini-3.5-flash-lite}
+      AI_MONTHLY_BUDGET_USD: ${AI_MONTHLY_BUDGET_USD:-5}
       BILLINGEASE_TODAY: ${BILLINGEASE_TODAY:-}
     volumes:
       - files:/data/files
+      - ${GOOGLE_APPLICATION_CREDENTIALS:-/dev/null}:/run/secrets/gcp.json:ro
     # Not published: only the web app talks to the API.
     expose: ["4000"]
 

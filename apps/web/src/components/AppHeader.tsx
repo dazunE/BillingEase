@@ -31,6 +31,8 @@ function verbs(b: Business): Item[] {
     lk
       ? { label: b.vatRegistered ? "Send a tax invoice" : "Send an invoice", hint: b.vatRegistered ? "With VAT and SSCL on their own lines" : "In rupees", href: "/app/in/invoices/new", icon: ICONS.doc, tint: "bg-tint" }
       : { label: b.vatRegistered ? "Send a VAT invoice" : "Send an invoice", hint: b.vatRegistered ? "In pounds, with VAT" : "In pounds", href: "/app/in/invoices/new", icon: ICONS.doc, tint: "bg-tint" },
+    { label: "Snap a receipt or bill", hint: "A photo or PDF: BillingEase reads it for you to check", href: "/app/check#capture", icon: ICONS.camera, tint: "bg-going-tint" },
+    { label: "Upload a bank statement", hint: "Any bank's CSV or PDF: matched to your books", href: "/app/statements", icon: ICONS.bank, tint: "bg-going-tint" },
     { label: "Record an expense", hint: lk ? "Already paid: cash, cheque or transfer" : b.country === "us" ? "Already paid, in a Schedule C line" : "Already paid, in an HMRC category", href: "/app/out#expense", icon: ICONS.bill, tint: "bg-going-tint" },
     { label: "Enter a bill", hint: "Something you’ll pay later", href: "/app/out/bills/new", icon: BILL, tint: "bg-going-tint" },
     { label: "Write a quote", hint: "A price before you start", href: "/app/in/quotes/new", icon: ICONS.doc, tint: "bg-tint" },
@@ -54,6 +56,8 @@ export async function AppHeader({ userName, email, business }: { userName: strin
   const account: Item[] = [
     { label: "Business profile", hint: lk ? "Name, TIN, VAT and SSCL" : business.country === "us" ? "Name and EIN" : "Name, UTR and VAT", href: "/app/settings/business" },
     { label: "Notifications", hint: count ? `${count} new` : "Nothing new", href: "/app/notifications" },
+    { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
+    { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
     { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/features" },
     { label: "Help", hint: "Answers, and talk to a person", href: "/help" },
   ];

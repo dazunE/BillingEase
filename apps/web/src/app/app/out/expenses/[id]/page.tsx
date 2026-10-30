@@ -66,7 +66,7 @@ export default async function ExpensePage({ params }: { params: Promise<{ id: st
           <Card className="flex flex-col gap-3 p-6">
             <h2 className="font-display text-xl font-bold">History</h2>
             <p className="text-sm text-ink2">
-              Recorded by hand{e.createdByName ? ` by ${e.createdByName}` : ""} · {formatDate(e.createdAt.slice(0, 10))}
+              {e.createdVia === "agent" ? "Read by Capture, approved" : "Recorded by hand"}{e.createdByName ? ` by ${e.createdByName}` : ""} · {formatDate(e.createdAt.slice(0, 10))}
             </p>
             {e.supplierId && <Link href={`/app/out/suppliers/${e.supplierId}`} className="text-sm font-semibold underline underline-offset-4">See {e.payee}&apos;s page</Link>}
             {e.monthlyCostId && <Link href="/app/out/monthly" className="text-sm font-semibold underline underline-offset-4">Recorded from an every-month cost</Link>}
