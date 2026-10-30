@@ -59,7 +59,7 @@ export default async function ExpensePage({ params }: { params: Promise<{ id: st
           </Card>
           <Card className="p-[clamp(18px,3vw,28px)]">
             <h2 className="mb-4 font-display text-[22px] font-bold tracking-[-0.02em]">Receipt or invoice</h2>
-            <AttachmentList ownerType="expense" ownerId={e.id} files={data.attachments} hint={uk ? "Kept with your books. HMRC can ask to see it." : "Kept with your books for your tax practitioner."} />
+            <AttachmentList ownerType="expense" ownerId={e.id} files={data.attachments} hint={{ uk: "Kept with your books. HMRC can ask to see it.", lk: "Kept with your books for your tax practitioner.", us: "Kept with your books. The IRS can ask to see it." }[setup.country]} />
           </Card>
         </div>
         <aside className="flex flex-col gap-5">

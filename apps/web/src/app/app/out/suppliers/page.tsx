@@ -23,7 +23,7 @@ export default async function SuppliersPage({ searchParams }: { searchParams: Pr
   // People you've paid by name but haven't added as suppliers.
   const known = new Set(all.suppliers.map((s) => s.name.toLowerCase()));
   const loose = [...new Set(unlinked.expenses.filter((e) => !e.supplierId && !known.has(e.payee.toLowerCase())).map((e) => e.payee))].slice(0, 8);
-  const vatLabel = setup.country === "uk" ? "VAT registration number" : "VAT registration number (TIN-VAT)";
+  const vatLabel = { uk: "VAT registration number", lk: "VAT registration number (TIN-VAT)", us: "Sales tax permit" }[setup.country];
 
   return (
     <>

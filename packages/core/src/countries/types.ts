@@ -1,8 +1,8 @@
 import type { Currency } from "../money";
 import type { IsoDate, Period } from "../dates";
 
-export type CountryCode = "uk" | "lk";
-export const COUNTRY_CODES: CountryCode[] = ["uk", "lk"];
+export type CountryCode = "uk" | "lk" | "us";
+export const COUNTRY_CODES: CountryCode[] = ["uk", "lk", "us"];
 
 export type Category = {
   id: string;

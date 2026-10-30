@@ -43,6 +43,19 @@ export function featuresFor(a: Answers): Feature[] {
       { g: "acct", k: "ask", t: "Ask: answers from Sri Lankan tax sources", on: true },
     ];
   }
+  if (a.country === "us") {
+    return [
+      { g: "in", k: "invoices", t: "Invoices in dollars, no sales tax", on: true },
+      { g: "in", k: "quotes", t: "Quotes you can mark accepted", on: true },
+      { g: "in", k: "pay", t: "Payments by transfer, ACH, card or check", on: true },
+      { g: "out", k: "expenses", t: "Expenses in Schedule C lines", on: true },
+      { g: "out", k: "bills", t: "Bills to pay", on: true },
+      { g: "out", k: "monthly", t: "Every-month costs", on: true },
+      { g: "keep", k: "quarters", t: "Calendar quarters and the tax year", on: true },
+      { g: "acct", k: "pview", t: `Your ${noun} sees the same books`, on: true },
+      { g: "acct", k: "ask", t: "Ask: answers from IRS guidance", on: true },
+    ];
+  }
   const trade = a.kind === "sole_trader" || a.kind === "both";
   const land = a.kind === "landlord" || a.kind === "both";
   return [
@@ -107,7 +120,7 @@ export function SetupPreview({ answers: a, done, prev }: { answers: Answers; don
           </div>
         </div>
         <span className="text-xs text-muted">
-          Starts at {zero} and fills in as you add invoices and costs. Yours to keep is after {lk ? "income tax" : r.wording.taxLabel}.
+          Starts at {zero} and fills in as you add invoices and costs. {a.country === "us" ? "Tax set-aside isn’t worked out for US businesses yet." : <>Yours to keep is after {lk ? "income tax" : r.wording.taxLabel}.</>}
         </span>
       </div>
 

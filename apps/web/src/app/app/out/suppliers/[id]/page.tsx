@@ -27,7 +27,7 @@ export default async function SupplierPage({ params }: { params: Promise<{ id: s
     ...d.expenses.map((e) => ({ key: `e${e.id}`, date: e.spentOn, title: e.note ?? e.categoryName ?? "To sort", sub: [e.chequeNumber ? `Cheque ${e.chequeNumber}` : e.method, e.attachmentCount ? "attached" : null].filter(Boolean).join(" · "), amount: e.gross, href: `/app/out/expenses/${e.id}` })),
     ...d.payments.map((p) => ({ key: `p${p.id}`, date: p.paidOn, title: `Bill${p.billReference ? ` ${p.billReference}` : ""}`, sub: p.chequeNumber ? `Cheque ${p.chequeNumber}${p.chequeBank ? `, ${p.chequeBank}` : ""}` : p.method, amount: p.amount, href: `/app/out/bills/${p.billId}` })),
   ].sort((a, b) => b.date.localeCompare(a.date));
-  const vatLabel = setup.country === "uk" ? "VAT registration number" : "VAT registration number (TIN-VAT)";
+  const vatLabel = { uk: "VAT registration number", lk: "VAT registration number (TIN-VAT)", us: "Sales tax permit" }[setup.country];
   const details: [string, string | null][] = [
     ["Contact", s.contactName], ["Email", s.email], ["Phone", s.phone], ["Address", s.address],
     [vatLabel, s.vatNumber], ["Usually goes to", s.defaultCategoryName], ["Notes", s.notes],

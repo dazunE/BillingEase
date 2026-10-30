@@ -3,10 +3,17 @@ import { Country, endpoint, optionalText } from "./endpoint";
 
 const Kind = z.enum(["sole_trader", "landlord", "both", "sole_proprietor", "partnership"]);
 
+/** Business types each country offers. In the US, a single-member LLC is taxed as a sole proprietor and a multi-member LLC as a partnership. */
+export const KINDS_BY_COUNTRY: Record<z.infer<typeof Country>, z.infer<typeof Kind>[]> = {
+  uk: ["sole_trader", "landlord", "both"],
+  lk: ["sole_proprietor", "partnership"],
+  us: ["sole_proprietor", "partnership"],
+};
+
 export const Business = z.object({
   id: z.string(),
   country: Country,
-  currency: z.enum(["GBP", "LKR"]),
+  currency: z.enum(["GBP", "LKR", "USD"]),
   name: z.string(),
   legalName: z.string().nullable(),
   kind: Kind,
@@ -56,7 +63,8 @@ const profileFields = {
 export const CreateBusinessBody = z.object({ country: Country, kind: Kind, ...profileFields })
   .refine((b) => !b.vatRegistered || !!b.vatNumber, { path: ["vatNumber"], message: "Enter the VAT number" })
   .refine((b) => b.country === "lk" || !b.ssclRegistered, { path: ["ssclRegistered"], message: "SSCL is for Sri Lankan businesses" })
-  .refine((b) => (b.country === "uk" ? ["sole_trader", "landlord", "both"] : ["sole_proprietor", "partnership"]).includes(b.kind), { path: ["kind"], message: "Pick a business type for this country" });
+  .refine((b) => b.country !== "us" || !b.vatRegistered, { path: ["vatRegistered"], message: "Sales tax isn't set up for US businesses yet" })
+  .refine((b) => KINDS_BY_COUNTRY[b.country].includes(b.kind), { path: ["kind"], message: "Pick a business type for this country" });
 
 export const UpdateBusinessBody = z.object({
   ...profileFields,

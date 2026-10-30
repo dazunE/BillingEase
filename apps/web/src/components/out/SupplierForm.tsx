@@ -27,7 +27,7 @@ export function SupplierForm({ supplier, categories, vatLabel, name }: { supplie
         <Field label="Contact" hint="Optional" error={e.contactName}><Input name="contactName" defaultValue={val("contactName")} /></Field>
         <Field label="Email" hint="Optional" error={e.email}><Input name="email" type="email" defaultValue={val("email")} /></Field>
         <Field label="Phone" hint="Optional" error={e.phone}><Input name="phone" type="tel" defaultValue={val("phone")} /></Field>
-        <Field label={vatLabel} hint="Optional: if they're VAT registered" error={e.vatNumber}><Input name="vatNumber" defaultValue={val("vatNumber")} /></Field>
+        <Field label={vatLabel} hint={vatLabel === "Sales tax permit" ? "Optional" : "Optional: if they're VAT registered"} error={e.vatNumber}><Input name="vatNumber" defaultValue={val("vatNumber")} /></Field>
       </div>
       <Field label="Address" hint="Optional" error={e.address}><Textarea name="address" defaultValue={val("address")} className="min-h-16" /></Field>
       <Field label="Notes" hint="Optional, e.g. their terms" error={e.notes}><Textarea name="notes" defaultValue={val("notes")} className="min-h-16" /></Field>

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Item } from "@billingease/contracts";
-import { addDays, computeInvoice, formatDate, formatMoney, invoiceTitle, parseMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import { addDays, computeInvoice, currencySymbol, formatDate, formatMoney, invoiceTitle, parseMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import Link from "next/link";
 import { useActionState, useMemo, useState } from "react";
 import { Button, Field, ICONS, Icon, Input, Select, Textarea, cx } from "@/components/ui";
@@ -146,6 +146,8 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
       : "You're VAT registered, so this is a VAT invoice: your VAT number, the VAT rate and VAT on each line, and a VAT summary."
     : lk
       ? sscl ? "You're SSCL registered but not VAT registered: SSCL shows as its own line, with no VAT." : "You're not VAT registered, so no VAT or SSCL is added."
+      : b.country === "us"
+      ? "No sales tax is added. The total is what your customer pays."
       : "You're not VAT registered, so no VAT is added. Change it in your business profile if you register.";
 
   return (
@@ -194,9 +196,11 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
                   <Input value={nc.taxId} onChange={(ev) => setNc({ ...nc, taxId: ev.target.value })} inputMode="numeric" />
                 </Field>
               )}
-              <Field label={lk ? "Their VAT registration number" : "Their VAT number"} hint="Optional" error={e["newCustomer.vatNumber"]}>
-                <Input value={nc.vatNumber} onChange={(ev) => setNc({ ...nc, vatNumber: ev.target.value })} />
-              </Field>
+              {b.country !== "us" && (
+                <Field label={lk ? "Their VAT registration number" : "Their VAT number"} hint="Optional" error={e["newCustomer.vatNumber"]}>
+                  <Input value={nc.vatNumber} onChange={(ev) => setNc({ ...nc, vatNumber: ev.target.value })} />
+                </Field>
+              )}
             </div>
           )}
           {customer && !customer.email && mode !== "repeating" && (
@@ -260,7 +264,7 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
                     <Field label={`Quantity${items.find((x) => x.id === l.itemId)?.unit ? ` (${items.find((x) => x.id === l.itemId)!.unit})` : ""}`} error={err("quantityMilli")}>
                       <Input inputMode="decimal" value={l.qty} onChange={(ev) => update(i, { qty: ev.target.value })} />
                     </Field>
-                    <Field label={`Price (${b.currency === "GBP" ? "£" : "Rs"})`} error={err("unitPrice")}>
+                    <Field label={`Price (${currencySymbol(b.currency)})`} error={err("unitPrice")}>
                       <Input inputMode="decimal" value={l.price} onChange={(ev) => update(i, { price: ev.target.value })} placeholder="0.00" />
                     </Field>
                     <Field label="Discount" hint="Optional" error={err("discount")}>

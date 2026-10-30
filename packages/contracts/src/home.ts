@@ -47,7 +47,7 @@ export const VatMonthCard = z.object({
 
 export const HomeSummary = z.object({
   today: IsoDate,
-  currency: z.enum(["GBP", "LKR"]),
+  currency: z.enum(["GBP", "LKR", "USD"]),
   period: z.object({ key: PeriodKey, from: IsoDate, to: IsoDate, label: z.string(), soFar: IsoDate }),
   periods: z.array(z.object({ key: PeriodKey, label: z.string() })),
   comingIn: z.object({ total: Minor, received: Minor, onTheWay: Minor, late: Minor, lateCount: z.number().int() }),

@@ -2,6 +2,7 @@
 
 import type { OutCategory } from "@billingease/contracts";
 import { useState, type ReactNode } from "react";
+import { currencySymbol } from "@billingease/core";
 import { Field, Input, cx } from "@/components/ui";
 
 /** A row of pill-shaped radio buttons. */
@@ -26,12 +27,11 @@ export function Chips({ name, legend, options, value, onChange, error, hint, cla
   );
 }
 
-const SYMBOL = { GBP: "£", LKR: "Rs" } as const;
 
-export function MoneyInput({ currency, className, ...props }: React.ComponentProps<"input"> & { currency: "GBP" | "LKR" }) {
+export function MoneyInput({ currency, className, ...props }: React.ComponentProps<"input"> & { currency: "GBP" | "LKR" | "USD" }) {
   return (
     <span className={cx("relative flex", className)}>
-      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted">{SYMBOL[currency]}</span>
+      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted">{currencySymbol(currency)}</span>
       <Input inputMode="decimal" autoComplete="off" placeholder="0.00" {...props} className={cx(currency === "LKR" ? "pl-10" : "pl-7", "tabular")} />
     </span>
   );

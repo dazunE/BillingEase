@@ -1,11 +1,11 @@
 /**
- * Money is always an integer number of minor units: pence for GBP, cents for LKR.
+ * Money is always an integer number of minor units: pence for GBP, cents for LKR and USD.
  * Never a float. Rates are basis points (2000 = 20%).
  */
-export type Currency = "GBP" | "LKR";
+export type Currency = "GBP" | "LKR" | "USD";
 
-const LOCALE: Record<Currency, string> = { GBP: "en-GB", LKR: "en-LK" };
-const SYMBOL: Record<Currency, string> = { GBP: "£", LKR: "Rs " };
+const LOCALE: Record<Currency, string> = { GBP: "en-GB", LKR: "en-LK", USD: "en-US" };
+const SYMBOL: Record<Currency, string> = { GBP: "£", LKR: "Rs ", USD: "$" };
 
 export function formatMoney(minor: number, currency: Currency, opts: { decimals?: "auto" | "always" | "never" } = {}): string {
   const mode = opts.decimals ?? "auto";
@@ -18,11 +18,16 @@ export function formatMoney(minor: number, currency: Currency, opts: { decimals?
   return (minor < 0 ? "−" : "") + SYMBOL[currency] + n;
 }
 
-/** Parses "1,250", "£1250.5", "Rs 12,500.00" into minor units. Null if it isn't an amount. */
+/** The symbol shown in front of an amount field: £, Rs or $. */
+export function currencySymbol(currency: Currency): string {
+  return SYMBOL[currency].trim();
+}
+
+/** Parses "1,250", "£1250.5", "Rs 12,500.00", "$1,250" into minor units. Null if it isn't an amount. */
 export function parseMoney(input: string | number | null | undefined): number | null {
   if (input == null) return null;
   if (typeof input === "number") return Number.isFinite(input) ? Math.round(input * 100) : null;
-  const cleaned = input.replace(/(rs\.?|lkr|gbp|£|,|\s)/gi, "");
+  const cleaned = input.replace(/(rs\.?|lkr|gbp|usd|£|\$|,|\s)/gi, "");
   if (!/^\d+(\.\d{1,2})?$/.test(cleaned)) return null;
   const [whole, frac = ""] = cleaned.split(".");
   return Number(whole) * 100 + Number(frac.padEnd(2, "0"));

@@ -8,13 +8,18 @@ export function HowItWorks({ country, picked }: { country: Cty; picked: boolean 
   const r = rulesFor(country);
   const lk = country === "lk";
   const ex = example(country);
-  const rules = lk
+  const us = country === "us";
+  const rules = us
+    ? [`Dollars, with the tax year from ${yearStart("us")}`, "Expenses in the IRS’s Schedule C lines", "Invoices without sales tax, for states like Delaware that have none"]
+    : lk
     ? [`Rupees, with the year of assessment from ${yearStart("lk")}`, `${r.wording.vatInvoiceTitle}s with VAT ${vatRate("lk")} and SSCL as its own line`, "Payroll with EPF, ETF and APIT worked out for you"]
     : [`Pounds, with the tax year from ${yearStart("uk")}`, "Expenses in HMRC’s categories, ready each quarter", "Your practice files your Making Tax Digital updates"];
   return (
     <DarkPanel label="How BillingEase works" eyebrow="How it works" title="Your business, in three numbers.">
       <PanelBody>
-        {lk
+        {us
+          ? "Invoices, expenses and bills each sit behind one of them. Your accountant sees the same records."
+          : lk
           ? "Invoices, expenses, payroll and your VAT and SSCL each sit behind one of them. Your practitioner sees the same books in TaxWise.lk."
           : "Invoices, expenses, your property and your MTD quarter each sit behind one of them. Your accountant sees the same records."}
       </PanelBody>
@@ -25,14 +30,14 @@ export function HowItWorks({ country, picked }: { country: Cty; picked: boolean 
         lines={{
           in: "What customers paid you this month, or still owe.",
           out: lk ? "Expenses, bills and payroll, paid or still to pay." : "Expenses and bills, paid or still to pay.",
-          keep: lk ? "What’s left after income tax is set aside." : "What’s left after Income Tax and National Insurance are set aside.",
+          keep: us ? "What’s left of your profit. Tax set-aside isn’t worked out for US businesses yet." : lk ? "What’s left after income tax is set aside." : "What’s left after Income Tax and National Insurance are set aside.",
         }}
       />
       <TickList items={rules} />
       <Scene country={country} variant="signup" keep={ex.keep} />
       <PanelFoot>
         {picked ? `Example month for a small design studio in ${r.name}.` : "Example month for a small design studio. Pick your country to see its version."}
-        {lk && ` ${ratesNote("lk")}`}
+        {country !== "uk" && ` ${ratesNote(country)}`}
       </PanelFoot>
     </DarkPanel>
   );

@@ -31,7 +31,7 @@ export default async function PricesPage({ searchParams }: { searchParams: Promi
         intro={`Your prices, saved once. Pick them when you write a quote or an invoice and the price${b.vatRegistered ? (sscl ? ", SSCL and VAT" : " and VAT") : ""} fills itself in.`}
         chips={<Chip label="Items" value={`${items.length}`} />}
         aside={<>
-          <p>{b.vatRegistered ? `You're VAT${sscl ? " and SSCL" : ""} registered, so each price shows its VAT rate${sscl ? " and whether SSCL applies" : ""}.` : "You're not VAT registered, so prices are what your customer pays."}</p>
+          <p>{b.vatRegistered ? `You're VAT${sscl ? " and SSCL" : ""} registered, so each price shows its VAT rate${sscl ? " and whether SSCL applies" : ""}.` : b.country === "us" ? "No sales tax is added, so prices are what your customer pays." : "You're not VAT registered, so prices are what your customer pays."}</p>
           <a href="#add" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-violet px-5 text-[15px] font-semibold hover:bg-[#a98ffb]"><Icon d={ICONS.plus} size={18} strokeWidth={2.4} />Add a price</a>
         </>}
       />

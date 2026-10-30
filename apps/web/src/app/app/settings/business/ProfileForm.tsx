@@ -62,6 +62,7 @@ export function ProfileForm({ b, text, canEdit }: { b: Business; text: CountryTe
   const v = state?.values;
   const e = state?.errors ?? {};
   const uk = b.country === "uk";
+  const us = b.country === "us";
   const val = (k: keyof Business) => (v ? v[k] ?? "" : (b[k] as string | null) ?? "");
   const [kind, setKind] = useState<string>(v?.kind ?? b.kind);
   const [vat, setVat] = useState(v ? v.vatRegistered === "on" : b.vatRegistered);
@@ -81,7 +82,7 @@ export function ProfileForm({ b, text, canEdit }: { b: Business; text: CountryTe
         <Section id="who-h" title="Who you are" sub="Shown at the top of every invoice and quote you send.">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Business name" hint="What customers know you as" error={e.name}><Input name="name" defaultValue={val("name")} /></Field>
-            <Field label="Legal name" hint={uk ? "If different, for example your own name as a sole trader" : "As registered, if different"} error={e.legalName}><Input name="legalName" defaultValue={val("legalName")} /></Field>
+            <Field label="Legal name" hint={uk ? "If different, for example your own name as a sole trader" : us ? "As registered with the state, for example Harbor Lane LLC" : "As registered, if different"} error={e.legalName}><Input name="legalName" defaultValue={val("legalName")} /></Field>
             <Field label="Owner" error={e.ownerName}><Input name="ownerName" defaultValue={val("ownerName")} /></Field>
             <Field label="Email" hint="Customers reply here" error={e.email}><Input name="email" type="email" defaultValue={val("email")} /></Field>
             <Field label="Phone" error={e.phone}><Input name="phone" type="tel" defaultValue={val("phone")} /></Field>
@@ -101,9 +102,11 @@ export function ProfileForm({ b, text, canEdit }: { b: Business; text: CountryTe
           </div>
         </Section>
 
-        <Section id="tax-h" title="Tax and registration" sub={uk ? "How HMRC knows you. Your accountant can check these." : "How the Inland Revenue Department knows you. Your tax practitioner can check these."}>
+        <Section id="tax-h" title="Tax and registration" sub={uk ? "How HMRC knows you. Your accountant can check these." : us ? "How the IRS knows you. Your accountant can check these." : "How the Inland Revenue Department knows you. Your tax practitioner can check these."}>
           <Seg name="kind" legend="What kind of business is it?" value={kind} onChange={setKind} options={uk
             ? [{ id: "sole_trader", label: "Sole trader" }, { id: "landlord", label: "Landlord" }, { id: "both", label: "Both" }]
+            : us
+            ? [{ id: "sole_proprietor", label: "Single-member LLC" }, { id: "partnership", label: "Multi-member LLC" }]
             : [{ id: "sole_proprietor", label: "Sole proprietor" }, { id: "partnership", label: "Partnership" }]} />
           {e.kind && <span className="text-xs font-semibold text-late">{e.kind}</span>}
           <Field label={`${text.taxIdLabel} · ${text.taxIdLong}`} hint={text.taxIdHint} error={e.taxId} className="sm:max-w-sm">
@@ -114,13 +117,13 @@ export function ProfileForm({ b, text, canEdit }: { b: Business; text: CountryTe
               hint={basis === "cash" ? "Cash basis: income and costs count when money moves. The usual for sole traders." : "Accruals basis: they count when you invoice or are billed."}
               options={[{ id: "cash", label: "When money moves" }, { id: "accrual", label: "When invoiced or billed" }]} />
           )}
-          <Seg name="vatRegistered" legend="Registered for VAT?" hint={text.vatHint} value={vat ? "on" : "off"} onChange={(x) => setVat(x === "on")} options={[{ id: "on", label: "Yes" }, { id: "off", label: "No" }]} />
+          {!us && <Seg name="vatRegistered" legend="Registered for VAT?" hint={text.vatHint} value={vat ? "on" : "off"} onChange={(x) => setVat(x === "on")} options={[{ id: "on", label: "Yes" }, { id: "off", label: "No" }]} />}
           {vat && (
             <Field label={text.vatIdLabel} hint={`Printed on every ${text.vatInvoiceTitle}.`} error={e.vatNumber} className="sm:max-w-sm">
               <Input name="vatNumber" defaultValue={val("vatNumber")} />
             </Field>
           )}
-          {!uk && (
+          {b.country === "lk" && (
             <Seg name="ssclRegistered" legend="Registered for SSCL?" hint="The Social Security Contribution Levy shows as its own line on Tax Invoices."
               value={sscl ? "on" : "off"} onChange={(x) => setSscl(x === "on")} options={[{ id: "on", label: "Yes" }, { id: "off", label: "No" }]} />
           )}
@@ -144,7 +147,7 @@ export function ProfileForm({ b, text, canEdit }: { b: Business; text: CountryTe
               </Select>
             </Field>
           </div>
-          <Field label="Payment details printed on invoices" hint={uk ? "Account name, sort code and account number" : "Bank, branch, account name and number"} error={e.paymentDetails}>
+          <Field label="Payment details printed on invoices" hint={uk ? "Account name, sort code and account number" : us ? "Bank, account name, routing and account number" : "Bank, branch, account name and number"} error={e.paymentDetails}>
             <Textarea name="paymentDetails" defaultValue={val("paymentDetails")} rows={3} />
           </Field>
           <Field label="Note on every invoice (optional)" hint="For example: thank you for your business" error={e.invoiceNote}>

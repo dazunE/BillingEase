@@ -1,7 +1,7 @@
 "use client";
 
 import type { Customer, Item, Line } from "@billingease/contracts";
-import { formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import { currencySymbol, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import { useActionState, useState } from "react";
 import { Button, Field, Input, Select, Textarea, cx } from "@/components/ui";
 import type { FormState } from "@/lib/form";
@@ -26,7 +26,7 @@ export function PaymentForm({ action, country, currency, open, today }: { action
     <form action={formAction} noValidate className="flex flex-col gap-4">
       <Alert state={state} />
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={`Amount (${currency === "GBP" ? "£" : "Rs"})`} hint={`${formatMoney(open, currency, { decimals: "always" })} left to pay`} error={e.amount}>
+        <Field label={`Amount (${currencySymbol(currency)})`} hint={`${formatMoney(open, currency, { decimals: "always" })} left to pay`} error={e.amount}>
           <Input name="amount" inputMode="decimal" defaultValue={v.amount ?? decimal(open)} />
         </Field>
         <Field label="Received on" error={e.receivedOn}>
@@ -156,7 +156,7 @@ export function CustomerForm({ action, country, customer, submit = "Save", invoi
         {country === "lk" && (
           <Field label={`${rules.wording.taxIdLabel}`} hint="Taxpayer Identification Number, printed on Tax Invoices" error={e.taxId}><Input name="taxId" defaultValue={val("taxId")} inputMode="numeric" /></Field>
         )}
-        <Field label={country === "lk" ? "VAT registration number" : "VAT number"} hint={country === "lk" ? "If they're VAT registered" : "Optional, if they're VAT registered"} error={e.vatNumber}><Input name="vatNumber" defaultValue={val("vatNumber")} /></Field>
+        {country !== "us" && <Field label={country === "lk" ? "VAT registration number" : "VAT number"} hint={country === "lk" ? "If they're VAT registered" : "Optional, if they're VAT registered"} error={e.vatNumber}><Input name="vatNumber" defaultValue={val("vatNumber")} /></Field>}
         <Field label="Notes" hint="Only your team sees these" error={e.notes} className="sm:col-span-2"><Textarea name="notes" defaultValue={val("notes")} className="min-h-20" /></Field>
       </div>
       <div className="flex flex-wrap gap-2.5">
@@ -178,7 +178,7 @@ export function ItemForm({ action, country, vatRegistered, ssclRegistered, item,
       <Alert state={state} />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Field label="Name" error={e.name} className="lg:col-span-2"><Input name="name" defaultValue={v.name ?? item?.name} /></Field>
-        <Field label={`Price (${country === "uk" ? "£" : "Rs"})`} hint="Before tax" error={e.unitPrice}><Input name="unitPrice" inputMode="decimal" defaultValue={v.unitPrice ?? (item ? decimal(item.unitPrice) : "")} /></Field>
+        <Field label={`Price (${currencySymbol(rulesFor(country).currency)})`} hint="Before tax" error={e.unitPrice}><Input name="unitPrice" inputMode="decimal" defaultValue={v.unitPrice ?? (item ? decimal(item.unitPrice) : "")} /></Field>
         <Field label="Per" hint="e.g. hour, day, sign" error={e.unit}><Input name="unit" defaultValue={v.unit ?? item?.unit ?? ""} /></Field>
         <Field label="Description" hint="Optional" error={e.description} className="sm:col-span-2"><Input name="description" defaultValue={v.description ?? item?.description ?? ""} /></Field>
         {vatRegistered && (

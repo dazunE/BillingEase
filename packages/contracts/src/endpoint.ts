@@ -38,5 +38,5 @@ export const IsoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a date like 
 /** Minor units (pence, cents): a whole number. */
 export const Minor = z.number().int();
 export const PositiveMinor = z.number().int().positive("Enter an amount more than 0");
-export const Country = z.enum(["uk", "lk"]);
+export const Country = z.enum(["uk", "lk", "us"]);
 export const optionalText = (max = 500) => z.string().trim().max(max).optional().nullable().transform((v) => (v ? v : null));

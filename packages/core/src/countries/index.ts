@@ -1,11 +1,12 @@
 import { lk } from "./lk";
 import { uk } from "./uk";
-import type { CountryCode, CountryRules } from "./types";
+import { us } from "./us";
+import { COUNTRY_CODES, type CountryCode, type CountryRules } from "./types";
 
 export * from "./types";
-export { uk, lk };
+export { uk, lk, us };
 
-const RULES: Record<CountryCode, CountryRules> = { uk, lk };
+const RULES: Record<CountryCode, CountryRules> = { uk, lk, us };
 
 export function rulesFor(country: CountryCode): CountryRules {
   const r = RULES[country];
@@ -14,7 +15,7 @@ export function rulesFor(country: CountryCode): CountryRules {
 }
 
 export function isCountryCode(x: unknown): x is CountryCode {
-  return x === "uk" || x === "lk";
+  return COUNTRY_CODES.includes(x as CountryCode);
 }
 
 export function categoryById(country: CountryCode, id: string) {

@@ -26,8 +26,8 @@ export const OutCategory = z.object({
 export type OutCategory = z.infer<typeof OutCategory>;
 
 export const OutSetup = z.object({
-  country: z.enum(["uk", "lk"]),
-  currency: z.enum(["GBP", "LKR"]),
+  country: z.enum(["uk", "lk", "us"]),
+  currency: z.enum(["GBP", "LKR", "USD"]),
   categories: z.array(OutCategory),
   payMethods: z.array(z.string()),
   vatRegistered: z.boolean(),

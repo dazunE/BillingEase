@@ -48,7 +48,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
           { key: "all", label: "Everyone", count: live.length, href: href("all") },
           { key: "owe", label: "Owe you", count: live.filter((c) => c.owed > 0).length, href: href("owe") },
           { key: "late", label: "Late", count: live.filter((c) => c.late > 0).length, href: href("late") },
-          { key: "tax", label: lk ? "Have a TIN or VAT no." : "Have a VAT number", count: live.filter((c) => c.taxId || c.vatNumber).length, href: href("tax") },
+          { key: "tax", label: lk ? "Have a TIN or VAT no." : b.country === "us" ? "Have a tax ID" : "Have a VAT number", count: live.filter((c) => c.taxId || c.vatNumber).length, href: href("tax") },
           ...(archived.length ? [{ key: "archived", label: "Archived", count: archived.length, href: href("archived") }] : []),
         ]} />
         <form method="get" action="/app/in/customers" className="flex w-full gap-2 sm:w-auto">

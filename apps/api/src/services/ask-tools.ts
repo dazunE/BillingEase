@@ -39,7 +39,7 @@ export function askTools(country: BusinessRow["country"]): ToolDef[] {
       name: "get_numbers",
       description: "The three numbers for a period of this business: Coming in (received plus still owed on invoices issued in the period), Going out (paid plus still owed on bills), the tax estimate share and Yours to keep. Also late invoices and bills due soon. Use for any question about income, spending, profit or tax owed.",
       input: z.object({ period: z.enum(["month", "quarter", "year"]) }),
-      schema: { type: "object", properties: { period: { type: "string", enum: ["month", "quarter", "year"], description: country === "uk" ? "month, quarter (this MTD quarter) or year (this tax year)" : "month (this VAT month) or year (this year of assessment)" } }, required: ["period"], additionalProperties: false },
+      schema: { type: "object", properties: { period: { type: "string", enum: ["month", "quarter", "year"], description: { uk: "month, quarter (this MTD quarter) or year (this tax year)", lk: "month (this VAT month) or year (this year of assessment)", us: "month, quarter (this calendar quarter) or year (this tax year)" }[country] } }, required: ["period"], additionalProperties: false },
       async run({ period }, t) {
         const r = await threeNumbers(t.db, t.business, period, t.today);
         const m = (x: number) => formatMoney(x, t.business.currency);
@@ -155,7 +155,7 @@ export function askTools(country: BusinessRow["country"]): ToolDef[] {
         return {
           source, name: b.name, country: rules.name, kind: b.kind, currency: b.currency,
           [rules.wording.taxIdLabel]: b.taxId ? "recorded" : "not recorded yet",
-          vatRegistered: b.vatRegistered, ...(country === "lk" ? { ssclRegistered: b.ssclRegistered } : { mtdQuarters: b.quarterType }),
+          ...(country === "us" ? { salesTax: "not charged" } : { vatRegistered: b.vatRegistered }), ...(country === "lk" ? { ssclRegistered: b.ssclRegistered } : country === "uk" ? { mtdQuarters: b.quarterType } : {}),
           accountingBasis: b.basis === "cash" ? "cash basis (when money moves)" : "accruals basis (when invoiced or billed)",
           paymentTermsDays: b.termsDays,
         };

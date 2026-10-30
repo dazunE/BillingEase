@@ -54,7 +54,7 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-due-bg text-due"><Icon d={ICONS.sort} size={19} /></span>
               <div className="flex flex-col">
                 <span className="text-[17px] font-bold">{unsorted.expenses.length} expense{unsorted.expenses.length === 1 ? " needs" : "s need"} a category</span>
-                <span className="text-sm text-ink2">Your {setup.country === "uk" ? "accountant needs them for the quarterly update" : "tax practitioner needs them for your return"}.</span>
+                <span className="text-sm text-ink2">Your {{ uk: "accountant needs them for the quarterly update", lk: "tax practitioner needs them for your return", us: "accountant needs them for your return" }[setup.country]}.</span>
               </div>
             </div>
             <ul className="flex flex-col divide-y divide-divider">
@@ -123,7 +123,7 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
             chip={summary.counts.openBills ? `${summary.counts.openBills} to pay · ${fmt(summary.counts.openBillsTotal)}` : "Nothing to pay"} chipTone={summary.needs.overdueBills ? "late" : "neutral"} />
           <ToolCard href="/app/out/suppliers" icon={ICONS.people} title="Suppliers" line="Everyone you pay, and how much"
             chip={`${summary.counts.suppliers} supplier${summary.counts.suppliers === 1 ? "" : "s"}`} />
-          <ToolCard href="/app/out/monthly" icon={ICONS.clock} title="Every month" line={setup.country === "uk" ? "Desk rent, software and phone" : "Rent, electricity and internet"}
+          <ToolCard href="/app/out/monthly" icon={ICONS.clock} title="Every month" line={setup.country === "lk" ? "Rent, electricity and internet" : "Desk rent, software and phone"}
             chip={summary.counts.monthlyCosts ? (summary.counts.monthlyToPay ? `${fmt(summary.counts.monthlyToPay)} still to come` : "All recorded this month") : "None set up"} />
         </div>
       </section>
@@ -165,7 +165,7 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
   );
 }
 
-function MoneyRow({ item: i, currency, methods, today }: { item: MoneyOutItem; currency: "GBP" | "LKR"; methods: string[]; today: string }) {
+function MoneyRow({ item: i, currency, methods, today }: { item: MoneyOutItem; currency: "GBP" | "LKR" | "USD"; methods: string[]; today: string }) {
   return (
     <li className="flex flex-wrap items-center gap-x-3.5 gap-y-2 py-3">
       <Avatar name={i.name} className={i.kind === "monthly" ? "bg-tint" : undefined} />
