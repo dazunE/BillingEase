@@ -3,6 +3,7 @@
 import { auth } from "@billingease/contracts";
 import { redirect } from "next/navigation";
 import { call } from "@/lib/api";
+import { isCty } from "@/components/auth/country";
 import { failed, formValues, type FormState } from "@/lib/form";
 import { clearSession, setSession } from "@/lib/session";
 
@@ -13,7 +14,7 @@ function safeNext(next: string | undefined, fallback: string) {
 
 export async function signUp(_: FormState, fd: FormData): Promise<FormState> {
   const v = formValues(fd);
-  if (v.country !== "uk" && v.country !== "lk") return { errors: { country: "Pick where your business is" }, values: v };
+  if (!isCty(v.country)) return { errors: { country: "Pick where your business is" }, values: v };
   if (v.terms !== "on") return { errors: { terms: "Please agree to the terms to continue" }, values: v };
   try {
     const s = await call(auth.signUp, { body: { name: v.name ?? "", email: v.email ?? "", password: v.password ?? "" }, token: null });

@@ -18,7 +18,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone: "in"
 const dueTone = (days: number) => (days < 0 ? "late" : days <= 10 ? "due" : "neutral") as "late" | "due" | "neutral";
 
 /** UK: this MTD quarter. Sri Lanka: this month's VAT and SSCL return (only when registered). */
-export function PeriodCard({ card, currency, practitioner }: { card: Card; currency: "GBP" | "LKR"; practitioner: string }) {
+export function PeriodCard({ card, currency, practitioner }: { card: Card; currency: "GBP" | "LKR" | "USD"; practitioner: string }) {
   const m = (n: number) => whole(n, currency);
   if (card.kind === "quarter") {
     const c = card.current, p = card.previous;

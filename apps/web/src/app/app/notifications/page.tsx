@@ -17,7 +17,7 @@ export default async function NotificationsPage({ searchParams }: { searchParams
   const lk = business.country === "lk";
   const hear = lk
     ? ["Payments you record and invoices that go late", "Bills coming due, payroll and EPF and ETF dates", "VAT and SSCL return dates and income tax instalments"]
-    : ["Payments you record and invoices that go late", "Bills coming due", "When a quarter closes and when its update is due"];
+    : ["Payments you record and invoices that go late", "Bills coming due", business.country === "us" ? "When the tax year ends" : "When a quarter closes and when its update is due"];
   return (
     <>
     <AppCrumbs trail={[{ label: "Notifications" }]} />
@@ -73,7 +73,7 @@ export default async function NotificationsPage({ searchParams }: { searchParams
         ) : (
           <div className="flex flex-col items-start gap-2 rounded-3xl border border-dashed border-input p-6">
             <span className="font-display text-lg font-bold">Nothing here yet</span>
-            <span className="text-sm text-ink2">When an invoice goes late, a payment comes in or a {lk ? "VAT return" : "quarter"} date comes up, you&apos;ll hear about it here.</span>
+            <span className="text-sm text-ink2">When an invoice goes late, a payment comes in or a {lk ? "VAT return" : business.country === "us" ? "year-end" : "quarter"} date comes up, you&apos;ll hear about it here.</span>
           </div>
         )}
       </section>

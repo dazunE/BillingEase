@@ -60,7 +60,7 @@ export const passwordResets = pgTable("password_resets", {
   usedAt: timestamp("used_at", { withTimezone: true }),
 });
 
-export const COUNTRIES = ["uk", "lk"] as const;
+export const COUNTRIES = ["uk", "lk", "us"] as const;
 export const BUSINESS_KINDS = ["sole_trader", "landlord", "both", "sole_proprietor", "partnership"] as const;
 
 export const businesses = pgTable(
@@ -69,7 +69,7 @@ export const businesses = pgTable(
     id: id(),
     // Fixed at sign-up: a business in another country is a new business.
     country: text("country").$type<(typeof COUNTRIES)[number]>().notNull(),
-    currency: text("currency").$type<"GBP" | "LKR">().notNull(),
+    currency: text("currency").$type<"GBP" | "LKR" | "USD">().notNull(),
     name: text("name").notNull(),
     legalName: text("legal_name"),
     kind: text("kind").$type<(typeof BUSINESS_KINDS)[number]>().notNull(),
@@ -81,7 +81,7 @@ export const businesses = pgTable(
     town: text("town"),
     region: text("region"),
     postcode: text("postcode"),
-    // UTR in the UK, TIN in Sri Lanka
+    // UTR in the UK, TIN in Sri Lanka, EIN in the US
     taxId: text("tax_id"),
     vatRegistered: boolean("vat_registered").notNull().default(false),
     vatNumber: text("vat_number"),
@@ -103,8 +103,8 @@ export const businesses = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [
-    check("businesses_country", sql`${t.country} in ('uk','lk')`),
-    check("businesses_currency", sql`(${t.country} = 'uk' and ${t.currency} = 'GBP') or (${t.country} = 'lk' and ${t.currency} = 'LKR')`),
+    check("businesses_country", sql`${t.country} in ('uk','lk','us')`),
+    check("businesses_currency", sql`(${t.country} = 'uk' and ${t.currency} = 'GBP') or (${t.country} = 'lk' and ${t.currency} = 'LKR') or (${t.country} = 'us' and ${t.currency} = 'USD')`),
     check("businesses_basis", sql`${t.basis} in ('cash','accrual')`),
     check("businesses_terms", sql`${t.termsDays} between 0 and 365`),
   ],

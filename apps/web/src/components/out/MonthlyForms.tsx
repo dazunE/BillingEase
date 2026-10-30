@@ -22,7 +22,7 @@ export function MonthlyForm({ setup, suppliers, cost, onCancel }: { setup: OutSe
       <Alert state={state} />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Field label="What is it" error={e.name}>
-          <Input name="name" defaultValue={v.name ?? cost?.name} placeholder={setup.country === "uk" ? "e.g. Desk at the co-working" : "e.g. Studio cleaning"} />
+          <Input name="name" defaultValue={v.name ?? cost?.name} placeholder={setup.country === "lk" ? "e.g. Studio cleaning" : "e.g. Desk at the co-working"} />
         </Field>
         <Field label="Amount each month" error={e.amount}>
           <MoneyInput currency={setup.currency} name="amount" defaultValue={v.amount ?? amt(cost?.amount)} />
@@ -67,7 +67,7 @@ export function MonthlyForm({ setup, suppliers, cost, onCancel }: { setup: OutSe
 }
 
 /** Record this month's payment of an every-month cost, on the day it was paid. */
-export function RecordMonthly({ cost, currency, today, methods }: { cost: MonthlyCost; currency: "GBP" | "LKR"; today: string; methods: string[] }) {
+export function RecordMonthly({ cost, currency, today, methods }: { cost: MonthlyCost; currency: "GBP" | "LKR" | "USD"; today: string; methods: string[] }) {
   const [open, setOpen] = useState(false);
   const [state, action, pending] = useActionState(recordMonthly, undefined);
   const [method, setMethod] = useState(cost.method);

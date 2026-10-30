@@ -1,4 +1,4 @@
-import { business } from "@billingease/contracts";
+import { business, KINDS_BY_COUNTRY } from "@billingease/contracts";
 import { rulesFor } from "@billingease/core";
 import { seedAccounts } from "@billingease/db";
 import { businesses, memberships } from "@billingease/db/schema";
@@ -48,10 +48,10 @@ export async function businessRoutes(app: FastifyInstance) {
     const vatRegistered = next.vatRegistered ?? b.vatRegistered;
     const vatNumber = next.vatNumber !== undefined ? next.vatNumber : b.vatNumber;
     if (vatRegistered && !vatNumber) throw badRequest("Enter the VAT number.", { vatNumber: "Enter the VAT number" });
-    if (b.country === "uk" && next.ssclRegistered) throw badRequest("SSCL is for Sri Lankan businesses.");
+    if (b.country !== "lk" && next.ssclRegistered) throw badRequest("SSCL is for Sri Lankan businesses.");
+    if (b.country === "us" && next.vatRegistered) throw badRequest("Sales tax isn't set up for US businesses yet.");
     if (next.kind) {
-      const ok = b.country === "uk" ? ["sole_trader", "landlord", "both"] : ["sole_proprietor", "partnership"];
-      if (!ok.includes(next.kind)) throw badRequest("Pick a business type for this country.", { kind: "Not for this country" });
+      if (!KINDS_BY_COUNTRY[b.country].includes(next.kind)) throw badRequest("Pick a business type for this country.", { kind: "Not for this country" });
     }
     if (next.settings) next.settings = { ...b.settings, ...next.settings };
     const [row] = await ctx.db.update(businesses).set({ ...next, updatedAt: new Date() }).where(eq(businesses.id, b.id)).returning();

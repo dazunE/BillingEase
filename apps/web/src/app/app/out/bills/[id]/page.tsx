@@ -79,7 +79,7 @@ export default async function BillPage({ params }: { params: Promise<{ id: strin
 
           <section className="flex flex-col gap-2.5" aria-labelledby="files-h">
             <h2 id="files-h" className="text-base font-bold">The bill itself</h2>
-            <AttachmentList ownerType="bill" ownerId={b.id} files={d.attachments} hint={uk ? "HMRC can ask to see it." : "For your tax practitioner."} />
+            <AttachmentList ownerType="bill" ownerId={b.id} files={d.attachments} hint={{ uk: "HMRC can ask to see it.", lk: "For your tax practitioner.", us: "The IRS can ask to see it." }[setup.country]} />
           </section>
 
           <div className="grid gap-5 md:grid-cols-2">

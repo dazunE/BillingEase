@@ -7,7 +7,7 @@ import { Button, Field, Input } from "@/components/ui";
 import { Alert, ChequeFields, Chips, MoneyInput } from "./fields";
 
 /** Mark a bill paid in full, or in part, with how it was paid. */
-export function PayBillForm({ billId, left, currency, methods, today, supplier }: { billId: string; left: number; currency: "GBP" | "LKR"; methods: string[]; today: string; supplier: string }) {
+export function PayBillForm({ billId, left, currency, methods, today, supplier }: { billId: string; left: number; currency: "GBP" | "LKR" | "USD"; methods: string[]; today: string; supplier: string }) {
   const [mode, setMode] = useState<"none" | "full" | "part">("none");
   const [state, action, pending] = useActionState(payBill.bind(null, billId), undefined);
   const [method, setMethod] = useState(methods[0]);

@@ -36,6 +36,10 @@ const COUNTRY: Record<CountryCode, { rules: string; practitioner: string }> = {
     rules: "Sri Lanka tax (Inland Revenue Department guidance): VAT, the Social Security Contribution Levy (SSCL), personal income tax and instalments, APIT, and EPF and ETF contributions",
     practitioner: "tax practitioner",
   },
+  us: {
+    rules: "US tax (IRS and state guidance): how an LLC is taxed, Schedule C expenses, estimated tax, self-employment tax, EINs and record keeping",
+    practitioner: "accountant",
+  },
 };
 
 /** The system prompt: fixed per country (no dates or names), so it caches. */
@@ -48,12 +52,14 @@ export function systemPrompt(country: CountryCode): string {
 export function contextNote(b: BusinessRow, today: string): string {
   const rules = rulesFor(b.country);
   const year = rules.taxYearOf(today);
-  const kind = { sole_trader: "sole trader", landlord: "landlord", both: "sole trader and landlord", sole_proprietor: "sole proprietor", partnership: "partnership" }[b.kind];
+  const kind = { sole_trader: "sole trader", landlord: "landlord", both: "sole trader and landlord", sole_proprietor: b.country === "us" ? "single-member LLC" : "sole proprietor", partnership: b.country === "us" ? "multi-member LLC" : "partnership" }[b.kind];
   const facts = [
     `Today is ${formatDate(today, { year: true })} (${today}).`,
     `Business: ${b.name}, a ${kind} in ${rules.name}. Currency ${b.currency}.`,
-    `${b.country === "uk" ? "Tax year" : "Year of assessment"} ${year.label}: ${year.from} to ${year.to}.`,
-    `VAT registered: ${b.vatRegistered ? "yes" : "no"}.${b.country === "lk" ? ` SSCL registered: ${b.ssclRegistered ? "yes" : "no"}.` : ` MTD quarters: ${b.quarterType}.`} Basis: ${b.basis}.`,
+    `${b.country === "lk" ? "Year of assessment" : "Tax year"} ${year.label}: ${year.from} to ${year.to}.`,
+    b.country === "us"
+      ? `No sales tax is charged on invoices. Basis: ${b.basis}.`
+      : `VAT registered: ${b.vatRegistered ? "yes" : "no"}.${b.country === "lk" ? ` SSCL registered: ${b.ssclRegistered ? "yes" : "no"}.` : ` MTD quarters: ${b.quarterType}.`} Basis: ${b.basis}.`,
   ];
   return `<context>\n${facts.join("\n")}\n</context>`;
 }

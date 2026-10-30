@@ -10,7 +10,7 @@ import { AppCrumbs } from "@/components/app/AppCrumbs";
 
 export const metadata: Metadata = { title: "Quotes" };
 
-function QuoteCard({ q, currency }: { q: QuoteRow; currency: "GBP" | "LKR" }) {
+function QuoteCard({ q, currency }: { q: QuoteRow; currency: "GBP" | "LKR" | "USD" }) {
   const line = q.status === "sent" ? `Expires ${formatDate(q.expiryDate)}` : q.status === "draft" ? "Not sent yet" : q.status === "accepted" ? "Ready to invoice" : q.status === "invoiced" && q.invoiceNumber ? `Became ${q.invoiceNumber}` : q.decidedAt ? formatDate(q.decidedAt.slice(0, 10)) : "";
   return (
     <li>

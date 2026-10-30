@@ -13,10 +13,9 @@ export async function summaryRoutes(app: FastifyInstance) {
     const b = ctx.business;
     const now = today();
     const all = periodsFor({ country: b.country, quarterType: b.quarterType }, now);
-    const yearWord = b.country === "uk" ? "This tax year" : "This year of assessment";
-    const options: { key: PeriodKey; label: string }[] = b.country === "uk"
-      ? [{ key: "month", label: "This month" }, { key: "quarter", label: "This quarter" }, { key: "year", label: yearWord }]
-      : [{ key: "month", label: "This month" }, { key: "year", label: yearWord }];
+    const options: { key: PeriodKey; label: string }[] = b.country === "lk"
+      ? [{ key: "month", label: "This month" }, { key: "year", label: "This year of assessment" }]
+      : [{ key: "month", label: "This month" }, { key: "quarter", label: "This quarter" }, { key: "year", label: "This tax year" }];
     const key = options.some((o) => o.key === query.period) ? query.period! : all.default;
     const p = all[key];
     const label = key === "year" && b.country === "lk" ? p.label.replace("Tax year", "Year of assessment") : p.label;

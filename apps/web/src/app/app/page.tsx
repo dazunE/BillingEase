@@ -24,7 +24,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const first = me.user.name.split(/\s+/)[0];
   const practitioner = rules.wording.practitionerNoun;
   const profit = s.comingIn.total - s.goingOut.total;
-  const when = { quarter: "so far this quarter.", month: "so far this month.", year: `so far this ${business.country === "uk" ? "tax year" : "year of assessment"}.` }[s.period.key];
+  const when = { quarter: "so far this quarter.", month: "so far this month.", year: `so far this ${business.country === "lk" ? "year of assessment" : "tax year"}.` }[s.period.key];
 
   let sentence: React.ReactNode;
   if (s.empty) sentence = <>Welcome, {first}. Let&apos;s get <Mark>{business.name}</Mark> set up.</>;

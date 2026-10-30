@@ -12,6 +12,7 @@ import { signUp } from "../actions";
 const COUNTRIES = {
   uk: { name: "United Kingdom", line: "Pounds · HMRC · MTD" },
   lk: { name: "Sri Lanka", line: "Rupees · IRD · EPF and ETF" },
+  us: { name: "United States", line: "Dollars · IRS · LLCs" },
 };
 
 export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {

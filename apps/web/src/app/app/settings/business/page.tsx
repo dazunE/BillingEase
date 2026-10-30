@@ -10,18 +10,23 @@ export default async function BusinessProfilePage() {
   const { business: b } = await requireBusiness();
   const rules = rulesFor(b.country);
   const uk = b.country === "uk";
+  const us = b.country === "us";
   const text: CountryText = {
     name: rules.name,
     taxIdLabel: rules.wording.taxIdLabel,
-    taxIdLong: uk ? "Unique Taxpayer Reference" : "Taxpayer Identification Number",
-    taxIdHint: uk ? "10 digits, on letters from HMRC" : "From the Inland Revenue Department",
+    taxIdLong: uk ? "Unique Taxpayer Reference" : us ? "Employer Identification Number" : "Taxpayer Identification Number",
+    taxIdHint: uk ? "10 digits, on letters from HMRC" : us ? "9 digits, on your IRS letter. Customers may ask for it on a W-9" : "From the Inland Revenue Department",
     vatIdLabel: rules.wording.vatIdLabel,
     vatInvoiceTitle: rules.wording.vatInvoiceTitle,
     vatHint: `You must register once your turnover passes ${formatMoney(rules.vatThreshold, rules.currency)} a year${uk ? "" : " (to confirm with IRD)"}.`,
     townLabel: uk ? "Town or city" : "City",
-    regionLabel: uk ? "County" : "District",
-    postcodeLabel: uk ? "Postcode" : "Postal code",
-    facts: `${rules.currency === "GBP" ? "Pounds" : "Rupees"}, ${uk ? "tax year 6 April to 5 April" : "year of assessment 1 April to 31 March"}.`,
+    regionLabel: uk ? "County" : us ? "State" : "District",
+    postcodeLabel: uk ? "Postcode" : us ? "ZIP code" : "Postal code",
+    facts: {
+      uk: "Pounds, tax year 6 April to 5 April.",
+      lk: "Rupees, year of assessment 1 April to 31 March.",
+      us: "Dollars, tax year 1 January to 31 December. No sales tax on invoices.",
+    }[b.country],
   };
   return (
     <>

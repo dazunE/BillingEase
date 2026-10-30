@@ -30,6 +30,14 @@ const SUGGESTIONS = {
     "Is my office rent an allowable expense?",
     "Which invoices are late?",
   ],
+  us: [
+    "What can my LLC deduct on Schedule C?",
+    "How much have I made this quarter?",
+    "When are estimated tax payments due?",
+    "Do I need to charge sales tax?",
+    "What records should I keep?",
+    "Which invoices are late?",
+  ],
 };
 
 export default async function AskPage({ searchParams }: { searchParams: Promise<{ thread?: string }> }) {
@@ -58,7 +66,7 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
       <section aria-labelledby="ask-h" className="flex min-w-0 flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-semibold text-muted">AI answers for {uk ? "the UK" : "Sri Lanka"}</span>
+          <span className="text-sm font-semibold text-muted">AI answers for {{ uk: "the UK", lk: "Sri Lanka", us: "the US" }[business.country]}</span>
           <h1 id="ask-h" className="font-display text-[clamp(30px,4vw,40px)] font-bold leading-[1.05] tracking-[-0.03em]">Ask about tax and your books</h1>
           <p className="max-w-[680px] text-ink2">Answers come from your own books and {rules.askSources}, and list the sources they rely on. They can be wrong and they never file anything. When it needs judgement, ask your {practitioner}.</p>
         </div>
@@ -77,7 +85,7 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
         )}
 
         <AskBox key={threadId ?? "new"} threadId={threadId} disabled={!setUp} suggestions={SUGGESTIONS[business.country]}
-          placeholder={uk ? "For example: can I claim my phone bill if I also use it personally?" : "For example: do I charge SSCL on a quote I've already sent?"} />
+          placeholder={uk ? "For example: can I claim my phone bill if I also use it personally?" : business.country === "us" ? "For example: can my LLC deduct a laptop I also use personally?" : "For example: do I charge SSCL on a quote I've already sent?"} />
 
         {pairs.length === 0 && setUp && (
           <div className="flex flex-col gap-1 rounded-3xl border border-dashed border-input p-6 text-center">

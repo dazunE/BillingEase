@@ -1,4 +1,5 @@
 import { home, type Business } from "@billingease/contracts";
+import { rulesFor } from "@billingease/core";
 import Link from "next/link";
 import { Suspense } from "react";
 import { signOut } from "@/app/(auth)/actions";
@@ -21,6 +22,8 @@ async function unread(): Promise<number> {
 
 type Item = { label: string; hint: string; href: string; icon?: string; tint?: string };
 
+const COUNTRY_CHIP = { uk: "UK", lk: "Sri Lanka", us: "US" } as const;
+
 /** What New offers, in the business's country (prototype AppHeader). */
 function verbs(b: Business): Item[] {
   const lk = b.country === "lk";
@@ -30,7 +33,7 @@ function verbs(b: Business): Item[] {
       : { label: b.vatRegistered ? "Send a VAT invoice" : "Send an invoice", hint: b.vatRegistered ? "In pounds, with VAT" : "In pounds", href: "/app/in/invoices/new", icon: ICONS.doc, tint: "bg-tint" },
     { label: "Snap a receipt or bill", hint: "A photo or PDF: BillingEase reads it for you to check", href: "/app/check#capture", icon: ICONS.camera, tint: "bg-going-tint" },
     { label: "Upload a bank statement", hint: "Any bank's CSV or PDF: matched to your books", href: "/app/statements", icon: ICONS.bank, tint: "bg-going-tint" },
-    { label: "Record an expense", hint: lk ? "Already paid: cash, cheque or transfer" : "Already paid, in an HMRC category", href: "/app/out#expense", icon: ICONS.bill, tint: "bg-going-tint" },
+    { label: "Record an expense", hint: lk ? "Already paid: cash, cheque or transfer" : b.country === "us" ? "Already paid, in a Schedule C line" : "Already paid, in an HMRC category", href: "/app/out#expense", icon: ICONS.bill, tint: "bg-going-tint" },
     { label: "Enter a bill", hint: "Something you’ll pay later", href: "/app/out/bills/new", icon: BILL, tint: "bg-going-tint" },
     { label: "Write a quote", hint: "A price before you start", href: "/app/in/quotes/new", icon: ICONS.doc, tint: "bg-tint" },
     { label: "Add a customer", hint: "Name and email is enough", href: "/app/in/customers#new", icon: ICONS.people, tint: "bg-tint" },
@@ -51,7 +54,7 @@ export async function AppHeader({ userName, email, business }: { userName: strin
   const menu = "absolute right-0 top-[calc(100%+8px)] z-30 flex w-[280px] max-w-[calc(100vw-32px)] flex-col gap-0.5 rounded-[18px] border border-line bg-white p-2 shadow-[0_16px_40px_rgba(24,22,31,0.16)]";
   const chip = "shrink-0 rounded-full bg-surface px-2 text-[11.5px] font-bold leading-[18px] text-ink";
   const account: Item[] = [
-    { label: "Business profile", hint: lk ? "Name, TIN, VAT and SSCL" : "Name, UTR and VAT", href: "/app/settings/business" },
+    { label: "Business profile", hint: lk ? "Name, TIN, VAT and SSCL" : business.country === "us" ? "Name and EIN" : "Name, UTR and VAT", href: "/app/settings/business" },
     { label: "Notifications", hint: count ? `${count} new` : "Nothing new", href: "/app/notifications" },
     { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
     { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
@@ -64,7 +67,7 @@ export async function AppHeader({ userName, email, business }: { userName: strin
         <Link href="/app" aria-label="BillingEase home"><Logo /></Link>
         <span className="hidden min-w-0 items-center gap-2 border-l border-line pl-3.5 text-sm font-semibold text-ink2 min-[1100px]:flex">
           <span className="max-w-[200px] truncate">{business.name}</span>
-          <span title={`${lk ? "Sri Lanka" : "United Kingdom"} business`} className={chip}>{lk ? "Sri Lanka" : "UK"}</span>
+          <span title={`${rulesFor(business.country).name} business`} className={chip}>{COUNTRY_CHIP[business.country]}</span>
         </span>
 
         <HeaderSearch
@@ -105,7 +108,7 @@ export async function AppHeader({ userName, email, business }: { userName: strin
             </summary>
             <div role="menu" className={`${menu} max-h-[calc(100vh-90px)] overflow-y-auto`}>
               <span className="mb-1 flex flex-col border-b border-surface px-3 pb-2.5 pt-2">
-                <span className="flex items-center gap-2 text-[15px] font-bold">{business.name}<span className={chip}>{lk ? "Sri Lanka" : "UK"}</span></span>
+                <span className="flex items-center gap-2 text-[15px] font-bold">{business.name}<span className={chip}>{COUNTRY_CHIP[business.country]}</span></span>
                 <span className="text-[13px] text-muted">{userName} · {ROLE[business.role]}</span>
               </span>
               {account.map((a) => (

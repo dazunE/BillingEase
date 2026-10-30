@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  addMonths, balanced, chartOfAccounts, computeInvoice, formatMoney, lk, parseMoney, posting, rulesFor, uk,
+  addMonths, balanced, chartOfAccounts, computeInvoice, formatMoney, lk, parseMoney, posting, rulesFor, uk, us,
 } from "../src";
 
 describe("money", () => {
@@ -9,11 +9,14 @@ describe("money", () => {
     expect(formatMoney(125050, "GBP")).toBe("£1,250.50");
     expect(formatMoney(12095000, "LKR")).toBe("Rs 120,950");
     expect(formatMoney(-500, "GBP")).toBe("−£5");
+    expect(formatMoney(150050, "USD")).toBe("$1,500.50");
   });
   it("parses typed amounts", () => {
     expect(parseMoney("1,250")).toBe(125000);
     expect(parseMoney("£12.5")).toBe(1250);
     expect(parseMoney("Rs 120,950.00")).toBe(12095000);
+    expect(parseMoney("$1,250.50")).toBe(125050);
+    expect(parseMoney("USD 40")).toBe(4000);
     expect(parseMoney("12.345")).toBeNull();
     expect(parseMoney("abc")).toBeNull();
   });
@@ -38,6 +41,11 @@ describe("dates and periods", () => {
     expect(lk.taxYearOf("2026-03-31").label).toBe("2025/26");
     expect(lk.periodOf("2026-09-14")).toMatchObject({ id: "2026-09", from: "2026-09-01", to: "2026-09-30", due: "2026-10-20" });
     expect(lk.periodOf("2026-12-03").due).toBe("2027-01-20");
+  });
+  it("US calendar tax year and quarters with estimated tax due dates", () => {
+    expect(us.taxYearOf("2026-10-30")).toEqual({ from: "2026-01-01", to: "2026-12-31", label: "2026" });
+    expect(us.periodOf("2026-02-10")).toMatchObject({ id: "2026-q1", from: "2026-01-01", to: "2026-03-31", due: "2026-04-15" });
+    expect(us.periodOf("2026-10-30")).toMatchObject({ id: "2026-q4", from: "2026-10-01", to: "2026-12-31", due: "2027-01-15" });
   });
 });
 
