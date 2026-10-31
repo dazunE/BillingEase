@@ -813,6 +813,9 @@ export const proposals = pgTable(
     sources: jsonb("sources").$type<ProposalSource[]>().notNull().default([]),
     status: text("status").$type<ProposalStatus>().notNull().default("pending"),
     proposedByKind: text("proposed_by_kind").$type<"agent" | "api_client" | "practice">().notNull().default("agent"),
+    // For proposals from an outside app: its name, and the token it used.
+    sourceName: text("source_name"),
+    apiTokenId: uuid("api_token_id"),
     // What a person changed before approving, as {field: [before, after]}.
     edits: jsonb("edits").$type<Record<string, [unknown, unknown]>>(),
     decidedByUserId: uuid("decided_by_user_id").references(() => users.id, { onDelete: "set null" }),
@@ -964,4 +967,108 @@ export const bankStatementLines = pgTable(
     check("bank_statement_lines_status", sql`${t.status} in ('unmatched','matched','proposed','ignored')`),
     check("bank_statement_lines_amount", sql`${t.amount} <> 0`),
   ],
+);
+
+// ---------------------------------------------------------------------------
+// Public API: apps, tokens and calls
+
+/** What a token may do. Nothing an outside app does changes the books without a person approving. */
+export type ApiScope = "books:read" | "books:propose";
+
+/**
+ * An app that signs in with OAuth. Registered by the app itself (dynamic registration), or
+ * known by the URL of its metadata document (the client id is that URL).
+ */
+export const oauthClients = pgTable("oauth_clients", {
+  // "bec_…" for registered apps; the https URL for metadata-document apps
+  id: text("id").primaryKey(),
+  kind: text("kind").$type<"registered" | "metadata_url">().notNull(),
+  name: text("name").notNull(),
+  uri: text("uri"),
+  logoUri: text("logo_uri"),
+  redirectUris: jsonb("redirect_uris").$type<string[]>().notNull(),
+  // When a metadata document was last read; it is read again after a day.
+  fetchedAt: timestamp("fetched_at", { withTimezone: true }),
+  createdAt: createdAt(),
+}, (t) => [check("oauth_clients_kind", sql`${t.kind} in ('registered','metadata_url')`)]);
+
+/** A one-time code from the consent screen, swapped for tokens within minutes. */
+export const oauthCodes = pgTable("oauth_codes", {
+  // sha256 of the code
+  id: text("id").primaryKey(),
+  clientId: text("client_id").notNull().references(() => oauthClients.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  businessId: businessId(),
+  scopes: jsonb("scopes").$type<ApiScope[]>().notNull(),
+  redirectUri: text("redirect_uri").notNull(),
+  codeChallenge: text("code_challenge").notNull(),
+  resource: text("resource"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+  createdAt: createdAt(),
+});
+
+/**
+ * Personal access tokens and OAuth access and refresh tokens. Each acts for one person in one
+ * business, with their role at the time of each call. Only a sha256 of the token is kept.
+ */
+export const apiTokens = pgTable(
+  "api_tokens",
+  {
+    id: id(),
+    hash: text("hash").notNull(),
+    kind: text("kind").$type<"personal" | "access" | "refresh">().notNull(),
+    // The first characters, to tell tokens apart in the list.
+    prefix: text("prefix").notNull(),
+    name: text("name").notNull(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    businessId: businessId(),
+    clientId: text("client_id").references(() => oauthClients.id, { onDelete: "cascade" }),
+    scopes: jsonb("scopes").$type<ApiScope[]>().notNull(),
+    // The API it may be used with (…/mcp or …/v1); null for either.
+    resource: text("resource"),
+    // An OAuth grant: the access and refresh tokens from one consent share it, so revoking one revokes all.
+    grantId: uuid("grant_id"),
+    // A refresh token once swapped; presenting it again revokes the grant.
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("api_tokens_hash").on(t.hash),
+    index("api_tokens_business").on(t.businessId, t.createdAt),
+    index("api_tokens_grant").on(t.grantId),
+    check("api_tokens_kind", sql`${t.kind} in ('personal','access','refresh')`),
+  ],
+);
+
+/** Every call to the public API and MCP server, kept for 90 days. */
+export const apiCalls = pgTable(
+  "api_calls",
+  {
+    id: id(),
+    businessId: businessId(),
+    tokenId: uuid("token_id").references(() => apiTokens.id, { onDelete: "set null" }),
+    clientId: text("client_id"),
+    surface: text("surface").$type<"rest" | "mcp">().notNull(),
+    // The route pattern (GET /v1/invoices/:id) or the MCP tool's name.
+    operation: text("operation").notNull(),
+    status: integer("status").notNull(),
+    ms: integer("ms").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("api_calls_business").on(t.businessId, t.createdAt), index("api_calls_token").on(t.tokenId, t.createdAt)],
+);
+
+/** Calls per business per day, for the daily quota. */
+export const apiUsageDaily = pgTable(
+  "api_usage_daily",
+  {
+    businessId: businessId(),
+    day: date("day").notNull(),
+    calls: integer("calls").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.businessId, t.day] })],
 );

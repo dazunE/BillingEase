@@ -1,7 +1,7 @@
 "use client";
 
 import type { Proposal } from "@billingease/contracts";
-import { formatMoney, type Currency } from "@billingease/core";
+import { currencySymbol, formatMoney, type Currency } from "@billingease/core";
 import { useActionState, useState } from "react";
 import { Badge, Button, Field, Input, Select, Textarea } from "@/components/ui";
 import { approveProposal, rejectProposal } from "./actions";
@@ -45,8 +45,13 @@ export function ProposalCard({ p, currency, categories }: { p: Proposal; currenc
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Paid on" error={e.spentOn}><Input type="date" name="spentOn" defaultValue={v.spentOn ?? String(pay.spentOn ?? "")} /></Field>
             <Field label="Paid to" error={e.payee}><Input name="payee" defaultValue={v.payee ?? String(pay.payee ?? "")} /></Field>
-            <Field label={`Amount paid (${currency === "GBP" ? "£" : "Rs"})`} error={e.gross}><Input name="gross" inputMode="decimal" defaultValue={v.gross ?? amount(pay.gross)} /></Field>
-            <Field label={`VAT on the receipt (${currency === "GBP" ? "£" : "Rs"})`} error={e.vat}><Input name="vat" inputMode="decimal" defaultValue={v.vat ?? amount(pay.vat ?? 0)} /></Field>
+            <Field label={`Amount paid (${currencySymbol(currency)})`} error={e.gross}><Input name="gross" inputMode="decimal" defaultValue={v.gross ?? amount(pay.gross)} /></Field>
+            {currency === "USD" ? (
+              // No VAT in the US: sales tax is part of what was paid.
+              <input type="hidden" name="vat" value="0" />
+            ) : (
+              <Field label={`VAT on the receipt (${currencySymbol(currency)})`} error={e.vat}><Input name="vat" inputMode="decimal" defaultValue={v.vat ?? amount(pay.vat ?? 0)} /></Field>
+            )}
             <Field label="Category" error={e.categoryId} className="sm:col-span-2">
               <Select name="categoryId" defaultValue={v.categoryId ?? String(pay.categoryId ?? "")}>
                 <option value="">Sort later</option>

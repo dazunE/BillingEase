@@ -31,11 +31,14 @@ services:
       AI_MODEL_FAST: ${AI_MODEL_FAST:-gemini-3.8-flash}
       AI_MODEL_LITE: ${AI_MODEL_LITE:-gemini-3.5-flash-lite}
       AI_MONTHLY_BUDGET_USD: ${AI_MONTHLY_BUDGET_USD:-5}
+      API_DAILY_QUOTA: ${API_DAILY_QUOTA:-5000}
+      API_RATE_PER_MINUTE: ${API_RATE_PER_MINUTE:-120}
       BILLINGEASE_TODAY: ${BILLINGEASE_TODAY:-}
     volumes:
       - files:/data/files
       - ${GOOGLE_APPLICATION_CREDENTIALS:-/dev/null}:/run/secrets/gcp.json:ro
-    # Not published: only the web app talks to the API.
+    # Not published: only the web app talks to the API. Outside apps reach /v1, /mcp and
+    # /oauth through the web app's address, which forwards them.
     expose: ["4000"]
 
   web:

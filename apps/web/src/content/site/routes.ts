@@ -104,6 +104,7 @@ export const ROUTES = {
 
   guides: { href: "/guides", label: "Guides", hint: { uk: "MTD, VAT and tax dates, explained", lk: "VAT, SSCL, EPF and ETF, explained" }, icon: I.guides, tone: "violet" },
   help: { href: "/help", label: "Help centre", hint: "Answers, and a person when you need one", icon: I.help, tone: "grey" },
+  developers: { href: "/developers", label: "Developers", hint: "Connect an AI assistant, or call the API", icon: I.features, tone: "dark" },
 
   about: { href: "/about", label: "About", hint: "Why we built BillingEase", icon: I.about, tone: "violet" },
   careers: { href: "/careers", label: "Careers", hint: "Work with us", icon: I.careers, tone: "orange" },
@@ -149,7 +150,7 @@ export const FOOTER: { label: string; items: SiteRoute[] }[] = [
   { label: "Product", items: [ROUTES.features, ROUTES.comingIn, ROUTES.goingOut, ROUTES.yoursToKeep, ROUTES.security, ROUTES.changelog] },
   { label: "Who it’s for", items: [ROUTES.soleTraders, ROUTES.landlords, ROUTES.smallBusinesses, ROUTES.accountants, ROUTES.countries] },
   { label: "Pricing", items: [ROUTES.pricing, ROUTES.switch, ROUTES.signUp, ROUTES.signIn] },
-  { label: "Resources", items: [ROUTES.guides, ROUTES.help] },
+  { label: "Resources", items: [ROUTES.guides, ROUTES.help, ROUTES.developers] },
   { label: "Company", items: [ROUTES.about, ROUTES.careers, ROUTES.press, ROUTES.contact] },
 ];
 

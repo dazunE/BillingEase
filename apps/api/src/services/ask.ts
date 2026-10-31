@@ -93,7 +93,7 @@ export const ASK_AGENT: AgentDef = registerAgent({
   description: "Answers questions about your books and tax, with sources.",
   version: "2",
   tier: "deep",
-  countries: ["uk", "lk"],
+  countries: ["uk", "lk", "us"],
   maxModelCalls: MAX_ROUNDS,
   proposes: [],
   build: () => {

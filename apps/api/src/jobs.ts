@@ -2,6 +2,7 @@ import { hostname } from "node:os";
 import type { FastifyInstance } from "fastify";
 import { scanForLate } from "./agents/chaser";
 import { drain, requeueStale } from "./agents/platform/queue";
+import { tidyApi } from "./public/access";
 import { runDueRecurring } from "./services/recurring-run";
 
 /**
@@ -18,6 +19,7 @@ export const JOBS: Job[] = [
   { name: "agent-queue", everyMs: 2_000, run: (app) => drain(app, `${hostname()}:${process.pid}`, 5) },
   { name: "chaser-scan", everyMs: 6 * 60 * 60_000, run: (app) => scanForLate(app) },
   { name: "agent-queue-stale", everyMs: 5 * 60_000, run: (app) => requeueStale(app.be.db) },
+  { name: "api-tidy", everyMs: 24 * 60 * 60_000, run: (app) => tidyApi(app) },
 ];
 
 export function startJobs(app: FastifyInstance) {

@@ -33,7 +33,8 @@ With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, s
 5. On the invoice, **Record a payment** (in Sri Lanka try a cheque, with its number and bank).
 6. **New → Record an expense** and **New → Add a bill**; pay the bill in part, then the rest.
 7. Back on **Home**, the three numbers have moved (without VAT and SSCL). Try the period switch, search and notifications.
-8. **Ask** says it isn't set up until Vertex AI is: run `gcloud auth application-default login`, then start with `GOOGLE_CLOUD_PROJECT=<your project> npm run dev`. Every question shows in **Account → AI and agents** with its cost; anything an agent drafts waits in **For you to check** until you approve it: snap a receipt, upload a bank statement (any bank's CSV or PDF) or draft reminders for late invoices from there.
+8. **Account → Apps and API**: make a personal access token and call `curl -H "Authorization: Bearer <token>" http://localhost:3000/v1/me`, or add `http://localhost:3000/mcp` as a custom connector in an AI assistant that can reach your machine. What the API offers is at http://localhost:3000/developers.
+9. **Ask** says it isn't set up until Vertex AI is: run `gcloud auth application-default login`, then start with `GOOGLE_CLOUD_PROJECT=<your project> npm run dev`. Every question shows in **Account → AI and agents** with its cost; anything an agent drafts waits in **For you to check** until you approve it: snap a receipt, upload a bank statement (any bank's CSV or PDF) or draft reminders for late invoices from there.
 
 Emails you send are kept in the database (`outbox_emails`), not sent. To start again from an empty database, stop the app and delete `apps/api/.data/pglite`. To see the app on a fixed date, start it with `BILLINGEASE_TODAY=2026-10-11 npm run dev`.
 

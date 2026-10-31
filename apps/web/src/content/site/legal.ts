@@ -219,6 +219,7 @@ export const LEGAL: Record<LegalDoc, LegalDocument> = {
             ["You,", "and anyone you give access to, such as your accountant or tax practitioner."],
             ["Your customers,", "who see the invoices, quotes and reminders you send them."],
             ["Our service providers,", "who host the service, deliver email and, when you use Ask or send a receipt or bill to be read, run the AI model (Google’s Gemini, on Vertex AI). They act on our instructions under written contracts. The current list is in the data processing terms."],
+            ["Apps you connect,", "such as an AI assistant or your own software, see what you allowed when you connected them (reading your books, suggesting changes). They are yours to choose, not our providers: their own terms apply to what they do with it. You can disconnect any of them in Settings → Apps and API."],
             ["Authorities,", "only when the law requires it."],
           ),
           p("Nobody at BillingEase looks at your books unless you ask us to help with something specific, or the law requires it."),

@@ -28,6 +28,7 @@ const reading = (r: Partial<Reading>): Reading => ({
 
 const UK = { country: "uk" as const, currency: "GBP" as const, vatRegistered: true, ssclRegistered: false, termsDays: 30 };
 const LK = { country: "lk" as const, currency: "LKR" as const, vatRegistered: true, ssclRegistered: true, termsDays: 30 };
+const US = { country: "us" as const, currency: "USD" as const, vatRegistered: false, ssclRegistered: false, termsDays: 30 };
 const base = { today: "2026-10-11", filename: "IMG_2041.jpg", supplierId: null, duplicateOf: null };
 
 describe("checkReading", () => {
@@ -44,6 +45,13 @@ describe("checkReading", () => {
     if (!c.ok) throw new Error("expected ok");
     expect(c.payload).toMatchObject({ gross: 4800, vat: 0, method: "Bank transfer" });
     expect(c.fields.checks).toEqual(["You're not VAT registered, so the VAT stays in the amount.", "How it was paid isn't on it: set to Bank transfer. Change it if not."]);
+  });
+
+  it("keeps US sales tax in what was paid", () => {
+    const c = checkReading(reading({ currency: "USD", total: 53.75, vat: 3.75, categoryId: "supplies", supplierName: "Staples" }), { ...base, business: US });
+    if (!c.ok) throw new Error("expected ok");
+    expect(c.payload).toMatchObject({ gross: 5375, vat: 0, categoryId: "supplies", method: "Card" });
+    expect(c.fields.checks).toContain("Sales tax stays in the amount: it's part of what you paid.");
   });
 
   it("makes a Sri Lankan Tax Invoice into a bill, with SSCL as part of the cost", () => {
@@ -75,6 +83,7 @@ describe("checkReading", () => {
     expect(checkReading(reading({ kind: "not_a_receipt", notes: "a photo of a cat" }), { ...base, business: UK })).toEqual({ ok: false, error: "This doesn't look like a receipt or a bill: a photo of a cat" });
     expect(checkReading(reading({ currency: "USD" }), { ...base, business: UK })).toMatchObject({ ok: false, error: expect.stringContaining("It's in USD") });
     expect(checkReading(reading({ total: null, notes: "faded" }), { ...base, business: UK })).toMatchObject({ ok: false, error: expect.stringContaining("(faded)") });
+    expect(checkReading(reading({ currency: "GBP" }), { ...base, business: US })).toMatchObject({ ok: false, error: expect.stringContaining("in dollars") });
   });
 
   it("lowers its confidence for a future date, a possible duplicate and an unknown category", () => {

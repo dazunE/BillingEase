@@ -188,7 +188,8 @@ export function applyMapping(rows: string[][], m: Mapping): CsvResult {
     if (m.amount != null) {
       amount = parseAmount(cell(r, m.amount));
       const flag = cell(r, m.drcr).toLowerCase();
-      if (amount != null && flag) amount = /^(dr|d|debit|withdrawal|out)/.test(flag) ? -Math.abs(amount) : /^(cr|c|credit|deposit|in)/.test(flag) ? Math.abs(amount) : amount;
+      // Whole words only: a "Type" column of CHECK or CARD is not a credit marker.
+      if (amount != null && flag) amount = /^(dr|d|debit|withdrawal|out)\b/.test(flag) ? -Math.abs(amount) : /^(cr|c|credit|deposit|in)\b/.test(flag) ? Math.abs(amount) : amount;
       if (amount != null && m.invert) amount = -amount;
     } else {
       const out = parseAmount(cell(r, m.debit));
