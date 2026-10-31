@@ -8,6 +8,7 @@ import fontkit from "@pdf-lib/fontkit";
 import { and, asc, eq, isNull } from "drizzle-orm";
 import { PDFDocument, PDFName, PDFString, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import type { Attachment } from "./email";
+import type { Storage } from "./storage";
 import { snapshotFor } from "./invoice-core";
 
 /**
@@ -44,7 +45,17 @@ export type DocData = {
   note?: string | null;
   notes?: string | null;
   modeOfPayment?: string | null;
-  accent?: string;
+  /** The business's look: layout, typeface, colour, logo and footer line. Left out: Classic, plain. */
+  brand?: Brand | null;
+};
+
+export type Brand = {
+  template: "classic" | "modern" | "minimal";
+  font: "sans" | "serif" | "mono";
+  /** "#7A5AF8" */
+  accent: string;
+  footer: string | null;
+  logo: { bytes: Uint8Array; mime: string } | null;
 };
 
 // Brand colours (see apps/web globals.css)
@@ -78,24 +89,74 @@ function fontFile(pkg: string, file: string) {
   // The packages only export CSS, so find the package folder from its LICENSE.
   return path.join(path.dirname(require.resolve(`${pkg}/LICENSE`)), "files", file);
 }
-const FONT_FILES = {
-  regular: ["@fontsource/dm-sans", "dm-sans-latin-400-normal.woff"],
-  bold: ["@fontsource/dm-sans", "dm-sans-latin-700-normal.woff"],
-  display: ["@fontsource/sora", "sora-latin-700-normal.woff"],
-  regularExt: ["@fontsource/dm-sans", "dm-sans-latin-ext-400-normal.woff"],
-  boldExt: ["@fontsource/dm-sans", "dm-sans-latin-ext-700-normal.woff"],
-} as const;
+type FontSet = Record<"regular" | "bold" | "display" | "regularExt" | "boldExt", readonly [string, string]>;
+/** The three typefaces a business can pick. Each has a latin-ext fallback for accented names. */
+const FONT_FILES: Record<Brand["font"], FontSet> = {
+  sans: {
+    regular: ["@fontsource/dm-sans", "dm-sans-latin-400-normal.woff"],
+    bold: ["@fontsource/dm-sans", "dm-sans-latin-700-normal.woff"],
+    display: ["@fontsource/sora", "sora-latin-700-normal.woff"],
+    regularExt: ["@fontsource/dm-sans", "dm-sans-latin-ext-400-normal.woff"],
+    boldExt: ["@fontsource/dm-sans", "dm-sans-latin-ext-700-normal.woff"],
+  },
+  serif: {
+    regular: ["@fontsource/source-serif-4", "source-serif-4-latin-400-normal.woff"],
+    bold: ["@fontsource/source-serif-4", "source-serif-4-latin-700-normal.woff"],
+    display: ["@fontsource/source-serif-4", "source-serif-4-latin-700-normal.woff"],
+    regularExt: ["@fontsource/source-serif-4", "source-serif-4-latin-ext-400-normal.woff"],
+    boldExt: ["@fontsource/source-serif-4", "source-serif-4-latin-ext-700-normal.woff"],
+  },
+  mono: {
+    regular: ["@fontsource/jetbrains-mono", "jetbrains-mono-latin-400-normal.woff"],
+    bold: ["@fontsource/jetbrains-mono", "jetbrains-mono-latin-700-normal.woff"],
+    display: ["@fontsource/jetbrains-mono", "jetbrains-mono-latin-700-normal.woff"],
+    regularExt: ["@fontsource/jetbrains-mono", "jetbrains-mono-latin-ext-400-normal.woff"],
+    boldExt: ["@fontsource/jetbrains-mono", "jetbrains-mono-latin-ext-700-normal.woff"],
+  },
+};
 
-let fontBytes: Promise<Record<keyof typeof FONT_FILES, Uint8Array>> | null = null;
-function loadFonts() {
-  fontBytes ??= Promise.all(
-    Object.entries(FONT_FILES).map(async ([k, [pkg, f]]) => [k, new Uint8Array(await readFile(fontFile(pkg, f)))] as const),
-  ).then((e) => Object.fromEntries(e) as Record<keyof typeof FONT_FILES, Uint8Array>);
-  return fontBytes.catch((err) => {
-    fontBytes = null;
+const fontBytes = new Map<string, Promise<Record<keyof FontSet, Uint8Array>>>();
+function loadFonts(family: Brand["font"] = "sans") {
+  let p = fontBytes.get(family);
+  if (!p) {
+    p = Promise.all(
+      Object.entries(FONT_FILES[family]).map(async ([k, [pkg, f]]) => [k, new Uint8Array(await readFile(fontFile(pkg, f)))] as const),
+    ).then((e) => Object.fromEntries(e) as Record<keyof FontSet, Uint8Array>);
+    fontBytes.set(family, p);
+  }
+  return p.catch((err) => {
+    fontBytes.delete(family);
     throw err;
   });
 }
+
+/** A colour between `c` and white: t = 0 is white, 1 is `c`. */
+function tint(h: string, t: number) {
+  const ch = (i: number) => parseInt(h.slice(i, i + 2), 16) / 255;
+  return rgb(1 - (1 - ch(1)) * t, 1 - (1 - ch(3)) * t, 1 - (1 - ch(5)) * t);
+}
+
+/** White text on a dark brand colour, ink on a light one. */
+function onColour(h: string) {
+  const lin = (i: number) => {
+    const v = parseInt(h.slice(i, i + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const lum = 0.2126 * lin(1) + 0.7152 * lin(3) + 0.0722 * lin(5);
+  return lum > 0.45 ? INK : rgb(1, 1, 1);
+}
+
+/**
+ * The brand colour as text on white: kept when it reads well, darkened when it's light (a yellow
+ * total would be lost on the page).
+ */
+function readable(h: string) {
+  if (onColour(h) !== INK) return hex(h);
+  const ch = (i: number) => (parseInt(h.slice(i, i + 2), 16) / 255) * 0.55;
+  return rgb(ch(1), ch(3), ch(5));
+}
+
+const validHex = (h: string | undefined) => (h && /^#[0-9a-f]{6}$/i.test(h) ? h : "#7A5AF8");
 
 /** A font plus a fallback for accented letters outside basic Latin. */
 type Face = { main: PDFFont; ext: PDFFont | null; mainSet: Set<number>; extSet: Set<number> };
@@ -185,7 +246,11 @@ export function pdfFilename(number: string | null, kind: DocData["kind"]) {
 
 /** Renders an invoice, credit note or quote. */
 export async function renderDocument(d: DocData): Promise<Uint8Array> {
-  const bytes = await loadFonts();
+  const brand: Brand = d.brand ?? { template: "classic", font: "sans", accent: "#7A5AF8", footer: null, logo: null };
+  const accentHex = validHex(brand.accent);
+  const ACCENT = hex(accentHex);
+  const ACCENT_TEXT = readable(accentHex);
+  const bytes = await loadFonts(brand.font);
   const pdf = await PDFDocument.create();
   pdf.registerFontkit(fontkit);
   const [regular, bold, display, regularExt, boldExt] = await Promise.all([
@@ -198,6 +263,18 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   const R = face(regular, regularExt);
   const B = face(bold, boldExt);
   const D = face(display, boldExt);
+  // A logo that won't embed is left out rather than failing the whole document.
+  const logo = brand.logo
+    ? await (brand.logo.mime === "image/png" ? pdf.embedPng(brand.logo.bytes) : pdf.embedJpg(brand.logo.bytes)).catch(() => null)
+    : null;
+  /** Draws the logo inside a box (top-left corner x, y), keeping its shape. Returns the size used. */
+  const drawLogo = (p: PDFPage, x: number, top: number, maxW: number, maxH: number, align: "left" | "right" = "left") => {
+    if (!logo) return { w: 0, h: 0 };
+    const k = Math.min(maxW / logo.width, maxH / logo.height, 1);
+    const w = logo.width * k, h = logo.height * k;
+    p.drawImage(logo, { x: align === "right" ? x - w : x, y: top - h, width: w, height: h });
+    return { w, h };
+  };
   const rules = rulesFor(d.country);
   const lk = d.country === "lk";
   // A foreign currency is written with its code ("EUR 1,250.00"): clear to any reader, and every
@@ -234,14 +311,8 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     if (y - h < M + 30) newPage();
   };
 
-  // --- Header: seller on the left, title and number on the right
+  // --- Header, in the business's chosen layout
   newPage();
-  drawMark(page, M, y, 28);
-  const nameLines = wrap(D, d.seller.name, 16, 280);
-  nameLines.forEach((l, i) => draw(page, D, l, M + 38, y - 19 - i * 19, 16));
-  drawRight(page, D, d.title, RIGHT, y - 20, 22);
-  drawRight(page, B, numberText, RIGHT, y - 38, 11, INK2);
-  y -= Math.max(50, 26 + nameLines.length * 19) + 4;
   const sellerInfo: string[] = [];
   if (d.seller.legalName && d.seller.legalName !== d.seller.name) sellerInfo.push(d.seller.legalName);
   if (d.seller.address) sellerInfo.push(d.seller.address);
@@ -253,13 +324,75 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   } else if (d.seller.vatNumber) {
     sellerInfo.push(`${rules.wording.vatIdLabel}: ${d.seller.vatNumber}`);
   }
-  for (const s of sellerInfo) {
-    for (const l of wrap(R, s, 9.5, 300)) {
-      draw(page, R, l, M, y, 9.5, INK2);
-      y -= 13;
+  const sellerLines = (x: number, align: "left" | "right", maxW: number) => {
+    for (const s of sellerInfo) {
+      for (const l of wrap(R, s, 9.5, maxW)) {
+        if (align === "right") drawRight(page, R, l, x, y, 9.5, INK2);
+        else draw(page, R, l, x, y, 9.5, INK2);
+        y -= 13;
+      }
     }
+  };
+
+  if (brand.template === "modern") {
+    // A band in the brand colour across the top: logo on a white tile, name, then title and number.
+    const fg = onColour(accentHex);
+    const bandH = 112;
+    page.drawRectangle({ x: 0, y: PAGE_H - bandH, width: PAGE_W, height: bandH, color: ACCENT });
+    let x = M;
+    if (logo) {
+      const tileH = 56, tileW = Math.min(150, (logo.width / logo.height) * 44 + 12);
+      page.drawRectangle({ x: M, y: PAGE_H - 28 - tileH, width: tileW, height: tileH, color: rgb(1, 1, 1) });
+      drawLogo(page, M + (tileW - Math.min(tileW - 12, (logo.width / logo.height) * 44)) / 2, PAGE_H - 34, tileW - 12, 44);
+      x = M + tileW + 14;
+    }
+    const nameLines = wrap(D, d.seller.name, 16, 250 - (x - M) / 2);
+    nameLines.slice(0, 2).forEach((l, i) => draw(page, D, l, x, PAGE_H - 52 - i * 19, 16, fg));
+    drawRight(page, D, d.title, RIGHT, PAGE_H - 52, 22, fg);
+    drawRight(page, B, numberText, RIGHT, PAGE_H - 72, 11, fg);
+    y = PAGE_H - bandH - 26;
+    sellerLines(M, "left", 300);
+    y -= 14;
+  } else if (brand.template === "minimal") {
+    // Quiet: the title on the left, the logo and the seller on the right, one thin brand rule.
+    const top = y;
+    draw(page, D, d.title, M, y - 22, 26);
+    draw(page, B, numberText, M, y - 42, 11, INK2);
+    page.drawRectangle({ x: M, y: y - 56, width: 36, height: 2.5, color: ACCENT });
+    let ry = top;
+    const lg = drawLogo(page, RIGHT, ry, 160, 52, "right");
+    if (lg.h) ry -= lg.h + 10;
+    for (const l of wrap(B, d.seller.name, 12, 240)) {
+      drawRight(page, B, l, RIGHT, ry - 10, 12);
+      ry -= 15;
+    }
+    y = ry - 12;
+    sellerLines(RIGHT, "right", 240);
+    y = Math.min(y, top - 70) - 16;
+  } else {
+    // Classic: the logo (or the business name with the BillingEase mark) on the left, title on the right.
+    let lh = 0;
+    if (logo) {
+      lh = drawLogo(page, M, y, 170, 52).h;
+      y -= lh + 8;
+      for (const l of wrap(D, d.seller.name, 13, 280)) {
+        draw(page, D, l, M, y - 11, 13);
+        y -= 16;
+      }
+      y -= 12;
+    } else {
+      drawMark(page, M, y, 28);
+      const nameLines = wrap(D, d.seller.name, 16, 280);
+      nameLines.forEach((l, i) => draw(page, D, l, M + 38, y - 19 - i * 19, 16));
+      y -= Math.max(50, 26 + nameLines.length * 19) + 4;
+    }
+    const top = PAGE_H - M;
+    drawRight(page, D, d.title, RIGHT, top - 20, 22, ACCENT_TEXT);
+    drawRight(page, B, numberText, RIGHT, top - 38, 11, INK2);
+    y = Math.min(y, top - 50);
+    sellerLines(M, "left", 300);
+    y -= 18;
   }
-  y -= 18;
 
   // --- Buyer and dates
   const top = y;
@@ -307,11 +440,13 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
         { label: lk ? "VALUE" : "AMOUNT", right: RIGHT, value: (l) => m(l.net) },
       ];
   const descRight = cols[0].right - 40;
+  const rule = brand.template === "minimal" ? LINE : ACCENT;
   const header = () => {
+    if (brand.template === "modern") page.drawRectangle({ x: M - 6, y: y - 5, width: RIGHT - M + 12, height: 18, color: tint(accentHex, 0.12) });
     draw(page, B, "DESCRIPTION", M, y, 8, MUTED);
     for (const c of cols) drawRight(page, B, c.label, c.right, y, 8, MUTED);
     y -= 8;
-    page.drawLine({ start: { x: M, y }, end: { x: RIGHT, y }, thickness: 1, color: INK });
+    page.drawLine({ start: { x: M, y }, end: { x: RIGHT, y }, thickness: brand.template === "minimal" ? 0.75 : 1, color: brand.template === "modern" ? tint(accentHex, 0.12) : rule });
     y -= 16;
   };
   header();
@@ -358,7 +493,7 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   y -= 4;
   for (const r of rows) {
     if (r.strong) {
-      page.drawLine({ start: { x: L, y: y + 11 }, end: { x: RIGHT, y: y + 11 }, thickness: 1, color: INK });
+      page.drawLine({ start: { x: L, y: y + 11 }, end: { x: RIGHT, y: y + 11 }, thickness: 1, color: brand.template === "minimal" ? INK : ACCENT });
       y -= 3;
     }
     draw(page, r.strong ? B : R, r.label, L, y, r.strong ? 10.5 : 10, r.strong ? INK : INK2);
@@ -374,7 +509,7 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     page.drawLine({ start: { x: L, y: y + 10 }, end: { x: RIGHT, y: y + 10 }, thickness: 1, color: INK });
     y -= 8;
     draw(page, B, d.status === "paid" ? "Balance" : "Amount due", L, y, 11.5);
-    drawRight(page, D, m(d.status === "void" ? 0 : open), RIGHT, y - 2, 18);
+    drawRight(page, D, m(d.status === "void" ? 0 : open), RIGHT, y - 2, 18, brand.template === "classic" ? INK : ACCENT_TEXT);
     y -= 34;
   } else {
     y -= 10;
@@ -447,7 +582,7 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   else if (d.kind === "invoice" && d.status === "paid") box(POS_BG, null, "Paid in full. Thank you!", POS);
   else if (d.status === "draft") box(SURFACE, null, `Draft. This ${d.kind === "quote" ? "quote" : "invoice"} hasn't been sent yet.`);
   if (d.notes) box(SURFACE, d.kind === "credit_note" ? "Reason" : null, d.notes);
-  if (d.kind !== "credit_note" && d.paymentDetails) box(TINT, "How to pay", d.paymentDetails);
+  if (d.kind !== "credit_note" && d.paymentDetails) box(brand.template === "minimal" ? SURFACE : tint(accentHex, 0.14), "How to pay", d.paymentDetails);
   if (d.note) box(SURFACE, null, d.note);
   if (lk && d.sscl > 0 && rules.ssclInVatBase) {
     need(30);
@@ -460,7 +595,9 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   // --- Footer on every page
   pages.forEach((p, i) => {
     p.drawLine({ start: { x: M, y: M - 8 }, end: { x: RIGHT, y: M - 8 }, thickness: 0.75, color: LINE });
-    draw(p, R, `${d.seller.name} · ${d.title} ${numberText}`, M, M - 22, 8, MUTED);
+    // The business's own footer line (registration number, website, thanks), else who and what.
+    const left = brand.footer?.trim() ? wrap(R, brand.footer.trim().replace(/\s+/g, " "), 8, RIGHT - M - 80)[0] : `${d.seller.name} · ${d.title} ${numberText}`;
+    draw(p, R, left, M, M - 22, 8, MUTED);
     drawRight(p, R, `Page ${i + 1} of ${pages.length}`, RIGHT, M - 22, 8, MUTED);
   });
   return pdf.save({ useObjectStreams: false });
@@ -490,8 +627,19 @@ function vatByRate(d: DocData) {
 
 const day = (d: string) => formatDate(d, { year: true });
 
+type BusinessDb = typeof businesses.$inferSelect;
+
+/** The business's look for its documents, with its logo read from storage (left out if it's gone). */
+export async function brandFor(b: BusinessDb, storage?: Storage): Promise<Brand> {
+  let logo: Brand["logo"] = null;
+  if (storage && b.logoKey && b.logoMime) {
+    logo = await storage.get(b.logoKey).then((bytes) => ({ bytes, mime: b.logoMime! })).catch(() => null);
+  }
+  return { template: b.template, font: b.font, accent: b.accent, footer: b.footer, logo };
+}
+
 /** Everything an invoice or credit note's PDF shows, read for one business. */
-export async function invoicePdfData(db: Exec, businessId: string, invoiceId: string): Promise<DocData | null> {
+export async function invoicePdfData(db: Exec, businessId: string, invoiceId: string, storage?: Storage): Promise<DocData | null> {
   const [b] = await db.select().from(businesses).where(eq(businesses.id, businessId));
   const [inv] = await db.select().from(invoices).where(and(eq(invoices.id, invoiceId), eq(invoices.businessId, businessId)));
   if (!b || !inv) return null;
@@ -527,10 +675,11 @@ export async function invoicePdfData(db: Exec, businessId: string, invoiceId: st
     net: inv.net, vat: inv.vat, sscl: inv.sscl, total: inv.total, paid: inv.paid, credited: inv.credited,
     paymentDetails: snap.paymentDetails, note: inv.kind === "credit_note" ? null : snap.note, notes: inv.notes,
     modeOfPayment: methods.length ? methods.join(", ") : rulesFor(b.country).receiveMethods.join(", "),
+    brand: await brandFor(b, storage),
   };
 }
 
-export async function quotePdfData(db: Exec, businessId: string, quoteId: string): Promise<DocData | null> {
+export async function quotePdfData(db: Exec, businessId: string, quoteId: string, storage?: Storage): Promise<DocData | null> {
   const [b] = await db.select().from(businesses).where(eq(businesses.id, businessId));
   const [q] = await db.select().from(quotes).where(and(eq(quotes.id, quoteId), eq(quotes.businessId, businessId)));
   if (!b || !q) return null;
@@ -548,19 +697,20 @@ export async function quotePdfData(db: Exec, businessId: string, quoteId: string
     lines: lines.map((l) => ({ description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, vatBps: l.vatBps, net: l.net, vat: l.vat, sscl: l.sscl })),
     net: q.net, vat: q.vat, sscl: q.sscl, total: q.total, paid: 0, credited: 0,
     paymentDetails: null, note: null, notes: q.notes,
+    brand: await brandFor(b, storage),
   };
 }
 
 /** Renders the invoice or quote attached to an outbox email, when it's sent. */
-export async function outboxAttachments(db: Exec, m: typeof outboxEmails.$inferSelect): Promise<Attachment[]> {
+export async function outboxAttachments(db: Exec, m: typeof outboxEmails.$inferSelect, storage?: Storage): Promise<Attachment[]> {
   if (!m.businessId) return [];
   const out: Attachment[] = [];
   if (m.attachInvoiceId) {
-    const d = await invoicePdfData(db, m.businessId, m.attachInvoiceId);
+    const d = await invoicePdfData(db, m.businessId, m.attachInvoiceId, storage);
     if (d) out.push({ filename: pdfFilename(d.number, d.kind), contentType: "application/pdf", content: await renderDocument(d) });
   }
   if (m.attachQuoteId) {
-    const d = await quotePdfData(db, m.businessId, m.attachQuoteId);
+    const d = await quotePdfData(db, m.businessId, m.attachQuoteId, storage);
     if (d) out.push({ filename: pdfFilename(d.number, d.kind), contentType: "application/pdf", content: await renderDocument(d) });
   }
   return out;

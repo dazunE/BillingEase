@@ -9,12 +9,14 @@ import type { FormState } from "@/lib/form";
 import { DocPreview, type PreviewData } from "./DocPreview";
 import { blankLine, decimal, lineFromItem, qtyMilli, type LineState } from "./lines";
 import { CurrencyRate } from "@/components/fx/CurrencyRate";
+import type { PreviewBrand } from "./brand";
 
 export type { LineState };
 
 export type EditorBusiness = {
   country: CountryCode; currency: Currency; name: string; vatRegistered: boolean; ssclRegistered: boolean; termsDays: number;
   address: string; email: string | null; phone: string | null; taxId: string | null; vatNumber: string | null; paymentDetails: string | null; invoiceNote: string | null;
+  brand?: PreviewBrand;
 };
 export type EditorCustomer = { id: string; name: string; email: string | null; address: string | null; taxId: string | null; vatNumber: string | null; currency?: string | null };
 export type EditorInitial = {
@@ -170,6 +172,7 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
     net: t.net, vat: t.vat, sscl: t.sscl, total: t.total, paid: 0, credited: 0,
     paymentDetails: b.paymentDetails, note: mode === "quote" ? null : b.invoiceNote, notes: notes || null,
     modeOfPayment: rules.receiveMethods.join(", "),
+    brand: b.brand,
   };
 
   const explain = b.vatRegistered

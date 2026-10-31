@@ -170,7 +170,7 @@ export async function invoiceRoutes(app: FastifyInstance) {
   app.get(comingIn.invoicePdf.path, async (req, reply) => {
     const ctx = await authenticate(app, req, comingIn.invoicePdf);
     const id = idOr404((req.params as { id?: string }).id, "That invoice");
-    const d = await invoicePdfData(ctx.db, ctx.business!.id, id);
+    const d = await invoicePdfData(ctx.db, ctx.business!.id, id, ctx.services.storage);
     if (!d) throw notFound("That invoice");
     const bytes = await renderDocument(d);
     const download = (req.query as { download?: string }).download === "1";
@@ -181,7 +181,7 @@ export async function invoiceRoutes(app: FastifyInstance) {
   app.get(comingIn.quotePdf.path, async (req, reply) => {
     const ctx = await authenticate(app, req, comingIn.quotePdf);
     const id = idOr404((req.params as { id?: string }).id, "That quote");
-    const d = await quotePdfData(ctx.db, ctx.business!.id, id);
+    const d = await quotePdfData(ctx.db, ctx.business!.id, id, ctx.services.storage);
     if (!d) throw notFound("That quote");
     const bytes = await renderDocument(d);
     const download = (req.query as { download?: string }).download === "1";

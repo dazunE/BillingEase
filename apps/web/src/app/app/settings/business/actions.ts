@@ -33,7 +33,6 @@ export async function saveProfile(_: FormState, fd: FormData): Promise<FormState
         termsDays: Number.isFinite(terms) ? terms : -1,
         paymentDetails: blankToNull(v.paymentDetails),
         invoiceNote: blankToNull(v.invoiceNote),
-        accent: v.accent ?? "",
       },
     });
   } catch (err) {

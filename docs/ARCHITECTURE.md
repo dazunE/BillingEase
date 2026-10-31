@@ -63,6 +63,15 @@ A business keeps its books in one home currency (GBP, LKR or USD, from its count
 - **PDFs** show a foreign document in its currency (written with the code, e.g. "USD 1,250.00") and its totals in the home currency with the rate underneath, so a UK VAT invoice shows the VAT in sterling.
 - **Bank statements** match amounts only against invoices and bills in the home currency; a payment for a foreign one is recorded from the invoice or bill.
 
+## Branding
+
+A business chooses how its invoices, quotes and credit notes look in **Account → Invoice branding** (owner only): a layout (`classic`, `modern` with a band of colour, or `minimal`), a typeface (DM Sans, Source Serif 4 or JetBrains Mono, bundled from `@fontsource` so PDFs need no network), its colour (`accent`), a footer line, and a logo.
+
+- **Logo**: `PUT /business/logo` takes a PNG or JPEG (base64, up to 1 MB). It must open as an image (pdf-lib embeds it) or it's refused, so it can never break a PDF. The file lives in `Storage`; `businesses.logo_key` points at it and is never sent to the browser (`hasLogo` and `logoVersion` are). The web app proxies it at `/app/settings/branding/logo`.
+- **Where it shows**: the PDF (`invoice-pdf.ts`, `brandFor` reads the business and logo when the PDF is drawn), the on-screen preview (`DocPreview` with `brandOf`), and emails about an invoice or quote, which go out as HTML with the logo inline (`cid:logo`), the colour and the footer (`email-html.ts`), alongside the plain-text version. Other emails stay plain text.
+- Branding is read live, not frozen into the snapshot: a document downloaded again later shows the current look. The legal content (seller, buyer, tax numbers, VAT summary) is the same in every layout.
+- A light brand colour is darkened for text (`readable`), and text on a band of colour is white or ink by contrast, so totals stay readable whatever is picked.
+
 ## Background jobs
 
 `apps/api/src/jobs.ts` runs jobs on timers in the API process: email delivery, repeating invoices, and the agent queue. Each job claims rows in the database, so it is safe to run on more than one instance. Agent work goes in the `jobs` table (`agents/platform/queue.ts`): claimed with `FOR UPDATE SKIP LOCKED`, retried with back-off, deduplicated per business and agent, and requeued if a worker dies.

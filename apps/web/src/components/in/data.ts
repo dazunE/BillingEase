@@ -2,6 +2,7 @@ import type { Business, Customer, InvoiceDetail, QuoteDetail } from "@billingeas
 import { formatDate, rulesFor } from "@billingease/core";
 import type { EditorBusiness, EditorCustomer } from "./DocEditor";
 import type { PreviewData } from "./DocPreview";
+import { brandOf } from "./brand";
 
 /** Shapes the business and customers for the editor and previews. */
 
@@ -13,6 +14,7 @@ export function editorBusiness(b: Business): EditorBusiness {
   return {
     country: b.country, currency: b.currency, name: b.name, vatRegistered: b.vatRegistered, ssclRegistered: b.ssclRegistered, termsDays: b.termsDays,
     address: addressOf(b), email: b.email, phone: b.phone, taxId: b.taxId, vatNumber: b.vatNumber, paymentDetails: b.paymentDetails, invoiceNote: b.invoiceNote,
+    brand: brandOf(b),
   };
 }
 
@@ -45,6 +47,7 @@ export function invoicePreview(inv: InvoiceDetail, b: Business): PreviewData {
     net: inv.net, vat: inv.vat, sscl: inv.sscl, total: inv.total, paid: inv.paid, credited: inv.credited,
     paymentDetails: s ? s.paymentDetails : b.paymentDetails, note: inv.kind === "credit_note" ? null : (s ? s.note : b.invoiceNote), notes: inv.notes,
     modeOfPayment: live,
+    brand: brandOf(b),
   };
 }
 
@@ -66,6 +69,7 @@ export function quotePreview(q: QuoteDetail, b: Business): PreviewData {
     vatRegistered: q.vatRegistered,
     lines: q.lines.map((l) => ({ description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, net: l.net, vat: l.vat, sscl: l.ssclAmount })),
     net: q.net, vat: q.vat, sscl: q.sscl, total: q.total, paid: 0, credited: 0, notes: q.notes,
+    brand: brandOf(b),
   };
 }
 

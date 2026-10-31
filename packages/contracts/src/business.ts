@@ -10,6 +10,15 @@ export const KINDS_BY_COUNTRY: Record<z.infer<typeof Country>, z.infer<typeof Ki
   us: ["sole_proprietor", "partnership"],
 };
 
+/** Invoice, quote and credit note layouts. */
+export const TEMPLATES = ["classic", "modern", "minimal"] as const;
+export const Template = z.enum(TEMPLATES);
+/** Typefaces for customer documents: DM Sans, Source Serif 4 or JetBrains Mono. */
+export const FONTS = ["sans", "serif", "mono"] as const;
+export const Font = z.enum(FONTS);
+/** The largest logo accepted, in bytes. */
+export const LOGO_MAX_BYTES = 1024 * 1024;
+
 export const Business = z.object({
   id: z.string(),
   country: Country,
@@ -36,6 +45,13 @@ export const Business = z.object({
   invoiceNote: z.string().nullable(),
   paymentDetails: z.string().nullable(),
   accent: z.string(),
+  /** How customer documents look: layout, typeface and a line at the foot of every page. */
+  template: Template,
+  font: Font,
+  footer: z.string().nullable(),
+  /** Whether a logo is uploaded, and a version that changes with it (for caching its image). */
+  hasLogo: z.boolean(),
+  logoVersion: z.string().nullable(),
   settings: z.record(z.string(), z.unknown()),
   role: z.enum(["owner", "accountant", "admin"]),
 });
@@ -73,7 +89,10 @@ export const UpdateBusinessBody = z.object({
   termsDays: z.number().int().min(0).max(365),
   invoiceNote: optionalText(1000),
   paymentDetails: optionalText(1000),
-  accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Use a colour like #7A5AF8"),
+  template: Template,
+  font: Font,
+  footer: optionalText(200),
   settings: z.record(z.string(), z.unknown()).default({}),
 }).partial();
 
@@ -81,4 +100,13 @@ export const business = {
   create: endpoint({ method: "POST", path: "/businesses", auth: "user", body: CreateBusinessBody, response: Business }),
   get: endpoint({ method: "GET", path: "/business", response: Business }),
   update: endpoint({ method: "PATCH", path: "/business", roles: ["owner"], body: UpdateBusinessBody, response: Business }),
+  /** A PNG or JPEG logo, base64 encoded, up to 1 MB. It goes on invoices, quotes, credit notes and their emails. */
+  uploadLogo: endpoint({
+    method: "PUT", path: "/business/logo", roles: ["owner"],
+    body: z.object({ image: z.string().min(1, "Choose an image").max(Math.ceil((LOGO_MAX_BYTES * 4) / 3) + 8, "That image is over 1 MB") }),
+    response: Business,
+  }),
+  removeLogo: endpoint({ method: "DELETE", path: "/business/logo", roles: ["owner"], response: Business }),
+  /** Raw image bytes. */
+  logo: endpoint({ method: "GET", path: "/business/logo", response: z.unknown() }),
 };

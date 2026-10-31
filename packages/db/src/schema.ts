@@ -108,6 +108,13 @@ export const businesses = pgTable(
     // Bank details printed on invoices so customers can pay by transfer.
     paymentDetails: text("payment_details"),
     accent: text("accent").notNull().default("#7A5AF8"),
+    // How invoices, quotes and credit notes look: the layout, the typeface, a line printed at the
+    // foot of every page, and the business's own logo (PNG or JPEG, kept in file storage).
+    template: text("template").$type<"classic" | "modern" | "minimal">().notNull().default("classic"),
+    font: text("font").$type<"sans" | "serif" | "mono">().notNull().default("sans"),
+    footer: text("footer"),
+    logoKey: text("logo_key"),
+    logoMime: text("logo_mime"),
     // Optional settings that don't need their own column (WhatsApp reminders, invoice language, ...).
     settings: jsonb("settings").$type<Record<string, unknown>>().notNull().default({}),
     createdAt: createdAt(),
@@ -118,6 +125,8 @@ export const businesses = pgTable(
     check("businesses_currency", sql`(${t.country} = 'uk' and ${t.currency} = 'GBP') or (${t.country} = 'lk' and ${t.currency} = 'LKR') or (${t.country} = 'us' and ${t.currency} = 'USD')`),
     check("businesses_basis", sql`${t.basis} in ('cash','accrual')`),
     check("businesses_terms", sql`${t.termsDays} between 0 and 365`),
+    check("businesses_template", sql`${t.template} in ('classic','modern','minimal')`),
+    check("businesses_font", sql`${t.font} in ('sans','serif','mono')`),
   ],
 );
 

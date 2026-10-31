@@ -4,6 +4,11 @@ import "@fontsource-variable/sora";
 import "@fontsource-variable/dm-sans";
 import "@fontsource/caveat/600.css";
 import "@fontsource/caveat/700.css";
+// The typefaces a business can pick for its invoices, for the previews.
+import "@fontsource/source-serif-4/400.css";
+import "@fontsource/source-serif-4/700.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/700.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
