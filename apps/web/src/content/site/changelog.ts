@@ -21,6 +21,14 @@ export type ChangeEntry = {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "apps-and-api",
+    date: "2026-10-31",
+    tag: "New",
+    title: "Connect an AI assistant, or your own software",
+    body: "Add BillingEase to Claude, ChatGPT, Cursor or another assistant that takes MCP connectors, or call the API with a token you make in settings. They can read your books and suggest expenses, bills, payments and reminders; every suggestion waits in For you to check until you approve it. You see each connected app, every call it made, and can disconnect it any time.",
+    link: { label: "For developers", href: ROUTES.developers.href },
+  },
+  {
     id: "capture-agent",
     date: "2026-10-18",
     tag: "New",

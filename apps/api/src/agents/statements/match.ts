@@ -48,7 +48,8 @@ export function methodFor(country: CountryCode, description: string, amount: num
   const d = description.toUpperCase();
   const methods = rulesFor(country).payMethods;
   const pick = (m: string) => (methods.includes(m) ? m : methods[0]);
-  if (/\b(CHQ|CHEQUE|CHECK)\b/.test(d)) return pick("Cheque");
+  if (/\b(CHQ|CHEQUE|CHECK|CHK)\b/.test(d)) return pick(methods.includes("Check") ? "Check" : "Cheque");
+  if (/\bACH\b/.test(d) && methods.includes("ACH")) return "ACH";
   if (/\b(DD|DIRECT DEBIT)\b/.test(d) && amount < 0) return pick("Direct debit");
   if (/\b(CARD|POS|VISA|MASTERCARD|CONTACTLESS|DEB)\b/.test(d)) return pick("Card");
   if (/\b(CASH|ATM)\b/.test(d)) return pick("Cash");

@@ -36,7 +36,7 @@ export const CHASER_AGENT = registerAgent({
   description: "Drafts reminders for invoices that are late. Nothing is sent until you approve each one.",
   version: "1",
   tier: "lite",
-  countries: ["uk", "lk"],
+  countries: ["uk", "lk", "us"],
   maxModelCalls: 2,
   proposes: ["invoice.remind"],
   build: (ctx, model) => new LlmAgent({

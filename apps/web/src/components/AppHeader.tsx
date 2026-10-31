@@ -58,6 +58,7 @@ export async function AppHeader({ userName, email, business }: { userName: strin
     { label: "Notifications", hint: count ? `${count} new` : "Nothing new", href: "/app/notifications" },
     { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
     { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
+    { label: "Apps and API", hint: "Connect an AI assistant or your own software", href: "/app/settings/apps" },
     { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/features" },
     { label: "Help", hint: "Answers, and talk to a person", href: "/help" },
   ];

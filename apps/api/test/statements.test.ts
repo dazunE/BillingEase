@@ -24,6 +24,8 @@ describe("matching", () => {
     expect(methodFor("lk", "CHQ PAID 004417", -100)).toBe("Cheque");
     expect(methodFor("lk", "EE DIRECT DEBIT", -100)).toBe("Bank transfer");
     expect(payeeFrom("CARD PAYMENT TO PRET A MANGER 12OCT")).toBe("PRET A MANGER");
+    expect(methodFor("us", "CHECK 1042 HARBOR PRINTING", -100)).toBe("Check");
+    expect(methodFor("us", "ACH DEBIT GUSTO PAYROLL", -100)).toBe("ACH");
   });
 
   it("matches money in to an invoice by its number, then by amount and name, never guessing between two", () => {
@@ -176,6 +178,23 @@ describe("Bank statements", () => {
     const d2 = await api.get(`/statements/${odd.body.id}`);
     expect(d2.body.statement).toMatchObject({ status: "done", readBy: "model", lineCount: 2 });
     expect(d2.body.lines[1]).toMatchObject({ amount: 500000, status: "unmatched", note: "Money in that doesn't match an invoice still owed." });
+  });
+
+  it("reads a US statement, month first, with checks and ACH, in dollars", async () => {
+    const { api, business, token } = await signUpWithBusiness(t.app, "us");
+    models.llm.script.push(text(JSON.stringify({ lines: [
+      { seq: 1, kind: "business_cost", payee: "Harbor Printing", categoryId: "supplies", confidence: 88 },
+      { seq: 2, kind: "tax", payee: "Delaware Division of Corporations", categoryId: null, confidence: 90 },
+    ] })));
+    const csv = "Posting Date,Description,Amount,Type,Balance\n10/09/2026,CHECK 1042 HARBOR PRINTING,-212.50,CHECK,4787.50\n10/14/2026,ACH DEBIT DELAWARE FRANCHISE TAX,-300.00,ACH,4487.50\n";
+    const up = await upload(token, business.id, "chase-oct.csv", Buffer.from(csv));
+    await drain(t.app);
+    const d = await api.get(`/statements/${up.body.id}`);
+    expect(d.body.statement).toMatchObject({ status: "done", readBy: "header", periodFrom: "2026-10-09", periodTo: "2026-10-14" });
+    expect(d.body.lines[1].note).toMatch(/tax payment/);
+    const ps = (await api.get("/proposals")).body.proposals as { title: string; payload: { method: string; gross: number; categoryId: string } }[];
+    expect(ps).toHaveLength(1);
+    expect(ps[0]).toMatchObject({ title: "Harbor Printing, $212.50", payload: { method: "Check", gross: 21250, categoryId: "supplies" } });
   });
 
   it("says plainly what it can't use", async () => {

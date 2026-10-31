@@ -42,9 +42,12 @@ const OPEN_DAYS = 30;
 
 type Row = typeof proposals.$inferSelect;
 
+/** Who made it: an outside app's name, or the agent's. */
+const proposerName = (r: { agent: string; sourceName: string | null }) => r.sourceName ?? agentName(r.agent);
+
 export function toProposal(r: Row, decidedBy: string | null = null): Proposal {
   return {
-    id: r.id, agent: r.agent, agentName: agentName(r.agent), kind: r.kind as ProposalKind, payload: r.payload,
+    id: r.id, agent: r.agent, agentName: proposerName(r), kind: r.kind as ProposalKind, payload: r.payload,
     targetId: r.targetId, title: r.title, summary: r.summary, confidence: r.confidence, sources: r.sources, status: r.status,
     proposedBy: r.proposedByKind, edits: r.edits, decidedBy, decidedAt: r.decidedAt?.toISOString() ?? null, reason: r.reason,
     appliedHref: r.appliedId && KINDS[r.kind as ProposalKind] ? KINDS[r.kind as ProposalKind].href(r.appliedId) : null,
@@ -69,6 +72,9 @@ export async function propose(db: Exec, p: {
   confidence?: number | null;
   sources?: ProposalSource[];
   proposedByKind?: "agent" | "api_client" | "practice";
+  /** An outside app: its name, and the token it used. */
+  sourceName?: string;
+  apiTokenId?: string;
 }, opts: { notify?: boolean } = {}) {
   const k = KINDS[p.kind];
   if (!!k.target !== !!p.targetId) throw new AppError(400, "invalid_proposal", k.target ? "That needs the invoice or bill it is for." : "That doesn't act on an invoice or bill.");
@@ -80,11 +86,11 @@ export async function propose(db: Exec, p: {
     businessId: p.businessId, runId: p.runId, agent: p.agent, kind: p.kind, targetId: p.targetId ?? null, payload: p.payload,
     title: p.title.slice(0, 200), summary: p.summary.slice(0, 1000),
     confidence: p.confidence == null ? null : Math.max(0, Math.min(100, Math.round(p.confidence))),
-    sources: p.sources ?? [], proposedByKind: p.proposedByKind ?? "agent",
+    sources: p.sources ?? [], proposedByKind: p.proposedByKind ?? "agent", sourceName: p.sourceName ?? null, apiTokenId: p.apiTokenId ?? null,
     expiresAt: new Date(Date.now() + OPEN_DAYS * 86_400_000),
   }).returning();
   // Agents that make many at once (a statement) send one notice themselves.
-  if (opts.notify !== false) await notify(db, p.businessId, `${agentName(p.agent)} has something for you to check`, { body: row.title, link: "/app/check" });
+  if (opts.notify !== false) await notify(db, p.businessId, `${proposerName({ agent: p.agent, sourceName: p.sourceName ?? null })} has something for you to check`, { body: row.title, link: "/app/check" });
   return row;
 }
 
@@ -171,7 +177,7 @@ export async function approve(app: FastifyInstance, req: FastifyRequest, ctx: Bi
       await tx.update(attachments).set({ ownerType: k.table === "expenses" ? "expense" : "bill", ownerId: appliedId })
         .where(and(inArray(attachments.id, files), eq(attachments.businessId, ctx.business.id), eq(attachments.ownerType, "capture")));
     }
-    await logActivity(tx, ctx.business.id, `${ctx.user.name} approved ${agentName(p.agent)}'s ${k.noun}: ${p.title}`, { actorId: ctx.user.id, link: k.href(appliedId) });
+    await logActivity(tx, ctx.business.id, `${ctx.user.name} approved ${proposerName(p)}'s ${k.noun}: ${p.title}`, { actorId: ctx.user.id, link: k.href(appliedId) });
   });
   return loadProposal(ctx, id);
 }
@@ -187,7 +193,7 @@ export async function reject(ctx: BizCtx, id: string, reason: string | null) {
       await tx.update(bankStatementLines).set({ status: "ignored", note: `Turned down by ${ctx.user.name}${reason ? `: ${reason}` : ""}` })
         .where(and(inArray(bankStatementLines.id, lines), eq(bankStatementLines.businessId, ctx.business.id)));
     }
-    await logActivity(tx, ctx.business.id, `${ctx.user.name} turned down ${agentName(p.agent)}'s suggestion: ${p.title}`, { actorId: ctx.user.id });
+    await logActivity(tx, ctx.business.id, `${ctx.user.name} turned down ${proposerName(p)}'s suggestion: ${p.title}`, { actorId: ctx.user.id });
   });
   return loadProposal(ctx, id);
 }
