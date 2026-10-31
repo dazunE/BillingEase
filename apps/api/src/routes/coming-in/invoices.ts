@@ -8,7 +8,7 @@ import { authenticate } from "../../lib/auth";
 import { badRequest, conflict, notFound } from "../../lib/errors";
 import { route } from "../../lib/route";
 import {
-  createCreditNote, getInvoiceRow, idOr404, invoiceDetail, invoiceEmail, invoiceLink, invoiceRowsQuery, issueDraft, normalLines, openOf,
+  createCreditNote, getInvoiceRow, idOr404, invoiceDetail, invoiceEmail, invoiceFx, invoiceLink, invoiceRowsQuery, issueDraft, normalLines, openOf,
   recordPayment, reminderText, toRow, voidInvoice, voidPayment, writeDraft,
 } from "../../services/invoice-core";
 import { invoicePdfData, pdfFilename, quotePdfData, renderDocument } from "../../services/invoice-pdf";
@@ -40,10 +40,12 @@ export async function invoiceRoutes(app: FastifyInstance) {
     const list = all.filter((r) => matches(query.status, r));
     if (query.status === "unpaid" || query.status === "late") list.sort((a, c) => a.dueDate.localeCompare(c.dueDate));
     const live = list.filter((r) => r.status !== "draft" && r.status !== "void");
-    const sum = (xs: InvoiceRow[], k: "total" | "open" | "paid") => xs.reduce((a, r) => a + r[k], 0);
+    // Totals are in the home currency: each invoice at its own rate.
+    const sum = (xs: InvoiceRow[], k: "homeTotal" | "homeOpen") => xs.reduce((a, r) => a + r[k], 0);
+    const total = sum(live, "homeTotal"), open = sum(live, "homeOpen");
     return {
       invoices: list,
-      totals: { count: list.length, total: sum(live, "total"), open: sum(live, "open"), late: sum(live.filter((r) => r.shown === "late"), "open"), paid: sum(live, "paid") },
+      totals: { count: list.length, total, open, late: sum(live.filter((r) => r.shown === "late"), "homeOpen"), paid: total - open },
       counts: {
         all: all.length,
         draft: all.filter((r) => matches("draft", r)).length,
@@ -60,7 +62,7 @@ export async function invoiceRoutes(app: FastifyInstance) {
   route(app, comingIn.createInvoice, async ({ body, ctx }) => {
     const b = ctx.business;
     const id = await ctx.db.transaction(async (tx) => {
-      const id = await writeDraft(tx, b, { ...body, lines: normalLines(body.lines, b) });
+      const id = await writeDraft(tx, b, { ...body, ...(await invoiceFx(tx, ctx.services, b, body)), lines: normalLines(body.lines, b) });
       await logActivity(tx, b.id, "Draft invoice started", { actorId: ctx.user.id, link: invoiceLink(id) });
       return id;
     });
@@ -72,7 +74,7 @@ export async function invoiceRoutes(app: FastifyInstance) {
     await ctx.db.transaction(async (tx) => {
       const inv = await getInvoiceRow(tx, b.id, params.id, { forUpdate: true });
       if (inv.status !== "draft") throw conflict(`${inv.number} has been issued, so it can't be changed. Give a credit note, or void it and issue a new one.`);
-      await writeDraft(tx, b, { ...body, id: inv.id, lines: normalLines(body.lines, b) });
+      await writeDraft(tx, b, { ...body, ...(await invoiceFx(tx, ctx.services, b, body)), id: inv.id, lines: normalLines(body.lines, b) });
     });
     return invoiceDetail(ctx.db, b, params.id);
   });
@@ -105,7 +107,7 @@ export async function invoiceRoutes(app: FastifyInstance) {
       const [c] = await tx.select().from(customers).where(and(eq(customers.id, inv.customerId), eq(customers.businessId, b.id)));
       if (!c.email) throw badRequest(`Add an email address for ${c.name} first.`, { email: "No email for this customer" });
       const title = inv.kind === "credit_note" ? "Credit note" : (inv.snapshot?.title ?? "Invoice");
-      const m = invoiceEmail(b, c, { number: inv.number, total: inv.total, dueDate: inv.dueDate, title }, body.message);
+      const m = invoiceEmail(b, c, { number: inv.number, total: inv.total, currency: inv.currency, dueDate: inv.dueDate, title }, body.message);
       const id = await ctx.services.email.queue(tx, { businessId: b.id, to: c.email, replyTo: b.email ?? ctx.user.email, subject: m.subject, text: m.text, attachInvoiceId: inv.id });
       await logActivity(tx, b.id, `${title} ${inv.number} emailed to ${c.email}`, { actorId: ctx.user.id, link: invoiceLink(inv.id) });
       return id;
@@ -122,7 +124,7 @@ export async function invoiceRoutes(app: FastifyInstance) {
 
   route(app, comingIn.recordPayment, async ({ body, params, ctx }) => {
     const b = ctx.business;
-    await ctx.db.transaction((tx) => recordPayment(tx, b, params.id, ctx.user.id, body));
+    await ctx.db.transaction((tx) => recordPayment(tx, ctx.services, b, params.id, ctx.user.id, body));
     return invoiceDetail(ctx.db, b, params.id);
   });
 

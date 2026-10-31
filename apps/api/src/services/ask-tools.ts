@@ -79,7 +79,7 @@ export function askTools(country: BusinessRow["country"]): ToolDef[] {
         else if (status) w.push(eq(invoices.status, status));
         if (from) w.push(gte(invoices.issueDate, from));
         if (to) w.push(lte(invoices.issueDate, to));
-        const rows = await t.db.select({ number: invoices.number, kind: invoices.kind, status: invoices.status, issued: invoices.issueDate, due: invoices.dueDate, net: invoices.net, vat: invoices.vat, sscl: invoices.sscl, total: invoices.total, open, customer: customers.name })
+        const rows = await t.db.select({ number: invoices.number, kind: invoices.kind, status: invoices.status, issued: invoices.issueDate, due: invoices.dueDate, net: invoices.net, vat: invoices.vat, sscl: invoices.sscl, total: invoices.total, open, currency: invoices.currency, homeTotal: invoices.homeTotal, customer: customers.name })
           .from(invoices).innerJoin(customers, eq(customers.id, invoices.customerId)).where(and(...w)).orderBy(desc(invoices.issueDate)).limit(LIMIT + 1);
         const m = (x: unknown) => formatMoney(n(x), t.business.currency);
         const source = t.cite({ kind: "books", title: `Your books · invoices${status ? ` (${status.replace("_", " ")})` : ""}${from || to ? `, ${from ?? "…"} to ${to ?? "…"}` : ""}` });
@@ -87,7 +87,13 @@ export function askTools(country: BusinessRow["country"]): ToolDef[] {
           source, count: Math.min(rows.length, LIMIT), more: rows.length > LIMIT,
           invoices: rows.slice(0, LIMIT).map((r) => ({
             number: r.number ?? "(draft)", kind: r.kind, status: r.status, customer: r.customer, issued: r.issued, due: r.due,
-            net: m(r.net), vat: m(r.vat), ...(country === "lk" ? { sscl: m(r.sscl) } : {}), total: m(r.total), stillOwed: m(r.open),
+            ...(r.currency === t.business.currency
+              ? { net: m(r.net), vat: m(r.vat), ...(country === "lk" ? { sscl: m(r.sscl) } : {}), total: m(r.total), stillOwed: m(r.open) }
+              : {
+                currency: r.currency,
+                net: formatMoney(n(r.net), r.currency), vat: formatMoney(n(r.vat), r.currency), total: formatMoney(n(r.total), r.currency), stillOwed: formatMoney(n(r.open), r.currency),
+                totalInHomeCurrency: m(r.homeTotal),
+              }),
           })),
         };
       },

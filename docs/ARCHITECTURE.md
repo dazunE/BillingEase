@@ -38,18 +38,30 @@ Coming in − Going out = Yours to keep, for the period on screen (UK: this quar
 
 ## Ledger accounts
 
-Fixed codes from `chartOfAccounts` in core: 1000 bank, 1010 cash, 1100 receivable, 1200 VAT to reclaim, 2000 bills owed, 2050 card, 2200 VAT owed, 2210 SSCL owed (Sri Lanka), 3000 money put in, 3100 drawings, 4000 sales, 4100 other income, 4500 rent (UK), 4900 / 6990 to sort, and one expense account per country category (6xxx business, 7xxx UK property).
+Fixed codes from `chartOfAccounts` in core: 1000 bank, 1010 cash, 1100 receivable, 1200 VAT to reclaim, 2000 bills owed, 2050 card, 2200 VAT owed, 2210 SSCL owed (Sri Lanka), 3000 money put in, 3100 drawings, 4000 sales, 4100 other income, 4500 rent (UK), 4800 exchange rate gains and losses, 4900 / 6990 to sort, and one expense account per country category (6xxx business, 7xxx UK property).
 
 | Event | Posting (core `posting.*`) |
 |---|---|
 | Invoice sent | Dr 1100 total · Cr 4000 net · Cr 2200 VAT · Cr 2210 SSCL |
 | Credit note | the reverse of an invoice |
-| Money received | Dr bank/cash · Cr 1100 |
+| Money received | Dr bank/cash (what arrived) · Cr 1100 (what it cleared at the invoice's rate) · the difference to 4800 |
 | Expense paid | Dr category (business share, net of reclaimable VAT) · Dr 1200 VAT · Dr 3100 personal share · Cr bank/cash/card |
 | Bill received | Dr categories · Dr 1200 VAT · Cr 2000 |
-| Bill paid | Dr 2000 · Cr bank/cash/card |
+| Bill paid | Dr 2000 (what it cleared at the bill's rate) · Cr bank/cash/card (what left) · the difference to 4800 |
 
 A draft invoice posts nothing. Voiding a sent invoice reverses its entry.
+
+## Other currencies
+
+A business keeps its books in one home currency (GBP, LKR or USD, from its country). Quotes, invoices, credit notes, repeating invoices, bills and expenses can be written in any currency on core's list (`packages/core/src/currencies.ts`), for clients and suppliers abroad. Customers and suppliers can have a usual currency that new documents start in.
+
+- **Rates** are decimal strings (`"0.7912"`: home units per unit of the document's currency), stored as `numeric(22,10)` and converted with BigInt in core's `fx.ts`, never floats. `convertMinor` handles currencies with other decimal places (JPY has none).
+- **Where rates come from**: `services/fx.ts` asks the free currency-api (jsDelivr, then Cloudflare) for the document's date, looking back up to four days for weekends and holidays, and caches each in `fx_rates`. The form fills the rate in and the person can change it; when none can be found the API asks for one (`fxRate` field error). `FX_RATES=off` turns lookups off; tests pass fixed rates.
+- **What's stored**: invoices, quotes and bills keep their amounts in their own currency (`net`, `vat`, `total`, `paid`…) plus `currency`, `fx_rate` and the same totals in the home currency (`home_net`, `home_total`…). `home_cleared` is how much of `home_total` payments and credit notes have cleared. An expense is paid on the spot, so its `gross` and `vat` are what left the account in the home currency, with the receipt's own `currency`, `original_gross` and rate kept alongside.
+- **The ledger is in the home currency only.** An invoice or bill posts its home totals. A payment records what reached (or left) the bank in the home currency (`home_amount`, typed or at the day's rate) and clears its share of the document at the document's rate (`homeCleared` in core: the last payment clears whatever is left, so 1100 and 2000 end at exactly zero). The difference goes to 4800 as an exchange rate gain or loss. A credit note uses its invoice's currency and rate.
+- **Reports and the three numbers** use the home amounts: payments as they reached the bank, and what's owed at each document's rate.
+- **PDFs** show a foreign document in its currency (written with the code, e.g. "USD 1,250.00") and its totals in the home currency with the rate underneath, so a UK VAT invoice shows the VAT in sterling.
+- **Bank statements** match amounts only against invoices and bills in the home currency; a payment for a foreign one is recorded from the invoice or bill.
 
 ## Background jobs
 

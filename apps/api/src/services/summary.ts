@@ -9,17 +9,21 @@ const n = (v: unknown) => Number(v ?? 0);
  * Both leave out VAT and SSCL (each payment is split in the invoice's proportions): that money
  * belongs to the tax office, so it isn't yours to keep. Late is the full amount owed and past due,
  * whenever it was issued. See docs/ARCHITECTURE.md.
+ *
+ * Everything is in the home currency: payments as they reached the bank, and what's owed on an
+ * invoice in another currency at that invoice's rate.
  */
 export async function comingIn(db: Exec, businessId: string, from: string, to: string, today: string) {
-  const exTax = (amount: unknown) => sql`round((${amount}) * ${invoices.net}::numeric / nullif(${invoices.total}, 0))`;
-  const [r] = await db.select({ sum: sql<string>`coalesce(sum(${exTax(receipts.amount)}), 0)` }).from(receipts)
+  const exTax = (amount: unknown) => sql`round((${amount}) * ${invoices.homeNet}::numeric / nullif(${invoices.homeTotal}, 0))`;
+  const [r] = await db.select({ sum: sql<string>`coalesce(sum(${exTax(receipts.homeAmount)}), 0)` }).from(receipts)
     .innerJoin(invoices, eq(invoices.id, receipts.invoiceId))
     .where(and(eq(receipts.businessId, businessId), between(receipts.receivedOn, from, to), isNull(receipts.voidedAt)));
-  const open = sql`${invoices.total} - ${invoices.paid} - ${invoices.credited}`;
+  const docOpen = sql`${invoices.total} - ${invoices.paid} - ${invoices.credited}`;
+  const open = sql`case when ${docOpen} > 0 then ${invoices.homeTotal} - ${invoices.homeCleared} else 0 end`;
   const live = and(eq(invoices.businessId, businessId), eq(invoices.kind, "invoice"), ne(invoices.status, "draft"), ne(invoices.status, "void"));
   const [o] = await db.select({ sum: sql<string>`coalesce(sum(${exTax(open)}), 0)` }).from(invoices).where(and(live, between(invoices.issueDate, from, to)));
   const [l] = await db.select({ sum: sql<string>`coalesce(sum(${open}), 0)`, count: sql<string>`count(*)` }).from(invoices)
-    .where(and(live, lt(invoices.dueDate, today), gt(open, 0)));
+    .where(and(live, lt(invoices.dueDate, today), gt(docOpen, 0)));
   const received = n(r.sum), onTheWay = n(o.sum);
   return { received, onTheWay, total: received + onTheWay, late: n(l.sum), lateCount: n(l.count) };
 }
@@ -33,11 +37,12 @@ export async function goingOut(db: Exec, businessId: string, from: string, to: s
   // Business share of each expense, before reclaimable VAT (only VAT-registered businesses record VAT).
   const [e] = await db.select({ sum: sql<string>`coalesce(sum(round((${expenses.gross} - ${expenses.vat}) * ${expenses.bizPct} / 100.0)), 0)` }).from(expenses)
     .where(and(eq(expenses.businessId, businessId), between(expenses.spentOn, from, to)));
-  const billExVat = (amount: unknown) => sql`round((${amount}) * ${bills.net}::numeric / nullif(${bills.total}, 0))`;
-  const [p] = await db.select({ sum: sql<string>`coalesce(sum(${billExVat(billPayments.amount)}), 0)` }).from(billPayments)
+  // Bills in the home currency: payments as they left the bank, what's owed at the bill's rate.
+  const billExVat = (amount: unknown) => sql`round((${amount}) * ${bills.homeNet}::numeric / nullif(${bills.homeTotal}, 0))`;
+  const [p] = await db.select({ sum: sql<string>`coalesce(sum(${billExVat(billPayments.homeAmount)}), 0)` }).from(billPayments)
     .innerJoin(bills, eq(bills.id, billPayments.billId))
     .where(and(eq(billPayments.businessId, businessId), between(billPayments.paidOn, from, to), isNull(billPayments.voidedAt)));
-  const owed = sql`${bills.total} - ${bills.paid}`;
+  const owed = sql`${bills.homeTotal} - ${bills.homeCleared}`;
   const live = and(eq(bills.businessId, businessId), ne(bills.status, "void"), ne(bills.status, "paid"));
   const [o] = await db.select({ sum: sql<string>`coalesce(sum(${billExVat(owed)}), 0)` }).from(bills).where(and(live, between(bills.billDate, from, to)));
   const soon = sql`(${today}::date + 7)`;

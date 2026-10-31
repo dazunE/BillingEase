@@ -1,5 +1,5 @@
 import { goingOut } from "@billingease/contracts";
-import { formatDate, formatMoney } from "@billingease/core";
+import { formatDate, formatMoney, describeRate } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -43,6 +43,11 @@ export default async function ExpensePage({ params }: { params: Promise<{ id: st
         </div>
         <div className="flex flex-col items-start gap-1 sm:items-end">
           <span className="font-display text-[clamp(32px,4vw,48px)] font-bold leading-none tracking-[-0.03em] tabular">{fmt(e.gross)}</span>
+          {e.currency && e.originalGross != null && (
+            <span className="text-sm text-ink2" data-testid="expense-original">
+              {formatMoney(e.originalGross, e.currency, { decimals: "always", homeOf: setup.currency })} on the receipt{e.fxRate ? ` · ${describeRate(e.currency, setup.currency, e.fxRate)}` : ""}
+            </span>
+          )}
           <span className="text-[13px] text-ink2">
             {e.bizPct < 100 ? `${fmt(e.businessShare)} counts in Going out (${e.bizPct}% business)` : "Counts in Going out · paid"}
             {e.vat > 0 ? ` · ${fmt(e.vat)} ${uk ? "VAT" : "input VAT"}` : ""}
@@ -55,7 +60,8 @@ export default async function ExpensePage({ params }: { params: Promise<{ id: st
           <Card className="p-[clamp(18px,3vw,28px)]">
             <h2 className="mb-1 font-display text-[22px] font-bold tracking-[-0.02em]">{e.categoryId ? "What was it for?" : "Pick a category"}</h2>
             <p className="mb-5 text-sm text-ink2">Change anything here. Your books keep a record: the old entry is reversed and the new one posted.</p>
-            <ExpenseForm setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)} expense={e} />
+            <ExpenseForm setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)} expense={e}
+              supplierCurrencies={Object.fromEntries(suppliers.suppliers.filter((s) => s.currency).map((s) => [s.name.toLowerCase(), s.currency!]))} />
           </Card>
           <Card className="p-[clamp(18px,3vw,28px)]">
             <h2 className="mb-4 font-display text-[22px] font-bold tracking-[-0.02em]">Receipt or invoice</h2>

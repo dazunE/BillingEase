@@ -4,15 +4,15 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui";
 import { AuthFrame, AuthTitle, FormError } from "@/components/auth/Frame";
-import { AuthField, CountryCards, FieldError, PasswordField } from "@/components/auth/fields";
+import { AuthField, CountrySelect, FieldError, PasswordField } from "@/components/auth/fields";
 import { HowItWorks } from "@/components/auth/panels";
 import type { Cty } from "@/components/auth/country";
 import { signUp } from "../actions";
 
 const COUNTRIES = {
-  uk: { name: "United Kingdom", line: "Pounds · HMRC · MTD" },
-  lk: { name: "Sri Lanka", line: "Rupees · IRD · EPF and ETF" },
-  us: { name: "United States", line: "Dollars · IRS · LLCs" },
+  uk: { name: "United Kingdom", currency: "Pounds (GBP)", line: "HMRC · Making Tax Digital" },
+  lk: { name: "Sri Lanka", currency: "Rupees (LKR)", line: "IRD · EPF and ETF" },
+  us: { name: "United States", currency: "Dollars (USD)", line: "IRS · LLCs" },
 };
 
 export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
@@ -27,13 +27,13 @@ export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
   const card = (
     <form action={action} className="flex flex-col gap-5" noValidate>
       <AuthTitle title="Create your account." lead="Free to start. Setup takes about three minutes, and you can send an invoice today." />
-      <CountryCards
-        legend="Where is your business?"
+      <CountrySelect
+        label="Where is your business based?"
         value={country}
         onChange={setCountry}
         names={COUNTRIES}
         error={e.country}
-        hint="It sets your currency, tax year and tax rules, and can’t change later."
+        hint="It sets your home currency, tax year and tax rules, and can’t change later. You can still quote and invoice clients abroad in their currency."
       />
       <AuthField label="Your name" name="name" autoComplete="name" defaultValue={v.name} error={e.name} required />
       <AuthField label="Work email" name="email" type="email" autoComplete="email" defaultValue={v.email} error={e.email} required

@@ -6,7 +6,9 @@ import type { FastifyInstance } from "fastify";
 import { logActivity } from "../../lib/activity";
 import { badRequest, conflict } from "../../lib/errors";
 import { route } from "../../lib/route";
-import { invoiceLink, money, normalLines, quoteLink, snapshotFor, storedLines, writeDraft } from "../../services/invoice-core";
+import { invoiceFx, invoiceLink, normalLines, quoteLink, snapshotFor, storedLines, writeDraft } from "../../services/invoice-core";
+import { docMoney, rateFor } from "../../services/doc-currency";
+import { AppError } from "../../lib/errors";
 import { nextNumber } from "../../services/numbering";
 import { getQuoteRow, quoteDetail, quoteRowsQuery, toQuoteRow, writeQuote } from "../../services/quote-core";
 import type { Exec } from "@billingease/db";
@@ -31,7 +33,8 @@ export async function quoteRoutes(app: FastifyInstance) {
       query.customerId ? eq(quotes.customerId, query.customerId) : undefined,
     )).orderBy(desc(quotes.issueDate), desc(quotes.createdAt));
     const list = rows.map(toQuoteRow);
-    const sum = (s: string) => list.filter((q) => q.status === s).reduce((a, q) => a + q.total, 0);
+    // In the home currency, each quote at its own (indicative) rate.
+    const sum = (s: string) => list.filter((q) => q.status === s).reduce((a, q) => a + q.homeTotal, 0);
     return { quotes: list, totals: { waiting: sum("sent"), draft: sum("draft"), accepted: sum("accepted") } };
   });
 
@@ -40,7 +43,7 @@ export async function quoteRoutes(app: FastifyInstance) {
   route(app, comingIn.createQuote, async ({ body, ctx }) => {
     const b = ctx.business;
     const id = await ctx.db.transaction(async (tx) => {
-      const id = await writeQuote(tx, b, { ...body, lines: normalLines(body.lines, b) });
+      const id = await writeQuote(tx, b, { ...body, ...(await invoiceFx(tx, ctx.services, b, body)), lines: normalLines(body.lines, b) });
       await logActivity(tx, b.id, "Quote started", { actorId: ctx.user.id, link: quoteLink(id) });
       return id;
     });
@@ -52,7 +55,7 @@ export async function quoteRoutes(app: FastifyInstance) {
     await ctx.db.transaction(async (tx) => {
       const q = await getQuoteRow(tx, b.id, params.id);
       if (q.status !== "draft" && q.status !== "sent") throw conflict(`This quote has been ${q.status}, so it can't be changed.`);
-      await writeQuote(tx, b, { ...body, id: q.id, lines: normalLines(body.lines, b) });
+      await writeQuote(tx, b, { ...body, ...(await invoiceFx(tx, ctx.services, b, body)), id: q.id, lines: normalLines(body.lines, b) });
       if (q.status === "sent") await logActivity(tx, b.id, `Quote ${q.number} changed`, { actorId: ctx.user.id, link: quoteLink(q.id) });
     });
     return quoteDetail(ctx.db, b, params.id);
@@ -81,7 +84,7 @@ export async function quoteRoutes(app: FastifyInstance) {
       if (body.email && c.email) {
         const text = [
           c.contactName ? `Hello ${c.contactName.split(/\s+/)[0]},` : "Hello,", "",
-          body.message?.trim() || `Here is quote ${number} for ${money(b, q.total)}. It's valid until ${formatDate(q.expiryDate, { year: true })}. The PDF is attached; just reply to say yes.`,
+          body.message?.trim() || `Here is quote ${number} for ${docMoney(b, q.currency, q.total)}. It's valid until ${formatDate(q.expiryDate, { year: true })}. The PDF is attached; just reply to say yes.`,
           "", "Thank you,", b.name,
         ].join("\n");
         emailId = await ctx.services.email.queue(tx, { businessId: b.id, to: c.email, replyTo: b.email ?? ctx.user.email, subject: `Quote ${number} from ${b.name}`, text, attachQuoteId: q.id });
@@ -115,7 +118,13 @@ export async function quoteRoutes(app: FastifyInstance) {
       const lines = await tx.select().from(quoteLines).where(and(eq(quoteLines.quoteId, q.id), eq(quoteLines.businessId, b.id))).orderBy(asc(quoteLines.position));
       if (!lines.length) throw badRequest("The quote has no lines to invoice.");
       const number = await numberQuote(tx, b, q);
-      const id = await writeDraft(tx, b, { customerId: q.customerId, issueDate: today(), notes: q.notes, quoteId: q.id, lines: storedLines(lines) });
+      // The invoice keeps the quote's currency, at the rate on its own date (the quote's, if none can be found).
+      const issueDate = today();
+      const fxRate = await rateFor(tx, ctx.services, b, q.currency, issueDate).catch((e: unknown) => {
+        if (e instanceof AppError) return q.fxRate;
+        throw e;
+      });
+      const id = await writeDraft(tx, b, { customerId: q.customerId, issueDate, notes: q.notes, quoteId: q.id, currency: q.currency, fxRate, lines: storedLines(lines) });
       await tx.update(quotes).set({ status: "invoiced", invoiceId: id, decidedAt: q.decidedAt ?? new Date(), updatedAt: new Date() }).where(and(eq(quotes.id, q.id), eq(quotes.businessId, b.id)));
       await logActivity(tx, b.id, `Quote ${number} turned into a draft invoice`, { actorId: ctx.user.id, link: quoteLink(q.id) });
       await logActivity(tx, b.id, `Draft invoice made from quote ${number}`, { actorId: ctx.user.id, link: invoiceLink(id) });

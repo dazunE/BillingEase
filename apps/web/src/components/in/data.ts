@@ -17,7 +17,7 @@ export function editorBusiness(b: Business): EditorBusiness {
 }
 
 export function editorCustomers(list: Customer[]): EditorCustomer[] {
-  return list.map((c) => ({ id: c.id, name: c.name, email: c.email, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber }));
+  return list.map((c) => ({ id: c.id, name: c.name, email: c.email, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber, currency: c.currency }));
 }
 
 const day = (d: string) => formatDate(d, { year: true });
@@ -28,7 +28,8 @@ export function invoicePreview(inv: InvoiceDetail, b: Business): PreviewData {
   const s = inv.snapshot;
   const live = receiptsMode(inv);
   return {
-    kind: inv.kind, country: b.country, currency: b.currency, title: inv.title, number: inv.number, status: inv.status,
+    kind: inv.kind, country: b.country, currency: inv.currency, title: inv.title,
+    home: inv.currency === b.currency ? null : { currency: b.currency, rate: inv.fxRate, net: inv.homeNet, vat: inv.homeVat, sscl: inv.homeSscl, total: inv.homeTotal }, number: inv.number, status: inv.status,
     seller: s?.seller ?? { name: b.name, address: addressOf(b), email: b.email, phone: b.phone, taxId: lk ? b.taxId : null, vatNumber: inv.vatRegistered ? b.vatNumber : null },
     buyer: s?.buyer ?? { name: inv.customer.name, address: inv.customer.address, email: inv.customer.email, taxId: lk ? inv.customer.taxId : null, vatNumber: inv.customer.vatNumber },
     dates: inv.kind === "credit_note"
@@ -57,7 +58,8 @@ function receiptsMode(inv: InvoiceDetail) {
 export function quotePreview(q: QuoteDetail, b: Business): PreviewData {
   const lk = b.country === "lk";
   return {
-    kind: "quote", country: b.country, currency: b.currency, title: "Quote", number: q.number, status: q.status,
+    kind: "quote", country: b.country, currency: q.currency, title: "Quote",
+    home: q.currency === b.currency ? null : { currency: b.currency, rate: q.fxRate, net: 0, vat: 0, sscl: 0, total: q.homeTotal, indicative: true }, number: q.number, status: q.status,
     seller: { name: b.name, address: addressOf(b), email: b.email, phone: b.phone, taxId: lk ? b.taxId : null, vatNumber: q.vatRegistered ? b.vatNumber : null },
     buyer: { name: q.customer.name, address: q.customer.address, email: q.customer.email, taxId: lk ? q.customer.taxId : null, vatNumber: q.customer.vatNumber },
     dates: [["Quote date", day(q.issueDate)], ["Valid until", day(q.expiryDate)]],

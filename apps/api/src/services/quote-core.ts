@@ -1,11 +1,12 @@
 import type { QuoteDetail, QuoteRow } from "@billingease/contracts";
-import { addDays } from "@billingease/core";
+import { addDays, toHome, type Rate } from "@billingease/core";
 import type { Exec } from "@billingease/db";
 import { activity, customers, invoices, quoteLines, quotes } from "@billingease/db/schema";
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import type { BusinessRow } from "../lib/context";
 import { badRequest, notFound } from "../lib/errors";
 import { checkRefs, computeLines, idOr404, lineOut, quoteLink, type NormalLine } from "./invoice-core";
+import { shownRate } from "./doc-currency";
 
 export type QuoteDb = typeof quotes.$inferSelect;
 
@@ -20,7 +21,7 @@ export function toQuoteRow(r: { q: QuoteDb; customerName: string; summary: strin
   const q = r.q;
   return {
     id: q.id, number: q.number, status: q.status, customerId: q.customerId, customerName: r.customerName, issueDate: q.issueDate, expiryDate: q.expiryDate,
-    summary: r.summary ?? "", net: q.net, vat: q.vat, sscl: q.sscl, total: q.total, invoiceId: q.invoiceId, invoiceNumber: r.invoiceNumber,
+    summary: r.summary ?? "", currency: q.currency, fxRate: shownRate(q.fxRate), net: q.net, vat: q.vat, sscl: q.sscl, total: q.total, homeTotal: q.homeTotal, invoiceId: q.invoiceId, invoiceNumber: r.invoiceNumber,
     sentAt: q.sentAt?.toISOString() ?? null, decidedAt: q.decidedAt?.toISOString() ?? null,
   };
 }
@@ -42,19 +43,24 @@ export async function quoteDetail(db: Exec, b: BusinessRow, id: string): Promise
     ...toQuoteRow(r),
     notes: r.q.notes,
     vatRegistered: r.q.status === "draft" ? b.vatRegistered : r.q.vatRegistered,
-    customer: { id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber },
+    customer: { id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber, currency: c.currency },
     lines: lines.map(lineOut),
     activity: acts.map((a) => ({ message: a.message, at: a.at.toISOString() })),
   };
 }
 
-export async function writeQuote(db: Exec, b: BusinessRow, data: { id?: string; customerId: string; issueDate: string; expiryDate?: string | null; notes?: string | null; lines: NormalLine[] }) {
+export async function writeQuote(
+  db: Exec, b: BusinessRow,
+  data: { id?: string; customerId: string; issueDate: string; expiryDate?: string | null; notes?: string | null; lines: NormalLine[]; currency: string; fxRate: Rate },
+) {
   await checkRefs(db, b, data.customerId, data.lines);
   const { totals, rows } = computeLines(b, data.lines);
+  const home = toHome(totals, data.currency, b.currency, data.fxRate);
   const expiryDate = data.expiryDate ?? addDays(data.issueDate, 30);
   if (expiryDate < data.issueDate) throw badRequest("The quote can't expire before it's dated.", { expiryDate: "Pick a date after the quote date" });
   const values = {
     customerId: data.customerId, issueDate: data.issueDate, expiryDate, notes: data.notes ?? null,
+    currency: data.currency, fxRate: data.fxRate, homeTotal: home.total,
     net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total, vatRegistered: b.vatRegistered, updatedAt: new Date(),
   };
   let id = data.id;

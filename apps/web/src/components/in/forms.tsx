@@ -1,9 +1,10 @@
 "use client";
 
 import type { Customer, Item, Line } from "@billingease/contracts";
-import { currencySymbol, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import { currencyDigits, currencySymbol, describeRate, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import { useActionState, useState } from "react";
 import { Button, Field, Input, Select, Textarea, cx } from "@/components/ui";
+import { CurrencyField } from "@/components/fx/CurrencyField";
 import type { FormState } from "@/lib/form";
 
 type Action = (state: FormState, fd: FormData) => Promise<FormState>;
@@ -13,10 +14,15 @@ function Alert({ state }: { state: FormState }) {
   return <p role={state.ok ? "status" : "alert"} className={cx("rounded-xl px-4 py-3 text-sm font-semibold", state.ok ? "bg-pos-bg text-pos" : "bg-late-bg text-late")}>{state.message}</p>;
 }
 
-const decimal = (minor: number) => (minor / 100).toFixed(2);
+const decimal = (minor: number, currency = "GBP") => { const d = currencyDigits(currency); return (minor / 10 ** d).toFixed(d); };
 
 /** Record money received: amount, date, how, and cheque details when it's a cheque. */
-export function PaymentForm({ action, country, currency, open, today }: { action: Action; country: CountryCode; currency: Currency; open: number; today: string }) {
+export function PaymentForm({ action, country, currency, home, fxRate, open, today }: {
+  action: Action; country: CountryCode;
+  /** The invoice's currency; `home` is the business's, when different. */
+  currency: string; home?: Currency; fxRate?: string; open: number; today: string;
+}) {
+  const foreign = !!home && home !== currency;
   const [state, formAction, pending] = useActionState(action, undefined);
   const rules = rulesFor(country);
   const v = state?.values ?? {};
@@ -25,10 +31,19 @@ export function PaymentForm({ action, country, currency, open, today }: { action
   return (
     <form action={formAction} noValidate className="flex flex-col gap-4">
       <Alert state={state} />
+      <input type="hidden" name="currency" value={currency} />
+      {home && <input type="hidden" name="homeCurrency" value={home} />}
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={`Amount (${currencySymbol(currency)})`} hint={`${formatMoney(open, currency, { decimals: "always" })} left to pay`} error={e.amount}>
-          <Input name="amount" inputMode="decimal" defaultValue={v.amount ?? decimal(open)} />
+        <Field label={`Amount (${currencySymbol(currency)})`} hint={`${formatMoney(open, currency, { decimals: "always", homeOf: home })} left to pay`} error={e.amount}>
+          <Input name="amount" inputMode="decimal" defaultValue={v.amount ?? decimal(open, currency)} />
         </Field>
+        {foreign && (
+          <Field label={`What reached your bank (${currencySymbol(home!)})`}
+            hint={`Optional. Leave it empty to use the rate on the day it arrived. The invoice was at ${describeRate(currency, home!, fxRate ?? "1")}; any difference is an exchange rate gain or loss.`}
+            error={e.homeAmount}>
+            <Input name="homeAmount" inputMode="decimal" defaultValue={v.homeAmount} placeholder="0.00" />
+          </Field>
+        )}
         <Field label="Received on" error={e.receivedOn}>
           <Input name="receivedOn" type="date" defaultValue={v.receivedOn ?? today} max={today} />
         </Field>
@@ -60,7 +75,7 @@ export function PaymentForm({ action, country, currency, open, today }: { action
 }
 
 /** A credit note: the whole invoice, or some lines, some of the quantity or a lower price. */
-export function CreditNoteForm({ action, lines, currency, open, hasEmail, today, issueDate }: { action: Action; lines: Line[]; currency: Currency; open: number; hasEmail: boolean; today: string; issueDate: string }) {
+export function CreditNoteForm({ action, lines, currency, home, open, hasEmail, today, issueDate }: { action: Action; lines: Line[]; currency: string; home?: Currency; open: number; hasEmail: boolean; today: string; issueDate: string }) {
   const [state, formAction, pending] = useActionState(action, undefined);
   const v = state?.values ?? {};
   const e = state?.errors ?? {};
@@ -68,7 +83,8 @@ export function CreditNoteForm({ action, lines, currency, open, hasEmail, today,
   return (
     <form action={formAction} noValidate className="flex flex-col gap-4">
       <Alert state={state} />
-      <p className="text-sm text-ink2">A credit note takes money off what {`they`} owe, up to the {formatMoney(open, currency, { decimals: "always" })} still to pay. Paying back money for a paid invoice goes in Going out.</p>
+      <input type="hidden" name="currency" value={currency} />
+      <p className="text-sm text-ink2">A credit note takes money off what {`they`} owe, up to the {formatMoney(open, currency, { decimals: "always", homeOf: home })} still to pay. Paying back money for a paid invoice goes in Going out.</p>
       <fieldset className="flex flex-wrap gap-2">
         <legend className="sr-only">What to credit</legend>
         {[{ id: "part", label: "Some lines" }, { id: "full", label: "The whole invoice" }].map((o) => (
@@ -84,14 +100,14 @@ export function CreditNoteForm({ action, lines, currency, open, hasEmail, today,
             <li key={l.id} className="flex flex-col gap-2 rounded-2xl bg-bg p-3">
               <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-[15px] font-semibold">
                 <input type="checkbox" name={`pick_${l.id}`} defaultChecked={v[`pick_${l.id}`] === "on"} className="size-5 accent-[#18161F]" />
-                {l.description} <span className="font-normal text-muted">· {formatMoney(l.total, currency, { decimals: "always" })}</span>
+                {l.description} <span className="font-normal text-muted">· {formatMoney(l.total, currency, { decimals: "always", homeOf: home })}</span>
               </label>
               <div className="grid grid-cols-2 gap-3 pl-7">
                 <Field label="Quantity" error={e[`qty_${l.id}`]}>
                   <Input name={`qty_${l.id}`} inputMode="decimal" defaultValue={v[`qty_${l.id}`] ?? String(l.quantityMilli / 1000)} />
                 </Field>
                 <Field label="Price" hint="Lower it to credit part" error={e[`price_${l.id}`]}>
-                  <Input name={`price_${l.id}`} inputMode="decimal" defaultValue={v[`price_${l.id}`] ?? decimal(l.unitPrice)} />
+                  <Input name={`price_${l.id}`} inputMode="decimal" defaultValue={v[`price_${l.id}`] ?? decimal(l.unitPrice, currency)} />
                 </Field>
               </div>
             </li>
@@ -157,6 +173,8 @@ export function CustomerForm({ action, country, customer, submit = "Save", invoi
           <Field label={`${rules.wording.taxIdLabel}`} hint="Taxpayer Identification Number, printed on Tax Invoices" error={e.taxId}><Input name="taxId" defaultValue={val("taxId")} inputMode="numeric" /></Field>
         )}
         {country !== "us" && <Field label={country === "lk" ? "VAT registration number" : "VAT number"} hint={country === "lk" ? "If they're VAT registered" : "Optional, if they're VAT registered"} error={e.vatNumber}><Input name="vatNumber" defaultValue={val("vatNumber")} /></Field>}
+        <CurrencyField home={rules.currency} value={val("currency") || null} error={e.currency}
+          hint="For a client abroad: their quotes and invoices start in this currency. You can change it on each one." />
         <Field label="Notes" hint="Only your team sees these" error={e.notes} className="sm:col-span-2"><Textarea name="notes" defaultValue={val("notes")} className="min-h-20" /></Field>
       </div>
       <div className="flex flex-wrap gap-2.5">

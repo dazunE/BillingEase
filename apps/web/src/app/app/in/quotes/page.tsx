@@ -15,7 +15,7 @@ function QuoteCard({ q, currency }: { q: QuoteRow; currency: "GBP" | "LKR" | "US
   return (
     <li>
       <Link href={`/app/in/quotes/${q.id}`} className="flex flex-col gap-1 rounded-[20px] border border-line bg-white p-4 hover:border-input">
-        <span className="flex items-baseline justify-between gap-3"><strong className="truncate text-[16px]">{q.customerName}</strong><strong className="tabular">{fmt(q.total, currency)}</strong></span>
+        <span className="flex items-baseline justify-between gap-3"><strong className="truncate text-[16px]">{q.customerName}</strong><strong className="tabular">{fmt(q.total, q.currency, currency)}</strong></span>
         <span className="truncate text-sm text-ink2">{[q.summary, q.number].filter(Boolean).join(" · ") || "Draft"}</span>
         <span className="flex flex-wrap items-center gap-2 text-[13px] text-muted"><QuoteBadge q={q} />{line}</span>
       </Link>

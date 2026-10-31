@@ -1,18 +1,23 @@
 "use client";
 
 import type { OutSetup } from "@billingease/contracts";
-import { addDays, formatDate, formatMoney } from "@billingease/core";
+import { addDays, currencyDigits, formatDate, formatMoney } from "@billingease/core";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { createBill } from "@/app/app/out/actions";
 import { Button, Field, Input, Select, cx } from "@/components/ui";
 import type { FormState } from "@/lib/form";
 import { Alert, FilePicker, MoneyInput, previewMinor, uploadFile } from "./fields";
+import { CurrencyRate } from "@/components/fx/CurrencyRate";
 
 type Line = { key: number; description: string; categoryId: string; net: string; vat: string };
 
 /** Enter a bill: who sent it, its number and dates, and one or more lines. */
-export function BillForm({ setup, suppliers, supplierName }: { setup: OutSetup; suppliers: string[]; supplierName?: string }) {
+export function BillForm({ setup, suppliers, supplierName, supplierCurrencies = {} }: {
+  setup: OutSetup; suppliers: string[]; supplierName?: string;
+  /** Each supplier's usual currency, by name: picking them brings it. */
+  supplierCurrencies?: Record<string, string>;
+}) {
   const router = useRouter();
   const [state, setState] = useState<FormState>(undefined);
   const [pending, start] = useTransition();
@@ -23,9 +28,19 @@ export function BillForm({ setup, suppliers, supplierName }: { setup: OutSetup; 
   const [fileError, setFileError] = useState<string>();
   const e = state?.errors ?? {};
   const v = state?.values ?? {};
-  const money = (m: number) => formatMoney(m, setup.currency, { decimals: "always" });
-  const net = lines.reduce((a, l) => a + previewMinor(l.net), 0);
-  const vat = setup.vatRegistered ? lines.reduce((a, l) => a + previewMinor(l.vat), 0) : 0;
+  const home = setup.currency;
+  const [currency, setCurrency] = useState((supplierName && supplierCurrencies[supplierName.toLowerCase()]) || home);
+  const [fxRate, setFxRate] = useState(currency === home ? "1" : "");
+  const [currencyPicked, setCurrencyPicked] = useState(false);
+  const digits = currencyDigits(currency);
+  const onSupplier = (name: string) => {
+    if (currencyPicked) return;
+    const c = supplierCurrencies[name.trim().toLowerCase()] ?? home;
+    if (c !== currency) { setCurrency(c); setFxRate(c === home ? "1" : ""); }
+  };
+  const money = (m: number) => formatMoney(m, currency, { decimals: "always", homeOf: home });
+  const net = lines.reduce((a, l) => a + previewMinor(l.net, currency), 0);
+  const vat = setup.vatRegistered ? lines.reduce((a, l) => a + previewMinor(l.vat, currency), 0) : 0;
   const set = (i: number, patch: Partial<Line>) => setLines((ls) => ls.map((l, j) => (j === i ? { ...l, ...patch } : l)));
   const groups = [...new Set(setup.categories.map((c) => c.scope))];
 
@@ -51,7 +66,7 @@ export function BillForm({ setup, suppliers, supplierName }: { setup: OutSetup; 
       <Alert state={state && !state.ok ? state : undefined} />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Field label="Supplier" error={e.supplierName}>
-          <Input name="supplierName" list="bill-suppliers" defaultValue={v.supplierName ?? supplierName} placeholder="Who sent the bill" autoComplete="off" aria-invalid={!!e.supplierName} />
+          <Input name="supplierName" list="bill-suppliers" defaultValue={v.supplierName ?? supplierName} placeholder="Who sent the bill" autoComplete="off" aria-invalid={!!e.supplierName} onChange={(x) => onSupplier(x.target.value)} />
         </Field>
         <Field label="Bill number" hint="Optional" error={e.reference}>
           <Input name="reference" defaultValue={v.reference} placeholder="From the bill" />
@@ -75,6 +90,14 @@ export function BillForm({ setup, suppliers, supplierName }: { setup: OutSetup; 
         {dueDate && <span className="text-ink2">· due <strong>{formatDate(dueDate, { year: true })}</strong></span>}
       </div>
 
+      <input type="hidden" name="currency" value={currency} />
+      <input type="hidden" name="fxRate" value={currency === home ? "" : fxRate} />
+      <CurrencyRate home={home} currency={currency} rate={fxRate} total={net + vat} date={billDate}
+        onCurrency={(c) => { setCurrencyPicked(true); setCurrency(c); }} onRate={setFxRate}
+        currencyError={e.currency} rateError={e.fxRate}
+        currencyHint={currency === home ? "A bill from abroad? Pick the currency on it." : "As on the bill. Your books record it in " + home + "."}
+        note="That's what counts in Going out." />
+
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-2 text-base font-bold">What it&apos;s for</legend>
         {lines.map((l, i) => {
@@ -93,19 +116,19 @@ export function BillForm({ setup, suppliers, supplierName }: { setup: OutSetup; 
                   </Select>
                 </Field>
                 <Field label={setup.vatRegistered ? "Amount before VAT" : "Amount"} error={e[`lines.${i}.net`]}>
-                  <MoneyInput currency={setup.currency} name={`lines.${i}.net`} value={l.net} onChange={(x) => set(i, { net: x.target.value })} />
+                  <MoneyInput currency={currency} name={`lines.${i}.net`} value={l.net} onChange={(x) => set(i, { net: x.target.value })} />
                 </Field>
                 {setup.vatRegistered && (
                   <Field label="VAT" error={e[`lines.${i}.vat`]}>
-                    <MoneyInput currency={setup.currency} name={`lines.${i}.vat`} value={l.vat} onChange={(x) => set(i, { vat: x.target.value })} />
+                    <MoneyInput currency={currency} name={`lines.${i}.vat`} value={l.vat} onChange={(x) => set(i, { vat: x.target.value })} />
                   </Field>
                 )}
               </div>
               <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
                 <span>{cat?.official}{cat && !cat.allowable ? " · not allowable" : ""}</span>
                 <span className="flex gap-3">
-                  {setup.vatRegistered && previewMinor(l.net) > 0 && setup.defaultVatBps > 0 && (
-                    <button type="button" className="min-h-9 font-semibold text-ink underline underline-offset-4" onClick={() => set(i, { vat: ((Math.round((previewMinor(l.net) * setup.defaultVatBps) / 10000)) / 100).toFixed(2) })}>
+                  {setup.vatRegistered && previewMinor(l.net, currency) > 0 && setup.defaultVatBps > 0 && (
+                    <button type="button" className="min-h-9 font-semibold text-ink underline underline-offset-4" onClick={() => set(i, { vat: ((Math.round((previewMinor(l.net, currency) * setup.defaultVatBps) / 10000)) / 10 ** digits).toFixed(digits) })}>
                       Add VAT at {setup.defaultVatBps / 100}%
                     </button>
                   )}
@@ -128,7 +151,7 @@ export function BillForm({ setup, suppliers, supplierName }: { setup: OutSetup; 
             <span className="flex justify-between"><span className="text-ink2">{setup.country === "lk" ? "Input VAT" : "VAT"}</span><span className="tabular">{money(vat)}</span></span>
           </>}
           <span className="flex justify-between border-t border-line pt-2 font-bold"><span>Bill total</span><span className="font-display text-lg tabular">{money(net + vat)}</span></span>
-          <span className="text-xs text-muted">{net + vat > 0 ? `All ${money(net + vat)} counts in Going out as still to pay until you mark it paid.` : "Add the amounts on the bill to see how it counts."}</span>
+          <span className="text-xs text-muted">{net + vat > 0 ? `All of it counts in Going out as still to pay until you mark it paid.` : "Add the amounts on the bill to see how it counts."}</span>
         </div>
         <FilePicker file={file} onFile={setFile} error={fileError} hint="A photo or PDF of the bill itself, kept with your books. BillingEase doesn't read it, so type the numbers above." />
       </div>

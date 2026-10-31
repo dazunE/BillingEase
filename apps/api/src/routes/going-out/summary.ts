@@ -5,6 +5,7 @@ import { and, between, eq, gte, inArray, isNull, lt, lte, sql } from "drizzle-or
 import type { FastifyInstance } from "fastify";
 import type { BizCtx } from "../../lib/context";
 import { route } from "../../lib/route";
+import { docMoney } from "../../services/doc-currency";
 import { goingOut } from "../../services/summary";
 import { monthlyOut } from "./monthly";
 import { billDue, businessShare, categoryName, money } from "./shared";
@@ -29,7 +30,7 @@ export async function summaryRoutes(app: FastifyInstance) {
     const open = and(eq(bills.businessId, b.id), inArray(bills.status, ["unpaid", "part_paid"]));
     const [soon] = await ctx.db.select({ n: sql<string>`count(*)` }).from(bills).where(and(open, gte(bills.dueDate, now), lte(bills.dueDate, addDays(now, 7))));
     const [late] = await ctx.db.select({ n: sql<string>`count(*)` }).from(bills).where(and(open, lt(bills.dueDate, now)));
-    const [openAll] = await ctx.db.select({ n: sql<string>`count(*)`, sum: sql<string>`coalesce(sum(${bills.total} - ${bills.paid}), 0)` }).from(bills).where(open);
+    const [openAll] = await ctx.db.select({ n: sql<string>`count(*)`, sum: sql<string>`coalesce(sum(${bills.homeTotal} - ${bills.homeCleared}), 0)` }).from(bills).where(open);
     const [sup] = await ctx.db.select({ n: sql<string>`count(*)` }).from(suppliers).where(and(eq(suppliers.businessId, b.id), isNull(suppliers.archivedAt)));
     const costs = await monthlyOut(ctx.db, b, await ctx.db.select().from(monthlyCosts).where(eq(monthlyCosts.businessId, b.id)), now);
     return {
@@ -66,7 +67,7 @@ export async function summaryRoutes(app: FastifyInstance) {
       ...pays.map(({ p, bill, supplier }) => ({
         ...base, kind: "bill_payment" as const, id: p.id, date: p.paidOn, name: supplier,
         detail: [`Bill${bill.reference ? ` ${bill.reference}` : ""}`, p.chequeNumber ? `Cheque ${p.chequeNumber}` : p.method].join(" · "),
-        amount: p.amount, href: `/app/out/bills/${bill.id}`, billId: bill.id,
+        amount: p.homeAmount, href: `/app/out/bills/${bill.id}`, billId: bill.id,
       })),
     ].sort((x, y) => y.date.localeCompare(x.date));
     const toPay = [
@@ -74,8 +75,8 @@ export async function summaryRoutes(app: FastifyInstance) {
         const d = billDue(bill, now);
         return {
           ...base, kind: "bill" as const, id: bill.id, date: bill.dueDate, name: supplier,
-          detail: `${bill.description}${bill.paid > 0 ? ` · ${money(b, bill.paid)} paid` : ""}`,
-          amount: bill.total - bill.paid, href: `/app/out/bills/${bill.id}`, billId: bill.id,
+          detail: `${bill.description}${bill.currency !== b.currency ? ` · ${docMoney(b, bill.currency, bill.total - bill.paid)}` : ""}${bill.paid > 0 ? ` · ${docMoney(b, bill.currency, bill.paid)} paid` : ""}`,
+          amount: bill.homeTotal - bill.homeCleared, href: `/app/out/bills/${bill.id}`, billId: bill.id,
           due: d === "overdue" || d === "due_soon" ? d : ("due" as const),
         };
       }),

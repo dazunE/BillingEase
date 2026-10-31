@@ -32,6 +32,7 @@ export function chartOfAccounts(country: CountryCode): AccountSeed[] {
     { code: "3900", name: "Opening balances", type: "equity", role: "opening" },
     { code: "4000", name: "Sales", type: "income", role: "sales" },
     { code: "4100", name: "Other income", type: "income", role: "other_income" },
+    { code: "4800", name: "Exchange rate gains and losses", type: "income", role: "fx" },
     { code: "4900", name: "Income to sort", type: "income", role: "uncategorised_in" },
     { code: "6990", name: "Spending to sort", type: "expense", role: "uncategorised_out" },
   ];
@@ -64,6 +65,14 @@ export function balanced(lines: PostingLine[]): { code: string; debit: number; c
   return out;
 }
 
+/** The account exchange rate differences go to: a gain is a credit, a loss a debit. */
+export const FX_ACCOUNT = "4800";
+
+/** A line that makes up the difference between what was cleared and what moved, at a new rate. */
+function fxLine(gain: number): PostingLine {
+  return gain >= 0 ? { code: FX_ACCOUNT, credit: gain } : { code: FX_ACCOUNT, debit: -gain };
+}
+
 /** Which account a payment method moves money in or out of. */
 export function moneyAccountFor(method: string): string {
   const m = method.toLowerCase();
@@ -82,18 +91,27 @@ export const posting = {
       { code: "2210", credit: t.sscl },
     ];
   },
-  /** A credit note reduces what the customer owes, and the sale and tax with it. */
-  creditNote(t: { net: number; vat: number; sscl: number; total: number }, incomeCode = "4000"): PostingLine[] {
+  /**
+   * A credit note reduces what the customer owes, and the sale and tax with it. `cleared` is how
+   * much of the receivable it takes off (in the home currency, at the invoice's rate) when that
+   * differs by rounding from the credit note's own total.
+   */
+  creditNote(t: { net: number; vat: number; sscl: number; total: number }, incomeCode = "4000", cleared = t.total): PostingLine[] {
     return [
       { code: incomeCode, debit: t.net },
       { code: "2200", debit: t.vat },
       { code: "2210", debit: t.sscl },
-      { code: "1100", credit: t.total },
+      { code: "1100", credit: cleared },
+      fxLine(cleared - t.total),
     ];
   },
-  /** Money received against an invoice. */
-  receipt(amount: number, method: string): PostingLine[] {
-    return [{ code: moneyAccountFor(method), debit: amount }, { code: "1100", credit: amount }];
+  /**
+   * Money received against an invoice. `amount` is what reached the bank; `cleared` is how much of
+   * the receivable it settles, at the invoice's rate. For an invoice in a foreign currency they
+   * differ, and the difference is an exchange rate gain or loss.
+   */
+  receipt(amount: number, method: string, cleared = amount): PostingLine[] {
+    return [{ code: moneyAccountFor(method), debit: amount }, { code: "1100", credit: cleared }, fxLine(amount - cleared)];
   },
   /**
    * An expense paid there and then. Only the business share is a cost (and only its VAT is
@@ -121,8 +139,11 @@ export const posting = {
     out.push({ code: "2000", credit: total });
     return out;
   },
-  /** Paying a bill, in full or in part. */
-  billPayment(amount: number, method: string): PostingLine[] {
-    return [{ code: "2000", debit: amount }, { code: moneyAccountFor(method), credit: amount }];
+  /**
+   * Paying a bill, in full or in part. `amount` is what left the bank; `cleared` is how much of the
+   * bill it settles at the bill's rate. Paying more than that is a loss; paying less, a gain.
+   */
+  billPayment(amount: number, method: string, cleared = amount): PostingLine[] {
+    return [{ code: "2000", debit: cleared }, { code: moneyAccountFor(method), credit: amount }, fxLine(cleared - amount)];
   },
 };

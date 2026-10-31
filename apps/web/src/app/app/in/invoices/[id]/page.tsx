@@ -1,5 +1,5 @@
 import { comingIn } from "@billingease/contracts";
-import { formatDate, rulesFor, today } from "@billingease/core";
+import { formatDate, rulesFor, today, describeRate } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AlsoIn, InvoiceBadge, Notice, Panel, fmt, fmt2 } from "@/components/in/bits";
@@ -23,7 +23,10 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
   const sp = await searchParams;
   const { business: b } = await requireBusiness();
   const inv = await load(comingIn.getInvoice, { params: { id } });
-  const cur = b.currency;
+  // The invoice's own currency; the books are in the business's.
+  const cur = inv.currency;
+  const home = b.currency;
+  const foreign = cur !== home;
   const rules = rulesFor(b.country);
   const lk = b.country === "lk";
   const now = today();
@@ -37,7 +40,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
   const pdf = `/app/in/invoices/${inv.id}/pdf`;
   const reminderDefault = [
     "Hello,", "",
-    `A friendly reminder that invoice ${inv.number} ${inv.dueDate < now ? "was" : "is"} due on ${formatDate(inv.dueDate, { year: true })}, and ${fmt2(inv.open, cur)} is still to pay.`,
+    `A friendly reminder that invoice ${inv.number} ${inv.dueDate < now ? "was" : "is"} due on ${formatDate(inv.dueDate, { year: true })}, and ${fmt2(inv.open, cur, home)} is still to pay.`,
     ...(b.paymentDetails ? ["", `How to pay: ${b.paymentDetails}`] : []), "",
     "If you've already paid, thank you, and please ignore this.", "", b.name,
   ].join("\n");
@@ -65,13 +68,18 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             <div className="flex flex-wrap items-end justify-between gap-3 rounded-2xl bg-bg p-4">
               <div className="flex flex-col">
                 <span className="text-sm font-bold">{isCredit ? "Credited" : inv.status === "paid" ? "Paid in full" : inv.status === "void" ? "Voided" : draft ? "Comes to" : "Amount due"}</span>
-                <span className="tabular font-display text-[34px] font-bold leading-tight tracking-[-0.02em]" data-testid="amount-due">{fmt2(isCredit || draft || inv.status === "paid" || inv.status === "void" ? inv.total : inv.open, cur)}</span>
+                <span className="tabular font-display text-[34px] font-bold leading-tight tracking-[-0.02em]" data-testid="amount-due">{fmt2(isCredit || draft || inv.status === "paid" || inv.status === "void" ? inv.total : inv.open, cur, home)}</span>
+                {foreign && (
+                  <span className="text-sm text-ink2" data-testid="amount-home">
+                    {fmt2(isCredit || draft || inv.status === "paid" || inv.status === "void" ? inv.homeTotal : inv.homeOpen, home)} in your books · {describeRate(cur, home, inv.fxRate)}
+                  </span>
+                )}
               </div>
               <div className="flex flex-col items-end text-sm">
                 {!isCredit && <strong>{inv.shown === "late" ? "Was due" : "Due"} {formatDate(inv.dueDate)}</strong>}
                 {inv.sentAt && <span className="text-ink2">Sent {when(inv.sentAt)}</span>}
-                {inv.paid > 0 && <span className="text-ink2">{fmt(inv.paid, cur)} received</span>}
-                {inv.credited > 0 && <span className="text-ink2">{fmt(inv.credited, cur)} credited</span>}
+                {inv.paid > 0 && <span className="text-ink2">{fmt(inv.paid, cur, home)} received</span>}
+                {inv.credited > 0 && <span className="text-ink2">{fmt(inv.credited, cur, home)} credited</span>}
               </div>
             </div>
             {inv.creditFor && <p className="text-sm">Takes money off <Link href={`/app/in/invoices/${inv.creditFor.id}`} className="font-semibold underline">{inv.creditFor.number}</Link>.</p>}
@@ -108,7 +116,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
           {owed && (
             <p className="flex gap-2 rounded-2xl bg-tint px-4 py-3 text-sm">
               <span className="mt-1.5 size-2 shrink-0 rounded-full bg-coming" aria-hidden />
-              When they pay, record it here and {fmt(inv.open, cur)} lands in Coming in as received on the day you record.
+              When they pay, record it here and {fmt(inv.open, cur, home)} lands in Coming in as received on the day you record.
             </p>
           )}
         </div>
@@ -116,7 +124,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
 
       {owed && (
         <Panel id="pay" title="Record a payment" aside={<span className="text-sm text-muted">{rules.receiveMethods.join(", ")}</span>}>
-          <PaymentForm action={recordPayment.bind(null, inv.id)} country={b.country} currency={cur} open={inv.open} today={now} />
+          <PaymentForm action={recordPayment.bind(null, inv.id)} country={b.country} currency={cur} home={home} fxRate={inv.fxRate} open={inv.open} today={now} />
         </Panel>
       )}
 
@@ -126,10 +134,11 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             {inv.receipts.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2.5">
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="font-semibold">{fmt2(r.amount, cur)} by {r.method === "Cheque" && r.chequeNumber ? `cheque ${r.chequeNumber}` : (r.method === r.method.toUpperCase() ? r.method : r.method.toLowerCase())}</span>
+                  <span className="font-semibold">{fmt2(r.amount, cur, home)} by {r.method === "Cheque" && r.chequeNumber ? `cheque ${r.chequeNumber}` : (r.method === r.method.toUpperCase() ? r.method : r.method.toLowerCase())}</span>
                   <span className="text-sm text-muted">
                     {formatDate(r.receivedOn, { year: true })}
                     {r.chequeBank ? ` · ${r.chequeBank}` : ""}{r.chequeDate ? ` · dated ${formatDate(r.chequeDate, { year: true })}` : ""}{r.reference ? ` · ${r.reference}` : ""}
+                    {foreign ? ` · ${fmt2(r.homeAmount, home)} in the bank${r.fxGain ? ` (exchange ${r.fxGain > 0 ? "gain" : "loss"} ${fmt2(Math.abs(r.fxGain), home)})` : ""}` : ""}
                   </span>
                 </span>
                 {r.voided ? <Badge tone="neutral">Removed</Badge> : (
@@ -144,7 +153,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
               </li>
             ))}
           </ul>
-          {paidReceipts.length > 0 && <p className="text-sm text-ink2">{fmt2(inv.paid, cur)} received in all.</p>}
+          {paidReceipts.length > 0 && <p className="text-sm text-ink2">{fmt2(inv.paid, cur, home)} received in all.</p>}
         </Panel>
       )}
 
@@ -156,7 +165,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
 
       {owed && (
         <Panel id="credit" title="Give a credit note" aside={<span className="text-sm text-muted">Own number, e.g. {b.invoicePrefix}CN-0001</span>}>
-          <CreditNoteForm action={creditNote.bind(null, inv.id)} lines={inv.lines} currency={cur} open={inv.open} hasEmail={hasEmail} today={now} issueDate={inv.issueDate} />
+          <CreditNoteForm action={creditNote.bind(null, inv.id)} lines={inv.lines} currency={cur} home={home} open={inv.open} hasEmail={hasEmail} today={now} issueDate={inv.issueDate} />
         </Panel>
       )}
 
@@ -164,7 +173,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
         <Panel title="Credit notes">
           <ul className="flex flex-col divide-y divide-divider">
             {inv.creditNotes.map((c) => (
-              <li key={c.id}><Link href={`/app/in/invoices/${c.id}`} className="flex min-h-12 items-center justify-between gap-3 hover:underline"><span className="font-semibold">{c.number} · {formatDate(c.issueDate, { year: true })}</span><span className="tabular">−{fmt2(c.total, cur)}</span></Link></li>
+              <li key={c.id}><Link href={`/app/in/invoices/${c.id}`} className="flex min-h-12 items-center justify-between gap-3 hover:underline"><span className="font-semibold">{c.number} · {formatDate(c.issueDate, { year: true })}</span><span className="tabular">−{fmt2(c.total, cur, home)}</span></Link></li>
             ))}
           </ul>
         </Panel>

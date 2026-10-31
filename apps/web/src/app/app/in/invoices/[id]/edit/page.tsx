@@ -1,5 +1,5 @@
 import { comingIn } from "@billingease/contracts";
-import { today } from "@billingease/core";
+import { today, currencyDigits } from "@billingease/core";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { editorBusiness, editorCustomers } from "@/components/in/data";
@@ -37,7 +37,8 @@ export default async function EditInvoicePage({ params, searchParams }: { params
         initial={{
           id: inv.id, customerId: inv.customerId, issueDate: inv.issueDate, supplyDate: inv.supplyDate, dueDate: inv.dueDate, termsDays: b.termsDays,
           notes: inv.notes, reference: inv.reference,
-          lines: inv.lines.map((l) => lineFromStored({ ...l, sscl: l.sscl })),
+          currency: inv.currency, fxRate: inv.fxRate,
+          lines: inv.lines.map((l) => lineFromStored({ ...l, sscl: l.sscl }, currencyDigits(inv.currency))),
         }}
         action={saveInvoice}
         cancelHref={`/app/in/invoices/${id}`}

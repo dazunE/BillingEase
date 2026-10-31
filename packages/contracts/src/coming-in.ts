@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { endpoint, IsoDate, Ok, optionalText } from "./endpoint";
+import { CurrencyCode, endpoint, FxRate, FxRateInput, FxShown, IsoDate, Ok, optionalText } from "./endpoint";
 
 /**
  * Coming in: customers, the price list, invoices (and credit notes), payments received,
@@ -24,9 +24,11 @@ export const Customer = z.object({
   /** VAT number (UK) or VAT registration number (Sri Lanka). */
   vatNumber: z.string().nullable(),
   notes: z.string().nullable(),
+  /** The currency their quotes and invoices start in; null for the home currency. */
+  currency: z.string().nullable(),
   archived: z.boolean(),
   createdAt: z.string(),
-  /** Still to pay on issued invoices. */
+  /** Still to pay on issued invoices (home currency, at each invoice's rate). */
   owed: z.number().int(),
   /** Of which past due. */
   late: z.number().int(),
@@ -47,6 +49,8 @@ export const CustomerBody = z.object({
   taxId: optionalText(40),
   vatNumber: optionalText(40),
   notes: optionalText(2000),
+  /** Left out or null: the home currency. */
+  currency: CurrencyCode.optional().nullable().transform((v) => v ?? null),
 });
 export type CustomerBody = z.input<typeof CustomerBody>;
 
@@ -140,10 +144,15 @@ export const InvoiceRow = z.object({
   issueDate: IsoDate,
   dueDate: IsoDate,
   summary: z.string(),
+  /** Amounts are in `currency`; home* in the home currency at `fxRate`. */
+  ...FxShown,
   ...Totals,
   paid: z.number().int(),
   credited: z.number().int(),
   open: z.number().int(),
+  homeTotal: z.number().int(),
+  /** What's still owed, in the home currency at the invoice's rate. */
+  homeOpen: z.number().int(),
   daysLate: z.number().int(),
   remindersSent: z.number().int(),
 });
@@ -151,7 +160,12 @@ export type InvoiceRow = z.infer<typeof InvoiceRow>;
 
 export const Receipt = z.object({
   id: z.string(),
+  /** In the invoice's currency. */
   amount: z.number().int(),
+  /** What reached the bank, in the home currency. */
+  homeAmount: z.number().int(),
+  /** Exchange rate gain (or loss, below 0) against the invoice's rate, in the home currency. */
+  fxGain: z.number().int(),
   method: z.string(),
   receivedOn: IsoDate,
   reference: z.string().nullable(),
@@ -169,7 +183,10 @@ export const InvoiceDetail = InvoiceRow.extend({
   notes: z.string().nullable(),
   vatRegistered: z.boolean(),
   snapshot: Snapshot.nullable(),
-  customer: z.object({ id: z.string(), name: z.string(), email: z.string().nullable(), phone: z.string().nullable(), address: z.string().nullable(), taxId: z.string().nullable(), vatNumber: z.string().nullable() }),
+  customer: z.object({ id: z.string(), name: z.string(), email: z.string().nullable(), phone: z.string().nullable(), address: z.string().nullable(), taxId: z.string().nullable(), vatNumber: z.string().nullable(), currency: z.string().nullable() }),
+  homeNet: z.number().int(),
+  homeVat: z.number().int(),
+  homeSscl: z.number().int(),
   lines: z.array(Line),
   receipts: z.array(Receipt),
   creditNotes: z.array(z.object({ id: z.string(), number: z.string().nullable(), issueDate: IsoDate, total: z.number().int() })),
@@ -193,6 +210,10 @@ export const InvoiceBody = z.object({
   dueDate: IsoDate.optional().nullable(),
   reference: optionalText(80),
   notes: optionalText(2000),
+  /** Left out: the customer's currency, else the home currency. */
+  currency: CurrencyCode.optional().nullable(),
+  /** Home currency per unit of `currency`. Left out: the rate on the issue date is looked up. */
+  fxRate: FxRateInput,
   lines: z.array(LineInput).max(200),
 });
 export type InvoiceBody = z.input<typeof InvoiceBody>;
@@ -220,7 +241,13 @@ export const IssueBody = z.object({
 });
 
 export const PaymentBody = z.object({
+  /** In the invoice's currency: what it takes off the invoice. */
   amount: z.number({ message: "Enter the amount" }).int().positive("Enter an amount more than 0"),
+  /**
+   * For an invoice in another currency: what reached your bank, in the home currency. Left out,
+   * it's worked out at the rate on the day it was received.
+   */
+  homeAmount: z.number().int().positive("Enter an amount more than 0").optional().nullable(),
   receivedOn: IsoDate,
   method: z.string().trim().min(1, "Pick how they paid"),
   reference: optionalText(120),
@@ -257,7 +284,9 @@ export const QuoteRow = z.object({
   issueDate: IsoDate,
   expiryDate: IsoDate,
   summary: z.string(),
+  ...FxShown,
   ...Totals,
+  homeTotal: z.number().int(),
   invoiceId: z.string().nullable(),
   invoiceNumber: z.string().nullable(),
   sentAt: z.string().nullable(),
@@ -280,6 +309,9 @@ export const QuoteBody = z.object({
   /** Left out: 30 days after the issue date. */
   expiryDate: IsoDate.optional().nullable(),
   notes: optionalText(2000),
+  currency: CurrencyCode.optional().nullable(),
+  /** Indicative: the invoice made from it takes the rate on its own date. */
+  fxRate: FxRateInput,
   lines: z.array(LineInput).max(200),
 });
 export type QuoteBody = z.input<typeof QuoteBody>;
@@ -303,6 +335,7 @@ export const Recurring = z.object({
   nextRun: IsoDate,
   endDate: z.string().nullable(),
   mode: z.enum(["draft", "send"]),
+  currency: z.string(),
   active: z.boolean(),
   lastRunAt: z.string().nullable(),
   termsDays: z.number().int(),
@@ -326,6 +359,8 @@ export const RecurringBody = z.object({
   termsDays: z.number().int().min(0).max(365),
   notes: optionalText(2000),
   reference: optionalText(80),
+  /** Each invoice is in this currency at the rate on its date. Left out: the customer's, else home. */
+  currency: CurrencyCode.optional().nullable(),
   lines: z.array(LineInput).min(1, "Add at least one line").max(200),
 });
 export type RecurringBody = z.input<typeof RecurringBody>;
@@ -356,6 +391,9 @@ const Archive = z.object({ archived: z.boolean() });
 const Raw = z.unknown();
 
 export const comingIn = {
+  /** The exchange rate to the home currency on a day, for a quote, invoice, bill or expense form. */
+  fxRate: endpoint({ method: "GET", path: "/fx/rate", query: z.object({ from: CurrencyCode, on: IsoDate.optional() }), response: FxRate }),
+
   summary: endpoint({ method: "GET", path: "/in/summary", query: z.object({ period: PeriodKey.optional() }), response: ComingInSummary }),
 
   listCustomers: endpoint({ method: "GET", path: "/customers", query: z.object({ q: z.string().trim().max(100).optional(), archived: z.enum(["true", "false", "all"]).default("false") }), response: z.object({ customers: z.array(Customer) }) }),

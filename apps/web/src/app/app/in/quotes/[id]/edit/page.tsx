@@ -1,5 +1,5 @@
 import { comingIn } from "@billingease/contracts";
-import { today } from "@billingease/core";
+import { today, currencyDigits } from "@billingease/core";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { editorBusiness, editorCustomers } from "@/components/in/data";
@@ -23,7 +23,7 @@ export default async function EditQuotePage({ params }: { params: Promise<{ id: 
       <AppCrumbs area="in" trail={[{ label: "Coming in", href: "/app/in" }, { label: "Quotes", href: "/app/in/quotes" }, { label: `Edit ${q.number ?? "draft"}` }]} />
       <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold leading-[1.05] tracking-[-0.03em]">Edit {q.number ?? "draft quote"} for {q.customer.name}</h1>
       <DocEditor mode="quote" business={editorBusiness(b)} customers={editorCustomers(customers.customers)} items={items.items} number={q.number ?? summary.numbers.quote} today={today()}
-        initial={{ id: q.id, customerId: q.customerId, issueDate: q.issueDate, expiryDate: q.expiryDate, termsDays: b.termsDays, notes: q.notes, lines: q.lines.map((l) => lineFromStored(l)) }}
+        initial={{ id: q.id, customerId: q.customerId, issueDate: q.issueDate, expiryDate: q.expiryDate, termsDays: b.termsDays, notes: q.notes, currency: q.currency, fxRate: q.fxRate, lines: q.lines.map((l) => lineFromStored(l, currencyDigits(q.currency))) }}
         action={saveQuote} cancelHref={`/app/in/quotes/${id}`} />
     </>
   );

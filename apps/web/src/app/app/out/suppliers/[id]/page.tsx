@@ -25,7 +25,7 @@ export default async function SupplierPage({ params }: { params: Promise<{ id: s
   const monthly = d.monthlyCosts.filter((c) => c.active);
   const payments = [
     ...d.expenses.map((e) => ({ key: `e${e.id}`, date: e.spentOn, title: e.note ?? e.categoryName ?? "To sort", sub: [e.chequeNumber ? `Cheque ${e.chequeNumber}` : e.method, e.attachmentCount ? "attached" : null].filter(Boolean).join(" · "), amount: e.gross, href: `/app/out/expenses/${e.id}` })),
-    ...d.payments.map((p) => ({ key: `p${p.id}`, date: p.paidOn, title: `Bill${p.billReference ? ` ${p.billReference}` : ""}`, sub: p.chequeNumber ? `Cheque ${p.chequeNumber}${p.chequeBank ? `, ${p.chequeBank}` : ""}` : p.method, amount: p.amount, href: `/app/out/bills/${p.billId}` })),
+    ...d.payments.map((p) => ({ key: `p${p.id}`, date: p.paidOn, title: `Bill${p.billReference ? ` ${p.billReference}` : ""}`, sub: p.chequeNumber ? `Cheque ${p.chequeNumber}${p.chequeBank ? `, ${p.chequeBank}` : ""}` : p.method, amount: p.homeAmount, href: `/app/out/bills/${p.billId}` })),
   ].sort((a, b) => b.date.localeCompare(a.date));
   const vatLabel = { uk: "VAT registration number", lk: "VAT registration number (TIN-VAT)", us: "Sales tax permit" }[setup.country];
   const details: [string, string | null][] = [
@@ -70,7 +70,7 @@ export default async function SupplierPage({ params }: { params: Promise<{ id: s
                     <Link href={`/app/out/bills/${b.id}`} className="flex flex-wrap items-center gap-3 py-3 hover:underline">
                       <span className="flex min-w-0 flex-[1_1_200px] flex-col"><span className="font-bold">{b.reference ?? "Bill"} · {b.description}</span><span className="text-[13px] text-muted">Dated {formatDate(b.billDate)}</span></span>
                       <DueBadge bill={b} />
-                      <span className="font-bold tabular">{fmt(b.total)}</span>
+                      <span className="font-bold tabular">{formatMoney(b.total, b.currency, { homeOf: setup.currency })}</span>
                     </Link>
                   </li>
                 ))}
@@ -121,7 +121,7 @@ export default async function SupplierPage({ params }: { params: Promise<{ id: s
             </dl>
             <details className="group">
               <summary className="inline-flex min-h-11 cursor-pointer list-none items-center rounded-full bg-ink/[0.07] px-4 text-sm font-semibold [&::-webkit-details-marker]:hidden">Edit details</summary>
-              <div className="mt-4"><SupplierForm supplier={s} categories={setup.categories} vatLabel={vatLabel} /></div>
+              <div className="mt-4"><SupplierForm supplier={s} categories={setup.categories} vatLabel={vatLabel} home={setup.currency} /></div>
             </details>
           </Card>
           <div className="flex flex-col gap-2 px-1">

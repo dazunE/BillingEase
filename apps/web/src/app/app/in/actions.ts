@@ -1,7 +1,7 @@
 "use server";
 
 import { comingIn, type LineInput } from "@billingease/contracts";
-import { parseMoney } from "@billingease/core";
+import { currencyDigits, parseMoney, parseRate } from "@billingease/core";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { EditorPayload } from "@/components/in/DocEditor";
@@ -31,11 +31,13 @@ function readPayload(fd: FormData): EditorPayload {
 /** The editor's lines as the API wants them, noting field errors for what can't be read. */
 function linesOf(p: EditorPayload, errors: Record<string, string>): LineInput[] {
   const kept = p.lines.filter((l) => l.description.trim() || l.price.trim());
+  // Prices are in the document's currency, with its decimal places (none for JPY).
+  const digits = currencyDigits(p.currency);
   return kept.map((l, i) => {
-    const unitPrice = parseMoney(l.price);
+    const unitPrice = parseMoney(l.price, digits);
     if (!l.price.trim()) errors[`lines.${i}.unitPrice`] = "Enter a price";
-    else if (unitPrice == null) errors[`lines.${i}.unitPrice`] = "Enter a price like 12.50";
-    const discount = l.discount.trim() ? parseMoney(l.discount) : 0;
+    else if (unitPrice == null) errors[`lines.${i}.unitPrice`] = digits ? "Enter a price like 12.50" : "Enter a whole amount like 1200";
+    const discount = l.discount.trim() ? parseMoney(l.discount, digits) : 0;
     if (discount == null) errors[`lines.${i}.discount`] = "Enter an amount like 5.00";
     const q = qtyMilli(l.qty);
     if (!q) errors[`lines.${i}.quantityMilli`] = "Enter a quantity more than 0";
@@ -66,6 +68,13 @@ async function customerIdOf(p: EditorPayload, errors: Record<string, string>): P
   return p.customerId || null;
 }
 
+/** The currency and rate the editor sends; a rate that can't be read is a field error. */
+function fxOf(p: EditorPayload, errors: Record<string, string>) {
+  const fxRate = parseRate(p.fxRate);
+  if (p.fxRate && !fxRate) errors.fxRate = "Enter a rate above 0, like 0.7912";
+  return { currency: p.currency || null, fxRate };
+}
+
 const invalid = (errors: Record<string, string>, id?: string): FormState => ({ message: "Some details need fixing.", errors, values: id ? { id } : undefined });
 
 // ---------------------------------------------------------------------------
@@ -76,11 +85,12 @@ export async function saveInvoice(_: FormState, fd: FormData): Promise<FormState
   const intent = String(fd.get("intent") ?? "draft");
   const errors: Record<string, string> = {};
   const lines = linesOf(p, errors);
+  const fx = fxOf(p, errors);
   if (intent !== "draft" && !lines.length) errors.lines = "Add at least one line";
   if (Object.keys(errors).length) return invalid(errors, p.id);
   const customerId = await customerIdOf(p, errors);
   if (!customerId || Object.keys(errors).length) return invalid(errors, p.id);
-  const body = { customerId, issueDate: p.issueDate, supplyDate: blankToNull(p.supplyDate), dueDate: blankToNull(p.dueDate), notes: blankToNull(p.notes), reference: blankToNull(p.reference), lines };
+  const body = { customerId, issueDate: p.issueDate, supplyDate: blankToNull(p.supplyDate), dueDate: blankToNull(p.dueDate), notes: blankToNull(p.notes), reference: blankToNull(p.reference), ...fx, lines };
   let id = p.id;
   try {
     const saved = id ? await call(comingIn.updateInvoice, { params: { id }, body }) : await call(comingIn.createInvoice, { body });
@@ -137,14 +147,17 @@ export async function voidInvoice(id: string, fd: FormData) {
 
 export async function recordPayment(id: string, _: FormState, fd: FormData): Promise<FormState> {
   const v = formValues(fd);
-  const amount = parseMoney(v.amount ?? "");
+  // The amount is in the invoice's currency; for a foreign one, what reached the bank is in home.
+  const amount = parseMoney(v.amount ?? "", currencyDigits(v.currency ?? ""));
   if (amount == null || amount <= 0) return { message: "Some details need fixing.", errors: { amount: "Enter an amount like 250.00" }, values: v };
+  const homeAmount = v.homeAmount?.trim() ? parseMoney(v.homeAmount, currencyDigits(v.homeCurrency ?? "")) : null;
+  if (homeAmount === null && v.homeAmount?.trim()) return { message: "Some details need fixing.", errors: { homeAmount: "Enter an amount like 250.00" }, values: v };
   const cheque = v.method === "Cheque";
   try {
     await call(comingIn.recordPayment, {
       params: { id },
       body: {
-        amount, receivedOn: v.receivedOn ?? "", method: v.method ?? "", reference: blankToNull(v.reference),
+        amount, homeAmount, receivedOn: v.receivedOn ?? "", method: v.method ?? "", reference: blankToNull(v.reference),
         chequeNumber: cheque ? blankToNull(v.chequeNumber) : null, chequeDate: cheque ? blankToNull(v.chequeDate) : null, chequeBank: cheque ? blankToNull(v.chequeBank) : null,
       },
     });
@@ -176,7 +189,7 @@ export async function creditNote(id: string, _: FormState, fd: FormData): Promis
       if (!m || !checked(val)) continue;
       const lineId = m[1];
       const q = qtyMilli(v[`qty_${lineId}`] ?? "");
-      const price = v[`price_${lineId}`]?.trim() ? parseMoney(v[`price_${lineId}`]) : undefined;
+      const price = v[`price_${lineId}`]?.trim() ? parseMoney(v[`price_${lineId}`], currencyDigits(v.currency ?? "")) : undefined;
       if (!q) errors[`qty_${lineId}`] = "Enter a quantity";
       if (price === null) errors[`price_${lineId}`] = "Enter a price like 12.50";
       lines.push({ lineId, quantityMilli: q || 1000, ...(price != null ? { unitPrice: price } : {}) });
@@ -212,7 +225,7 @@ export async function remind(id: string, _: FormState, fd: FormData): Promise<Fo
 function customerBody(v: Record<string, string>) {
   return {
     name: v.name ?? "", contactName: blankToNull(v.contactName), email: blankToNull(v.email), phone: blankToNull(v.phone), address: blankToNull(v.address),
-    taxId: blankToNull(v.taxId), vatNumber: blankToNull(v.vatNumber), notes: blankToNull(v.notes),
+    taxId: blankToNull(v.taxId), vatNumber: blankToNull(v.vatNumber), notes: blankToNull(v.notes), currency: blankToNull(v.currency),
   };
 }
 
@@ -277,7 +290,7 @@ export async function saveQuote(_: FormState, fd: FormData): Promise<FormState> 
   if (Object.keys(errors).length) return invalid(errors, p.id);
   const customerId = await customerIdOf(p, errors);
   if (!customerId || Object.keys(errors).length) return invalid(errors, p.id);
-  const body = { customerId, issueDate: p.issueDate, expiryDate: blankToNull(p.expiryDate), notes: blankToNull(p.notes), lines };
+  const body = { customerId, issueDate: p.issueDate, expiryDate: blankToNull(p.expiryDate), notes: blankToNull(p.notes), ...fxOf(p, {}), lines };
   let id = p.id;
   try {
     const saved = id ? await call(comingIn.updateQuote, { params: { id }, body }) : await call(comingIn.createQuote, { body });
@@ -347,7 +360,7 @@ export async function saveRecurring(_: FormState, fd: FormData): Promise<FormSta
   if (!customerId || Object.keys(errors).length) return invalid(errors, p.id);
   const body = {
     customerId, name: p.name, frequency: p.frequency as "monthly", nextRun: p.nextRun, endDate: blankToNull(p.endDate), mode: (p.recurMode === "send" ? "send" : "draft") as "draft" | "send",
-    termsDays: p.termsDays, notes: blankToNull(p.notes), reference: blankToNull(p.reference), lines,
+    termsDays: p.termsDays, notes: blankToNull(p.notes), reference: blankToNull(p.reference), currency: p.currency || null, lines,
   };
   let id = p.id;
   try {

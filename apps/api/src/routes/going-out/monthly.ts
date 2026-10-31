@@ -112,7 +112,8 @@ export async function monthlyRoutes(app: FastifyInstance) {
     const gross = body.gross ?? c.amount;
     const v = await expenseValues(ctx.db, ctx, {
       spentOn: body.spentOn, supplierId: c.supplierId, payee: c.supplierId ? null : c.name, categoryId: c.categoryId,
-      gross, vat: gross === c.amount ? c.vat : 0, bizPct: 100, method: body.method ?? c.method,
+      // Every-month costs are kept in the home currency.
+      gross, vat: gross === c.amount ? c.vat : 0, currency: b.currency, fxRate: null, bizPct: 100, method: body.method ?? c.method,
       chequeNumber: body.chequeNumber, chequeDate: body.chequeDate, chequeBank: body.chequeBank,
       note: c.supplierId ? `${c.name}, ${monthLabel(body.spentOn)}` : monthLabel(body.spentOn),
     });

@@ -114,7 +114,8 @@ export default async function GoingOutPage({ searchParams }: { searchParams: Pro
 
       {sorting && needsSection}
 
-      <ExpensePanel setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)} />
+      <ExpensePanel setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)}
+        supplierCurrencies={Object.fromEntries(suppliers.suppliers.filter((s) => s.currency).map((s) => [s.name.toLowerCase(), s.currency!]))} />
 
       <section className="flex flex-col gap-4" aria-labelledby="tools-h">
         <SectionTitle id="tools-h" aside="Bills, suppliers and every-month costs">Tools for Going out</SectionTitle>

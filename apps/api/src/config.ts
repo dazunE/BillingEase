@@ -32,6 +32,11 @@ export type Config = {
   sessionDays: number;
   /** The public API and MCP server: calls per business per day, and per token per minute. */
   api: { dailyQuota: number; perMinute: number };
+  /**
+   * Exchange rates for documents in another currency. When off (FX_RATES=off), or the service
+   * can't be reached, people type the rate themselves.
+   */
+  fx: { enabled: boolean };
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -67,6 +72,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     },
     sessionDays: Number(env.SESSION_DAYS ?? 30),
     api: { dailyQuota: Number(env.API_DAILY_QUOTA ?? 5000), perMinute: Number(env.API_RATE_PER_MINUTE ?? 120) },
+    fx: { enabled: env.FX_RATES !== "off" && mode !== "test" },
   };
 }
 

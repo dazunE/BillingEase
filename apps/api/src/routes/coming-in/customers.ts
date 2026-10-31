@@ -15,15 +15,20 @@ import { recurringOut } from "../../services/recurring-run";
 const n = (v: unknown) => Number(v ?? 0);
 const customerLink = (id: string) => `/app/in/customers/${id}`;
 
-/** Customers with what they owe, what's late and what they've paid. */
+/**
+ * Customers with what they owe, what's late and what they've paid, in the home currency: each
+ * invoice at its own rate, and payments as they reached the bank.
+ */
 export async function customerRows(db: Exec, b: BusinessRow, where: ReturnType<typeof and>): Promise<Customer[]> {
   const now = today();
   const open = sql`${invoices.total} - ${invoices.paid} - ${invoices.credited}`;
+  const homeOpen = sql`case when ${open} > 0 then ${invoices.homeTotal} - ${invoices.homeCleared} else 0 end`;
+  const received = sql`(select coalesce(sum(${receipts.homeAmount}), 0) from ${receipts} where ${receipts.invoiceId} = ${invoices.id} and ${receipts.voidedAt} is null)`;
   const agg = db.select({
     customerId: invoices.customerId,
-    owed: sql<string>`coalesce(sum(${open}), 0)`.as("owed"),
-    late: sql<string>`coalesce(sum(case when ${invoices.dueDate} < ${now} then ${open} else 0 end), 0)`.as("late"),
-    paid: sql<string>`coalesce(sum(${invoices.paid}), 0)`.as("paid"),
+    owed: sql<string>`coalesce(sum(${homeOpen}), 0)`.as("owed"),
+    late: sql<string>`coalesce(sum(case when ${invoices.dueDate} < ${now} then ${homeOpen} else 0 end), 0)`.as("late"),
+    paid: sql<string>`coalesce(sum(${received}), 0)`.as("paid"),
     openCount: sql<string>`count(*) filter (where ${open} > 0)`.as("open_count"),
   }).from(invoices)
     .where(and(eq(invoices.businessId, b.id), eq(invoices.kind, "invoice"), notInArray(invoices.status, ["draft", "void"])))
@@ -34,7 +39,7 @@ export async function customerRows(db: Exec, b: BusinessRow, where: ReturnType<t
     .orderBy(asc(sql`lower(${customers.name})`));
   return rows.map((r) => ({
     id: r.c.id, name: r.c.name, contactName: r.c.contactName, email: r.c.email, phone: r.c.phone, address: r.c.address,
-    taxId: r.c.taxId, vatNumber: r.c.vatNumber, notes: r.c.notes, archived: !!r.c.archivedAt, createdAt: r.c.createdAt.toISOString(),
+    taxId: r.c.taxId, vatNumber: r.c.vatNumber, notes: r.c.notes, currency: r.c.currency, archived: !!r.c.archivedAt, createdAt: r.c.createdAt.toISOString(),
     owed: n(r.owed), late: n(r.late), paid: n(r.paid), openCount: n(r.openCount),
   }));
 }
@@ -64,7 +69,7 @@ export async function customerRoutes(app: FastifyInstance) {
     const b = ctx.business;
     const customer = await oneCustomer(ctx.db, b, params.id);
     const year = rulesFor(b.country).taxYearOf(today());
-    const [paid] = await ctx.db.select({ sum: sql<string>`coalesce(sum(${receipts.amount}), 0)` }).from(receipts)
+    const [paid] = await ctx.db.select({ sum: sql<string>`coalesce(sum(${receipts.homeAmount}), 0)` }).from(receipts)
       .innerJoin(invoices, eq(invoices.id, receipts.invoiceId))
       .where(and(eq(receipts.businessId, b.id), eq(invoices.customerId, customer.id), isNull(receipts.voidedAt), between(receipts.receivedOn, year.from, year.to)));
     const invs = await invoiceRowsQuery(ctx.db).where(and(eq(invoices.businessId, b.id), eq(invoices.customerId, customer.id))).orderBy(desc(invoices.issueDate), desc(invoices.createdAt));

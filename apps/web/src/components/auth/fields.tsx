@@ -131,52 +131,61 @@ export function PasswordField({
   );
 }
 
-/** The two country cards with their £ / Rs badges. Real radios, so the form posts `country`. */
-export function CountryCards({
+/**
+ * Where the business is, as a dropdown. A real select, so the form posts `country`. The picked
+ * country's currency and tax office show underneath.
+ */
+export function CountrySelect({
   value,
   onChange,
-  legend,
+  label,
   hint,
   error,
-  big = false,
   names,
 }: {
   value: Cty | "";
-  onChange: (c: Cty) => void;
-  legend: string;
+  onChange: (c: Cty | "") => void;
+  label: string;
   hint?: ReactNode;
   error?: string;
-  big?: boolean;
-  names: Record<Cty, { name: string; line: string }>;
+  names: Record<Cty, { name: string; currency: string; line: string }>;
 }) {
+  const id = useId();
+  const note = `${id}-note`;
   return (
-    <fieldset className="flex min-w-0 flex-col gap-1.5">
-      <legend className={cx("mb-1.5 font-semibold", big ? "text-sm" : "text-[13px]")}>{legend}</legend>
-      <div className={cx("grid gap-2", big ? "grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] gap-2.5" : "grid-cols-[repeat(auto-fit,minmax(min(100%,170px),1fr))]")}>
-        {COUNTRY_CODES.map((c) => {
-          const on = value === c;
-          return (
-            <label
-              key={c}
-              className={cx(
-                "relative flex cursor-pointer items-center gap-3 border-2 text-left transition-colors hover:border-ink has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-coming",
-                big ? "min-h-[72px] gap-3.5 rounded-[18px] px-4 py-3" : "min-h-16 rounded-2xl px-3.5 py-2.5",
-                on ? "border-ink bg-tint" : "border-line bg-white",
-              )}
-            >
-              <input type="radio" name="country" value={c} checked={on} onChange={() => onChange(c)} className="absolute inset-0 z-10 m-0 size-full cursor-pointer appearance-none opacity-0" />
-              <span aria-hidden className={cx("flex flex-none items-center justify-center font-display font-bold", big ? "size-11 rounded-[14px] text-[15px]" : "size-[38px] rounded-xl text-sm", c === "lk" ? "bg-going-tint" : "bg-tint")}>
-                {SYMBOL[c]}
-              </span>
-              <span className="flex min-w-0 flex-col gap-px">
-                <span className={cx("font-bold", big ? "text-base" : "text-[15px]")}>{names[c].name}</span>
-                <span className={cx("text-muted", big ? "text-[13px] leading-[1.4] text-ink2" : "text-xs")}>{names[c].line}</span>
-              </span>
-            </label>
-          );
-        })}
-      </div>
-      {error ? <FieldError>{error}</FieldError> : hint && <span className="text-[13px] leading-[1.45] text-muted">{hint}</span>}
-    </fieldset>
+    <div className="flex min-w-0 flex-col gap-1.5">
+      <label htmlFor={id} className="text-[13px] font-semibold">{label}</label>
+      <span className="relative flex items-center">
+        {value && (
+          <span aria-hidden className={cx("pointer-events-none absolute left-2 flex size-7 items-center justify-center rounded-lg font-display text-xs font-bold", value === "lk" ? "bg-going-tint" : "bg-tint")}>
+            {SYMBOL[value]}
+          </span>
+        )}
+        <select
+          id={id}
+          name="country"
+          value={value}
+          onChange={(e) => onChange(e.target.value as Cty | "")}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={note}
+          required
+          className={cx(inputBase, "cursor-pointer appearance-none pr-10", value ? "pl-11" : "text-muted", error ? "border-late" : "border-input")}
+        >
+          <option value="" disabled>Choose a country</option>
+          {COUNTRY_CODES.map((c) => (
+            <option key={c} value={c} className="text-ink">{names[c].name} · {names[c].currency}</option>
+          ))}
+        </select>
+        <svg aria-hidden viewBox="0 0 16 16" className="pointer-events-none absolute right-3.5 size-4 text-ink2"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      </span>
+      {error ? (
+        <FieldError id={note}>{error}</FieldError>
+      ) : (
+        <span id={note} className="text-[13px] leading-[1.45] text-muted">
+          {value && <strong className="font-semibold text-ink2">{names[value].line}. </strong>}
+          {hint}
+        </span>
+      )}
+    </div>
   );
 }

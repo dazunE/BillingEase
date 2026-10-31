@@ -1,5 +1,5 @@
 import { comingIn } from "@billingease/contracts";
-import { formatDate, today } from "@billingease/core";
+import { formatDate, today, currencyDigits } from "@billingease/core";
 import type { Metadata } from "next";
 import { AlsoIn, Empty, FREQ, InvoiceLine, Notice, Panel, fmt } from "@/components/in/bits";
 import { DONE, editorBusiness, editorCustomers } from "@/components/in/data";
@@ -26,7 +26,7 @@ export default async function RepeatingDetailPage({ params, searchParams }: { pa
       <section className="flex flex-wrap items-end justify-between gap-4 rounded-3xl border border-line bg-white p-[clamp(18px,3vw,28px)]">
         <div className="flex min-w-0 flex-col gap-1">
           <span className="flex flex-wrap items-center gap-2"><h1 className="font-display text-[clamp(26px,3.5vw,34px)] font-bold tracking-[-0.02em]">{r.name}</h1><Badge tone={r.active ? "pos" : "due"}>{r.active ? "Active" : "Paused"}</Badge></span>
-          <span className="text-[15px] text-ink2">{r.customerName} · {fmt(r.total, cur)} {FREQ[r.frequency]} · {r.mode === "send" ? "sent on the day" : "makes a draft for you to check"}</span>
+          <span className="text-[15px] text-ink2">{r.customerName} · {fmt(r.total, r.currency, cur)} {FREQ[r.frequency]} · {r.mode === "send" ? "sent on the day" : "makes a draft for you to check"}</span>
           <span className="text-sm text-muted">{r.active && r.upcoming[0] ? `Next on ${formatDate(r.upcoming[0], { year: true })}` : "Paused: nothing is made until you resume."}{r.endDate ? ` · stops after ${formatDate(r.endDate, { year: true })}` : ""}</span>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -41,7 +41,7 @@ export default async function RepeatingDetailPage({ params, searchParams }: { pa
 
       <h2 className="font-display text-[22px] font-bold">Change it</h2>
       <DocEditor mode="repeating" business={editorBusiness(b)} customers={editorCustomers(customers.customers)} items={items.items} number="" today={today()}
-        initial={{ id: r.id, customerId: r.customerId, issueDate: r.nextRun, nextRun: r.nextRun, endDate: r.endDate, termsDays: r.termsDays, name: r.name, frequency: r.frequency, recurMode: r.mode, notes: r.notes, reference: r.reference, lines: r.lines.map((l) => lineFromStored(l)) }}
+        initial={{ id: r.id, customerId: r.customerId, issueDate: r.nextRun, nextRun: r.nextRun, endDate: r.endDate, termsDays: r.termsDays, name: r.name, frequency: r.frequency, recurMode: r.mode, notes: r.notes, reference: r.reference, currency: r.currency, lines: r.lines.map((l) => lineFromStored(l, currencyDigits(r.currency))) }}
         action={saveRecurring} cancelHref="/app/in/repeating" />
 
       <details className="self-start">

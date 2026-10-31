@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { formatDate, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import { currencyDigits, describeRate, formatDate, formatMoney, parseRate, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import type { Exec } from "@billingease/db";
 import { businesses, customers, invoiceLines, invoices, outboxEmails, quoteLines, quotes, receipts } from "@billingease/db/schema";
 import fontkit from "@pdf-lib/fontkit";
@@ -24,7 +24,13 @@ export type Party = { name: string; legalName?: string | null; address?: string 
 export type DocData = {
   kind: "invoice" | "credit_note" | "quote";
   country: CountryCode;
-  currency: Currency;
+  /** The document's currency; amounts are in it. */
+  currency: string;
+  /**
+   * For a document in another currency: the same totals in the business's home currency and the
+   * rate used, printed under the totals (UK VAT invoices must show the VAT in sterling).
+   */
+  home?: { currency: Currency; rateLabel: string; net: number; vat: number; sscl: number; total: number; indicative?: boolean } | null;
   title: string;
   number: string | null;
   status: string;
@@ -194,7 +200,15 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   const D = face(display, boldExt);
   const rules = rulesFor(d.country);
   const lk = d.country === "lk";
-  const m = (minor: number) => formatMoney(minor, d.currency, { decimals: "always" });
+  // A foreign currency is written with its code ("EUR 1,250.00"): clear to any reader, and every
+  // character is in the embedded fonts.
+  const foreignAmount = (minor: number) => {
+    const digits = currencyDigits(d.currency);
+    const n = new Intl.NumberFormat("en-GB", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(Math.abs(minor) / 10 ** digits);
+    return `${minor < 0 ? "-" : ""}${d.currency} ${n}`;
+  };
+  const m = (minor: number) => (d.home ? foreignAmount(minor) : formatMoney(minor, d.currency, { decimals: "always" }));
+  const hm = (minor: number) => formatMoney(minor, d.home!.currency, { decimals: "always" });
   const numberText = d.number ?? "Draft";
   // UK VAT invoices show VAT per line; Sri Lankan Tax Invoices put SSCL and VAT in the totals.
   const mode: "plain" | "ukvat" | "lktax" = d.vatRegistered ? (lk ? "lktax" : "ukvat") : (lk && d.sscl > 0 ? "lktax" : "plain");
@@ -366,6 +380,25 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     y -= 10;
   }
 
+  // --- The same totals in the home currency, for a document in another currency
+  if (d.home) {
+    const h = d.home;
+    const homeRows: [string, string][] = [];
+    if (h.vat > 0 || h.sscl > 0) homeRows.push([`${mode === "lktax" ? "Value of supply" : "Total excluding VAT"} in ${h.currency}`, hm(h.net)]);
+    if (h.sscl > 0) homeRows.push([`SSCL in ${h.currency}`, hm(h.sscl)]);
+    if (h.vat > 0) homeRows.push([`VAT in ${h.currency}`, hm(h.vat)]);
+    homeRows.push([`Total in ${h.currency}`, hm(h.total)]);
+    need(homeRows.length * 16 + 34);
+    draw(page, R, `${h.indicative ? "For reference, at" : "Converted at"} ${h.rateLabel}`, L, y, 8, MUTED);
+    y -= 15;
+    for (const [label, value] of homeRows) {
+      draw(page, R, label, L, y, 9, INK2);
+      drawRight(page, R, value, RIGHT, y, 9);
+      y -= 15;
+    }
+    y -= 10;
+  }
+
   // --- VAT summary by rate (UK VAT invoices)
   if (mode === "ukvat") {
     const summary = vatByRate(d);
@@ -484,7 +517,11 @@ export async function invoicePdfData(db: Exec, businessId: string, invoiceId: st
       ];
   const methods = [...new Set(recs.map((r) => (r.method === "Cheque" && r.chequeNumber ? `Cheque no. ${r.chequeNumber}` : r.method)))];
   return {
-    kind: inv.kind, country: b.country, currency: b.currency, title: inv.kind === "credit_note" ? "Credit note" : snap.title, number: inv.number, status: inv.status,
+    kind: inv.kind, country: b.country, currency: inv.currency, title: inv.kind === "credit_note" ? "Credit note" : snap.title, number: inv.number, status: inv.status,
+    home: inv.currency === b.currency ? null : {
+      currency: b.currency, rateLabel: `${describeRate(inv.currency, b.currency, parseRate(inv.fxRate) ?? "1")} (${day(inv.issueDate)})`,
+      net: inv.homeNet, vat: inv.homeVat, sscl: inv.homeSscl, total: inv.homeTotal,
+    },
     seller: snap.seller, buyer: snap.buyer, dates, vatRegistered,
     lines: lines.map((l) => ({ description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, vatBps: l.vatBps, net: l.net, vat: l.vat, sscl: l.sscl })),
     net: inv.net, vat: inv.vat, sscl: inv.sscl, total: inv.total, paid: inv.paid, credited: inv.credited,
@@ -502,7 +539,11 @@ export async function quotePdfData(db: Exec, businessId: string, quoteId: string
   const vatRegistered = q.status === "draft" ? b.vatRegistered : q.vatRegistered;
   const snap = q.snapshot ?? snapshotFor(b, c, vatRegistered);
   return {
-    kind: "quote", country: b.country, currency: b.currency, title: "Quote", number: q.number, status: q.status,
+    kind: "quote", country: b.country, currency: q.currency, title: "Quote", number: q.number, status: q.status,
+    home: q.currency === b.currency ? null : {
+      currency: b.currency, rateLabel: describeRate(q.currency, b.currency, parseRate(q.fxRate) ?? "1"), indicative: true,
+      net: 0, vat: 0, sscl: 0, total: q.homeTotal,
+    },
     seller: snap.seller, buyer: snap.buyer, dates: [["Quote date", day(q.issueDate)], ["Valid until", day(q.expiryDate)]], vatRegistered,
     lines: lines.map((l) => ({ description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, vatBps: l.vatBps, net: l.net, vat: l.vat, sscl: l.sscl })),
     net: q.net, vat: q.vat, sscl: q.sscl, total: q.total, paid: 0, credited: 0,

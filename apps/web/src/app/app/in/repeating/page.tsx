@@ -36,7 +36,7 @@ export default async function RepeatingPage() {
                     <span className="text-[15px] text-ink2">{r.name} · {FREQ[r.frequency]}</span>
                     <span className="text-sm text-muted">{r.mode === "send" ? "Sent on the day with the PDF" : "Makes a draft for you to check"} · {r.invoiceCount} sent so far</span>
                   </div>
-                  <div className="flex flex-col items-end"><strong className="tabular text-[20px]">{fmt(r.total, cur)}</strong>{(r.vat > 0 || r.sscl > 0) && <span className="text-sm text-muted">{fmt(r.net, cur)} before tax</span>}</div>
+                  <div className="flex flex-col items-end"><strong className="tabular text-[20px]">{fmt(r.total, r.currency, cur)}</strong>{(r.vat > 0 || r.sscl > 0) && <span className="text-sm text-muted">{fmt(r.net, r.currency, cur)} before tax</span>}</div>
                 </div>
                 {r.upcoming.length > 0 && (
                   <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-bg p-3 text-sm">
@@ -65,7 +65,7 @@ export default async function RepeatingPage() {
                 <Link href={`/app/in/invoices/${c.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-3 hover:bg-bg">
                   <span className="flex min-w-0 flex-1 flex-col"><strong>{c.customerName}</strong><span className="text-sm text-muted">{c.number} · {formatDate(c.issueDate)}{c.summary ? ` · ${c.summary}` : ""}</span></span>
                   <Badge tone="pos">Applied</Badge>
-                  <strong className="tabular">−{fmt(c.total, cur)}</strong>
+                  <strong className="tabular">−{fmt(c.total, c.currency, cur)}</strong>
                 </Link>
               </li>
             ))}

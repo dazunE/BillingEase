@@ -7,6 +7,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgTable,
   primaryKey,
   text,
@@ -20,6 +21,16 @@ const money = (name: string) => bigint(name, { mode: "number" });
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 const updatedAt = () => timestamp("updated_at", { withTimezone: true }).notNull().defaultNow();
+/**
+ * An exchange rate: units of the home currency per unit of the document's currency, exact to 10
+ * decimal places. Read back as a string ("0.7912000000"), never a float.
+ */
+const fxRate = (name = "fx_rate") => numeric(name, { precision: 22, scale: 10 });
+/**
+ * What a document is written in, and the same amounts in the business's home currency for the
+ * books. For a document in the home currency the rate is 1 and the home amounts are the same.
+ */
+const homeMoney = (name: string) => money(name).notNull().default(0);
 const businessId = () => uuid("business_id").notNull().references(() => businesses.id, { onDelete: "cascade" });
 /** Cheque details, kept for Sri Lanka (and UK cheques). */
 const cheque = {
@@ -222,6 +233,8 @@ export const customers = pgTable(
     taxId: text("tax_id"),
     vatNumber: text("vat_number"),
     notes: text("notes"),
+    // The currency new quotes and invoices for this customer start in. Null: the home currency.
+    currency: text("currency"),
     archivedAt: timestamp("archived_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
@@ -273,12 +286,21 @@ export const invoices = pgTable(
     dueDate: date("due_date").notNull(),
     reference: text("reference"),
     notes: text("notes"),
+    // Amounts below are in `currency`; home_* are the same in the home currency, at `fx_rate`.
+    currency: text("currency").notNull(),
+    fxRate: fxRate().notNull().default("1"),
     net: money("net").notNull().default(0),
     vat: money("vat").notNull().default(0),
     sscl: money("sscl").notNull().default(0),
     total: money("total").notNull().default(0),
     paid: money("paid").notNull().default(0),
     credited: money("credited").notNull().default(0),
+    homeNet: homeMoney("home_net"),
+    homeVat: homeMoney("home_vat"),
+    homeSscl: homeMoney("home_sscl"),
+    homeTotal: homeMoney("home_total"),
+    // How much of home_total payments and credit notes have cleared from what customers owe you.
+    homeCleared: homeMoney("home_cleared"),
     vatRegistered: boolean("vat_registered").notNull().default(false),
     // For a credit note: the invoice it reduces.
     creditForId: uuid("credit_for_id"),
@@ -302,6 +324,7 @@ export const invoices = pgTable(
     check("invoices_kind", sql`${t.kind} in ('invoice','credit_note')`),
     check("invoices_amounts", sql`${t.total} >= 0 and ${t.paid} >= 0 and ${t.credited} >= 0 and ${t.paid} + ${t.credited} <= ${t.total}`),
     check("invoices_numbered", sql`${t.status} = 'draft' or ${t.number} is not null`),
+    check("invoices_fx", sql`${t.fxRate} > 0 and ${t.homeCleared} >= 0 and ${t.homeCleared} <= ${t.homeTotal}`),
   ],
 );
 
@@ -341,6 +364,10 @@ export const quotes = pgTable(
     issueDate: date("issue_date").notNull(),
     expiryDate: date("expiry_date").notNull(),
     notes: text("notes"),
+    currency: text("currency").notNull(),
+    // Indicative only: the invoice takes the rate on its own date.
+    fxRate: fxRate().notNull().default("1"),
+    homeTotal: homeMoney("home_total"),
     net: money("net").notNull().default(0),
     vat: money("vat").notNull().default(0),
     sscl: money("sscl").notNull().default(0),
@@ -386,6 +413,8 @@ export const recurringInvoices = pgTable(
     endDate: date("end_date"),
     // draft: each run makes a draft for you to check and send. send: emailed on the day.
     mode: text("mode").$type<"draft" | "send">().notNull().default("draft"),
+    // Each run's invoice is in this currency, at the rate on its date.
+    currency: text("currency").notNull(),
     template: jsonb("template").$type<RecurringTemplate>().notNull(),
     active: boolean("active").notNull().default(true),
     lastRunAt: timestamp("last_run_at", { withTimezone: true }),
@@ -405,7 +434,12 @@ export const receipts = pgTable(
     id: id(),
     businessId: businessId(),
     invoiceId: uuid("invoice_id").notNull().references(() => invoices.id),
+    // In the invoice's currency: what it takes off the invoice.
     amount: money("amount").notNull(),
+    // In the home currency: what reached the bank, and how much of the invoice's home value it
+    // cleared. Any difference is an exchange rate gain or loss.
+    homeAmount: homeMoney("home_amount"),
+    homeCleared: homeMoney("home_cleared"),
     method: text("method").notNull(),
     receivedOn: date("received_on").notNull(),
     reference: text("reference"),
@@ -436,6 +470,8 @@ export const suppliers = pgTable(
     vatNumber: text("vat_number"),
     defaultCategoryId: text("default_category_id"),
     notes: text("notes"),
+    // The currency new bills and expenses from this supplier start in. Null: the home currency.
+    currency: text("currency"),
     archivedAt: timestamp("archived_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
@@ -459,6 +495,12 @@ export const expenses = pgTable(
     vat: money("vat").notNull().default(0),
     // Share used for the business, 1–100.
     bizPct: integer("biz_pct").notNull().default(100),
+    // gross and vat above are what left your account, in the home currency. When the receipt was in
+    // another currency, it and its amounts are kept here with the rate used.
+    currency: text("currency"),
+    fxRate: fxRate(),
+    originalGross: money("original_gross"),
+    originalVat: money("original_vat"),
     method: text("method").notNull(),
     ...cheque,
     note: text("note"),
@@ -490,10 +532,17 @@ export const bills = pgTable(
     billDate: date("bill_date").notNull(),
     dueDate: date("due_date").notNull(),
     description: text("description").notNull(),
+    // Amounts below are in `currency`; home_* are the same in the home currency, at `fx_rate`.
+    currency: text("currency").notNull(),
+    fxRate: fxRate().notNull().default("1"),
     net: money("net").notNull(),
     vat: money("vat").notNull().default(0),
     total: money("total").notNull(),
     paid: money("paid").notNull().default(0),
+    homeNet: homeMoney("home_net"),
+    homeVat: homeMoney("home_vat"),
+    homeTotal: homeMoney("home_total"),
+    homeCleared: homeMoney("home_cleared"),
     status: text("status").$type<(typeof BILL_STATUSES)[number]>().notNull().default("unpaid"),
     // manual | agent | api: how the row was made; proposal_id when an approved proposal made it.
     createdVia: text("created_via").$type<"manual" | "agent" | "api">().notNull().default("manual"),
@@ -507,6 +556,7 @@ export const bills = pgTable(
     index("bills_business_status").on(t.businessId, t.status),
     check("bills_status", sql`${t.status} in ('unpaid','part_paid','paid','void')`),
     check("bills_amounts", sql`${t.total} > 0 and ${t.paid} >= 0 and ${t.paid} <= ${t.total} and ${t.total} = ${t.net} + ${t.vat}`),
+    check("bills_fx", sql`${t.fxRate} > 0 and ${t.homeCleared} >= 0 and ${t.homeCleared} <= ${t.homeTotal}`),
   ],
 );
 
@@ -527,7 +577,11 @@ export const billPayments = pgTable(
     id: id(),
     businessId: businessId(),
     billId: uuid("bill_id").notNull().references(() => bills.id),
+    // In the bill's currency: what it takes off the bill.
     amount: money("amount").notNull(),
+    // In the home currency: what left the bank, and how much of the bill's home value it cleared.
+    homeAmount: homeMoney("home_amount"),
+    homeCleared: homeMoney("home_cleared"),
     paidOn: date("paid_on").notNull(),
     method: text("method").notNull(),
     ...cheque,
@@ -540,6 +594,20 @@ export const billPayments = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("bill_payments_bill").on(t.billId), check("bill_payments_positive", sql`${t.amount} > 0`)],
+);
+
+/** Exchange rates fetched from the rates service, one per day and pair, so each is fetched once. */
+export const fxRates = pgTable(
+  "fx_rates",
+  {
+    day: date("day").notNull(),
+    base: text("base").notNull(),
+    quote: text("quote").notNull(),
+    rate: fxRate("rate").notNull(),
+    source: text("source").notNull(),
+    fetchedAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.base, t.quote] }), check("fx_rates_positive", sql`${t.rate} > 0`)],
 );
 
 /** Costs that come round every month: you record each one with a tap. */

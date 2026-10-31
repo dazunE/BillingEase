@@ -1,4 +1,4 @@
-import { formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import { describeRate, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import { BrandMark, cx } from "@/components/ui";
 import { qty } from "./bits";
 
@@ -6,7 +6,10 @@ import { qty } from "./bits";
 export type PreviewData = {
   kind: "invoice" | "credit_note" | "quote";
   country: CountryCode;
-  currency: Currency;
+  /** The document's currency: the amounts are in it. */
+  currency: string;
+  /** For a document in another currency: the same totals in the home currency, and the rate. */
+  home?: { currency: Currency; rate: string; net: number; vat: number; sscl: number; total: number; indicative?: boolean } | null;
   title: string;
   number: string | null;
   status: string;
@@ -25,7 +28,8 @@ export type PreviewData = {
 export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: boolean }) {
   const rules = rulesFor(d.country);
   const lk = d.country === "lk";
-  const m = (minor: number) => formatMoney(minor, d.currency, { decimals: "always" });
+  const m = (minor: number) => formatMoney(minor, d.currency, { decimals: "always", homeOf: d.home?.currency });
+  const hm = (minor: number) => formatMoney(minor, d.home!.currency, { decimals: "always" });
   const mode = d.vatRegistered ? (lk ? "lktax" : "ukvat") : lk && d.sscl > 0 ? "lktax" : "plain";
   const rateLabel = (id: string | null) => (id ? (rules.vatRates.find((r) => r.id === id)?.label ?? id).replace(/ \(.*\)$/, "") : "-");
   const byRate = new Map<string, { label: string; base: number; vat: number }>();
@@ -136,6 +140,16 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
           </div>
         )}
       </dl>
+
+      {d.home && (
+        <dl className="ml-auto grid w-full max-w-[340px] grid-cols-[1fr_auto] gap-x-4 gap-y-1 rounded-xl bg-bg px-3 py-2.5 text-xs" data-testid="preview-home">
+          <div className="col-span-2 text-[11px] text-muted">{d.home.indicative ? "For reference, at" : "Converted at"} {describeRate(d.currency, d.home.currency, d.home.rate)}</div>
+          {(d.home.vat > 0 || d.home.sscl > 0) && <Row label={`${mode === "lktax" ? "Value of supply" : "Excluding VAT"} in ${d.home.currency}`} value={hm(d.home.net)} />}
+          {d.home.sscl > 0 && <Row label={`SSCL in ${d.home.currency}`} value={hm(d.home.sscl)} />}
+          {d.home.vat > 0 && <Row label={`VAT in ${d.home.currency}`} value={hm(d.home.vat)} />}
+          <Row label={`Total in ${d.home.currency}`} value={hm(d.home.total)} strong />
+        </dl>
+      )}
 
       {mode === "ukvat" && rates.length > 0 && (
         <table className="w-full max-w-[360px] text-xs">

@@ -174,12 +174,15 @@ async function loadBooks(db: Db, b: BusinessRow, from: string, to: string): Prom
   const open = sql<number>`(${invoices.total} - ${invoices.paid} - ${invoices.credited})::bigint`;
   const [invs, bls, rcs, bps, exps, sups, prev] = await Promise.all([
     db.select({ id: invoices.id, number: invoices.number, customer: customers.name, open }).from(invoices).innerJoin(customers, eq(customers.id, invoices.customerId))
-      .where(and(eq(invoices.businessId, b.id), eq(invoices.kind, "invoice"), inArray(invoices.status, ["sent", "part_paid"]), sql`${open} > 0`)),
+      // Only invoices in the home currency are matched by amount: a payment for one in another
+      // currency is recorded from the invoice, with what reached the bank.
+      .where(and(eq(invoices.businessId, b.id), eq(invoices.kind, "invoice"), eq(invoices.currency, b.currency), inArray(invoices.status, ["sent", "part_paid"]), sql`${open} > 0`)),
     db.select({ id: bills.id, supplier: suppliers.name, reference: bills.reference, open: sql<number>`(${bills.total} - ${bills.paid})::bigint` }).from(bills).innerJoin(suppliers, eq(suppliers.id, bills.supplierId))
-      .where(and(eq(bills.businessId, b.id), inArray(bills.status, ["unpaid", "part_paid"]))),
-    db.select({ id: receipts.id, invoiceId: receipts.invoiceId, amount: receipts.amount, date: receipts.receivedOn }).from(receipts)
+      .where(and(eq(bills.businessId, b.id), eq(bills.currency, b.currency), inArray(bills.status, ["unpaid", "part_paid"]))),
+    // What reached or left the bank, in the home currency, so a statement line finds it.
+    db.select({ id: receipts.id, invoiceId: receipts.invoiceId, amount: receipts.homeAmount, date: receipts.receivedOn }).from(receipts)
       .where(and(eq(receipts.businessId, b.id), isNull(receipts.voidedAt), gte(receipts.receivedOn, lo), lte(receipts.receivedOn, hi))),
-    db.select({ id: billPayments.id, billId: billPayments.billId, amount: billPayments.amount, date: billPayments.paidOn }).from(billPayments)
+    db.select({ id: billPayments.id, billId: billPayments.billId, amount: billPayments.homeAmount, date: billPayments.paidOn }).from(billPayments)
       .where(and(eq(billPayments.businessId, b.id), isNull(billPayments.voidedAt), gte(billPayments.paidOn, lo), lte(billPayments.paidOn, hi))),
     db.select({ id: expenses.id, payee: expenses.payee, gross: expenses.gross, date: expenses.spentOn }).from(expenses)
       .where(and(eq(expenses.businessId, b.id), gte(expenses.spentOn, lo), lte(expenses.spentOn, hi))),

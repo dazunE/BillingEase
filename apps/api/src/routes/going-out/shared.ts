@@ -4,6 +4,7 @@ import { attachments, bills, expenses, suppliers, users } from "@billingease/db/
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { BizCtx, BusinessRow } from "../../lib/context";
 import { badRequest, notFound } from "../../lib/errors";
+import { shownRate } from "../../services/doc-currency";
 
 export type ExpenseRow = typeof expenses.$inferSelect;
 export type BillRow = typeof bills.$inferSelect;
@@ -86,6 +87,7 @@ export function expenseOut(b: BusinessRow, e: ExpenseRow, extra: { attachmentCou
     id: e.id, spentOn: e.spentOn, supplierId: e.supplierId, payee: e.payee, categoryId: e.categoryId,
     categoryName: cat.name, categoryOfficial: cat.official,
     gross: e.gross, vat: e.vat, bizPct: e.bizPct, businessShare: businessShare(e.gross, e.bizPct),
+    currency: e.currency, fxRate: e.fxRate ? shownRate(e.fxRate) : null, originalGross: e.originalGross, originalVat: e.originalVat,
     method: e.method, chequeNumber: e.chequeNumber, chequeDate: e.chequeDate, chequeBank: e.chequeBank,
     note: e.note, monthlyCostId: e.monthlyCostId,
     attachmentCount: extra.attachmentCount ?? 0, createdByName: extra.createdByName ?? null, createdVia: e.createdVia,
@@ -127,11 +129,16 @@ export function daysTo(d: string, now = today()) {
   return Math.round((Date.parse(d + "T00:00:00Z") - Date.parse(now + "T00:00:00Z")) / 86400000);
 }
 
+/** What's still to pay on a bill in the home currency, at the bill's own rate. */
+export const homeLeftOf = (bill: Pick<BillRow, "status" | "total" | "paid" | "homeTotal" | "homeCleared">) =>
+  (bill.status === "void" || bill.total - bill.paid <= 0 ? 0 : bill.homeTotal - bill.homeCleared);
+
 export function billOut(bill: BillRow, extra: { supplierName: string; attachmentCount?: number; lastPaidOn?: string | null }) {
   return {
     id: bill.id, supplierId: bill.supplierId, supplierName: extra.supplierName, reference: bill.reference,
-    billDate: bill.billDate, dueDate: bill.dueDate, description: bill.description,
+    billDate: bill.billDate, dueDate: bill.dueDate, description: bill.description, currency: bill.currency, fxRate: shownRate(bill.fxRate),
     net: bill.net, vat: bill.vat, total: bill.total, paid: bill.paid, left: bill.status === "void" ? 0 : bill.total - bill.paid,
+    homeTotal: bill.homeTotal, homeLeft: homeLeftOf(bill),
     status: bill.status, due: billDue(bill), daysToDue: daysTo(bill.dueDate), lastPaidOn: extra.lastPaidOn ?? null,
     attachmentCount: extra.attachmentCount ?? 0,
   };

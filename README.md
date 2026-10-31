@@ -30,6 +30,7 @@ With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, s
 2. **Create an account**, choosing the **United Kingdom** or **Sri Lanka**. Try both: use a second email (or a private window) for the other country.
 3. **Set up the business.** Say yes to VAT (and SSCL in Sri Lanka) to see VAT invoices and Tax Invoices.
 4. **New → Add a customer**, then **New → New invoice**: two lines, *Save and send*. Download the PDF from the invoice page.
+   Try a client abroad too: give a customer a *Usual currency* (say US dollars), and their invoice is in dollars with the day's rate filled in (or typed, when it can't be looked up). Record the payment with what reached your bank to see the exchange rate gain or loss.
 5. On the invoice, **Record a payment** (in Sri Lanka try a cheque, with its number and bank).
 6. **New → Record an expense** and **New → Add a bill**; pay the bill in part, then the rest.
 7. Back on **Home**, the three numbers have moved (without VAT and SSCL). Try the period switch, search and notifications.
