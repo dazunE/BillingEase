@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { endpoint, IsoDate, Minor, Ok, optionalText, PositiveMinor } from "./endpoint";
+import { CurrencyCode, FxRateInput, FxShown, IsoDate, Minor, Ok, PositiveMinor, endpoint, optionalText } from "./endpoint";
 import { PeriodKey } from "./home";
 
 /**
@@ -79,10 +79,12 @@ export const Supplier = z.object({
   defaultCategoryId: z.string().nullable(),
   defaultCategoryName: z.string().nullable(),
   notes: z.string().nullable(),
+  /** The currency their bills and expenses start in; null for the home currency. */
+  currency: z.string().nullable(),
   archived: z.boolean(),
-  /** Paid to them this tax year (expenses and bill payments). */
+  /** Paid to them this tax year (expenses and bill payments), in the home currency. */
   paidThisYear: Minor,
-  /** Still owed on open bills. */
+  /** Still owed on open bills, in the home currency at each bill's rate. */
   owed: Minor,
   openBills: z.number().int(),
 });
@@ -97,6 +99,8 @@ export const SupplierBody = z.object({
   vatNumber: optionalText(40),
   defaultCategoryId: optionalText(40),
   notes: optionalText(1000),
+  /** Left out or null: the home currency. */
+  currency: CurrencyCode.optional().nullable().transform((v) => v ?? null),
 });
 export type SupplierBody = z.input<typeof SupplierBody>;
 
@@ -116,8 +120,14 @@ export const Expense = z.object({
   categoryId: z.string().nullable(),
   categoryName: z.string().nullable(),
   categoryOfficial: z.string().nullable(),
+  /** What left your account, in the home currency. */
   gross: Minor,
   vat: Minor,
+  /** When the receipt was in another currency: that currency, its amounts and the rate used. */
+  currency: z.string().nullable(),
+  fxRate: z.string().nullable(),
+  originalGross: Minor.nullable(),
+  originalVat: Minor.nullable(),
   bizPct: z.number().int(),
   /** What counts in Going out: gross less the personal share. */
   businessShare: Minor,
@@ -141,8 +151,15 @@ export const ExpenseBody = z.object({
   payee: optionalText(160),
   /** Null or "" means "sort later": it posts to Spending to sort. */
   categoryId: z.string().trim().max(40).optional().nullable().transform((v) => (v ? v : null)),
+  /** In `currency` (the home currency when left out). */
   gross: PositiveMinor,
   vat: Minor.min(0, "VAT can't be negative").default(0),
+  /** The receipt's currency. Left out: the supplier's, else the home currency. */
+  currency: CurrencyCode.optional().nullable(),
+  /** Home currency per unit of `currency`. Left out: the rate on the day it was spent. */
+  fxRate: FxRateInput,
+  /** For a receipt in another currency: what actually left your account, in the home currency. */
+  homeGross: PositiveMinor.optional().nullable(),
   bizPct: z.number().int().min(1, "Business use is between 1% and 100%").max(100, "Business use is between 1% and 100%").default(100),
   method: z.string().trim().min(1, "Pick how you paid"),
   ...chequeFields,
@@ -183,11 +200,16 @@ export const Bill = z.object({
   billDate: IsoDate,
   dueDate: IsoDate,
   description: z.string(),
+  /** Amounts are in `currency`; home* in the home currency at `fxRate`. */
+  ...FxShown,
   net: Minor,
   vat: Minor,
   total: Minor,
   paid: Minor,
   left: Minor,
+  homeTotal: Minor,
+  /** Still to pay in the home currency, at the bill's rate. */
+  homeLeft: Minor,
   status: BillStatus,
   due: BillDue,
   /** Days from today to the due date (negative when late). */
@@ -209,7 +231,12 @@ export const BillLine = z.object({
 
 export const BillPayment = z.object({
   id: z.string(),
+  /** In the bill's currency. */
   amount: Minor,
+  /** What left the bank, in the home currency. */
+  homeAmount: Minor,
+  /** Exchange rate gain (or loss, below 0) against the bill's rate, in the home currency. */
+  fxGain: Minor,
   paidOn: IsoDate,
   method: z.string(),
   chequeNumber: z.string().nullable(),
@@ -243,13 +270,20 @@ export const BillBody = z.object({
   billDate: IsoDate,
   dueDate: IsoDate,
   description: optionalText(300),
+  /** The bill's currency. Left out: the supplier's, else the home currency. */
+  currency: CurrencyCode.optional().nullable(),
+  /** Home currency per unit of `currency`. Left out: the rate on the bill date. */
+  fxRate: FxRateInput,
   lines: z.array(BillLineBody).min(1, "Add at least one line").max(50),
 }).refine((b) => b.supplierId || b.supplierName, { path: ["supplierName"], message: "Who sent the bill?" })
   .refine((b) => b.dueDate >= b.billDate, { path: ["dueDate"], message: "The due date can't be before the bill date" });
 export type BillBody = z.input<typeof BillBody>;
 
 export const BillPaymentBody = z.object({
+  /** In the bill's currency: what it takes off the bill. */
   amount: PositiveMinor,
+  /** For a bill in another currency: what left your bank, in the home currency. Left out: at the rate on the day. */
+  homeAmount: PositiveMinor.optional().nullable(),
   paidOn: IsoDate,
   method: z.string().trim().min(1, "Pick how you paid"),
   ...chequeFields,

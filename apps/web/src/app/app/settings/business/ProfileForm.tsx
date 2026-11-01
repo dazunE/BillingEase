@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Business } from "@billingease/contracts";
 import { useActionState, useState } from "react";
 import { Button, Field, Input, Select, Textarea, cx } from "@/components/ui";
@@ -19,14 +20,6 @@ export type CountryText = {
   facts: string;
 };
 
-const ACCENTS = [
-  { value: "#7A5AF8", name: "Violet" },
-  { value: "#18161F", name: "Graphite" },
-  { value: "#1F5E91", name: "Blue" },
-  { value: "#2F7D5B", name: "Green" },
-  { value: "#C2410C", name: "Orange" },
-  { value: "#A8200D", name: "Red" },
-];
 
 function Seg({ name, legend, hint, value, onChange, options }: { name: string; legend: string; hint?: string; value: string; onChange: (v: string) => void; options: { id: string; label: string }[] }) {
   return (
@@ -69,7 +62,6 @@ export function ProfileForm({ b, text, canEdit }: { b: Business; text: CountryTe
   const [sscl, setSscl] = useState(v ? v.ssclRegistered === "on" : b.ssclRegistered);
   const [basis, setBasis] = useState<string>(v?.basis ?? b.basis);
   const [quarters, setQuarters] = useState<string>(v?.quarterType ?? b.quarterType);
-  const [accent, setAccent] = useState<string>(v?.accent ?? b.accent);
   const [prefix, setPrefix] = useState<string>(v?.invoicePrefix ?? b.invoicePrefix);
 
   return (
@@ -153,19 +145,7 @@ export function ProfileForm({ b, text, canEdit }: { b: Business; text: CountryTe
           <Field label="Note on every invoice (optional)" hint="For example: thank you for your business" error={e.invoiceNote}>
             <Textarea name="invoiceNote" defaultValue={val("invoiceNote")} rows={2} />
           </Field>
-          <fieldset className="flex flex-col gap-2">
-            <legend className="mb-1 text-[13px] font-semibold">Accent colour</legend>
-            <div className="flex flex-wrap gap-2">
-              {ACCENTS.map((a) => (
-                <label key={a.value} title={a.name} className={cx("flex size-11 cursor-pointer items-center justify-center rounded-full border-2 has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-coming", accent.toUpperCase() === a.value ? "border-ink" : "border-transparent")}>
-                  <input type="radio" name="accent" value={a.value} checked={accent.toUpperCase() === a.value} onChange={() => setAccent(a.value)} className="sr-only" aria-label={a.name} />
-                  <span className="size-8 rounded-full" style={{ background: a.value }} />
-                </label>
-              ))}
-              {!ACCENTS.some((a) => a.value === accent.toUpperCase()) && <input type="hidden" name="accent" value={accent} />}
-            </div>
-            <span className="text-xs text-muted">Used on invoices, quotes and emails. The app keeps its own colours.</span>
-          </fieldset>
+          <p className="text-sm text-ink2">Your logo, colour, layout and typeface are in <Link href="/app/settings/branding" className="font-semibold underline underline-offset-2">Invoice branding</Link>.</p>
         </Section>
       </fieldset>
       {canEdit

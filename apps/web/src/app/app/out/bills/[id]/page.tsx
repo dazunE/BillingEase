@@ -1,5 +1,5 @@
 import { goingOut } from "@billingease/contracts";
-import { formatDate, formatMoney } from "@billingease/core";
+import { formatDate, formatMoney, describeRate } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -21,7 +21,10 @@ export default async function BillPage({ params }: { params: Promise<{ id: strin
   });
   const [setup, bills] = await Promise.all([load(goingOut.setup), load(goingOut.bills)]);
   const b = d.bill;
-  const money = (m: number) => formatMoney(m, setup.currency, { decimals: "always" });
+  // The bill's own currency; the books are in the home currency.
+  const money = (m: number) => formatMoney(m, b.currency, { decimals: "always", homeOf: setup.currency });
+  const homeMoney = (m: number) => formatMoney(m, setup.currency, { decimals: "always" });
+  const foreign = b.currency !== setup.currency;
   const open = b.status === "unpaid" || b.status === "part_paid";
   const uk = setup.country === "uk";
 
@@ -42,16 +45,17 @@ export default async function BillPage({ params }: { params: Promise<{ id: strin
             <div className="flex flex-col items-start sm:items-end">
               <span className="font-display text-[clamp(28px,3.5vw,36px)] font-bold tracking-[-0.03em] tabular">{money(b.total)}</span>
               <span className="text-[13px] text-ink2">{b.status === "void" ? "Voided: nothing owed" : b.status === "paid" ? "Paid in full" : `${money(b.left)} left to pay`}</span>
+              {foreign && <span className="text-[13px] text-ink2" data-testid="bill-home">{homeMoney(b.status === "paid" || b.status === "void" ? b.homeTotal : b.homeLeft)} in your books · {describeRate(b.currency, setup.currency, b.fxRate)}</span>}
             </div>
           </header>
 
           {b.status !== "void" && (
             <div className="flex flex-col gap-2.5">
               <SplitBar paid={b.paid} toPay={b.left} />
-              <Legend paid={b.paid} toPay={b.left} currency={setup.currency} toPayLabel="left to pay" />
+              <Legend paid={b.paid} toPay={b.left} currency={b.currency} toPayLabel="left to pay" />
             </div>
           )}
-          {open && <PayBillForm billId={b.id} left={b.left} currency={setup.currency} methods={setup.payMethods} today={setup.today} supplier={b.supplierName} />}
+          {open && <PayBillForm billId={b.id} left={b.left} currency={b.currency} home={setup.currency} fxRate={b.fxRate} methods={setup.payMethods} today={setup.today} supplier={b.supplierName} />}
 
           <section className="flex flex-col gap-2.5" aria-labelledby="lines-h">
             <h2 id="lines-h" className="text-base font-bold">On the bill</h2>
@@ -96,7 +100,10 @@ export default async function BillPage({ params }: { params: Promise<{ id: strin
                         {p.chequeNumber && <span className="text-xs text-muted">Cheque {p.chequeNumber}{p.chequeDate ? `, dated ${formatDate(p.chequeDate)}` : ""}{p.chequeBank ? `, ${p.chequeBank}` : ""}</span>}
                         {p.reference && <span className="text-xs text-muted">Ref {p.reference}</span>}
                       </span>
-                      <span className="font-bold tabular">{money(p.amount)}</span>
+                      <span className="flex flex-col items-end">
+                        <span className="font-bold tabular">{money(p.amount)}</span>
+                        {foreign && <span className="text-xs text-muted tabular">{homeMoney(p.homeAmount)} from the bank{p.fxGain ? ` · exchange ${p.fxGain > 0 ? "gain" : "loss"} ${homeMoney(Math.abs(p.fxGain))}` : ""}</span>}
+                      </span>
                     </li>
                   ))}
                 </ul>

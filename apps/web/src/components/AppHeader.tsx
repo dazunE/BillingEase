@@ -55,6 +55,7 @@ export async function AppHeader({ userName, email, business }: { userName: strin
   const chip = "shrink-0 rounded-full bg-surface px-2 text-[11.5px] font-bold leading-[18px] text-ink";
   const account: Item[] = [
     { label: "Business profile", hint: lk ? "Name, TIN, VAT and SSCL" : business.country === "us" ? "Name and EIN" : "Name, UTR and VAT", href: "/app/settings/business" },
+    { label: "Invoice branding", hint: "Logo, colour, layout and typeface", href: "/app/settings/branding" },
     { label: "Notifications", hint: count ? `${count} new` : "Nothing new", href: "/app/notifications" },
     { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
     { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },

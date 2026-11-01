@@ -7,16 +7,17 @@ import { buildApp } from "../src/app";
 import { loadConfig } from "../src/config";
 import { createServices } from "../src/services";
 import type { EmailTransport } from "../src/services/email";
+import type { RateSource } from "../src/services/fx";
 
 export type Sent = Parameters<EmailTransport["send"]>[0];
 
 /** A fresh API on an in-memory database. Emails are captured in `sent`. */
-export async function testApp(opts: { email?: boolean } = {}) {
+export async function testApp(opts: { email?: boolean; rates?: RateSource | null } = {}) {
   const h: DbHandle = await connect({ pgliteDir: "memory://" });
   const config = { ...loadConfig({ NODE_ENV: "test" }), storage: { dir: mkdtempSync(path.join(tmpdir(), "be-files-")) } };
   const sent: Sent[] = [];
   const transport: EmailTransport | null = opts.email === false ? null : { send: async (m) => { sent.push(m); } };
-  const services = createServices(config, { transport });
+  const services = createServices(config, { transport, rates: opts.rates ?? null });
   const app = await buildApp({ db: h.db, config, services, logger: false });
   return { app, db: h.db, sent, close: async () => { await app.close(); await h.close(); } };
 }

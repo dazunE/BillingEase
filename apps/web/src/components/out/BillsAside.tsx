@@ -22,7 +22,7 @@ export function BillsAside({ bills, currentId, currency }: { bills: Bill[]; curr
               <span className="truncate text-[15px] font-bold">{b.supplierName}</span>
               <span className={cx("text-xs font-bold", TONE[b.due])}>{dueText(b)}</span>
             </span>
-            <span className="text-sm font-bold tabular">{formatMoney(b.status === "paid" ? b.total : b.left, currency)}</span>
+            <span className="text-sm font-bold tabular">{formatMoney(b.status === "paid" ? b.total : b.left, b.currency, { homeOf: currency })}</span>
           </Link>
         ))}
       </div>

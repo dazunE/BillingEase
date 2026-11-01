@@ -1,5 +1,5 @@
 import { ExpenseBody, goingOut } from "@billingease/contracts";
-import { formatDate } from "@billingease/core";
+import { convertMinor, currencyDigits, formatDate, parseRate } from "@billingease/core";
 import type { Exec } from "@billingease/db";
 import { attachments, expenses } from "@billingease/db/schema";
 import { and, desc, eq, gte, isNull, lte, type SQL } from "drizzle-orm";
@@ -9,6 +9,7 @@ import { logActivity } from "../../lib/activity";
 import type { BizCtx } from "../../lib/context";
 import { badRequest, notFound } from "../../lib/errors";
 import { route } from "../../lib/route";
+import { docMoney, rateFor } from "../../services/doc-currency";
 import {
   categoryFor, checkMethod, checkVat, chequeFields, expenseOut, expensesOut, money, postExpense, reverseExpense,
   supplierByName, supplierOf, type ExpenseRow,
@@ -23,18 +24,41 @@ export async function expenseValues(db: Exec, ctx: BizCtx, body: Body) {
   if (body.categoryId) categoryFor(b, body.categoryId);
   checkVat(b, body.gross, body.vat);
   let supplierId: string | null = null;
+  let supplierCurrency: string | null = null;
   let payee = body.payee;
   if (body.supplierId) {
     const s = await supplierOf(db, b.id, body.supplierId);
     supplierId = s.id;
+    supplierCurrency = s.currency;
     payee = payee ?? s.name;
   } else if (payee) {
-    supplierId = (await supplierByName(db, b.id, payee))?.id ?? null;
+    const s = await supplierByName(db, b.id, payee);
+    supplierId = s?.id ?? null;
+    supplierCurrency = s?.currency ?? null;
   }
   if (!payee) throw badRequest("Who did you pay?", { payee: "Who did you pay?" });
+  const vat = b.vatRegistered ? body.vat : 0;
+  // An expense is paid there and then, so it's kept at what left your account in the home currency.
+  // A receipt in another currency keeps its own amounts and the rate alongside.
+  const currency = body.currency || supplierCurrency || b.currency;
+  let fx: { gross: number; vat: number; currency: string | null; fxRate: string | null; originalGross: number | null; originalVat: number | null } = {
+    gross: body.gross, vat, currency: null, fxRate: null, originalGross: null, originalVat: null,
+  };
+  if (currency !== b.currency) {
+    let rate = body.fxRate;
+    if (!rate && body.homeGross) {
+      // Worked out from what left the account: informative only, the amounts are what count.
+      const units = (minor: number, c: string) => minor / 10 ** currencyDigits(c);
+      rate = parseRate((units(body.homeGross, b.currency) / units(body.gross, currency)).toFixed(10));
+    }
+    rate = await rateFor(db, ctx.services, b, currency, body.spentOn, rate);
+    const homeGross = body.homeGross ?? convertMinor(body.gross, currency, b.currency, rate);
+    const homeVat = vat ? Math.round((vat * homeGross) / body.gross) : 0;
+    fx = { gross: homeGross, vat: Math.min(homeVat, homeGross - 1), currency, fxRate: rate, originalGross: body.gross, originalVat: vat };
+  }
   return {
     spentOn: body.spentOn, supplierId, payee, categoryId: body.categoryId,
-    gross: body.gross, vat: b.vatRegistered ? body.vat : 0,
+    ...fx,
     // Business use is a UK idea: in Sri Lanka the whole expense is the business's.
     bizPct: b.country === "uk" ? body.bizPct : 100,
     method, ...chequeFields(method, body, body.spentOn), note: body.note,
@@ -45,7 +69,7 @@ export async function createExpense(tx: Exec, ctx: BizCtx, values: Awaited<Retur
   const [row] = await tx.insert(expenses).values({ ...values, businessId: ctx.business.id, monthlyCostId: extra.monthlyCostId ?? null, createdBy: ctx.user.id }).returning();
   const entryId = await postExpense(tx, ctx, row);
   const [done] = await tx.update(expenses).set({ journalEntryId: entryId }).where(eq(expenses.id, row.id)).returning();
-  await logActivity(tx, ctx.business.id, `Expense ${money(ctx.business, row.gross)} to ${row.payee} recorded${row.categoryId ? "" : " (to sort)"}`, { actorId: ctx.user.id, link: `/app/out/expenses/${row.id}` });
+  await logActivity(tx, ctx.business.id, `Expense ${row.currency && row.originalGross != null ? `${docMoney(ctx.business, row.currency, row.originalGross)} (${money(ctx.business, row.gross)})` : money(ctx.business, row.gross)} to ${row.payee} recorded${row.categoryId ? "" : " (to sort)"}`, { actorId: ctx.user.id, link: `/app/out/expenses/${row.id}` });
   return done;
 }
 

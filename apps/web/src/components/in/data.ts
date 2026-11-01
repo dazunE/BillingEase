@@ -2,6 +2,7 @@ import type { Business, Customer, InvoiceDetail, QuoteDetail } from "@billingeas
 import { formatDate, rulesFor } from "@billingease/core";
 import type { EditorBusiness, EditorCustomer } from "./DocEditor";
 import type { PreviewData } from "./DocPreview";
+import { brandOf } from "./brand";
 
 /** Shapes the business and customers for the editor and previews. */
 
@@ -13,11 +14,12 @@ export function editorBusiness(b: Business): EditorBusiness {
   return {
     country: b.country, currency: b.currency, name: b.name, vatRegistered: b.vatRegistered, ssclRegistered: b.ssclRegistered, termsDays: b.termsDays,
     address: addressOf(b), email: b.email, phone: b.phone, taxId: b.taxId, vatNumber: b.vatNumber, paymentDetails: b.paymentDetails, invoiceNote: b.invoiceNote,
+    brand: brandOf(b),
   };
 }
 
 export function editorCustomers(list: Customer[]): EditorCustomer[] {
-  return list.map((c) => ({ id: c.id, name: c.name, email: c.email, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber }));
+  return list.map((c) => ({ id: c.id, name: c.name, email: c.email, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber, currency: c.currency }));
 }
 
 const day = (d: string) => formatDate(d, { year: true });
@@ -28,7 +30,8 @@ export function invoicePreview(inv: InvoiceDetail, b: Business): PreviewData {
   const s = inv.snapshot;
   const live = receiptsMode(inv);
   return {
-    kind: inv.kind, country: b.country, currency: b.currency, title: inv.title, number: inv.number, status: inv.status,
+    kind: inv.kind, country: b.country, currency: inv.currency, title: inv.title,
+    home: inv.currency === b.currency ? null : { currency: b.currency, rate: inv.fxRate, net: inv.homeNet, vat: inv.homeVat, sscl: inv.homeSscl, total: inv.homeTotal }, number: inv.number, status: inv.status,
     seller: s?.seller ?? { name: b.name, address: addressOf(b), email: b.email, phone: b.phone, taxId: lk ? b.taxId : null, vatNumber: inv.vatRegistered ? b.vatNumber : null },
     buyer: s?.buyer ?? { name: inv.customer.name, address: inv.customer.address, email: inv.customer.email, taxId: lk ? inv.customer.taxId : null, vatNumber: inv.customer.vatNumber },
     dates: inv.kind === "credit_note"
@@ -44,6 +47,7 @@ export function invoicePreview(inv: InvoiceDetail, b: Business): PreviewData {
     net: inv.net, vat: inv.vat, sscl: inv.sscl, total: inv.total, paid: inv.paid, credited: inv.credited,
     paymentDetails: s ? s.paymentDetails : b.paymentDetails, note: inv.kind === "credit_note" ? null : (s ? s.note : b.invoiceNote), notes: inv.notes,
     modeOfPayment: live,
+    brand: brandOf(b),
   };
 }
 
@@ -57,13 +61,15 @@ function receiptsMode(inv: InvoiceDetail) {
 export function quotePreview(q: QuoteDetail, b: Business): PreviewData {
   const lk = b.country === "lk";
   return {
-    kind: "quote", country: b.country, currency: b.currency, title: "Quote", number: q.number, status: q.status,
+    kind: "quote", country: b.country, currency: q.currency, title: "Quote",
+    home: q.currency === b.currency ? null : { currency: b.currency, rate: q.fxRate, net: 0, vat: 0, sscl: 0, total: q.homeTotal, indicative: true }, number: q.number, status: q.status,
     seller: { name: b.name, address: addressOf(b), email: b.email, phone: b.phone, taxId: lk ? b.taxId : null, vatNumber: q.vatRegistered ? b.vatNumber : null },
     buyer: { name: q.customer.name, address: q.customer.address, email: q.customer.email, taxId: lk ? q.customer.taxId : null, vatNumber: q.customer.vatNumber },
     dates: [["Quote date", day(q.issueDate)], ["Valid until", day(q.expiryDate)]],
     vatRegistered: q.vatRegistered,
     lines: q.lines.map((l) => ({ description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, net: l.net, vat: l.vat, sscl: l.ssclAmount })),
     net: q.net, vat: q.vat, sscl: q.sscl, total: q.total, paid: 0, credited: 0, notes: q.notes,
+    brand: brandOf(b),
   };
 }
 

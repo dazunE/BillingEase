@@ -1,5 +1,5 @@
 import { comingIn } from "@billingease/contracts";
-import { formatDate } from "@billingease/core";
+import { formatDate, describeRate } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AlsoIn, Notice, Panel, QuoteBadge, fmt2 } from "@/components/in/bits";
@@ -40,7 +40,7 @@ export default async function QuotePage({ params, searchParams }: { params: Prom
               <QuoteBadge q={q} />
             </div>
             <div className="flex flex-wrap items-end justify-between gap-3 rounded-2xl bg-bg p-4">
-              <div className="flex flex-col"><span className="text-sm font-bold">Quote total</span><span className="tabular font-display text-[32px] font-bold leading-tight">{fmt2(q.total, b.currency)}</span></div>
+              <div className="flex flex-col"><span className="text-sm font-bold">Quote total</span><span className="tabular font-display text-[32px] font-bold leading-tight">{fmt2(q.total, q.currency, b.currency)}</span>{q.currency !== b.currency && <span className="text-sm text-ink2">About {fmt2(q.homeTotal, b.currency)} at {describeRate(q.currency, b.currency, q.fxRate)}</span>}</div>
               <div className="flex flex-col items-end text-sm"><strong>Valid until {formatDate(q.expiryDate)}</strong>{q.sentAt && <span className="text-ink2">Sent {formatDate(q.sentAt.slice(0, 10))}</span>}</div>
             </div>
 

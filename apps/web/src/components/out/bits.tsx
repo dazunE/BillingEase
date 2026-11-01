@@ -45,7 +45,7 @@ export function SplitBar({ paid, toPay, className }: { paid: number; toPay: numb
   );
 }
 
-export function Legend({ paid, toPay, currency, paidLabel = "paid", toPayLabel = "still to pay" }: { paid: number; toPay: number; currency: Currency; paidLabel?: string; toPayLabel?: string }) {
+export function Legend({ paid, toPay, currency, paidLabel = "paid", toPayLabel = "still to pay" }: { paid: number; toPay: number; currency: Currency | string; paidLabel?: string; toPayLabel?: string }) {
   return (
     <span className="flex flex-wrap gap-x-6 gap-y-1.5 text-sm text-ink2">
       <span className="inline-flex items-center gap-2"><span className="size-2.5 rounded-[3px] bg-going" aria-hidden /><strong className="tabular text-ink">{formatMoney(paid, currency)}</strong> {paidLabel}</span>

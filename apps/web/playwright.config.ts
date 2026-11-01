@@ -26,7 +26,7 @@ export default defineConfig({
       url: `http://127.0.0.1:${API}/health`,
       timeout: 120_000,
       reuseExistingServer: false,
-      env: { PGLITE_DIR: "memory://", BILLINGEASE_TODAY: "2026-10-11", API_PORT: String(API), APP_URL: `http://127.0.0.1:${WEB}`, STORAGE_DIR: ".data/e2e-files" },
+      env: { PGLITE_DIR: "memory://", BILLINGEASE_TODAY: "2026-10-11", FX_RATES: "off", API_PORT: String(API), APP_URL: `http://127.0.0.1:${WEB}`, STORAGE_DIR: ".data/e2e-files" },
     },
     {
       command: `npx next dev -p ${WEB}`,

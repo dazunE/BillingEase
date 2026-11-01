@@ -40,7 +40,7 @@ for (const [code, c] of Object.entries(COUNTRIES)) {
 
     // Sign up, choosing the country first.
     await page.goto("/sign-up");
-    await page.getByLabel(c.country).check();
+    await page.getByLabel("Where is your business based?").selectOption(code);
     await page.getByLabel("Your name").fill(c.owner);
     await page.getByLabel("Email").fill(`${code}-${Date.now()}@example.com`);
     await page.getByLabel("Password").fill("correct horse battery");

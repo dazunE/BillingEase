@@ -110,30 +110,31 @@ async function needsYou(db: Exec, b: BusinessRow, today: string): Promise<NeedsI
   const money = (m: number) => formatMoney(m, b.currency);
   const out: NeedsItem[] = [];
   const open = sql<string>`${invoices.total} - ${invoices.paid} - ${invoices.credited}`;
+  const homeOpen = sql<string>`${invoices.homeTotal} - ${invoices.homeCleared}`;
 
-  const late = await db.select({ id: invoices.id, number: invoices.number, due: invoices.dueDate, open, customer: customers.name })
+  const late = await db.select({ id: invoices.id, number: invoices.number, due: invoices.dueDate, open, homeOpen, currency: invoices.currency, customer: customers.name })
     .from(invoices).innerJoin(customers, eq(customers.id, invoices.customerId))
     .where(and(eq(invoices.businessId, b.id), eq(invoices.kind, "invoice"), inArray(invoices.status, ["sent", "part_paid"]), lt(invoices.dueDate, today), sql`${open} > 0`))
     .orderBy(asc(invoices.dueDate)).limit(6);
   for (const r of late.slice(0, 5)) {
     const days = daysBetween(r.due, today);
     out.push({
-      id: `late-${r.id}`, kind: "late", tone: "late", amount: n(r.open),
+      id: `late-${r.id}`, kind: "late", tone: "late", amount: n(r.homeOpen),
       title: `${r.number} to ${r.customer} is ${days} day${days === 1 ? "" : "s"} late`,
-      body: `${money(n(r.open))} was due ${formatDate(r.due, { year: true })}. Send a reminder or record the payment.`,
+      body: `${formatMoney(n(r.open), r.currency, { homeOf: b.currency })} was due ${formatDate(r.due, { year: true })}. Send a reminder or record the payment.`,
       href: `/app/in/invoices/${r.id}`, cta: "Open invoice",
     });
   }
   if (late.length > 5) out.push({ id: "late-more", kind: "late", tone: "late", amount: null, title: "More late invoices", body: "See every invoice that's past its due date.", href: "/app/in/invoices?status=late", cta: "See all late" });
 
-  const drafts = await db.select({ id: invoices.id, total: invoices.total, customer: customers.name, issued: invoices.issueDate })
+  const drafts = await db.select({ id: invoices.id, total: invoices.total, homeTotal: invoices.homeTotal, currency: invoices.currency, customer: customers.name, issued: invoices.issueDate })
     .from(invoices).innerJoin(customers, eq(customers.id, invoices.customerId))
     .where(and(eq(invoices.businessId, b.id), eq(invoices.status, "draft"))).orderBy(asc(invoices.issueDate)).limit(3);
   for (const d of drafts) {
     out.push({
-      id: `draft-${d.id}`, kind: "draft", tone: "info", amount: n(d.total),
+      id: `draft-${d.id}`, kind: "draft", tone: "info", amount: n(d.homeTotal),
       title: `Draft for ${d.customer} not sent yet`,
-      body: `${money(n(d.total))} · dated ${formatDate(d.issued, { year: true })}. Check it and send it so it counts as coming in.`,
+      body: `${formatMoney(n(d.total), d.currency, { homeOf: b.currency })} · dated ${formatDate(d.issued, { year: true })}. Check it and send it so it counts as coming in.`,
       href: `/app/in/invoices/${d.id}`, cta: "Finish and send",
     });
   }
@@ -186,7 +187,7 @@ async function needsYou(db: Exec, b: BusinessRow, today: string): Promise<NeedsI
   if (!b.vatRegistered && rules.vatThreshold > 0) {
     const from = addDays(addMonths(today, -12), 1);
     const sign = sql`case when ${invoices.kind} = 'credit_note' then -1 else 1 end`;
-    const [t] = await db.select({ sum: sql<string>`coalesce(sum(${invoices.net} * ${sign}), 0)` }).from(invoices)
+    const [t] = await db.select({ sum: sql<string>`coalesce(sum(${invoices.homeNet} * ${sign}), 0)` }).from(invoices)
       .where(and(eq(invoices.businessId, b.id), ne(invoices.status, "draft"), ne(invoices.status, "void"), between(invoices.issueDate, from, today)));
     const turnover = n(t.sum);
     if (turnover >= rules.vatThreshold * 0.75) {
@@ -276,14 +277,14 @@ export async function search(db: Exec, b: BusinessRow, q: string): Promise<Searc
   const [cs, inv, sup, ex, bl] = await Promise.all([
     db.select({ id: customers.id, name: customers.name, email: customers.email }).from(customers)
       .where(and(eq(customers.businessId, b.id), or(ilike(customers.name, p), ilike(customers.email, p), ilike(customers.contactName, p)))).orderBy(asc(customers.name)).limit(per),
-    db.select({ id: invoices.id, number: invoices.number, kind: invoices.kind, status: invoices.status, total: invoices.total, issued: invoices.issueDate, customer: customers.name })
+    db.select({ id: invoices.id, number: invoices.number, kind: invoices.kind, status: invoices.status, total: invoices.homeTotal, issued: invoices.issueDate, customer: customers.name })
       .from(invoices).innerJoin(customers, eq(customers.id, invoices.customerId))
       .where(and(eq(invoices.businessId, b.id), or(ilike(invoices.number, p), ilike(invoices.reference, p)))).orderBy(desc(invoices.issueDate)).limit(per),
     db.select({ id: suppliers.id, name: suppliers.name, email: suppliers.email }).from(suppliers)
       .where(and(eq(suppliers.businessId, b.id), or(ilike(suppliers.name, p), ilike(suppliers.email, p)))).orderBy(asc(suppliers.name)).limit(per),
     db.select({ id: expenses.id, payee: expenses.payee, gross: expenses.gross, spent: expenses.spentOn, note: expenses.note }).from(expenses)
       .where(and(eq(expenses.businessId, b.id), or(ilike(expenses.payee, p), ilike(expenses.note, p)))).orderBy(desc(expenses.spentOn)).limit(per),
-    db.select({ id: bills.id, reference: bills.reference, description: bills.description, total: bills.total, date: bills.billDate, supplier: suppliers.name })
+    db.select({ id: bills.id, reference: bills.reference, description: bills.description, total: bills.homeTotal, date: bills.billDate, supplier: suppliers.name })
       .from(bills).innerJoin(suppliers, eq(suppliers.id, bills.supplierId))
       .where(and(eq(bills.businessId, b.id), or(ilike(bills.reference, p), ilike(bills.description, p), ilike(suppliers.name, p)))).orderBy(desc(bills.billDate)).limit(per),
   ]);

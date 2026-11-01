@@ -1,5 +1,5 @@
 import { comingIn, type RecurringBody } from "@billingease/contracts";
-import { today } from "@billingease/core";
+import { convertMinor, today } from "@billingease/core";
 import type { Exec } from "@billingease/db";
 import { customers, invoices, recurringInvoices } from "@billingease/db/schema";
 import { and, count, desc, eq, inArray, ne } from "drizzle-orm";
@@ -34,12 +34,13 @@ async function one(db: Exec, b: BusinessRow, id: string) {
 
 async function values(db: Exec, b: BusinessRow, body: z.output<typeof RecurringBody>, previousNextRun?: string) {
   const lines = normalLines(body.lines, b);
-  await checkRefs(db, b, body.customerId, lines);
+  const c = await checkRefs(db, b, body.customerId, lines);
   computeLines(b, lines); // checks the VAT rates and discounts
   if (body.nextRun < today() && body.nextRun !== previousNextRun) throw badRequest("Pick today or a later date for the next invoice.", { nextRun: "Today or later" });
   if (body.endDate && body.endDate < body.nextRun) throw badRequest("The end date is before the next invoice.", { endDate: "After the next invoice" });
   return {
     customerId: body.customerId, name: body.name, frequency: body.frequency, nextRun: body.nextRun, endDate: body.endDate ?? null, mode: body.mode,
+    currency: body.currency || c.currency || b.currency,
     template: { lines, notes: body.notes ?? null, reference: body.reference ?? null, termsDays: body.termsDays, billDay: Number(body.nextRun.slice(8, 10)) },
   };
 }
@@ -48,7 +49,12 @@ export async function recurringRoutes(app: FastifyInstance) {
   route(app, comingIn.listRecurring, async ({ ctx }) => {
     const list = await rowsFor(ctx.db, ctx.business);
     const perMonth = { weekly: 52 / 12, monthly: 1, quarterly: 1 / 3, yearly: 1 / 12 } as const;
-    const monthly = Math.round(list.filter((r) => r.active).reduce((a, r) => a + r.total * perMonth[r.frequency], 0));
+    // In the home currency: a repeating invoice in another currency at today's rate, when there is one.
+    let monthly = 0;
+    for (const r of list.filter((x) => x.active)) {
+      const fx = r.currency === ctx.business.currency ? { rate: "1" } : await ctx.services.fx.rate(ctx.db, r.currency, ctx.business.currency, today());
+      if (fx) monthly += convertMinor(Math.round(r.total * perMonth[r.frequency]), r.currency, ctx.business.currency, fx.rate);
+    }
     return { recurring: list, monthly };
   });
 

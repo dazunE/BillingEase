@@ -6,8 +6,9 @@ import { Badge, ICONS, Icon, cx, type Tone } from "@/components/ui";
 
 /** Small pieces shared by the Coming in pages. */
 
-export const fmt = (minor: number, currency: Currency) => formatMoney(minor, currency);
-export const fmt2 = (minor: number, currency: Currency) => formatMoney(minor, currency, { decimals: "always" });
+/** An amount in any currency; `home` makes a foreign "$" read "US$". */
+export const fmt = (minor: number, currency: string, home?: Currency) => formatMoney(minor, currency, { homeOf: home });
+export const fmt2 = (minor: number, currency: string, home?: Currency) => formatMoney(minor, currency, { decimals: "always", homeOf: home });
 
 /** 1500 → "1.5" */
 export function qty(milli: number) {
@@ -154,8 +155,9 @@ export function InvoiceLine({ r, currency, showCustomer = true }: { r: InvoiceRo
         </span>
         <InvoiceBadge row={r} />
         <span className="ml-auto flex flex-col items-end">
-          <strong className="tabular text-[15px]">{fmt(r.status === "paid" || r.status === "void" || r.status === "draft" || r.kind === "credit_note" ? r.total : r.open, currency)}</strong>
-          {r.open !== r.total && r.status !== "paid" && r.status !== "void" && r.status !== "draft" && <span className="tabular text-xs text-muted">of {fmt(r.total, currency)}</span>}
+          <strong className="tabular text-[15px]">{fmt(r.status === "paid" || r.status === "void" || r.status === "draft" || r.kind === "credit_note" ? r.total : r.open, r.currency, currency)}</strong>
+          {r.open !== r.total && r.status !== "paid" && r.status !== "void" && r.status !== "draft" && <span className="tabular text-xs text-muted">of {fmt(r.total, r.currency, currency)}</span>}
+          {r.currency !== currency && <span className="tabular text-xs text-muted">{fmt(r.status === "paid" || r.status === "void" || r.status === "draft" || r.kind === "credit_note" ? r.homeTotal : r.homeOpen, currency)} in your books</span>}
         </span>
       </Link>
     </li>

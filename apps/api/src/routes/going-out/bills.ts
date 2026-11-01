@@ -1,5 +1,5 @@
 import { goingOut } from "@billingease/contracts";
-import { addDays, formatDate, posting, today } from "@billingease/core";
+import { addDays, convertMinor, formatDate, homeCleared, posting, today } from "@billingease/core";
 import { postEntry, reverseEntry, type Exec } from "@billingease/db";
 import { attachments, billLines, billPayments, bills, suppliers } from "@billingease/db/schema";
 import { and, asc, desc, eq, gte, inArray, isNull, lt, lte, ne, type SQL } from "drizzle-orm";
@@ -8,7 +8,8 @@ import { logActivity } from "../../lib/activity";
 import type { BusinessRow } from "../../lib/context";
 import { badRequest, conflict, notFound } from "../../lib/errors";
 import { route } from "../../lib/route";
-import { attachmentCounts, billOut, categoryFor, checkMethod, chequeFields, isCheque, money, supplierByName, supplierOf, type BillRow } from "./shared";
+import { attachmentCounts, billOut, categoryFor, checkMethod, chequeFields, homeLeftOf, isCheque, money, supplierByName, supplierOf, type BillRow } from "./shared";
+import { docMoney, rateFor } from "../../services/doc-currency";
 
 async function billRow(db: Exec, businessId: string, id: string) {
   const [b] = await db.select().from(bills).where(and(eq(bills.id, id), eq(bills.businessId, businessId)));
@@ -37,7 +38,7 @@ async function billDetail(db: Exec, b: BusinessRow, row: BillRow) {
   const files = await db.select().from(attachments).where(and(eq(attachments.businessId, b.id), eq(attachments.ownerType, "bill"), eq(attachments.ownerId, row.id))).orderBy(asc(attachments.createdAt));
   const history = [
     { date: row.createdAt.toISOString().slice(0, 10), text: row.createdVia === "agent" ? "Read by Capture and approved" : "Entered" },
-    ...pays.map((p) => ({ date: p.paidOn, text: `${money(b, p.amount)} paid by ${p.chequeNumber ? `cheque ${p.chequeNumber}` : (p.method === p.method.toUpperCase() ? p.method : p.method.toLowerCase())}` })),
+    ...pays.map((p) => ({ date: p.paidOn, text: `${docMoney(b, row.currency, p.amount)} paid by ${p.chequeNumber ? `cheque ${p.chequeNumber}` : (p.method === p.method.toUpperCase() ? p.method : p.method.toLowerCase())}` })),
     ...(row.voidedAt ? [{ date: row.voidedAt.toISOString().slice(0, 10), text: "Voided" }] : []),
   ];
   return {
@@ -46,7 +47,7 @@ async function billDetail(db: Exec, b: BusinessRow, row: BillRow) {
       const c = categoryFor(b, l.categoryId);
       return { id: l.id, description: l.description, categoryId: l.categoryId, categoryName: c.name, categoryOfficial: c.official, net: l.net, vat: l.vat };
     }),
-    payments: pays.map((p) => ({ id: p.id, amount: p.amount, paidOn: p.paidOn, method: p.method, chequeNumber: p.chequeNumber, chequeDate: p.chequeDate, chequeBank: p.chequeBank, reference: p.reference })),
+    payments: pays.map((p) => ({ id: p.id, amount: p.amount, homeAmount: p.homeAmount, fxGain: p.homeCleared - p.homeAmount, paidOn: p.paidOn, method: p.method, chequeNumber: p.chequeNumber, chequeDate: p.chequeDate, chequeBank: p.chequeBank, reference: p.reference })),
     attachments: files.map((f) => ({ ...f, ownerType: "bill" as const, createdAt: f.createdAt.toISOString() })),
     history,
   };
@@ -71,7 +72,8 @@ export async function billRoutes(app: FastifyInstance) {
     const live = (x: (typeof list)[number]) => x.status === "unpaid" || x.status === "part_paid";
     list.sort((x, y) => Number(live(y)) - Number(live(x)) || (live(x) ? x.dueDate.localeCompare(y.dueDate) : y.billDate.localeCompare(x.billDate)));
     const all = await ctx.db.select().from(bills).where(and(eq(bills.businessId, b.id), open, ne(bills.status, "paid")));
-    const left = (r: BillRow) => r.total - r.paid;
+    // Totals in the home currency, each bill at its own rate.
+    const left = (r: BillRow) => homeLeftOf(r);
     const overdue = all.filter((r) => r.dueDate < now);
     const soon = all.filter((r) => r.dueDate <= addDays(now, 7));
     return {
@@ -97,21 +99,28 @@ export async function billRoutes(app: FastifyInstance) {
     const description = body.description ?? (body.lines.length > 1 ? `${body.lines[0].description} and ${body.lines.length - 1} more` : body.lines[0].description);
     const row = await ctx.db.transaction(async (tx) => {
       let supplier = body.supplierId ? await supplierOf(tx, b.id, body.supplierId) : await supplierByName(tx, b.id, body.supplierName!);
+      // In the bill's currency (else the supplier's, else home), booked in home at the bill date's rate.
+      const currency = body.currency || supplier?.currency || b.currency;
+      const fxRate = await rateFor(tx, ctx.services, b, currency, body.billDate, body.fxRate);
+      const homeLines = body.lines.map((l) => ({ net: convertMinor(l.net, currency, b.currency, fxRate), vat: convertMinor(l.vat, currency, b.currency, fxRate) }));
+      const homeNet = homeLines.reduce((a, l) => a + l.net, 0);
+      const homeVat = homeLines.reduce((a, l) => a + l.vat, 0);
       if (!supplier) {
-        [supplier] = await tx.insert(suppliers).values({ businessId: b.id, name: body.supplierName!, defaultCategoryId: cats[0].id }).returning();
+        [supplier] = await tx.insert(suppliers).values({ businessId: b.id, name: body.supplierName!, defaultCategoryId: cats[0].id, currency: currency === b.currency ? null : currency }).returning();
         await logActivity(tx, b.id, `Supplier ${supplier.name} added`, { actorId: ctx.user.id, link: `/app/out/suppliers/${supplier.id}` });
       }
       const [bill] = await tx.insert(bills).values({
         businessId: b.id, supplierId: supplier.id, reference: body.reference, billDate: body.billDate, dueDate: body.dueDate,
-        description: description.slice(0, 300), net, vat, total: net + vat,
+        description: description.slice(0, 300), currency, fxRate, net, vat, total: net + vat,
+        homeNet, homeVat, homeTotal: homeNet + homeVat,
       }).returning();
       await tx.insert(billLines).values(body.lines.map((l, i) => ({ businessId: b.id, billId: bill.id, position: i, description: l.description, categoryId: l.categoryId, net: l.net, vat: l.vat })));
       const entryId = await postEntry(tx, {
         businessId: b.id, date: bill.billDate, memo: `Bill from ${supplier.name}${bill.reference ? ` ${bill.reference}` : ""}`, sourceType: "bill", sourceId: bill.id, createdBy: ctx.user.id,
-        lines: posting.bill(body.lines.map((l, i) => ({ categoryCode: cats[i].accountCode, net: l.net, vat: l.vat })), b.vatRegistered),
+        lines: posting.bill(homeLines.map((l, i) => ({ categoryCode: cats[i].accountCode, net: l.net, vat: l.vat })), b.vatRegistered),
       });
       const [done] = await tx.update(bills).set({ journalEntryId: entryId }).where(eq(bills.id, bill.id)).returning();
-      await logActivity(tx, b.id, `Bill from ${supplier.name} for ${money(b, done.total)} entered, due ${formatDate(done.dueDate)}`, { actorId: ctx.user.id, link: `/app/out/bills/${done.id}` });
+      await logActivity(tx, b.id, `Bill from ${supplier.name} for ${docMoney(b, done.currency, done.total)} entered, due ${formatDate(done.dueDate)}`, { actorId: ctx.user.id, link: `/app/out/bills/${done.id}` });
       return done;
     });
     return (await billsOut(ctx.db, b, [row]))[0];
@@ -123,21 +132,30 @@ export async function billRoutes(app: FastifyInstance) {
     if (bill.status === "void") throw conflict("This bill was voided, so there's nothing to pay.");
     if (bill.status === "paid") throw conflict("This bill is already paid.");
     const left = bill.total - bill.paid;
-    if (body.amount > left) throw badRequest(`That's more than the ${money(b, left)} left to pay.`, { amount: `No more than ${money(b, left)}` });
+    if (body.amount > left) throw badRequest(`That's more than the ${docMoney(b, bill.currency, left)} left to pay.`, { amount: `No more than ${docMoney(b, bill.currency, left)}` });
     const method = checkMethod(b, body.method);
     const cheque = chequeFields(method, body, body.paidOn);
     const row = await ctx.db.transaction(async (tx) => {
-      const [p] = await tx.insert(billPayments).values({ businessId: b.id, billId: bill.id, amount: body.amount, paidOn: body.paidOn, method, ...cheque, reference: body.reference }).returning();
+      // What left the bank in the home currency: as told, else at the rate on the day it was paid.
+      const foreign = bill.currency !== b.currency;
+      const homeAmount = !foreign ? body.amount
+        : body.homeAmount ?? convertMinor(body.amount, bill.currency, b.currency, await rateFor(tx, ctx.services, b, bill.currency, body.paidOn, null, "homeAmount"));
+      // How much of the bill's home value it settles at the bill's rate; the rest is a gain or loss.
+      const cleared = homeCleared({ total: bill.total, settledBefore: bill.paid, amount: body.amount, homeTotal: bill.homeTotal, homeClearedBefore: bill.homeCleared });
+      const [p] = await tx.insert(billPayments).values({
+        businessId: b.id, billId: bill.id, amount: body.amount, homeAmount, homeCleared: cleared, paidOn: body.paidOn, method, ...cheque, reference: body.reference,
+      }).returning();
       const [sup] = await tx.select({ name: suppliers.name }).from(suppliers).where(and(eq(suppliers.id, bill.supplierId), eq(suppliers.businessId, b.id)));
       const entryId = await postEntry(tx, {
         businessId: b.id, date: body.paidOn, memo: `Paid ${sup?.name ?? "supplier"}${bill.reference ? ` ${bill.reference}` : ""}${isCheque(method) ? ` by cheque ${cheque.chequeNumber}` : ""}`,
-        sourceType: "bill_payment", sourceId: p.id, createdBy: ctx.user.id, lines: posting.billPayment(body.amount, method),
+        sourceType: "bill_payment", sourceId: p.id, createdBy: ctx.user.id, lines: posting.billPayment(homeAmount, method, cleared),
       });
       await tx.update(billPayments).set({ journalEntryId: entryId }).where(eq(billPayments.id, p.id));
       const paid = bill.paid + body.amount;
-      const [done] = await tx.update(bills).set({ paid, status: paid >= bill.total ? "paid" : "part_paid", updatedAt: new Date() })
+      const [done] = await tx.update(bills).set({ paid, homeCleared: bill.homeCleared + cleared, status: paid >= bill.total ? "paid" : "part_paid", updatedAt: new Date() })
         .where(and(eq(bills.id, bill.id), eq(bills.businessId, b.id))).returning();
-      await logActivity(tx, b.id, `${money(b, body.amount)} paid to ${sup?.name ?? "supplier"}${done.status === "paid" ? ": bill paid in full" : ""}`, { actorId: ctx.user.id, link: `/app/out/bills/${bill.id}` });
+      const inHome = foreign ? ` (${money(b, homeAmount)} from the bank)` : "";
+      await logActivity(tx, b.id, `${docMoney(b, bill.currency, body.amount)}${inHome} paid to ${sup?.name ?? "supplier"}${done.status === "paid" ? ": bill paid in full" : ""}`, { actorId: ctx.user.id, link: `/app/out/bills/${bill.id}` });
       return done;
     });
     return (await billsOut(ctx.db, b, [row]))[0];
@@ -150,7 +168,7 @@ export async function billRoutes(app: FastifyInstance) {
     const row = await ctx.db.transaction(async (tx) => {
       if (bill.journalEntryId) await reverseEntry(tx, b.id, bill.journalEntryId, { createdBy: ctx.user.id });
       const [done] = await tx.update(bills).set({ status: "void", voidedAt: new Date(), updatedAt: new Date() }).where(and(eq(bills.id, bill.id), eq(bills.businessId, b.id))).returning();
-      await logActivity(tx, b.id, `Bill ${bill.reference ?? ""} for ${money(b, bill.total)} voided`.replace("  ", " "), { actorId: ctx.user.id, link: `/app/out/bills/${bill.id}` });
+      await logActivity(tx, b.id, `Bill ${bill.reference ?? ""} for ${docMoney(b, bill.currency, bill.total)} voided`.replace("  ", " "), { actorId: ctx.user.id, link: `/app/out/bills/${bill.id}` });
       return done;
     });
     return (await billsOut(ctx.db, b, [row]))[0];

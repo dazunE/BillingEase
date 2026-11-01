@@ -31,7 +31,7 @@ export default async function BillsPage({ searchParams }: { searchParams: Promis
     <>
       <AppCrumbs area="out" trail={[{ label: "Going out", href: "/app/out" }, { label: "Bills" }]} />
       <HeroCard label="Bills to pay" amount={fmt(t.open)}
-        sub={<span className="text-sm text-ink2">{t.openCount} bill{t.openCount === 1 ? "" : "s"}{t.overdueCount ? ` · ${t.overdueCount} late (${fmt(t.overdue)})` : ""}{show === "open" && next ? ` · next due ${formatDate(next.dueDate)}: ${next.supplierName} ${fmt(next.left)}` : ""}</span>}>
+        sub={<span className="text-sm text-ink2">{t.openCount} bill{t.openCount === 1 ? "" : "s"}{t.overdueCount ? ` · ${t.overdueCount} late (${fmt(t.overdue)})` : ""}{show === "open" && next ? ` · next due ${formatDate(next.dueDate)}: ${next.supplierName} ${formatMoney(next.left, next.currency, { homeOf: setup.currency })}` : ""}</span>}>
         <p className="text-[15px] leading-relaxed">
           A bill is something you owe and pay later, outside BillingEase. Enter it once with a photo or PDF, then mark it paid in full or in part when you&apos;ve paid it{setup.country === "lk" ? " by bank transfer, cheque or cash" : " by bank, card or cash"}.
         </p>
@@ -59,8 +59,9 @@ export default async function BillsPage({ searchParams }: { searchParams: Promis
                 </Link>
                 <DueBadge bill={b} />
                 <span className="ml-auto text-right font-bold tabular">
-                  {fmt(b.status === "paid" || b.status === "void" ? b.total : b.left)}
-                  {b.status === "part_paid" && <span className="block text-xs font-normal text-muted">of {fmt(b.total)}</span>}
+                  {formatMoney(b.status === "paid" || b.status === "void" ? b.total : b.left, b.currency, { homeOf: setup.currency })}
+                  {b.status === "part_paid" && <span className="block text-xs font-normal text-muted">of {formatMoney(b.total, b.currency, { homeOf: setup.currency })}</span>}
+                  {b.currency !== setup.currency && <span className="block text-xs font-normal text-muted">{fmt(b.status === "paid" || b.status === "void" ? b.homeTotal : b.homeLeft)} in your books</span>}
                 </span>
                 {(b.status === "unpaid" || b.status === "part_paid") && <QuickPay id={b.id} left={b.left} methods={setup.payMethods} />}
               </li>

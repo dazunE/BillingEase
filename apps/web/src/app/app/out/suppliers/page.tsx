@@ -104,7 +104,7 @@ export default async function SuppliersPage({ searchParams }: { searchParams: Pr
 
       <section id="add" className="scroll-mt-4 rounded-3xl border border-line bg-white p-[clamp(18px,3vw,28px)]" aria-labelledby="add-h">
         <h2 id="add-h" className="mb-4 font-display text-[22px] font-bold tracking-[-0.02em]">Add a supplier</h2>
-        <SupplierForm key={name ?? ""} categories={setup.categories} vatLabel={vatLabel} name={name} />
+        <SupplierForm key={name ?? ""} categories={setup.categories} vatLabel={vatLabel} name={name} home={setup.currency} />
       </section>
     </>
   );

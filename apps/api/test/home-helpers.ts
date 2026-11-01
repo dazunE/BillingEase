@@ -3,7 +3,8 @@ import { randomBytes } from "node:crypto";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { connect, type Db } from "@billingease/db";
-import { bills, customers, expenses, invoices, receipts, suppliers } from "@billingease/db/schema";
+import { bills, businesses, customers, expenses, invoices, receipts, suppliers } from "@billingease/db/schema";
+import { sql } from "drizzle-orm";
 import { buildApp } from "../src/app";
 import { loadConfig } from "../src/config";
 import { createServices } from "../src/services";
@@ -22,6 +23,8 @@ export async function homeTestApp(opts: { models?: Models | null; config?: (c: R
 
 /** Rows written straight into the tables, as the Coming in and Going out areas would leave them. */
 export function seed(db: Db, businessId: string) {
+  // Seeded documents are in the business's home currency.
+  const home = sql<string>`(select ${businesses.currency} from ${businesses} where ${businesses.id} = ${businessId})`;
   return {
     customer: async (name = "Acme Ltd", extra: Partial<typeof customers.$inferInsert> = {}) =>
       (await db.insert(customers).values({ businessId, name, ...extra }).returning())[0],
@@ -29,14 +32,16 @@ export function seed(db: Db, businessId: string) {
       (await db.insert(invoices).values({
         businessId, customerId: v.customerId, kind: v.kind ?? "invoice", number: v.status === "draft" ? null : v.number ?? `INV-${randomBytes(3).toString("hex")}`,
         status: v.status ?? "sent", issueDate: v.issueDate, dueDate: v.dueDate, net: v.net ?? v.total, vat: v.vat ?? 0, sscl: v.sscl ?? 0, total: v.total, paid: v.paid ?? 0,
+        currency: home, homeNet: v.net ?? v.total, homeVat: v.vat ?? 0, homeSscl: v.sscl ?? 0, homeTotal: v.total, homeCleared: v.paid ?? 0,
         publicToken: randomBytes(12).toString("hex"),
       }).returning())[0],
     receipt: async (invoiceId: string, amount: number, receivedOn: string) =>
-      (await db.insert(receipts).values({ businessId, invoiceId, amount, receivedOn, method: "Bank transfer" }).returning())[0],
+      (await db.insert(receipts).values({ businessId, invoiceId, amount, homeAmount: amount, homeCleared: amount, receivedOn, method: "Bank transfer" }).returning())[0],
     expense: async (v: { spentOn: string; gross: number; vat?: number; bizPct?: number; categoryId?: string | null; payee?: string; note?: string }) =>
       (await db.insert(expenses).values({ businessId, spentOn: v.spentOn, gross: v.gross, vat: v.vat ?? 0, bizPct: v.bizPct ?? 100, categoryId: v.categoryId === undefined ? "office" : v.categoryId, payee: v.payee ?? "Ryman", note: v.note ?? null, method: "Card" }).returning())[0],
     supplier: async (name = "Northern Power") => (await db.insert(suppliers).values({ businessId, name }).returning())[0],
     bill: async (v: { supplierId: string; billDate: string; dueDate: string; net: number; vat?: number; paid?: number; status?: "unpaid" | "part_paid" | "paid" | "void"; description?: string; reference?: string }) =>
-      (await db.insert(bills).values({ businessId, supplierId: v.supplierId, billDate: v.billDate, dueDate: v.dueDate, net: v.net, vat: v.vat ?? 0, total: v.net + (v.vat ?? 0), paid: v.paid ?? 0, status: v.status ?? "unpaid", description: v.description ?? "Electricity", reference: v.reference ?? null }).returning())[0],
+      (await db.insert(bills).values({ businessId, supplierId: v.supplierId, billDate: v.billDate, dueDate: v.dueDate, net: v.net, vat: v.vat ?? 0, total: v.net + (v.vat ?? 0), paid: v.paid ?? 0,
+        currency: home, homeNet: v.net, homeVat: v.vat ?? 0, homeTotal: v.net + (v.vat ?? 0), homeCleared: v.paid ?? 0, status: v.status ?? "unpaid", description: v.description ?? "Electricity", reference: v.reference ?? null }).returning())[0],
   };
 }

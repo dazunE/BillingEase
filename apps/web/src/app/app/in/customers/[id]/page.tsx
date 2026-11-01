@@ -56,7 +56,7 @@ export default async function CustomerPage({ params, searchParams }: { params: P
             {d.quotes.length === 0 ? <Empty>No quotes yet.</Empty> : (
               <ul className="flex flex-col">
                 {d.quotes.map((q) => (
-                  <li key={q.id}><Link href={`/app/in/quotes/${q.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-3 hover:bg-bg"><span className="flex min-w-0 flex-1 flex-col"><strong>{q.number ?? "Draft"}{q.summary ? ` · ${q.summary}` : ""}</strong></span><QuoteBadge q={q} /><strong className="tabular">{fmt(q.total, cur)}</strong></Link></li>
+                  <li key={q.id}><Link href={`/app/in/quotes/${q.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-3 hover:bg-bg"><span className="flex min-w-0 flex-1 flex-col"><strong>{q.number ?? "Draft"}{q.summary ? ` · ${q.summary}` : ""}</strong></span><QuoteBadge q={q} /><strong className="tabular">{fmt(q.total, q.currency, cur)}</strong></Link></li>
                 ))}
               </ul>
             )}
@@ -65,7 +65,7 @@ export default async function CustomerPage({ params, searchParams }: { params: P
             {d.recurring.length === 0 ? <Empty>None.</Empty> : (
               <ul className="flex flex-col">
                 {d.recurring.map((r) => (
-                  <li key={r.id}><Link href={`/app/in/repeating/${r.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-3 hover:bg-bg"><span className="flex min-w-0 flex-1 flex-col"><strong>{r.name}</strong><span className="text-sm text-muted">{FREQ[r.frequency]} · {r.invoiceCount} sent so far</span></span><Badge tone={r.active ? "pos" : "due"}>{r.active ? "Active" : "Paused"}</Badge><strong className="tabular">{fmt(r.total, cur)}</strong></Link></li>
+                  <li key={r.id}><Link href={`/app/in/repeating/${r.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-3 hover:bg-bg"><span className="flex min-w-0 flex-1 flex-col"><strong>{r.name}</strong><span className="text-sm text-muted">{FREQ[r.frequency]} · {r.invoiceCount} sent so far</span></span><Badge tone={r.active ? "pos" : "due"}>{r.active ? "Active" : "Paused"}</Badge><strong className="tabular">{fmt(r.total, r.currency, cur)}</strong></Link></li>
                 ))}
               </ul>
             )}

@@ -142,7 +142,7 @@ export const CI_FAQ: ByCountry<{ q: string; a: string }[]> = {
     { q: "Do you take a fee when I get paid?", a: "No. The money goes straight from your customer to you, so there’s nothing for us to take a cut of." },
     { q: "Can I make VAT invoices?", a: "Yes, when you tell BillingEase you’re VAT registered. Invoices show your VAT number and the VAT on each line at 20%, 5%, 0% or exempt, and the VAT adds up for each VAT quarter. Your accountant files the VAT return." },
     { q: "Do reminders go out on their own?", a: "No. BillingEase writes a polite reminder for each late invoice and puts it on Home. You read it, change it if you like, and send it by email." },
-    { q: "Can I bill in euros or dollars?", a: "Invoices are in pounds. If you work for a customer abroad, record the invoice in pounds and add a note with the foreign amount." },
+    { q: "Can I bill in euros or dollars?", a: "Yes. Pick the currency on the quote or invoice, or set it as the customer's usual currency. The day's exchange rate is filled in and you can change it. Your books stay in pounds: the invoice counts at its rate, and when the money lands you enter what reached your bank, so any difference is kept as an exchange rate gain or loss. A VAT invoice also shows the VAT in pounds." },
     { q: "What happens to Coming in when I send a credit note?", a: "The credit note comes off Coming in straight away and off the invoice it relates to, and your books get a correcting entry. Nothing is deleted." },
   ],
   lk: [
@@ -150,7 +150,7 @@ export const CI_FAQ: ByCountry<{ q: string; a: string }[]> = {
     { q: "Do you take a fee when I get paid?", a: "No. The money goes straight from your customer to you, so there’s nothing for us to take a cut of." },
     { q: "Do invoices follow the IRD Tax Invoice format?", a: "When you’re VAT registered, invoices are titled Tax Invoice with your TIN and VAT registration number, SSCL at 2.5% on its own line and VAT at 18%. Zero-rated and exempt lines are available. Rates and fields are checked against ird.gov.lk before launch." },
     { q: "How do WhatsApp reminders work?", a: "BillingEase writes a polite reminder for each late invoice. Choose email and we send it, or choose WhatsApp and it opens with the message ready for you to send from your own number." },
-    { q: "Can I bill in dollars for an export customer?", a: "Invoices are in rupees. For a customer abroad, record the invoice in rupees and add a note with the foreign amount." },
+    { q: "Can I bill in dollars for an export customer?", a: "Yes. Pick US dollars (or another currency) on the invoice, or make it the customer's usual currency. The day's rate is filled in and you can change it to your bank's. Your books stay in rupees, and the Tax Invoice also shows its totals in rupees. When the payment lands, enter the rupees that reached your bank: any difference is an exchange rate gain or loss." },
     { q: "Can I record a cheque before it clears?", a: "Record it when you receive it with its number and bank, or wait until it clears. Either way the invoice shows what’s been paid and what’s left." },
   ],
 };

@@ -1,12 +1,16 @@
-import { formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import { describeRate, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import { BrandMark, cx } from "@/components/ui";
 import { qty } from "./bits";
+import { FONT_STACKS, readable, textOn, wash, type PreviewBrand } from "./brand";
 
 /** What the preview shows. Laid out like the PDF the customer gets. */
 export type PreviewData = {
   kind: "invoice" | "credit_note" | "quote";
   country: CountryCode;
-  currency: Currency;
+  /** The document's currency: the amounts are in it. */
+  currency: string;
+  /** For a document in another currency: the same totals in the home currency, and the rate. */
+  home?: { currency: Currency; rate: string; net: number; vat: number; sscl: number; total: number; indicative?: boolean } | null;
   title: string;
   number: string | null;
   status: string;
@@ -20,12 +24,15 @@ export type PreviewData = {
   note?: string | null;
   notes?: string | null;
   modeOfPayment?: string | null;
+  /** The business's layout, typeface, colour, logo and footer. Left out: Classic with the BillingEase mark. */
+  brand?: PreviewBrand | null;
 };
 
 export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: boolean }) {
   const rules = rulesFor(d.country);
   const lk = d.country === "lk";
-  const m = (minor: number) => formatMoney(minor, d.currency, { decimals: "always" });
+  const m = (minor: number) => formatMoney(minor, d.currency, { decimals: "always", homeOf: d.home?.currency });
+  const hm = (minor: number) => formatMoney(minor, d.home!.currency, { decimals: "always" });
   const mode = d.vatRegistered ? (lk ? "lktax" : "ukvat") : lk && d.sscl > 0 ? "lktax" : "plain";
   const rateLabel = (id: string | null) => (id ? (rules.vatRates.find((r) => r.id === id)?.label ?? id).replace(/ \(.*\)$/, "") : "-");
   const byRate = new Map<string, { label: string; base: number; vat: number }>();
@@ -46,22 +53,61 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
       ? [d.buyer.taxId && `${rules.wording.taxIdLabel}: ${d.buyer.taxId}`, d.buyer.vatNumber && `${rules.wording.vatIdLabel}: ${d.buyer.vatNumber}`]
       : [d.buyer.vatNumber && `${rules.wording.vatIdLabel}: ${d.buyer.vatNumber}`]
     : [];
-  const pad = compact ? "p-5" : "p-[clamp(18px,3vw,36px)]";
+  const pad = compact ? "20px" : "clamp(18px, 3vw, 36px)";
+  const brand: PreviewBrand = d.brand ?? { template: "classic", font: "sans", accent: "#7A5AF8", footer: null, logoUrl: null };
+  const t = brand.template;
+  const accentText = readable(brand.accent);
+  const font = FONT_STACKS[brand.font];
+  const sellerLines = [d.seller.address, [d.seller.email, d.seller.phone].filter(Boolean).join(" · "), ...sellerTax].filter(Boolean) as string[];
+  // eslint-disable-next-line @next/next/no-img-element
+  const logo = (cls: string) => (brand.logoUrl ? <img src={brand.logoUrl} alt={`${d.seller.name} logo`} className={cx("block w-auto object-contain", cls)} /> : null);
 
   return (
-    <article aria-label={`${d.title} preview`} className={cx("flex flex-col gap-5 rounded-[18px] border border-line bg-white text-[13px] text-ink shadow-[0_6px_24px_rgba(24,22,31,0.06)]", pad)}>
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex min-w-0 flex-col gap-1">
-          <span className="flex items-center gap-2.5"><BrandMark size={26} /><span className="font-display text-[17px] font-bold">{d.seller.name}</span></span>
-          <span className="text-xs leading-relaxed text-ink2">
-            {[d.seller.address, [d.seller.email, d.seller.phone].filter(Boolean).join(" · "), ...sellerTax].filter(Boolean).map((s, i) => <span key={i} className="block break-words">{s}</span>)}
-          </span>
-        </div>
-        <div className="flex flex-col items-end">
-          <span className="font-display text-[22px] font-bold leading-tight">{d.title}</span>
-          <span className="text-xs font-bold text-ink2">{d.number ?? "Draft"}</span>
-        </div>
-      </header>
+    <article aria-label={`${d.title} preview`} data-template={t}
+      className="flex flex-col gap-5 overflow-hidden rounded-[18px] border border-line bg-white text-[13px] text-ink shadow-[0_6px_24px_rgba(24,22,31,0.06)]"
+      style={{ padding: pad, fontFamily: font, ["--font-display" as string]: brand.font === "sans" ? undefined : font, ["--pad" as string]: pad }}>
+      {t === "modern" ? (
+        <>
+          <header className="flex flex-wrap items-center justify-between gap-4 px-[var(--pad)] py-5" data-testid="preview-band"
+            style={{ margin: `calc(-1 * var(--pad)) calc(-1 * var(--pad)) 0`, background: brand.accent, color: textOn(brand.accent) }}>
+            <span className="flex min-w-0 items-center gap-3">
+              {brand.logoUrl && <span className="rounded-lg bg-white px-2 py-1.5">{logo("max-h-9 max-w-[120px]")}</span>}
+              <span className="font-display text-[17px] font-bold">{d.seller.name}</span>
+            </span>
+            <span className="flex flex-col items-end">
+              <span className="font-display text-[22px] font-bold leading-tight">{d.title}</span>
+              <span className="text-xs font-bold">{d.number ?? "Draft"}</span>
+            </span>
+          </header>
+          <span className="-mt-1 text-xs leading-relaxed text-ink2">{sellerLines.map((s, i) => <span key={i} className="block break-words">{s}</span>)}</span>
+        </>
+      ) : t === "minimal" ? (
+        <header className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="font-display text-[26px] font-bold leading-tight">{d.title}</span>
+            <span className="text-xs font-bold text-ink2">{d.number ?? "Draft"}</span>
+            <span className="mt-1.5 block h-[3px] w-9" style={{ background: brand.accent }} />
+          </div>
+          <div className="flex min-w-0 flex-col items-end gap-1 text-right">
+            {logo("mb-1 max-h-12 max-w-[150px]")}
+            <span className="text-[15px] font-bold">{d.seller.name}</span>
+            <span className="text-xs leading-relaxed text-ink2">{sellerLines.map((s, i) => <span key={i} className="block break-words">{s}</span>)}</span>
+          </div>
+        </header>
+      ) : (
+        <header className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex min-w-0 flex-col gap-1">
+            {brand.logoUrl
+              ? <>{logo("max-h-12 max-w-[160px]")}<span className="font-display text-[15px] font-bold">{d.seller.name}</span></>
+              : <span className="flex items-center gap-2.5"><BrandMark size={26} /><span className="font-display text-[17px] font-bold">{d.seller.name}</span></span>}
+            <span className="text-xs leading-relaxed text-ink2">{sellerLines.map((s, i) => <span key={i} className="block break-words">{s}</span>)}</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="font-display text-[22px] font-bold leading-tight" style={d.brand ? { color: accentText } : undefined}>{d.title}</span>
+            <span className="text-xs font-bold text-ink2">{d.number ?? "Draft"}</span>
+          </div>
+        </header>
+      )}
 
       <div className="flex flex-wrap justify-between gap-4">
         <div className="flex min-w-0 flex-col gap-0.5">
@@ -79,7 +125,8 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
       <div className="overflow-x-auto">
         <table className="w-full min-w-[300px] border-collapse text-[13px]">
           <thead>
-            <tr className="border-b border-ink text-left text-[10.5px] uppercase tracking-wide text-muted">
+            <tr className="border-b text-left text-[10.5px] uppercase tracking-wide text-muted"
+              style={{ borderColor: t === "minimal" ? "#E2DFE8" : t === "modern" ? wash(brand.accent) : d.brand ? brand.accent : "#18161F", background: t === "modern" ? wash(brand.accent) : undefined }}>
               <th className="py-1.5 pr-2 font-bold">Description</th>
               <th className="py-1.5 pr-2 text-right font-bold">Qty</th>
               <th className="py-1.5 pr-2 text-right font-bold">{lk ? "Unit price" : "Price"}</th>
@@ -132,10 +179,20 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
         {d.kind === "invoice" && (
           <div className="col-span-2 mt-1 flex items-baseline justify-between border-t border-ink pt-2">
             <span className="font-bold">{d.status === "paid" ? "Balance" : "Amount due"}</span>
-            <span className="tabular font-display text-[22px] font-bold">{m(d.status === "void" ? 0 : open)}</span>
+            <span className="tabular font-display text-[22px] font-bold" style={t !== "classic" ? { color: accentText } : undefined}>{m(d.status === "void" ? 0 : open)}</span>
           </div>
         )}
       </dl>
+
+      {d.home && (
+        <dl className="ml-auto grid w-full max-w-[340px] grid-cols-[1fr_auto] gap-x-4 gap-y-1 rounded-xl bg-bg px-3 py-2.5 text-xs" data-testid="preview-home">
+          <div className="col-span-2 text-[11px] text-muted">{d.home.indicative ? "For reference, at" : "Converted at"} {describeRate(d.currency, d.home.currency, d.home.rate)}</div>
+          {(d.home.vat > 0 || d.home.sscl > 0) && <Row label={`${mode === "lktax" ? "Value of supply" : "Excluding VAT"} in ${d.home.currency}`} value={hm(d.home.net)} />}
+          {d.home.sscl > 0 && <Row label={`SSCL in ${d.home.currency}`} value={hm(d.home.sscl)} />}
+          {d.home.vat > 0 && <Row label={`VAT in ${d.home.currency}`} value={hm(d.home.vat)} />}
+          <Row label={`Total in ${d.home.currency}`} value={hm(d.home.total)} strong />
+        </dl>
+      )}
 
       {mode === "ukvat" && rates.length > 0 && (
         <table className="w-full max-w-[360px] text-xs">
@@ -150,11 +207,14 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
       {d.status === "void" && <p className="rounded-xl bg-surface px-4 py-3 text-xs font-bold">This was voided. Nothing is owed on it.</p>}
       {d.kind === "invoice" && d.status === "paid" && <p className="rounded-xl bg-pos-bg px-4 py-3 text-xs font-bold text-pos">Paid in full. Thank you!</p>}
       {d.notes && <p className="whitespace-pre-line rounded-xl bg-surface px-4 py-3 text-xs">{d.kind === "credit_note" ? <><strong>Reason</strong><br /></> : null}{d.notes}</p>}
-      {d.kind !== "credit_note" && d.kind !== "quote" && d.paymentDetails && <p className="whitespace-pre-line rounded-xl bg-tint px-4 py-3 text-xs"><strong>How to pay</strong><br />{d.paymentDetails}</p>}
+      {d.kind !== "credit_note" && d.kind !== "quote" && d.paymentDetails && (
+        <p className="whitespace-pre-line rounded-xl bg-tint px-4 py-3 text-xs" style={d.brand ? { background: t === "minimal" ? "#EFEDF3" : wash(brand.accent, 0.14) } : undefined}><strong>How to pay</strong><br />{d.paymentDetails}</p>
+      )}
       {d.note && <p className="whitespace-pre-line rounded-xl bg-surface px-4 py-3 text-xs">{d.note}</p>}
       {lk && d.sscl > 0 && rules.ssclInVatBase && (
         <p className="text-[11px] text-muted">SSCL is shown as its own line and included in the value VAT is charged on (to confirm with IRD).</p>
       )}
+      {brand.footer?.trim() && <p className="border-t border-line pt-2 text-[11px] text-muted" data-testid="preview-footer">{brand.footer}</p>}
     </article>
   );
 }

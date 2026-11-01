@@ -7,6 +7,7 @@ import type { BusinessRow } from "../lib/context";
 import { logActivity, notify } from "../lib/activity";
 import type { Services } from "./index";
 import { invoiceLink, issueDraft, taxContext, writeDraft } from "./invoice-core";
+import { rateFor } from "./doc-currency";
 
 export type RecurringDb = typeof recurringInvoices.$inferSelect;
 type Frequency = RecurringDb["frequency"];
@@ -40,7 +41,7 @@ export function recurringOut(b: BusinessRow, r: RecurringDb, customerName: strin
     // A rate that no longer exists: shown as nothing until it's edited.
   }
   return {
-    id: r.id, name: r.name, customerId: r.customerId, customerName, frequency: r.frequency, nextRun: r.nextRun, endDate: r.endDate, mode: r.mode, active: r.active,
+    id: r.id, name: r.name, customerId: r.customerId, customerName, frequency: r.frequency, nextRun: r.nextRun, endDate: r.endDate, mode: r.mode, currency: r.currency, active: r.active,
     lastRunAt: r.lastRunAt?.toISOString() ?? null, termsDays: t.termsDays, notes: t.notes ?? null, reference: t.reference ?? null, lines,
     net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total, invoiceCount, upcoming: r.active ? upcoming(r) : [],
   };
@@ -65,7 +66,11 @@ export async function runOnce(
 
   const t: RecurringTemplate = r.template;
   const [c] = await tx.select().from(customers).where(and(eq(customers.id, r.customerId), eq(customers.businessId, b.id)));
+  // Each run is in the repeating invoice's currency, at the rate on its own date. With no rate to
+  // be found the run fails, and the job pauses it and tells the owner.
+  const fxRate = await rateFor(tx, services, b, r.currency, opts.issueDate);
   const invoiceId = await writeDraft(tx, b, {
+    currency: r.currency, fxRate,
     customerId: r.customerId, issueDate: opts.issueDate, dueDate: addDays(opts.issueDate, t.termsDays), reference: t.reference ?? null, notes: t.notes ?? null,
     recurringId: r.id,
     lines: t.lines.map((l) => ({ itemId: l.itemId ?? null, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount ?? 0, vatRateId: l.vatRateId ?? null, sscl: b.country === "lk" && l.sscl !== false })),

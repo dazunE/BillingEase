@@ -5,7 +5,7 @@ import { useActionState, useState, type FormEvent, type ReactNode } from "react"
 import Link from "next/link";
 import { Icon, ICONS, Logo, cx } from "@/components/ui";
 import { Backdrop, StepArt, type StepPic } from "@/components/auth/AuthArt";
-import { CountryCards, FieldError } from "@/components/auth/fields";
+import { CountrySelect, FieldError } from "@/components/auth/fields";
 import { money, quarterSpans, ratesNote, ssclRate, vatRate, yearSpan, type Cty } from "@/components/auth/country";
 import { SetupPreview, featuresFor, type Answers } from "./SetupPreview";
 import { createBusiness } from "./actions";
@@ -26,9 +26,9 @@ const STEPS: Record<Cty, string[]> = {
 const FIELD_STEP: Record<string, number> = { country: 1, name: 1, ownerName: 1, town: 1, kind: 2, taxId: 3, vatRegistered: 3, vatNumber: 3, ssclRegistered: 3, quarterType: 4, basis: 4 };
 
 const COUNTRIES = {
-  uk: { name: "United Kingdom", line: "Pounds · MTD quarters · HMRC categories" },
-  lk: { name: "Sri Lanka", line: "Rupees · Tax Invoices · EPF, ETF and APIT" },
-  us: { name: "United States", line: "Dollars · IRS Schedule C · LLCs" },
+  uk: { name: "United Kingdom", currency: "Pounds (GBP)", line: "MTD quarters · HMRC categories" },
+  lk: { name: "Sri Lanka", currency: "Rupees (LKR)", line: "Tax Invoices · EPF, ETF and APIT" },
+  us: { name: "United States", currency: "Dollars (USD)", line: "IRS Schedule C · LLCs" },
 };
 
 const I = {
@@ -213,7 +213,7 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
           {/* 1 · The business and its country */}
           <div hidden={step !== 1} className="flex flex-col gap-[22px]">
             {head("What's your business called, and where is it?", "Your country sets the currency, the tax year, the expense categories and the tax rules. It stays fixed once your business is set up.")}
-            <CountryCards big legend="Country" value={picked ? a.country : ""} onChange={pickCountry} names={COUNTRIES} error={errors.country}
+            <CountrySelect label="Where is your business based?" value={picked ? a.country : ""} onChange={(c) => c && pickCountry(c)} names={COUNTRIES} error={errors.country}
               hint={initialCountry ? "From your sign-up. Change it here if that was a slip; it can’t change once you start." : undefined} />
             <SetupField id="sp-name" label="Business name" name="name" big value={a.name} onChange={(x) => setA({ ...a, name: x })} error={errors.name}
               placeholder={lk ? "e.g. Serendib Design Studio" : us ? "e.g. Harbor Lane LLC" : "e.g. Harper Studio"} autoComplete="organization"

@@ -71,9 +71,10 @@ export async function runChaser(app: FastifyInstance, businessId: string, userId
   const today = todayIso();
   const late = await lateToChase(db, b, today);
   if (!late.length) return;
-  const money = (m: number) => formatMoney(m, b.currency);
+  // In the invoice's own currency: that's what the customer owes.
+  const money = (m: number, currency: string) => formatMoney(m, currency, { homeOf: b.currency });
   const facts = late.map(({ inv, c, open: o }) => ({
-    invoice: inv.number, customer: c.contactName || c.name, owed: money(Number(o)), due: formatDate(inv.dueDate, { year: true }),
+    invoice: inv.number, customer: c.contactName || c.name, owed: money(Number(o), inv.currency), due: formatDate(inv.dueDate, { year: true }),
     daysLate: daysBetween(inv.dueDate, today), remindedBefore: inv.remindersSent,
   }));
   let drafts = new Map<string, string>();
@@ -94,7 +95,7 @@ export async function runChaser(app: FastifyInstance, businessId: string, userId
     if (!(err instanceof SyntaxError)) throw err;
   }
   for (const { inv, c, open: o } of late) {
-    const owed = money(Number(o));
+    const owed = money(Number(o), inv.currency);
     const draft = drafts.get(inv.number ?? "");
     // The draft must state the number and the amount as they are; otherwise the plain template.
     const ok = draft && draft.length <= 2000 && draft.includes(inv.number ?? "\u0000") && draft.includes(owed) && !/\[[a-z ]+\]/i.test(draft);

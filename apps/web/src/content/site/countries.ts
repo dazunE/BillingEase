@@ -85,7 +85,7 @@ export const COUNTRIES = {
   faq: [
     { q: "Can I change my country later?", a: "No. Your country is fixed at sign-up because it decides how every entry is recorded. Moving country means signing up a new business." },
     { q: "I have a business in each country. Can I use one account?", a: "Not yet. Each account keeps the books for one business in one country, so you’d sign up twice." },
-    { q: "Can I invoice a customer abroad in their currency?", a: "No. Your books are in your home currency only. Record a foreign invoice in £ or Rs and add a note with the original amount." },
+    { q: "Can I invoice a customer abroad in their currency?", a: "Yes. Quotes, invoices, bills and expenses can be in another currency, like US dollars or euros. Your books stay in your home currency: each one is converted at the day's rate (which you can change), and the difference when the money actually moves is kept as an exchange rate gain or loss." },
     { q: "Does BillingEase file tax in either country?", a: "No. In the UK your accountant files your MTD updates and VAT; in Sri Lanka you or your practitioner file with the IRD, and the year goes to TaxWise.lk. Filing links may come later." },
     { q: "Is it in Sinhala or Tamil?", a: "English first. Sinhala and Tamil invoice templates and payslips are next." },
     { q: "Will you add other countries?", a: "Not for now. Adding a country means a new pack of rules and a local accountant channel, so we’re doing two well first." },

@@ -2,7 +2,7 @@
 
 import type { OutCategory } from "@billingease/contracts";
 import { useState, type ReactNode } from "react";
-import { currencySymbol } from "@billingease/core";
+import { currencySymbol, currencyDigits, parseMoney } from "@billingease/core";
 import { Field, Input, cx } from "@/components/ui";
 
 /** A row of pill-shaped radio buttons. */
@@ -28,11 +28,13 @@ export function Chips({ name, legend, options, value, onChange, error, hint, cla
 }
 
 
-export function MoneyInput({ currency, className, ...props }: React.ComponentProps<"input"> & { currency: "GBP" | "LKR" | "USD" }) {
+export function MoneyInput({ currency, className, ...props }: React.ComponentProps<"input"> & { currency: string }) {
+  const sym = currencySymbol(currency);
   return (
     <span className={cx("relative flex", className)}>
-      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted">{currencySymbol(currency)}</span>
-      <Input inputMode="decimal" autoComplete="off" placeholder="0.00" {...props} className={cx(currency === "LKR" ? "pl-10" : "pl-7", "tabular")} />
+      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted">{sym}</span>
+      <Input inputMode="decimal" autoComplete="off" placeholder={currencyDigits(currency) ? "0.00" : "0"} {...props}
+        className={cx(sym.length >= 3 ? "pl-14" : sym.length === 2 ? "pl-10" : "pl-7", "tabular")} />
     </span>
   );
 }
@@ -128,11 +130,9 @@ export function vatInside(gross: number, bps: number) {
 }
 
 /** Parses a typed amount for live previews (the server checks it properly). */
-export function previewMinor(v: string) {
-  const cleaned = v.replace(/[,\s£]|rs\.?/gi, "");
-  if (!/^\d+(\.\d{0,2})?$/.test(cleaned)) return 0;
-  const [w, f = ""] = cleaned.split(".");
-  return Number(w) * 100 + Number(f.padEnd(2, "0"));
+/** What's typed so far as minor units, for live totals (0 while it isn't an amount yet). */
+export function previewMinor(v: string, currency = "GBP") {
+  return parseMoney(v.replace(/\.$/, ""), currencyDigits(currency)) ?? 0;
 }
 
 export function Alert({ state }: { state: { ok?: boolean; message?: string } | undefined }) {

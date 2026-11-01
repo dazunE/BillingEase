@@ -2,6 +2,7 @@ import { outboxEmails, type OutboxStatus } from "@billingease/db/schema";
 import type { Exec } from "@billingease/db";
 import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
 import type { Config } from "../config";
+import type { InlineImage } from "./email-html";
 
 export type OutgoingEmail = {
   businessId: string | null;
@@ -18,7 +19,7 @@ export type Attachment = { filename: string; contentType: string; content: Uint8
 
 /** Something that can actually send an email. */
 export interface EmailTransport {
-  send(m: { from: string; to: string; replyTo?: string | null; subject: string; text: string; attachments: Attachment[] }): Promise<void>;
+  send(m: { from: string; to: string; replyTo?: string | null; subject: string; text: string; html?: string | null; inline?: InlineImage[]; attachments: Attachment[] }): Promise<void>;
 }
 
 class PostmarkTransport implements EmailTransport {
@@ -28,8 +29,11 @@ class PostmarkTransport implements EmailTransport {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json", "x-postmark-server-token": this.token },
       body: JSON.stringify({
-        From: m.from, To: m.to, ReplyTo: m.replyTo ?? undefined, Subject: m.subject, TextBody: m.text, MessageStream: "outbound",
-        Attachments: m.attachments.map((a) => ({ Name: a.filename, ContentType: a.contentType, Content: Buffer.from(a.content).toString("base64") })),
+        From: m.from, To: m.to, ReplyTo: m.replyTo ?? undefined, Subject: m.subject, TextBody: m.text, HtmlBody: m.html ?? undefined, MessageStream: "outbound",
+        Attachments: [
+          ...m.attachments.map((a) => ({ Name: a.filename, ContentType: a.contentType, Content: Buffer.from(a.content).toString("base64") })),
+          ...(m.inline ?? []).map((a) => ({ Name: a.filename, ContentType: a.contentType, Content: Buffer.from(a.content).toString("base64"), ContentID: `cid:${a.contentId}` })),
+        ],
       }),
     });
     if (!res.ok) throw new Error(`Postmark said ${res.status}: ${(await res.text()).slice(0, 300)}`);
@@ -44,6 +48,8 @@ class PostmarkTransport implements EmailTransport {
 export function createEmail(config: Config, opts: { transport?: EmailTransport | null; render?: (db: Exec, m: typeof outboxEmails.$inferSelect) => Promise<Attachment[]> } = {}) {
   const transport = opts.transport !== undefined ? opts.transport : config.email.provider === "postmark" && config.email.postmarkToken ? new PostmarkTransport(config.email.postmarkToken) : null;
   let render = opts.render ?? (async () => []);
+  // The HTML version and inline logo of an email to a customer, in the business's branding.
+  let extras: (db: Exec, m: typeof outboxEmails.$inferSelect) => Promise<{ html: string | null; inline: InlineImage[] }> = async () => ({ html: null, inline: [] });
 
   return {
     get enabled() {
@@ -52,6 +58,9 @@ export function createEmail(config: Config, opts: { transport?: EmailTransport |
     /** Attachments (invoice and quote PDFs) are rendered when the email is sent. */
     setRenderer(r: typeof render) {
       render = r;
+    },
+    setExtras(x: typeof extras) {
+      extras = x;
     },
     async queue(db: Exec, m: OutgoingEmail) {
       const [row] = await db.insert(outboxEmails).values({
@@ -76,7 +85,8 @@ export function createEmail(config: Config, opts: { transport?: EmailTransport |
           .where(and(eq(outboxEmails.id, m.id), eq(outboxEmails.status, m.status))).returning({ id: outboxEmails.id });
         if (!claimed.length) continue;
         try {
-          await transport.send({ from: config.email.from, to: m.toEmail, replyTo: m.replyTo, subject: m.subject, text: m.bodyText, attachments: await render(db, m) });
+          const { html, inline } = await extras(db, m);
+          await transport.send({ from: config.email.from, to: m.toEmail, replyTo: m.replyTo, subject: m.subject, text: m.bodyText, html, inline, attachments: await render(db, m) });
           await db.update(outboxEmails).set({ status: "sent", sentAt: new Date(), error: null }).where(eq(outboxEmails.id, m.id));
           sent++;
         } catch (err) {

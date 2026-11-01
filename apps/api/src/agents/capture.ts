@@ -103,7 +103,7 @@ export function checkReading(r: Reading, o: { business: Pick<BusinessRow, "count
   const money = (m: number) => formatMoney(m, o.business.currency);
   if (r.kind === "not_a_receipt") return { ok: false, error: `This doesn't look like a receipt or a bill${r.notes ? `: ${r.notes}` : "."}` };
   if (r.currency && r.currency.toUpperCase() !== rules.currency) {
-    return { ok: false, error: `It's in ${r.currency.toUpperCase()}. BillingEase keeps your books in ${CURRENCY_WORDS[rules.currency]}: enter it by hand at the amount that left your account.` };
+    return { ok: false, error: `It's in ${r.currency.toUpperCase()}. Enter it by hand: pick ${r.currency.toUpperCase()} as its currency and add what left your account in ${CURRENCY_WORDS[rules.currency]}.` };
   }
   const total = minor(r.total);
   if (total == null || total <= 0) return { ok: false, error: `The total couldn't be read${r.notes ? ` (${r.notes})` : ""}. Enter it by hand, or try a clearer photo.` };

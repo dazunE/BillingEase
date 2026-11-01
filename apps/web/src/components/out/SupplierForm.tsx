@@ -5,9 +5,10 @@ import { useActionState } from "react";
 import { saveSupplier } from "@/app/app/out/actions";
 import { Button, Field, Input, Select, Textarea } from "@/components/ui";
 import { Alert } from "./fields";
+import { CurrencyField } from "@/components/fx/CurrencyField";
 
 /** Add a supplier, or change their details. */
-export function SupplierForm({ supplier, categories, vatLabel, name }: { supplier?: Supplier; categories: OutCategory[]; vatLabel: string; name?: string }) {
+export function SupplierForm({ supplier, categories, vatLabel, name, home }: { supplier?: Supplier; categories: OutCategory[]; vatLabel: string; name?: string; home: string }) {
   const [state, action, pending] = useActionState(saveSupplier, undefined);
   const e = state?.errors ?? {};
   const v = state?.values ?? {};
@@ -27,6 +28,7 @@ export function SupplierForm({ supplier, categories, vatLabel, name }: { supplie
         <Field label="Contact" hint="Optional" error={e.contactName}><Input name="contactName" defaultValue={val("contactName")} /></Field>
         <Field label="Email" hint="Optional" error={e.email}><Input name="email" type="email" defaultValue={val("email")} /></Field>
         <Field label="Phone" hint="Optional" error={e.phone}><Input name="phone" type="tel" defaultValue={val("phone")} /></Field>
+        <CurrencyField home={home} value={val("currency") || null} error={e.currency} hint="For a supplier abroad: their bills and expenses start in this currency." />
         <Field label={vatLabel} hint={vatLabel === "Sales tax permit" ? "Optional" : "Optional: if they're VAT registered"} error={e.vatNumber}><Input name="vatNumber" defaultValue={val("vatNumber")} /></Field>
       </div>
       <Field label="Address" hint="Optional" error={e.address}><Textarea name="address" defaultValue={val("address")} className="min-h-16" /></Field>

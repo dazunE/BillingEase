@@ -21,7 +21,8 @@ export default async function NewBillPage({ searchParams }: { searchParams: Prom
           <p className="mb-5 mt-1 text-[15px] text-ink2">
             Who sent it, when it&apos;s due and what it&apos;s for, as it says on the bill. {bills.totals.openCount > 0 && `You have ${formatMoney(bills.totals.open, setup.currency)} in ${bills.totals.openCount} open bill${bills.totals.openCount === 1 ? "" : "s"}.`}
           </p>
-          <BillForm setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)} supplierName={supplier} />
+          <BillForm setup={setup} suppliers={suppliers.suppliers.map((s) => s.name)} supplierName={supplier}
+            supplierCurrencies={Object.fromEntries(suppliers.suppliers.filter((s) => s.currency).map((s) => [s.name.toLowerCase(), s.currency!]))} />
         </section>
       </div>
     </>

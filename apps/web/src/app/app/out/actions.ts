@@ -1,22 +1,23 @@
 "use server";
 
 import { goingOut } from "@billingease/contracts";
-import { parseMoney, today } from "@billingease/core";
+import { currencyDigits, parseMoney, parseRate, today } from "@billingease/core";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { call } from "@/lib/api";
 import { blankToNull, failed, formValues, type FormState } from "@/lib/form";
 
 /** Reads an amount typed by hand ("1,250.50") into minor units, noting a field error if it isn't one. */
-function amount(v: string | undefined, field: string, errors: Record<string, string>, opts: { required?: boolean; label?: string } = {}) {
+function amount(v: string | undefined, field: string, errors: Record<string, string>, opts: { required?: boolean; label?: string; currency?: string } = {}) {
   const raw = (v ?? "").trim();
   if (!raw) {
     if (opts.required !== false) errors[field] = opts.label ?? "Enter the amount";
     return 0;
   }
-  const n = parseMoney(raw);
+  const digits = opts.currency ? currencyDigits(opts.currency) : 2;
+  const n = parseMoney(raw, digits);
   if (n == null) {
-    errors[field] = "Enter an amount like 12.50";
+    errors[field] = digits ? "Enter an amount like 12.50" : "Enter a whole amount like 1200";
     return 0;
   }
   return n;
@@ -33,18 +34,28 @@ function revalidateOut() {
   revalidatePath("/app");
 }
 
+/** The currency and rate a bill or expense form sends (`currency`, `fxRate`). */
+function fxOf(v: Record<string, string>, errors: Record<string, string>) {
+  const fxRate = v.fxRate?.trim() ? parseRate(v.fxRate) : null;
+  if (v.fxRate?.trim() && !fxRate) errors.fxRate = "Enter a rate above 0, like 0.7912";
+  return { currency: blankToNull(v.currency), fxRate };
+}
+
 function invalid(errors: Record<string, string>, values: Record<string, string>): FormState {
   return { message: "Some details need fixing.", errors, values };
 }
 
 function expenseBody(v: Record<string, string>, errors: Record<string, string>) {
+  const foreign = !!v.currency && v.currency !== v.homeCurrency;
   return {
+    ...(foreign ? fxOf(v, errors) : { currency: null, fxRate: null }),
+    homeGross: foreign && v.homeGross?.trim() ? amount(v.homeGross, "homeGross", errors, { currency: v.homeCurrency }) : null,
     spentOn: v.spentOn || today(),
     payee: blankToNull(v.payee),
     supplierId: blankToNull(v.supplierId),
     categoryId: v.categoryId && v.categoryId !== "later" ? v.categoryId : null,
-    gross: amount(v.gross, "gross", errors, { label: "Enter what you paid" }),
-    vat: amount(v.vat, "vat", errors, { required: false }),
+    gross: amount(v.gross, "gross", errors, { label: "Enter what you paid", currency: v.currency }),
+    vat: amount(v.vat, "vat", errors, { required: false, currency: v.currency }),
     bizPct: int(v.bizPct, 100),
     method: v.method ?? "",
     ...cheque(v),
@@ -120,10 +131,11 @@ export async function createBill(_: FormState, fd: FormData): Promise<FormState>
     lines.push({
       description: v[`lines.${i}.description`] ?? "",
       categoryId: v[`lines.${i}.categoryId`] ?? "",
-      net: amount(v[`lines.${i}.net`], `lines.${lines.length}.net`, errors),
-      vat: amount(v[`lines.${i}.vat`], `lines.${lines.length}.vat`, errors, { required: false }),
+      net: amount(v[`lines.${i}.net`], `lines.${lines.length}.net`, errors, { currency: v.currency }),
+      vat: amount(v[`lines.${i}.vat`], `lines.${lines.length}.vat`, errors, { required: false, currency: v.currency }),
     });
   }
+  const fx = fxOf(v, errors);
   if (Object.keys(errors).length) return invalid(errors, v);
   const supplierId = blankToNull(v.supplierId);
   try {
@@ -134,6 +146,7 @@ export async function createBill(_: FormState, fd: FormData): Promise<FormState>
         reference: blankToNull(v.reference),
         billDate: v.billDate || today(),
         dueDate: v.dueDate || v.billDate || today(),
+        ...fx,
         lines,
       },
     });
@@ -148,7 +161,8 @@ export async function payBill(id: string, _: FormState, fd: FormData): Promise<F
   const v = formValues(fd);
   const errors: Record<string, string> = {};
   const body = {
-    amount: amount(v.amount, "amount", errors, { label: "Enter what you paid" }),
+    amount: amount(v.amount, "amount", errors, { label: "Enter what you paid", currency: v.currency }),
+    homeAmount: v.homeAmount?.trim() ? amount(v.homeAmount, "homeAmount", errors, { currency: v.homeCurrency }) : null,
     paidOn: v.paidOn || today(),
     method: v.method ?? "",
     ...cheque(v),
@@ -261,6 +275,7 @@ export async function saveSupplier(_: FormState, fd: FormData): Promise<FormStat
   const body = {
     name: v.name ?? "", contactName: blankToNull(v.contactName), email: blankToNull(v.email), phone: blankToNull(v.phone),
     address: blankToNull(v.address), vatNumber: blankToNull(v.vatNumber), defaultCategoryId: blankToNull(v.defaultCategoryId), notes: blankToNull(v.notes),
+    currency: blankToNull(v.currency),
   };
   let id = v.id;
   try {

@@ -22,11 +22,12 @@ async function supplierStats(db: Exec, b: BusinessRow, ids: string[]) {
   const ex = await db.select({ id: expenses.supplierId, sum: sql<string>`sum(${expenses.gross})` }).from(expenses)
     .where(and(eq(expenses.businessId, b.id), inArray(expenses.supplierId, ids), between(expenses.spentOn, year.from, year.to))).groupBy(expenses.supplierId);
   for (const r of ex) if (r.id) get(r.id).paid += Number(r.sum);
-  const pay = await db.select({ id: bills.supplierId, sum: sql<string>`sum(${billPayments.amount})` }).from(billPayments)
+  // In the home currency: what left the bank, and what's owed at each bill's rate.
+  const pay = await db.select({ id: bills.supplierId, sum: sql<string>`sum(${billPayments.homeAmount})` }).from(billPayments)
     .innerJoin(bills, eq(bills.id, billPayments.billId))
     .where(and(eq(billPayments.businessId, b.id), inArray(bills.supplierId, ids), isNull(billPayments.voidedAt), between(billPayments.paidOn, year.from, year.to))).groupBy(bills.supplierId);
   for (const r of pay) get(r.id).paid += Number(r.sum);
-  const owed = await db.select({ id: bills.supplierId, sum: sql<string>`sum(${bills.total} - ${bills.paid})`, n: sql<string>`count(*)` }).from(bills)
+  const owed = await db.select({ id: bills.supplierId, sum: sql<string>`sum(${bills.homeTotal} - ${bills.homeCleared})`, n: sql<string>`count(*)` }).from(bills)
     .where(and(eq(bills.businessId, b.id), inArray(bills.supplierId, ids), ne(bills.status, "void"), ne(bills.status, "paid"))).groupBy(bills.supplierId);
   for (const r of owed) Object.assign(get(r.id), { owed: Number(r.sum), open: Number(r.n) });
   return stats;
@@ -35,7 +36,7 @@ async function supplierStats(db: Exec, b: BusinessRow, ids: string[]) {
 function supplierOut(b: BusinessRow, s: SupplierRow, st?: { paid: number; owed: number; open: number }) {
   return {
     id: s.id, name: s.name, contactName: s.contactName, email: s.email, phone: s.phone, address: s.address, vatNumber: s.vatNumber,
-    defaultCategoryId: s.defaultCategoryId, defaultCategoryName: categoryName(b, s.defaultCategoryId).name, notes: s.notes,
+    defaultCategoryId: s.defaultCategoryId, defaultCategoryName: categoryName(b, s.defaultCategoryId).name, notes: s.notes, currency: s.currency,
     archived: !!s.archivedAt, paidThisYear: st?.paid ?? 0, owed: st?.owed ?? 0, openBills: st?.open ?? 0,
   };
 }
@@ -72,7 +73,7 @@ export async function supplierRoutes(app: FastifyInstance) {
       supplier: supplierOut(b, s, stats.get(s.id)),
       expenses: await expensesOut(ctx.db, b, ex),
       bills: billRows.map((x) => billOut(x, { supplierName: s.name })),
-      payments: pays.map(({ p, ref }) => ({ id: p.id, billId: p.billId, billReference: ref, amount: p.amount, paidOn: p.paidOn, method: p.method, chequeNumber: p.chequeNumber, chequeDate: p.chequeDate, chequeBank: p.chequeBank, reference: p.reference })),
+      payments: pays.map(({ p, ref }) => ({ id: p.id, billId: p.billId, billReference: ref, amount: p.amount, homeAmount: p.homeAmount, fxGain: p.homeCleared - p.homeAmount, paidOn: p.paidOn, method: p.method, chequeNumber: p.chequeNumber, chequeDate: p.chequeDate, chequeBank: p.chequeBank, reference: p.reference })),
       monthlyCosts: await monthlyOut(ctx.db, b, costs),
       taxYear: rulesFor(b.country).taxYearOf(today()).label,
     };

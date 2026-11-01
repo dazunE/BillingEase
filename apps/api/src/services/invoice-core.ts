@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import type { InvoiceDetail, InvoiceRow, LineInput } from "@billingease/contracts";
-import { addDays, computeInvoice, daysBetween, formatDate, formatMoney, invoiceTitle, posting, rulesFor, today, type InvoiceTotals } from "@billingease/core";
+import { addDays, computeInvoice, convertMinor, daysBetween, formatDate, formatMoney, homeCleared, invoiceTitle, posting, rulesFor, today, toHome, type InvoiceTotals, type Rate } from "@billingease/core";
 import { postEntry, reverseEntry, type Exec } from "@billingease/db";
 import {
   activity, customers, invoiceLines, invoices, items, outboxEmails, quoteLines, quotes, receipts, type InvoiceSnapshot,
@@ -11,6 +11,7 @@ import { logActivity } from "../lib/activity";
 import { AppError, badRequest, conflict, notFound } from "../lib/errors";
 import type { Services } from "./index";
 import { nextNumber } from "./numbering";
+import { docMoney, rateFor, shownRate } from "./doc-currency";
 
 export type InvoiceDb = typeof invoices.$inferSelect;
 export type CustomerDb = typeof customers.$inferSelect;
@@ -99,6 +100,9 @@ export function snapshotFor(b: BusinessRow, c: CustomerDb, vatRegistered: boolea
 // Reading
 
 export const openOf = (i: { total: number; paid: number; credited: number; status: string }) => (i.status === "void" || i.status === "draft" ? 0 : i.total - i.paid - i.credited);
+/** What's still owed in the home currency, at the invoice's own rate. */
+export const homeOpenOf = (i: { total: number; paid: number; credited: number; status: string; homeTotal: number; homeCleared: number }) =>
+  (openOf(i) > 0 ? i.homeTotal - i.homeCleared : 0);
 
 export function shownStatus(i: { status: InvoiceDb["status"]; kind: string; dueDate: string; total: number; paid: number; credited: number }, now = today()): InvoiceRow["shown"] {
   if (i.kind === "invoice" && (i.status === "sent" || i.status === "part_paid") && openOf(i) > 0 && i.dueDate < now) return "late";
@@ -117,8 +121,9 @@ export function toRow(r: { inv: InvoiceDb; customerName: string; summary: string
   const shown = shownStatus(i, now);
   return {
     id: i.id, kind: i.kind, number: i.number, status: i.status, shown, customerId: i.customerId, customerName: r.customerName,
-    issueDate: i.issueDate, dueDate: i.dueDate, summary: r.summary ?? "", net: i.net, vat: i.vat, sscl: i.sscl, total: i.total,
-    paid: i.paid, credited: i.credited, open: openOf(i), daysLate: shown === "late" ? daysBetween(i.dueDate, now) : 0, remindersSent: i.remindersSent,
+    issueDate: i.issueDate, dueDate: i.dueDate, summary: r.summary ?? "", currency: i.currency, fxRate: shownRate(i.fxRate),
+    net: i.net, vat: i.vat, sscl: i.sscl, total: i.total, paid: i.paid, credited: i.credited, open: openOf(i),
+    homeTotal: i.homeTotal, homeOpen: homeOpenOf(i), daysLate: shown === "late" ? daysBetween(i.dueDate, now) : 0, remindersSent: i.remindersSent,
   };
 }
 
@@ -157,9 +162,10 @@ export async function invoiceDetail(db: Exec, b: BusinessRow, id: string): Promi
     title: i.kind === "credit_note" ? "Credit note" : (i.snapshot?.title ?? invoiceTitle(b.country, b.vatRegistered)),
     supplyDate: i.supplyDate, reference: i.reference, notes: i.notes, vatRegistered: i.status === "draft" ? b.vatRegistered : i.vatRegistered,
     snapshot: i.snapshot ?? null,
-    customer: { id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber },
+    customer: { id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber, currency: c.currency },
+    homeNet: i.homeNet, homeVat: i.homeVat, homeSscl: i.homeSscl,
     lines: lines.map(lineOut),
-    receipts: recs.map((x) => ({ id: x.id, amount: x.amount, method: x.method, receivedOn: x.receivedOn, reference: x.reference, chequeNumber: x.chequeNumber, chequeDate: x.chequeDate, chequeBank: x.chequeBank, voided: !!x.voidedAt })),
+    receipts: recs.map((x) => ({ id: x.id, amount: x.amount, homeAmount: x.homeAmount, fxGain: x.homeAmount - x.homeCleared, method: x.method, receivedOn: x.receivedOn, reference: x.reference, chequeNumber: x.chequeNumber, chequeDate: x.chequeDate, chequeBank: x.chequeBank, voided: !!x.voidedAt })),
     creditNotes: credits,
     creditFor: parent[0] ?? null,
     quote: quote[0] ?? null,
@@ -177,15 +183,24 @@ export async function invoiceDetail(db: Exec, b: BusinessRow, id: string): Promi
 /** Saves a draft's lines and totals (replacing any lines it had). */
 export async function writeDraft(
   db: Exec, b: BusinessRow,
-  data: { id?: string; customerId: string; issueDate: string; supplyDate?: string | null; dueDate?: string | null; reference?: string | null; notes?: string | null; lines: NormalLine[]; quoteId?: string | null; recurringId?: string | null },
+  data: {
+    id?: string; customerId: string; issueDate: string; supplyDate?: string | null; dueDate?: string | null; reference?: string | null; notes?: string | null;
+    lines: NormalLine[]; quoteId?: string | null; recurringId?: string | null;
+    /** The invoice's currency and its rate to home (see doc-currency's rateFor). */
+    currency: string; fxRate: Rate;
+  },
 ): Promise<string> {
   await checkRefs(db, b, data.customerId, data.lines);
   const { totals, rows } = computeLines(b, data.lines);
+  const home = toHome(totals, data.currency, b.currency, data.fxRate);
   const dueDate = data.dueDate ?? addDays(data.issueDate, b.termsDays);
   if (dueDate < data.issueDate) throw badRequest("The due date is before the invoice date.", { dueDate: "Pick a date on or after the invoice date" });
   const values = {
     customerId: data.customerId, issueDate: data.issueDate, supplyDate: data.supplyDate ?? null, dueDate, reference: data.reference ?? null, notes: data.notes ?? null,
-    net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total, vatRegistered: b.vatRegistered, updatedAt: new Date(),
+    currency: data.currency, fxRate: data.fxRate,
+    net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total,
+    homeNet: home.net, homeVat: home.vat, homeSscl: home.sscl, homeTotal: home.total,
+    vatRegistered: b.vatRegistered, updatedAt: new Date(),
   };
   let id = data.id;
   if (id) {
@@ -199,6 +214,18 @@ export async function writeDraft(
   return id;
 }
 
+/**
+ * The currency and rate for an invoice written from a form or the API: the currency asked for,
+ * else the customer's, else home; the rate given, else the one on the issue date.
+ */
+export async function invoiceFx(
+  db: Exec, services: Services, b: BusinessRow, body: { customerId: string; issueDate: string; currency?: string | null; fxRate?: Rate | null },
+): Promise<{ currency: string; fxRate: Rate }> {
+  const [c] = await db.select({ currency: customers.currency }).from(customers).where(and(eq(customers.id, body.customerId), eq(customers.businessId, b.id)));
+  const currency = body.currency || c?.currency || b.currency;
+  return { currency, fxRate: await rateFor(db, services, b, currency, body.issueDate, body.fxRate) };
+}
+
 export function storedLines(lines: Pick<LineDb, "itemId" | "description" | "quantityMilli" | "unitPrice" | "discount" | "vatRateId" | "ssclApplies">[]): NormalLine[] {
   return lines.map((l) => ({ itemId: l.itemId, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, sscl: l.ssclApplies }));
 }
@@ -207,11 +234,11 @@ function greeting(c: CustomerDb) {
   return c.contactName ? `Hello ${c.contactName.split(/\s+/)[0]},` : "Hello,";
 }
 
-export function invoiceEmail(b: BusinessRow, c: CustomerDb, inv: { number: string; total: number; dueDate: string; title: string }, message?: string | null) {
+export function invoiceEmail(b: BusinessRow, c: CustomerDb, inv: { number: string; total: number; currency: string; dueDate: string; title: string }, message?: string | null) {
   const body = [
     greeting(c),
     "",
-    message?.trim() || `Here is ${inv.title.toLowerCase().startsWith("tax") ? "Tax Invoice" : "invoice"} ${inv.number} for ${money(b, inv.total)}, due on ${formatDate(inv.dueDate, { year: true })}. The PDF is attached.`,
+    message?.trim() || `Here is ${inv.title.toLowerCase().startsWith("tax") ? "Tax Invoice" : "invoice"} ${inv.number} for ${docMoney(b, inv.currency, inv.total)}, due on ${formatDate(inv.dueDate, { year: true })}. The PDF is attached.`,
     ...(b.paymentDetails ? ["", `How to pay: ${b.paymentDetails}`] : []),
     "",
     "Thank you,",
@@ -227,7 +254,7 @@ export function reminderText(b: BusinessRow, c: CustomerDb, inv: InvoiceDb, now 
   const lines = [
     greeting(c),
     "",
-    `A friendly reminder that invoice ${inv.number} ${when}, and ${money(b, open)} is still to pay.`,
+    `A friendly reminder that invoice ${inv.number} ${when}, and ${docMoney(b, inv.currency, open)} is still to pay.`,
     ...(b.paymentDetails ? ["", `How to pay: ${b.paymentDetails}`] : []),
     "",
     "If you've already paid, thank you, and please ignore this.",
@@ -253,6 +280,8 @@ export async function issueDraft(
   // Recompute with the business's registration as it is now, so the issued invoice matches its title.
   const { totals, rows } = computeLines(b, storedLines(lines));
   if (totals.total <= 0) throw badRequest("The invoice comes to nothing. Add a price to a line.", { lines: "Add a price" });
+  // The books are in the home currency, at the rate the invoice carries.
+  const home = toHome(totals, inv.currency, b.currency, inv.fxRate);
   if (opts.email && !c.email) throw badRequest(`Add an email address for ${c.name} to email it, or save it without emailing.`, { email: "No email for this customer" });
 
   const number = await nextNumber(tx, b.id, "invoice");
@@ -261,16 +290,17 @@ export async function issueDraft(
   await tx.insert(invoiceLines).values(rows.map((r) => ({ ...r, invoiceId: inv.id })));
   const entryId = await postEntry(tx, {
     businessId: b.id, date: inv.issueDate, memo: `Invoice ${number} to ${c.name}`, sourceType: "invoice", sourceId: inv.id, createdBy: opts.userId,
-    lines: posting.invoice(totals),
+    lines: posting.invoice(home),
   });
   await tx.update(invoices).set({
     number, status: "sent", net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total, vatRegistered: b.vatRegistered,
+    homeNet: home.net, homeVat: home.vat, homeSscl: home.sscl, homeTotal: home.total, homeCleared: 0,
     snapshot, journalEntryId: entryId, sentAt: new Date(), updatedAt: new Date(),
   }).where(and(eq(invoices.id, inv.id), eq(invoices.businessId, b.id)));
 
   let emailId: string | null = null;
   if (opts.email && c.email) {
-    const m = invoiceEmail(b, c, { number, total: totals.total, dueDate: inv.dueDate, title: snapshot.title }, opts.message);
+    const m = invoiceEmail(b, c, { number, total: totals.total, currency: inv.currency, dueDate: inv.dueDate, title: snapshot.title }, opts.message);
     emailId = await services.email.queue(tx, { businessId: b.id, to: c.email, replyTo: opts.replyTo ?? b.email, subject: m.subject, text: m.text, attachInvoiceId: inv.id });
   }
   await logActivity(tx, b.id, emailId ? `${snapshot.title} ${number} emailed to ${c.name} (${c.email})` : `${snapshot.title} ${number} issued to ${c.name}`, { actorId: opts.userId, link: invoiceLink(inv.id) });
@@ -285,8 +315,8 @@ export function statusFor(i: { total: number; paid: number; credited: number }):
 }
 
 export async function recordPayment(
-  tx: Exec, b: BusinessRow, invoiceId: string, userId: string | null,
-  p: { amount: number; receivedOn: string; method: string; reference?: string | null; chequeNumber?: string | null; chequeDate?: string | null; chequeBank?: string | null },
+  tx: Exec, services: Services, b: BusinessRow, invoiceId: string, userId: string | null,
+  p: { amount: number; homeAmount?: number | null; receivedOn: string; method: string; reference?: string | null; chequeNumber?: string | null; chequeDate?: string | null; chequeBank?: string | null },
 ) {
   const rules = rulesFor(b.country);
   const inv = await getInvoiceRow(tx, b.id, invoiceId, { forUpdate: true });
@@ -295,27 +325,34 @@ export async function recordPayment(
   if (inv.status === "void") throw conflict("This invoice was voided.");
   const open = openOf(inv);
   if (open <= 0) throw conflict("This invoice is already paid.");
-  if (p.amount > open) throw badRequest(`That's more than the ${money(b, open)} left to pay.`, { amount: `At most ${money(b, open)}` });
+  if (p.amount > open) throw badRequest(`That's more than the ${docMoney(b, inv.currency, open)} left to pay.`, { amount: `At most ${docMoney(b, inv.currency, open)}` });
   if (!rules.receiveMethods.includes(p.method)) throw badRequest("Pick how they paid.", { method: `One of: ${rules.receiveMethods.join(", ")}` });
   if (p.receivedOn > today()) throw badRequest("Pick today or an earlier date.", { receivedOn: "Can't be in the future" });
   const cheque = p.method === "Cheque";
   if (cheque && b.country === "lk" && !p.chequeNumber) throw badRequest("Enter the cheque number.", { chequeNumber: "Enter the cheque number" });
   const [c] = await tx.select({ name: customers.name }).from(customers).where(and(eq(customers.id, inv.customerId), eq(customers.businessId, b.id)));
+  // What reached the bank, in the home currency: as told, else at the rate on the day it arrived.
+  const foreign = inv.currency !== b.currency;
+  const homeAmount = !foreign ? p.amount
+    : p.homeAmount ?? convertMinor(p.amount, inv.currency, b.currency, await rateFor(tx, services, b, inv.currency, p.receivedOn, null, "homeAmount"));
+  // How much of the invoice's home value it settles, at the invoice's rate. The rest is a gain or loss.
+  const cleared = homeCleared({ total: inv.total, settledBefore: inv.paid + inv.credited, amount: p.amount, homeTotal: inv.homeTotal, homeClearedBefore: inv.homeCleared });
 
   const [rec] = await tx.insert(receipts).values({
-    businessId: b.id, invoiceId: inv.id, amount: p.amount, method: p.method, receivedOn: p.receivedOn, reference: p.reference ?? null,
+    businessId: b.id, invoiceId: inv.id, amount: p.amount, homeAmount, homeCleared: cleared, method: p.method, receivedOn: p.receivedOn, reference: p.reference ?? null,
     chequeNumber: cheque ? (p.chequeNumber ?? null) : null, chequeDate: cheque ? (p.chequeDate ?? null) : null, chequeBank: cheque ? (p.chequeBank ?? null) : null,
   }).returning({ id: receipts.id });
   const entryId = await postEntry(tx, {
     businessId: b.id, date: p.receivedOn, memo: `Payment for ${inv.number} from ${c.name}`, sourceType: "receipt", sourceId: rec.id, createdBy: userId,
-    lines: posting.receipt(p.amount, p.method),
+    lines: posting.receipt(homeAmount, p.method, cleared),
   });
   await tx.update(receipts).set({ journalEntryId: entryId }).where(eq(receipts.id, rec.id));
   const paid = inv.paid + p.amount;
   const status = statusFor({ total: inv.total, paid, credited: inv.credited });
-  await tx.update(invoices).set({ paid, status, updatedAt: new Date() }).where(and(eq(invoices.id, inv.id), eq(invoices.businessId, b.id)));
+  await tx.update(invoices).set({ paid, homeCleared: inv.homeCleared + cleared, status, updatedAt: new Date() }).where(and(eq(invoices.id, inv.id), eq(invoices.businessId, b.id)));
   const how = cheque && p.chequeNumber ? `cheque ${p.chequeNumber}` : (p.method === p.method.toUpperCase() ? p.method : p.method.toLowerCase());
-  await logActivity(tx, b.id, `${money(b, p.amount)} received from ${c.name} for ${inv.number} by ${how}${status === "paid" ? ", now paid in full" : ""}`, { actorId: userId, link: invoiceLink(inv.id) });
+  const inHome = foreign ? ` (${money(b, homeAmount)} in the bank)` : "";
+  await logActivity(tx, b.id, `${docMoney(b, inv.currency, p.amount)}${inHome} received from ${c.name} for ${inv.number} by ${how}${status === "paid" ? ", now paid in full" : ""}`, { actorId: userId, link: invoiceLink(inv.id) });
   return rec.id;
 }
 
@@ -327,9 +364,9 @@ export async function voidPayment(tx: Exec, b: BusinessRow, invoiceId: string, r
   if (rec.journalEntryId) await reverseEntry(tx, b.id, rec.journalEntryId, { createdBy: userId, memo: `Payment removed: ${inv.number}` });
   await tx.update(receipts).set({ voidedAt: new Date() }).where(eq(receipts.id, rec.id));
   const paid = inv.paid - rec.amount;
-  await tx.update(invoices).set({ paid, status: statusFor({ total: inv.total, paid, credited: inv.credited }), updatedAt: new Date() })
+  await tx.update(invoices).set({ paid, homeCleared: Math.max(0, inv.homeCleared - rec.homeCleared), status: statusFor({ total: inv.total, paid, credited: inv.credited }), updatedAt: new Date() })
     .where(and(eq(invoices.id, inv.id), eq(invoices.businessId, b.id)));
-  await logActivity(tx, b.id, `Payment of ${money(b, rec.amount)} on ${inv.number} removed`, { actorId: userId, link: invoiceLink(inv.id) });
+  await logActivity(tx, b.id, `Payment of ${docMoney(b, inv.currency, rec.amount)} on ${inv.number} removed`, { actorId: userId, link: invoiceLink(inv.id) });
 }
 
 export async function voidInvoice(tx: Exec, b: BusinessRow, invoiceId: string, userId: string | null, reason?: string | null) {
@@ -376,8 +413,11 @@ export async function createCreditNote(
   if (totals.total <= 0) throw badRequest("The credit note comes to nothing.");
   const open = openOf(inv);
   if (totals.total > open) {
-    throw new AppError(409, "too_much", `That's ${money(b, totals.total)}, more than the ${money(b, open)} still owed. Money you pay back for a paid invoice goes in Going out.`);
+    throw new AppError(409, "too_much", `That's ${docMoney(b, inv.currency, totals.total)}, more than the ${docMoney(b, inv.currency, open)} still owed. Money you pay back for a paid invoice goes in Going out.`);
   }
+  // In the invoice's currency and at its rate, so it takes off exactly what it says.
+  const home = toHome(totals, inv.currency, b.currency, inv.fxRate);
+  const cleared = homeCleared({ total: inv.total, settledBefore: inv.paid + inv.credited, amount: totals.total, homeTotal: inv.homeTotal, homeClearedBefore: inv.homeCleared });
   const issueDate = body.issueDate ?? today();
   if (issueDate < inv.issueDate) throw badRequest("The credit note can't be dated before the invoice.", { issueDate: "On or after the invoice date" });
   const [c] = await tx.select().from(customers).where(and(eq(customers.id, inv.customerId), eq(customers.businessId, b.id)));
@@ -386,26 +426,28 @@ export async function createCreditNote(
   const snapshot = { ...snapshotFor(b, c, inv.vatRegistered), title: "Credit note" };
   const [cn] = await tx.insert(invoices).values({
     businessId: b.id, kind: "credit_note", number, customerId: inv.customerId, status: "sent", issueDate, dueDate: issueDate,
-    reference: inv.number, notes: body.reason ?? null, net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total,
+    reference: inv.number, notes: body.reason ?? null, currency: inv.currency, fxRate: inv.fxRate,
+    net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total,
+    homeNet: home.net, homeVat: home.vat, homeSscl: home.sscl, homeTotal: home.total,
     vatRegistered: inv.vatRegistered, creditForId: inv.id, snapshot, publicToken: newToken(), sentAt: new Date(),
   }).returning({ id: invoices.id });
   await tx.insert(invoiceLines).values(rows.map((r) => ({ ...r, invoiceId: cn.id })));
   const entryId = await postEntry(tx, {
     businessId: b.id, date: issueDate, memo: `Credit note ${number} against ${inv.number}`, sourceType: "credit_note", sourceId: cn.id, createdBy: userId,
-    lines: posting.creditNote(totals),
+    lines: posting.creditNote(home, "4000", cleared),
   });
   await tx.update(invoices).set({ journalEntryId: entryId }).where(eq(invoices.id, cn.id));
   const credited = inv.credited + totals.total;
-  await tx.update(invoices).set({ credited, status: statusFor({ total: inv.total, paid: inv.paid, credited }), updatedAt: new Date() })
+  await tx.update(invoices).set({ credited, homeCleared: inv.homeCleared + cleared, status: statusFor({ total: inv.total, paid: inv.paid, credited }), updatedAt: new Date() })
     .where(and(eq(invoices.id, inv.id), eq(invoices.businessId, b.id)));
   let emailId: string | null = null;
   if (body.email && c.email) {
     emailId = await services.email.queue(tx, {
       businessId: b.id, to: c.email, replyTo: b.email, subject: `Credit note ${number} from ${b.name}`, attachInvoiceId: cn.id,
-      text: [greeting(c), "", `Here is credit note ${number} for ${money(b, totals.total)}, taken off invoice ${inv.number}. The PDF is attached.`, "", "Thank you,", b.name].join("\n"),
+      text: [greeting(c), "", `Here is credit note ${number} for ${docMoney(b, inv.currency, totals.total)}, taken off invoice ${inv.number}. The PDF is attached.`, "", "Thank you,", b.name].join("\n"),
     });
   }
-  const msg = `Credit note ${number} for ${money(b, totals.total)} against ${inv.number}${emailId ? `, emailed to ${c.email}` : ""}`;
+  const msg = `Credit note ${number} for ${docMoney(b, inv.currency, totals.total)} against ${inv.number}${emailId ? `, emailed to ${c.email}` : ""}`;
   await logActivity(tx, b.id, msg, { actorId: userId, link: invoiceLink(inv.id) });
   await logActivity(tx, b.id, msg, { actorId: userId, link: invoiceLink(cn.id) });
   return { id: cn.id, emailId };
