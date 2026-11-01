@@ -77,3 +77,23 @@ describe("businesses", () => {
     expect(r.body).toMatchObject({ vatRegistered: true, vatNumber: "GB123456789", termsDays: 30 });
   });
 });
+
+describe("one account, several businesses", () => {
+  it("lists each business and keeps their books apart", async () => {
+    const { token, business: first } = await signUpWithBusiness(t.app, "uk");
+    const second = await as(t.app, token).post("/businesses", { country: "lk", kind: "sole_proprietor", name: "Colombo Branch", ownerName: "Test Owner", taxId: "104563218", vatRegistered: false });
+    expect(second.status).toBe(200);
+    const me = await as(t.app, token).get("/auth/me");
+    expect(me.body.businesses.map((b: { name: string; role: string }) => [b.name, b.role])).toEqual([["Harper Studio", "owner"], ["Colombo Branch", "owner"]]);
+    // With two, the API needs to be told which.
+    expect((await as(t.app, token).get("/business")).body.error.code).toBe("pick_business");
+    expect((await as(t.app, token, first.id).get("/business")).body.currency).toBe("GBP");
+    expect((await as(t.app, token, second.body.id).get("/business")).body.currency).toBe("LKR");
+    await as(t.app, token, first.id).post("/customers", { name: "Only in the UK" });
+    const lkCustomers = await as(t.app, token, second.body.id).get("/customers");
+    expect(JSON.stringify(lkCustomers.body)).not.toContain("Only in the UK");
+    // Someone else's business stays out of reach.
+    const other = await signUpWithBusiness(t.app, "us");
+    expect((await as(t.app, other.token, first.id).get("/business")).status).toBe(403);
+  });
+});

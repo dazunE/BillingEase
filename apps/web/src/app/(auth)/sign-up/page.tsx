@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageCountry } from "@/components/auth/pageCountry";
+import { googleEnabled } from "@/lib/google";
 import { SignUpForm } from "./SignUpForm";
 
 export const metadata: Metadata = {
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 
 export default async function SignUpPage({ searchParams }: { searchParams: Promise<{ country?: string }> }) {
   const { country } = await searchParams;
-  return <SignUpForm initialCountry={await pageCountry(country)} />;
+  return <SignUpForm initialCountry={await pageCountry(country)} google={googleEnabled()} />;
 }

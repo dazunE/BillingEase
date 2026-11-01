@@ -7,7 +7,10 @@ import { ApiFailure, call } from "./api";
 import { BUSINESS_COOKIE, SESSION_COOKIE } from "./cookies";
 
 export async function setSession(token: string, expiresAt: string) {
-  (await cookies()).set(SESSION_COOKIE, token, {
+  const jar = await cookies();
+  // A new sign-in starts without the last person's business.
+  jar.delete(BUSINESS_COOKIE);
+  jar.set(SESSION_COOKIE, token, {
     httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", expires: new Date(expiresAt),
   });
 }
@@ -18,8 +21,11 @@ export async function clearSession() {
   jar.delete(BUSINESS_COOKIE);
 }
 
+/** Remembers which business the person is working in, until they sign out or switch. */
 export async function chooseBusiness(id: string) {
-  (await cookies()).set(BUSINESS_COOKIE, id, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/" });
+  (await cookies()).set(BUSINESS_COOKIE, id, {
+    httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 * 365,
+  });
 }
 
 /** The signed-in user, or null. Cached for the request. */

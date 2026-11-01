@@ -3,17 +3,25 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { Button, Icon } from "@/components/ui";
-import { AuthTitle } from "@/components/auth/Frame";
+import { AuthTitle, FormError } from "@/components/auth/Frame";
+import { GoogleButton, OrDivider } from "@/components/auth/GoogleButton";
 import { AuthField, PasswordField } from "@/components/auth/fields";
 import { signIn } from "../actions";
 
-export function SignInForm({ next }: { next?: string }) {
+export function SignInForm({ next, google, googleError }: { next?: string; google?: boolean; googleError?: string }) {
   const [state, action, pending] = useActionState(signIn, undefined);
   const e = state?.errors ?? {};
   return (
     <form action={action} className="flex flex-col gap-5" noValidate>
       <AuthTitle title="Welcome back." lead="Sign in to see where your three numbers stand today." />
       <input type="hidden" name="next" value={next ?? ""} />
+      {!state && <FormError message={googleError} />}
+      {google && (
+        <>
+          <GoogleButton href={`/auth/google${next ? `?next=${encodeURIComponent(next)}` : ""}`} />
+          <OrDivider />
+        </>
+      )}
       <AuthField label="Email" name="email" type="email" autoComplete="email" defaultValue={state?.values?.email} error={e.email} required />
       <PasswordField label="Password" name="password" autoComplete="current-password" error={e.password} min={1}
         aside={<Link href="/forgot-password" className="text-[13px] font-semibold underline underline-offset-2">Forgot password?</Link>} />

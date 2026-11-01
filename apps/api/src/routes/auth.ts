@@ -1,5 +1,5 @@
 import { auth } from "@billingease/contracts";
-import { businesses, memberships, passwordResets, sessions, users } from "@billingease/db/schema";
+import { businesses, memberships, passwordResets, sessions, userIdentities, users } from "@billingease/db/schema";
 import bcrypt from "bcryptjs";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
@@ -18,6 +18,19 @@ async function startSession(ctx: Ctx, userId: string, userAgent?: string) {
   return { token, expiresAt: expiresAt.toISOString() };
 }
 
+/** How this person can sign in, for Account → Sign-in methods. */
+async function methodsFor(ctx: Ctx, userId: string) {
+  const [user] = await ctx.db.select({ email: users.email, passwordHash: users.passwordHash }).from(users).where(eq(users.id, userId));
+  const [google] = await ctx.db.select({ email: userIdentities.email }).from(userIdentities)
+    .where(and(eq(userIdentities.userId, userId), eq(userIdentities.provider, "google")));
+  return { email: user.email, hasPassword: !!user.passwordHash, google: google ?? null, googleAvailable: !!ctx.services.google };
+}
+
+function googleOrOff(ctx: Ctx) {
+  if (!ctx.services.google) throw new AppError(404, "google_off", "Signing in with Google isn't set up here. Use your email and password.");
+  return ctx.services.google;
+}
+
 export async function authRoutes(app: FastifyInstance) {
   // Slows down password guessing and email bombing.
   const limited = { rateLimit: { max: 10, timeWindow: "1 minute" } };
@@ -32,8 +45,63 @@ export async function authRoutes(app: FastifyInstance) {
   route(app, auth.signIn, async ({ body, ctx, req }) => {
     const [user] = await ctx.db.select().from(users).where(eq(users.email, body.email));
     const ok = await bcrypt.compare(body.password, user?.passwordHash ?? DUMMY_HASH);
-    if (!user || !ok) throw new AppError(401, "bad_credentials", "That email and password don't match.");
+    if (!user?.passwordHash || !ok) throw new AppError(401, "bad_credentials", "That email and password don't match.");
     return startSession(ctx, user.id, req.headers["user-agent"]);
+  }, limited);
+
+  route(app, auth.google, async ({ body, ctx, req }) => {
+    const p = await googleOrOff(ctx).verify(body);
+    const { userId, created } = await ctx.db.transaction(async (tx) => {
+      const [known] = await tx.select().from(userIdentities).where(and(eq(userIdentities.provider, "google"), eq(userIdentities.subject, p.sub)));
+      if (known) {
+        if (known.email !== p.email) await tx.update(userIdentities).set({ email: p.email }).where(and(eq(userIdentities.provider, "google"), eq(userIdentities.subject, p.sub)));
+        return { userId: known.userId, created: false };
+      }
+      // Only an email Google has verified may join an existing account or claim a new one.
+      if (!p.emailVerified) throw new AppError(400, "google_unverified", "Google hasn't verified the email on that account yet. Verify it with Google, or sign up with your email and a password.");
+      const [existing] = await tx.select().from(users).where(eq(users.email, p.email));
+      if (existing) {
+        const [other] = await tx.select({ email: userIdentities.email }).from(userIdentities)
+          .where(and(eq(userIdentities.userId, existing.id), eq(userIdentities.provider, "google")));
+        if (other) throw new AppError(409, "google_other", `Your BillingEase account is connected to a different Google account (${other.email}). Sign in with that one, or with your password.`);
+        await tx.insert(userIdentities).values({ provider: "google", subject: p.sub, userId: existing.id, email: p.email });
+        if (!existing.emailVerifiedAt) await tx.update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, existing.id));
+        return { userId: existing.id, created: false };
+      }
+      const [user] = await tx.insert(users).values({ email: p.email, name: p.name ?? p.email.split("@")[0], passwordHash: null, emailVerifiedAt: new Date() }).returning();
+      await tx.insert(userIdentities).values({ provider: "google", subject: p.sub, userId: user.id, email: p.email });
+      return { userId: user.id, created: true };
+    });
+    return { ...(await startSession(ctx, userId, req.headers["user-agent"])), created };
+  }, limited);
+
+  route(app, auth.signInMethods, ({ ctx }) => methodsFor(ctx, ctx.user.id));
+
+  route(app, auth.linkGoogle, async ({ body, ctx }) => {
+    const p = await googleOrOff(ctx).verify(body);
+    const [known] = await ctx.db.select().from(userIdentities).where(and(eq(userIdentities.provider, "google"), eq(userIdentities.subject, p.sub)));
+    if (known && known.userId !== ctx.user.id) throw new AppError(409, "google_taken", "That Google account already signs in to a different BillingEase account.");
+    if (!known) {
+      const [mine] = await ctx.db.select({ email: userIdentities.email }).from(userIdentities)
+        .where(and(eq(userIdentities.userId, ctx.user.id), eq(userIdentities.provider, "google")));
+      if (mine) throw new AppError(409, "google_other", `You're already connected to ${mine.email}. Disconnect it first.`);
+      await ctx.db.insert(userIdentities).values({ provider: "google", subject: p.sub, userId: ctx.user.id, email: p.email });
+    }
+    return methodsFor(ctx, ctx.user.id);
+  }, limited);
+
+  route(app, auth.unlinkGoogle, async ({ ctx }) => {
+    const m = await methodsFor(ctx, ctx.user.id);
+    if (m.google && !m.hasPassword) throw new AppError(400, "last_method", "Google is the only way you sign in. Set a password first, then you can disconnect Google.");
+    await ctx.db.delete(userIdentities).where(and(eq(userIdentities.userId, ctx.user.id), eq(userIdentities.provider, "google")));
+    return methodsFor(ctx, ctx.user.id);
+  });
+
+  route(app, auth.setPassword, async ({ body, ctx }) => {
+    const [user] = await ctx.db.select({ passwordHash: users.passwordHash }).from(users).where(eq(users.id, ctx.user.id));
+    if (user.passwordHash) throw new AppError(409, "has_password", "You already have a password. Change it instead.");
+    await ctx.db.update(users).set({ passwordHash: await bcrypt.hash(body.password, 10) }).where(eq(users.id, ctx.user.id));
+    return methodsFor(ctx, ctx.user.id);
   }, limited);
 
   route(app, auth.signOut, async ({ ctx }) => {
@@ -79,6 +147,7 @@ export async function authRoutes(app: FastifyInstance) {
 
   route(app, auth.changePassword, async ({ body, ctx }) => {
     const [user] = await ctx.db.select().from(users).where(eq(users.id, ctx.user.id));
+    if (!user.passwordHash) throw new AppError(400, "no_password", "You don't have a password yet. Set one instead.");
     if (!(await bcrypt.compare(body.current, user.passwordHash))) throw new AppError(400, "invalid", "Your current password isn't right.", { current: "Not right" });
     await ctx.db.update(users).set({ passwordHash: await bcrypt.hash(body.password, 10) }).where(eq(users.id, user.id));
     return { ok: true as const };
