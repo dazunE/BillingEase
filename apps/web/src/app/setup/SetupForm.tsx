@@ -43,7 +43,7 @@ const I = {
   spark: "M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2",
 };
 
-export function SetupForm({ initialCountry, ownerName, email }: { initialCountry: Cty | null; ownerName: string; email: string }) {
+export function SetupForm({ initialCountry, ownerName, email, adding = false }: { initialCountry: Cty | null; ownerName: string; email: string; adding?: boolean }) {
   const [state, action, pending] = useActionState(createBusiness, undefined);
   const [a, setA] = useState<Answers>(() => {
     const country = initialCountry ?? "uk";
@@ -175,7 +175,10 @@ export function SetupForm({ initialCountry, ownerName, email }: { initialCountry
       <Backdrop country={a.country} setup />
       <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-5 gap-y-3 px-[clamp(16px,4vw,40px)] pt-5">
         <SetupLogo />
-        <span className="hidden text-sm text-ink2 sm:inline">Signed in as <strong className="font-semibold text-ink">{email}</strong></span>
+        <span className="flex items-center gap-4 text-sm text-ink2">
+          <span className="hidden sm:inline">Signed in as <strong className="font-semibold text-ink">{email}</strong></span>
+          {adding && <Link href="/businesses" className="font-semibold text-ink underline underline-offset-2">Back to your businesses</Link>}
+        </span>
       </div>
 
       <main className="mx-auto flex max-w-[1200px] flex-wrap items-start gap-x-10 gap-y-7 px-[clamp(16px,4vw,40px)] pb-16 pt-7">

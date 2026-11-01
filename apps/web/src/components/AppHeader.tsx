@@ -1,8 +1,9 @@
-import { home, type Business } from "@billingease/contracts";
+import { home, type Business, type Me } from "@billingease/contracts";
 import { rulesFor } from "@billingease/core";
 import Link from "next/link";
 import { Suspense } from "react";
 import { signOut } from "@/app/(auth)/actions";
+import { switchBusiness } from "@/app/businesses/actions";
 import { call } from "@/lib/api";
 import { HeaderSearch } from "./app/HeaderSearch";
 import { MenuCloser } from "./MenuCloser";
@@ -47,7 +48,8 @@ const ROLE: Record<Business["role"], string> = { owner: "Owner", accountant: "Ac
  * New, notifications and the account menu. Where you are, and the three numbers, sit under it
  * in each page's AppCrumbs.
  */
-export async function AppHeader({ userName, email, business }: { userName: string; email: string; business: Business }) {
+export async function AppHeader({ userName, email, business, businesses }: { userName: string; email: string; business: Business; businesses: Me["businesses"] }) {
+  const others = businesses.filter((b) => b.id !== business.id);
   const count = await unread();
   const lk = business.country === "lk";
   const initials = userName.split(/\s+/).map((p) => p[0]).join("").slice(0, 2).toUpperCase();
@@ -60,6 +62,7 @@ export async function AppHeader({ userName, email, business }: { userName: strin
     { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
     { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
     { label: "Apps and API", hint: "Connect an AI assistant or your own software", href: "/app/settings/apps" },
+    { label: "Sign-in methods", hint: "Google and your password", href: "/app/settings/sign-in" },
     { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/features" },
     { label: "Help", hint: "Answers, and talk to a person", href: "/help" },
   ];
@@ -67,10 +70,11 @@ export async function AppHeader({ userName, email, business }: { userName: strin
     <header className="border-b border-line bg-white">
       <div className="mx-auto box-border flex max-w-[1200px] flex-wrap items-center gap-x-5 gap-y-3 px-[clamp(16px,4vw,40px)] py-3">
         <Link href="/app" aria-label="BillingEase home"><Logo /></Link>
-        <span className="hidden min-w-0 items-center gap-2 border-l border-line pl-3.5 text-sm font-semibold text-ink2 min-[1100px]:flex">
+        <Link href="/businesses" title={businesses.length > 1 ? "Switch business" : "Your businesses"} className="hidden min-w-0 items-center gap-2 border-l border-line pl-3.5 text-sm font-semibold text-ink2 no-underline hover:text-ink min-[1100px]:flex">
           <span className="max-w-[200px] truncate">{business.name}</span>
           <span title={`${rulesFor(business.country).name} business`} className={chip}>{COUNTRY_CHIP[business.country]}</span>
-        </span>
+          {businesses.length > 1 && <Icon d="M7 10l5 5 5-5" size={16} />}
+        </Link>
 
         <HeaderSearch
           placeholder={lk ? "Find a customer, tax invoice, supplier or bill" : "Find a customer, invoice, supplier or bill"}
@@ -113,6 +117,24 @@ export async function AppHeader({ userName, email, business }: { userName: strin
                 <span className="flex items-center gap-2 text-[15px] font-bold">{business.name}<span className={chip}>{COUNTRY_CHIP[business.country]}</span></span>
                 <span className="text-[13px] text-muted">{userName} · {ROLE[business.role]}</span>
               </span>
+              {others.length > 0 && (
+                <div className="mb-1 flex flex-col border-b border-surface pb-1.5">
+                  <span className="px-3 pb-1 pt-1 text-xs font-semibold text-muted">Switch to</span>
+                  {others.map((b) => (
+                    <form key={b.id} action={switchBusiness}>
+                      <input type="hidden" name="id" value={b.id} />
+                      <button role="menuitem" className="flex min-h-11 w-full items-center gap-2 rounded-xl px-3 text-left hover:bg-bg">
+                        <span className="truncate text-sm font-semibold">{b.name}</span>
+                        <span className={chip}>{COUNTRY_CHIP[b.country]}</span>
+                      </button>
+                    </form>
+                  ))}
+                </div>
+              )}
+              <Link role="menuitem" href="/businesses" className="flex min-h-12 flex-col justify-center rounded-xl px-3 py-1 hover:bg-bg">
+                <span className="text-sm font-semibold">{others.length > 0 ? "All your businesses" : "Add a business"}</span>
+                <span className="text-xs text-muted">{others.length > 0 ? "Switch, or add another" : "Another company, in any country"}</span>
+              </Link>
               {account.map((a) => (
                 <Link key={a.label} role="menuitem" href={a.href} className="flex min-h-12 flex-col justify-center rounded-xl px-3 py-1 hover:bg-bg">
                   <span className="text-sm font-semibold">{a.label}</span>

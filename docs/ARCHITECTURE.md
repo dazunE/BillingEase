@@ -63,6 +63,15 @@ A business keeps its books in one home currency (GBP, LKR or USD, from its count
 - **PDFs** show a foreign document in its currency (written with the code, e.g. "USD 1,250.00") and its totals in the home currency with the rate underneath, so a UK VAT invoice shows the VAT in sterling.
 - **Bank statements** match amounts only against invoices and bills in the home currency; a payment for a foreign one is recorded from the invoice or bill.
 
+## People, sign-in and several businesses
+
+One person (`users`) can belong to any number of businesses (`memberships`, with a role in each). Each business keeps its own country, currency, books and settings; a business in another country is a separate business, not a setting.
+
+- **Which business**: the web app keeps the chosen one in the `be_business` cookie and sends it as `X-Business-Id`. With one business it can be left out; with several and none chosen, the API answers `pick_business` and the web app shows `/businesses` (pick one, or add another through `/setup`). The header's business name and the account menu switch between them (`switchBusiness`, which only accepts a business in the person's own list; the API checks membership on every call anyway). A new sign-in clears the cookie.
+- **Passwords** are bcrypt hashes in `users.password_hash`, null for someone who has only used Google.
+- **Google** (OpenID Connect, authorization code + PKCE). `GET /auth/google` in the web app makes a state, PKCE verifier and nonce, keeps them in the short-lived `be_google` cookie (path `/auth/google`) and sends the person to Google; `/auth/google/callback` checks the state and hands the code to `POST /auth/google`. The API swaps the code with Google's token endpoint using the client secret and checks the ID token's issuer, audience, expiry and nonce (`services/google.ts`; the token comes straight from Google over TLS, so its signature isn't checked separately, per OIDC Core 3.1.3.7). Then: a Google account seen before (`user_identities`, by Google's `sub`) signs in to its person; otherwise a **verified** Google email that matches an account is linked to it; otherwise a new account is made and the person goes on to set up a business. An unverified Google email is refused.
+- **Account → Sign-in methods** connects or disconnects Google (`/auth/google?intent=link`, `POST /auth/google/link`, `DELETE /auth/google`) and sets or changes the password. A person always keeps one way in: Google can't be disconnected without a password. One Google account belongs to one person, and a person has at most one.
+
 ## Branding
 
 A business chooses how its invoices, quotes and credit notes look in **Account → Invoice branding** (owner only): a layout (`classic`, `modern` with a band of colour, or `minimal`), a typeface (DM Sans, Source Serif 4 or JetBrains Mono, bundled from `@fontsource` so PDFs need no network), its colour (`accent`), a footer line, and a logo.

@@ -30,6 +30,8 @@ export type Config = {
     monthlyBudgetMicros: number;
   };
   sessionDays: number;
+  /** Sign in with Google (OpenID Connect). Null unless GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are set. */
+  google: { clientId: string; clientSecret: string } | null;
   /** The public API and MCP server: calls per business per day, and per token per minute. */
   api: { dailyQuota: number; perMinute: number };
   /**
@@ -71,6 +73,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       monthlyBudgetMicros: Math.round(Number(env.AI_MONTHLY_BUDGET_USD ?? 5) * 1_000_000),
     },
     sessionDays: Number(env.SESSION_DAYS ?? 30),
+    google: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } : null,
     api: { dailyQuota: Number(env.API_DAILY_QUOTA ?? 5000), perMinute: Number(env.API_RATE_PER_MINUTE ?? 120) },
     fx: { enabled: env.FX_RATES !== "off" && mode !== "test" },
   };

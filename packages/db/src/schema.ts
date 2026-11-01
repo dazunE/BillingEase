@@ -46,7 +46,8 @@ export const users = pgTable("users", {
   id: id(),
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
-  passwordHash: text("password_hash").notNull(),
+  // Null for someone who has only ever signed in with Google.
+  passwordHash: text("password_hash"),
   emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
   createdAt: createdAt(),
 });
@@ -62,6 +63,27 @@ export const sessions = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("sessions_user").on(t.userId)],
+);
+
+/**
+ * Other ways a person signs in (Google today). `subject` is the provider's stable id for the
+ * person (Google's `sub`), never the email, which can change.
+ */
+export const userIdentities = pgTable(
+  "user_identities",
+  {
+    provider: text("provider").$type<"google">().notNull(),
+    subject: text("subject").notNull(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.provider, t.subject] }),
+    // One Google account per person.
+    uniqueIndex("user_identities_user_provider").on(t.userId, t.provider),
+    check("user_identities_provider", sql`${t.provider} in ('google')`),
+  ],
 );
 
 export const passwordResets = pgTable("password_resets", {

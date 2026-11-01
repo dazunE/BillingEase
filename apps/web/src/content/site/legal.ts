@@ -39,7 +39,8 @@ const list = (...items: ([string, string] | string)[]): LegalBlock => ({ list: i
 
 export const COOKIE_ROWS = [
   { name: "be_session", what: "Keeps you signed in to the app. Set when you sign in, removed when you sign out.", kind: "Necessary", keep: "Up to 30 days" },
-  { name: "be_business", what: "Remembers which business you’re working in.", kind: "Necessary", keep: "Until you close the browser" },
+  { name: "be_business", what: "Remembers which business you’re working in.", kind: "Necessary", keep: "Until you sign out, or a year" },
+  { name: "be_google", what: "Checks that a Google sign-in coming back is the one you started.", kind: "Necessary", keep: "10 minutes" },
   { name: "be_site_country", what: "Remembers whether you chose the UK or Sri Lanka site.", kind: "Necessary", keep: "1 year" },
   { name: "be_cookies", what: "Remembers your cookie choice, so we don’t ask again.", kind: "Necessary", keep: "1 year" },
 ];

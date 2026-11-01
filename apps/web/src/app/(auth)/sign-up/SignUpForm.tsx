@@ -5,6 +5,7 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui";
 import { AuthFrame, AuthTitle, FormError } from "@/components/auth/Frame";
 import { AuthField, CountrySelect, FieldError, PasswordField } from "@/components/auth/fields";
+import { GoogleButton, OrDivider } from "@/components/auth/GoogleButton";
 import { HowItWorks } from "@/components/auth/panels";
 import type { Cty } from "@/components/auth/country";
 import { signUp } from "../actions";
@@ -15,7 +16,7 @@ const COUNTRIES = {
   us: { name: "United States", currency: "Dollars (USD)", line: "IRS · LLCs" },
 };
 
-export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
+export function SignUpForm({ initialCountry, google }: { initialCountry?: Cty; google?: boolean }) {
   const [state, action, pending] = useActionState(signUp, undefined);
   const v = state?.values ?? {};
   const e = state?.errors ?? {};
@@ -35,6 +36,19 @@ export function SignUpForm({ initialCountry }: { initialCountry?: Cty }) {
         error={e.country}
         hint="It sets your home currency, tax year and tax rules, and can’t change later. You can still quote and invoice clients abroad in their currency."
       />
+      {google && (
+        <>
+          <div className="flex flex-col gap-2">
+            <GoogleButton href={`/auth/google${country ? `?country=${country}` : ""}`} label="Sign up with Google" />
+            <p className="text-center text-[13px] leading-normal text-muted">
+              By continuing with Google you agree to the{" "}
+              <Link href="/legal/terms" target="_blank" rel="noopener" className="font-semibold text-ink underline underline-offset-2">Terms</Link> and{" "}
+              <Link href="/legal/privacy" target="_blank" rel="noopener" className="font-semibold text-ink underline underline-offset-2">Privacy notice</Link>.
+            </p>
+          </div>
+          <OrDivider />
+        </>
+      )}
       <AuthField label="Your name" name="name" autoComplete="name" defaultValue={v.name} error={e.name} required />
       <AuthField label="Work email" name="email" type="email" autoComplete="email" defaultValue={v.email} error={e.email} required
         hint="Customers see this address on your invoices. You can change it later." />

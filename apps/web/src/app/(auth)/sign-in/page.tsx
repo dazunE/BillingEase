@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AuthFrame } from "@/components/auth/Frame";
 import { JustAsYouLeft } from "@/components/auth/panels";
 import { pageCountry } from "@/components/auth/pageCountry";
+import { GOOGLE_ERRORS, googleEnabled } from "@/lib/google";
 import { SignInForm } from "./SignInForm";
 
 export const metadata: Metadata = {
@@ -10,15 +11,15 @@ export const metadata: Metadata = {
   description: "Sign in to BillingEase to see where your three numbers stand today.",
 };
 
-export default async function SignInPage({ searchParams }: { searchParams: Promise<{ next?: string; country?: string }> }) {
-  const { next, country: c } = await searchParams;
+export default async function SignInPage({ searchParams }: { searchParams: Promise<{ next?: string; country?: string; google?: string }> }) {
+  const { next, country: c, google } = await searchParams;
   const country = (await pageCountry(c)) ?? "uk";
   return (
     <AuthFrame
       country={country}
       variant="signin"
       topLink={<>New here? <Link href="/sign-up" className="font-semibold text-ink underline underline-offset-2">Create an account</Link></>}
-      card={<SignInForm next={next} />}
+      card={<SignInForm next={next} google={googleEnabled()} googleError={google ? GOOGLE_ERRORS[google] ?? GOOGLE_ERRORS.google_failed : undefined} />}
       aside={<JustAsYouLeft country={country} />}
     />
   );
