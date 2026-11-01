@@ -19,7 +19,7 @@ export default async function BrandingPage() {
   const net1 = unit * 2, net2 = Math.round(unit / 2);
   const vat1 = vat ? Math.round((net1 * vat.bps) / 10000) : 0, vat2 = vat ? Math.round((net2 * vat.bps) / 10000) : 0;
   const sample: PreviewData = {
-    kind: "invoice", country: b.country, currency: b.currency, title: invoiceTitle(b.country, b.vatRegistered), number: `${b.invoicePrefix}0042`, status: "sent",
+    kind: "invoice", country: b.country, currency: b.currency, title: invoiceTitle(b.country, b.vatRegistered, b.titleStyle), number: `${b.invoicePrefix}0042`, status: "sent",
     seller: { name: b.name, address: addressOf(b), email: b.email, phone: b.phone, taxId: lk ? b.taxId : null, vatNumber: b.vatRegistered ? b.vatNumber : null },
     buyer: { name: lk ? "Kandyan Spice Co" : b.country === "us" ? "Harbor Labs Inc" : "Kirkstall Brewing Co", address: lk ? "45 Peradeniya Rd, Kandy" : b.country === "us" ? "200 Main St, Boston, MA" : "Broad Lane, Leeds LS5 3RU" },
     dates: [["Invoice date", formatDate(now, { year: true })], ["Due date", formatDate(now, { year: true })]],

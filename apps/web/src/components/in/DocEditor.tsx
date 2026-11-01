@@ -14,7 +14,7 @@ import type { PreviewBrand } from "./brand";
 export type { LineState };
 
 export type EditorBusiness = {
-  country: CountryCode; currency: Currency; name: string; vatRegistered: boolean; ssclRegistered: boolean; termsDays: number;
+  country: CountryCode; currency: Currency; name: string; vatRegistered: boolean; ssclRegistered: boolean; termsDays: number; titleStyle: "tax" | "plain";
   address: string; email: string | null; phone: string | null; taxId: string | null; vatNumber: string | null; paymentDetails: string | null; invoiceNote: string | null;
   brand?: PreviewBrand;
 };
@@ -148,7 +148,7 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
   /** A price-list item (priced in the home currency) at the document's rate. */
   const itemLine = (it: Item) => (foreign && rateOk ? lineFromItem(it, decimal(convertMinor(it.unitPrice, b.currency, currency, invertRate(rateOk)), digits)) : lineFromItem(it));
 
-  const title = mode === "quote" ? "Quote" : invoiceTitle(b.country, b.vatRegistered);
+  const title = mode === "quote" ? "Quote" : invoiceTitle(b.country, b.vatRegistered, b.titleStyle);
   const buyer = customer ?? (customerId === "__new" && nc.name ? { name: nc.name, email: nc.email || null, address: null, taxId: nc.taxId || null, vatNumber: nc.vatNumber || null } : null);
   const preview: PreviewData = {
     kind: mode === "quote" ? "quote" : "invoice", country: b.country, currency, title,

@@ -85,7 +85,7 @@ export function addressOf(b: BusinessRow) {
 export function snapshotFor(b: BusinessRow, c: CustomerDb, vatRegistered: boolean): InvoiceSnapshot {
   const lk = b.country === "lk";
   return {
-    title: invoiceTitle(b.country, vatRegistered),
+    title: invoiceTitle(b.country, vatRegistered, b.titleStyle),
     seller: {
       name: b.name, legalName: b.legalName, address: addressOf(b),
       taxId: lk ? b.taxId : null, vatNumber: vatRegistered ? b.vatNumber : null, email: b.email, phone: b.phone,
@@ -159,7 +159,7 @@ export async function invoiceDetail(db: Exec, b: BusinessRow, id: string): Promi
   ]);
   return {
     ...toRow(r),
-    title: i.kind === "credit_note" ? "Credit note" : (i.snapshot?.title ?? invoiceTitle(b.country, b.vatRegistered)),
+    title: i.kind === "credit_note" ? "Credit note" : (i.snapshot?.title ?? invoiceTitle(b.country, b.vatRegistered, b.titleStyle)),
     supplyDate: i.supplyDate, reference: i.reference, notes: i.notes, vatRegistered: i.status === "draft" ? b.vatRegistered : i.vatRegistered,
     snapshot: i.snapshot ?? null,
     customer: { id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber, currency: c.currency },

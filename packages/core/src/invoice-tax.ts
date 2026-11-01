@@ -72,8 +72,8 @@ export function computeInvoice(inputs: TaxLineInput[], ctx: TaxContext): Invoice
   return { lines, net: total("net"), sscl: total("sscl"), vat: total("vat"), total: total("total"), vatByRate: [...byRate.values()] };
 }
 
-/** The document title: "Invoice", "VAT invoice" (UK) or "Tax Invoice" (Sri Lanka). */
-export function invoiceTitle(country: CountryCode, vatRegistered: boolean): string {
+/** The document title: "Invoice", "VAT invoice" (UK) or "Tax Invoice" (Sri Lanka); a registered business can choose plain "Invoice" (`style`). */
+export function invoiceTitle(country: CountryCode, vatRegistered: boolean, style: "tax" | "plain" = "tax"): string {
   const w = rulesFor(country).wording;
-  return vatRegistered ? w.vatInvoiceTitle : w.invoiceTitle;
+  return vatRegistered && style === "tax" ? w.vatInvoiceTitle : w.invoiceTitle;
 }

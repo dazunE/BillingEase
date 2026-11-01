@@ -8,12 +8,14 @@ export type PreviewBrand = {
   footer: string | null;
   /** The uploaded logo, or null to show the business name. */
   logoUrl: string | null;
+  /** The logo's height in px (24–96); the PDF uses the same number in points. Left out: 48. */
+  logoSize?: number;
 };
 
 export const LOGO_URL = "/app/settings/branding/logo";
 
-export function brandOf(b: Pick<Business, "template" | "font" | "accent" | "footer" | "hasLogo" | "logoVersion">): PreviewBrand {
-  return { template: b.template, font: b.font, accent: b.accent, footer: b.footer, logoUrl: b.hasLogo ? `${LOGO_URL}?v=${b.logoVersion ?? ""}` : null };
+export function brandOf(b: Pick<Business, "template" | "font" | "accent" | "footer" | "hasLogo" | "logoVersion" | "logoSize">): PreviewBrand {
+  return { template: b.template, font: b.font, accent: b.accent, footer: b.footer, logoUrl: b.hasLogo ? `${LOGO_URL}?v=${b.logoVersion ?? ""}` : null, logoSize: b.logoSize };
 }
 
 export const FONT_STACKS: Record<PreviewBrand["font"], string> = {
