@@ -38,7 +38,7 @@ function sectionOf(path: string): SectionKey {
 
 const startsWith = (path: string, prefix: string) => path === prefix || path.startsWith(prefix + "/");
 
-export function BottomIsland({ country, vatRegistered, ssclRegistered = false, counts }: { country: "uk" | "lk" | "us"; vatRegistered: boolean; ssclRegistered?: boolean; counts: IslandCounts }) {
+export function BottomIsland({ country, vatRegistered, ssclRegistered = false, landlord = false, counts }: { country: "uk" | "lk" | "us"; vatRegistered: boolean; ssclRegistered?: boolean; landlord?: boolean; counts: IslandCounts }) {
   const path = usePathname() ?? "/app";
   const current = sectionOf(path);
   // ← shows the sections on this page only: the next page shows its own section again.
@@ -53,7 +53,7 @@ export function BottomIsland({ country, vatRegistered, ssclRegistered = false, c
     { key: "in", label: "Coming in", href: "/app/in", icon: ICON.in, on: "bg-violet text-ink", chip: "bg-violet text-ink", badge: counts.lateInvoices, badgeLabel: `${counts.lateInvoices} late invoices` },
     { key: "out", label: "Going out", href: "/app/out", icon: ICON.out, on: "bg-going text-ink", chip: "bg-going text-ink", badge: counts.billsDueSoon, badgeLabel: `${counts.billsDueSoon} to pay within a week` },
     { key: "keep", label: "Yours to keep", short: "To keep", href: "/app/keep", icon: ICON.keep, on: "bg-white text-ink", chip: "bg-[#2C2935] text-violet", badge: counts.toCheck, badgeLabel: `${counts.toCheck} waiting for you to check` },
-    { key: "acct", label: lk ? "Practitioner" : "Accountant", short: lk ? "Tax help" : "Accountant", href: "/app/ask", icon: ICON.acct, on: "bg-white text-ink", chip: "bg-[#2C2935] text-white" },
+    { key: "acct", label: lk ? "Practitioner" : "Accountant", short: lk ? "Tax help" : "Accountant", href: "/app/accountant", icon: ICON.acct, on: "bg-white text-ink", chip: "bg-[#2C2935] text-white" },
     { key: "biz", label: "Business", href: "/app/settings/business", icon: ICON.biz, on: "bg-white text-ink", chip: "bg-[#2C2935] text-white" },
   ];
 
@@ -71,6 +71,8 @@ export function BottomIsland({ country, vatRegistered, ssclRegistered = false, c
       { href: "/app/out/monthly", label: "Every month" },
       { href: "/app/out/suppliers", label: "Suppliers" },
       { href: "/app/out/payroll", label: country === "uk" ? "Payroll records" : "Payroll" },
+      ...(country === "uk" ? [{ href: "/app/out/mileage", label: "Mileage" }] : []),
+      ...(country === "uk" && landlord ? [{ href: "/app/out/properties", label: "Properties" }] : []),
     ],
     keep: [
       ...(country === "uk" ? [{ href: "/app/keep/quarters", label: "Quarters" }] : []),
@@ -82,8 +84,9 @@ export function BottomIsland({ country, vatRegistered, ssclRegistered = false, c
       { href: "/app/check", label: "For you to check", badge: counts.toCheck, badgeLabel: `${counts.toCheck} waiting` },
     ],
     acct: [
+      { href: "/app/accountant", label: lk ? "Your practitioner" : "Your accountant" },
+      { href: "/app/accountant/view", label: "What they see" },
       { href: "/app/ask", label: "Ask" },
-      { href: "/app/settings/people", label: lk ? "Invite your practitioner" : "Invite your accountant" },
     ],
     biz: [
       { href: "/app/settings/business", label: "Profile" },
@@ -151,7 +154,10 @@ export function BottomIsland({ country, vatRegistered, ssclRegistered = false, c
           </Link>
           <span aria-hidden className="mx-1 h-6 w-px shrink-0 bg-[#3A3644]" />
           {items.map((p) => {
-            const lit = startsWith(path, p.href) || (p.match ?? []).some((m) => startsWith(path, m));
+            // The most specific page that matches is the lit one (/app/accountant/view isn't also /app/accountant).
+            const matches = (x: Page) => startsWith(path, x.href) || (x.match ?? []).some((m) => startsWith(path, m));
+            const best = items.filter(matches).sort((a, c) => c.href.length - a.href.length)[0];
+            const lit = best === p;
             return (
               <Link key={p.href} href={p.href} aria-current={lit ? "page" : undefined} className={cx(item, lit ? "bg-white text-ink" : off)}>
                 <span>{p.label}</span>

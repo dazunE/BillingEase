@@ -386,6 +386,103 @@ export const payrollDues = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// UK property, mileage, and working with your accountant
+
+/** A home the business lets (UK). Its rent and costs are kept apart from the trade's. */
+export const properties = pgTable(
+  "properties",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    address: text("address"),
+    // The owner's share, in percent: rent and costs are entered at their full amount and taken at this share.
+    sharePct: integer("share_pct").notNull().default(100),
+    monthlyRent: money("monthly_rent").notNull().default(0),
+    rentDay: integer("rent_day"),
+    agent: text("agent"),
+    archived: boolean("archived").notNull().default(false),
+    createdAt: createdAt(),
+  },
+  (t) => [index("properties_business").on(t.businessId), check("properties_share", sql`${t.sharePct} between 1 and 100`)],
+);
+
+/** Rent received and costs paid for a property, each posted to the ledger. */
+export const propertyEntries = pgTable(
+  "property_entries",
+  {
+    id: id(),
+    businessId: businessId(),
+    propertyId: uuid("property_id").notNull().references(() => properties.id, { onDelete: "cascade" }),
+    kind: text("kind").$type<"rent" | "cost">().notNull(),
+    on: date("on_date").notNull(),
+    description: text("description").notNull(),
+    payee: text("payee"),
+    // A UK property category (p-running, p-repairs, p-finance ...) for a cost.
+    categoryId: text("category_id"),
+    // The full amount; the owner's share of it is what's posted.
+    amount: money("amount").notNull(),
+    share: money("share").notNull(),
+    method: text("method").notNull(),
+    entryId: uuid("entry_id"),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("property_entries_property").on(t.propertyId, t.on), check("property_entries_kind", sql`${t.kind} in ('rent','cost')`)],
+);
+
+/** A business trip in your own vehicle, claimed at HMRC's flat rate per mile. */
+export const trips = pgTable(
+  "trips",
+  {
+    id: id(),
+    businessId: businessId(),
+    on: date("on_date").notNull(),
+    fromPlace: text("from_place").notNull(),
+    toPlace: text("to_place").notNull(),
+    purpose: text("purpose"),
+    // Tenths of a mile.
+    miles: integer("miles").notNull(),
+    vehicle: text("vehicle").$type<"car" | "motorcycle" | "bicycle">().notNull().default("car"),
+    amount: money("amount").notNull(),
+    entryId: uuid("entry_id"),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("trips_business_date").on(t.businessId, t.on), check("trips_vehicle", sql`${t.vehicle} in ('car','motorcycle','bicycle')`), check("trips_miles", sql`${t.miles} > 0`)],
+);
+
+/** Something the accountant asks the owner for, open until marked done. */
+export const practiceRequests = pgTable(
+  "practice_requests",
+  {
+    id: id(),
+    businessId: businessId(),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    title: text("title").notNull(),
+    body: text("body"),
+    link: text("link"),
+    status: text("status").$type<"open" | "done">().notNull().default("open"),
+    doneAt: timestamp("done_at", { withTimezone: true }),
+    doneBy: uuid("done_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("practice_requests_business").on(t.businessId, t.status), check("practice_requests_status", sql`${t.status} in ('open','done')`)],
+);
+
+export const practiceMessages = pgTable(
+  "practice_messages",
+  {
+    id: id(),
+    businessId: businessId(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    body: text("body").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("practice_messages_business").on(t.businessId, t.createdAt)],
+);
+
+// ---------------------------------------------------------------------------
 // Coming in
 
 export const customers = pgTable(

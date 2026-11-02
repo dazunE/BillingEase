@@ -11,6 +11,7 @@ import { homeRoutes } from "./home";
 import { peopleRoutes } from "./people";
 import { bookRoutes } from "./books";
 import { payrollRoutes } from "./payroll";
+import { practiceRoutes } from "./practice";
 import { publicRoutes } from "../public";
 
 /** Every area registers its endpoints here. */
@@ -20,6 +21,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await peopleRoutes(app);
   await bookRoutes(app);
   await payrollRoutes(app);
+  await practiceRoutes(app);
   await comingInRoutes(app);
   await goingOutRoutes(app);
   await homeRoutes(app);

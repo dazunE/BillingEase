@@ -1,5 +1,5 @@
 import type { Exec } from "@billingease/db";
-import { billPayments, bills, expenses, invoices, payRuns, payrollDues, receipts } from "@billingease/db/schema";
+import { billPayments, bills, expenses, invoices, payRuns, payrollDues, receipts, trips } from "@billingease/db/schema";
 import { and, between, eq, gt, isNull, lt, ne, sql } from "drizzle-orm";
 
 const n = (v: unknown) => Number(v ?? 0);
@@ -56,6 +56,9 @@ export async function goingOut(db: Exec, businessId: string, from: string, to: s
     .where(and(eq(payrollDues.businessId, businessId), isNull(payrollDues.paidOn), between(payRuns.payDate, from, to)));
   const [pd] = await db.select({ sum: sql<string>`coalesce(sum(${payrollDues.amount}), 0)`, count: sql<string>`count(*)` }).from(payrollDues)
     .where(and(eq(payrollDues.businessId, businessId), isNull(payrollDues.paidOn), sql`${payrollDues.dueOn} <= ${soon}`));
-  const paid = n(e.sum) + n(p.sum) + n(pp.sum), toPay = n(o.sum) + n(po.sum);
+  // Mileage claimed at the flat rate: a cost on the day of the trip.
+  const [mi] = await db.select({ sum: sql<string>`coalesce(sum(${trips.amount}), 0)` }).from(trips)
+    .where(and(eq(trips.businessId, businessId), isNull(trips.voidedAt), between(trips.on, from, to)));
+  const paid = n(e.sum) + n(p.sum) + n(pp.sum) + n(mi.sum), toPay = n(o.sum) + n(po.sum);
   return { paid, toPay, total: paid + toPay, dueSoon: n(d.sum) + n(pd.sum), dueSoonCount: n(d.count) + n(pd.count) };
 }
