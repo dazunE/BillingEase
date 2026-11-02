@@ -132,7 +132,8 @@ A business chooses how its invoices, quotes and credit notes look in **Account â
 
 ## Email, files, Ask
 
-- **Email** is queued in `outbox_emails` inside the transaction that caused it and delivered after commit. Without `POSTMARK_TOKEN` it is kept, never sent.
+- **Email** is queued in `outbox_emails` inside the transaction that caused it and delivered after commit. It goes out over SMTP when `SMTP_HOST` is set (e.g. Stalwart), else through Postmark when `POSTMARK_TOKEN` is set; with neither it is kept, never sent.
+- **Files** (logos, receipts, attachments, statements) go through the `Storage` interface: local disk under `STORAGE_DIR`, or a private bucket on any S3-compatible store when `S3_BUCKET` is set. Keys are `<business id>/<uuid><ext>` in both. See [DEPLOY-DOKPLOY.md](DEPLOY-DOKPLOY.md).
 - **Files** (attachments) go through the `Storage` interface: local disk now, S3-compatible later.
 - **AI** runs on Gemini through Vertex AI, with agents built on Google's Agent Development Kit (`@google/adk`, pinned). Everything ADK touches sits in `apps/api/src/agents/platform`:
   - `models.ts`: a model per tier (`deep`, `fast`, `lite`), set in config because Google retires versions; tests pass a scripted model.

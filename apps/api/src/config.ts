@@ -11,11 +11,20 @@ export type Config = {
   /** Shared secret the web server sends so only it can call the API (optional in development). */
   internalKey: string | null;
   email: {
-    provider: "outbox" | "postmark";
+    provider: "outbox" | "postmark" | "smtp";
     from: string;
     postmarkToken: string | null;
+    /** Any SMTP server that takes a login on its submission port (e.g. Stalwart). */
+    smtp: { host: string; port: number; secure: boolean; user: string | null; password: string | null } | null;
   };
-  storage: { dir: string };
+  /**
+   * Attachment files. On local disk under `dir`, unless S3_BUCKET is set: then in that bucket on
+   * any S3-compatible store (AWS S3, MinIO, Silo, Garage…), under an optional key prefix.
+   */
+  storage: {
+    dir: string;
+    s3: { endpoint: string | null; region: string; bucket: string; accessKeyId: string; secretAccessKey: string; forcePathStyle: boolean; prefix: string } | null;
+  };
   /**
    * Gemini on Vertex AI, for Ask and the agents. Null when GOOGLE_CLOUD_PROJECT isn't set:
    * Ask and the agents then say they aren't set up. Model IDs are config, not code, because
@@ -52,11 +61,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     appUrl: (env.APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     internalKey,
     email: {
-      provider: env.POSTMARK_TOKEN ? "postmark" : "outbox",
+      provider: env.SMTP_HOST ? "smtp" : env.POSTMARK_TOKEN ? "postmark" : "outbox",
       from: env.EMAIL_FROM ?? "BillingEase <hello@billingease.local>",
-      postmarkToken: env.POSTMARK_TOKEN ?? null,
+      postmarkToken: env.POSTMARK_TOKEN || null,
+      smtp: env.SMTP_HOST ? smtp(env) : null,
     },
-    storage: { dir: env.STORAGE_DIR ?? ".data/files" },
+    storage: { dir: env.STORAGE_DIR ?? ".data/files", s3: env.S3_BUCKET ? s3(env) : null },
     ai: {
       vertex: env.GOOGLE_CLOUD_PROJECT ? { project: env.GOOGLE_CLOUD_PROJECT, location: env.GOOGLE_CLOUD_LOCATION ?? "europe-west2" } : null,
       models: {
@@ -76,6 +86,30 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     google: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } : null,
     api: { dailyQuota: Number(env.API_DAILY_QUOTA ?? 5000), perMinute: Number(env.API_RATE_PER_MINUTE ?? 120) },
     fx: { enabled: env.FX_RATES !== "off" && mode !== "test" },
+  };
+}
+
+/** SMTP_PORT defaults to 465 (TLS from the start); 587 and 25 use STARTTLS unless SMTP_SECURE=true. */
+function smtp(env: NodeJS.ProcessEnv): NonNullable<Config["email"]["smtp"]> {
+  const port = Number(env.SMTP_PORT || 465);
+  if (!Number.isInteger(port) || port <= 0) throw new Error("SMTP_PORT must be a port number.");
+  const secure = env.SMTP_SECURE ? env.SMTP_SECURE === "true" : port === 465;
+  return { host: env.SMTP_HOST!, port, secure, user: env.SMTP_USER || null, password: env.SMTP_PASSWORD || null };
+}
+
+function s3(env: NodeJS.ProcessEnv): NonNullable<Config["storage"]["s3"]> {
+  const accessKeyId = env.S3_ACCESS_KEY_ID, secretAccessKey = env.S3_SECRET_ACCESS_KEY;
+  if (!accessKeyId || !secretAccessKey) throw new Error("S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY must be set with S3_BUCKET.");
+  const prefix = (env.S3_PREFIX ?? "").replace(/^\/+|\/+$/g, "");
+  return {
+    endpoint: env.S3_ENDPOINT ? env.S3_ENDPOINT.replace(/\/$/, "") : null,
+    region: env.S3_REGION || "us-east-1",
+    bucket: env.S3_BUCKET!,
+    accessKeyId,
+    secretAccessKey,
+    // Self-hosted stores usually serve buckets at <endpoint>/<bucket>, not <bucket>.<endpoint>.
+    forcePathStyle: env.S3_FORCE_PATH_STYLE ? env.S3_FORCE_PATH_STYLE !== "false" : !!env.S3_ENDPOINT,
+    prefix: prefix ? prefix + "/" : "",
   };
 }
 
