@@ -97,7 +97,7 @@ export function BrandingForm({ b, sample, canEdit }: { b: Business; sample: Prev
     on ? "border-ink bg-tint" : "border-line bg-white hover:border-input");
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(340px,460px)]">
+    <div className="flex min-w-0 flex-col gap-6">
       <div className="flex min-w-0 flex-col gap-5">
         <section className="flex flex-col gap-4 rounded-3xl border border-line bg-white p-[clamp(16px,3vw,28px)]" aria-labelledby="logo-h">
           <h2 id="logo-h" className="text-[20px] font-bold">Logo</h2>
@@ -213,7 +213,7 @@ export function BrandingForm({ b, sample, canEdit }: { b: Business; sample: Prev
         </form>
       </div>
 
-      <aside className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-6" aria-label="Preview">
+      <aside className="flex min-w-0 flex-col gap-3" aria-label="Preview">
         <div className="rounded-3xl bg-surface p-3">
           <DocPreview d={{ ...sample, title: invoiceTitle(b.country, b.vatRegistered, titleStyle), brand }} compact />
           <p className="pt-2 text-center text-xs text-muted">A sample invoice in your branding · quotes and credit notes match</p>

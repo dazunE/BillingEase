@@ -16,10 +16,33 @@ export type GoogleAttempt = {
   country: string | null;
 };
 
-/** Where Google sends people back. Must be listed exactly in the Google Cloud console. */
-export function googleRedirectUri(origin: string) {
-  return `${(process.env.APP_URL ?? origin).replace(/\/$/, "")}/auth/google/callback`;
+/**
+ * The address people open the app at, e.g. https://billingease.app. Behind a proxy or in a
+ * container the request's own URL is the internal one (http://0.0.0.0:3000, a service name), which
+ * neither Google nor the browser can use, so APP_URL comes first, then the proxy's forwarded host.
+ */
+export function publicOrigin(req: { headers: Headers; nextUrl: { origin: string } }) {
+  if (process.env.APP_URL) return process.env.APP_URL.replace(/\/$/, "");
+  const host = req.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  if (host) {
+    const proto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() || "https";
+    return `${proto}://${host}`;
+  }
+  return req.nextUrl.origin;
 }
+
+/**
+ * Where Google sends the browser back: this web app's callback, on the public address. (Not the
+ * API: the browser can't reach it, and the web app hands the code to the API itself.) It must be
+ * listed exactly, character for character, under the OAuth client's "Authorised redirect URIs"
+ * in the Google Cloud console. GOOGLE_REDIRECT_URI overrides it when the two must differ.
+ */
+export function googleRedirectUri(req: { headers: Headers; nextUrl: { origin: string } }) {
+  return (process.env.GOOGLE_REDIRECT_URI || `${publicOrigin(req)}/auth/google/callback`).trim();
+}
+
+/** A path on the public address, for redirects after Google. */
+export const publicUrl = (path: string, req: { headers: Headers; nextUrl: { origin: string } }) => new URL(path, publicOrigin(req) + "/");
 
 /** Only same-site paths, so a crafted link can't send people elsewhere after sign-in. */
 export function safeNext(next: string | null | undefined, fallback: string) {
