@@ -58,6 +58,7 @@ export default async function KeepPage({ searchParams }: { searchParams: Promise
     ...(business.country === "uk" ? [{ href: "/app/keep/quarters", name: "Quarters", desc: "Making Tax Digital updates", icon: I.cal, status: card?.kind === "quarter" ? filingStatus : null }] : []),
     ...((lk && (business.vatRegistered || business.ssclRegistered)) || (business.country === "uk" && business.vatRegistered)
       ? [{ href: "/app/keep/tax-periods", name: lk ? "VAT and SSCL" : "VAT summary", desc: lk ? "Month by month, for the IRD return" : "Per VAT quarter, for your accountant", icon: I.percent, status: card?.kind === "vat-month" ? filingStatus : null }] : []),
+    { href: "/app/out/payroll", name: lk ? "Payroll" : "Payroll records", desc: lk ? "EPF, ETF, APIT and payslips" : "Pay runs from your payroll software", icon: I.people, status: null },
     { href: "/app/keep/reports", name: "Reports", desc: "Profit and loss, balance sheet", icon: I.chart, status: null as string | null },
     { href: "/app/keep/year-end", name: "Tax and year-end", desc: `What your ${practitioner} needs for the year`, icon: I.flag, status: null },
     { href: "/app/statements", name: "Bank check", desc: "Upload a statement and match it", icon: I.bank, status: null },

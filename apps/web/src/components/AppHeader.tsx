@@ -37,6 +37,9 @@ function verbs(b: Business): Item[] {
     { label: "Record an expense", hint: lk ? "Already paid: cash, cheque or transfer" : b.country === "us" ? "Already paid, in a Schedule C line" : "Already paid, in an HMRC category", href: "/app/out#expense", icon: ICONS.bill, tint: "bg-going-tint" },
     { label: "Enter a bill", hint: "Something you’ll pay later", href: "/app/out/bills/new", icon: BILL, tint: "bg-going-tint" },
     { label: "Write a quote", hint: "A price before you start", href: "/app/in/quotes/new", icon: ICONS.doc, tint: "bg-tint" },
+    lk
+      ? { label: "Run payroll", hint: "EPF, ETF and APIT worked out", href: "/app/out/payroll", icon: ICONS.people, tint: "bg-going-tint" }
+      : { label: "Enter a pay run", hint: "From your payroll software", href: "/app/out/payroll", icon: ICONS.people, tint: "bg-going-tint" },
     { label: "Add a customer", hint: "Name and email is enough", href: "/app/in/customers#new", icon: ICONS.people, tint: "bg-tint" },
   ];
 }

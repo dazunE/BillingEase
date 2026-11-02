@@ -91,6 +91,15 @@ Under **Yours to keep** (`/app/keep/*`); the API is `/books/*` (`services/books.
 - **Marking a period sent** (`POST /books/locks`, owner or accountant) writes a `locked_periods` row; the database then refuses any entry dated inside it. Only a period that has ended and is one of the business's quarters, VAT periods or tax years can be locked, and once only.
 - **Tax and year-end** puts the year's profit and loss, the tax estimate and its payments, the quarters' states and the checks together, and closes the year once it has ended.
 
+## Payroll
+
+`/app/out/payroll`; the API is `/payroll/*` (`routes/payroll.ts`), the rules are `payroll.ts` in core (`PAYROLL_RULES`, marked unverified like the other country figures).
+
+- **Sri Lanka works payroll out.** Each person has a monthly basic pay and fixed allowances (each marked for EPF or not). `lkPay` gives earnings, EPF 8% (employee) and 12% (employer) and ETF 3% on basic plus EPF-liable allowances (overtime left out), APIT from the monthly table with Rs 150,000 tax-free, and net pay. A run's lines are a snapshot, so a payslip never changes.
+- **The UK keeps records.** Each run's figures (gross, PAYE, employee and employer NI, employee and employer pension) are typed from the payroll software's summary; BillingEase doesn't calculate payroll or report to HMRC. `ukCheck` is only a rough sense check.
+- **Runs** are drafts until approved (owner or accountant). Approving posts one entry on pay day: Dr staff costs (gross + the employer's contributions) · Cr 2300 net pay owed · Cr 2310 payroll tax owed (APIT, or PAYE and both NIs) · Cr 2320 contributions owed (EPF, ETF, pensions). It also lists what's owed in `payroll_dues`: net pay on pay day; in Sri Lanka APIT by the 15th of the next month and EPF and ETF by its last working day; in the UK PAYE, NI and pension by the 22nd after the tax month (6th to 5th). Marking one paid posts Dr the liability · Cr bank (or cash or card).
+- **Going out** counts payroll like bills: what was paid in the period, plus what's still owed on runs paid in it, so a run's whole cost lands in its month; due soon includes payroll owed within seven days.
+
 ## Your business: people, devices and data
 
 - **People and access** (`/app/settings/people`): the owner invites an accountant (a tax practitioner in Sri Lanka) or an office admin by email (`POST /business/invites`). The `invites` table keeps only a sha256 of the link's token; the link (`/invite/<token>`, 14 days) shows who invited you to what before sign-in, and `POST /invites/:token/accept` adds a membership for whoever is signed in **with the invited email**. A new invitation to the same email cancels the old one. The owner can cancel an invitation or remove anyone but the owner. What each role can do is set by the endpoints' `roles`, not configured per person.

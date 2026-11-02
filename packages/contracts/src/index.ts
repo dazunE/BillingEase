@@ -10,3 +10,4 @@ export * from "./api";
 export * from "./openapi";
 export * from "./people";
 export * from "./books";
+export * from "./payroll";

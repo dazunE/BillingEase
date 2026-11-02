@@ -51,7 +51,7 @@ export function BottomIsland({ country, vatRegistered, ssclRegistered = false, c
   const sections: Section[] = [
     { key: "home", label: "Home", href: "/app", icon: ICON.home, on: "bg-white text-ink", chip: "bg-[#2C2935] text-white" },
     { key: "in", label: "Coming in", href: "/app/in", icon: ICON.in, on: "bg-violet text-ink", chip: "bg-violet text-ink", badge: counts.lateInvoices, badgeLabel: `${counts.lateInvoices} late invoices` },
-    { key: "out", label: "Going out", href: "/app/out", icon: ICON.out, on: "bg-going text-ink", chip: "bg-going text-ink", badge: counts.billsDueSoon, badgeLabel: `${counts.billsDueSoon} bills due soon` },
+    { key: "out", label: "Going out", href: "/app/out", icon: ICON.out, on: "bg-going text-ink", chip: "bg-going text-ink", badge: counts.billsDueSoon, badgeLabel: `${counts.billsDueSoon} to pay within a week` },
     { key: "keep", label: "Yours to keep", short: "To keep", href: "/app/keep", icon: ICON.keep, on: "bg-white text-ink", chip: "bg-[#2C2935] text-violet", badge: counts.toCheck, badgeLabel: `${counts.toCheck} waiting for you to check` },
     { key: "acct", label: lk ? "Practitioner" : "Accountant", short: lk ? "Tax help" : "Accountant", href: "/app/ask", icon: ICON.acct, on: "bg-white text-ink", chip: "bg-[#2C2935] text-white" },
     { key: "biz", label: "Business", href: "/app/settings/business", icon: ICON.biz, on: "bg-white text-ink", chip: "bg-[#2C2935] text-white" },
@@ -67,9 +67,10 @@ export function BottomIsland({ country, vatRegistered, ssclRegistered = false, c
       { href: "/app/in/prices", label: "Products and services" },
     ],
     out: [
-      { href: "/app/out/bills", label: "Bills", badge: counts.billsDueSoon, badgeLabel: `${counts.billsDueSoon} due soon` },
+      { href: "/app/out/bills", label: "Bills" },
       { href: "/app/out/monthly", label: "Every month" },
       { href: "/app/out/suppliers", label: "Suppliers" },
+      { href: "/app/out/payroll", label: country === "uk" ? "Payroll records" : "Payroll" },
     ],
     keep: [
       ...(country === "uk" ? [{ href: "/app/keep/quarters", label: "Quarters" }] : []),

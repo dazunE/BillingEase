@@ -40,6 +40,8 @@ With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, s
 
 **Your books.** Under **Yours to keep**: the UK quarters (mark a closed one as sent and it locks), VAT and SSCL periods, the profit and loss and balance sheet (with CSV downloads), categories, and the tax year end.
 
+**Payroll.** **Going out → Payroll**: in Sri Lanka add people with their basic pay and allowances, and BillingEase works out EPF, ETF, APIT and net pay; approve the run, open a payslip, and mark APIT, EPF and ETF paid. In the UK enter each pay run from your payroll software and mark HMRC and the pension provider paid.
+
 **Getting around and Your business.** The dark island at the foot of every screen lists the sections on Home and, inside a section, its pages. Under **Business → People and access**, invite your accountant by email: the link is in `outbox_emails`; open it in a private window and sign up with that email to accept. **Security and data** lists where you're signed in, imports customers from a CSV and exports invoices, expenses, bills and customers as CSV files.
 
 **Several businesses and Google sign-in.** Open the menu under your initials → **Add a business** to set up a second one (in any of the three countries); then switch between them from the same menu or by clicking the business name in the header. To try **Continue with Google**, create a Google OAuth client with `http://localhost:3000/auth/google/callback` as a redirect URI and start with `GOOGLE_CLIENT_ID=… GOOGLE_CLIENT_SECRET=… npm run dev`; **Account → Security and data → Sign-in methods** connects Google to an existing account or sets a password for a Google-only one.

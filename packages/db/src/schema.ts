@@ -282,6 +282,110 @@ export const lockedPeriods = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Payroll (Sri Lanka: worked out here; UK: records from the payroll software)
+
+export const employees = pgTable(
+  "employees",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    job: text("job"),
+    startedOn: date("started_on"),
+    endedOn: date("ended_on"),
+    // NIC in Sri Lanka, National Insurance number in the UK.
+    idNumber: text("id_number"),
+    // EPF member number (Sri Lanka).
+    epfNumber: text("epf_number"),
+    // PAYE tax code (UK), e.g. 1257L.
+    taxCode: text("tax_code"),
+    // Monthly basic pay and fixed allowances (Sri Lanka); the UK takes each run's figures from the software.
+    basic: money("basic").notNull().default(0),
+    allowances: jsonb("allowances").$type<{ name: string; amount: number; epf: boolean }[]>().notNull().default([]),
+    pension: boolean("pension").notNull().default(false),
+    bankDetails: text("bank_details"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("employees_business").on(t.businessId)],
+);
+
+export const payRuns = pgTable(
+  "pay_runs",
+  {
+    id: id(),
+    businessId: businessId(),
+    // YYYY-MM: the month the run pays for.
+    month: text("month").notNull(),
+    payDate: date("pay_date").notNull(),
+    status: text("status").$type<"draft" | "approved">().notNull().default("draft"),
+    gross: money("gross").notNull().default(0),
+    net: money("net").notNull().default(0),
+    // What the employer adds on top of gross (EPF 12% and ETF 3%, or employer NI and pension).
+    employer: money("employer").notNull().default(0),
+    entryId: uuid("entry_id"),
+    approvedBy: uuid("approved_by").references(() => users.id, { onDelete: "set null" }),
+    approvedAt: timestamp("approved_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("pay_runs_business_month").on(t.businessId, t.month),
+    check("pay_runs_status", sql`${t.status} in ('draft','approved')`),
+  ],
+);
+
+export const payRunLines = pgTable(
+  "pay_run_lines",
+  {
+    id: id(),
+    businessId: businessId(),
+    runId: uuid("run_id").notNull().references(() => payRuns.id, { onDelete: "cascade" }),
+    employeeId: uuid("employee_id").notNull().references(() => employees.id),
+    // As the person was when the run was made, so a payslip never changes.
+    name: text("name").notNull(),
+    job: text("job"),
+    basic: money("basic").notNull().default(0),
+    allowances: money("allowances").notNull().default(0),
+    overtime: money("overtime").notNull().default(0),
+    gross: money("gross").notNull(),
+    epfBase: money("epf_base").notNull().default(0),
+    epfEe: money("epf_ee").notNull().default(0),
+    epfEr: money("epf_er").notNull().default(0),
+    etf: money("etf").notNull().default(0),
+    apit: money("apit").notNull().default(0),
+    paye: money("paye").notNull().default(0),
+    eeNi: money("ee_ni").notNull().default(0),
+    erNi: money("er_ni").notNull().default(0),
+    pensionEe: money("pension_ee").notNull().default(0),
+    pensionEr: money("pension_er").notNull().default(0),
+    net: money("net").notNull(),
+  },
+  (t) => [index("pay_run_lines_run").on(t.runId)],
+);
+
+/** What an approved run owes: net pay, then the tax office and the funds. */
+export const payrollDues = pgTable(
+  "payroll_dues",
+  {
+    id: id(),
+    businessId: businessId(),
+    runId: uuid("run_id").notNull().references(() => payRuns.id, { onDelete: "cascade" }),
+    kind: text("kind").$type<"net" | "apit" | "epf" | "etf" | "hmrc" | "pension">().notNull(),
+    label: text("label").notNull(),
+    payTo: text("pay_to").notNull(),
+    amount: money("amount").notNull(),
+    dueOn: date("due_on").notNull(),
+    paidOn: date("paid_on"),
+    method: text("method"),
+    reference: text("reference"),
+    entryId: uuid("entry_id"),
+  },
+  (t) => [
+    index("payroll_dues_business").on(t.businessId, t.dueOn),
+    check("payroll_dues_kind", sql`${t.kind} in ('net','apit','epf','etf','hmrc','pension')`),
+  ],
+);
+
+// ---------------------------------------------------------------------------
 // Coming in
 
 export const customers = pgTable(
