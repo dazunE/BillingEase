@@ -137,6 +137,10 @@ export const businesses = pgTable(
     footer: text("footer"),
     logoKey: text("logo_key"),
     logoMime: text("logo_mime"),
+    // The logo's height on documents, in points on the PDF (CSS px on the preview).
+    logoSize: integer("logo_size").notNull().default(48),
+    // A VAT-registered business can title its invoices "VAT invoice" / "Tax Invoice" (tax) or plain "Invoice".
+    titleStyle: text("title_style").$type<"tax" | "plain">().notNull().default("tax"),
     // Optional settings that don't need their own column (WhatsApp reminders, invoice language, ...).
     settings: jsonb("settings").$type<Record<string, unknown>>().notNull().default({}),
     createdAt: createdAt(),
@@ -149,6 +153,8 @@ export const businesses = pgTable(
     check("businesses_terms", sql`${t.termsDays} between 0 and 365`),
     check("businesses_template", sql`${t.template} in ('classic','modern','minimal')`),
     check("businesses_font", sql`${t.font} in ('sans','serif','mono')`),
+    check("businesses_logo_size", sql`${t.logoSize} between 24 and 96`),
+    check("businesses_title_style", sql`${t.titleStyle} in ('tax','plain')`),
   ],
 );
 

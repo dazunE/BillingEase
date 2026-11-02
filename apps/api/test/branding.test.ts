@@ -89,4 +89,42 @@ describe("invoice branding", () => {
     const cn = await api.post(`/invoices/${inv.id}/credit-notes`, { full: true });
     expect((await get(`/invoices/${cn.body.id}/pdf`)).statusCode).toBe(200);
   });
+
+  it("saves a logo size and draws the PDF at every size", async () => {
+    const { api, business, token } = await signUpWithBusiness(t.app, "uk");
+    expect((await api.get("/business")).body.logoSize).toBe(48);
+    expect((await api.patch("/business", { logoSize: 20 })).status).toBe(400);
+    expect((await api.patch("/business", { logoSize: 100 })).status).toBe(400);
+    await api.put("/business/logo", { image: png(300, 60).toString("base64") });
+    const c = (await api.post("/customers", { name: "Kirkstall Brewing Co" })).body;
+    const inv = (await api.post("/invoices", { customerId: c.id, issueDate: "2026-10-08", lines: [{ description: "Labels", quantityMilli: 1000, unitPrice: 45000 }] })).body;
+    for (const logoSize of [24, 48, 96]) {
+      for (const template of ["classic", "modern", "minimal"]) {
+        expect((await api.patch("/business", { logoSize, template })).body.logoSize).toBe(logoSize);
+        const res = await t.app.inject({ method: "GET", url: `/invoices/${inv.id}/pdf`, headers: { authorization: `Bearer ${token}`, "x-business-id": business.id } });
+        expect(res.statusCode, `${template} ${logoSize}`).toBe(200);
+        expect((await PDFDocument.load(res.rawPayload)).getPageCount()).toBe(1);
+      }
+    }
+  });
+
+  it("lets a VAT-registered business title its invoices plain Invoice; sent ones keep their title", async () => {
+    const { api } = await signUpWithBusiness(t.app, "uk", { vatRegistered: true, vatNumber: "GB123456789" });
+    expect((await api.get("/business")).body.titleStyle).toBe("tax");
+    const c = (await api.post("/customers", { name: "Ochre Café" })).body;
+    const body = { customerId: c.id, issueDate: "2026-10-08", lines: [{ description: "Design", quantityMilli: 1000, unitPrice: 100000, vatRateId: "std" }] };
+    const first = (await api.post("/invoices", body)).body;
+    await api.post(`/invoices/${first.id}/issue`, {});
+    expect((await api.get(`/invoices/${first.id}`)).body.title).toBe("VAT invoice");
+    expect((await api.patch("/business", { titleStyle: "fancy" })).status).toBe(400);
+    expect((await api.patch("/business", { titleStyle: "plain" })).body.titleStyle).toBe("plain");
+    const second = (await api.post("/invoices", body)).body;
+    expect((await api.get(`/invoices/${second.id}`)).body.title).toBe("Invoice");
+    await api.post(`/invoices/${second.id}/issue`, {});
+    const sent = (await api.get(`/invoices/${second.id}`)).body;
+    expect(sent.title).toBe("Invoice");
+    // VAT details stay on it whatever the title.
+    expect(sent.snapshot.seller.vatNumber).toBe("GB123456789");
+    expect((await api.get(`/invoices/${first.id}`)).body.title).toBe("VAT invoice");
+  });
 });

@@ -14,6 +14,8 @@ export async function saveBranding(_: FormState, fd: FormData): Promise<FormStat
         font: v.font as "sans",
         accent: (v.accent ?? "").toUpperCase(),
         footer: blankToNull(v.footer),
+        logoSize: Number(v.logoSize ?? 48),
+        ...(v.titleStyle === "tax" || v.titleStyle === "plain" ? { titleStyle: v.titleStyle } : {}),
       },
     });
   } catch (err) {

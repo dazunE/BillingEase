@@ -1,6 +1,7 @@
 "use client";
 
-import { FONTS, LOGO_MAX_BYTES, TEMPLATES, type Business } from "@billingease/contracts";
+import { FONTS, LOGO_MAX_BYTES, LOGO_SIZE, TEMPLATES, type Business } from "@billingease/contracts";
+import { invoiceTitle, rulesFor } from "@billingease/core";
 import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState, useTransition } from "react";
 import { DocPreview, type PreviewData } from "@/components/in/DocPreview";
@@ -54,13 +55,18 @@ export function BrandingForm({ b, sample, canEdit }: { b: Business; sample: Prev
   const [font, setFont] = useState<PreviewBrand["font"]>((v?.font as PreviewBrand["font"]) ?? b.font);
   const [accent, setAccent] = useState((v?.accent ?? b.accent).toUpperCase());
   const [footer, setFooter] = useState(v?.footer ?? b.footer ?? "");
+  const [logoSize, setLogoSize] = useState(Number(v?.logoSize ?? b.logoSize));
+  const [titleStyle, setTitleStyle] = useState<Business["titleStyle"]>((v?.titleStyle as Business["titleStyle"]) ?? b.titleStyle);
+  const words = rulesFor(b.country).wording;
+  // Only a registered business has a choice: "VAT invoice" / "Tax Invoice", or plain "Invoice".
+  const titleChoice = b.vatRegistered && words.vatInvoiceTitle !== words.invoiceTitle;
   const [logo, setLogo] = useState<{ has: boolean; version: string | null }>({ has: b.hasLogo, version: b.logoVersion });
   const [logoMsg, setLogoMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [uploading, start] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
   const hexOk = /^#[0-9A-F]{6}$/.test(accent);
 
-  const brand: PreviewBrand = { template, font, accent: hexOk ? accent : b.accent, footer: footer || null, logoUrl: logo.has ? `${LOGO_URL}?v=${logo.version ?? ""}` : null };
+  const brand: PreviewBrand = { template, font, accent: hexOk ? accent : b.accent, footer: footer || null, logoUrl: logo.has ? `${LOGO_URL}?v=${logo.version ?? ""}` : null, logoSize };
 
   function upload(file: File | undefined) {
     if (!file) return;
@@ -111,11 +117,23 @@ export function BrandingForm({ b, sample, canEdit }: { b: Business; sample: Prev
               </div>
             )}
           </div>
-          <p className="text-[13px] text-muted">PNG or JPEG, up to 1 MB. A wide logo on a transparent background works best; it&apos;s shown up to about 160 by 50 points on A4.</p>
+          <p className="text-[13px] text-muted">PNG or JPEG, up to 1 MB. A wide logo on a transparent background works best. Your business name goes on the line below it.</p>
+          {logo.has && (
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="logo-size" className="flex items-baseline justify-between text-sm font-semibold">
+                Logo size <span className="font-normal text-muted" aria-hidden>{logoSize} pt tall</span>
+              </label>
+              <input id="logo-size" type="range" min={LOGO_SIZE.min} max={LOGO_SIZE.max} step={4} value={logoSize} disabled={!canEdit}
+                onChange={(ev) => setLogoSize(Number(ev.target.value))} aria-valuetext={`${logoSize} points tall`}
+                className="h-11 w-full max-w-sm cursor-pointer accent-[#18161F]" />
+              <span className="text-xs text-muted">How tall it is on the PDF. A wide logo keeps its shape; save to keep the size.</span>
+            </div>
+          )}
           {logoMsg && <p role={logoMsg.ok ? "status" : "alert"} className={cx("rounded-xl px-4 py-3 text-sm font-semibold", logoMsg.ok ? "bg-pos-bg text-pos" : "bg-late-bg text-late")}>{logoMsg.text}</p>}
         </section>
 
         <form action={action} noValidate className="flex flex-col gap-5">
+          <input type="hidden" name="logoSize" value={logoSize} />
           {state?.message && <p role={state.ok ? "status" : "alert"} className={cx("rounded-xl px-4 py-3 text-sm font-semibold", state.ok ? "bg-pos-bg text-pos" : "bg-late-bg text-late")}>{state.message}</p>}
           <fieldset disabled={!canEdit} className="flex flex-col gap-5 rounded-3xl border border-line bg-white p-[clamp(16px,3vw,28px)]">
             <fieldset className="flex flex-col gap-2">
@@ -164,6 +182,27 @@ export function BrandingForm({ b, sample, canEdit }: { b: Business; sample: Prev
               </div>
             </fieldset>
 
+            {titleChoice && (
+              <fieldset className="flex flex-col gap-2">
+                <legend className="mb-2 text-[20px] font-bold">Invoice title</legend>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {(["tax", "plain"] as const).map((s) => (
+                    <label key={s} className={card(titleStyle === s)}>
+                      <input type="radio" name="titleStyle" value={s} checked={titleStyle === s} onChange={() => setTitleStyle(s)} className="sr-only" />
+                      <span className="font-bold">{s === "tax" ? words.vatInvoiceTitle : words.invoiceTitle}</span>
+                      <span className="text-xs text-muted">{s === "tax" ? "Says it's a tax document" : "Shorter; the VAT details stay on it"}</span>
+                    </label>
+                  ))}
+                </div>
+                <span className="text-xs text-muted">
+                  {b.country === "lk"
+                    ? "The IRD expects a VAT-registered seller's invoice to be headed Tax Invoice. Check with your accountant before changing it."
+                    : "Either is fine for HMRC: what matters is your VAT number, the rate and the VAT on each invoice, which are always shown."}
+                  {" "}Invoices already sent keep their title.
+                </span>
+              </fieldset>
+            )}
+
             <Field label="Footer line" hint="Optional. At the foot of every page and email, e.g. your company number, website or a thank-you." error={e.footer}>
               <Input name="footer" value={footer} onChange={(ev) => setFooter(ev.target.value.slice(0, 200))} placeholder="e.g. Registered in England 01234567 · nordstar.co.uk" />
             </Field>
@@ -176,7 +215,7 @@ export function BrandingForm({ b, sample, canEdit }: { b: Business; sample: Prev
 
       <aside className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-6" aria-label="Preview">
         <div className="rounded-3xl bg-surface p-3">
-          <DocPreview d={{ ...sample, brand }} compact />
+          <DocPreview d={{ ...sample, title: invoiceTitle(b.country, b.vatRegistered, titleStyle), brand }} compact />
           <p className="pt-2 text-center text-xs text-muted">A sample invoice in your branding · quotes and credit notes match</p>
         </div>
       </aside>

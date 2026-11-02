@@ -56,6 +56,8 @@ export type Brand = {
   accent: string;
   footer: string | null;
   logo: { bytes: Uint8Array; mime: string } | null;
+  /** The logo's height in points (24–96). Left out: 48. */
+  logoSize?: number;
 };
 
 // Brand colours (see apps/web globals.css)
@@ -275,6 +277,9 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     p.drawImage(logo, { x: align === "right" ? x - w : x, y: top - h, width: w, height: h });
     return { w, h };
   };
+  // The owner's chosen logo height, and a width that keeps a wide logo in proportion.
+  const logoH = Math.min(96, Math.max(24, brand.logoSize ?? 48));
+  const logoMaxW = (h: number, cap: number) => Math.min(h * 3.5, cap);
   const rules = rulesFor(d.country);
   const lk = d.country === "lk";
   // A foreign currency is written with its code ("EUR 1,250.00"): clear to any reader, and every
@@ -335,19 +340,22 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   };
 
   if (brand.template === "modern") {
-    // A band in the brand colour across the top: logo on a white tile, name, then title and number.
+    // A band in the brand colour across the top: the logo on a white tile, the name on the line
+    // below it, and the title and number on the right. The band grows with the logo.
     const fg = onColour(accentHex);
-    const bandH = 112;
+    const bandLogoH = Math.round(logoH * 0.75);
+    const tileH = logo ? bandLogoH + 12 : 0;
+    const nameLines = wrap(D, d.seller.name, 16, 300).slice(0, 2);
+    const bandH = Math.max(112, 26 + (logo ? tileH + 12 : 0) + nameLines.length * 19 + 22);
     page.drawRectangle({ x: 0, y: PAGE_H - bandH, width: PAGE_W, height: bandH, color: ACCENT });
-    let x = M;
+    let nameTop = PAGE_H - 26;
     if (logo) {
-      const tileH = 56, tileW = Math.min(150, (logo.width / logo.height) * 44 + 12);
-      page.drawRectangle({ x: M, y: PAGE_H - 28 - tileH, width: tileW, height: tileH, color: rgb(1, 1, 1) });
-      drawLogo(page, M + (tileW - Math.min(tileW - 12, (logo.width / logo.height) * 44)) / 2, PAGE_H - 34, tileW - 12, 44);
-      x = M + tileW + 14;
+      const lw = Math.min(logoMaxW(bandLogoH, 240), (logo.width / logo.height) * bandLogoH);
+      page.drawRectangle({ x: M, y: PAGE_H - 26 - tileH, width: lw + 12, height: tileH, color: rgb(1, 1, 1) });
+      drawLogo(page, M + 6, PAGE_H - 32, lw, bandLogoH);
+      nameTop -= tileH + 12;
     }
-    const nameLines = wrap(D, d.seller.name, 16, 250 - (x - M) / 2);
-    nameLines.slice(0, 2).forEach((l, i) => draw(page, D, l, x, PAGE_H - 52 - i * 19, 16, fg));
+    nameLines.forEach((l, i) => draw(page, D, l, M, nameTop - 14 - i * 19, 16, fg));
     drawRight(page, D, d.title, RIGHT, PAGE_H - 52, 22, fg);
     drawRight(page, B, numberText, RIGHT, PAGE_H - 72, 11, fg);
     y = PAGE_H - bandH - 26;
@@ -360,8 +368,8 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     draw(page, B, numberText, M, y - 42, 11, INK2);
     page.drawRectangle({ x: M, y: y - 56, width: 36, height: 2.5, color: ACCENT });
     let ry = top;
-    const lg = drawLogo(page, RIGHT, ry, 160, 52, "right");
-    if (lg.h) ry -= lg.h + 10;
+    const lg = drawLogo(page, RIGHT, ry, logoMaxW(logoH, 240), logoH, "right");
+    if (lg.h) ry -= lg.h + 12;
     for (const l of wrap(B, d.seller.name, 12, 240)) {
       drawRight(page, B, l, RIGHT, ry - 10, 12);
       ry -= 15;
@@ -373,8 +381,9 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     // Classic: the logo (or the business name with the BillingEase mark) on the left, title on the right.
     let lh = 0;
     if (logo) {
-      lh = drawLogo(page, M, y, 170, 52).h;
-      y -= lh + 8;
+      // The logo, then the business name on its own line below it.
+      lh = drawLogo(page, M, y, logoMaxW(logoH, 260), logoH).h;
+      y -= lh + 12;
       for (const l of wrap(D, d.seller.name, 13, 280)) {
         draw(page, D, l, M, y - 11, 13);
         y -= 16;
@@ -635,7 +644,7 @@ export async function brandFor(b: BusinessDb, storage?: Storage): Promise<Brand>
   if (storage && b.logoKey && b.logoMime) {
     logo = await storage.get(b.logoKey).then((bytes) => ({ bytes, mime: b.logoMime! })).catch(() => null);
   }
-  return { template: b.template, font: b.font, accent: b.accent, footer: b.footer, logo };
+  return { template: b.template, font: b.font, accent: b.accent, footer: b.footer, logo, logoSize: b.logoSize };
 }
 
 /** Everything an invoice or credit note's PDF shows, read for one business. */

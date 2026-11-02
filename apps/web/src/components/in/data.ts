@@ -12,7 +12,7 @@ export function addressOf(b: Business) {
 
 export function editorBusiness(b: Business): EditorBusiness {
   return {
-    country: b.country, currency: b.currency, name: b.name, vatRegistered: b.vatRegistered, ssclRegistered: b.ssclRegistered, termsDays: b.termsDays,
+    country: b.country, currency: b.currency, name: b.name, vatRegistered: b.vatRegistered, ssclRegistered: b.ssclRegistered, termsDays: b.termsDays, titleStyle: b.titleStyle,
     address: addressOf(b), email: b.email, phone: b.phone, taxId: b.taxId, vatNumber: b.vatNumber, paymentDetails: b.paymentDetails, invoiceNote: b.invoiceNote,
     brand: brandOf(b),
   };

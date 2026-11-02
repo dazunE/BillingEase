@@ -18,7 +18,7 @@ export default async function NewInvoicePage({ searchParams }: { searchParams: P
     load(comingIn.listItems),
     load(comingIn.summary),
   ]);
-  const title = invoiceTitle(b.country, b.vatRegistered);
+  const title = invoiceTitle(b.country, b.vatRegistered, b.titleStyle);
   const now = today();
   return (
     <>

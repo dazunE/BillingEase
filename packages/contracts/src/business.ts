@@ -16,6 +16,11 @@ export const Template = z.enum(TEMPLATES);
 /** Typefaces for customer documents: DM Sans, Source Serif 4 or JetBrains Mono. */
 export const FONTS = ["sans", "serif", "mono"] as const;
 export const Font = z.enum(FONTS);
+/** How tall the logo is on documents: points on the PDF, CSS px on the preview. */
+export const LOGO_SIZE = { min: 24, max: 96, default: 48 } as const;
+/** A VAT-registered business's invoice title: the country's tax title ("VAT invoice", "Tax Invoice") or plain "Invoice". */
+export const TITLE_STYLES = ["tax", "plain"] as const;
+export const TitleStyle = z.enum(TITLE_STYLES);
 /** The largest logo accepted, in bytes. */
 export const LOGO_MAX_BYTES = 1024 * 1024;
 
@@ -49,6 +54,8 @@ export const Business = z.object({
   template: Template,
   font: Font,
   footer: z.string().nullable(),
+  logoSize: z.number().int(),
+  titleStyle: TitleStyle,
   /** Whether a logo is uploaded, and a version that changes with it (for caching its image). */
   hasLogo: z.boolean(),
   logoVersion: z.string().nullable(),
@@ -93,6 +100,8 @@ export const UpdateBusinessBody = z.object({
   template: Template,
   font: Font,
   footer: optionalText(200),
+  logoSize: z.number().int().min(LOGO_SIZE.min, `At least ${LOGO_SIZE.min}`).max(LOGO_SIZE.max, `At most ${LOGO_SIZE.max}`),
+  titleStyle: TitleStyle,
   settings: z.record(z.string(), z.unknown()).default({}),
 }).partial();
 

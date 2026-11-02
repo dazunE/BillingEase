@@ -59,8 +59,12 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
   const accentText = readable(brand.accent);
   const font = FONT_STACKS[brand.font];
   const sellerLines = [d.seller.address, [d.seller.email, d.seller.phone].filter(Boolean).join(" · "), ...sellerTax].filter(Boolean) as string[];
-  // eslint-disable-next-line @next/next/no-img-element
-  const logo = (cls: string) => (brand.logoUrl ? <img src={brand.logoUrl} alt={`${d.seller.name} logo`} className={cx("block w-auto object-contain", cls)} /> : null);
+  // The owner's logo height (the PDF draws the same number in points); wide logos keep their shape.
+  const logoH = Math.min(96, Math.max(24, brand.logoSize ?? 48));
+  const logo = (cls: string, h = logoH) => (brand.logoUrl
+    // eslint-disable-next-line @next/next/no-img-element
+    ? <img src={brand.logoUrl} alt={`${d.seller.name} logo`} className={cx("block w-auto object-contain", cls)} style={{ height: h, maxWidth: `min(100%, ${Math.round(h * 3.5)}px)` }} data-testid="preview-logo" />
+    : null);
 
   return (
     <article aria-label={`${d.title} preview`} data-template={t}
@@ -70,8 +74,8 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
         <>
           <header className="flex flex-wrap items-center justify-between gap-4 px-[var(--pad)] py-5" data-testid="preview-band"
             style={{ margin: `calc(-1 * var(--pad)) calc(-1 * var(--pad)) 0`, background: brand.accent, color: textOn(brand.accent) }}>
-            <span className="flex min-w-0 items-center gap-3">
-              {brand.logoUrl && <span className="rounded-lg bg-white px-2 py-1.5">{logo("max-h-9 max-w-[120px]")}</span>}
+            <span className="flex min-w-0 flex-col items-start gap-3">
+              {brand.logoUrl && <span className="max-w-full rounded-lg bg-white px-1.5 py-1.5">{logo("", Math.round(logoH * 0.75))}</span>}
               <span className="font-display text-[17px] font-bold">{d.seller.name}</span>
             </span>
             <span className="flex flex-col items-end">
@@ -89,7 +93,7 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
             <span className="mt-1.5 block h-[3px] w-9" style={{ background: brand.accent }} />
           </div>
           <div className="flex min-w-0 flex-col items-end gap-1 text-right">
-            {logo("mb-1 max-h-12 max-w-[150px]")}
+            {logo("mb-2 object-right")}
             <span className="text-[15px] font-bold">{d.seller.name}</span>
             <span className="text-xs leading-relaxed text-ink2">{sellerLines.map((s, i) => <span key={i} className="block break-words">{s}</span>)}</span>
           </div>
@@ -98,7 +102,7 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex min-w-0 flex-col gap-1">
             {brand.logoUrl
-              ? <>{logo("max-h-12 max-w-[160px]")}<span className="font-display text-[15px] font-bold">{d.seller.name}</span></>
+              ? <>{logo("mb-2 object-left")}<span className="font-display text-[15px] font-bold">{d.seller.name}</span></>
               : <span className="flex items-center gap-2.5"><BrandMark size={26} /><span className="font-display text-[17px] font-bold">{d.seller.name}</span></span>}
             <span className="text-xs leading-relaxed text-ink2">{sellerLines.map((s, i) => <span key={i} className="block break-words">{s}</span>)}</span>
           </div>
