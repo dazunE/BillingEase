@@ -1,29 +1,29 @@
 /*
- * BillingEase marketing site: Guides, Help center answers and the changelog.
- * Read by SiteGuides, SiteGuide, SiteHelp and SiteChangelog. Prices and links
- * come from site.js (window.SITE) so the copy never disagrees with Pricing.
+ * BillingEase marketing site: Guides, Help centre answers and What's new.
+ * Read by SiteGuides, SiteGuide, SiteHelp and SiteChangelog. Mirrors
+ * apps/web/src/content/site (guides.ts, help.ts, changelog.ts). Prices and
+ * links come from site.js (window.SITE) so the copy never disagrees with Pricing.
  * Everything here is general information for a prototype, not tax advice.
+ * Rates are illustrative: check with your accountant or tax practitioner.
  */
 (function () {
   'use strict';
-  var S = window.SITE || { plans: [{}, { month: 16, year: 13 }, { month: 39, year: 32 }], addons: [{ price: '$20 a month + $6 per person' }, { price: '2.9% + 30¢ per payment' }, { price: '1% per payment, $10 max' }], company: { support: 'help@billingease.app' } };
-  var PRO = S.plans[1], TEAM = S.plans[2], PAYROLL = S.addons[0], CARD = S.addons[1], BANK = S.addons[2];
+  var S = window.SITE || { company: { support: 'help@billingease.app' } };
 
   // ---- block helpers (articles are lists of typed blocks) -----------------
   function P(x, lead) { return { t: 'p', x: x, lead: lead || '' }; }
   function H(x) { return { t: 'h', x: x }; }
   function Q(x, who) { return { t: 'quote', x: x, who: who }; }
+  // A rule of thumb (shown as a pull-quote; not a quote from a person).
+  function R(x) { return Q(x, 'Rule of thumb'); }
   function C(title, x, tone) { return { t: 'callout', title: title, x: x, tone: tone || 'tip' }; }
   function L(items) { return { t: 'list', items: items }; }
   function T(caption, head, rows) { return { t: 'table', caption: caption, head: head, rows: rows }; }
   function EX(title, rows, total, note) { return { t: 'example', title: title, rows: rows, total: total, note: note }; }
 
+  // No named authors: guides are written by the BillingEase team.
   var AUTHORS = {
-    ines: { name: 'Lucía Ferrer, EA', role: 'Tax lead', initials: 'LF', bg: '#FDE6D6', bio: 'Enrolled agent. Spent eleven years doing tax returns for freelancers in Queens before joining BillingEase.' },
-    theo: { name: 'Owen Pritchard', role: 'Product writer', initials: 'OP', bg: '#EEE8FF', bio: 'Writes every word you read in the app, and rewrites them when customers tell us they’re confusing.' },
-    hana: { name: 'Hana Sato', role: 'Customer success lead', initials: 'HS', bg: '#E2F6D5', bio: 'Ran a stationery shop in Portland for six years. Now helps new customers get set up.' },
-    renata: { name: 'Renata Okafor, CPA', role: 'Head of accounting education', initials: 'RO', bg: '#EEE8FF', bio: 'Accountant to small businesses for fifteen years. Believes nobody should need a dictionary to read their own books.' },
-    kofi: { name: 'Kofi Mensah', role: 'Payroll specialist', initials: 'KM', bg: '#FDE6D6', bio: 'Has run payroll for businesses with one employee and with four hundred. Prefers the first kind.' }
+    team: { name: 'The BillingEase team', role: 'Guides team', initials: 'BE', bg: '#EEE8FF', bio: 'Written by the people who build BillingEase, and checked against HMRC and IRD guidance on the date shown. General information, not tax advice: check with your accountant or tax practitioner before you rely on a rate.' }
   };
 
   // ---- covers: small flat illustrations, drawn once as SVG ---------------
@@ -34,17 +34,31 @@
   var st = ' stroke="' + INK + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"';
   var F = 'font-family="Arial, Helvetica, sans-serif" font-weight="700"';
   var COVERS = {
+    taxinv: svg('#E2F6D5',
+      '<rect x="96" y="30" width="170" height="190" rx="8" fill="#FFFFFF"' + st + '/>' +
+      '<text x="116" y="62" ' + F + ' font-size="16" fill="' + INK + '">TAX INVOICE</text>' +
+      '<path d="M116 84 H240 M116 104 H220" stroke="#E2DFE8" stroke-width="6" stroke-linecap="round"/>' +
+      '<rect x="116" y="124" width="130" height="24" rx="6" fill="#EEE8FF"/><text x="126" y="141" ' + F + ' font-size="12" fill="' + INK + '">SSCL 2.5%</text>' +
+      '<rect x="116" y="154" width="130" height="24" rx="6" fill="#FDE6D6"/><text x="126" y="171" ' + F + ' font-size="12" fill="' + INK + '">VAT 18%</text>' +
+      '<text x="246" y="204" text-anchor="end" ' + F + ' font-size="15" fill="' + INK + '">Rs 302,375</text>' +
+      '<circle cx="306" cy="80" r="34" fill="#B9A3FF"' + st + '/><path d="M292 80 l10 10 l18 -20" fill="none"' + st + '/>'),
+    cheque: svg('#FFF4E8',
+      '<g transform="rotate(-6 200 120)"><rect x="60" y="60" width="280" height="120" rx="8" fill="#FFFFFF"' + st + '/>' +
+      '<text x="80" y="92" ' + F + ' font-size="14" fill="' + INK + '">CHEQUE</text>' +
+      '<path d="M80 120 H230 M80 146 H200" stroke="#E2DFE8" stroke-width="6" stroke-linecap="round"/>' +
+      '<rect x="244" y="108" width="80" height="30" rx="6" fill="#FDE6D6"' + st + '/><text x="284" y="129" text-anchor="middle" ' + F + ' font-size="12" fill="' + INK + '">Rs 48,000</text></g>' +
+      '<rect x="270" y="168" width="96" height="52" rx="12" fill="#18161F"/><text x="318" y="200" text-anchor="middle" ' + F + ' font-size="15" fill="#B9A3FF">LankaQR</text>'),
     tax: svg('#EEE8FF',
       '<circle cx="300" cy="60" r="70" fill="#FFFFFF" opacity="0.6"/>' +
       '<path d="M120 62 H200 V76 C200 84 226 90 226 118 V196 C226 214 212 226 194 226 H126 C108 226 94 214 94 196 V118 C94 90 120 84 120 76 Z" fill="#FFFFFF"' + st + '/>' +
       '<rect x="112" y="46" width="96" height="20" rx="6" fill="#B9A3FF"' + st + '/>' +
       '<rect x="104" y="150" width="112" height="66" rx="4" fill="#B6E0AE"' + st + '/>' +
       '<circle cx="160" cy="183" r="15" fill="#D3EDCE" stroke="#4F7F49" stroke-width="2"/>' +
-      '<text x="160" y="190" text-anchor="middle" ' + F + ' font-size="20" fill="#2F5711">$</text>' +
+      '<text x="160" y="190" text-anchor="middle" ' + F + ' font-size="20" fill="#2F5711">£</text>' +
       '<rect x="244" y="118" width="96" height="108" rx="10" fill="#18161F"/>' +
       '<path d="M244 138 H340" stroke="#B9A3FF" stroke-width="3"/>' +
-      '<text x="292" y="190" text-anchor="middle" ' + F + ' font-size="34" fill="#B9A3FF">25%</text>' +
-      '<text x="292" y="211" text-anchor="middle" ' + F + ' font-size="12" fill="#EEE8FF">FOR TAX</text>' +
+      '<text x="292" y="190" text-anchor="middle" ' + F + ' font-size="34" fill="#B9A3FF">20%</text>' +
+      '<text x="292" y="211" text-anchor="middle" ' + F + ' font-size="12" fill="#EEE8FF">VAT</text>' +
       '<path d="M226 150 C236 140 240 136 244 132" fill="none"' + st + ' stroke-dasharray="2 7"/>'),
     papers: svg('#FDE6D6',
       '<g transform="rotate(-8 120 130)"><rect x="60" y="40" width="120" height="160" rx="8" fill="#FFFFFF"' + st + '/><path d="M80 70 H140 M80 92 H160 M80 110 H150" stroke="#C9BCFB" stroke-width="6" stroke-linecap="round"/><text x="80" y="176" ' + F + ' font-size="16" fill="' + INK + '">QUOTE</text></g>' +
@@ -66,7 +80,7 @@
       '<path d="M170 96 H300 L290 206 H180 Z" fill="#FDE6D6"' + st + '/>' +
       '<path d="M206 96 C206 66 264 66 264 96" fill="none"' + st + '/>' +
       '<g transform="rotate(12 320 80)"><path d="M292 52 H350 V108 H292 L276 80 Z" fill="#FFFFFF"' + st + '/><circle cx="290" cy="80" r="5" fill="' + INK + '"/><text x="322" y="88" text-anchor="middle" ' + F + ' font-size="22" fill="' + INK + '">%</text></g>' +
-      '<text x="235" y="160" text-anchor="middle" ' + F + ' font-size="20" fill="' + INK + '">SHOP</text>'),
+      '<text x="235" y="160" text-anchor="middle" ' + F + ' font-size="20" fill="' + INK + '">TO LET</text>'),
     clock: svg('#EEE8FF',
       '<rect x="54" y="46" width="150" height="170" rx="10" fill="#FFFFFF"' + st + '/>' +
       '<path d="M78 82 H180 M78 110 H180 M78 138 H180 M78 166 H150" stroke="#E2DFE8" stroke-width="5" stroke-linecap="round"/>' +
@@ -75,25 +89,25 @@
       '<rect x="270" y="52" width="24" height="16" rx="4" fill="#18161F"/>' +
       '<path d="M282 132 L282 132 L282 66 A66 66 0 0 1 339 165 Z" fill="#B9A3FF"/>' +
       '<circle cx="282" cy="132" r="44" fill="#18161F"/>' +
-      '<text x="282" y="144" text-anchor="middle" ' + F + ' font-size="34" fill="#FFFFFF">20</text>' +
-      '<text x="282" y="164" text-anchor="middle" ' + F + ' font-size="11" fill="#EEE8FF">MIN</text>'),
+      '<text x="282" y="144" text-anchor="middle" ' + F + ' font-size="34" fill="#FFFFFF">Q2</text>' +
+      '<text x="282" y="164" text-anchor="middle" ' + F + ' font-size="11" fill="#EEE8FF">MTD</text>'),
     hire: svg('#FDE6D6',
       '<circle cx="128" cy="96" r="34" fill="#C68B6E"' + st + '/>' +
       '<path d="M96 90 C94 64 112 54 130 54 C150 54 162 66 160 88 C150 76 134 72 118 76 C108 78 100 82 96 90 Z" fill="#2B2233"/>' +
       '<path d="M66 214 C66 160 92 140 128 140 C164 140 190 160 190 214 Z" fill="#7A5AF8"' + st + '/>' +
       '<rect x="112" y="160" width="32" height="40" rx="4" fill="#FFFFFF"' + st + '/>' +
       '<rect x="222" y="58" width="128" height="150" rx="8" fill="#FFFFFF"' + st + '/>' +
-      '<text x="240" y="88" ' + F + ' font-size="13" fill="' + INK + '">PAY STUB</text>' +
+      '<text x="240" y="88" ' + F + ' font-size="13" fill="' + INK + '">PAYSLIP</text>' +
       '<path d="M240 108 H330 M240 128 H310 M240 148 H320" stroke="#F4C3A1" stroke-width="6" stroke-linecap="round"/>' +
       '<rect x="240" y="166" width="92" height="26" rx="13" fill="#B6E0AE" stroke="' + INK + '" stroke-width="2"/>' +
-      '<text x="286" y="184" text-anchor="middle" ' + F + ' font-size="13" fill="' + INK + '">$1,602</text>'),
+      '<text x="286" y="184" text-anchor="middle" ' + F + ' font-size="13" fill="' + INK + '">EPF 8%</text>'),
     globe: svg('#EEE8FF',
       '<circle cx="150" cy="122" r="80" fill="#FFFFFF"' + st + '/>' +
       '<path d="M70 122 H230 M150 42 C110 82 110 162 150 202 M150 42 C190 82 190 162 150 202" fill="none"' + st + '/>' +
       '<path d="M84 82 H216 M84 162 H216" fill="none" stroke="' + INK + '" stroke-width="2"/>' +
-      '<circle cx="290" cy="76" r="32" fill="#B9A3FF"' + st + '/><text x="290" y="88" text-anchor="middle" ' + F + ' font-size="32" fill="' + INK + '">€</text>' +
+      '<circle cx="290" cy="76" r="32" fill="#B9A3FF"' + st + '/><text x="290" y="88" text-anchor="middle" ' + F + ' font-size="32" fill="' + INK + '">Rs</text>' +
       '<circle cx="324" cy="148" r="32" fill="#F4C3A1"' + st + '/><text x="324" y="160" text-anchor="middle" ' + F + ' font-size="32" fill="' + INK + '">£</text>' +
-      '<circle cx="262" cy="196" r="28" fill="#B6E0AE"' + st + '/><text x="262" y="207" text-anchor="middle" ' + F + ' font-size="28" fill="' + INK + '">$</text>'),
+      '<circle cx="262" cy="196" r="28" fill="#B6E0AE"' + st + '/><text x="262" y="207" text-anchor="middle" ' + F + ' font-size="28" fill="' + INK + '">✓</text>'),
     sheet: svg('#E2F6D5',
       '<rect x="40" y="52" width="170" height="140" rx="8" fill="#FFFFFF"' + st + '/>' +
       '<path d="M40 84 H210 M40 112 H210 M40 140 H210 M40 168 H210 M96 52 V192 M152 52 V192" stroke="#B5B0BF" stroke-width="2"/>' +
@@ -105,221 +119,214 @@
       '<rect x="288" y="140" width="74" height="36" rx="8" fill="#B9A3FF"/>')
   };
 
-  var COVER_BG = { tax: '#EEE8FF', papers: '#FDE6D6', late: '#FFF4E8', maker: '#E2F6D5', clock: '#EEE8FF', hire: '#FDE6D6', globe: '#EEE8FF', sheet: '#E2F6D5' };
 
-  // ---- the eight guides ----------------------------------------------------
+  var COVER_BG = { tax: '#EEE8FF', papers: '#FDE6D6', late: '#FFF4E8', maker: '#E2F6D5', clock: '#EEE8FF', hire: '#FDE6D6', globe: '#EEE8FF', sheet: '#E2F6D5', taxinv: '#E2F6D5', cheque: '#FFF4E8' };
+  var WRITTEN = '14 Oct 2026';
+
+  // ---- the guides (guides.ts) ----------------------------------------------
   var guides = [
     {
-      slug: 'how-much-to-set-aside-for-tax', cover: 'tax', category: 'Tax', author: 'ines', date: 'Sep 15, 2026', featured: true,
-      title: 'How much should I set aside for tax?',
-      dek: 'For most US sole owners the answer is 25 to 30 percent of profit. Here’s where that number comes from, and when yours should be different.',
-      summary: ['Set aside a share of profit, not of sales. Start at 25%, or 30% if you earn more or live in a high-tax state.', 'Pay the IRS four times a year: April 15, June 15, September 15 and January 15.', 'Paying at least what you owed last year keeps you clear of underpayment penalties.'],
-      app: { label: 'See your tax set-aside', href: 'ThreeKeep.dc.html', line: 'Yours to keep shows your profit, the 25% we put aside for tax, and what’s left. Change the percentage any time.' },
+      slug: 'getting-ready-for-mtd-for-income-tax', country: 'uk', cover: 'clock', category: 'Making Tax Digital', author: 'team', date: WRITTEN, featured: true,
+      title: 'Getting ready for Making Tax Digital for Income Tax',
+      dek: 'Who has to join and when, what a quarterly update is, and the habits that make each quarter a ten-minute job instead of a weekend.',
+      summary: ['If your self-employment and property income together are over £50,000, MTD starts in April 2026; over £30,000 in April 2027; over £20,000 in April 2028.', 'You keep digital records and send a short update to HMRC every quarter, then a final declaration after the tax year.', 'Your accountant can send the updates for you from the records you keep.'],
+      app: { label: 'See how quarters work', href: 'SiteKeep.dc.html', line: 'Your records go into HMRC’s categories as you enter them, so each quarter is ready for your accountant to send.' },
       blocks: [
-        P('If you work for yourself, nobody withholds tax from what you earn. The money lands in your account whole, and it is very easy to treat all of it as yours. Then April comes. This guide gives you a number to start with, shows where it comes from, and explains how to make setting it aside automatic, so you don’t have to think about it again.'),
-        H('Set aside from profit, not from sales'),
-        P('Tax is charged on profit: what came in, minus what it cost you to earn it. If a customer pays you $5,000 and you spent $1,200 on materials and software to do the job, you are taxed on $3,800. Setting aside 25% of the $5,000 would lock up money you don’t owe. Setting aside 25% of the $3,800 is about right.'),
-        P('In BillingEase terms: Coming in, minus Going out, is your profit. The set-aside comes off that, and what’s left is Yours to keep.'),
-        H('Where 25 to 30 percent comes from'),
-        P('For a sole owner in the US, three taxes stack up on the same profit:'),
-        L(['Self-employment tax: 15.3% on about 92% of your profit. It pays for Social Security and Medicare, the part an employer would normally share with you.', 'Federal income tax: on what’s left after the standard deduction, at 10%, then 12%, then 22% and up as profit rises.', 'State income tax: from nothing in states like Texas and Florida to 5–7% in many others, and more in a few.']),
-        P('Added together, most people with $40,000 to $120,000 of profit pay somewhere between 22% and 32% of it. That’s why 25% is our default, and why 30% is the safer choice if you earn more or live somewhere with a high state tax.'),
-        EX('A worked example: $60,000 of profit, single filer', [['Profit for the year', '$60,000'], ['Self-employment tax (15.3% × 92.35%)', '$8,478'], ['Federal income tax, after deductions', '$3,560'], ['State income tax (a 5% state, roughly)', '$2,300']], ['Total tax', '$14,338'], 'That’s 23.9% of profit. A 25% set-aside ($15,000) covers it with $662 to spare.'),
-        Q('The set-aside isn’t money you lose. It’s money that was never yours, parked where you can’t spend it by accident.', 'Lucía Ferrer, EA'),
-        H('Pay four times a year, not once'),
-        P('The IRS expects tax as you earn it, through quarterly estimated payments. Miss them and you pay a small penalty, a bit like interest, on top of the tax itself. The quarters aren’t quite even:'),
-        T('Estimated tax dates for 2026 income', ['Income earned', 'Payment due'], [['Jan 1 – Mar 31', 'Apr 15, 2026'], ['Apr 1 – May 31', 'Jun 15, 2026'], ['Jun 1 – Aug 31', 'Sep 15, 2026'], ['Sep 1 – Dec 31', 'Jan 15, 2027']]),
-        P('You avoid the penalty if your four payments add up to at least what your total tax was last year (110% of it if last year’s income was over $150,000). That gives you a simple fallback in a lumpy year: divide last year’s tax by four and pay that each quarter.', 'The safe harbor.'),
-        H('When your number should be different'),
-        L(['Your first year: there’s no last year to lean on, so use 30% until you’ve seen twelve months of numbers.', 'You’re an S corporation: your salary has tax withheld through payroll, so the set-aside only covers tax on the profit left over. Ask your accountant for your percentage.', 'A big deduction is coming: buying equipment or opening a retirement account can lower the bill. Don’t cut the set-aside until the deduction is real.', 'You sell products: sales tax you collect is a separate pile. It was never income, so don’t count it here.']),
-        C('Make it automatic', 'Open a second savings account just for tax. Every time a customer pays, move your percentage across the same day. BillingEase shows the amount on each payment, so the move takes ten seconds.', 'tip'),
-        H('What to do this week'),
-        P('Look at your profit so far this year, multiply it by your percentage, and compare that with what’s sitting in your tax account. If you’re short, top it up a little each week before the next quarterly date, rather than all at once in April.')
+        P('Making Tax Digital for Income Tax (MTD) changes how sole traders and landlords report to HMRC. Instead of one Self Assessment return a year built from a year of paperwork, you keep your records digitally and send a summary every three months. It sounds like four times the work. Done steadily, it’s less: the year-end rush disappears because the year was never left to pile up.'),
+        H('Who has to join, and when'),
+        P('It depends on your qualifying income: your gross income from self-employment and from property, added together, before expenses. HMRC looks at the tax return from two years earlier to decide.'),
+        T('When MTD for Income Tax starts', ['Qualifying income', 'MTD starts', 'Based on your return for'], [['Over £50,000', '6 April 2026', '2024 to 2025'], ['Over £30,000', '6 April 2027', '2025 to 2026'], ['Over £20,000', '6 April 2028', '2026 to 2027']]),
+        P('Gross means turnover, not profit. A designer who invoices £34,000 a year and lets a flat for £9,600 has qualifying income of £43,600, even if the profit is far lower, so they join in April 2027.', 'Turnover, not profit.'),
+        H('What you do each quarter'),
+        P('You keep a digital record of every sale and every cost, in HMRC’s categories. Every quarter, totals for each category go to HMRC through MTD-compatible software. The standard quarters follow the tax year:'),
+        T('Standard quarters and update deadlines', ['Quarter', 'Covers', 'Update due by'], [['1', '6 April to 5 July', '7 August'], ['2', '6 July to 5 October', '7 November'], ['3', '6 October to 5 January', '7 February'], ['4', '6 January to 5 April', '7 May']]),
+        P('You can choose calendar quarters instead (1 April to 30 June, and so on), which many people find easier to remember. Ask your accountant which you use.'),
+        P('After the year ends you, or your accountant, send a final declaration by 31 January. That’s where allowances, other income and adjustments go in, and where your tax bill is worked out. The quarterly updates themselves don’t create a bill.'),
+        R('A quarterly update is a summary of records you already keep. If the records are there, the update takes minutes.'),
+        H('Habits that make it easy'),
+        L(['Record income and costs as they happen, or at least once a week. A week of receipts is ten minutes; a quarter of them is an afternoon.', 'Keep business and personal spending apart, ideally in a separate bank account.', 'Attach a photo or PDF of each receipt or bill to the record, so you and your accountant can check it later.', 'Split costs you use partly for yourself, like a phone or a car, by the share that’s for business.', 'If you’re a landlord too, keep each property’s rent and costs apart from your trade.']),
+        C('Working with an accountant', 'Most people joining MTD will have their accountant send the quarterly updates and the final declaration. Your part is the records. Agree a date each quarter when the books should be up to date, a week or two before the deadline.', 'tip'),
+        H('What to do this month'),
+        P('Add up last tax year’s turnover and property income to see which wave you’re in. Then pick the day of the month you’ll keep your books up to date, and put it in your calendar. If your first quarter starts next April, a few months of practice before then makes it routine.')
       ]
     },
     {
-      slug: 'invoice-vs-quote-vs-receipt', cover: 'papers', category: 'Getting paid', author: 'theo', date: 'Aug 27, 2026',
-      title: 'Invoice vs quote vs receipt',
-      dek: 'Three pieces of paper, three different jobs. Use the right one at the right moment and customers pay faster, with fewer questions.',
-      summary: ['A quote is a price agreed before the work. Nothing is owed yet.', 'An invoice asks for money: what, how much and by when.', 'A receipt proves the money arrived.'],
-      app: { label: 'Send a quote', href: 'SellQuotes.dc.html', line: 'Write a quote, let the customer accept it online, and turn it into the invoice in one click.' },
+      slug: 'allowable-expenses-for-sole-traders', country: 'uk', cover: 'sheet', category: 'Tax', author: 'team', date: WRITTEN,
+      title: 'Allowable expenses for sole traders',
+      dek: 'What you can take off your profit, what you can’t, and how to handle the things you use for both work and home.',
+      summary: ['A cost is allowable when it’s wholly and exclusively for your business.', 'Costs used partly for yourself are split by the business share.', 'Flat rates for mileage and working from home save you adding up the real costs.'],
+      app: { label: 'See how expenses work', href: 'SiteGoingOut.dc.html', line: 'Each expense goes into HMRC’s category as you enter it, with the business share and a photo or PDF attached.' },
       blocks: [
-        P('They look alike: your name at the top, a list of things, a number at the bottom. But each one tells your customer, and the tax office, something different about where you are in the job. Mixing them up is one of the most common reasons an invoice sits unpaid.'),
+        P('You pay tax on profit: what came in, minus allowable expenses. Every allowable cost you record is profit you don’t pay tax on. Every personal cost you record by mistake is a question from HMRC waiting to happen. Here’s how to tell them apart.'),
+        H('The test: wholly and exclusively'),
+        P('A cost is allowable when you spent it only to run your business. Software you use for client work, materials for a job, your accountant’s fee: allowable. Your lunch on a normal working day, your everyday clothes, a parking fine: not allowable, even though you were working at the time.'),
+        T('Common costs and HMRC’s categories', ['Cost', 'Usually', 'HMRC category'], [['Materials and stock you sell', 'Allowable', 'Cost of goods'], ['Phone, broadband, software, stationery', 'Allowable (business share)', 'Office costs'], ['Train fares and hotels for work trips', 'Allowable', 'Car, van and travel'], ['Advertising and your website', 'Allowable', 'Advertising'], ['Accountant’s fees', 'Allowable', 'Professional fees'], ['Bank charges on a business account', 'Allowable', 'Bank and finance charges'], ['Entertaining clients', 'Not allowable', 'Business entertainment'], ['Everyday clothes, commuting, fines', 'Not allowable', 'Not a business expense']]),
+        H('Things you use for both'),
+        P('A phone you use for work and home, a car, a room in your house: you can claim the business share. Pick a fair way to measure it (calls, miles, hours) and use it consistently. If 60% of your phone bill is work, record the whole bill and mark 60% as business.'),
+        EX('A month of mixed costs', [['Phone contract, £36, 60% business', '£21.60'], ['Broadband, £30, 40% business', '£12.00'], ['Design software subscription', '£24.00'], ['Working from home, 60 hours this month (flat rate)', '£18.00']], ['Allowable this month', '£75.60'], 'Example figures. The business shares are your own judgement; keep a note of how you arrived at them.'),
+        H('Flat rates instead of real costs'),
+        P('For some costs you can use HMRC’s simplified expenses: a flat rate instead of working out the real figure.'),
+        T('Simplified expenses', ['What', 'Flat rate'], [['Business miles in your own car or van', '45p a mile for the first 10,000 miles in the tax year, 25p after'], ['Working from home, 25 to 50 hours a month', '£10 a month'], ['Working from home, 51 to 100 hours a month', '£18 a month'], ['Working from home, 101 hours or more a month', '£26 a month']]),
+        P('If you use mileage rates for a vehicle, you can’t also claim its fuel, insurance or repairs. Once you choose a method for a vehicle, you keep it for as long as you use that vehicle in the business.', 'One method per vehicle.'),
+        H('The £1,000 trading allowance'),
+        P('If your costs are very small, you can take £1,000 off your income instead of claiming actual expenses. It suits small side earnings. If your real allowable costs are more than £1,000, claim them instead.'),
+        C('Keep the proof', 'Keep receipts, bills and invoices for at least five years after the 31 January deadline for that tax year. A photo or a PDF is fine, as long as you can read it.', 'note'),
+        R('If you’d have bought it anyway, it probably isn’t a business expense. If you bought it only because of the work, it probably is.')
+      ]
+    },
+    {
+      slug: 'keeping-records-as-a-landlord', country: 'uk', cover: 'maker', category: 'Landlords', author: 'team', date: WRITTEN,
+      title: 'Keeping records as a landlord',
+      dek: 'Rent, costs and mortgage interest for each property, kept so your accountant can file without a single follow-up question.',
+      summary: ['Keep each property’s rent and costs apart, and record your share if you own it jointly.', 'Mortgage interest isn’t an expense: it gives a 20% tax reduction instead, so keep it separate.', 'Property income counts towards the Making Tax Digital thresholds.'],
+      app: { label: 'BillingEase for landlords', href: 'SiteTeams.dc.html', line: 'Properties with your share, rent and costs per property, and mortgage interest kept apart from the rest.' },
+      blocks: [
+        P('Letting a flat or a house is a business in HMRC’s eyes, with its own section of your tax return and, from 2026 onwards, its own quarterly updates under Making Tax Digital. The good news: a landlord’s books are simpler than most. A few records, kept the same way every month, do the job.'),
+        H('One set of records per property'),
+        L(['Rent received, with the date and the tenant.', 'Costs: letting agent fees, repairs, insurance, ground rent and service charges, safety certificates, cleaning between tenants.', 'Mortgage or loan interest, kept on its own.', 'Your share, if you own the property with someone else. You record your share of the rent and costs.']),
+        P('Furnished holiday lettings used to have their own rules. They were abolished from April 2025, so those properties are now treated like any other let.', 'Holiday lets.'),
+        H('Repairs or improvements?'),
+        P('Repairing something back to how it was is an allowable cost: fixing a leaking roof, replacing a broken boiler with a similar one, repainting between tenants. Improving the property, like an extension or a loft conversion, isn’t; it’s a capital cost that may reduce tax when you sell. Replacing furniture, appliances and furnishings in a let home is usually allowable as replacement of domestic items.'),
+        H('Mortgage interest works differently'),
+        P('For residential lets you can’t deduct mortgage interest from your rent. Instead you get a tax reduction of 20% of the interest. That’s why it needs to be kept apart: it goes into a different box, and your accountant needs the full figure.'),
+        EX('One flat in Leeds, a year', [['Rent received, 12 × £800', '£9,600'], ['Letting agent, insurance, repairs', '−£1,840'], ['Profit before mortgage interest', '£7,760'], ['Mortgage interest paid (kept apart)', '£3,000']], ['Tax reduction for the interest (20%)', '£600'], 'Illustrative figures. Income tax is charged on the £7,760 at your own rate, then £600 comes off the bill.'),
+        H('The £1,000 property allowance'),
+        P('If your property income is small, you can take £1,000 off it instead of claiming actual costs. You can’t use it together with the mortgage interest reduction, so it rarely suits a mortgaged let, but it can suit renting out a driveway or a room occasionally.'),
+        C('Making Tax Digital', 'Your gross rent counts towards the MTD thresholds together with any self-employment income. If the two together are over £50,000 you join in April 2026; over £30,000 in April 2027; over £20,000 in April 2028.', 'note'),
+        R('Same day, same way: record the rent when it lands and the cost when you pay it, and the quarter takes care of itself.')
+      ]
+    },
+    {
+      slug: 'vat-registration-in-the-uk', country: 'uk', cover: 'tax', category: 'VAT and SSCL', author: 'team', date: WRITTEN,
+      title: 'VAT registration: when you have to, and when you might want to',
+      dek: 'How the £90,000 threshold works, what changes on your invoices once you register, and why some people register early.',
+      summary: ['You must register when your VAT-taxable turnover in the last 12 months goes over £90,000, or will in the next 30 days.', 'Once registered, you charge VAT on your sales, show it on your invoices and send a VAT return every quarter.', 'You can register voluntarily below the threshold, which suits businesses whose customers are mostly VAT registered.'],
+      app: { label: 'See how invoices work', href: 'SiteComingIn.dc.html', line: 'Say you’re VAT registered and add your VAT number, and every invoice becomes a VAT invoice with the rate on each line.' },
+      blocks: [
+        P('VAT is the tax most small businesses meet first and understand last. The rules are mostly about one number, a threshold, and what happens to your invoices when you cross it.'),
+        H('The threshold is a rolling 12 months'),
+        P('Add up your VAT-taxable turnover (sales that aren’t exempt) for the last 12 months, at the end of every month. Not the tax year, not the calendar year: the last 12 months. If it goes over £90,000, you must register within 30 days of the end of that month. You must also register straight away if you expect to go over £90,000 in the next 30 days alone.'),
+        T('VAT in the UK', ['What', 'Figure'], [['Registration threshold', '£90,000 in any rolling 12 months'], ['Deregistration threshold', '£88,000'], ['Standard rate', '20%'], ['Reduced rate (for example home energy)', '5%'], ['Zero rate (for example most food, books)', '0%']]),
+        H('What changes once you’re registered'),
+        L(['You add VAT to your prices for VAT-able sales, and pay it to HMRC.', 'You can reclaim the VAT on most of your business costs.', 'Your invoices must be VAT invoices: your VAT number, the date of supply, the rate and amount of VAT on each line, and the totals with and without VAT.', 'You send a VAT return, usually every quarter, through Making Tax Digital for VAT software. Your accountant usually does this.']),
+        EX('A VAT invoice from a design studio', [['Brand guidelines, 1 × £1,800', '£1,800.00'], ['Website design, 1 × £1,200', '£1,200.00'], ['VAT at 20%', '£600.00']], ['Total due', '£3,600.00'], 'The £600 isn’t income. It goes to HMRC, less the VAT you paid on your own costs.'),
+        H('Registering before you have to'),
+        P('If most of your customers are VAT-registered businesses, registering early can make sense: they reclaim the VAT you charge, so it costs them nothing, and you reclaim VAT on your own costs. If most of your customers are the public, registering early usually means raising prices or earning less.'),
+        C('VAT stays out of your three numbers', 'VAT you collect isn’t yours, so BillingEase leaves it out of Coming in, Going out and Yours to keep. You see the VAT separately, for your accountant’s return.', 'note'),
+        R('Watch the rolling 12 months, not the tax year. The threshold doesn’t wait for April.')
+      ]
+    },
+    {
+      slug: 'writing-a-sri-lankan-tax-invoice', country: 'lk', cover: 'taxinv', category: 'VAT and SSCL', author: 'team', date: WRITTEN, featured: true,
+      title: 'Writing a Sri Lankan Tax Invoice with VAT and SSCL',
+      dek: 'What has to be on a Tax Invoice, how VAT at 18% and SSCL at 2.5% sit on it, and the mistakes that cause trouble at return time.',
+      summary: ['VAT-registered businesses issue invoices titled “Tax Invoice”, with both parties’ details and VAT shown separately.', 'VAT is 18% for most supplies. SSCL at 2.5% is a separate levy and goes on its own line.', 'Keep invoice numbers in one unbroken series, and never edit an issued Tax Invoice: issue a credit note.'],
+      app: { label: 'See how Tax Invoices work', href: 'SiteComingIn.dc.html', line: 'Add your TIN and VAT number once. Every invoice is then a Tax Invoice, with VAT and SSCL on their own lines.' },
+      blocks: [
+        P('If your business is registered for VAT in Sri Lanka, the invoices you issue are more than a request for payment: they’re the document your customer uses to claim back the VAT, and the one the Inland Revenue Department (IRD) checks against your return. Getting the format right once saves a lot of correcting later.'),
+        H('What goes on a Tax Invoice'),
+        L(['The words “Tax Invoice” at the top.', 'Your business name, address, TIN and VAT registration number.', 'Your customer’s name and address, and their VAT number if they’re registered.', 'The date of the invoice and the date of supply, and a serial number from one unbroken series.', 'A description of what you supplied, with quantity and value.', 'The VAT rate and the VAT amount, shown separately, and the total including VAT.']),
+        P('The IRD revised the required Tax Invoice format from 1 July 2026, ahead of e-invoicing through RAMIS. Check the current field list with your tax practitioner or on ird.gov.lk before you design your own template.', 'A revised format.'),
+        H('VAT and SSCL'),
+        P('VAT is charged at 18% on most supplies, with some zero-rated and exempt. The Social Security Contribution Levy (SSCL) is a separate levy of 2.5% on turnover. Unlike VAT, there’s no credit for SSCL you pay on your own costs, so it needs its own line and its own summary.'),
+        EX('A Tax Invoice from a design studio in Colombo', [['Design services', 'Rs 250,000.00'], ['SSCL 2.5%', 'Rs 6,250.00'], ['VAT 18% (on Rs 256,250)', 'Rs 46,125.00']], ['Total', 'Rs 302,375.00'], 'Layout only. Whether SSCL sits inside the VAT base like this is one of the details to confirm with your practitioner or the IRD before you rely on it.'),
+        H('When you have to register'),
+        P('You must register for VAT once your taxable supplies pass the registration threshold. Published figures for the current threshold differ, so confirm the figure that applies to you with your tax practitioner or the IRD. Below the threshold you issue ordinary invoices, without VAT.'),
+        H('Mistakes that cause trouble'),
+        L(['Gaps or repeats in invoice numbers. Use one series and never reuse a number, even for a cancelled invoice.', 'Editing an invoice after it’s issued. Issue a credit note for the difference instead, and a new invoice if needed.', 'Counting VAT and SSCL as income. They pass through your account on their way to the IRD.', 'Missing your customer’s VAT number when they’re registered. Without it they may not be able to claim the VAT back.']),
+        C('Your three numbers leave them out', 'BillingEase keeps VAT and SSCL out of Coming in, Going out and Yours to keep, and shows them in their own summary for each period, ready for your return.', 'note'),
+        R('A Tax Invoice is a tax document first and a bill second. Number it, date it, and don’t change it once it’s out.')
+      ]
+    },
+    {
+      slug: 'epf-etf-and-apit-basics', country: 'lk', cover: 'hire', category: 'Payroll', author: 'team', date: WRITTEN,
+      title: 'EPF, ETF and APIT: payroll basics for your first employee',
+      dek: 'What you take from each salary, what you add on top, and what goes where every month once someone is on your payroll.',
+      summary: ['EPF: 8% from the employee and 12% from you. ETF: 3% from you. Both on EPF-liable earnings.', 'APIT is income tax taken from salaries using the IRD’s tables, and paid to the IRD monthly.', 'Each month: pay salaries, pay EPF and ETF, pay APIT, and keep the schedules.'],
+      app: { label: 'See payroll in BillingEase', href: 'SiteGoingOut.dc.html', line: 'Payslips with EPF, ETF and APIT worked out, and the monthly schedules to pay and file yourself.' },
+      blocks: [
+        P('Hiring your first employee in Sri Lanka brings three new names into your books: EPF, ETF and APIT. Each is a percentage or a table, each has its own monthly payment, and each needs a record. Here’s what they are, in the order you’ll meet them.'),
+        H('EPF: the Employees’ Provident Fund'),
+        P('EPF is a retirement fund. Each month the employee contributes 8% of their EPF-liable earnings, taken from their pay, and you add 12% on top. Both go to the EPF, administered through the Central Bank of Sri Lanka. EPF-liable earnings are usually basic salary plus regular allowances; ask your practitioner which allowances count for your staff.'),
+        H('ETF: the Employees’ Trust Fund'),
+        P('ETF is paid by you alone: 3% of the same earnings. Nothing comes out of the employee’s pay for it.'),
+        H('APIT: tax on salaries'),
+        P('APIT (Advance Personal Income Tax) is income tax you deduct from salaries and pay to the IRD. The amount comes from the IRD’s tax tables, based on monthly pay. Since 1 April 2025, the first Rs 1.8 million a year (Rs 150,000 a month) is covered by the personal relief, so lower salaries have no APIT to deduct.'),
+        EX('One monthly salary of Rs 200,000', [['Gross salary', 'Rs 200,000'], ['EPF, employee 8% (from pay)', '− Rs 16,000'], ['APIT (from the IRD tables)', '− from the tables'], ['EPF, employer 12% (on top)', 'Rs 24,000'], ['ETF, employer 3% (on top)', 'Rs 6,000']], ['Cost to you before APIT', 'Rs 230,000'], 'Layout only: the APIT figure depends on the current tables, and the contribution base on which allowances are EPF-liable.'),
+        H('What happens every month'),
+        T('A month of payroll', ['What', 'Who pays', 'When'], [['Net salaries', 'You, to each employee', 'Payday'], ['EPF (8% + 12%) with the contribution schedule', 'You', 'By the end of the following month'], ['ETF (3%) with its schedule', 'You', 'By the end of the following month'], ['APIT deducted', 'You, to the IRD', 'By the 15th of the following month']]),
+        P('Late EPF and ETF payments attract surcharges, so set a reminder a few days before each date. Confirm the current deadlines and filing channels with your practitioner; they change from time to time.', 'Deadlines matter.'),
+        H('At the end of the year'),
+        P('You give each employee a certificate of the APIT deducted, and the totals go into your own return and to your practitioner. Keep payslips and schedules for at least five years.'),
+        C('What BillingEase does, and doesn’t', 'BillingEase works out EPF, ETF and APIT, makes payslips and the monthly schedules, and posts the costs to your books. You pay and file through the EPF, ETF and IRD channels yourself.', 'note'),
+        R('Two percentages and a table, every month, on time. Payroll is mostly about the calendar.')
+      ]
+    },
+    {
+      slug: 'cheques-lankaqr-and-getting-paid', country: 'lk', cover: 'cheque', category: 'Getting paid', author: 'team', date: WRITTEN,
+      title: 'Cheques, LankaQR and bank transfers: recording how you get paid',
+      dek: 'How to record each kind of payment so your books match your bank, including post-dated and returned cheques.',
+      summary: ['Record every payment against its invoice on the day you receive it, with how it was paid.', 'For a cheque, note the number, the bank and the date written on it, and check it clears.', 'A returned cheque means the invoice is unpaid again: reverse the payment, don’t delete it.'],
+      app: { label: 'See how payments work', href: 'SiteComingIn.dc.html', line: 'Record a payment on any invoice by bank transfer, cheque, cash or LankaQR, with the cheque number and bank kept on it.' },
+      blocks: [
+        P('In Sri Lanka a single month of payments can include a bank transfer, a stack of cheques, cash at the counter and a LankaQR scan. Each lands in your bank differently. Recording them the same way every time is what keeps your books and your bank statement in agreement.'),
+        H('Bank transfers'),
+        P('The simplest. Record the payment against the invoice on the date it reaches your account, and add the reference your customer used. Put your bank details on every invoice, so customers don’t have to ask.'),
+        H('Cheques'),
+        L(['Record the cheque number, the bank and branch, and the date written on the cheque.', 'Record the payment on the day you receive it, then check it clears a few days after you deposit it.', 'A post-dated cheque can’t be banked before its date. Keep the invoice open until then, with a note of the cheque.', 'Banks generally won’t accept a cheque that’s more than six months old, so bank cheques promptly.']),
+        P('If a cheque is returned unpaid, reverse the payment rather than deleting it. The invoice is owed again, and the history shows what happened. Bank charges for the returned cheque are a cost of yours.', 'When a cheque bounces.'),
+        H('LankaQR'),
+        P('LankaQR is the Central Bank of Sri Lanka’s national QR standard: a customer scans your code in their banking or payment app, and the money comes to your account. Record it as a LankaQR payment with the date and the reference from your bank’s notification, the same as a transfer.'),
+        H('Cash'),
+        P('Give a receipt for every cash payment, record it the same day, and bank cash regularly. Cash that isn’t recorded is the hardest thing to explain to a tax practitioner later.'),
+        T('Recording each kind of payment', ['How they paid', 'Record', 'Check'], [['Bank transfer', 'Date it arrived, reference', 'Matches your statement'], ['Cheque', 'Number, bank, date on the cheque', 'Cleared after deposit'], ['LankaQR', 'Date, reference', 'Matches your statement'], ['Cash', 'Date, your receipt number', 'Banked, or counted at month end']]),
+        C('Send a reminder on WhatsApp', 'In BillingEase, a reminder for an unpaid invoice can go by email or open WhatsApp with the message ready, which is often how customers reply fastest.', 'tip'),
+        R('Record the payment the day it happens, with how it was paid. The bank statement then becomes a check, not a puzzle.')
+      ]
+    },
+    {
+      slug: 'working-with-your-accountant', country: 'both', cover: 'globe', category: 'Working together', author: 'team', date: WRITTEN, featured: true,
+      title: 'Working with your accountant or tax practitioner',
+      dek: 'What they need from you, when they need it, and how to keep the books so their questions are few and their bill is smaller.',
+      summary: ['Your job is the records: every sale and cost, in the right category, with the receipt attached.', 'Their job is the filing and the judgement calls. Ask before you guess.', 'Agree a date each month or quarter when your books are up to date, and keep to it.'],
+      app: { label: 'BillingEase for accountants', href: 'SitePartners.dc.html', line: 'Your accountant sees the same books you do, so there’s nothing to send back and forth.' },
+      blocks: [
+        P('Most small businesses split the work: you keep the books, and an accountant or tax practitioner files the returns and handles the tricky parts. It works best when both sides know exactly where one job ends and the other begins.'),
+        H('What they need from you'),
+        L(['Every sale: invoices you issued, and payments you received.', 'Every cost, in the right category, with a photo or PDF of the receipt or bill.', 'Notes on anything unusual: a large purchase, a cost that’s partly personal, money you put in or took out.', 'Answers to their questions, before the deadline rather than on it.']),
+        H('In the UK'),
+        P('If you’re joining Making Tax Digital, your accountant will usually send the quarterly updates and the final declaration from your records. Agree a date each quarter, a week or two before the update deadline, when your books will be complete for that quarter. If you’re VAT registered they usually file your VAT return too.'),
+        P('The accountant files; you keep the records. BillingEase doesn’t file to HMRC itself.', 'Who files what.'),
+        H('In Sri Lanka'),
+        P('Your tax practitioner usually prepares your income tax return, and, if you’re registered, your VAT and SSCL returns. If you run payroll they may also check your EPF, ETF and APIT schedules. Agree a date each month when the month’s books are done, especially if you file VAT monthly.'),
+        P('At the end of the year of assessment, your books are handed to TaxWise.lk for the return, by you or by your practitioner. Neither BillingEase nor TaxWise.lk files to the IRD on your behalf.', 'The year-end hand-off.'),
+        H('A monthly routine'),
+        T('Twenty minutes, once a month', ['Step', 'What you do'], [['1. Sales', 'Check every invoice for the month is in, and record payments you’ve received.'], ['2. Costs', 'Enter expenses and bills you haven’t yet, and attach the receipts.'], ['3. Check', 'Compare your bank statement’s closing balance with your books, and find any difference.'], ['4. Chase', 'Send reminders for anything overdue.'], ['5. Look', 'Read your three numbers. Did anything surprise you?']]),
+        R('Ask before you guess. A two-line question now is cheaper than an amended return later.'),
+        H('Fixing mistakes'),
+        P('If you find a mistake in a period your accountant has already filed, tell them rather than changing it quietly. In BillingEase, filed periods are locked and corrections are recorded as a new entry that reverses the old one, so both of you can see what changed and when.'),
+        C('They see what you see', 'When your accountant works with you in BillingEase, they look at the same books, with the receipts attached. No exports, no spreadsheets by email.', 'tip')
+      ]
+    },
+    {
+      slug: 'invoice-quote-or-credit-note', country: 'both', cover: 'papers', category: 'Getting paid', author: 'team', date: WRITTEN,
+      title: 'Invoice, quote or credit note?',
+      dek: 'Three documents, three different jobs. Use the right one at the right moment and customers pay faster, with fewer questions.',
+      summary: ['A quote is a price agreed before the work. Nothing is owed yet.', 'An invoice asks for money: what, how much and by when.', 'A credit note takes some or all of an invoice back. You never edit an invoice once it’s sent.'],
+      app: { label: 'See quotes and invoices', href: 'SiteComingIn.dc.html', line: 'Write a quote, mark it accepted, and turn it into the invoice without typing it again.' },
+      blocks: [
+        P('They look alike: your name at the top, a list of things, a number at the bottom. But each tells your customer, and the tax office, something different about where you are in the job.'),
         H('A quote: “here’s what it would cost”'),
-        P('A quote comes before any work. It tells the customer what you’ll do and what it will cost, so they can say yes. Nothing is owed yet, and it doesn’t count as income. A good quote has a clear description of the work, a price for each part, what’s not included, and an expiry date (30 days is common) so last spring’s prices don’t come back to haunt you.'),
-        P('Some people use “estimate” for a best guess that may change and “quote” for a fixed price. Customers don’t always know the difference, so if you mean fixed, write “fixed price” on the page.', 'Quote or estimate?'),
+        P('A quote comes before any work. It tells the customer what you’ll do and what it will cost, so they can say yes. Nothing is owed yet, and it isn’t income. A good quote has a clear description, a price for each part, what’s not included, and an expiry date so old prices don’t come back to haunt you.'),
         H('An invoice: “please pay this”'),
-        P('An invoice asks for payment for work done or goods delivered, or, with a deposit, about to be. It’s the moment money becomes owed, and in BillingEase it’s the moment the amount shows in Coming in. A useful invoice has a unique number, the date, a due date, what you did, the total, any tax, and how to pay.'),
-        C('Due dates beat payment terms', '“Net 30” makes your customer do arithmetic. “Due November 3” doesn’t. Write the date.', 'note'),
-        H('A receipt: “thanks, you’ve paid”'),
-        P('A receipt confirms that money changed hands. Your customer needs it for their own books and expense claims, and you keep a copy to prove what came in. You rarely need to make one by hand: when an invoice is paid online, the receipt goes out automatically.'),
-        P('Receipts you get from others matter just as much. They’re your proof for every expense, which is why it’s worth snapping them the moment they arrive.'),
-        T('Side by side', ['', 'Quote', 'Invoice', 'Receipt'], [['When', 'Before the work', 'After it, or for a deposit', 'After payment'], ['Is money owed?', 'No', 'Yes', 'No, it’s paid'], ['In Coming in?', 'No', 'Yes, as expected', 'Yes, as received'], ['Has a date that matters', 'Expiry date', 'Due date', 'Date paid'], ['Typical number', 'Q-0031', 'INV-0156', 'Sent with payment']]),
-        H('How they connect: a worked example'),
-        P('Here’s one job from start to finish, for a design studio making lobby signs for an architecture firm.'),
-        EX('Greenline Architects: lobby signage', [['Quote Q-0031 sent Sep 30', '$4,200'], ['Accepted Oct 6, deposit invoice (50%)', '$2,100'], ['Deposit paid Oct 8, receipt sent', '$2,100'], ['Final invoice after install, Oct 27', '$2,100']], ['Total billed', '$4,200'], 'The quote itself never counted as income. Coming in grew by $2,100 with each invoice, and when the second receipt went out the whole $4,200 was paid.'),
-        Q('When a customer says yes to a quote, turn it into the invoice in one step. Retyping is where the mistakes come from.', 'Owen Pritchard'),
-        H('Common mix-ups'),
-        L(['Sending an invoice when you meant a quote: the customer may pay it, or their accounts team may log it as a debt. Send a quote first for anything not yet agreed.', 'Changing an invoice after sending it: don’t edit it quietly. Void it and send a corrected one, or give money back to the customer (a credit note) for the difference.', 'Treating a “pro forma” as an invoice: it’s a quote dressed up as an invoice, often for customs or a purchase order. Nothing is owed until the real invoice.']),
-        P('If you remember one thing: quote to agree, invoice to ask, receipt to confirm.')
-      ]
-    },
-    {
-      slug: 'when-a-customer-pays-late', cover: 'late', category: 'Getting paid', author: 'hana', date: 'Sep 29, 2026',
-      title: 'What to do when a customer pays late',
-      dek: 'A calm, step-by-step plan from the first friendly nudge to the last resort, with the exact words to use.',
-      summary: ['Most late invoices are forgotten, not refused. Start friendly.', 'Remind on a schedule: before, on and after the due date.', 'A late fee only works if it was in your terms from the start.'],
-      app: { label: 'See overdue invoices', href: 'SellInvoices.dc.html', line: 'Every invoice shows when it was opened and which reminders went out. Overdue ones float to the top.' },
-      blocks: [
-        P('Ask any group of small business owners and most will have an invoice that’s late right now. Almost always the reason is dull: the invoice went to the wrong inbox, the person who approves payments was away, or it simply slipped. That’s good news, because dull problems have simple fixes.'),
-        H('Before it’s late'),
-        L(['Send the invoice to the person who pays, not only the person who hired you. Ask “who handles invoices on your side?” at the start of every job.', 'Put a real due date on it, and say how to pay. Every extra step (log in, find your bank details, type them in) adds days.', 'Let them pay from a link, by card or bank transfer. Invoices with a pay button get paid noticeably faster than ones without.']),
-        H('A reminder schedule that works'),
-        P('Reminders feel awkward to send, so people put them off. Decide the schedule once, and stop deciding each time.'),
-        T('Reminders we suggest', ['When', 'Tone', 'What to say'], [['3 days before', 'Friendly', '“A heads-up that INV-0158 for $3,200 is due on Friday. Here’s the link to pay.”'], ['On the due date', 'Plain', '“INV-0158 is due today. You can pay here in a minute.”'], ['7 days late', 'Direct', '“INV-0158 is now a week overdue. When can I expect it?”'], ['14 days late', 'Firm', '“This is two weeks overdue. As in our terms, a late fee applies from day 30.”'], ['30 days late', 'A phone call', 'Ask what’s in the way, and agree a date.']]),
-        P('In BillingEase, Pro sends the first four for you, at times you choose, and stops the moment the customer pays.'),
-        Q('Ask a question, not for a favor. “When can I expect this?” gets an answer. “Sorry to bother you” gets ignored.', 'Hana Sato'),
-        H('When it’s 30 days late'),
-        P('Call. An email is easy to leave unread; a polite phone call rarely is. Ask whether there’s a problem with the work, and agree a date. If they can’t pay it all at once, offer a plan of two or three payments, each with its own due date. Something now is worth more than everything someday.'),
-        P('You don’t have to stop a job halfway, but don’t start the next one until the overdue invoice is settled. Say so kindly, and in writing.', 'Pause new work.'),
-        H('Late fees, done right'),
-        P('A late fee only holds up if it was in your terms before the work started, ideally on the quote the customer accepted. A common choice is 1.5% a month on the overdue amount. Some states cap what you can charge, so check yours before you pick a number.'),
-        EX('Lumen Dental Group, INV-0158', [['Invoice amount, due Sep 4', '$3,200'], ['30 days late: one month at 1.5%', '$48'], ['60 days late: two months at 1.5%', '$96']], ['Owed at 60 days', '$3,296'], 'A $48 fee won’t make you rich. What it does is move your invoice to the top of their pile.'),
-        H('The last resort'),
-        P('If 60 to 90 days pass and calls go nowhere, send a formal letter saying what you’ll do, and by which date. After that, small claims court handles most small business debts without a lawyer (the limit is between about $5,000 and $25,000 depending on the state), or a collection agency will chase the debt for a share of it, often 25 to 50%. Very few invoices get this far. The letter alone usually does it.'),
-        C('If you have to give up', 'Mark the invoice as bad debt rather than deleting it. It comes off Coming in, the history stays, and your accountant can treat it properly at tax time.', 'note'),
-        P('And next time, ask for a deposit before you start. A customer who has paid half up front almost always pays the rest.')
-      ]
-    },
-    {
-      slug: 'sales-tax-for-makers-selling-online', cover: 'maker', category: 'Tax', author: 'ines', date: 'Jul 21, 2026',
-      title: 'Sales tax for makers selling online',
-      dek: 'Marketplaces collect it for you; your own website might not. A plain map of who collects what, and when you need to register.',
-      summary: ['Craftmarket, Parcelhub and other marketplaces collect and pay sales tax for you in every US state that has it.', 'On your own website you collect for your home state, plus any state where you pass its threshold.', 'Keep collected sales tax apart from your money. It was never yours.'],
-      app: { label: 'See sales tax you collected', href: 'BooksTax.dc.html', line: 'Sales tax is tracked per sale and per state, with the amount and the filing date ready before it’s due.' },
-      blocks: [
-        P('If you make things and sell them online, sales tax probably sounds like a maze of 45 states and thousands of local rates. In practice, for most small makers, it comes down to three questions: where are you, where do your buyers live, and how much do you sell to each place.'),
-        H('It depends on where the buyer is'),
-        P('Since a 2018 Supreme Court case, South Dakota v. Wayfair, states can require sales tax on sales into the state even if you have no shop or staff there. Each state set a threshold: once your sales into it pass the line in a year, you register and start collecting. For most states the line is $100,000 of sales; a few also count the number of orders.'),
-        P('Below every other state’s threshold, you only deal with your home state. That describes most makers.'),
-        H('Marketplaces handle their own sales'),
-        P('Craftmarket, Parcelhub, eBay and similar sites are “marketplace facilitators”. They charge the buyer sales tax, file it and pay it, in every state that has one. You don’t collect anything extra on those orders, and in most states those sales don’t count toward your own threshold. A handful of states do count them, so check any state where you’re getting close.'),
-        H('Your own website is your job'),
-        P('On your own shop (your website, a pay link on an invoice, a market stall), you collect tax from buyers in your home state, and from buyers in any other state where you’ve passed its threshold.'),
-        EX('Juniper & Wick, candles, Columbus, Ohio · 2026 so far', [['Craftmarket sales (Craftmarket collects the tax)', '$38,200'], ['Website sales, all states', '$21,400'], ['Website sales to Ohio buyers', '$6,200'], ['Ohio rate in Franklin County', '7.5%']], ['Sales tax to collect and file', '$465'], 'Website sales into every other state are far below that state’s threshold, so no other state is involved yet. The Craftmarket orders are already taken care of.'),
-        H('What’s taxable'),
-        P('Most physical goods are. Some states treat clothing, food or handmade art differently, and shipping you charge the buyer is taxed in some states and not others. Services like design or repairs usually aren’t taxed, though a few states tax some of them.'),
-        T('What usually applies (always check your state)', ['Item', 'Usually taxed?'], [['Candles, jewelry, prints, ceramics', 'Yes'], ['Clothing', 'In most states; a few exempt basics'], ['Shipping charged to the buyer', 'Depends on the state'], ['Digital downloads and patterns', 'In about half of states'], ['Design or consulting services', 'Rarely']]),
-        H('Registering and filing'),
-        L(['Register with your home state before your first taxable sale. It’s usually free and online.', 'Your state tells you how often to file (monthly, quarterly or yearly), based on how much you collect.', 'File even when you owe nothing. A “zero return” still counts, and skipping it can mean a fine.', 'Keep a record of the tax on each sale, by state. That’s the first thing an audit asks for.']),
-        Q('Sales tax you collect isn’t income. It passes through your account on its way to the state, so treat it like someone else’s money.', 'Lucía Ferrer, EA'),
-        C('How BillingEase keeps it apart', 'Tax you collect on product sales is held out of Yours to keep and shown as “Sales tax you collected”, so you never spend it by mistake.', 'note'),
-        P('If you start selling at wholesale, ask each shop for its resale certificate. With one on file, you don’t charge them sales tax; the shop collects it when it sells to the final buyer.')
-      ]
-    },
-    {
-      slug: 'bookkeeping-in-20-minutes-a-month', cover: 'clock', category: 'Bookkeeping', author: 'renata', date: 'Jun 30, 2026',
-      title: 'Bookkeeping in 20 minutes a month',
-      dek: 'A once-a-month routine that keeps your books ready for your accountant, with a timer on each step.',
-      summary: ['Pick one day a month and protect 20 minutes for it.', 'Sort, match, check against the bank, chase, look: in that order.', 'Little and often beats a weekend of shoeboxes in March.'],
-      app: { label: 'Check against your bank statement', href: 'BooksReconcile.dc.html', line: 'Type the balance from your statement. BillingEase lines it up and shows exactly what’s different, if anything.' },
-      blocks: [
-        P('Bookkeeping has a reputation for eating weekends. That happens when it’s left for a year. Done once a month, with a connected bank, it’s small: about a cup of coffee’s worth of work. This is the routine I give every new client.'),
-        H('Before you start'),
-        P('Connect your business bank account and cards so transactions arrive on their own, and keep business and personal spending in separate accounts. Those two decisions do more than any routine. If you mix them, every month starts with untangling.'),
-        P('If you have an accountant, ask them one question before your first month: “Which categories do you want me to use?” Ten minutes of their time now saves an hour of re-sorting at year-end, and the reports they pull from your books will look the way they expect.'),
-        H('The routine'),
-        T('Your monthly 20 minutes', ['Step', 'Time', 'What you do'], [['1. Sort', '5 min', 'Give every new transaction a category. Most are sorted already; you only do the leftovers.'], ['2. Match receipts', '4 min', 'Snap or forward receipts still in your bag or inbox, and check they matched.'], ['3. Check against the bank', '5 min', 'Compare the month-end balance with your bank statement. They should agree.'], ['4. Harborline', '3 min', 'Look at overdue invoices. Nudge anyone more than a week late.'], ['5. Look', '3 min', 'Read your three numbers. Did anything surprise you?']]),
-        H('Step 3 is the one people skip'),
-        P('Checking against your bank statement, which accountants call reconciling, is how you know nothing is missing or counted twice. You take the closing balance on the statement, compare it with what your books say, and explain any difference. Most months there isn’t one. When there is, it’s nearly always one of three things: a bank fee you haven’t recorded, a payment that hasn’t cleared yet, or something entered twice.'),
-        EX('A September check, start to finish', [['Bank statement closing balance', '$18,437.10'], ['Your books say', '$18,379.10'], ['Difference to explain', '$58.00'], ['Check #1042, written Sep 28, not cashed yet', '+$73.00'], ['Monthly bank fee, not recorded yet', '−$15.00']], ['Left to explain', '$0.00'], 'Record the $15 fee and leave the check alone: it will clear next month. Done in four minutes.'),
-        Q('A difference of a few dollars is a clue, not a disaster. It’s nearly always a fee, a refund, or something that hasn’t cleared.', 'Renata Okafor, CPA'),
-        H('Three habits that keep it to 20 minutes'),
-        L(['Snap receipts when you get them. A receipt photographed at the counter takes five seconds; one found in March takes five minutes, if you find it at all.', 'Add a note to anything odd. “Lunch with Greenline about the signage job” is enough to turn a mystery into a business meal.', 'Never fix a past month quietly. If you find a mistake after your accountant has closed a month, tell them, so their numbers and yours stay the same.']),
-        H('Once a quarter, add ten minutes'),
-        P('Every three months, also compare your tax set-aside with what you’ll owe, make your quarterly estimated tax payment if you’re in the US, and file sales tax if you collect it. Put those dates in your calendar today, while you’re thinking about it.'),
-        H('Once a year, hand it over'),
-        P('If you’ve done the monthly routine, year-end is a short email: give your accountant access, and they’ll find the books already sorted, matched and checked. That alone can take hours off their bill.'),
-        C('Pick your day', 'The 3rd of the month works well. Your bank statement is out, and most every-month costs have already gone through.', 'tip')
-      ]
-    },
-    {
-      slug: 'hiring-your-first-employee', cover: 'hire', category: 'Team', author: 'kofi', date: 'May 12, 2026',
-      title: 'Hiring your first employee: payroll basics',
-      dek: 'What a hire really costs, the forms you need before day one, and what payroll does every payday.',
-      summary: ['Budget about 10% on top of salary for taxes and insurance, more with benefits.', 'Before day one: an EIN, state registration, I-9, W-4, a new-hire report and workers’ comp.', 'Every payday: withhold, pay and deposit. Every quarter and year: file.'],
-      app: { label: 'See payroll in the demo', href: 'SpendPayroll.dc.html', line: 'Run payroll in two clicks: pay stubs, direct deposit and payroll tax are handled, and each run lands in Going out.' },
-      blocks: [
-        P('Your first hire is a big step, and the paperwork has a reputation for being worse than it is. Here’s what changes when someone goes from “helping out” to being on payroll, in the order you’ll meet it.'),
-        H('Employee or contractor?'),
-        P('First, check you need an employee at all. If you set their hours, provide their tools and direct how the work is done, they’re probably an employee in the eyes of the IRS and your state, whatever your agreement calls them. Contractors run their own business, choose how to do the work and usually have other clients. Getting this wrong is expensive: back taxes plus penalties.'),
-        H('Before their first day'),
-        L(['An Employer Identification Number (EIN) from the IRS. It’s free and takes about ten minutes online.', 'Registration with your state for payroll tax and unemployment insurance.', 'Form I-9, which confirms they can work in the US, completed within three business days of their start date.', 'Form W-4, so you know how much federal income tax to withhold. Most states have their own version too.', 'A new-hire report to your state, usually within 20 days.', 'Workers’ compensation insurance, required in almost every state once you have an employee.']),
-        H('What a hire really costs'),
-        P('Salary is only part of it. On top, you pay the employer’s half of Social Security and Medicare, federal and state unemployment tax, and insurance.'),
-        EX('A designer on $52,000, paid every two weeks', [['Salary: 26 paychecks of $2,000', '$52,000'], ['Social Security and Medicare (7.65%)', '$3,978'], ['Federal unemployment (0.6% of the first $7,000)', '$42'], ['State unemployment (about 3% of the first $12,000)', '$360'], ['Workers’ comp insurance, office work', '$300']], ['Total cost for the year', '$56,680'], 'About 9% on top of salary before benefits. Add health insurance or a retirement match and 15 to 25% is common.'),
-        P('Benefits are optional for a business your size in most states, but they matter when you’re competing for good people. Even a simple retirement plan with a small match, or a fixed monthly amount toward health insurance, can make a modest salary more attractive.'),
-        H('What happens every payday'),
-        P('For each paycheck you work out gross pay, take out the employee’s share of taxes, pay them the rest, and deposit the withheld tax together with your own share with the IRS, usually monthly when you’re small.'),
-        T('One $2,000 paycheck (single, standard W-4, rough)', ['', 'Amount'], [['Gross pay', '$2,000.00'], ['Social Security (6.2%)', '−$124.00'], ['Medicare (1.45%)', '−$29.00'], ['Federal income tax', '−$165.00'], ['State income tax', '−$80.00'], ['Take-home pay', '$1,602.00']]),
-        P('The $153 for Social Security and Medicare comes out of their pay, and you add another $153 of your own. Both go to the IRS.'),
-        H('Quarterly and yearly filings'),
-        P('Every quarter you file Form 941 for federal withholding, plus your state’s returns. Every January you file Form 940 for federal unemployment and give each employee a W-2 by January 31. Contractors you paid over the yearly threshold get a 1099-NEC instead.'),
-        Q('Run your first payroll a few days early. The first one always raises a question, and you want time to answer it before payday.', 'Kofi Mensah'),
-        C('Let software do the arithmetic', 'Payroll software works out withholding, deposits the tax and files the forms for you. In BillingEase it’s the Payroll add-on, ' + PAYROLL.price + ', and every run lands in Going out on its own.', 'tip'),
-        P('One last thing: write down what you agreed (pay, hours, start date, time off) in a short offer letter. It saves both of you from misremembering later.')
-      ]
-    },
-    {
-      slug: 'charging-customers-abroad', cover: 'globe', category: 'Going global', author: 'renata', date: 'Apr 21, 2026',
-      title: 'Charging customers abroad: currencies and VAT',
-      dek: 'Which currency to bill in, how not to lose money on the exchange, and when VAT is, and isn’t, your problem.',
-      summary: ['Bill in the customer’s currency when it helps win or keep the work, with a small buffer built in.', 'Exchange rates move: the dollars you receive can differ from the dollars you invoiced.', 'Selling services from the US to a business in the EU or UK usually means no VAT from you: the customer reverse-charges it.'],
-      app: { label: 'See the reports in the demo', href: 'BooksReports.dc.html', line: 'Invoice in euros or pounds, see the rate on the day you sent it and the day you were paid, and the gain or loss in between.' },
-      blocks: [
-        P('Overseas customers are usually a sign things are going well. They also bring two new questions: which currency to use, and whether you need to charge VAT. Here’s how to answer both without hiring a specialist.'),
-        H('Choosing a currency'),
-        P('Billing in dollars puts the exchange risk on your customer; billing in theirs puts it on you. Larger companies often insist on paying in their own currency, and a small customer is more likely to say yes to a price they understand at a glance. If you do bill in their currency, quote with a small buffer of 2 to 3% to cover rate swings and conversion fees.'),
-        H('Why the dollars don’t always match'),
-        P('An invoice in euros is worth one number of dollars on the day you send it and another on the day it’s paid. The difference is a real gain or loss, and it belongs in your books like any other.'),
-        EX('Kaffeehaus Berlin GmbH: café rebrand', [['Invoice €6,500 at 1 EUR = 1.09 USD', '$7,085'], ['Paid 30 days later at 1 EUR = 1.07 USD', '$6,955'], ['Exchange loss', '−$130'], ['Bank’s conversion fee (0.5%)', '−$35']], ['Dollars you actually keep', '$6,920'], 'Quoting €6,700 instead, a 3% buffer, would have covered both the rate change and the fee.'),
-        H('Getting paid without losing 4%'),
-        L(['Ask to be paid into a multi-currency account, so euros arrive as euros and you convert when the rate suits you.', 'Avoid international wires where you can: both banks may take $15 to $45 each.', 'Cards work everywhere but cost more. For large invoices, a local bank transfer (SEPA in Europe) is usually cheapest.']),
-        H('VAT, in plain words'),
-        P('VAT is the European and British cousin of sales tax. It’s charged at each step of a sale, and businesses claim back the VAT they pay. Whether you charge it depends mostly on who your customer is and what you sell them.'),
-        T('If you’re a US business selling services', ['Your customer', 'Do you charge VAT?'], [['A business in the EU with a VAT number', 'No. Write “VAT reverse charged to the customer” and their VAT number on the invoice.'], ['A business in the UK', 'No. The UK business accounts for it under the reverse charge.'], ['Consumers in the EU buying digital services', 'Yes, at their country’s rate, usually through the EU’s One Stop Shop.'], ['Consumers in the EU, services done in person', 'Usually no, but check the rule for your service.']]),
-        Q('Check the customer’s VAT number before the first invoice. The EU has a free online checker, and a valid number is what makes the reverse charge stand up.', 'Renata Okafor, CPA'),
-        H('Physical products are different'),
-        P('Shipping goods abroad brings import VAT and customs duty, usually paid by the buyer on delivery. Say so clearly at checkout so a parcel isn’t refused at the door. For EU consumers, lower-value parcels can use a scheme called IOSS to collect VAT up front, so the buyer pays nothing extra on arrival.'),
-        C('In BillingEase', 'Each invoice can have its own currency. We record the rate on the day you send it and on the day you’re paid, and show any gain or loss under Yours to keep.', 'note'),
-        P('Write your bank details for international payments (SWIFT/BIC and IBAN, or the local details your multi-currency account gives you) on the invoice itself. A customer who has to ask is a customer who pays next week.')
-      ]
-    },
-    {
-      slug: 'switching-from-a-spreadsheet', cover: 'sheet', category: 'Bookkeeping', author: 'hana', date: 'Mar 17, 2026',
-      title: 'Switching from a spreadsheet',
-      dek: 'The signs you’ve outgrown it, the five things to bring over, and a one-afternoon plan to move without losing a number.',
-      summary: ['Switch on the first day of a month or quarter, never midway.', 'Bring over five things: opening balances, customers, open invoices, unpaid bills and every-month costs.', 'Keep both going for one month, compare, then retire the spreadsheet.'],
-      app: { label: 'How switching works', href: 'SiteSwitch.dc.html', line: 'Bring your customers, open invoices and balances across from a spreadsheet, Wave or QuickBooks, with a person to help.' },
-      blocks: [
-        P('Spreadsheets are a fine way to start. They’re free, flexible and familiar. But at some point you’re spending Sunday evenings copying bank lines into rows, and you still can’t say what you can pay yourself this month. That’s the point to switch, and it’s less work than it sounds.'),
-        H('Signs you’ve outgrown it'),
-        L(['You copy transactions from your bank by hand, every month.', 'You’ve sent an invoice twice, or not at all, because the list was out of date.', 'Your accountant asks for “the books” and you send three files and an apology.', 'You can’t say what you made last month without an hour of formulas.', 'Someone else needs to help, and the spreadsheet only makes sense to you.']),
-        P('None of these mean you did anything wrong. A spreadsheet is built for one person asking one kind of question. A growing business asks lots of questions, of lots of people, at once, and wants the answers to agree.'),
-        H('Pick a clean start date'),
-        P('Choose the first day of a month, ideally the first day of a quarter. Everything before that date stays in the spreadsheet (keep it; your accountant may want it). Everything from that date lives in your new books. Starting midway means splitting a month across two systems, which is exactly where numbers get lost.'),
-        H('The five things to bring over'),
-        T('What to move, and where to find it', ['What', 'Where it is now', 'Time'], [['Opening bank balances', 'Your bank statement, on your start date', '5 min'], ['Customers', 'Your client list: names, emails, addresses', '15 min'], ['Open invoices', 'Anything sent but not paid yet', '15 min'], ['Unpaid bills', 'What you still owe suppliers', '10 min'], ['Every-month costs', 'Rent, software, insurance', '10 min']]),
-        P('That’s about an hour. Past transactions don’t need to come over line by line: a connected bank usually pulls in the last 90 days or more, and your accountant only needs the old years as they are.'),
-        EX('A florist’s opening balances on July 1', [['Business checking, statement balance', '$12,840.55'], ['Business credit card, owed', '−$1,206.30'], ['Open invoices to customers (4)', '$3,975.00'], ['Unpaid bills to suppliers (2)', '−$1,140.00']], ['Where you start', '$14,469.25'], 'If your spreadsheet’s own total for that day is different, find out why before going further. It’s the last time it will be easy.'),
-        H('Keep both going for one month'),
-        P('For your first month, keep updating the spreadsheet too. At the end of the month, compare the totals: money in, money out, and what customers still owe you. If they agree, rename the spreadsheet clearly (“Books to June 30, 2026 – final”), make it read-only and stop touching it.'),
-        Q('The goal isn’t a perfect history. It’s a clean start you trust, from a date you can name.', 'Hana Sato'),
-        H('What not to bring'),
-        L(['Old paid invoices: save them as a PDF archive instead.', 'Categories you never used: start with the standard set and add your own as you go.', 'Formulas: the point is that you don’t need them any more.']),
-        P('Do bring your notes, though. If a customer always pays late, or a supplier gives you a discount for paying early, add that to their record in the new books on day one, while you still remember it.'),
-        C('A person to help you move', 'Send us your spreadsheet and we’ll set up your opening balances, customers and open invoices with you, on a 30-minute call. It’s free on every plan.', 'tip'),
-        P('After the first month, the new habit is the monthly 20 minutes: sort, match, check, chase, look. The spreadsheet can finally retire.')
+        P('An invoice asks for payment for work done or goods delivered. It’s the moment money becomes owed. A useful invoice has a unique number, the date, a due date, what you did, the total, any tax, and how to pay: your bank details, written out.'),
+        P('If you’re VAT registered in the UK, your invoices are VAT invoices. If you’re VAT registered in Sri Lanka, they’re Tax Invoices, with VAT and SSCL on their own lines.', 'With tax.'),
+        H('A credit note: “we’re taking some of that back”'),
+        P('Once an invoice is sent, don’t change it. If you need to reduce what’s owed, because of a mistake, a return or a discount agreed afterwards, issue a credit note for the difference. It has its own number and points to the original invoice, so both sets of books stay in step.'),
+        T('Side by side', ['', 'Quote', 'Invoice', 'Credit note'], [['When', 'Before the work', 'After it', 'After an invoice'], ['Is money owed?', 'No', 'Yes', 'Less is owed'], ['Counts as income?', 'No', 'Yes', 'Reduces income'], ['Date that matters', 'Expiry date', 'Due date', 'Date issued']]),
+        EX('One job from start to finish, in the UK', [['Quote sent to Kirkstall Brewing Co', '£2,400'], ['Quote accepted, invoice sent', '£2,400'], ['One label design dropped, credit note', '−£300'], ['Payment received by bank transfer', '£2,100']], ['Still owed', '£0'], 'The quote never counted as income. The invoice did, and the credit note took £300 of it back.'),
+        EX('The same job in Sri Lanka', [['Quote sent to Ochre Café', 'Rs 180,000'], ['Quote accepted, invoice sent', 'Rs 180,000'], ['One menu design dropped, credit note', '− Rs 30,000'], ['Payment received by cheque', 'Rs 150,000']], ['Still owed', 'Rs 0'], 'Amounts before tax. The quote never counted as income. The invoice did, and the credit note took Rs 30,000 of it back.'),
+        R('Quote to agree, invoice to ask, credit note to correct.')
       ]
     }
   ];
@@ -334,76 +341,106 @@
     });
     return n;
   }
+  var COUNTRY_LABEL = { uk: 'UK', lk: 'Sri Lanka', both: 'UK and Sri Lanka' };
   guides.forEach(function (g) {
     g.words = words(g);
     g.minutes = Math.max(3, Math.ceil(g.words / 200));
     g.by = AUTHORS[g.author];
+    g.countryLabel = COUNTRY_LABEL[g.country] || '';
     g.img = COVERS[g.cover];
     g.coverBg = COVER_BG[g.cover];
     g.bgImg = g.coverBg + ' url("' + g.img + '")';
   });
 
-  // ---- help center answers ---------------------------------------------------
+  // ---- help centre answers (help.ts) -----------------------------------------
+  // `a` is the UK answer (or the answer for both). `lk` is the Sri Lanka answer when it differs.
+  // `only: 'lk'` answers apply in Sri Lanka only; `only: 'uk'` in the UK only.
   var helpTopics = [
-    { id: 'start', name: 'Getting started', line: 'Signing up, setup and your first week', icon: 'M5 12h14M13 6l6 6-6 6' },
-    { id: 'invoices', name: 'Invoices and getting paid', line: 'Quotes, invoices, reminders, payments', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
-    { id: 'expenses', name: 'Expenses and receipts', line: 'Snapping, sorting and splitting', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-    { id: 'bank', name: 'Bank and reports', line: 'Connecting, syncing and checking', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9.5 10v8M14.5 10v8M3 20h18' },
-    { id: 'tax', name: 'Tax', line: 'Set-aside, sales tax and VAT', icon: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3' },
-    { id: 'team', name: 'Team', line: 'People, roles, your accountant, payroll', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' },
-    { id: 'account', name: 'Account and billing', line: 'Plans, receipts, exporting, closing', icon: 'M3 6h18v12H3zM3 10h18M7 15h3' },
-    { id: 'security', name: 'Security', line: 'Sign-in, access and your data', icon: 'M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6zM9 12l2 2 4-4' }
+    { id: 'start', name: 'Getting started', line: 'Signing up, setup and your three numbers', icon: 'M5 12h14M13 6l6 6-6 6' },
+    { id: 'invoices', name: 'Invoices and getting paid', line: 'Quotes, VAT invoices, Tax Invoices, payments', icon: 'M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 13h8M8 17h5' },
+    { id: 'expenses', name: 'Expenses and bills', line: 'Costs, attachments, suppliers, every month', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+    { id: 'tax', name: 'Tax and Ask', line: 'Yours to keep, VAT, MTD, SSCL and Ask', icon: 'M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3' },
+    { id: 'accountant', name: 'Your accountant', line: 'Shared books, corrections and filing', icon: 'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8' },
+    { id: 'account', name: 'Account and data', line: 'Signing in, your data, closing', icon: 'M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6zM9 12l2 2 4-4' }
   ];
   var help = [
-    { id: 'what-do-i-need', topic: 'start', popular: true, q: 'What do I need to sign up?', a: 'An email address and about three minutes. We ask what you sell, where you are and who works with you, so the app only shows what applies to your business. No card is needed for the Free plan.', link: { label: 'Create an account', href: 'AuthSignUp.dc.html' }, words: 'register create account start setup' },
-    { id: 'try-pro', topic: 'start', q: 'Can I try Pro before paying?', a: 'Yes. Pro and Team are free for 30 days, with no card needed to start. When the trial ends you choose a plan, or you drop back to Free and keep everything you made.', link: { label: 'Compare plans', href: 'SitePricing.dc.html' }, words: 'trial free pro team cost' },
-    { id: 'bring-data', topic: 'start', q: 'How do I bring over my customers and invoices?', a: 'Upload a spreadsheet (CSV) of customers, or connect Wave or QuickBooks and we copy them across. Open invoices and your opening balances come over too. If you’d rather not do it alone, book a free 30-minute call and we’ll do it with you.', link: { label: 'How switching works', href: 'SiteSwitch.dc.html' }, words: 'import migrate spreadsheet csv wave quickbooks move' },
-    { id: 'first-invoice', topic: 'invoices', popular: true, q: 'How do I send my first invoice?', a: 'Press New, then Invoice. Type what you did in plain words (“Bill Atlas Freight $6,300 for October”), check the details, and send. Your customer gets an email with a link to pay, and the amount shows in Coming in straight away.', link: { label: 'See it in the demo', href: 'ThreeIn.dc.html' }, words: 'bill create send invoice new' },
-    { id: 'online-payments', topic: 'invoices', popular: true, q: 'How do customers pay me online, and what does it cost?', a: 'Every invoice has a pay button. Cards cost ' + CARD.price + ' and bank payments cost ' + BANK.price + '. There’s nothing to pay if your customer pays you another way, like a check.', link: { label: 'See pricing', href: 'SitePricing.dc.html' }, words: 'card bank ach fees stripe apple pay payment' },
-    { id: 'reminders', topic: 'invoices', q: 'Can BillingEase remind customers for me?', a: 'On Pro, yes. Reminders go out before the due date, on the day and after it, at times you choose, and stop the moment the customer pays. You can also send one by hand from any invoice.', link: { label: 'Guide: when a customer pays late', href: 'SiteGuide.dc.html#when-a-customer-pays-late' }, words: 'reminder overdue late chase nudge' },
-    { id: 'refund', topic: 'invoices', q: 'How do I give money back to a customer?', a: 'Open the invoice and choose “Money back to a customer”. You can refund to their card or take it off a future invoice (accountants call that a credit note). The amount comes off Coming in either way.', words: 'refund credit note return money back' },
-    { id: 'snap-receipt', topic: 'expenses', popular: true, q: 'How do I snap a receipt?', a: 'In the phone app, press the camera button and take a photo. You can also forward receipts by email to your own BillingEase address. We read the shop, date and total, and match the receipt to the charge from your bank.', link: { label: 'See receipts in the demo', href: 'ThreeOut.dc.html#expense' }, words: 'receipt photo scan camera ocr email forward' },
-    { id: 'blurry', topic: 'expenses', q: 'A receipt couldn’t be read. What now?', a: 'It’s kept safe and marked “Type the total”. Open it, type the amount and date, and it matches like any other. Taking the photo flat, in good light, avoids it next time.', words: 'blurry unreadable receipt failed scan' },
-    { id: 'personal', topic: 'expenses', q: 'I paid for something personal with the business card. How do I fix it?', a: 'Open the transaction and mark it as personal. It comes out of Going out and is recorded as money you took from the business, which is exactly how your accountant wants it.', link: { label: 'See a transaction', href: 'SpendTransaction.dc.html' }, words: 'personal mistake owner draw split transaction' },
-    { id: 'bank-safe', topic: 'bank', popular: true, q: 'Is it safe to connect my bank?', a: 'Yes. The connection is read-only, through a trusted bank connection provider. We never see or store your bank password, and nobody at BillingEase can move money out of your account.', link: { label: 'How we keep your books safe', href: 'SiteSecurity.dc.html' }, words: 'bank connect plaid safe secure password' },
-    { id: 'sync-stopped', topic: 'bank', q: 'My bank stopped syncing. What should I do?', a: 'Banks ask you to sign in again every so often, usually every 90 days. Go to Your business, then Bank connections, and press Reconnect. Anything missed while it was paused comes in by itself.', words: 'sync stopped broken disconnected reconnect bank' },
-    { id: 'reconcile', topic: 'bank', q: 'What does “Check against your bank statement” do?', a: 'It compares your books with your bank statement at the end of a month (accountants call it reconciling). Type the statement’s closing balance and we show any difference and the likely cause, like a fee you haven’t recorded.', link: { label: 'Guide: bookkeeping in 20 minutes', href: 'SiteGuide.dc.html#bookkeeping-in-20-minutes-a-month' }, words: 'reconcile reconciliation statement balance difference' },
-    { id: 'reports', topic: 'bank', q: 'Which reports will my accountant want?', a: 'Usually profit and loss, a balance sheet, and the general ledger for the year. All three are under Yours to keep, then Reports. Easier still, invite your accountant and they can look themselves.', words: 'report profit loss balance sheet ledger accountant year end' },
-    { id: 'set-aside', topic: 'tax', popular: true, q: 'How does the tax set-aside work?', a: 'We set aside a share of your profit for tax, 25% unless you change it, and show what’s left as Yours to keep. It’s a number we keep for you, not a separate account; many people move the same amount to a savings account.', link: { label: 'Guide: how much to set aside', href: 'SiteGuide.dc.html#how-much-to-set-aside-for-tax' }, words: 'tax set aside percentage income self employment quarterly' },
-    { id: 'sales-tax-file', topic: 'tax', q: 'Does BillingEase file my sales tax?', a: 'We work out what you collected per state and period, remind you before it’s due, and give you the exact numbers to enter on your state’s site. Filing on your behalf isn’t available yet.', link: { label: 'Guide: sales tax for makers', href: 'SiteGuide.dc.html#sales-tax-for-makers-selling-online' }, words: 'sales tax file return state nexus' },
-    { id: 'vat', topic: 'tax', q: 'Can I charge VAT or GST?', a: 'Yes, on Pro. Set your country and VAT number under Your business, and invoices show VAT correctly, including “VAT reverse charged to the customer” for business customers in another country.', link: { label: 'Outside the US', href: 'SiteGlobal.dc.html' }, words: 'vat gst reverse charge europe uk canada australia' },
-    { id: 'invite-accountant', topic: 'team', popular: true, q: 'How do I invite my accountant?', a: 'Go to Your business, then Team, and invite them as Accountant. They can read your books, add adjustments and download reports, but can’t send invoices or touch payroll. Accountants are free on Pro and Team.', link: { label: 'For accountants', href: 'SitePartners.dc.html' }, words: 'accountant cpa bookkeeper invite access' },
-    { id: 'staff-see', topic: 'team', q: 'What can Staff see?', a: 'Staff can make quotes and invoices and log time. They can’t see payroll, the bank or your three numbers. Admins can do everything except delete the business. Roles are on the Team plan.', link: { label: 'BillingEase for teams', href: 'SiteTeams.dc.html' }, words: 'roles permissions staff admin employee access' },
-    { id: 'payroll-where', topic: 'team', q: 'Where is payroll available?', a: 'Payroll is a US-only add-on for now, ' + PAYROLL.price + '. It covers direct deposit, pay stubs and payroll tax filings in all 50 states. Contractors can be paid in any country.', link: { label: 'Guide: hiring your first employee', href: 'SiteGuide.dc.html#hiring-your-first-employee' }, words: 'payroll employees w2 1099 contractors states' },
-    { id: 'change-plan', topic: 'account', q: 'How do I change or cancel my plan?', a: 'Go to Your business, then Plan. Upgrades start straight away; downgrades and cancellations take effect at the end of the period you’ve paid for. Pro is $' + PRO.month + ' a month, or $' + PRO.year + ' a month paid yearly.', link: { label: 'See pricing', href: 'SitePricing.dc.html' }, words: 'upgrade downgrade cancel plan subscription price' },
-    { id: 'refund-plan', topic: 'account', q: 'Can I get a refund?', a: 'If you paid for a year and cancel within 30 days, we refund the whole year. After that, you keep your plan until the year ends. Write to ' + S.company.support + ' and a person will sort it out.', words: 'refund money back subscription annual' },
-    { id: 'export', topic: 'account', popular: true, q: 'How do I export everything?', a: 'Go to Your business, then Security and data, and choose Export. You get your invoices as PDFs and every transaction, customer and report as spreadsheets. It’s your data, on every plan, at any time.', link: { label: 'See it in the demo', href: 'BizSecurity.dc.html' }, words: 'export download backup data csv leave' },
-    { id: 'delete-account', topic: 'account', q: 'How do I delete my account?', a: 'Go to Your business, then Security and data, and choose Delete. We ask you to export first, then everything is erased within 30 days, apart from what the law says we must keep for tax records.', words: 'delete close remove account erase' },
-    { id: 'two-step', topic: 'security', q: 'Do you have two-step sign-in?', a: 'Yes. Turn it on under Your business, then Security, with an authenticator app or a text message. On Team, an Admin can require it for everyone.', words: '2fa two factor mfa authenticator sign in' },
-    { id: 'who-sees', topic: 'security', q: 'Who at BillingEase can see my books?', a: 'Nobody, unless you ask us to help and give permission from the chat. That access lasts 24 hours, is logged, and you can end it at any time.', words: 'privacy staff access support see data' },
-    { id: 'data-stored', topic: 'security', q: 'Where is my data kept?', a: 'In encrypted data centers in the US, with a copy in a second region in case of trouble. Everything is encrypted when it’s sent and when it’s stored.', link: { label: 'Security in detail', href: 'SiteSecurity.dc.html' }, words: 'encryption data center storage backup region' }
+    { id: 'sign-up', topic: 'start', popular: true, q: 'What do I need to sign up?',
+      a: 'An email address, a password and a few minutes. You choose the United Kingdom, then answer a few questions about your business: sole trader, landlord or both, whether you’re VAT registered, how your quarters run, and cash or invoice basis. Not sure of an answer? Pick the closest; you can change it later in Business profile. No card is needed.',
+      lk: 'You choose Sri Lanka, then answer a few questions about your business: its type, your TIN, and whether you’re registered for VAT and SSCL.',
+      link: { label: 'Create an account', href: 'AuthSignUp.dc.html' }, words: 'register create account start setup free card' },
+    { id: 'country-fixed', topic: 'start', q: 'Can I change my country later?', a: 'No. Your country sets the currency, the tax year, the expense categories and the tax rules, so it stays fixed once your business is set up. Each account has one business. If you also have a business in the other country, sign up again with a different email address.', words: 'country uk sri lanka change move second business several' },
+    { id: 'three-numbers', topic: 'start', popular: true, q: 'What do the three numbers on Home mean?',
+      a: 'Coming in is what you’ve invoiced or been paid, Going out is what you’ve spent, and Yours to keep is what’s left after the tax we estimate you’ll owe (Income Tax and Class 4 National Insurance). VAT is left out of all three, because it isn’t yours. Use the period switch on Home to see this quarter, this tax year or another period.',
+      lk: 'Yours to keep is what’s left after the income tax we estimate you’ll owe. VAT and SSCL are left out of all three. The period switch shows this month, this year of assessment or another period.',
+      link: { label: 'See Home in the demo', href: 'ThreeHome.dc.html' }, words: 'home coming in going out yours to keep profit numbers dashboard period' },
+    { id: 'bring-data', topic: 'start', q: 'Can I bring my customers and invoices over from a spreadsheet or another app?', a: 'Not yet: there’s no import, so you add customers and open invoices by hand. Pick a clean start date (the first day of a month or quarter), add the customers you invoice and any invoices still unpaid, and keep your old records as they are for your accountant.', link: { label: 'How switching works', href: 'SiteSwitch.dc.html' }, words: 'import csv spreadsheet migrate switch move quickbooks xero excel' },
+    { id: 'first-invoice', topic: 'invoices', popular: true, q: 'How do I send my first invoice?', a: 'Press New, then New invoice, and pick what kind: time and materials, a fixed price, recurring, or items. Choose or add the customer, add a line for each thing you did, check the dates, and press Save and send. Your customer gets an email with the invoice as a PDF, and the amount shows in Coming in straight away. You can also download the PDF from the invoice page and send it yourself.', link: { label: 'See invoices in the demo', href: 'SellInvoices.dc.html' }, words: 'bill create send invoice new pdf email' },
+    { id: 'vat-invoice', topic: 'invoices', only: 'uk', q: 'How do I send VAT invoices?', a: 'Say you’re VAT registered when you set up, or later in Business profile, and add your VAT number. From then on each invoice is a VAT invoice: every line has a VAT rate (20%, 5%, 0% or exempt), and the totals show the VAT separately.', link: { label: 'See Business profile in the demo', href: 'BizProfile.dc.html' }, words: 'vat invoice registered number rate 20%' },
+    { id: 'tax-invoice', topic: 'invoices', only: 'lk', popular: true, q: 'How do I issue a Tax Invoice with VAT and SSCL?', a: 'Say you’re registered for VAT (and SSCL) when you set up, or later in Business profile, and add your TIN and VAT registration number. From then on each invoice is titled Tax Invoice, with VAT at 18% and SSCL at 2.5% on their own lines.', link: { label: 'Guide: writing a Sri Lankan Tax Invoice', href: 'SiteGuide.dc.html#writing-a-sri-lankan-tax-invoice' }, words: 'tax invoice vat sscl tin registration 18% 2.5% sri lanka' },
+    { id: 'get-paid', topic: 'invoices', popular: true, q: 'How do customers pay me?',
+      a: 'However you agree with them: bank transfer, your card machine or cash. Your bank details go on every invoice. When the money arrives, open the invoice and choose Record a payment. BillingEase doesn’t take card payments online.',
+      lk: 'Bank transfer, cheque, cash or LankaQR. For a cheque, add its number and bank when you record the payment.',
+      link: { label: 'See invoices in the demo', href: 'SellInvoices.dc.html' }, words: 'pay payment record bank transfer cheque cash lankaqr card machine paid' },
+    { id: 'part-payment', topic: 'invoices', q: 'A customer paid part of an invoice. What do I do?', a: 'Record the payment for the amount you received. The invoice stays open with the rest still owed, and you can record the next payment when it arrives.', words: 'part partial payment instalment balance owed' },
+    { id: 'reminders', topic: 'invoices', q: 'Can I send a reminder for an unpaid invoice?',
+      a: 'Yes. Open the invoice and send a reminder by email; it goes with the PDF attached, and you can change the message first. Overdue invoices are listed on Coming in, so you can remind from there too.',
+      lk: 'You can also choose WhatsApp, which opens it with the message ready to send.',
+      link: { label: 'Guide: cheques, LankaQR and getting paid', href: 'SiteGuide.dc.html#cheques-lankaqr-and-getting-paid' }, words: 'reminder overdue late chase nudge whatsapp email' },
+    { id: 'quotes', topic: 'invoices', q: 'How do quotes work?', a: 'Make a quote the same way as an invoice and send it. When your customer says yes, mark it accepted, then turn it into an invoice without typing anything again. A quote isn’t income until it becomes an invoice.', link: { label: 'See quotes in the demo', href: 'SellQuotes.dc.html' }, words: 'quote estimate accept accepted convert invoice' },
+    { id: 'repeating', topic: 'invoices', q: 'Can an invoice repeat every month?', a: 'Yes. Set up a repeating invoice with the customer, the lines and how often it runs. By default each run makes a draft for you to check and send; you can choose to have it sent on the day instead.', link: { label: 'See repeating invoices in the demo', href: 'SellRecurring.dc.html' }, words: 'repeat recurring retainer monthly subscription schedule' },
+    { id: 'credit-note', topic: 'invoices', q: 'I made a mistake on an invoice I’ve sent. How do I fix it?', a: 'Don’t change a sent invoice. Issue a credit note from it for the amount that’s wrong, then send a new invoice if needed. Your books keep both, so you and your accountant can see what happened.', link: { label: 'Guide: invoice, quote or credit note?', href: 'SiteGuide.dc.html#invoice-quote-or-credit-note' }, words: 'mistake wrong edit credit note refund money back cancel void' },
+    { id: 'expense', topic: 'expenses', popular: true, q: 'How do I record an expense?', a: 'Press New, then Record an expense. Add the amount, the date, the supplier and the category (in HMRC’s categories in the UK), and the business share if you use it partly for yourself. Attach a photo or PDF of the receipt and BillingEase keeps the file with the expense. Or press New, then Snap a receipt or bill: BillingEase reads it and drafts the expense for you to check and approve.', link: { label: 'See Going out in the demo', href: 'ThreeOut.dc.html' }, words: 'expense receipt cost spend record photo pdf attach category' },
+    { id: 'bills', topic: 'expenses', q: 'What’s the difference between an expense and a bill?', a: 'An expense is something you’ve already paid. A bill is something you owe a supplier and will pay later. Add a bill when it arrives, then mark it paid in full or in part when you pay it; it counts in Going out either way, and Going out shows what’s still to pay.', link: { label: 'See a bill in the demo', href: 'SpendBill.dc.html' }, words: 'bill supplier owe pay later due part paid' },
+    { id: 'every-month', topic: 'expenses', q: 'Can BillingEase remember costs I pay every month?', a: 'Yes. Set up rent, software, insurance and anything else that repeats under Every month, with the amount and the day. They’re listed together, so you can see what your month costs before it starts.', link: { label: 'See Every month in the demo', href: 'SpendEveryMonth.dc.html' }, words: 'every month recurring rent subscription regular costs' },
+    { id: 'bank-feeds', topic: 'expenses', q: 'Can I connect my bank or card?', a: 'No. BillingEase has no bank or card feeds: you enter sales and costs yourself, which is also what keeps each record checked by a person. Once a month, compare your bank statement’s closing balance with your books to make sure nothing is missing.', words: 'bank feed connect sync card open banking import statement' },
+    { id: 'yours-to-keep', topic: 'tax', q: 'How is Yours to keep worked out?',
+      a: 'It’s your profit (Coming in minus Going out) less an estimate of the Income Tax and Class 4 National Insurance you’ll owe on it. It’s an estimate from the rates for the tax year, not a tax bill. Your accountant works out the real figure.',
+      lk: 'It’s your profit less an estimate of the income tax you’ll owe for the year of assessment. Your tax practitioner works out the real figure.',
+      link: { label: 'How Yours to keep works', href: 'SiteKeep.dc.html' }, words: 'yours to keep tax estimate income tax national insurance profit set aside' },
+    { id: 'filing', topic: 'tax', popular: true, q: 'Does BillingEase file my tax returns?',
+      a: 'No. BillingEase keeps the records in HMRC’s categories, ready for each Making Tax Digital quarter. Your accountant sends the quarterly updates, the final declaration and any VAT return from their own software.',
+      lk: 'BillingEase keeps the books and works out your VAT and SSCL for each period. You or your tax practitioner file with the IRD; at the end of the year of assessment, your books go to TaxWise.lk for your income tax return.',
+      link: { label: 'Guide: working with your accountant', href: 'SiteGuide.dc.html#working-with-your-accountant' }, words: 'file filing return hmrc ird mtd submit vat return taxwise' },
+    { id: 'mtd', topic: 'tax', only: 'uk', q: 'Am I ready for Making Tax Digital for Income Tax?', a: 'If you record your income and costs in BillingEase as they happen, your records are digital and already in HMRC’s categories, which is what MTD asks for. Whether you need to join, and when, depends on your income: the guide explains the dates.', link: { label: 'Guide: getting ready for MTD', href: 'SiteGuide.dc.html#getting-ready-for-mtd-for-income-tax' }, words: 'mtd making tax digital quarterly update ready' },
+    { id: 'ask', topic: 'tax', q: 'What is Ask, and can I trust its answers?',
+      a: 'Ask answers questions in plain words from your own books and from official sources such as gov.uk and HMRC’s manuals, and lists the sources it used. It’s AI, so it can be wrong, and it never files anything. When a question needs judgement, ask your accountant.',
+      lk: 'In Sri Lanka its sources include the IRD’s guidance. When a question needs judgement, ask your tax practitioner.',
+      link: { label: 'See Ask in the demo', href: 'Ask.dc.html' }, words: 'ask ai question answer sources chat' },
+    { id: 'accountant-see', topic: 'accountant', popular: true, q: 'How does my accountant see my books?',
+      a: 'Through the accountant link: your accountant’s practice sees the same books you do, from their TaxWise practice tool. The link is being built now and arrives with the practice tool; until then, your invoices and quotes download as PDFs to share.',
+      lk: 'Your tax practitioner sees the same books from the TaxWise.lk practitioner tool, once the practitioner link arrives.',
+      link: { label: 'BillingEase for accountants', href: 'SitePartners.dc.html' }, words: 'accountant practitioner invite access share books practice taxwise' },
+    { id: 'corrections', topic: 'accountant', q: 'Can I change something from a period that’s already filed?', a: 'Filed periods are locked, so the numbers your accountant sent stay the same. Corrections are never made by quietly changing the past: they’re recorded as a new entry that reverses the old one, so both of you can see what changed and when. Tell your accountant when you need one.', words: 'change edit delete correction locked filed period reverse mistake' },
+    { id: 'password', topic: 'account', q: 'I’ve forgotten my password.', a: 'On the sign-in page, choose Forgot your password and enter your email. We’ll send a link to set a new one.', link: { label: 'Reset your password', href: 'AuthRecover.dc.html' }, words: 'password forgot reset sign in login locked out' },
+    { id: 'two-step', topic: 'account', q: 'Is there two-step sign-in?', a: 'Not yet. Until it arrives, use a long password you don’t use anywhere else, and sign out on shared computers.', words: '2fa two factor mfa authenticator security sign in' },
+    { id: 'export', topic: 'account', popular: true, q: 'Can I export my data?', a: 'Your invoices and quotes download as PDFs from their pages. A full export of your books isn’t available yet. If you need a copy of your data before then, write to us and we’ll help.', words: 'export download backup data csv pdf leave copy' },
+    { id: 'data-apart', topic: 'account', q: 'Who can see my books?', a: 'You, and, once the accountant link arrives, the accountant or practitioner you choose. Each business’s data is kept apart from every other business’s. Nobody at BillingEase looks at your books unless you ask us to help with something specific.', link: { label: 'Privacy policy', href: 'SiteLegal.dc.html#privacy' }, words: 'privacy who see data access staff secure' },
+    { id: 'close', topic: 'account', q: 'How do I close my account?', a: 'Write to us from the email address you signed up with and we’ll close it. Some records may have to be kept for a period the law sets for tax records; the privacy policy explains what and for how long.', link: { label: 'Privacy policy', href: 'SiteLegal.dc.html#privacy' }, words: 'delete close remove account erase cancel' }
   ];
+  help.forEach(function (h) {
+    h.lkNote = h.lk ? 'In Sri Lanka: ' + h.lk : '';
+    h.countryTag = h.only === 'lk' ? 'Sri Lanka only' : (h.only === 'uk' ? 'UK only' : '');
+  });
 
-  // ---- changelog ---------------------------------------------------------
+  // ---- What's new (changelog.ts): real entries only, newest first -------------
   var changelog = [
-    { id: 'quotes-online', date: 'Oct 6, 2026', month: 'October', tag: 'New', big: 'quote', title: 'Customers can accept quotes online', body: 'Send a quote and your customer gets a page where they can accept it, ask a question or decline with a reason. When they accept, the invoice is ready to send in one click, deposit included.', points: ['See when a quote was opened', 'Expiry dates with a gentle reminder three days before', 'Accepted quotes show in Coming in as expected, once invoiced'], link: { label: 'Try quotes in the demo', href: 'SellQuotes.dc.html' } },
-    { id: 'chase-reconnect', date: 'Sep 22, 2026', month: 'September', tag: 'Fixed', title: 'Harborline business accounts reconnect on their own', body: 'Some Harborline business accounts stopped syncing after Harborline changed its sign-in. They now reconnect without you doing anything, and any missed transactions came in the same morning.' },
-    { id: 'receipts-faster', date: 'Sep 8, 2026', month: 'September', tag: 'Improved', title: 'Receipts read in under two seconds, even crumpled ones', body: 'Reading a receipt used to take up to ten seconds. It now takes under two, and we get the total right far more often on folded, faded and long supermarket receipts.' },
-    { id: 'many-businesses', date: 'Aug 18, 2026', month: 'August', tag: 'New', big: 'biz', title: 'Several businesses under one sign-in', body: 'Run a studio and a side business? Switch between them from the account menu. Each keeps its own three numbers, bank, team and tax settings, and nothing ever mixes.', points: ['One sign-in, separate books', 'Different currencies and countries per business', 'On the Team plan'], link: { label: 'BillingEase for teams', href: 'SiteTeams.dc.html' } },
-    { id: 'state-set-aside', date: 'Jul 28, 2026', month: 'July', tag: 'Improved', title: 'The tax set-aside knows your state', body: 'Tell us your state and we suggest a set-aside percentage that includes state income tax, instead of one number for everyone. You can still choose your own.', link: { label: 'Guide: how much to set aside', href: 'SiteGuide.dc.html#how-much-to-set-aside-for-tax' } },
-    { id: 'short-months', date: 'Jul 7, 2026', month: 'July', tag: 'Fixed', title: 'Repeating invoices on the 31st go out in short months', body: 'Invoices set to repeat on the 31st skipped months with 30 days or fewer. They now go out on the last day of the month instead.' },
-    { id: 'currencies-vat', date: 'Jun 16, 2026', month: 'June', tag: 'New', big: 'fx', title: 'Multiple currencies and VAT', body: 'Bill customers in euros, pounds and 30 other currencies. We record the rate when you send and when you’re paid, show any gain or loss, and handle VAT, including the reverse charge for business customers abroad.', points: ['32 currencies', 'VAT and GST on invoices, with the right wording', 'Gains and losses under Yours to keep'], link: { label: 'Outside the US', href: 'SiteGlobal.dc.html' } },
-    { id: 'reconcile-one', date: 'May 19, 2026', month: 'May', tag: 'Improved', title: 'Check against your bank statement on one screen', body: 'Type your statement’s closing balance and see the difference straight away, with the likely cause listed first: a fee you haven’t recorded, or a check that hasn’t cleared.', link: { label: 'Guide: bookkeeping in 20 minutes', href: 'SiteGuide.dc.html#bookkeeping-in-20-minutes-a-month' } },
-    { id: 'due-dates-tz', date: 'Apr 14, 2026', month: 'April', tag: 'Fixed', title: 'Due dates stay put for customers in other time zones', body: 'Customers far east of you sometimes saw a due date one day earlier than the one you set. Due dates now show the same everywhere.' },
-    { id: 'payroll', date: 'Mar 10, 2026', month: 'March', tag: 'New', big: 'pay', title: 'Payroll for your first employees', body: 'Pay your team by direct deposit, with pay stubs and payroll taxes worked out and filed for you in all 50 states. Each run lands in Going out on its own.', points: [PAYROLL.price, 'Contractors paid too, with 1099s in January', 'Approvals for payroll on the Team plan'], link: { label: 'Guide: hiring your first employee', href: 'SiteGuide.dc.html#hiring-your-first-employee' } },
-    { id: 'every-month', date: 'Feb 3, 2026', month: 'February', tag: 'Improved', title: 'Every-month costs spotted for you', body: 'Rent, software and insurance that repeat are now found automatically and gathered under “Every month”. We also tell you when something looks unused, like “Cloudbox: no files changed in 60 days”.' },
-    { id: 'phone-receipts', date: 'Jan 13, 2026', month: 'January', tag: 'New', title: 'Snap receipts from your phone’s lock screen', body: 'Add the BillingEase camera to your lock screen or home screen and photograph a receipt in one tap, before it goes in your pocket.' }
+    { id: 'apps-and-api', date: '31 Oct 2026', month: 'October', tag: 'New', title: 'Connect an AI assistant, or your own software', body: 'Add BillingEase to Claude, ChatGPT, Cursor or another assistant that takes MCP connectors, or call the API with a token you make in settings. They can read your books and suggest expenses, bills, payments and reminders; every suggestion waits in For you to check until you approve it. You see each connected app, every call it made, and can disconnect it any time.' },
+    { id: 'capture-agent', date: '18 Oct 2026', month: 'October', tag: 'New', title: 'Snap a receipt or bill: BillingEase reads it for you to check', body: 'Send a photo or PDF of a receipt or a supplier’s bill and BillingEase reads it, checks that the amounts and the VAT (and SSCL in Sri Lanka) add up, and drafts the expense or bill. It waits in For you to check until you approve it, and you can change any detail first. Ask now runs on Google’s Gemini, and you can see what the AI costs your business each month.' },
+    { id: 'site-two-countries', date: '14 Oct 2026', month: 'October', tag: 'New', title: 'This website, for the UK and Sri Lanka', body: 'The site now opens in your country, with prices in pounds or rupees and the parts that differ between the two (Making Tax Digital in the UK; Tax Invoices, SSCL and payroll in Sri Lanka).', link: { label: 'What changes with your country', href: 'SiteGlobal.dc.html' } },
+    { id: 'repeating-bill-day', date: '11 Oct 2026', month: 'October', tag: 'Fixed', title: 'Repeating invoices keep their bill day', body: 'A monthly invoice due on the 31st now bills on the 28th in February and goes back to the 31st in March, instead of drifting to the 28th for good.' },
+    { id: 'numbers-without-vat', date: '11 Oct 2026', month: 'October', tag: 'Improved', title: 'The three numbers leave out VAT and SSCL', body: 'VAT you charge, VAT you pay and SSCL aren’t yours to keep, so Coming in, Going out and Yours to keep now leave them out. They’re shown on their own, for your return.', link: { label: 'Guide: writing a Sri Lankan Tax Invoice', href: 'SiteGuide.dc.html#writing-a-sri-lankan-tax-invoice' } },
+    { id: 'coming-in', date: '11 Oct 2026', month: 'October', tag: 'New', big: 'taxInvoice', title: 'Invoices, Tax Invoices and quotes', body: 'The first build of Coming in: invoices with a PDF and an email to your customer, quotes you mark accepted and turn into invoices, repeating invoices, credit notes, customers and a price list. Record payments yourself, and send reminders.', points: ['UK: VAT invoices when you’re VAT registered', 'Sri Lanka: Tax Invoices with VAT 18% and SSCL 2.5% on their own lines', 'Sri Lanka: payments by cheque, with its number and bank, and reminders on WhatsApp'], link: { label: 'More about Coming in', href: 'SiteComingIn.dc.html' } },
+    { id: 'going-out', date: '11 Oct 2026', month: 'October', tag: 'New', big: 'goingOut', title: 'Expenses, bills and every-month costs', body: 'The first build of Going out: record an expense with a photo or PDF attached, add bills and mark them paid in full or in part, keep suppliers, and set up the costs you pay every month.', points: ['Categories for your country, HMRC’s in the UK', 'Business-use share for things you use partly yourself', 'What’s still to pay, in one list'], link: { label: 'More about Going out', href: 'SiteGoingOut.dc.html' } },
+    { id: 'home-ask', date: '11 Oct 2026', month: 'October', tag: 'New', big: 'home', title: 'Home and Ask', body: 'Home shows your three numbers for the period you choose and what needs you next. Ask answers questions from your own books and official sources, lists the sources, and suggests your accountant when it needs judgement. Search and notifications arrived at the same time.', link: { label: 'More about Yours to keep', href: 'SiteKeep.dc.html' } },
+    { id: 'sign-up-country', date: '11 Oct 2026', month: 'October', tag: 'New', big: 'countries', title: 'Sign up by country', body: 'Sign-up starts by choosing the United Kingdom or Sri Lanka. Setup then asks only what applies there, and your country sets the currency, the tax year and the rules from the first screen.', points: ['UK: sole trader, landlord or both; VAT; quarter dates; cash or invoice basis', 'Sri Lanka: business type, TIN, VAT and SSCL registration', 'One business per account, with its data kept apart'], link: { label: 'UK and Sri Lanka', href: 'SiteGlobal.dc.html' } },
+    { id: 'spec', date: '11 Oct 2026', month: 'October', tag: 'New', title: 'The plan: one product, two countries', body: 'We wrote down what BillingEase is for: UK sole traders and landlords getting ready for Making Tax Digital, and small businesses in Sri Lanka, with entries you make by hand and an accountant who sees the same books. Bank feeds, card payments, receipt reading and the US are out.' },
+    { id: 'prototype', date: '3 Oct 2026', month: 'October', tag: 'New', title: 'The clickable prototype', body: 'Every screen started as a clickable design, built around three numbers: Coming in, Going out and Yours to keep. In October it was redrawn for the UK and Sri Lanka, with country packs, two sample businesses, Sri Lankan payroll and UK payroll records.' }
   ];
 
   window.SITE_CONTENT = {
     authors: AUTHORS,
     guides: guides,
-    guideCategories: ['Tax', 'Getting paid', 'Bookkeeping', 'Team', 'Going global'],
+    guideCategories: ['Making Tax Digital', 'Tax', 'Landlords', 'VAT and SSCL', 'Payroll', 'Getting paid', 'Working together'],
     help: help,
     helpTopics: helpTopics,
     changelog: changelog,

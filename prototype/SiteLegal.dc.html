@@ -44,8 +44,8 @@ html{scroll-behavior:smooth}
       <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
         <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Privacy, terms and cookies</span>
         <h1 id="lg-h" style="margin: 0; max-width: 760px; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(38px, 5.4vw, 72px); line-height: 1.03; letter-spacing: -0.035em;">The fine print, in plain words.</h1>
-        <p style="margin: 0; max-width: 620px; font-size: clamp(17px, 1.5vw, 19px); line-height: 1.55; color: #47444F;">You trust us with your books. Here is exactly what we keep, why we keep it, who can see it, and how to take it with you or delete it.</p>
-        <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 14px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>Last updated Sep 1, 2026</span>
+        <p style="margin: 0; max-width: 620px; font-size: clamp(17px, 1.5vw, 19px); line-height: 1.55; color: #47444F;">You trust us with your books. Here is exactly what we keep, why, who can see it, and what you can ask us to do with it. Written for the UK and Sri Lanka.</p>
+        <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 14px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>Last updated 14 Oct 2026 · Draft</span>
       </div>
       <div class="lg-hero-art lg-anim" aria-hidden="true" style="flex: 1 1 340px; max-width: 420px; min-width: 0;">
         <svg viewBox="0 0 360 260" width="100%" style="display: block; overflow: visible;">
@@ -84,7 +84,7 @@ html{scroll-behavior:smooth}
     <!-- The documents -->
     <section id="lg-docs" aria-label="Legal documents" style="background: #FFFFFF; border-top: 1px solid #E2DFE8; border-bottom: 1px solid #E2DFE8; scroll-margin-top: 68px;">
       <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(28px, 4vw, 48px) clamp(16px, 4vw, 40px) clamp(64px, 8vw, 104px); display: flex; flex-direction: column; gap: clamp(28px, 4vw, 44px);">
-        <div role="tablist" aria-label="Documents" onKeyDown="{{tabKey}}" style="display: flex; align-self: flex-start; max-width: 100%; box-sizing: border-box; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 9999px;">
+        <div role="tablist" aria-label="Documents" onKeyDown="{{tabKey}}" style="display: flex; flex-wrap: wrap; align-self: flex-start; max-width: 100%; box-sizing: border-box; gap: 4px; background: #EFEDF3; padding: 4px; border-radius: 24px;">
           <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
             <button type="button" role="tab" class="lg-tab" id="{{tb.tabId}}" aria-selected="{{tb.sel}}" aria-controls="lg-panel" tabindex="{{tb.tabindex}}" onClick="{{tb.go}}" style="min-height: 44px; padding: 0 clamp(14px, 3vw, 24px); border: 0; border-radius: 9999px; background: {{tb.bg}}; color: {{tb.ink}}; font: 600 15px DM Sans, sans-serif; cursor: pointer; white-space: nowrap;">{{tb.label}}</button>
           </sc-for>
@@ -102,7 +102,8 @@ html{scroll-behavior:smooth}
           <article id="lg-panel" role="tabpanel" aria-labelledby="{{doc.tabId}}" class="lg-docin" data-doc="{{doc.key}}" style="min-width: 0; max-width: 65ch;">
             <header style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 24px; margin-bottom: 28px; border-bottom: 1px solid #E2DFE8;">
               <h2 style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.08; letter-spacing: -0.03em;">{{doc.title}}</h2>
-              <span style="font-size: 14px; color: #5F5B68;">Last updated Sep 1, 2026 · {{doc.read}}</span>
+              <span style="font-size: 14px; color: #5F5B68;">Last updated 14 Oct 2026 · {{doc.read}}</span>
+              <span role="note" style="align-self: flex-start; padding: 6px 12px; border-radius: 12px; background: #FFF0B8; color: #6B4E00; font-size: 14px; font-weight: 600; line-height: 1.45;">{{draft}}</span>
               <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.7; color: #47444F;">{{doc.intro}}</p>
             </header>
 
@@ -165,11 +166,11 @@ html{scroll-behavior:smooth}
                           <span style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 9999px; background: {{ck.statusBg}}; font-size: 13px; font-weight: 700; color: {{ck.statusInk}};"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{ck.statusInk}};"></span>{{ck.status}}</span>
                         </div>
                         <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; border-radius: 16px; background: #F7F6F9;">
-                          <span style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0;"><span style="font-weight: 700; font-size: 16px; color: #18161F;">Necessary</span><span style="font-size: 14.5px; line-height: 1.5; color: #47444F;">Keep you signed in, protect forms and remember this choice. The site can’t work without them, so they’re always on.</span></span>
+                          <span style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0;"><span style="font-weight: 700; font-size: 16px; color: #18161F;">Necessary</span><span style="font-size: 14.5px; line-height: 1.5; color: #47444F;">Keep you signed in and remember your country and this choice. The site can’t work without them, so they’re always on.</span></span>
                           <span role="img" aria-label="Necessary cookies are always on" style="flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 9999px; background: #E2DFE8; font-size: 13px; font-weight: 700; color: #47444F;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#47444F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"></path></svg>Always on</span>
                         </div>
                         <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; border-radius: 16px; background: #F7F6F9;">
-                          <span style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0;"><span id="lg-measure-l" style="font-weight: 700; font-size: 16px; color: #18161F;">Measurement</span><span style="font-size: 14.5px; line-height: 1.5; color: #47444F;">Count visits and which pages help, without names or emails. Off unless you turn it on.</span></span>
+                          <span style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0;"><span id="lg-measure-l" style="font-weight: 700; font-size: 16px; color: #18161F;">Measurement</span><span style="font-size: 14.5px; line-height: 1.5; color: #47444F;">Count visits and which pages help, without names or emails. No measurement tool is running yet; it stays off unless you turn it on.</span></span>
                           <button type="button" role="switch" aria-checked="{{ck.on}}" aria-labelledby="lg-measure-l" onClick="{{ck.toggle}}" style="flex: none; position: relative; width: 56px; height: 32px; border: 0; border-radius: 9999px; background: {{ck.track}}; cursor: pointer; transition: background-color .2s ease;"><span style="position: absolute; top: 4px; left: {{ck.knob}}px; width: 24px; height: 24px; border-radius: 9999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(24,22,31,0.3); transition: left .2s ease;"></span></button>
                         </div>
                         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
@@ -197,16 +198,16 @@ html{scroll-behavior:smooth}
           <aside class="lg-aside" style="position: sticky; top: 92px; display: flex; flex-direction: column; gap: 12px;">
             <div style="background: #18161F; color: #FFFFFF; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 10px;">
               <span style="font-family: Sora, sans-serif; font-weight: 700; font-size: 18px; color: #B9A3FF;">A question about your data?</span>
-              <span style="font-size: 14.5px; line-height: 1.55; color: #EEE8FF;">Write to {{co.privacy}}. A person answers within one working day, and privacy requests are free.</span>
+              <span style="font-size: 14.5px; line-height: 1.55; color: #EEE8FF;">Write to {{co.privacy}}. A person answers, and privacy requests are free.</span>
             </div>
             <a href="SiteSecurity.dc.html" style="display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 20px; background: #F7F6F9; text-decoration: none; color: #18161F;">
               <span style="font-weight: 700; font-size: 15px;">How we keep your books safe</span>
-              <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Encryption, two-step sign-in and read-only bank access, explained.</span>
+              <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Each business kept apart, an append-only ledger, and no bank access, explained.</span>
               <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; margin-top: 4px;">Security<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
             </a>
             <a href="BizSecurity.dc.html" style="display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 20px; background: #F7F6F9; text-decoration: none; color: #18161F;">
               <span style="font-weight: 700; font-size: 15px;">Already a customer?</span>
-              <span style="font-size: 14px; line-height: 1.5; color: #47444F;">Export or delete your data yourself from Security and your data.</span>
+              <span style="font-size: 14px; line-height: 1.5; color: #47444F;">See your security settings and your data in the app.</span>
               <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; margin-top: 4px;">Open in the app<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
             </a>
           </aside>
@@ -218,7 +219,7 @@ html{scroll-behavior:smooth}
     <section aria-labelledby="lg-close-h" style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: clamp(56px, 8vw, 96px) clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px;">
       <div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
         <h2 id="lg-close-h" style="margin: 0; text-wrap: balance; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.08; letter-spacing: -0.03em;">Your books stay yours. Start with them in good hands.</h2>
-        <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #47444F;">Free to start, export any time, delete with one click.</p>
+        <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #47444F;">Free to start. What you enter stays yours.</p>
       </div>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
         <a href="AuthSignUp.dc.html" style="display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 28px; border-radius: 9999px; background: #B9A3FF; color: #18161F; text-decoration: none; font-weight: 700; font-size: 16px;">Start free<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
@@ -256,20 +257,21 @@ class Component extends DCLogic {
     this._hash = () => {
       // A footer link to #cookies (etc.) from the bottom of this page: bring the document into view.
       const h = (location.hash || '').slice(1);
-      if (['privacy', 'terms', 'cookies'].indexOf(h) >= 0) {
+      if (['terms', 'privacy', 'cookies', 'data-processing'].indexOf(h) >= 0) {
         const top = document.getElementById('lg-docs');
         if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView();
       }
+      this.setState({ active: null, mtoc: false });
       setTimeout(this._spy, 0);
     };
     window.addEventListener('hashchange', this._hash);
     // Opened on a section (e.g. #privacy-rights): content renders after load, so scroll to it ourselves.
     const h = (location.hash || '').slice(1);
-    if (h.indexOf('-') > 0) setTimeout(() => { const el = document.getElementById(h); if (el) el.scrollIntoView(); }, 60);
+    if (h.indexOf('-') > 0 && h !== 'data-processing') setTimeout(() => { const el = document.getElementById(h); if (el) el.scrollIntoView(); }, 60);
   }
   docKey() {
     const h = (location.hash || '').slice(1);
-    return ['privacy', 'terms', 'cookies'].find((d) => h === d || h.indexOf(d + '-') === 0) || 'privacy';
+    return ['terms', 'privacy', 'cookies', 'data-processing'].find((d) => h === d || h.indexOf(d + '-') === 0) || 'privacy';
   }
   goDoc(d, focus) {
     if (this.docKey() === d) return;
@@ -288,92 +290,119 @@ class Component extends DCLogic {
     const st = this.state;
     const key = this.docKey();
     const co = SITE.company;
-    const P = {}; SITE.plans.forEach((x) => { P[x.id] = x; });
-    const A = {}; SITE.addons.forEach((x) => { A[x.id] = x; });
-    const $ = SITE.money;
     const p = (t) => ({ p: t });
     const L = (items) => ({ list: items.map((x) => (Array.isArray(x) ? { b: x[0], t: x[1] } : { b: '', t: x })) });
+    const contact = { contact: true };
 
+    // legal.ts: drafts for the UK (UK GDPR, Data Protection Act 2018) and Sri Lanka (PDPA, No. 9 of 2022).
+    // Gaps only a decision can fill (legal entity, address, hosting region, retention, governing law) are stated as open.
     const DOCS = {
-      privacy: {
-        title: 'Privacy policy', label: 'Privacy', read: '9 minute read',
-        intro: 'This policy explains what BillingEase, Inc. collects when you use our website and app, why we need it, who else sees it, how long we keep it, and what you can ask us to do with it.',
-        short: ['We use your information to run your books and nothing else. We never sell it and we don’t show ads.', 'Bank access is read-only. We never see your bank password and can’t move your money.', 'You can export everything, or delete everything, at any time.', 'Questions or requests go to ' + co.support + '. They’re free and answered by a person.'],
+      terms: {
+        title: 'Terms of service', label: 'Terms', read: '6 minute read',
+        intro: 'These terms are the agreement between you and BillingEase when you use the BillingEase website and app. They’re written to be read, not skimmed past.',
+        short: ['BillingEase keeps your books. It doesn’t file returns to HMRC or the IRD, and it isn’t tax advice.', 'Tax figures, including Yours to keep and Ask’s answers, are estimates. Check them with your accountant or tax practitioner.', 'Your books are yours. You’re responsible for what you enter; we’re responsible for keeping it safe.', 'The free plan stays free. Paid plans can be cancelled at any time.'],
         sections: [
-          { id: 'who', h: 'Who we are', blocks: [p(co.name + ' (“BillingEase”, “we”) makes the BillingEase website, web app and phone app. Our office is at ' + co.address + '.'), p('If you use BillingEase for your business, we look after your books on your behalf. You decide what goes in them and who can see them.')] },
-          { id: 'data', h: 'What we collect', blocks: [p('Only what we need to keep your books and run your account:'), L([
-            ['Your account.', 'Your name, email, password (stored scrambled, never readable), and the business name you sign up with.'],
-            ['Your business details.', 'Address, country, currency, tax IDs, logo and invoice settings.'],
-            ['Your books.', 'Invoices, quotes, customers, vendors, expenses, receipts you snap or forward, bills, payroll details and anything else you enter.'],
-            ['Your bank and card feeds.', 'If you connect a bank, we receive transaction dates, descriptions, amounts and balances through our bank connection provider. Read-only: we never see your bank password.'],
-            ['Payments.', 'When customers pay you online, our payment partner handles the card or bank details. We see the amount, the date and the last four digits.'],
-            ['How you use the site.', 'Pages visited, device and browser, rough location from your IP address, and error reports. Measurement only happens if you allow it (see Cookies).'],
-            ['Messages to us.', 'Anything you write to support, sales or press.']
+          { id: 'who', h: 'Who we are and who these terms are for', blocks: [p('BillingEase (“we”, “us”) provides bookkeeping, invoicing and payroll software for businesses in the United Kingdom and Sri Lanka. The name of the legal entity, its registered address and its company number will be added here before launch.'), p('You can use BillingEase if you’re 18 or over and use it for a business: as a sole trader, landlord, partnership, company or similar, in the UK or Sri Lanka. If you sign up on behalf of a business, you confirm you’re allowed to.')] },
+          { id: 'account', h: 'Your account', blocks: [L([
+            ['One business per account.', 'You choose its country (the United Kingdom or Sri Lanka) when you sign up, and it stays fixed.'],
+            ['Keep your password safe.', 'You’re responsible for what happens under your account, and should tell us straight away if you think someone else has used it.'],
+            ['Tell us the truth.', 'Your details and your business’s details must be accurate and kept up to date.']
           ])] },
-          { id: 'why', h: 'Why we use it', blocks: [L([
-            ['To run BillingEase.', 'Show your three numbers, send invoices and reminders you set up, sort your charges, and prepare reports and filings.'],
-            ['To sort things for you.', 'We learn from your own past choices (“Pixelpad is Software”) to sort your new charges. We don’t use your books to train anything for other businesses.'],
-            ['To keep accounts safe.', 'Spot unusual sign-ins and fraud, and keep records of who changed what.'],
-            ['To talk to you.', 'Service emails like receipts and security alerts. Newsletters only if you sign up, with a one-click unsubscribe.'],
-            ['Because the law says so.', 'For example, keeping payroll records we filed for you.']
-          ]), p('We never sell your information and we never use your books for advertising.')] },
-          { id: 'share', h: 'Who sees it', blocks: [L([
-            ['You and the people you invite.', 'Each person sees what their role allows. An accountant you invite sees your books, not your bank sign-in.'],
-            ['Companies that help us run the service.', 'Cloud hosting, our bank connection provider, our payment partner, email delivery, our payroll partner (only if you use payroll) and our help desk. Each is bound by contract to use your information only for us.'],
-            ['Our team, rarely.', 'A support person looks at your account only when you ask for help and give permission. Every look is logged.'],
-            ['Authorities, only when required.', 'If we get a valid legal request, we check it, share the minimum, and tell you unless the law forbids it.']
+          { id: 'service', h: 'What BillingEase does, and doesn’t', blocks: [p('BillingEase records the sales, costs, payments and payroll you enter, works out totals and estimates, and produces invoices, quotes, payslips and summaries. It reads receipts and bills only when you send them to be read, and adds nothing to your books until you approve it. It doesn’t connect to your bank, take card payments, or file anything with HMRC, the Inland Revenue Department, the EPF or the ETF.'), L([
+            ['Not tax or legal advice.', 'Guides, estimates and Ask’s answers are general information. Yours to keep is an estimate. Rates are kept up to date as best we can, but you or your accountant must check figures before relying on them.'],
+            ['Ask and Capture use AI.', 'Ask’s answers can be wrong; it lists its sources so you can check them. What Capture reads from a receipt or bill is a draft for you to check. Neither files or sends anything, and nothing goes into your books until you approve it.'],
+            ['Payroll.', 'In the UK, BillingEase keeps payroll records you enter from your payroll software; it doesn’t run payroll or report to HMRC. In Sri Lanka it calculates pay, EPF, ETF and APIT; you pay and file them yourself.']
           ])] },
-          { id: 'keep', h: 'How long we keep it', blocks: [L([
-            ['While your account is open,', 'we keep your books so they’re there when you need them, including past years.'],
-            ['When you close your account,', 'you have 30 days to change your mind. Then we delete your books from our live systems within 60 days, and from backups within 90.'],
-            ['Payroll filings', 'we made for you are kept for 7 years, because tax law requires it.'],
-            ['Website logs', 'are kept for 30 days. Newsletter sign-ups until you unsubscribe.']
-          ])] },
-          { id: 'rights', h: 'Your rights', blocks: [p('Wherever you live, you can ask us to:'), L(['See the information we hold about you.', 'Correct anything that’s wrong.', 'Export your books (you can also do this yourself, any time, as spreadsheets and PDFs).', 'Delete your account and books.', 'Stop using your information for something you object to, like measurement.']), p('People in the EU, UK and California have these rights by law, and we give them to everyone. We answer within 30 days and never charge for it. If you’re unhappy with our answer, you can complain to your local data protection authority.')] },
-          { id: 'safe', h: 'How we protect it', blocks: [p('Your books are encrypted while they travel and while they’re stored. Two-step sign-in is available on every plan, staff access is limited and logged, and an independent firm reviews our security every year.'), { link: { href: 'SiteSecurity.dc.html', label: 'Read how we keep your books safe' } }] },
-          { id: 'where', h: 'Where your data lives', blocks: [p('We store your information in the United States. If you’re in the EU or UK, we protect transfers with the standard contract clauses approved for that purpose.')] },
-          { id: 'changes', h: 'Changes to this policy', blocks: [p('If we change something that matters, we’ll email account owners at least 30 days before it takes effect and show the date at the top of this page.')] },
-          { id: 'contact', h: 'Contact', blocks: [p('For privacy questions or requests, write to us. Put “Privacy” in the subject so it reaches the right person.'), { contact: true }] }
+          { id: 'your-data', h: 'Your books and your responsibilities', blocks: [p('What you put into BillingEase belongs to you (or your business). You give us permission to store and process it only to provide the service to you, as described in the privacy policy and the data processing terms.'), p('You’re responsible for the accuracy of what you enter, for keeping the records the law requires you to keep, and for the invoices and other documents you send from BillingEase. Entries are never silently changed: corrections are recorded as new entries that reverse earlier ones, and periods your accountant has filed are locked.')] },
+          { id: 'accountant', h: 'Your accountant or tax practitioner', blocks: [p('If you give an accountant, practice or tax practitioner access to your books, they see the same books you do and may make the changes you allow. They work for you, not for us, and their own terms apply to the service they give you.')] },
+          { id: 'plans', h: 'Plans and payment', blocks: [p('There is a free plan, and it stays free. Prices for paid plans are still being set; when they are, they will be shown on the pricing page before you choose one, with any tax that applies. Paid plans renew until you cancel, and you can cancel at any time; the plan then runs to the end of the period you’ve paid for.'), { link: { label: 'See pricing', href: 'SitePricing.dc.html' } }] },
+          { id: 'use', h: 'Fair use', blocks: [L(['Don’t use BillingEase for anything unlawful, including issuing false invoices or hiding income.', 'Don’t try to get into other people’s accounts or data, or to break or overload the service.', 'Don’t copy or resell the app, or use it to build a competing product.']), p('We may suspend an account that breaks these rules, telling you why unless the law stops us.')] },
+          { id: 'availability', h: 'Availability and changes', blocks: [p('We work to keep BillingEase available and your data safe, but we can’t promise it will never be interrupted. We may improve or change the service; if a change takes away something important you rely on, we’ll tell you in advance.')] },
+          { id: 'liability', h: 'Our responsibility to you', blocks: [p('Nothing in these terms limits liability that can’t be limited by law. Beyond that, the extent of our liability (for example for lost profits, or for penalties caused by figures nobody checked) is to be settled with our lawyers and will be set out here before launch.')] },
+          { id: 'ending', h: 'Ending', blocks: [p('You can stop using BillingEase and ask us to close your account at any time. Before you do, download the invoices and quotes you need. What we keep afterwards, and for how long, is in the privacy policy.')] },
+          { id: 'law', h: 'The law that applies', blocks: [p('Draft position, to be confirmed by a lawyer: for businesses in the United Kingdom, the laws of England and Wales; for businesses in Sri Lanka, the laws of Sri Lanka. Nothing in these terms takes away rights you have under the law where you live.')] },
+          { id: 'contact', h: 'Contact', blocks: [contact] }
         ]
       },
-      terms: {
-        title: 'Terms of service', label: 'Terms', read: '10 minute read',
-        intro: 'These terms are the agreement between you and ' + co.name + ' when you use BillingEase. We’ve kept them as short and plain as we can. If anything is unclear, ask us before you agree.',
-        short: ['Free is free for as long as you like. Paid plans renew until you cancel, and you can cancel any time.', 'Your books belong to you. You can export or delete them whenever you want.', 'BillingEase helps you keep your books, but it isn’t your accountant or tax adviser.', 'Use it for honest business. Don’t try to break it or misuse it.'],
+      privacy: {
+        title: 'Privacy policy', label: 'Privacy', read: '7 minute read',
+        intro: 'This policy explains what BillingEase collects when you use the website and the app, why, who else sees it, how long it’s kept, and what you can ask us to do with it. It’s written for the UK GDPR and the Data Protection Act 2018, and for Sri Lanka’s Personal Data Protection Act, No. 9 of 2022.',
+        short: ['We use your information to run your books and your account, and nothing else. We never sell it and don’t show ads.', 'We don’t connect to your bank and never see your bank login.', 'Each business’s data is kept apart from every other business’s.', 'Questions and requests go to ' + co.privacy + '. They’re free, and a person answers.'],
         sections: [
-          { id: 'agree', h: 'The agreement', blocks: [p('By creating an account you agree to these terms and our privacy policy. If you sign up for a business, you’re confirming you’re allowed to agree on its behalf.')] },
-          { id: 'account', h: 'Your account', blocks: [L(['You must be 18 or older and give us true details.', 'Keep your sign-in safe. Turn on two-step sign-in, especially if you connect a bank.', 'You’re responsible for what people you invite do in your account, so give each person the role that fits.'])] },
-          { id: 'plans', h: 'Plans, trials and billing', blocks: [L([
-            [P.free.name + ':', $(P.free.month) + ', with no time limit and no card needed.'],
-            [P.pro.name + ':', $(P.pro.month) + ' a month, or ' + $(P.pro.year) + ' a month paid yearly.'],
-            [P.team.name + ':', $(P.team.month) + ' a month, or ' + $(P.team.year) + ' a month paid yearly.']
-          ]), p('Prices are in US dollars, before any sales tax or VAT. Pro and Team start with 30 days free; we remind you 3 days before the trial ends, and you can go back to Free without paying anything.'), p('Paid plans renew automatically. Cancel any time and you keep your plan until the end of the period you paid for. If you cancel a yearly plan within 14 days of being charged, we refund it in full. If we raise a price, we tell you at least 30 days before it applies to you.')] },
-          { id: 'payments', h: 'Getting paid through BillingEase', blocks: [p('When your customers pay you online, the payment is handled by our payment partner, and their terms apply as well. You agree to these fees:'), L(SITE.addons.filter((x) => x.id !== 'payroll').map((x) => [x.name + ':', x.price + '. ' + x.line])), p('If a customer disputes a card payment, the amount may be held until it’s settled. We’ll show you what happened and help you respond.')] },
-          { id: 'payroll', h: 'Payroll', blocks: [p(A.payroll.name + ' costs ' + A.payroll.price + '. ' + A.payroll.line + ' You’re responsible for the pay amounts and employee details being right; we file on time based on what you give us, and fix any of our own mistakes at our cost, including penalties.')] },
-          { id: 'yours', h: 'Your data is yours', blocks: [p('You own everything you put into BillingEase. You give us permission to store and process it only so we can run the service for you. Export it any time; when you close your account, we delete it as described in the privacy policy.')] },
-          { id: 'isnt', h: 'What BillingEase isn’t', blocks: [p('BillingEase is a tool for keeping your books. It isn’t an accounting firm, a tax adviser or a bank. The tax set-aside is an estimate based on your numbers; check big decisions and filings with an accountant. Unless you use payroll, sending tax returns and payments is up to you.')] },
-          { id: 'fair', h: 'Fair use', blocks: [p('Please don’t:'), L(['Use BillingEase for anything illegal, or to send invoices for things you didn’t sell.', 'Send spam or harass anyone through invoices, quotes or reminders.', 'Try to get into accounts or systems that aren’t yours, or overload the service.', 'Resell BillingEase without a partner agreement.']), p('If you do, we may suspend your account. Where we can, we’ll tell you first and give you time to put it right and export your books.')] },
-          { id: 'wrong', h: 'When things go wrong', blocks: [p('We work hard to keep BillingEase running and your books correct, and we aim for 99.9% uptime. Still, it’s provided “as is”. As far as the law allows, we aren’t liable for indirect losses, and our total liability is limited to what you paid us in the 12 months before the problem. Nothing here limits rights you have by law that can’t be limited.')] },
-          { id: 'ending', h: 'Ending the agreement', blocks: [p('You can close your account any time from Security and your data. We can end this agreement with 30 days’ notice, or sooner for a serious breach of these terms. Either way, you’ll be able to export your books first.')] },
-          { id: 'law', h: 'Law and disputes', blocks: [p('These terms are governed by the laws of the State of New York. If we disagree, please write to us first; most things get solved in a conversation. If not, disputes go to the courts in Kings County, New York, and either of us may use small claims court.')] },
-          { id: 'contact', h: 'Contact', blocks: [p('Questions about these terms, or a plan, invoice or refund:'), { contact: true }] }
+          { id: 'who-we-are', h: 'Who we are', blocks: [p('BillingEase (“we”) makes the BillingEase website and app. The name of the legal entity, its registered address and, in the UK, its registration number with the Information Commissioner’s Office will be added here before launch.'), p('For your account and our website, we decide how your information is used: we’re the controller. For the books you keep in BillingEase, which may include your customers’, suppliers’ and employees’ details, your business decides what goes in and we process it for you: we’re the processor, under the data processing terms.'), { link: { label: 'Read the data processing terms', href: '#data-processing' } }] },
+          { id: 'collect', h: 'What we collect', blocks: [L([
+            ['Your account.', 'Your name, email address, password (stored scrambled, never readable) and your country.'],
+            ['Your business.', 'Its name, address, type, tax references (UTR, VAT number, TIN), invoice settings and logo.'],
+            ['Your books.', 'Invoices, quotes, customers, suppliers, expenses, bills, payments, payroll entries, and photos or PDFs you attach.'],
+            ['Questions to Ask.', 'What you ask, and the answers, so you can see them again.'],
+            ['Messages.', 'Anything you write to us.'],
+            ['Technical information.', 'Basic logs (time, page, browser, IP address) kept to run the service securely and fix errors.']
+          ]), p('We don’t receive bank or card data: BillingEase has no bank feeds and takes no card payments.')] },
+          { id: 'why', h: 'Why we use it, and our lawful basis', blocks: [L([
+            ['To provide BillingEase to you', '(our contract with you): keeping your books, sending the invoices and reminders you ask us to, producing summaries and estimates.'],
+            ['To keep it secure and working', '(our legitimate interests): preventing misuse, fixing problems, keeping logs.'],
+            ['To answer you', '(our contract with you, or legitimate interests): replying to messages.'],
+            ['To meet legal duties', '(legal obligation): for example keeping records a regulator requires.'],
+            ['With your consent', 'only for optional cookies (see the cookie policy). You can withdraw consent at any time.']
+          ]), p('Under Sri Lanka’s PDPA, we rely on the matching grounds: performance of a contract, legal obligations, legitimate interests and, where needed, consent.')] },
+          { id: 'who-sees', h: 'Who sees it', blocks: [L([
+            ['You,', 'and anyone you give access to, such as your accountant or tax practitioner.'],
+            ['Your customers,', 'who see the invoices, quotes and reminders you send them.'],
+            ['Our service providers,', 'who host the service, deliver email and, when you use Ask or send a receipt or bill to be read, run the AI model (Google’s Gemini, on Vertex AI). They act on our instructions under written contracts. The current list is in the data processing terms.'],
+            ['Apps you connect,', 'such as an AI assistant or your own software, see what you allowed when you connected them (reading your books, suggesting changes). They are yours to choose, not our providers: their own terms apply to what they do with it. You can disconnect any of them in Settings → Apps and API.'],
+            ['Authorities,', 'only when the law requires it.']
+          ]), p('Nobody at BillingEase looks at your books unless you ask us to help with something specific, or the law requires it.')] },
+          { id: 'keep', h: 'How long we keep it', blocks: [p('We keep your books while your account is open. Tax law asks businesses to keep records for years: in the UK, at least five years after the 31 January deadline for the tax year; in Sri Lanka, the period the Inland Revenue Act sets. When you close your account, we’ll tell you how to take what you need first. The exact periods we keep closed accounts’ data for are still to be set and will be stated here before launch.')] },
+          { id: 'rights', h: 'Your rights', blocks: [p('Under the UK GDPR you can ask us to: give you a copy of your personal data; correct it; delete it; restrict or object to how we use it; and give it to you in a format another service can use. Under Sri Lanka’s PDPA you can ask for access, correction, completion or erasure, withdraw consent, object to processing, and ask for a review of a decision made only by automated means.'), p('Write to ' + co.privacy + '. It’s free, and we answer within the time the law sets (one month in the UK). If you’re unhappy with our answer, you can complain to the Information Commissioner’s Office in the UK, or to the Data Protection Authority of Sri Lanka.')] },
+          { id: 'protect', h: 'How we protect it', blocks: [p('Passwords are stored scrambled. Each business’s data is kept apart from every other business’s. The books are an append-only ledger: entries are never silently changed or deleted, so changes can be traced. Connections to BillingEase are encrypted.'), { link: { label: 'How we keep your books safe', href: 'SiteSecurity.dc.html' } }] },
+          { id: 'where', h: 'Where your data lives', blocks: [p('Hosting is being decided before launch: a UK or EU region for UK businesses, and a region chosen under the PDPA’s cross-border rules for Sri Lankan businesses. Where data is transferred out of the UK, we’ll use the safeguards UK law requires (such as the UK International Data Transfer Agreement). This section will name the regions once they’re fixed.')] },
+          { id: 'changes', h: 'Changes to this policy', blocks: [p('If we change this policy in a way that matters, we’ll tell you by email or in the app before the change takes effect.')] },
+          { id: 'contact', h: 'Contact', blocks: [contact] }
         ]
       },
       cookies: {
-        title: 'Cookie policy', label: 'Cookies', read: '4 minute read',
-        intro: 'Cookies are small files a website saves in your browser. We use as few as we can: a handful to make the site work, and one for counting visits if you say yes. No advertising cookies, ever.',
-        short: ['Necessary cookies keep you signed in and keep forms safe. They’re always on.', 'Measurement is off until you turn it on, and never includes your name or email.', 'We don’t use advertising or social media tracking cookies.', 'Change your choice below at any time.'],
+        title: 'Cookie policy', label: 'Cookies', read: '2 minute read',
+        intro: 'Cookies are small files a website keeps in your browser. BillingEase uses only a few, and only the ones it needs to work, unless you say yes to more.',
+        short: ['Necessary cookies keep you signed in and remember your country and your cookie choice.', 'No advertising cookies, ever.', 'You can change your choice below at any time.'],
         sections: [
-          { id: 'what', h: 'What cookies are', blocks: [p('A cookie is a small text file saved by your browser. Some last until you close the browser, others for a set time. We also use your browser’s own storage to remember small things, like your cookie choice. We treat both the same way.')] },
           { id: 'list', h: 'The cookies we use', blocks: [{ table: true }] },
-          { id: 'settings', h: 'Your cookie settings', blocks: [p('This choice is saved in this browser only. If you use another browser or device, you’ll be asked there too.'), { settings: true }] },
-          { id: 'ads', h: 'No advertising cookies', blocks: [p('We don’t run ads, don’t use advertising networks, and don’t add social media buttons that track you. If that ever changed, we’d ask you first.')] },
+          { id: 'measurement', h: 'Measurement', blocks: [p('With your OK, we may count visits and see which pages help, without names or email addresses. No measurement tool is running yet. Before we add one, it will be named in the table above, and it will stay off unless you turn it on.')] },
+          { id: 'settings', h: 'Your cookie settings', blocks: [p('Your choice is saved in this browser only. If you use another browser or device, you’ll be asked there too.'), { settings: true }] },
           { id: 'control', h: 'Other ways to control cookies', blocks: [p('Every browser lets you see and delete cookies in its settings. If you block necessary cookies, you won’t be able to sign in to BillingEase.')] },
-          { id: 'contact', h: 'Contact', blocks: [p('Questions about cookies:'), { contact: true }] }
+          { id: 'contact', h: 'Contact', blocks: [contact] }
+        ]
+      },
+      'data-processing': {
+        title: 'Data processing terms', label: 'Data processing', read: '4 minute read',
+        intro: 'When your business, practice or clients keep books in BillingEase, those books contain personal data about other people: customers, suppliers and employees. These terms set out how we process that data on your behalf, as UK GDPR Article 28 and Sri Lanka’s PDPA require.',
+        short: ['You (the business, or the practice for its clients) decide what personal data goes in; we process it only on your instructions.', 'Everyone at BillingEase who can reach it is bound to confidentiality.', 'We tell you without undue delay if a breach affects your data.', 'At the end, the data is returned or deleted, apart from what the law makes us keep.'],
+        sections: [
+          { id: 'roles', h: 'Roles', blocks: [p('The business using BillingEase is the controller of the personal data in its books. BillingEase is the processor. When an accountant, practice or tax practitioner works in a client’s books, they act for that client, under their own engagement with the client.')] },
+          { id: 'scope', h: 'What we process', blocks: [L([
+            ['People:', 'your customers, suppliers, employees and contacts, and your own staff who use BillingEase.'],
+            ['Data:', 'names, contact details, addresses, tax references, amounts owed and paid, bank details printed on invoices, and, for payroll, salary, NIC or National Insurance number, EPF numbers and deductions.'],
+            ['Purpose:', 'keeping the books, issuing documents, calculating payroll and producing summaries, for as long as the account is open.']
+          ])] },
+          { id: 'our-duties', h: 'What we commit to', blocks: [L([
+            'Process personal data only on your documented instructions, which are these terms and the way you use the app.',
+            'Make sure everyone with access is bound to confidentiality.',
+            'Keep appropriate security measures in place, including separating each business’s data and an append-only ledger.',
+            'Help you answer requests from people exercising their rights, and with security, breach notifications and impact assessments.',
+            'Tell you without undue delay after becoming aware of a personal data breach affecting your data.',
+            'Return or delete your data when the service ends, unless the law requires us to keep it.',
+            'Make available the information you need to show compliance, and allow reasonable audits.'
+          ])] },
+          { id: 'subprocessors', h: 'Sub-processors', blocks: [p('We use other providers for parts of the service, under written contracts with the same protections. The list is still being finalised before launch; currently it covers:'), L([
+            ['Hosting and storage:', 'to be decided (a UK or EU region for UK businesses; a PDPA-compliant choice for Sri Lankan businesses).'],
+            ['Email delivery:', 'a transactional email provider that sends the invoices and reminders you ask us to send.'],
+            ['AI (Ask and Capture):', 'Google Cloud (Gemini on Vertex AI), which receives the question and the relevant parts of your books when you use Ask, and the photo or PDF when you send a receipt or bill to be read. It doesn’t use them to train its models.']
+          ]), p('We’ll give notice before adding or replacing a sub-processor, so you can object.')] },
+          { id: 'transfers', h: 'International transfers', blocks: [p('Where personal data leaves the UK, we’ll use a safeguard UK law recognises, such as the International Data Transfer Agreement or the UK Addendum, with a transfer risk assessment. Transfers from Sri Lanka will follow the PDPA’s cross-border rules. The hosting decision will be reflected here.')] },
+          { id: 'contact', h: 'Contact', blocks: [contact] }
         ]
       }
     };
-    const order = ['privacy', 'terms', 'cookies'];
+    const order = ['terms', 'privacy', 'cookies', 'data-processing'];
     const d = DOCS[key];
     const sections = d.sections.map((s, i) => Object.assign({}, s, { id: key + '-' + s.id, n: i + 1 }));
     const active = st.active && st.active.indexOf(key + '-') === 0 ? st.active : sections[0].id;
@@ -397,40 +426,41 @@ class Component extends DCLogic {
       statusInk: choice ? '#2F5711' : '#6B4E00',
       msg: st.ckMsg,
       toggle: () => this.setState({ measure: !st.measure, ckMsg: null }),
-      save: () => this.saveChoice(st.measure ? 'all' : 'necessary', st.measure ? 'Saved. Measurement is on for this browser. Thank you, it helps us see which pages are useful.' : 'Saved. Only necessary cookies on this browser.'),
-      all: () => this.saveChoice('all', 'Saved. All cookies are on for this browser.'),
+      save: () => this.saveChoice(st.measure ? 'all' : 'necessary', st.measure ? 'Saved. Measurement is allowed on this browser if we add it. No measurement tool is running yet.' : 'Saved. Only necessary cookies on this browser.'),
+      all: () => this.saveChoice('all', 'Saved. All cookies are allowed on this browser.'),
       necessary: () => this.saveChoice('necessary', 'Saved. Only necessary cookies on this browser.')
     };
-    const N = { t: '#EEE8FF' }, M = { t: '#FDE6D6' };
     const cookieRows = [
-      { name: 'be_session', what: 'Keeps you signed in to BillingEase.', kind: 'Necessary', keep: '30 days, or until you sign out', tint: N.t },
-      { name: 'be_csrf', what: 'Stops other sites from sending forms in your name.', kind: 'Necessary', keep: 'Until you close the browser', tint: N.t },
-      { name: 'be.cookies', what: 'Remembers the choice you make on this page.', kind: 'Necessary', keep: 'Until you change it', tint: N.t },
-      { name: 'be_measure', what: 'Counts visits and which pages help, with no name or email attached.', kind: 'Measurement', keep: '13 months', tint: M.t },
-      { name: 'be_from', what: 'Remembers which guide or partner sent you, so we can thank them.', kind: 'Measurement', keep: '30 days', tint: M.t }
-    ];
+      { name: 'be_session', what: 'Keeps you signed in to the app. Set when you sign in, removed when you sign out.', kind: 'Necessary', keep: 'Up to 30 days' },
+      { name: 'be_business', what: 'Remembers which business you’re working in.', kind: 'Necessary', keep: 'Until you sign out, or a year' },
+      { name: 'be_google', what: 'Checks that a Google sign-in coming back is the one you started.', kind: 'Necessary', keep: '10 minutes' },
+      { name: 'be_site_country', what: 'Remembers whether you chose the UK or Sri Lanka site.', kind: 'Necessary', keep: '1 year' },
+      { name: 'be_cookies', what: 'Remembers your cookie choice, so we don’t ask again.', kind: 'Necessary', keep: '1 year' }
+    ].map((r) => Object.assign({}, r, { tint: '#EEE8FF' }));
     const promises = [
-      { t: 'We never sell your data', d: 'No ads, no data brokers. We make money from plans and payment fees.', icon: 'M12 3 5 6v5c0 4.5 3 8.5 7 10 4-1.5 7-5.5 7-10V6zM9 12l2 2 4-4', tint: '#EEE8FF' },
-      { t: 'Take it with you any time', d: 'Export every invoice, expense and report as spreadsheets and PDFs, on any plan.', icon: 'M12 4v11M7 10l5 5 5-5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4', tint: '#FDE6D6' },
-      { t: 'Read-only bank access', d: 'We can see transactions to sort them. We can’t move a cent.', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9.5 10v8M14.5 10v8M3 20h18', tint: '#E2F6D5' }
+      { t: 'We never sell your data', d: 'No ads, no data brokers. Each business’s data is kept apart.', icon: 'M12 3 5 6v5c0 4.5 3 8.5 7 10 4-1.5 7-5.5 7-10V6zM9 12l2 2 4-4', tint: '#EEE8FF' },
+      { t: 'Corrections leave a trail', d: 'Entries are never silently changed: a correction reverses the old entry, and filed periods lock.', icon: 'M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5', tint: '#FDE6D6' },
+      { t: 'No bank access at all', d: 'There are no bank feeds, so we never see your bank login or move money.', icon: 'M3 10 12 4l9 6M5 10v8M19 10v8M9.5 10v8M14.5 10v8M3 20h18', tint: '#E2F6D5' }
     ];
+    const last = order.length - 1;
     return {
       doc: { key, title: d.title, intro: d.intro, short: d.short, read: d.read, tabId: 'lg-tab-' + key, tocLabel: d.title + ' contents', sections },
+      draft: 'Draft, to be reviewed by a lawyer. This document isn’t in force yet and will change before BillingEase launches.',
       tabs, toc, tocCount: sections.length, others, ck, cookieRows, promises, co,
       contacts: [
-        { label: 'Email', value: co.support },
-        { label: 'Post', value: co.name + ', ' + co.address },
-        { label: 'General', value: co.email }
+        { label: 'Privacy', value: co.privacy },
+        { label: 'Security', value: co.security },
+        { label: 'Anything else', value: co.email }
       ],
       mtocOpen: st.mtoc, mtocRot: st.mtoc ? 180 : 0,
       toggleMtoc: () => this.setState({ mtoc: !st.mtoc }),
       closeMtoc: () => this.setState({ mtoc: false }),
       tabKey: (e) => {
         const i = order.indexOf(key);
-        if (e.key === 'ArrowRight') { e.preventDefault(); this.goDoc(order[(i + 1) % 3], true); }
-        if (e.key === 'ArrowLeft') { e.preventDefault(); this.goDoc(order[(i + 2) % 3], true); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); this.goDoc(order[(i + 1) % order.length], true); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); this.goDoc(order[(i + last) % order.length], true); }
         if (e.key === 'Home') { e.preventDefault(); this.goDoc(order[0], true); }
-        if (e.key === 'End') { e.preventDefault(); this.goDoc(order[2], true); }
+        if (e.key === 'End') { e.preventDefault(); this.goDoc(order[last], true); }
       }
     };
   }

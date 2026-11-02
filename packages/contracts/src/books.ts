@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { endpoint, IsoDate, Minor, optionalText } from "./endpoint";
+import { PayrollYear } from "./payroll";
 
 /**
  * Yours to keep → your books: the profit and loss and balance sheet from the ledger, categories,
@@ -138,6 +139,8 @@ export const books = {
       instalments: z.array(z.object({ due: IsoDate, amount: Minor, label: z.string() })),
       checks: z.array(ReadyCheck),
       lock: PeriodLock.nullable(),
+      /** Payroll paid in the year, per person; null when the business has no payroll. */
+      payroll: PayrollYear.nullable(),
     }),
   }),
   /**

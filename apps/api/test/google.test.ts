@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { checkIdToken, type GoogleProfile } from "../src/services/google";
+import { codeAt, stepAt } from "../src/lib/totp";
 import { as, testApp } from "./helpers";
 
 // The code stands in for a Google account: the fake answers with the profile filed under it.
@@ -18,6 +19,21 @@ beforeAll(async () => {
 afterAll(() => t.close());
 
 describe("sign in with Google", () => {
+  it("still asks for the two-step code", async () => {
+    accounts.set("twostep", { sub: "g-9", email: "two@example.com", emailVerified: true, name: "Two" });
+    const first = await as(t.app).post("/auth/google", code("twostep"));
+    const me = as(t.app, first.body.token);
+    const { secret } = (await me.post("/auth/two-step/setup")).body;
+    await me.post("/auth/two-step/enable", { code: codeAt(secret, stepAt()) });
+    const again = await as(t.app).post("/auth/google", code("twostep"));
+    expect(again.body).toMatchObject({ twoStep: true });
+    expect(again.body.token).toBeUndefined();
+    const done = await as(t.app).post("/auth/two-step", { ticket: again.body.ticket, code: codeAt(secret, stepAt() + 1) });
+    expect(done.status).toBe(200);
+    const log = (await as(t.app, done.body.token).get("/auth/sign-ins")).body.signIns;
+    expect(log[0]).toMatchObject({ method: "google+code", ok: true });
+  });
+
   it("makes a new account the first time, then signs in to it", async () => {
     const first = await as(t.app).post("/auth/google", code("new"));
     expect(first.status).toBe(200);
@@ -28,7 +44,7 @@ describe("sign in with Google", () => {
     expect(again.body.created).toBe(false);
     expect((await as(t.app, again.body.token).get("/auth/me")).body.user.id).toBe(me.body.user.id);
     const m = await as(t.app, again.body.token).get("/auth/sign-in-methods");
-    expect(m.body).toEqual({ email: "maya@example.com", hasPassword: false, google: { email: "maya@example.com" }, googleAvailable: true });
+    expect(m.body).toEqual({ email: "maya@example.com", hasPassword: false, google: { email: "maya@example.com" }, googleAvailable: true, twoStep: { on: false, since: null, backupLeft: 0 } });
   });
 
   it("links a verified Google email to an existing password account", async () => {

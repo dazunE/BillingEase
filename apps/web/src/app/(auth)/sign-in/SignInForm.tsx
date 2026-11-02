@@ -8,7 +8,7 @@ import { GoogleButton, OrDivider } from "@/components/auth/GoogleButton";
 import { AuthField, PasswordField } from "@/components/auth/fields";
 import { signIn } from "../actions";
 
-export function SignInForm({ next, google, googleError }: { next?: string; google?: boolean; googleError?: string }) {
+export function SignInForm({ next, google, googleError, closed }: { next?: string; google?: boolean; googleError?: string; closed?: boolean }) {
   const [state, action, pending] = useActionState(signIn, undefined);
   const e = state?.errors ?? {};
   return (
@@ -16,6 +16,11 @@ export function SignInForm({ next, google, googleError }: { next?: string; googl
       <AuthTitle title="Welcome back." lead="Sign in to see where your three numbers stand today." />
       <input type="hidden" name="next" value={next ?? ""} />
       {!state && <FormError message={googleError} />}
+      {!state && closed && (
+        <p role="status" className="rounded-2xl bg-tint px-4 py-3.5 text-sm leading-normal">
+          Your account is closed and you&apos;re signed out everywhere. For the next 30 days you can sign in to look, export your records, or reopen it. Then everything is deleted.
+        </p>
+      )}
       {google && (
         <>
           <GoogleButton href={`/auth/google${next ? `?next=${encodeURIComponent(next)}` : ""}`} />

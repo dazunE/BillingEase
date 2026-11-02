@@ -84,11 +84,12 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
     <section aria-labelledby="sw-h" class="s3-wrap" style="padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(56px, 7vw, 96px); display: flex; flex-wrap: wrap; align-items: center; gap: 40px 56px;">
       <div style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 20px; align-items: flex-start;">
         <span class="s3-kick"><span class="s3-dot"></span>Switch to BillingEase</span>
-        <h1 id="sw-h" class="s3-h1">Bring your books over in an afternoon.</h1>
-        <p class="s3-lead">Coming from Wave, QuickBooks, Xero, FreshBooks or a spreadsheet? Your customers, invoices and balances come across with their numbers intact. On Pro and Team, we’ll do the whole move for you, free.</p>
+        <h1 id="sw-h" class="s3-h1">Move in an evening. Start from your next invoice.</h1>
+        <p class="s3-lead">Coming from a spreadsheet, a box of receipts or another bookkeeping tool? There’s no automatic import yet, so here’s the honest version: add your customers and prices in a few minutes, start from your next invoice, and enter opening balances with your accountant. Your old records stay where they are.</p>
+        <p class="s3-p" style="font-size: 15px;">In Sri Lanka it’s the same, plus your employees: start on the first of a month so VAT, SSCL and payroll periods line up.</p>
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding-top: 6px;">
-          <a href="AuthSignUp.dc.html" class="s3-btn s3-btn-lg">Start free and import<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-          <a href="#move" style="font-weight: 600; font-size: 15px; text-underline-offset: 3px;">Have us move it for you</a>
+          <a href="AuthSignUp.dc.html" class="s3-btn s3-btn-lg">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="#from" style="font-weight: 600; font-size: 15px; text-underline-offset: 3px;">See how a move works</a>
         </div>
       </div>
       <div class="s3-anim" aria-hidden="true" style="flex: 1 1 400px; min-width: 0; max-width: 520px; margin: 0 auto;">
@@ -140,7 +141,7 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
             <text x="34" y="154" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#EEE8FF">Yours to keep</text>
             <text x="26" y="172" font-family="Sora, sans-serif" font-size="13" font-weight="700" fill="#B9A3FF">{{hero.keepAmt}}</text>
             <rect x="14" y="190" width="132" height="24" rx="12" fill="#E2F6D5"></rect>
-            <text x="80" y="206" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#2F5711" style="animation: s3-blink 2.4s ease-in-out infinite;">Matches to the cent</text>
+            <text x="80" y="206" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#2F5711" style="animation: s3-blink 2.4s ease-in-out infinite;">From your start date</text>
           </g>
         </svg>
       </div>
@@ -151,10 +152,10 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
       <div class="s3-wrap s3-sec" style="display: flex; flex-direction: column; gap: 32px;">
         <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px;">
           <h2 id="from-h" class="s3-h2">Where are you coming from?</h2>
-          <p class="s3-p" style="font-size: 18px;">Pick your old app and we’ll show you exactly what moves, how, and how long it takes.</p>
+          <p class="s3-p" style="font-size: 18px;">Pick where your records are today. We’ll show you what to add, what stays where it is, and how long it takes.</p>
         </div>
         <div class="s3-tabs" role="tablist" aria-label="Where you’re coming from">
-          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
             <button type="button" class="s3-tab" role="tab" id="{{t.tid}}" aria-selected="{{t.on}}" aria-controls="from-panel" onClick="{{t.pick}}"><span class="s3-logo" style="background: {{t.tint}};">{{t.mono}}</span>{{t.name}}</button>
           </sc-for>
         </div>
@@ -164,7 +165,7 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
             <!-- What comes across -->
             <div style="flex: 999 1 460px; min-width: 0; background: #F7F6F9; border-radius: 24px; padding: clamp(20px, 2.6vw, 32px); display: flex; flex-direction: column; gap: 20px;">
               <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;">
-                <h3 class="s3-h3">What comes across from {{src.name}}</h3>
+                <h3 class="s3-h3">What you add from {{src.name}}</h3>
                 <span style="font-size: 14px; color: #5F5B68;">{{src.how}}</span>
               </div>
               <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 12px;">
@@ -186,12 +187,12 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
               <div class="s3-anim" aria-hidden="true" style="background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
                 <span style="display: flex; align-items: center; gap: 10px;">
                   <span class="s3-logo" style="background: {{src.tint}};">{{src.mono}}</span>
-                  <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 14px;">Importing from {{src.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{src.sample}}</span></span>
+                  <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font-weight: 700; font-size: 14px;">Moving from {{src.name}}</span><span style="font-size: 12px; color: #5F5B68;">{{src.sample}}</span></span>
                 </span>
                 <sc-for list="{{src.progress}}" as="r" hint-placeholder-count="4">
                   <span style="display: flex; flex-direction: column; gap: 6px;">
-                    <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px;"><span style="font-weight: 600;">{{r.t}}</span><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-variant-numeric: tabular-nums;">{{r.n}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="animation: s3-tick 5s ease-out infinite; animation-delay: {{r.delay}};"><path d="m5 12 5 5 9-10"></path></svg></span></span>
-                    <span style="display: block; height: 8px; border-radius: 9999px; background: #EFEDF3; overflow: hidden;"><span style="display: block; height: 100%; border-radius: 9999px; background: {{r.bar}}; animation: s3-fill 5s ease-out infinite; animation-delay: {{r.delay}};"></span></span>
+                    <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px;"><span style="font-weight: 600;">{{r.t}}</span><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-variant-numeric: tabular-nums;">{{r.n}}<sc-if value="{{r.done}}" hint-placeholder-val="{{true}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="animation: s3-tick 5s ease-out infinite; animation-delay: {{r.delay}};"><path d="m5 12 5 5 9-10"></path></svg></sc-if></span></span>
+                    <span style="display: block; height: 8px; border-radius: 9999px; background: #EFEDF3; overflow: hidden;"><span style="display: block; height: 100%; width: {{r.w}};"><span style="display: block; height: 100%; border-radius: 9999px; background: {{r.bar}}; animation: s3-fill 5s ease-out infinite; animation-delay: {{r.delay}};"></span></span></span>
                   </span>
                 </sc-for>
               </div>
@@ -224,7 +225,7 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
     <section aria-labelledby="words-h" class="s3-wrap s3-sec" style="display: flex; flex-wrap: wrap; gap: 32px 64px; align-items: flex-start;">
       <div style="flex: 0 1 400px; display: flex; flex-direction: column; gap: 16px;">
         <h2 id="words-h" class="s3-h2">What changes, in plain words.</h2>
-        <p class="s3-p" style="font-size: 18px;">Same books, friendlier names. The proper accounting terms are still there, one click down, for you and your accountant.</p>
+        <p class="s3-p" style="font-size: 18px;">Same records, plainer names. HMRC’s categories are still there, one click down, for you and your accountant.</p>
         <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E2DFE8; font-size: 13px; font-weight: 600;"><span class="s3-logo" style="width: 22px; height: 22px; font-size: 10px; background: {{src.tint}};">{{src.mono}}</span>Showing {{src.name}} · change it above</span>
       </div>
       <div style="flex: 999 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DFE8; border-radius: 24px; overflow: hidden;">
@@ -248,95 +249,46 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
       </div>
     </section>
 
-    <!-- 4 · We'll move it for you -->
+    <!-- 4 · Your first evening: a moving checklist (there is no moving service) -->
     <section id="move" aria-labelledby="move-h" class="s3-band" style="scroll-margin-top: 16px;">
       <div class="s3-wrap s3-sec" style="display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: flex-start;">
         <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
-          <span class="s3-kick"><span class="s3-dot" style="background: #E0752D;"></span>Free on Pro and Team</span>
-          <h2 id="move-h" class="s3-h2">We’ll move it for you.</h2>
-          <p class="s3-p" style="font-size: 18px;">A person on our move team brings your books across, checks every balance against your old app, and hands you the keys. You keep working the whole time.</p>
+          <span class="s3-kick"><span class="s3-dot" style="background: #E0752D;"></span>Your first evening</span>
+          <h2 id="move-h" class="s3-h2">A moving checklist, not a moving van.</h2>
+          <p class="s3-p" style="font-size: 18px;">Tick these off and your three numbers are right from your start date. Your accountant can do the balances for you.</p>
           <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 15px; line-height: 1.45;">
-            <sc-for list="{{moveList}}" as="m" hint-placeholder-count="4">
+            <sc-for list="{{moveList}}" as="m" hint-placeholder-count="3">
               <li style="display: flex; gap: 10px; align-items: flex-start;"><span style="width: 22px; height: 22px; border-radius: 9999px; background: #FDE6D6; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span><span>{{m}}</span></li>
             </sc-for>
           </ul>
-          <a href="SitePricing.dc.html" style="align-self: flex-start; font-weight: 600; font-size: 15px; text-underline-offset: 3px;">Compare Pro and Team</a>
+          <a href="SitePricing.dc.html" style="align-self: flex-start; font-weight: 600; font-size: 15px; text-underline-offset: 3px;">Compare plans</a>
         </div>
 
         <div style="flex: 999 1 480px; min-width: 0;">
-          <sc-if value="{{form.editing}}" hint-placeholder-val="{{true}}">
-            <form novalidate="" onSubmit="{{form.submit}}" aria-labelledby="move-form-h" style="background: #F7F6F9; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 18px;">
-              <h3 id="move-form-h" class="s3-h3">Ask for a free move</h3>
-              <sc-if value="{{form.hasErrors}}" hint-placeholder-val="{{false}}">
-                <p role="alert" style="margin: 0; padding: 12px 14px; border-radius: 14px; background: #FBE3DF; color: #8A1C0C; font-size: 14px; font-weight: 600;">{{form.summary}}</p>
-              </sc-if>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px;">
-                <div class="s3-field" style="display: flex; flex-direction: column; gap: 6px;">
-                  <label for="mv-name" class="s3-label">Your name</label>
-                  <input id="mv-name" class="s3-in" type="text" autocomplete="name" value="{{form.name}}" onChange="{{form.setName}}" aria-invalid="{{form.nameBad}}" aria-describedby="mv-name-e">
-                  <sc-if value="{{form.nameBad}}" hint-placeholder-val="{{false}}"><span id="mv-name-e" class="s3-err">Tell us who to talk to.</span></sc-if>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <label for="mv-email" class="s3-label">Work email</label>
-                  <input id="mv-email" class="s3-in" type="email" autocomplete="email" value="{{form.email}}" onChange="{{form.setEmail}}" aria-invalid="{{form.emailBad}}" aria-describedby="mv-email-e">
-                  <sc-if value="{{form.emailBad}}" hint-placeholder-val="{{false}}"><span id="mv-email-e" class="s3-err">{{form.emailMsg}}</span></sc-if>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <label for="mv-biz" class="s3-label">Business name</label>
-                  <input id="mv-biz" class="s3-in" type="text" autocomplete="organization" value="{{form.biz}}" onChange="{{form.setBiz}}" aria-invalid="{{form.bizBad}}" aria-describedby="mv-biz-e">
-                  <sc-if value="{{form.bizBad}}" hint-placeholder-val="{{false}}"><span id="mv-biz-e" class="s3-err">Which business are we moving?</span></sc-if>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <label for="mv-from" class="s3-label">Coming from</label>
-                  <select id="mv-from" class="s3-in" value="{{form.from}}" onChange="{{form.setFrom}}">
-                    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5"><option value="{{t.id}}">{{t.name}}</option></sc-for>
-                  </select>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <label for="mv-years" class="s3-label">Years of books</label>
-                  <select id="mv-years" class="s3-in" value="{{form.years}}" onChange="{{form.setYears}}">
-                    <option value="1">Less than a year</option>
-                    <option value="3">1 to 3 years</option>
-                    <option value="7">3 to 7 years</option>
-                    <option value="10">More than 7 years</option>
-                  </select>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <span id="mv-plan-l" class="s3-label">Plan</span>
-                  <div class="s3-seg" role="group" aria-labelledby="mv-plan-l" style="align-self: flex-start;">
-                    <button type="button" aria-pressed="{{form.pro}}" onClick="{{form.pickPro}}">Pro</button>
-                    <button type="button" aria-pressed="{{form.team}}" onClick="{{form.pickTeam}}">Team</button>
-                  </div>
-                </div>
-              </div>
-              <div style="display: flex; flex-direction: column; gap: 6px;">
-                <label for="mv-note" class="s3-label">Anything we should know? <span style="font-weight: 400; color: #5F5B68;">Optional</span></label>
-                <textarea id="mv-note" class="s3-in" value="{{form.note}}" onChange="{{form.setNote}}" placeholder="For example: two bank accounts, and customers in Canada"></textarea>
-              </div>
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px;">
-                <button type="submit" class="s3-btn s3-btn-dark">Book my free move</button>
-                <span style="font-size: 14px; color: #5F5B68;">We reply within one working day.</span>
-              </div>
-            </form>
-          </sc-if>
-          <sc-if value="{{form.sent}}" hint-placeholder-val="{{false}}">
-            <div role="status" style="background: #F7F6F9; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 20px;">
-              <span style="width: 52px; height: 52px; border-radius: 9999px; background: #E2F6D5; display: flex; align-items: center; justify-content: center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
-              <div style="display: flex; flex-direction: column; gap: 8px;">
-                <h3 class="s3-h3" style="font-size: 26px;">You’re on the list, {{form.first}}.</h3>
-                <p class="s3-p" style="font-size: 16px;">We’ll write to <strong style="color: #18161F;">{{form.email}}</strong> within one working day about moving {{form.biz}} from {{form.fromName}}. Here’s what happens next:</p>
-              </div>
-              <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;">
-                <sc-for list="{{form.next}}" as="n" hint-placeholder-count="3">
-                  <li style="display: flex; gap: 14px; align-items: flex-start; background: #FFFFFF; border-radius: 16px; padding: 14px 16px;"><span style="width: 28px; height: 28px; border-radius: 9999px; background: #EEE8FF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex: none;">{{n.n}}</span><span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 700;">{{n.t}}</span><span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{n.d}}</span></span></li>
-                </sc-for>
-              </ol>
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px;">
-                <a href="AuthSignUp.dc.html" class="s3-btn">Start your account now</a>
-                <button type="button" onClick="{{form.again}}" style="min-height: 44px; padding: 0 4px; border: 0; background: transparent; color: #18161F; font: 600 15px 'DM Sans', sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;">Change my details</button>
-              </div>
+          <div style="background: #F7F6F9; border-radius: 24px; padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;">
+              <h3 class="s3-h3">Moving checklist</h3>
+              <span aria-live="polite" style="font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums;">{{check.done}} of {{check.total}} done</span>
             </div>
-          </sc-if>
+            <span aria-hidden="true" style="display: block; height: 8px; border-radius: 9999px; background: #EFEDF3; overflow: hidden;"><span style="display: block; height: 100%; width: {{check.pct}}; border-radius: 9999px; background: #7A5AF8; transition: width .3s ease;"></span></span>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{check.items}}" as="c" hint-placeholder-count="6">
+                <li>
+                  <button type="button" aria-pressed="{{c.on}}" onClick="{{c.toggle}}" style="width: 100%; display: flex; gap: 14px; align-items: flex-start; text-align: left; background: #FFFFFF; border: 1px solid {{c.bd}}; border-radius: 16px; padding: 14px 16px; color: #18161F; font: inherit; cursor: pointer;">
+                    <span style="width: 26px; height: 26px; border-radius: 8px; border: 2px solid #18161F; background: {{c.box}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; flex: none;"><sc-if value="{{c.on}}" hint-placeholder-val="{{false}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></sc-if></span>
+                    <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-weight: 700; font-size: 15px; text-decoration: {{c.strike}};">{{c.t}}</span><span style="font-size: 14px; color: #47444F; line-height: 1.45;">{{c.d}}</span></span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+            <sc-if value="{{check.all}}" hint-placeholder-val="{{false}}">
+              <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; padding: 14px 16px; border-radius: 16px; background: #E2F6D5;">
+                <span style="font-weight: 600; font-size: 15px; color: #2F5711;">That’s everything. Your three numbers are right from your start date.</span>
+                <a href="AuthSignUp.dc.html" class="s3-btn">Start free</a>
+              </div>
+            </sc-if>
+            <span style="font-size: 14px; color: #5F5B68;">There’s no automatic import or moving service today. Importing customers and expenses from a CSV file is planned.</span>
+          </div>
         </div>
       </div>
     </section>
@@ -357,8 +309,8 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
             <path d="M110 124 q10 8 20 0" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round"></path>
             <g transform="translate(160 28)"><g style="animation: s3-bob 3.4s ease-in-out infinite;">
               <rect width="70" height="44" rx="10" fill="#18161F"></rect>
-              <text x="35" y="19" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#EEE8FF">INV-2291</text>
-              <text x="35" y="34" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" fill="#B9A3FF">picked up</text>
+              <text x="35" y="19" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#EEE8FF">Q3</text>
+              <text x="35" y="34" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" fill="#B9A3FF">start date</text>
             </g></g>
             <g transform="translate(4 40)"><g style="animation: s3-bob 3.4s ease-in-out infinite; animation-delay: -1.7s;">
               <path d="M0 8 L20 0 L40 8 V34 L20 42 L0 34 Z" fill="#E7B98A" stroke="#18161F" stroke-width="2" stroke-linejoin="round"></path>
@@ -367,10 +319,10 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
           </svg>
         </div>
         <div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
-          <blockquote style="margin: 0; font-family: Sora, sans-serif; font-weight: 600; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.3; letter-spacing: -0.02em; text-wrap: pretty;">“We moved six years of QuickBooks on a Tuesday afternoon. Every customer balance matched to the cent, and our invoices picked up at INV-2291 like nothing happened.”</blockquote>
+          <blockquote style="margin: 0; font-family: Sora, sans-serif; font-weight: 600; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.3; letter-spacing: -0.02em; text-wrap: pretty;">“{{story.quote}}”</blockquote>
           <figcaption style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;">
-            <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 16px;">Rosa Delgado</span><span style="font-size: 14px; color: #47444F;">Delgado Tile &amp; Stone, San Antonio · 9 people</span></span>
-            <span style="padding: 5px 12px; border-radius: 9999px; background: #FFFFFF; font-size: 12px; font-weight: 700;">Moved by our team in 2 days</span>
+            <span style="display: flex; flex-direction: column;"><span style="font-weight: 700; font-size: 16px;">{{story.name}}</span><span style="font-size: 14px; color: #47444F;">{{story.role}}</span></span>
+            <span style="padding: 5px 12px; border-radius: 9999px; background: #FFFFFF; font-size: 12px; font-weight: 700;">{{story.badge}}</span>
           </figcaption>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; padding-top: 8px; border-top: 1px solid rgba(24,22,31,0.12);">
             <sc-for list="{{mini}}" as="q" hint-placeholder-count="2">
@@ -413,15 +365,15 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
     <section aria-labelledby="close-h" style="padding: clamp(48px, 7vw, 96px) clamp(16px, 4vw, 40px);">
       <div style="max-width: 1200px; margin: 0 auto; box-sizing: border-box; background: #EEE8FF; border-radius: 32px; padding: clamp(36px, 6vw, 80px) clamp(24px, 6vw, 80px); display: flex; flex-wrap: wrap; align-items: center; gap: 32px 48px;">
         <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 22px;">
-          <span style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Your old app keeps working until you’re sure</span>
-          <h2 id="close-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(36px, 5.2vw, 68px); line-height: 1.02; letter-spacing: -0.04em; text-wrap: balance;">Move in today. See your three numbers tonight.</h2>
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #47444F;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: #7A5AF8;"></span>Your old records stay where they are</span>
+          <h2 id="close-h" style="margin: 0; font-family: Sora, sans-serif; font-weight: 700; font-size: clamp(36px, 5.2vw, 68px); line-height: 1.02; letter-spacing: -0.04em; text-wrap: balance;">Move in tonight. See your three numbers tomorrow.</h2>
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
             <a href="AuthSignUp.dc.html" class="s3-btn s3-btn-lg s3-btn-dark">Start free<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
             <a href="SitePricing.dc.html" style="font-weight: 600; font-size: 15px; text-underline-offset: 3px;">See pricing</a>
           </div>
         </div>
         <div style="flex: 1 1 260px; display: flex; justify-content: center;">
-          <dc-import name="CashJar" size="{{320}}" amount="$8,407" uid="switch" hint-size="320px,267px"></dc-import>
+          <dc-import name="CashJar" size="{{320}}" amount="£16,260" sym="£" uid="switch" hint-size="320px,267px"></dc-import>
         </div>
       </div>
     </section>
@@ -441,7 +393,7 @@ textarea.s3-in{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.5
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { src: 'quickbooks', f: { name: '', email: '', biz: '', from: 'quickbooks', years: '3', plan: 'pro', note: '' }, tried: false, sent: false, faq: 0, toast: null };
+    this.state = { src: 'sheet', ticks: {}, faq: 0, toast: null };
   }
   notify(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
   renderVals() {
@@ -453,116 +405,144 @@ class Component extends DCLogic {
       scale: 'M12 4v16M5 20h14M6 8h12M6 8l-3 6a3 3 0 0 0 6 0zM18 8l-3 6a3 3 0 0 0 6 0z',
       folder: 'M3 6h6l2 2h10v11H3z',
       box: 'M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10',
-      bill: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6'
+      bill: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6',
+      clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2'
     };
-    const base = (cust, inv, bal, cats) => [
-      { t: 'Customers', d: cust, icon: I.people, tint: '#EEE8FF' },
-      { t: 'Invoices', d: inv, icon: I.doc, tint: '#EEE8FF' },
-      { t: 'Balances', d: bal, icon: I.scale, tint: '#E2F6D5' },
-      { t: 'Chart of accounts', d: cats, icon: I.folder, tint: '#FDE6D6' }
-    ];
+    // switch.ts (UK). Honest about moving today: no automatic import; CSV import is planned.
     const SRC = {
-      wave: { name: 'Wave', mono: 'W', tint: '#D8ECFF', how: 'Using Wave’s data export',
-        moves: base('Names, emails, addresses and payment terms.', 'Paid and open, keeping their numbers and PDFs.', 'What each customer owes, and your opening bank balance.', 'Your accounts become Categories, matched one to one.').concat([{ t: 'Products and services', d: 'With prices and sales tax settings.', icon: I.box, tint: '#EFEDF3' }, { t: 'Vendors and bills', d: 'Including bills still to pay.', icon: I.bill, tint: '#FDE6D6' }]),
-        stays: 'Payroll history stays in Wave. We bring this year’s totals so year-end forms come out right.',
-        sample: 'Oak Hollow Pottery · 2 years', progress: [['Customers', '86'], ['Invoices', '412'], ['Open balances', '$6,240'], ['Categories', '38 matched']],
-        time: 'About 20 minutes', timeNote: 'For up to 3 years of books. Most of it is waiting for Wave’s export email.',
-        steps: [['Export from Wave', 'In Wave, open Settings → Data export and ask for the CSV export. It arrives by email in a few minutes.', '5 min'], ['Drop it in BillingEase', 'Drag the zip onto the import screen. We match every column and show you what we found before anything is saved.', '10 min'], ['Check the numbers', 'Your three numbers and each customer’s balance should match Wave to the cent. If anything’s off, we show you where.', '5 min']],
-        words: [['Estimates', 'Quotes', 'Same thing, shorter word'], ['Chart of accounts', 'Categories', 'Chart of accounts is right underneath'], ['Reconciliation', 'Check against your bank statement', 'Reconcile'], ['Journal transaction', 'Move money between categories by hand', 'Journal entry'], ['Sales tax report', 'Sales tax you collected', 'With the amount you owe and when'], ['Dashboard', 'Your three numbers', 'Coming in − Going out = Yours to keep']] },
-      quickbooks: { name: 'QuickBooks', mono: 'QB', tint: '#D7F0D2', how: 'Using QuickBooks Online’s export',
-        moves: base('Names, emails, addresses, terms and notes.', 'Paid and open. Numbering carries on where you left off.', 'Customer balances, vendor balances and opening bank balances.', 'Your accounts and sub-accounts become Categories.').concat([{ t: 'Products and services', d: 'Prices, costs and quantity on hand.', icon: I.box, tint: '#EFEDF3' }, { t: 'Vendors and bills', d: 'Including partly paid bills.', icon: I.bill, tint: '#FDE6D6' }]),
-        stays: 'Classes and locations come across as tags. Budgets and custom report layouts stay behind.',
-        sample: 'Ridge Outdoor Supply · 4 years', progress: [['Customers', '142'], ['Invoices', '1,208'], ['Open balances', '$18,420'], ['Categories', '46 → 31']],
-        time: 'About 45 minutes', timeNote: 'For up to 3 years of books. Longer history, or classes and locations? We’ll do it for you.',
-        steps: [['Export from QuickBooks', 'In QuickBooks Online, go to Settings → Export data, pick “All dates” and download the zip of reports and lists.', '10 min'], ['Drop it in BillingEase', 'Drag the zip in. We line up accounts with Categories and ask you about the few we aren’t sure of.', '25 min'], ['Check the numbers', 'Compare your profit and loss and each customer’s balance side by side with QuickBooks before you switch over.', '10 min']],
-        words: [['Estimates', 'Quotes', 'Same thing, shorter word'], ['Credit memo', 'Money back to a customer', 'Credit note'], ['Chart of accounts', 'Categories', 'Chart of accounts is right underneath'], ['Reconcile', 'Check against your bank statement', 'Reconcile'], ['Journal entry', 'Move money between categories by hand', 'Journal entry'], ['Profit and Loss', 'Yours to keep', 'After tax is set aside. The full report is one click away']] },
-      xero: { name: 'Xero', mono: 'X', tint: '#D3F1F7', how: 'Connected directly, read-only',
-        moves: base('Contacts marked as customers, with addresses.', 'Paid, open and repeating invoices.', 'Customer and supplier balances, plus your bank balances.', 'Your accounts become Categories, tax rates included.').concat([{ t: 'Items', d: 'With prices, and stock if you track it.', icon: I.box, tint: '#EFEDF3' }, { t: 'Suppliers and bills', d: 'Bills to pay come across with due dates.', icon: I.bill, tint: '#FDE6D6' }]),
-        stays: 'Tracking categories become tags. Payroll stays in Xero for now.',
-        sample: 'Thistle & Co. Ltd · 3 years', progress: [['Customers', '64'], ['Invoices', '730'], ['Open balances', '£9,880'], ['Categories', '41 matched']],
-        time: 'About 15 minutes', timeNote: 'No files. You approve read-only access and we pull it straight from Xero.',
-        steps: [['Connect Xero', 'Sign in to Xero from BillingEase and approve read-only access. We can’t change anything in Xero.', '2 min'], ['Pick what to bring', 'Choose the years and the bank accounts. We show you everything we found before saving.', '8 min'], ['Check the numbers', 'Balances in GBP, EUR or any other currency should match Xero exactly, with today’s rates for your home currency.', '5 min']],
-        words: [['Quotes', 'Quotes', 'No change'], ['Credit notes', 'Money back to a customer', 'Credit note'], ['Chart of accounts', 'Categories', 'Chart of accounts is right underneath'], ['Bank reconciliation', 'Check against your bank statement', 'Reconcile'], ['Manual journal', 'Move money between categories by hand', 'Journal entry'], ['Repeating invoices', 'Repeating invoices', 'No change, now with automatic reminders']] },
-      freshbooks: { name: 'FreshBooks', mono: 'FB', tint: '#DCE6FF', how: 'Connected directly, read-only',
-        moves: base('Clients and their contacts.', 'Paid and open, plus retainers.', 'What each client owes and any credit they have.', 'FreshBooks accounting accounts become Categories.').concat([{ t: 'Time and projects', d: 'Unbilled hours come across, ready to bill.', icon: I.box, tint: '#EFEDF3' }, { t: 'Expenses', d: 'With receipts attached.', icon: I.bill, tint: '#FDE6D6' }]),
-        stays: 'Proposals become Quotes. Team member time sheets come across on Team.',
-        sample: 'Lumen Dental Group · 2 years', progress: [['Clients', '58'], ['Invoices', '384'], ['Open balances', '$4,970'], ['Unbilled hours', '37.5']],
-        time: 'About 15 minutes', timeNote: 'No files. You approve read-only access and we bring it across in one go.',
-        steps: [['Connect FreshBooks', 'Sign in to FreshBooks from BillingEase and approve read-only access.', '2 min'], ['Pick what to bring', 'Clients, invoices, expenses and time. Unbilled hours land in Time you can bill.', '8 min'], ['Check the numbers', 'Each client’s balance should match FreshBooks. Your retainers keep their schedule.', '5 min']],
-        words: [['Estimates', 'Quotes', 'Same thing, shorter word'], ['Retainers', 'Repeating invoices', 'Same schedule, same amount'], ['Credits', 'Money back to a customer', 'Credit note'], ['Chart of accounts', 'Categories', 'Chart of accounts is right underneath'], ['Reconciliation', 'Check against your bank statement', 'Reconcile'], ['Reports', 'Your three numbers', 'Every report is still there for your accountant']] },
-      sheet: { name: 'A spreadsheet', mono: 'CSV', tint: '#FFF0B8', how: 'Upload a CSV or use our template',
-        moves: base('One row per customer, any column order.', 'Each row with a date and amount becomes an invoice.', 'Unpaid rows become what customers owe you.', 'Your expense columns become Categories.').concat([{ t: 'Expenses', d: 'Each row becomes an expense in Going out.', icon: I.bill, tint: '#FDE6D6' }, { t: 'Products', d: 'If you keep a price list, bring it too.', icon: I.box, tint: '#EFEDF3' }]),
-        stays: 'Formulas don’t come across, and you won’t need them. BillingEase does the adding up.',
-        sample: 'Juniper Café · 1 year', progress: [['Customers', '23'], ['Invoices', '96'], ['Unpaid', '$1,850'], ['Expense rows', '1,140']],
-        time: 'About 30 minutes', timeNote: 'For a year of rows. Messy sheet? Send it to us; tidy is our job.',
-        steps: [['Save as CSV', 'In Excel, Numbers or Google Sheets, save each tab (income, expenses, customers) as a CSV file.', '5 min'], ['Drop it in BillingEase', 'Tell us which column is the date, the amount and the name. We remember it for next time.', '20 min'], ['Check the numbers', 'Your year’s Coming in and Going out should match the totals at the bottom of your sheet.', '5 min']],
-        words: [['The “Income” tab', 'Coming in', 'Invoices, payments and what’s on the way'], ['The “Expenses” tab', 'Going out', 'Sorted into categories as it arrives'], ['The profit cell', 'Yours to keep', 'After tax is set aside, always up to date'], ['Highlighted unpaid rows', 'Open invoices', 'With reminders that send themselves'], ['A column of customer names', 'Customers', 'Each with their history and balance'], ['SUM formulas', 'Done for you', 'Nothing to drag down or fix']] }
+      sheet: { name: 'a spreadsheet', tab: 'A spreadsheet', mono: 'XL', tint: '#E2F6D5',
+        how: 'You type them in once. Most people have a few dozen customers and prices.',
+        moves: [
+          ['Customers', 'Name, email and address, typed in once. Add the ones you still bill; the rest can wait.', I.people],
+          ['Prices', 'What you sell and what you charge, saved for every invoice.', I.box],
+          ['Unpaid invoices', 'Add the ones still owed to you, so Coming in and your reminders are right from day one.', I.doc],
+          ['Every-month costs', 'Rent, phone and software set up once.', I.bill],
+          ['Import customers from a CSV file', 'Planned. Not in BillingEase yet.', I.folder, true]
+        ],
+        stays: 'Last year’s rows stay in your spreadsheet. Keep it: HMRC expects you to keep records for at least 5 years after the 31 January deadline.',
+        progress: [['Customers', 18, 18], ['Prices', 9, 9], ['Unpaid invoices', 4, 4], ['Every-month costs', 5, 6]],
+        time: 'About an hour', timeNote: 'For a sole trader with a couple of dozen customers. Start at the beginning of a quarter if you can.',
+        steps: [
+          ['Pick your start date', 'The start of the current MTD quarter is easiest. Everything from then on goes into BillingEase.', '2 min'],
+          ['Add who and what', 'Customers you still bill, your prices, your suppliers and every-month costs.', '30 to 45 min'],
+          ['Open balances with your accountant', 'Unpaid invoices, bills you owe and money in the bank on your start date. Your accountant can enter these for you.', '15 min']
+        ],
+        words: [
+          ['A tab called Income', 'Coming in', 'Invoices, payments you record, credit notes'],
+          ['A tab called Expenses', 'Going out', 'Expenses, bills and every-month costs'],
+          ['Profit, minus what you think you’ll owe', 'Yours to keep', 'Profit after estimated Income Tax and NI'],
+          ['Your own column of categories', 'HMRC categories', 'Plain names, the MTD boxes underneath'],
+          ['A copy of last month’s invoice', 'Repeating invoices', 'Drafted or emailed on the day'],
+          ['Total at the bottom', 'Reports', 'Profit and loss, balance sheet, who owes you']
+        ] },
+      paper: { name: 'paper and receipts', tab: 'Paper and receipts', mono: '✎', tint: '#FFF0B8',
+        how: 'No data to bring across: you start fresh, and the shoebox gets lighter from today.',
+        moves: [
+          ['Customers and prices', 'Typed in once, from your invoice book or your head.', I.people],
+          ['Receipts from today', 'Photograph each one and attach it to the expense. Nothing is read automatically; you type the total.', I.bill],
+          ['Unpaid invoices', 'Add what you’re still owed so nothing is forgotten.', I.doc],
+          ['Mileage', 'Log journeys from today at the simplified rates.', I.clock]
+        ],
+        stays: 'Keep your paper records from before your start date. HMRC expects them kept for at least 5 years after the 31 January deadline.',
+        progress: [['Customers', 12, 12], ['Prices', 6, 6], ['Unpaid invoices', 3, 3], ['Receipts this week', 7, 9]],
+        time: 'About 45 minutes', timeNote: 'Then a minute or two each time you get a receipt.',
+        steps: [
+          ['Pick your start date', 'Today, or the start of the current quarter if you’ll type in a few weeks of receipts.', '2 min'],
+          ['Add who and what', 'Customers, prices and every-month costs.', '30 min'],
+          ['From today, attach as you go', 'Snap the receipt, type the total, pick the category.', '1 min each']
+        ],
+        words: [
+          ['The invoice book', 'Coming in', 'Invoices as PDFs, payments you record'],
+          ['The shoebox', 'Going out', 'Expenses with the photo attached'],
+          ['What’s left in the bank', 'Yours to keep', 'Profit after estimated Income Tax and NI'],
+          ['Your accountant’s categories', 'HMRC categories', 'Chosen once per expense'],
+          ['A diary of journeys', 'Mileage', 'At the simplified rates'],
+          ['The envelope for the tax bill', 'Tax estimate', 'Updated with every entry']
+        ] },
+      tool: { name: 'another bookkeeping tool', tab: 'Another bookkeeping tool', mono: '⇄', tint: '#EEE8FF',
+        how: 'There’s no automatic transfer from other tools. You add the essentials and keep the old tool for history.',
+        moves: [
+          ['Customers and prices', 'Typed in once. Export a list from your old tool to copy from.', I.people],
+          ['Unpaid invoices and bills', 'Added as they stand on your start date.', I.doc],
+          ['Opening balances', 'Bank and the balances your accountant gives you, entered on your start date.', I.scale],
+          ['Invoice numbering', 'Choose your own prefix, so new invoice numbers never clash with old ones.', I.bill],
+          ['Import from a CSV file', 'Planned for customers and expenses. Not in BillingEase yet.', I.folder, true]
+        ],
+        stays: 'Your history stays in your old tool. Download its reports before you cancel, and keep them as long as HMRC asks.',
+        progress: [['Customers', 34, 34], ['Prices', 15, 15], ['Unpaid invoices and bills', 9, 9], ['Opening balances', 1, 1]],
+        time: 'An evening', timeNote: 'Best done at a quarter end, with your accountant’s balances to hand.',
+        steps: [
+          ['Pick your start date', 'A quarter end, so the old tool holds everything before it and BillingEase everything after.', '2 min'],
+          ['Add who and what', 'Customers, prices, suppliers and every-month costs, copied from your old tool’s lists.', '45 to 60 min'],
+          ['Opening balances', 'Unpaid invoices and bills, bank, and anything else your accountant gives you.', '20 min']
+        ],
+        words: [
+          ['Sales, receivables', 'Coming in', 'Invoices, payments you record, credit notes'],
+          ['Purchases, payables', 'Going out', 'Expenses, bills and every-month costs'],
+          ['Net profit', 'Yours to keep', 'Profit after estimated Income Tax and NI'],
+          ['Estimates', 'Quotes', 'Mark accepted, turn into an invoice'],
+          ['Recurring invoices', 'Repeating invoices', 'Drafted or emailed on the day'],
+          ['Chart of accounts', 'Categories', 'HMRC’s names underneath']
+        ] }
     };
-    const ORDER = ['wave', 'quickbooks', 'xero', 'freshbooks', 'sheet'];
+    const ORDER = ['sheet', 'paper', 'tool'];
     const set = (p) => this.setState(p);
     const s = SRC[st.src];
-    const tabs = ORDER.map((k) => ({ id: k, tid: 'tab-' + k, name: SRC[k].name, mono: SRC[k].mono, tint: SRC[k].tint, on: st.src === k,
-      pick: () => set({ src: k, f: st.sent || st.f.name || st.f.email ? st.f : Object.assign({}, st.f, { from: k }) }) }));
+    const tabs = ORDER.map((k) => ({ id: k, tid: 'tab-' + k, name: SRC[k].tab, mono: SRC[k].mono, tint: SRC[k].tint, on: st.src === k, pick: () => set({ src: k }) }));
     const bars = ['#7A5AF8', '#B9A3FF', '#4F7F49', '#E0752D'];
     const src = Object.assign({}, s, {
       tid: 'tab-' + st.src,
-      progress: s.progress.map((r, i) => ({ t: r[0], n: r[1], bar: bars[i], delay: (i * 0.35) + 's' })),
+      sample: 'Harper Studio · sample business',
+      moves: s.moves.map((m) => ({ t: m[0], d: m[1], icon: m[2], tint: m[3] ? '#EFEDF3' : '#EEE8FF' })),
+      progress: s.progress.map((r, i) => ({ t: r[0], n: r[1] + ' of ' + r[2], done: r[1] >= r[2], w: Math.round((r[1] / r[2]) * 100) + '%', bar: bars[i], delay: (i * 0.35) + 's' })),
       steps: s.steps.map((x, i) => ({ n: i + 1, t: x[0], d: x[1], mins: x[2] })),
       words: s.words.map((w) => ({ a: w[0], b: w[1], c: w[2] }))
     });
 
-    // Free move form
-    const f = st.f;
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim());
-    const bad = { name: st.tried && !f.name.trim(), email: st.tried && !emailOk, biz: st.tried && !f.biz.trim() };
-    const nBad = ['name', 'email', 'biz'].filter((k) => bad[k]).length;
-    const upd = (k) => (e) => set({ f: Object.assign({}, st.f, { [k]: e.target.value }) });
-    const yrs = { '1': 'less than a year', '3': 'up to 3 years', '7': 'up to 7 years', '10': 'more than 7 years' }[f.years];
-    const form = {
-      editing: !st.sent, sent: st.sent,
-      name: f.name, email: f.email, biz: f.biz, from: f.from, years: f.years, note: f.note,
-      first: f.name.trim().split(/\s+/)[0],
-      fromName: SRC[f.from].name === 'A spreadsheet' ? 'your spreadsheet' : SRC[f.from].name,
-      nameBad: bad.name, emailBad: bad.email, bizBad: bad.biz,
-      emailMsg: f.email.trim() ? 'That email doesn’t look complete. Check for a missing @ or dot.' : 'We need an email to reach you.',
-      hasErrors: nBad > 0, summary: nBad === 1 ? 'One thing needs a fix before we can book your move.' : nBad + ' things need a fix before we can book your move.',
-      pro: f.plan === 'pro', team: f.plan === 'team',
-      pickPro: () => set({ f: Object.assign({}, f, { plan: 'pro' }) }),
-      pickTeam: () => set({ f: Object.assign({}, f, { plan: 'team' }) }),
-      setName: upd('name'), setEmail: upd('email'), setBiz: upd('biz'), setFrom: upd('from'), setYears: upd('years'), setNote: upd('note'),
-      submit: (e) => {
-        e.preventDefault();
-        const ok = f.name.trim() && emailOk && f.biz.trim();
-        if (!ok) { set({ tried: true }); return; }
-        set({ sent: true, tried: false });
-        this.notify('Move requested for ' + f.biz.trim());
-      },
-      again: () => set({ sent: false }),
-      next: [
-        { n: 1, t: 'A short email from Teo on our move team', d: 'Within one working day, with a secure link to share ' + yrs + ' of books. No passwords by email, ever.' },
-        { n: 2, t: 'We move and check everything', d: 'Usually 1 to 3 working days. Every customer balance and your ' + (f.plan === 'team' ? 'Team' : 'Pro') + ' plan settings are checked against the old app.' },
-        { n: 3, t: 'A 20-minute handover call', d: 'We walk you through your three numbers and where everything landed. Then you switch the old app off.' }
-      ]
+    // Moving checklist (SWITCH_CHECKLIST.items.uk)
+    const ITEMS = [
+      ['date', 'Pick a start date', 'The start of the current MTD quarter is easiest'],
+      ['cust', 'Add customers you still bill', 'Name and email is enough to start'],
+      ['price', 'Save your prices', 'Pick them on any invoice'],
+      ['unpaid', 'Add unpaid invoices', 'So reminders and Coming in are right'],
+      ['every', 'Set up every-month costs', 'Rent, phone, software'],
+      ['acct', 'Invite your accountant', 'They can enter opening balances']
+    ];
+    const done = ITEMS.filter((x) => st.ticks[x[0]]).length;
+    const check = {
+      done, total: ITEMS.length, all: done === ITEMS.length, pct: Math.round((done / ITEMS.length) * 100) + '%',
+      items: ITEMS.map((x) => {
+        const on = !!st.ticks[x[0]];
+        return { t: x[1], d: x[2], on, box: on ? '#B9A3FF' : '#FFFFFF', bd: on ? '#18161F' : '#E2DFE8', strike: on ? 'line-through' : 'none',
+          toggle: () => {
+            const ticks = Object.assign({}, this.state.ticks, { [x[0]]: !on });
+            set({ ticks });
+            if (!on && ITEMS.every((y) => ticks[y[0]])) this.notify('Moving checklist done');
+          } };
+      })
     };
 
     const FAQ = [
-      { q: 'Will my invoice numbers stay the same?', a: 'Yes. Old invoices keep their numbers and PDFs, and new ones carry on from your last number, so customers never see a jump.' },
-      { q: 'Do I need to cancel my old app first?', a: 'No, and please don’t yet. Keep it until your numbers match in BillingEase. Most people run both for a week, then cancel.' },
-      { q: 'What about years of bank transactions?', a: 'Connect your bank and we pull up to 24 months straight from it. Anything older comes across from your old app’s export.' },
-      { q: 'What if something doesn’t match?', a: 'We show you exactly which customer, invoice or category is off and by how much. On Pro and Team, our move team fixes it for you.' },
-      { q: 'Is the move really free?', a: 'Doing it yourself is free on every plan. Having our team do it is free on Pro and Team, for any number of years of books.' },
-      { q: 'Can I go back?', a: 'Any time. Export everything as spreadsheets and PDFs on any plan. Your books are yours.' }
+      { q: 'Can you import my old books automatically?', a: 'Not yet. There’s no automatic import or migration from spreadsheets or other tools today. You add your customers, prices and unpaid invoices by hand, which takes most sole traders about an hour. Importing customers and expenses from a CSV file is planned.' },
+      { q: 'Will you move my books for me?', a: 'We don’t offer a moving service. Your accountant can help with opening balances, and our help team will answer questions as you go.' },
+      { q: 'Should I bring my history across?', a: 'Usually not. Keep the old records where they are, start BillingEase at the beginning of a quarter, and add only what’s still open: unpaid invoices and bills.' },
+      { q: 'Will my invoice numbers clash?', a: 'Choose your own invoice prefix in your business settings, so new numbers never clash with old ones.' },
+      { q: 'How long do I keep my old records?', a: 'HMRC expects the self-employed and landlords to keep records for at least 5 years after the 31 January submission deadline. Check gov.uk for your situation.' },
+      { q: 'I’m in Sri Lanka. Is moving any different?', a: 'You also add your employees, with NIC, EPF number and basic salary, and customers’ TINs when they’re VAT registered. Start on the first of a month so VAT, SSCL and payroll periods line up, and ask your practitioner for opening balances. Keep your old records for as long as the IRD requires.' }
     ];
     const faqs = FAQ.map((q, i) => { const on = st.faq === i; return Object.assign({}, q, { open: on, iconBg: on ? '#B9A3FF' : 'rgba(24,22,31,0.07)', icon: on ? 'M5 12h14' : 'M12 5v14M5 12h14', toggle: () => set({ faq: on ? -1 : i }) }); });
 
-    const HERO = { wave: ['$14,280', '$6,910', '$5,528'], quickbooks: ['$31,640', '$19,220', '$9,315'], xero: ['£12,400', '£7,150', '£3,938'], freshbooks: ['$22,700', '$12,960', '$7,305'], sheet: ['$9,860', '$5,240', '$3,465'] }[st.src];
     return {
-      hero: { from: s.name === 'A spreadsheet' ? 'your spreadsheet' : 'from ' + s.name, inAmt: HERO[0], outAmt: HERO[1], keepAmt: HERO[2] },
-      tabs, src, form, faqs,
-      moveList: ['A real person, not a script: Teo, Ana or Marguerite', 'Every year of books you want, from any of the apps above', 'Balances checked to the cent before you switch', 'A 20-minute handover call so you know where everything is'],
+      hero: { from: { sheet: 'your spreadsheet', paper: 'the shoebox', tool: 'your old tool' }[st.src], inAmt: '£28,400', outAmt: '£9,180', keepAmt: '£16,260' },
+      tabs, src, check, faqs,
+      moveList: ['Nothing is deleted from your old records', 'Your accountant sees the same books from day one', 'Start free; no card needed'],
+      story: {
+        quote: 'I moved on a Sunday evening from a spreadsheet I’d kept for six years. Customers and prices took forty minutes; my accountant put the opening balances in on Monday.',
+        name: 'Ellie Harper', role: 'Harper Studio, Leeds (sample business)', badge: 'Started at the beginning of Q3'
+      },
       mini: [
-        { t: 'My spreadsheet had nine tabs and a lot of yellow. It came across cleaner than it went in.', who: 'Kofi Mensah', biz: 'Mensah Mobile Detailing, Atlanta' },
-        { t: 'Xero to BillingEase took fifteen minutes. My accountant didn’t notice until I told her.', who: 'Isla Fraser', biz: 'Fraser Knitwear, Edinburgh' }
+        { t: 'I kept the old spreadsheet for history and haven’t opened it since.', who: 'Tom Pickering', biz: 'Pickering Lets, York (sample)' },
+        { t: 'Paper to photos in a week. The shoebox is retired.', who: 'Dan Brook', biz: 'Aire Valley Electrical (sample)' }
       ],
       company: S.company,
       toast: st.toast

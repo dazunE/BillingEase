@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { ApiFailure, call } from "./api";
-import { BUSINESS_COOKIE, SESSION_COOKIE } from "./cookies";
+import { BUSINESS_COOKIE, SESSION_COOKIE, TWO_STEP_COOKIE } from "./cookies";
 
 export async function setSession(token: string, expiresAt: string) {
   const jar = await cookies();
@@ -13,6 +13,28 @@ export async function setSession(token: string, expiresAt: string) {
   jar.set(SESSION_COOKIE, token, {
     httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", expires: new Date(expiresAt),
   });
+}
+
+/** Two-step sign-in is on: keep the ticket (never the password) until the code is in. */
+export async function setTwoStep(ticket: string, expiresAt: string, next?: string) {
+  (await cookies()).set(TWO_STEP_COOKIE, JSON.stringify({ t: ticket, n: next ?? "" }), {
+    httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", expires: new Date(expiresAt),
+  });
+}
+
+export async function readTwoStep(): Promise<{ ticket: string; next: string } | null> {
+  const raw = (await cookies()).get(TWO_STEP_COOKIE)?.value;
+  if (!raw) return null;
+  try {
+    const v = JSON.parse(raw) as { t?: unknown; n?: unknown };
+    return typeof v.t === "string" ? { ticket: v.t, next: typeof v.n === "string" ? v.n : "" } : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function clearTwoStep() {
+  (await cookies()).delete(TWO_STEP_COOKIE);
 }
 
 export async function clearSession() {

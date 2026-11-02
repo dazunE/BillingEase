@@ -3,6 +3,7 @@ import type { FastifyInstance } from "fastify";
 import { scanForLate } from "./agents/chaser";
 import { drain, requeueStale } from "./agents/platform/queue";
 import { tidyApi } from "./public/access";
+import { purgeClosed } from "./services/purge";
 import { runDueRecurring } from "./services/recurring-run";
 
 /**
@@ -20,6 +21,8 @@ export const JOBS: Job[] = [
   { name: "chaser-scan", everyMs: 6 * 60 * 60_000, run: (app) => scanForLate(app) },
   { name: "agent-queue-stale", everyMs: 5 * 60_000, run: (app) => requeueStale(app.be.db) },
   { name: "api-tidy", everyMs: 24 * 60 * 60_000, run: (app) => tidyApi(app) },
+  // Closed businesses are deleted 30 days after closing.
+  { name: "purge-closed", everyMs: 60 * 60_000, run: (app) => purgeClosed(app.be.db, app.be.services.storage) },
 ];
 
 export function startJobs(app: FastifyInstance) {

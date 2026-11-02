@@ -72,12 +72,12 @@ export async function AppHeader({ userName, email, business, businesses }: { use
     { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
     { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
     { label: "Apps and API", hint: "Connect an AI assistant or your own software", href: "/app/settings/apps" },
-    { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/features" },
-    { label: "Help", hint: "Answers, and talk to a person", href: "/help" },
+    { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/app/everything" },
+    { label: "Help", hint: "Answers, and talk to a person", href: "/app/help" },
   ];
   return (
     <header className="border-b border-line bg-white">
-      <div className="mx-auto box-border flex max-w-[1200px] flex-wrap items-center gap-x-5 gap-y-3 px-[clamp(16px,4vw,40px)] py-3">
+      <div className="mx-auto box-border flex max-w-[1200px] flex-wrap items-center gap-x-5 gap-y-3 px-[clamp(16px,4vw,40px)] py-3 max-sm:gap-x-2">
         <Link href="/app" aria-label="BillingEase home"><Logo /></Link>
         <Link href="/businesses" title={businesses.length > 1 ? "Switch business" : "Your businesses"} className="hidden min-w-0 items-center gap-2 border-l border-line pl-3.5 text-sm font-semibold text-ink2 no-underline hover:text-ink min-[1100px]:flex">
           <span className="max-w-[200px] truncate">{business.name}</span>
@@ -90,13 +90,13 @@ export async function AppHeader({ userName, email, business, businesses }: { use
           noHint={`Try a customer, an invoice number like ${business.invoicePrefix}0001, or a supplier.`}
         />
 
-        <div className="ml-auto flex items-center gap-2.5">
-          <Link href="/app/ask" aria-label="Ask: AI answers about tax and your books" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface px-4 text-[15px] font-semibold hover:bg-line max-sm:px-3">
+        <div className="ml-auto flex items-center gap-2.5 max-sm:gap-2">
+          <Link href="/app/ask" aria-label="Ask: AI answers about tax and your books" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface px-4 text-[15px] font-semibold hover:bg-line max-sm:size-11 max-sm:justify-center max-sm:px-0">
             <Icon d={SPARK} size={18} />
             <span className="max-sm:hidden">Ask</span>
           </Link>
           <details data-menu className="relative">
-            <summary aria-label="New" className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full bg-violet px-5 text-[15px] font-semibold hover:bg-[#a98ffb] max-sm:px-3 [&::-webkit-details-marker]:hidden">
+            <summary aria-label="New" className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full bg-violet px-5 text-[15px] font-semibold hover:bg-[#a98ffb] max-sm:size-11 max-sm:justify-center max-sm:px-0 [&::-webkit-details-marker]:hidden">
               <Icon d={ICONS.plus} size={18} strokeWidth={2.4} />
               <span className="max-sm:hidden">New</span>
             </summary>

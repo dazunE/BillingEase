@@ -7,6 +7,8 @@ export interface Storage {
   put(businessId: string, bytes: Uint8Array, ext: string): Promise<string>;
   get(key: string): Promise<Uint8Array>;
   remove(key: string): Promise<void>;
+  /** Every file a business has, when it's deleted. */
+  removeAll(businessId: string): Promise<void>;
 }
 
 export function diskStorage(dir: string): Storage {
@@ -25,5 +27,9 @@ export function diskStorage(dir: string): Storage {
     },
     get: async (key) => new Uint8Array(await readFile(full(key))),
     remove: (key) => rm(full(key), { force: true }),
+    removeAll: async (businessId) => {
+      if (!/^[0-9a-f-]{36}$/i.test(businessId)) throw new Error("Bad business id.");
+      await rm(full(businessId), { recursive: true, force: true });
+    },
   };
 }

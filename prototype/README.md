@@ -45,7 +45,7 @@ A screen that doesn't apply to the business's country shows a short note with a 
 
 Not in this version: bank and card feeds, online payments, receipt reading, multi-currency, stock and time tracking, US tax, and several businesses per account. Attachments (a photo or PDF on an expense or bill) replace receipts.
 
-The marketing pages (`ThreeLanding`, `Site*.dc.html`) are still the earlier US version and are being reworked.
+The marketing pages (`ThreeLanding`, `Site*.dc.html`, with shared content in `site.js` and `site-content.js`) follow the live site in `apps/web/src/content/site`: UK copy first, with Sri Lanka alongside, prices in £ and Rs, and a UK / Sri Lanka switch on the landing page and pricing. The older page names map to the new audiences: `SiteFreelancers` is sole traders, `SiteTeams` landlords, `SiteShops` small businesses in Sri Lanka, `SitePartners` accountants and tax practitioners, and `SiteGlobal` the UK and Sri Lanka page.
 
 ## What's inside
 

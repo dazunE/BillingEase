@@ -68,7 +68,7 @@ export async function authenticateToken(app: FastifyInstance, req: FastifyReques
     .leftJoin(oauthClients, eq(oauthClients.id, apiTokens.clientId))
     .where(eq(apiTokens.hash, hashToken(raw)));
   const t = row?.t;
-  const ok = t && t.kind !== "refresh" && !t.revokedAt && (!t.expiresAt || t.expiresAt > new Date()) && row.role;
+  const ok = t && t.kind !== "refresh" && !t.revokedAt && (!t.expiresAt || t.expiresAt > new Date()) && row.role && !row.business.closedAt;
   if (!ok) throw challenge(reply, config.appUrl, surface, 401, "invalid_token", "That token isn't valid: it may have expired or been revoked.");
   const r = resources(config.appUrl);
   if (t.resource && t.resource !== r[surface]) throw challenge(reply, config.appUrl, surface, 401, "invalid_token", "That token was issued for a different BillingEase API.");

@@ -2,7 +2,7 @@ import { payroll, type PayLine, type PayRun } from "@billingease/contracts";
 import { addMonths, daysBetween, dueAccount, lastWorkingDay, lkPay, moneyAccountFor, monthLabel, PAYROLL_RULES, payrollDues, payrollPosting, rulesFor, today, ukLine } from "@billingease/core";
 import { postEntry } from "@billingease/db";
 import { accounts, employees, payRunLines, payRuns, payrollDues as duesTable, users } from "@billingease/db/schema";
-import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNull, lte } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import { logActivity } from "../lib/activity";
 import type { BizCtx } from "../lib/context";
@@ -17,6 +17,7 @@ type DueRow = typeof duesTable.$inferSelect;
 const empOut = (e: typeof employees.$inferSelect) => ({
   id: e.id, name: e.name, job: e.job, startedOn: e.startedOn, endedOn: e.endedOn, idNumber: e.idNumber, epfNumber: e.epfNumber,
   taxCode: e.taxCode, basic: e.basic, allowances: e.allowances, pension: e.pension, bankDetails: e.bankDetails,
+  bankName: e.bankName, bankBranch: e.bankBranch, bankAccount: e.bankAccount,
 });
 
 const lineOut = (l: LineRow): PayLine => ({
@@ -139,6 +140,44 @@ export async function payrollRoutes(app: FastifyInstance) {
   });
 
   route(app, payroll.run, ({ params, ctx }) => detail(ctx, params.id));
+
+  route(app, payroll.schedules, async ({ params, ctx }) => {
+    const b = ctx.business;
+    if (b.country !== "lk") throw new AppError(404, "not_here", "EPF, ETF and APIT schedules are for Sri Lankan payroll.");
+    const [run] = await ctx.db.select().from(payRuns).where(and(eq(payRuns.id, params.id), eq(payRuns.businessId, b.id)));
+    if (!run) throw notFound("That pay run");
+    if (run.status !== "approved") throw badRequest("Approve the run first. The schedules come from its approved figures.");
+    const lines = await ctx.db.select().from(payRunLines).where(eq(payRunLines.runId, run.id)).orderBy(asc(payRunLines.name));
+    const people = lines.length ? await ctx.db.select().from(employees).where(inArray(employees.id, lines.map((l) => l.employeeId))) : [];
+    const emp = new Map(people.map((p) => [p.id, p]));
+    // APIT deducted so far in the year of assessment, from approved runs paid up to this one.
+    const year = rulesFor(b.country).taxYearOf(run.payDate);
+    const yearRuns = await ctx.db.select({ id: payRuns.id }).from(payRuns)
+      .where(and(eq(payRuns.businessId, b.id), eq(payRuns.status, "approved"), gte(payRuns.payDate, year.from), lte(payRuns.payDate, run.payDate)));
+    const yearLines = await ctx.db.select({ employeeId: payRunLines.employeeId, apit: payRunLines.apit }).from(payRunLines).where(inArray(payRunLines.runId, yearRuns.map((r) => r.id)));
+    const apitYear = new Map<string, number>();
+    for (const l of yearLines) apitYear.set(l.employeeId, (apitYear.get(l.employeeId) ?? 0) + l.apit);
+    const dues = await ctx.db.select().from(duesTable).where(eq(duesTable.runId, run.id));
+    const dueOn = (k: "epf" | "etf" | "apit") => dues.find((d) => d.kind === k)?.dueOn ?? null;
+    const rows = lines.map((l) => {
+      const e = emp.get(l.employeeId);
+      return {
+        employeeId: l.employeeId, name: l.name, nic: e?.idNumber ?? null, epfNumber: e?.epfNumber ?? null,
+        bankName: e?.bankName ?? (e?.bankDetails || null), bankBranch: e?.bankBranch ?? null, bankAccount: e?.bankAccount ?? null,
+        gross: l.gross, epfBase: l.epfBase, epfEe: l.epfEe, epfEr: l.epfEr, etf: l.etf, taxable: l.gross, apit: l.apit,
+        apitYear: apitYear.get(l.employeeId) ?? l.apit, net: l.net,
+      };
+    });
+    const sum = (k: "gross" | "epfBase" | "epfEe" | "epfEr" | "etf" | "taxable" | "apit" | "net") => rows.reduce((a, r) => a + r[k], 0);
+    return {
+      runId: run.id, month: run.month, label: monthLabel(run.month + "-01"), payDate: run.payDate,
+      employer: { name: b.legalName || b.name, tin: b.taxId }, yearLabel: year.label,
+      due: { epf: dueOn("epf"), etf: dueOn("etf"), apit: dueOn("apit") },
+      payTo: PAYROLL_RULES.lk.payTo,
+      rows,
+      totals: { gross: sum("gross"), epfBase: sum("epfBase"), epfEe: sum("epfEe"), epfEr: sum("epfEr"), etf: sum("etf"), taxable: sum("taxable"), apit: sum("apit"), net: sum("net") },
+    };
+  });
 
   route(app, payroll.createRun, async ({ body, ctx }) => {
     const lines = await buildLines(ctx, body);

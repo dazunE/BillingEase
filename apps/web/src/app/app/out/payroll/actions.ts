@@ -21,6 +21,7 @@ function employeeBody(v: Record<string, string>): EmployeeBody {
     name: v.name ?? "", job: v.job || null, startedOn: v.startedOn || null, endedOn: v.endedOn || null,
     idNumber: v.idNumber || null, epfNumber: v.epfNumber || null, taxCode: v.taxCode || null,
     basic: money(v.basic), allowances, pension: v.pension === "on", bankDetails: v.bankDetails || null,
+    bankName: v.bankName || null, bankBranch: v.bankBranch || null, bankAccount: v.bankAccount || null,
   };
 }
 
