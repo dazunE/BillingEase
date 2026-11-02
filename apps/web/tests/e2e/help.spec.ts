@@ -23,8 +23,13 @@ test("UK: Help and Everything from the account menu, with UK-only features", asy
   await context.addCookies([{ name: "be_session", value: await owner(request, "uk"), url: WEB }]);
 
   await page.goto("/app");
-  await page.locator("summary[aria-label^=\"Your business:\"]").click();
-  await page.getByRole("menuitem", { name: /^Help/ }).click();
+  // The menu can be clicked before the page is ready; try until it's open.
+  const help = page.getByRole("menuitem", { name: /^Help/ });
+  await expect(async () => {
+    if (!(await help.isVisible())) await page.locator("summary[aria-label^=\"Your business:\"]").click();
+    await expect(help).toBeVisible({ timeout: 2000 });
+  }).toPass({ timeout: 30_000 });
+  await help.click();
   await expect(page).toHaveURL(/\/app\/help$/);
   await expect(page.getByRole("heading", { name: "How can we help, Ellie?" })).toBeVisible();
   // The bottom island stays on Home's sections.
