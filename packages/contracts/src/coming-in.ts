@@ -83,6 +83,12 @@ export type ItemBody = z.input<typeof ItemBody>;
 // ---------------------------------------------------------------------------
 // Lines (invoices, quotes, credit notes, repeating invoices)
 
+/** How an invoice is billed: items (quantity × price), time and materials, or one fixed price. */
+export const BILLINGS = ["items", "time_materials", "fixed"] as const;
+export const Billing = z.enum(BILLINGS);
+export type Billing = z.infer<typeof Billing>;
+export const LineSection = z.enum(["time", "materials"]);
+
 export const LineInput = z.object({
   itemId: Uuid.optional().nullable(),
   description: z.string().trim().min(1, "Say what this line is for").max(500),
@@ -93,6 +99,16 @@ export const LineInput = z.object({
   vatRateId: z.string().max(20).optional().nullable(),
   /** Sri Lanka: SSCL applies to this line. */
   sscl: z.boolean().default(true),
+  /** Time and materials: the part of the invoice this line is in. */
+  section: LineSection.optional().nullable(),
+  /** When the work on a time line was done. */
+  workDate: IsoDate.optional().nullable(),
+  /** Who did the work on a time line. */
+  person: optionalText(80),
+  /** Materials: what they cost you. With `markupBps`, the price is worked out from it (and `unitPrice` is ignored). */
+  costPrice: z.number().int().min(0, "The cost can't be negative").optional().nullable(),
+  /** Markup on the cost, in basis points: 15% = 1500. */
+  markupBps: z.number().int().min(0, "The markup can't be negative").max(100000, "At most 1000%").optional().nullable(),
 });
 export type LineInput = z.input<typeof LineInput>;
 
@@ -111,6 +127,11 @@ export const Line = z.object({
   ssclAmount: z.number().int(),
   vat: z.number().int(),
   total: z.number().int(),
+  section: LineSection.nullable(),
+  workDate: z.string().nullable(),
+  person: z.string().nullable(),
+  costPrice: z.number().int().nullable(),
+  markupBps: z.number().int().nullable(),
 });
 export type Line = z.infer<typeof Line>;
 
@@ -178,6 +199,7 @@ export type Receipt = z.infer<typeof Receipt>;
 
 export const InvoiceDetail = InvoiceRow.extend({
   title: z.string(),
+  billing: Billing,
   supplyDate: z.string().nullable(),
   reference: z.string().nullable(),
   notes: z.string().nullable(),
@@ -214,6 +236,8 @@ export const InvoiceBody = z.object({
   currency: CurrencyCode.optional().nullable(),
   /** Home currency per unit of `currency`. Left out: the rate on the issue date is looked up. */
   fxRate: FxRateInput,
+  /** Items (quantity × price), time and materials, or one fixed price. */
+  billing: Billing.default("items"),
   lines: z.array(LineInput).max(200),
 });
 export type InvoiceBody = z.input<typeof InvoiceBody>;

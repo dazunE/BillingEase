@@ -54,7 +54,7 @@ test("UK: branding invoices with a logo, the Modern layout and a footer", async 
   // It stays after a reload, and a new invoice's preview uses it.
   await page.reload();
   await expect(page.getByLabel("Colour as a hex code")).toHaveValue("#0F766E");
-  await page.goto("/app/in/invoices/new");
+  await page.goto("/app/in/invoices/new?type=items");
   await expect(page.getByTestId("preview-band")).toBeVisible();
   await expect(page.locator("article[data-template=modern]").getByRole("img", { name: /logo/ })).toBeVisible();
 

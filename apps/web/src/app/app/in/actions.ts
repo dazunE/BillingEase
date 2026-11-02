@@ -1,7 +1,8 @@
 "use server";
 
 import { comingIn, type LineInput } from "@billingease/contracts";
-import { currencyDigits, parseMoney, parseRate } from "@billingease/core";
+import { currencyDigits, markedUp, parseMoney, parseRate } from "@billingease/core";
+import { markupBps } from "@/components/in/lines";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { EditorPayload } from "@/components/in/DocEditor";
@@ -30,19 +31,28 @@ function readPayload(fd: FormData): EditorPayload {
 
 /** The editor's lines as the API wants them, noting field errors for what can't be read. */
 function linesOf(p: EditorPayload, errors: Record<string, string>): LineInput[] {
-  const kept = p.lines.filter((l) => l.description.trim() || l.price.trim());
+  const kept = p.lines.filter((l) => l.description.trim() || l.price.trim() || l.cost?.trim());
   // Prices are in the document's currency, with its decimal places (none for JPY).
   const digits = currencyDigits(p.currency);
   return kept.map((l, i) => {
-    const unitPrice = parseMoney(l.price, digits);
-    if (!l.price.trim()) errors[`lines.${i}.unitPrice`] = "Enter a price";
+    // Materials with a cost: the price is the cost plus the markup (0% when none is typed).
+    const cost = l.section === "materials" && l.cost?.trim() ? parseMoney(l.cost, digits) : null;
+    if (l.section === "materials" && l.cost?.trim() && cost == null) errors[`lines.${i}.costPrice`] = "Enter a cost like 12.50";
+    const bps = cost != null ? (markupBps(l.markup) ?? 0) : null;
+    if (cost != null && l.markup?.trim() && markupBps(l.markup) == null) errors[`lines.${i}.markupBps`] = "Enter a percent like 15";
+    const unitPrice = cost != null ? markedUp(cost, bps!) : parseMoney(l.price, digits);
+    if (cost == null && !l.price.trim()) errors[`lines.${i}.unitPrice`] = l.section === "time" ? "Enter a rate" : "Enter a price";
     else if (unitPrice == null) errors[`lines.${i}.unitPrice`] = digits ? "Enter a price like 12.50" : "Enter a whole amount like 1200";
     const discount = l.discount.trim() ? parseMoney(l.discount, digits) : 0;
     if (discount == null) errors[`lines.${i}.discount`] = "Enter an amount like 5.00";
     const q = qtyMilli(l.qty);
     if (!q) errors[`lines.${i}.quantityMilli`] = "Enter a quantity more than 0";
     if (!l.description.trim()) errors[`lines.${i}.description`] = "Say what this line is for";
-    return { itemId: l.itemId, description: l.description.trim(), quantityMilli: q || 1000, unitPrice: unitPrice ?? 0, discount: discount ?? 0, vatRateId: l.vatRateId, sscl: l.sscl };
+    return {
+      itemId: l.itemId, description: l.description.trim(), quantityMilli: q || 1000, unitPrice: unitPrice ?? 0, discount: discount ?? 0, vatRateId: l.vatRateId, sscl: l.sscl,
+      section: l.section ?? null, workDate: l.section === "time" && l.workDate ? l.workDate : null, person: l.section === "time" ? (l.person?.trim() || null) : null,
+      costPrice: cost, markupBps: bps,
+    };
   });
 }
 
@@ -90,7 +100,8 @@ export async function saveInvoice(_: FormState, fd: FormData): Promise<FormState
   if (Object.keys(errors).length) return invalid(errors, p.id);
   const customerId = await customerIdOf(p, errors);
   if (!customerId || Object.keys(errors).length) return invalid(errors, p.id);
-  const body = { customerId, issueDate: p.issueDate, supplyDate: blankToNull(p.supplyDate), dueDate: blankToNull(p.dueDate), notes: blankToNull(p.notes), reference: blankToNull(p.reference), ...fx, lines };
+  const billing: "items" | "time_materials" | "fixed" = p.billing === "time_materials" || p.billing === "fixed" ? p.billing : "items";
+  const body = { customerId, issueDate: p.issueDate, supplyDate: blankToNull(p.supplyDate), dueDate: blankToNull(p.dueDate), notes: blankToNull(p.notes), reference: blankToNull(p.reference), ...fx, billing, lines };
   let id = p.id;
   try {
     const saved = id ? await call(comingIn.updateInvoice, { params: { id }, body }) : await call(comingIn.createInvoice, { body });

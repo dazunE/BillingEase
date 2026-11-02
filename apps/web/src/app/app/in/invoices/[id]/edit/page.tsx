@@ -25,10 +25,12 @@ export default async function EditInvoicePage({ params, searchParams }: { params
       <div className="flex flex-col gap-2">
         <span className="flex items-center gap-2 text-sm font-bold text-ink2"><span className="size-2 rounded-full bg-coming" aria-hidden />Draft · becomes {summary.numbers.invoice} when you send it</span>
         <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold leading-[1.05] tracking-[-0.03em]">Edit draft for {inv.customer.name}</h1>
+        {inv.billing !== "items" && <p className="text-ink2">{inv.billing === "fixed" ? "Fixed price" : "Time and materials"} invoice.</p>}
         {sp.from === "quote" && inv.quote && <p className="text-ink2">Made from quote {inv.quote.number}. Check the lines and dates, then send it.</p>}
       </div>
       <DocEditor
         mode="invoice"
+        billing={inv.billing}
         business={editorBusiness(b)}
         customers={editorCustomers(customers.customers)}
         items={items.items}

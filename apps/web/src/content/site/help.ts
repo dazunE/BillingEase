@@ -95,7 +95,7 @@ export const HELP: HelpAnswer[] = [
     topic: "invoices",
     popular: true,
     q: "How do I send my first invoice?",
-    a: "Press New, then New invoice. Choose or add the customer, add a line for each thing you did, check the dates, and press Save and send. Your customer gets an email with the invoice as a PDF, and the amount shows in Coming in straight away. You can also download the PDF from the invoice page and send it yourself.",
+    a: "Press New, then New invoice, and pick what kind: time and materials, a fixed price, recurring, or items. Choose or add the customer, add a line for each thing you did, check the dates, and press Save and send. Your customer gets an email with the invoice as a PDF, and the amount shows in Coming in straight away. You can also download the PDF from the invoice page and send it yourself.",
     link: { label: "Start a new invoice", href: APP.newInvoice },
     words: "bill create send invoice new pdf email",
   },

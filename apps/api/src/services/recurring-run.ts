@@ -33,7 +33,7 @@ export function upcoming(r: { nextRun: string; frequency: Frequency; endDate: st
 
 export function recurringOut(b: BusinessRow, r: RecurringDb, customerName: string, invoiceCount: number): Recurring {
   const t = r.template;
-  const lines = t.lines.map((l) => ({ itemId: l.itemId ?? null, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount ?? 0, vatRateId: l.vatRateId ?? null, sscl: l.sscl !== false }));
+  const lines = t.lines.map((l) => ({ itemId: l.itemId ?? null, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount ?? 0, vatRateId: l.vatRateId ?? null, sscl: l.sscl !== false, person: null }));
   let totals = { net: 0, vat: 0, sscl: 0, total: 0 };
   try {
     totals = computeInvoice(lines.map((l) => ({ ...l, sscl: b.country === "lk" ? l.sscl : false })), taxContext(b));
