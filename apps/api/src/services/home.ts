@@ -59,7 +59,7 @@ export async function threeNumbers(db: Exec, b: BusinessRow, key: PeriodKey | un
       taxYear: year.label,
       lines: est.lines,
       instalments: est.instalments,
-      wording: ESTIMATE_WORDING,
+      wording: ESTIMATE_WORDING.replace("accountant", rules.wording.practitionerNoun),
       verified: rules.verified,
     },
     keep: inn.total - out.total - share,
@@ -67,7 +67,7 @@ export async function threeNumbers(db: Exec, b: BusinessRow, key: PeriodKey | un
 }
 
 /** Output VAT, input VAT and SSCL for a month (Sri Lanka's VAT and SSCL return). */
-async function vatFor(db: Exec, businessId: string, from: string, to: string) {
+export async function vatFor(db: Exec, businessId: string, from: string, to: string) {
   const sign = sql`case when ${invoices.kind} = 'credit_note' then -1 else 1 end`;
   const [o] = await db.select({
     vat: sql<string>`coalesce(sum(${invoices.vat} * ${sign}), 0)`,

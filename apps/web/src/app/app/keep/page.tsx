@@ -20,6 +20,11 @@ const I = {
   check: "M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11",
   ask: "M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z",
   people: ICONS.people,
+  cal: "M4 5h16v15H4zM4 10h16M9 3v4M15 3v4",
+  percent: "M19 5 5 19M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3",
+  chart: "M4 20V10M10 20V4M16 20v-7M2 20h20",
+  flag: "M5 21V4h11l-1.5 4L16 12H5",
+  folder: "M3 6h7l2 2h9v11H3z",
 };
 
 /** Yours to keep (prototype ThreeKeep): what's left after Going out and the tax set aside, and how it got there. */
@@ -46,11 +51,18 @@ export default async function KeepPage({ searchParams }: { searchParams: Promise
   ];
   const scale = Math.max(1, ...rows.map((r) => Math.abs(r.amount)));
 
+  const card = s.periodCard;
+  const dueOf = (p: { label: string; due: string }) => `${p.label.split(" ")[0]} · due ${longDate(p.due).replace(/^\w+ /, "")}`;
+  const filingStatus = card ? (card.previous ? dueOf(card.previous) : `${card.current.label.split(" ")[0]} under way`) : null;
   const tools = [
-    { href: "/app/statements", name: "Bank check", desc: "Upload a statement and match it to your books", icon: I.bank, status: null as string | null },
-    { href: "/app/check", name: "For you to check", desc: "What the AI read from receipts and statements", icon: I.check, status: toCheck ? `${toCheck} waiting` : null },
-    { href: "/app/ask", name: "Ask", desc: `Questions about ${lk ? "VAT, SSCL and income tax" : "tax and your books"}`, icon: I.ask, status: null },
-    { href: "/app/settings/people", name: `Your ${practitioner}`, desc: `Invite them to see your books`, icon: I.people, status: null },
+    ...(business.country === "uk" ? [{ href: "/app/keep/quarters", name: "Quarters", desc: "Making Tax Digital updates", icon: I.cal, status: card?.kind === "quarter" ? filingStatus : null }] : []),
+    ...((lk && (business.vatRegistered || business.ssclRegistered)) || (business.country === "uk" && business.vatRegistered)
+      ? [{ href: "/app/keep/tax-periods", name: lk ? "VAT and SSCL" : "VAT summary", desc: lk ? "Month by month, for the IRD return" : "Per VAT quarter, for your accountant", icon: I.percent, status: card?.kind === "vat-month" ? filingStatus : null }] : []),
+    { href: "/app/keep/reports", name: "Reports", desc: "Profit and loss, balance sheet", icon: I.chart, status: null as string | null },
+    { href: "/app/keep/year-end", name: "Tax and year-end", desc: `What your ${practitioner} needs for the year`, icon: I.flag, status: null },
+    { href: "/app/statements", name: "Bank check", desc: "Upload a statement and match it", icon: I.bank, status: null },
+    { href: "/app/keep/categories", name: "Categories", desc: lk ? "Lines of the income tax return" : business.country === "us" ? "Schedule C lines" : "HMRC's self-employment boxes", icon: I.folder, status: null },
+    { href: "/app/check", name: "For you to check", desc: "What the AI read for you", icon: I.check, status: toCheck ? `${toCheck} waiting` : null },
   ];
 
   return (
@@ -101,7 +113,7 @@ export default async function KeepPage({ searchParams }: { searchParams: Promise
           <h2 id="books-h" className="font-display text-[22px] font-bold tracking-[-0.02em]">Your books</h2>
           <span className="text-[13px] text-muted">The checks your {practitioner} asks for</span>
         </div>
-        <nav aria-label="Your books" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <nav aria-label="Your books" className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {tools.map((t) => (
             <Link key={t.href} href={t.href} className="flex min-w-0 flex-col gap-2.5 rounded-[20px] border border-line bg-white px-[18px] py-4 transition-[border-color,box-shadow,transform] hover:-translate-y-px hover:border-input hover:shadow-[0_6px_18px_rgba(24,22,31,0.07)]">
               <span className="flex items-center justify-between">

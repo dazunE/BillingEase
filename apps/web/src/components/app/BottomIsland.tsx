@@ -38,7 +38,7 @@ function sectionOf(path: string): SectionKey {
 
 const startsWith = (path: string, prefix: string) => path === prefix || path.startsWith(prefix + "/");
 
-export function BottomIsland({ country, vatRegistered, counts }: { country: "uk" | "lk" | "us"; vatRegistered: boolean; counts: IslandCounts }) {
+export function BottomIsland({ country, vatRegistered, ssclRegistered = false, counts }: { country: "uk" | "lk" | "us"; vatRegistered: boolean; ssclRegistered?: boolean; counts: IslandCounts }) {
   const path = usePathname() ?? "/app";
   const current = sectionOf(path);
   // ← shows the sections on this page only: the next page shows its own section again.
@@ -72,7 +72,12 @@ export function BottomIsland({ country, vatRegistered, counts }: { country: "uk"
       { href: "/app/out/suppliers", label: "Suppliers" },
     ],
     keep: [
+      ...(country === "uk" ? [{ href: "/app/keep/quarters", label: "Quarters" }] : []),
+      ...(country === "lk" && (vatRegistered || ssclRegistered) ? [{ href: "/app/keep/tax-periods", label: "VAT and SSCL" }] : country === "uk" && vatRegistered ? [{ href: "/app/keep/tax-periods", label: "VAT summary" }] : []),
+      { href: "/app/keep/reports", label: "Reports" },
+      { href: "/app/keep/year-end", label: "Tax and year-end" },
       { href: "/app/statements", label: "Bank check" },
+      { href: "/app/keep/categories", label: "Categories" },
       { href: "/app/check", label: "For you to check", badge: counts.toCheck, badgeLabel: `${counts.toCheck} waiting` },
     ],
     acct: [

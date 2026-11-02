@@ -54,7 +54,7 @@ export async function buildExport(kind: ExportKind, home: string): Promise<{ csv
 }
 
 /** A file name like harper-studio-invoices-2026-10-11.csv. */
-export function exportName(business: string, kind: ExportKind, today: string) {
+export function exportName(business: string, kind: ExportKind | (string & {}), today: string) {
   const slug = business.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-").slice(0, 40) || "business";
   return `${slug}-${kind}-${today}.csv`;
 }
