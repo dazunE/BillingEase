@@ -2,10 +2,10 @@
 
 import { auth } from "@billingease/contracts";
 import { redirect } from "next/navigation";
-import { call } from "@/lib/api";
 import { isCty } from "@/components/auth/country";
 import { failed, formValues, type FormState } from "@/lib/form";
-import { clearSession, setSession } from "@/lib/session";
+import { ApiFailure, call } from "@/lib/api";
+import { clearSession, clearTwoStep, readTwoStep, setSession, setTwoStep } from "@/lib/session";
 
 /** Only same-site paths, so a crafted link can't send people elsewhere after sign-in. */
 function safeNext(next: string | undefined, fallback: string) {
@@ -29,13 +29,43 @@ export async function signUp(_: FormState, fd: FormData): Promise<FormState> {
 
 export async function signIn(_: FormState, fd: FormData): Promise<FormState> {
   const v = formValues(fd);
+  let twoStep = false;
   try {
     const s = await call(auth.signIn, { body: { email: v.email ?? "", password: v.password ?? "" }, token: null });
-    await setSession(s.token, s.expiresAt);
+    if ("ticket" in s) {
+      await setTwoStep(s.ticket, s.expiresAt, safeNext(v.next, "/app"));
+      twoStep = true;
+    } else {
+      await setSession(s.token, s.expiresAt);
+    }
   } catch (err) {
     return failed(err, { email: v.email ?? "" });
   }
-  redirect(safeNext(v.next, "/app"));
+  redirect(twoStep ? "/sign-in/code" : safeNext(v.next, "/app"));
+}
+
+/** The second step: the code from the authenticator app, or a backup code. */
+export async function signInCode(_: FormState, fd: FormData): Promise<FormState> {
+  const v = formValues(fd);
+  const pending = await readTwoStep();
+  if (!pending) return { message: "That took too long. Sign in again.", errors: { _expired: "1" }, values: {} };
+  const code = (v.code ?? "").trim();
+  const backup = v.backup === "1";
+  if (backup ? code.replace(/[^0-9a-z]/gi, "").length !== 8 : !/^\d{6}$/.test(code.replace(/\s/g, ""))) {
+    return { errors: { code: backup ? "Backup codes are 8 letters and numbers." : "Enter the 6 digits from your app." }, values: { backup: v.backup ?? "" } };
+  }
+  try {
+    const s = await call(auth.twoStep, { body: { ticket: pending.ticket, code }, token: null });
+    await setSession(s.token, s.expiresAt);
+    await clearTwoStep();
+  } catch (err) {
+    if (err instanceof ApiFailure && err.status === 401) {
+      await clearTwoStep();
+      return { message: err.message, errors: { _expired: "1" }, values: {} };
+    }
+    return failed(err, { backup: v.backup ?? "" });
+  }
+  redirect(safeNext(pending.next, "/app"));
 }
 
 export async function forgotPassword(_: FormState, fd: FormData): Promise<FormState> {
@@ -51,13 +81,19 @@ export async function forgotPassword(_: FormState, fd: FormData): Promise<FormSt
 export async function resetPassword(_: FormState, fd: FormData): Promise<FormState> {
   const v = formValues(fd);
   if ((v.password ?? "") !== (v.confirm ?? "")) return { errors: { confirm: "The two passwords don't match" }, values: { token: v.token ?? "" } };
+  let twoStep = false;
   try {
     const s = await call(auth.resetPassword, { body: { token: v.token ?? "", password: v.password ?? "" }, token: null });
-    await setSession(s.token, s.expiresAt);
+    if ("ticket" in s) {
+      await setTwoStep(s.ticket, s.expiresAt, "/app");
+      twoStep = true;
+    } else {
+      await setSession(s.token, s.expiresAt);
+    }
   } catch (err) {
     return failed(err, { token: v.token ?? "" });
   }
-  redirect("/app");
+  redirect(twoStep ? "/sign-in/code" : "/app");
 }
 
 export async function signOut() {

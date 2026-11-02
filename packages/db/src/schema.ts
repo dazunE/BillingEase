@@ -49,8 +49,56 @@ export const users = pgTable("users", {
   // Null for someone who has only ever signed in with Google.
   passwordHash: text("password_hash"),
   emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
+  // Two-step sign-in with an authenticator app: the shared secret (base32), set while setting
+  // up, and when it was turned on. Off when totpEnabledAt is null.
+  totpSecret: text("totp_secret"),
+  totpEnabledAt: timestamp("totp_enabled_at", { withTimezone: true }),
+  // The last 30-second step a code was accepted for, so one code can't be used twice.
+  totpLastStep: integer("totp_last_step"),
   createdAt: createdAt(),
 });
+
+/** One-time backup codes for two-step sign-in (sha256 of each code). */
+export const backupCodes = pgTable(
+  "backup_codes",
+  {
+    id: id(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    hash: text("hash").notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("backup_codes_user").on(t.userId)],
+);
+
+/**
+ * A password (or Google) that was right, waiting for the second step. The raw ticket goes to
+ * the browser; only its hash is kept. Short-lived, and a few wrong codes end it.
+ */
+export const signInChallenges = pgTable("sign_in_challenges", {
+  id: text("id").primaryKey(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  method: text("method").$type<"password" | "google" | "reset">().notNull(),
+  attempts: integer("attempts").notNull().default(0),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+});
+
+/** Every sign-in and failed attempt on a known account, for Security and data → Recent sign-ins. */
+export const signIns = pgTable(
+  "sign_ins",
+  {
+    id: id(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    at: timestamp("at", { withTimezone: true }).notNull().defaultNow(),
+    userAgent: text("user_agent"),
+    // password, google, password+code, google+code, password+backup, google+backup, reset
+    method: text("method").notNull(),
+    ok: boolean("ok").notNull(),
+    // Why it failed: wrong_password, wrong_code.
+    reason: text("reason"),
+  },
+  (t) => [index("sign_ins_user_at").on(t.userId, t.at)],
+);
 
 export const sessions = pgTable(
   "sessions",
@@ -145,6 +193,10 @@ export const businesses = pgTable(
     titleStyle: text("title_style").$type<"tax" | "plain">().notNull().default("tax"),
     // Optional settings that don't need their own column (WhatsApp reminders, invoice language, ...).
     settings: jsonb("settings").$type<Record<string, unknown>>().notNull().default({}),
+    // Closed by the owner: read-only and exportable until purgeAfter, then everything is deleted.
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+    closedBy: uuid("closed_by").references(() => users.id, { onDelete: "set null" }),
+    purgeAfter: timestamp("purge_after", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

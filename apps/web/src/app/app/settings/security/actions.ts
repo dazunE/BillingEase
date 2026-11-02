@@ -1,9 +1,12 @@
 "use server";
 
-import { comingIn, people } from "@billingease/contracts";
+import { auth, business, comingIn, people } from "@billingease/contracts";
 import { parseCsv } from "@billingease/core";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import QRCode from "qrcode";
 import { ApiFailure, call } from "@/lib/api";
+import { clearSession } from "@/lib/session";
 
 export async function endSession(fd: FormData) {
   await call(people.endSession, { params: { id: String(fd.get("id")) } });
@@ -71,4 +74,75 @@ export async function importCustomers(_: ImportState, fd: FormData): Promise<Imp
     skipped: skipped.slice(0, 20),
     message: added ? `${added} ${added === 1 ? "customer" : "customers"} added${skipped.length ? `, ${skipped.length} skipped` : ""}.` : `Nothing added: ${skipped.length} ${skipped.length === 1 ? "row was" : "rows were"} skipped.`,
   };
+}
+
+// ---- Two-step sign-in -------------------------------------------------------------------
+
+/** The API's words, or the field's when the code was the wrong shape. */
+function codeError(err: unknown) {
+  if (!(err instanceof ApiFailure)) return "Something went wrong. Try again.";
+  return err.code === "invalid" && err.fields?.code && err.fields.code !== "Not right" ? err.fields.code : err.message;
+}
+
+export type TwoStepState = { stage?: "scan" | "codes" | "done"; secret?: string; qr?: string; codes?: string[]; error?: string } | undefined;
+
+/** Starts setting up: a new secret, and its QR code to scan. */
+export async function startTwoStep(): Promise<TwoStepState> {
+  try {
+    const { secret, uri } = await call(auth.twoStepSetup);
+    const qr = await QRCode.toString(uri, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#18161F", light: "#FFFFFF" } });
+    return { stage: "scan", secret, qr };
+  } catch (err) {
+    return { error: err instanceof ApiFailure ? err.message : "Something went wrong. Try again." };
+  }
+}
+
+export async function enableTwoStep(prev: TwoStepState, fd: FormData): Promise<TwoStepState> {
+  try {
+    const { codes } = await call(auth.twoStepEnable, { body: { code: String(fd.get("code") ?? "") } });
+    revalidatePath("/app/settings/security");
+    return { stage: "codes", codes };
+  } catch (err) {
+    return { ...prev, error: codeError(err) };
+  }
+}
+
+export async function makeBackupCodes(_: TwoStepState, fd: FormData): Promise<TwoStepState> {
+  try {
+    const { codes } = await call(auth.twoStepCodes, { body: { code: String(fd.get("code") ?? "") } });
+    revalidatePath("/app/settings/security");
+    return { stage: "codes", codes };
+  } catch (err) {
+    return { error: codeError(err) };
+  }
+}
+
+export async function disableTwoStep(_: TwoStepState, fd: FormData): Promise<TwoStepState> {
+  try {
+    await call(auth.twoStepDisable, { body: { code: String(fd.get("code") ?? "") } });
+    revalidatePath("/app/settings/security");
+    return { stage: "done" };
+  } catch (err) {
+    return { error: codeError(err) };
+  }
+}
+
+// ---- Close things down ------------------------------------------------------------------
+
+export type CloseState = { error?: string } | undefined;
+
+/** Closes the business and the account. Everyone is signed out, this device too. */
+export async function closeBusiness(_: CloseState, fd: FormData): Promise<CloseState> {
+  try {
+    await call(business.close, { body: { confirm: String(fd.get("confirm") ?? "") } });
+  } catch (err) {
+    return { error: err instanceof ApiFailure ? err.message : "Something went wrong. Try again." };
+  }
+  await clearSession();
+  redirect("/sign-in?closed=1");
+}
+
+export async function reopenBusiness() {
+  await call(business.reopen);
+  revalidatePath("/app", "layout");
 }

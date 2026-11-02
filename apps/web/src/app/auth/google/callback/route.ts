@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { ApiFailure, call } from "@/lib/api";
 import { GOOGLE_COOKIE, googleRedirectUri, safeNext, type GoogleAttempt } from "@/lib/google";
-import { setSession } from "@/lib/session";
+import { setSession, setTwoStep } from "@/lib/session";
 
 function sameState(a: string, b: string) {
   const x = Buffer.from(a), y = Buffer.from(b);
@@ -38,6 +38,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL("/app/settings/sign-in?google=connected", req.url));
     }
     const s = await call(auth.google, { body, token: null });
+    if ("ticket" in s) {
+      await setTwoStep(s.ticket, s.expiresAt, safeNext(attempt.next, "/app"));
+      return NextResponse.redirect(new URL("/sign-in/code", req.url));
+    }
     await setSession(s.token, s.expiresAt);
     // A new account made to accept an invitation goes back to it, not to setting up a business.
     const joining = !!attempt.next && attempt.next.startsWith("/invite/");

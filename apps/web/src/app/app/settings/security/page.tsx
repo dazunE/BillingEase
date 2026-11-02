@@ -1,5 +1,5 @@
 import { auth, people } from "@billingease/contracts";
-import { today } from "@billingease/core";
+import { formatMoney, today } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -7,9 +7,12 @@ import { BizHeading, BizShell } from "@/components/app/BizShell";
 import { Badge, ButtonLink, cx, Icon, ICONS } from "@/components/ui";
 import { load } from "@/lib/api";
 import { exportName, type ExportKind } from "@/lib/export";
+import { homeSummary } from "@/lib/counts";
 import { requireBusiness } from "@/lib/session";
 import { endOtherSessions, endSession } from "./actions";
+import { CloseDown } from "./CloseDown";
 import { ImportForm } from "./ImportForm";
+import { TwoStep } from "./TwoStep";
 
 export const metadata: Metadata = { title: "Security and data" };
 
@@ -31,6 +34,22 @@ function ago(iso: string | null, fallback: string) {
   if (mins < 60) return `Active ${mins} minutes ago`;
   if (mins < 60 * 24) return `Active ${Math.round(mins / 60)} ${Math.round(mins / 60) === 1 ? "hour" : "hours"} ago`;
   return `Active ${d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: d.getFullYear() === new Date().getFullYear() ? undefined : "numeric" })}`;
+}
+
+/** How a sign-in happened, in words. */
+const HOW: Record<string, string> = {
+  password: "Password", google: "Google", sign_up: "Signed up", reset: "Password reset",
+  "password+code": "Password and code", "google+code": "Google and code", "reset+code": "Password reset and code",
+  "password+backup": "Password and a backup code", "google+backup": "Google and a backup code", "reset+backup": "Password reset and a backup code",
+};
+const WHY: Record<string, string> = { wrong_password: "Wrong password", wrong_code: "Wrong code" };
+
+function when(iso: string) {
+  const d = new Date(iso);
+  const day = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  const time = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const sameDay = d.toDateString() === new Date().toDateString();
+  return sameDay ? `Today, ${time}` : `${day}, ${time}`;
 }
 
 function Card({ id, title, sub, aside, children }: { id: string; title: string; sub?: ReactNode; aside?: ReactNode; children: ReactNode }) {
@@ -71,10 +90,27 @@ const LAW = {
 
 export default async function SecurityPage() {
   const { business: b } = await requireBusiness();
-  const [methods, { sessions }] = await Promise.all([load(auth.signInMethods), load(people.sessions)]);
+  const owner = b.role === "owner";
+  const [methods, { sessions }, { signIns }, team, summary] = await Promise.all([
+    load(auth.signInMethods), load(people.sessions), load(auth.signIns),
+    owner ? load(people.members) : Promise.resolve(null), owner ? homeSummary() : Promise.resolve(null),
+  ]);
+  const failed = signIns.filter((s) => !s.ok).length;
   const others = sessions.filter((s) => !s.current);
   const law = LAW[b.country];
-  const owner = b.role === "owner";
+  const lk = b.country === "lk";
+  const others_ = (team?.members ?? []).filter((m) => !m.you);
+  const toCome = summary ? summary.comingIn.onTheWay + summary.comingIn.late : 0;
+  const closeWhat = [
+    toCome > 0
+      ? `${formatMoney(toCome, b.currency)} still to come in stays owed by your customers, but you lose the record here.`
+      : "There are no unpaid invoices to worry about.",
+    others_.length
+      ? `${others_.map((m) => m.name.split(/[\s,]+/)[0]).join(" and ")} ${others_.length === 1 ? "loses" : "lose"} access straight away, including ${others_.some((m) => m.role === "accountant") ? `your ${lk ? "practitioner" : "accountant"}'s` : "their"} view of your books.`
+      : "Nobody else has access.",
+    lk ? "Keep your records as long as the IRD requires: export them first." : "HMRC expects you to keep records for years: export them first.",
+    `You're signed out everywhere. For 30 days you can sign in to look, export or reopen; then it's all deleted and ${methods.email} can be used for a new account.`,
+  ];
   const day = today();
   const files: { kind: ExportKind; label: string; hint: string; dot: string }[] = [
     { kind: "invoices", label: b.country === "lk" && b.vatRegistered ? "Tax invoices and credit notes" : "Invoices and credit notes", hint: "Every one, with its status, amounts and what's paid", dot: "bg-coming" },
@@ -86,7 +122,7 @@ export default async function SecurityPage() {
   return (
     <BizShell here="security">
       <BizHeading title="Security and data">
-        How you sign in, where you&apos;re signed in, and what happens to {b.name}&apos;s data: bring it in, or take it out.
+        How you sign in, where you&apos;re signed in, and what happens to {b.name}&apos;s data: bring it in, take it out, or close things down.
       </BizHeading>
 
       <Card id="signin-h" title="Signing in" sub={methods.email} aside={<ButtonLink variant="secondary" href="/app/settings/sign-in" className="min-h-10 px-4 text-sm">Sign-in methods</ButtonLink>}>
@@ -99,6 +135,7 @@ export default async function SecurityPage() {
             <span className="flex flex-col"><span className="font-semibold">Google</span><span className="text-[13px] text-muted">{methods.google ? `Connected as ${methods.google.email}` : methods.googleAvailable ? "Not connected" : "Not available on this BillingEase"}</span></span>
             {methods.google ? <Badge tone="pos">Connected</Badge> : <Badge tone="neutral">Off</Badge>}
           </li>
+          <TwoStep on={methods.twoStep.on} since={methods.twoStep.since} backupLeft={methods.twoStep.backupLeft} email={methods.email} />
         </ul>
       </Card>
 
@@ -132,6 +169,39 @@ export default async function SecurityPage() {
             );
           })}
         </ul>
+      </Card>
+
+      <Card id="recent-h" title="Recent sign-ins" sub="The last 30 days. We email you when a new device signs in.">
+        {signIns.length === 0 ? (
+          <span className="text-[13px] text-muted">Nothing yet. Sign-ins, and wrong passwords on your account, will show here.</span>
+        ) : (
+          <ul className="flex flex-col">
+            {signIns.slice(0, 20).map((e) => {
+              const d = device(e.userAgent);
+              return (
+                <li key={e.id} className="flex flex-wrap items-start gap-x-4 gap-y-1 border-t border-divider py-3.5">
+                  <span className="w-[140px] shrink-0 text-sm font-semibold">{when(e.at)}</span>
+                  <span className="flex min-w-[200px] flex-1 flex-col gap-0.5">
+                    <span className="text-sm">{d.name}</span>
+                    <span className="text-[13px] text-muted">{HOW[e.method] ?? e.method}</span>
+                  </span>
+                  {e.ok ? <Badge tone="pos">Signed in</Badge> : <Badge tone="late">Blocked · {WHY[e.reason ?? ""] ?? "Failed"}</Badge>}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {failed > 0 && (
+          <div className="flex flex-wrap items-center gap-2 rounded-[14px] bg-late-bg px-3 py-2.5">
+            <span className="min-w-[220px] flex-1 text-[13px] font-semibold text-late">
+              {failed === 1 ? "One sign-in was blocked" : `${failed} sign-ins were blocked`} in the last 30 days. Wasn&apos;t you? Sign out everywhere else, then change your password{methods.twoStep.on ? "" : " and turn on two-step sign-in"}.
+            </span>
+            {others.length > 0 && (
+              <form action={endOtherSessions}><button className="inline-flex min-h-9 items-center rounded-full bg-[#A8200D] px-3.5 text-[13px] font-semibold text-white">Sign out everywhere else</button></form>
+            )}
+            <Link href="/app/settings/sign-in" className="inline-flex min-h-9 items-center rounded-full bg-white px-3.5 text-[13px] font-semibold no-underline">Change password</Link>
+          </div>
+        )}
       </Card>
 
       <Card id="law-h" title="Where your data lives" sub={law.sub} aside={<Badge tone="violet">{law.chip}</Badge>}>
@@ -169,6 +239,12 @@ export default async function SecurityPage() {
           ))}
         </ul>
       </Card>
+
+      {owner && !b.closedAt && (
+        <Card id="close-h" title="Close things down" sub={<>Closing your account closes {b.name}&apos;s books too. Nothing happens by accident: you type the business name first.</>}>
+          <CloseDown name={b.name} what={closeWhat} purgeDays={30} />
+        </Card>
+      )}
 
       {!owner && (
         <p className="text-[13px] text-muted">Only the owner can change {b.name}&apos;s profile or who has access. <Link href="/app/settings/people" className="font-semibold underline underline-offset-4">People and access</Link></p>

@@ -97,6 +97,8 @@ export async function runDueRecurring(db: Db, services: Services, now = today())
       .innerJoin(businesses, eq(businesses.id, recurringInvoices.businessId))
       .where(and(
         eq(recurringInvoices.active, true),
+        // A closed business sends nothing more.
+        isNull(businesses.closedAt),
         lte(recurringInvoices.nextRun, now),
         or(isNull(recurringInvoices.endDate), sql`${recurringInvoices.nextRun} <= ${recurringInvoices.endDate}`),
       ))

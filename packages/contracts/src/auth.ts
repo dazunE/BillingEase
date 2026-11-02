@@ -12,6 +12,30 @@ const Password = z.string().min(10, "Use at least 10 characters").max(200);
 
 export const Session = z.object({ token: z.string(), expiresAt: z.string() });
 
+/** The password (or Google) was right; now the code from the authenticator app. */
+export const TwoStepNeeded = z.object({ twoStep: z.literal(true), ticket: z.string(), expiresAt: z.string() });
+export type TwoStepNeeded = z.infer<typeof TwoStepNeeded>;
+
+const Code = z.string().trim().min(6, "Enter the 6-digit code from your app, or a backup code").max(20);
+
+export const TwoStepStatus = z.object({
+  on: z.boolean(),
+  since: z.string().nullable(),
+  /** Backup codes not used yet. */
+  backupLeft: z.number().int(),
+});
+export type TwoStepStatus = z.infer<typeof TwoStepStatus>;
+
+export const SignInEvent = z.object({
+  id: z.string(),
+  at: z.string(),
+  userAgent: z.string().nullable(),
+  method: z.string(),
+  ok: z.boolean(),
+  reason: z.string().nullable(),
+});
+export type SignInEvent = z.infer<typeof SignInEvent>;
+
 /**
  * What the web app hands over after Google sends the person back: the one-time code, the PKCE
  * verifier and nonce it made when it sent them, and the exact redirect URI it used.
@@ -30,6 +54,7 @@ export const SignInMethods = z.object({
   google: z.object({ email: z.string() }).nullable(),
   /** False when this BillingEase isn't set up for Google (no GOOGLE_CLIENT_ID). */
   googleAvailable: z.boolean(),
+  twoStep: TwoStepStatus,
 });
 export type SignInMethods = z.infer<typeof SignInMethods>;
 
@@ -42,15 +67,46 @@ export const auth = {
   signIn: endpoint({
     method: "POST", path: "/auth/sign-in", auth: "public",
     body: z.object({ email: Email, password: z.string().min(1, "Enter your password") }),
+    /** A session, or (with two-step sign-in on) a ticket to finish with the code. */
+    response: z.union([Session, TwoStepNeeded]),
+  }),
+  /** The second step: the 6-digit code (or a backup code) with the ticket from sign-in. */
+  twoStep: endpoint({
+    method: "POST", path: "/auth/two-step", auth: "public",
+    body: z.object({ ticket: z.string().min(10).max(200), code: Code }),
     response: Session,
   }),
+  /** Starts turning two-step on: a new secret to put in the authenticator app. */
+  twoStepSetup: endpoint({
+    method: "POST", path: "/auth/two-step/setup", auth: "user",
+    response: z.object({ secret: z.string(), uri: z.string() }),
+  }),
+  /** Finishes turning it on with a code from the app. The backup codes are shown this once. */
+  twoStepEnable: endpoint({
+    method: "POST", path: "/auth/two-step/enable", auth: "user",
+    body: z.object({ code: Code }), response: z.object({ codes: z.array(z.string()) }),
+  }),
+  /** New backup codes (the old ones stop working). Needs a code from the app. */
+  twoStepCodes: endpoint({
+    method: "POST", path: "/auth/two-step/codes", auth: "user",
+    body: z.object({ code: Code }), response: z.object({ codes: z.array(z.string()) }),
+  }),
+  /** Turns it off. Needs a code from the app or a backup code. */
+  twoStepDisable: endpoint({
+    method: "POST", path: "/auth/two-step/disable", auth: "user",
+    body: z.object({ code: Code }), response: Ok,
+  }),
+  /** Sign-ins and failed attempts in the last 30 days, newest first. */
+  signIns: endpoint({ method: "GET", path: "/auth/sign-ins", auth: "user", response: z.object({ signIns: z.array(SignInEvent) }) }),
   signOut: endpoint({ method: "POST", path: "/auth/sign-out", auth: "user", response: Ok }),
   me: endpoint({ method: "GET", path: "/auth/me", auth: "user", response: Me }),
   /** Always answers ok, so it can't be used to find out who has an account. */
   forgotPassword: endpoint({ method: "POST", path: "/auth/forgot-password", auth: "public", body: z.object({ email: Email }), response: Ok }),
   resetPassword: endpoint({
     method: "POST", path: "/auth/reset-password", auth: "public",
-    body: z.object({ token: z.string().min(10), password: Password }), response: Session,
+    body: z.object({ token: z.string().min(10), password: Password }),
+    /** Signed in, or (with two-step sign-in on) a ticket for the code. */
+    response: z.union([Session, TwoStepNeeded]),
   }),
   /**
    * Sign in (or up) with Google. A Google account seen before signs in to its person; otherwise a
@@ -59,7 +115,7 @@ export const auth = {
    */
   google: endpoint({
     method: "POST", path: "/auth/google", auth: "public", body: GoogleCode,
-    response: Session.extend({ created: z.boolean() }),
+    response: z.union([Session.extend({ created: z.boolean() }), TwoStepNeeded]),
   }),
   signInMethods: endpoint({ method: "GET", path: "/auth/sign-in-methods", auth: "user", response: SignInMethods }),
   linkGoogle: endpoint({ method: "POST", path: "/auth/google/link", auth: "user", body: GoogleCode, response: SignInMethods }),

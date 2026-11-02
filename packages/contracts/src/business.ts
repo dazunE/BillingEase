@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Country, endpoint, optionalText } from "./endpoint";
+import { Country, endpoint, Ok, optionalText } from "./endpoint";
 
 const Kind = z.enum(["sole_trader", "landlord", "both", "sole_proprietor", "partnership"]);
 
@@ -61,6 +61,9 @@ export const Business = z.object({
   logoVersion: z.string().nullable(),
   settings: z.record(z.string(), z.unknown()),
   role: z.enum(["owner", "accountant", "admin"]),
+  /** Closed by the owner: read-only and exportable until purgeAfter, then deleted. */
+  closedAt: z.string().nullable(),
+  purgeAfter: z.string().nullable(),
 });
 export type Business = z.infer<typeof Business>;
 
@@ -108,6 +111,18 @@ export const UpdateBusinessBody = z.object({
 export const business = {
   create: endpoint({ method: "POST", path: "/businesses", auth: "user", body: CreateBusinessBody, response: Business }),
   get: endpoint({ method: "GET", path: "/business", response: Business }),
+  /**
+   * Closes the business and the owner's account: everyone else loses access, every device and
+   * API token is signed out, and nothing can change. The owner can still sign in, look and
+   * export for 30 days (or reopen), then everything is deleted. `confirm` is the business name.
+   */
+  close: endpoint({
+    method: "POST", path: "/business/close", roles: ["owner"],
+    body: z.object({ confirm: z.string().trim().min(1, "Type the business name") }),
+    response: z.object({ closedAt: z.string(), purgeAfter: z.string() }),
+  }),
+  /** Changes your mind within the 30 days. People who had access need inviting again. */
+  reopen: endpoint({ method: "POST", path: "/business/reopen", roles: ["owner"], response: Ok }),
   update: endpoint({ method: "PATCH", path: "/business", roles: ["owner"], body: UpdateBusinessBody, response: Business }),
   /** A PNG or JPEG logo, base64 encoded, up to 1 MB. It goes on invoices, quotes, credit notes and their emails. */
   uploadLogo: endpoint({

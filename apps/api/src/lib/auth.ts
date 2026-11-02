@@ -6,6 +6,9 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { Ctx, Role } from "./context";
 import { AppError, forbidden } from "./errors";
 
+/** What still works on a closed business, besides looking. */
+const CLOSED_OK = new Set(["/business/reopen"]);
+
 export const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
 export const newToken = () => randomBytes(32).toString("base64url");
 
@@ -55,5 +58,9 @@ export async function authenticate(app: FastifyInstance, req: FastifyRequest, e:
   ctx.business = rows[0].business;
   ctx.role = rows[0].role as Role;
   if (e.roles && !e.roles.includes(ctx.role)) throw forbidden();
+  // A closed business can be looked at and exported until it's deleted, but not changed.
+  if (ctx.business.closedAt && e.method !== "GET" && !CLOSED_OK.has(e.path)) {
+    throw new AppError(409, "business_closed", "This business is closed. You can look and export until it's deleted, or reopen it in Security and data.");
+  }
   return ctx;
 }

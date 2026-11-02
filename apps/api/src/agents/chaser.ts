@@ -67,7 +67,7 @@ export async function lateToChase(db: Db, b: BusinessRow, today: string) {
 export async function runChaser(app: FastifyInstance, businessId: string, userId: string | null) {
   const db = app.be.db;
   const [b] = await db.select().from(businesses).where(eq(businesses.id, businessId));
-  if (!b) return;
+  if (!b || b.closedAt) return;
   const today = todayIso();
   const late = await lateToChase(db, b, today);
   if (!late.length) return;
