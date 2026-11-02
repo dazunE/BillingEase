@@ -2,7 +2,7 @@ import { formatMoney, rulesFor } from "@billingease/core";
 import type { Metadata } from "next";
 import { requireBusiness } from "@/lib/session";
 import { ProfileForm, type CountryText } from "./ProfileForm";
-import { AppCrumbs } from "@/components/app/AppCrumbs";
+import { BizShell } from "@/components/app/BizShell";
 
 export const metadata: Metadata = { title: "Business profile" };
 
@@ -29,9 +29,8 @@ export default async function BusinessProfilePage() {
     }[b.country],
   };
   return (
-    <>
-    <AppCrumbs area={"biz"} trail={[{ label: "Your business" }, { label: "Business profile" }]} />
-    <div className="mx-auto flex w-full max-w-[860px] flex-col gap-6">
+    <BizShell here="business">
+    <div className="flex w-full max-w-[860px] flex-col gap-6">
       <div className="flex flex-col gap-2">
         <span className="text-sm font-semibold text-muted">Your business</span>
         <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold tracking-[-0.03em]">Business profile</h1>
@@ -39,6 +38,6 @@ export default async function BusinessProfilePage() {
       </div>
       <ProfileForm b={b} text={text} canEdit={b.role === "owner"} />
     </div>
-    </>
+    </BizShell>
   );
 }

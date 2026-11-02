@@ -8,3 +8,4 @@ export * from "./ask";
 export * from "./agents";
 export * from "./api";
 export * from "./openapi";
+export * from "./people";

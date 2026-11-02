@@ -39,7 +39,9 @@ export async function GET(req: NextRequest) {
     }
     const s = await call(auth.google, { body, token: null });
     await setSession(s.token, s.expiresAt);
-    const to = s.created ? `/setup${attempt.country ? `?country=${attempt.country}` : ""}` : safeNext(attempt.next, "/app");
+    // A new account made to accept an invitation goes back to it, not to setting up a business.
+    const joining = !!attempt.next && attempt.next.startsWith("/invite/");
+    const to = s.created && !joining ? `/setup${attempt.country ? `?country=${attempt.country}` : ""}` : safeNext(attempt.next, "/app");
     return NextResponse.redirect(new URL(to, req.url));
   } catch (err) {
     if (err instanceof ApiFailure) return back(err.status === 401 ? "expired" : err.code);

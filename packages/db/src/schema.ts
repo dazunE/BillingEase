@@ -61,6 +61,8 @@ export const sessions = pgTable(
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     userAgent: text("user_agent"),
     createdAt: createdAt(),
+    // When this session last made a request (updated at most every few minutes), for Security and data.
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
   },
   (t) => [index("sessions_user").on(t.userId)],
 );
@@ -173,6 +175,31 @@ export const memberships = pgTable(
     primaryKey({ columns: [t.businessId, t.userId] }),
     index("memberships_user").on(t.userId),
     check("memberships_role", sql`${t.role} in ('owner','accountant','admin')`),
+  ],
+);
+
+/**
+ * An invitation to open a business's books (People and access): the owner invites an accountant
+ * or an office admin by email. Only a sha256 of the link's token is kept. Accepting adds a
+ * membership for whoever is signed in with that email.
+ */
+export const invites = pgTable(
+  "invites",
+  {
+    id: id(),
+    businessId: businessId(),
+    tokenHash: text("token_hash").notNull().unique(),
+    email: text("email").notNull(),
+    role: text("role").$type<Exclude<Role, "owner">>().notNull(),
+    invitedBy: uuid("invited_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("invites_business").on(t.businessId),
+    check("invites_role", sql`${t.role} in ('accountant','admin')`),
   ],
 );
 

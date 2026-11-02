@@ -58,11 +58,12 @@ export async function AppHeader({ userName, email, business, businesses }: { use
   const account: Item[] = [
     { label: "Business profile", hint: lk ? "Name, TIN, VAT and SSCL" : business.country === "us" ? "Name and EIN" : "Name, UTR and VAT", href: "/app/settings/business" },
     { label: "Invoice branding", hint: "Logo, colour, layout and typeface", href: "/app/settings/branding" },
+    { label: "People and access", hint: lk ? "Invite your practitioner or team" : "Invite your accountant or team", href: "/app/settings/people" },
+    { label: "Security and data", hint: "Devices, import and export", href: "/app/settings/security" },
     { label: "Notifications", hint: count ? `${count} new` : "Nothing new", href: "/app/notifications" },
     { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
     { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
     { label: "Apps and API", hint: "Connect an AI assistant or your own software", href: "/app/settings/apps" },
-    { label: "Sign-in methods", hint: "Google and your password", href: "/app/settings/sign-in" },
     { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/features" },
     { label: "Help", hint: "Answers, and talk to a person", href: "/help" },
   ];

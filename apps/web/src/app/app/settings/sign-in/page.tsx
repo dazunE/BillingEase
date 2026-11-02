@@ -1,6 +1,6 @@
 import { auth } from "@billingease/contracts";
 import type { Metadata } from "next";
-import { AppCrumbs } from "@/components/app/AppCrumbs";
+import { BizShell } from "@/components/app/BizShell";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { Button } from "@/components/ui";
 import { load } from "@/lib/api";
@@ -26,9 +26,8 @@ export default async function SignInMethodsPage({ searchParams }: { searchParams
   const good = code === "connected" || code === "disconnected";
   const note = code ? NOTES[code] ?? GOOGLE_ERRORS[code] ?? GOOGLE_ERRORS.google_failed : null;
   return (
-    <>
-      <AppCrumbs area="biz" trail={[{ label: "Your account" }, { label: "Sign-in methods" }]} />
-      <div className="mx-auto flex w-full max-w-[860px] flex-col gap-6">
+    <BizShell here="security" sub="Sign-in methods">
+      <div className="flex w-full max-w-[860px] flex-col gap-6">
         <div className="flex flex-col gap-2">
           <span className="text-sm font-semibold text-muted">Your account · {m.email}</span>
           <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold tracking-[-0.03em]">Sign-in methods</h1>
@@ -62,6 +61,6 @@ export default async function SignInMethodsPage({ searchParams }: { searchParams
           <PasswordForm hasPassword={m.hasPassword} />
         </section>
       </div>
-    </>
+    </BizShell>
   );
 }

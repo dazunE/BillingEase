@@ -1,7 +1,7 @@
 import { apiAccess, SCOPES } from "@billingease/contracts";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AppCrumbs } from "@/components/app/AppCrumbs";
+import { BizShell } from "@/components/app/BizShell";
 import { ago } from "@/components/home/format";
 import { Badge, Button } from "@/components/ui";
 import { load } from "@/lib/api";
@@ -21,9 +21,8 @@ export default async function AppsPage() {
   const owner = business.role === "owner";
   const scopeText = (s: (keyof typeof SCOPES)[]) => s.map((x) => SCOPES[x].label).join(" · ");
   return (
-    <>
-      <AppCrumbs area="biz" trail={[{ label: "Your business" }, { label: "Apps and API" }]} />
-      <div className="mx-auto flex w-full max-w-[860px] flex-col gap-6">
+    <BizShell here="apps">
+      <div className="flex w-full max-w-[860px] flex-col gap-6">
         <div className="flex flex-col gap-2">
           <span className="text-sm font-semibold text-muted">Your business</span>
           <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold tracking-[-0.03em]">Apps and API</h1>
@@ -106,6 +105,6 @@ export default async function AppsPage() {
           )}
         </section>
       </div>
-    </>
+    </BizShell>
   );
 }

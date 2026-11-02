@@ -1,7 +1,7 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import type { Endpoint } from "@billingease/contracts";
 import { businesses, memberships, sessions, users } from "@billingease/db/schema";
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, isNull, lt, or } from "drizzle-orm";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { Ctx, Role } from "./context";
 import { AppError, forbidden } from "./errors";
@@ -36,6 +36,9 @@ export async function authenticate(app: FastifyInstance, req: FastifyRequest, e:
     if (row) {
       ctx.user = { id: row.id, email: row.email, name: row.name };
       ctx.sessionId = row.sid;
+      // For "Where you're signed in": at most one write every five minutes per session.
+      await db.update(sessions).set({ lastSeenAt: new Date() })
+        .where(and(eq(sessions.id, row.sid), or(isNull(sessions.lastSeenAt), lt(sessions.lastSeenAt, new Date(Date.now() - 5 * 60_000)))));
     }
   }
   if (mode === "public") return ctx;

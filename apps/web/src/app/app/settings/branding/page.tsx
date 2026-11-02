@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { formatDate, invoiceTitle, rulesFor, today } from "@billingease/core";
-import { AppCrumbs } from "@/components/app/AppCrumbs";
+import { BizShell } from "@/components/app/BizShell";
 import { addressOf } from "@/components/in/data";
 import type { PreviewData } from "@/components/in/DocPreview";
 import { requireBusiness } from "@/lib/session";
@@ -32,14 +32,13 @@ export default async function BrandingPage() {
     paymentDetails: b.paymentDetails ?? "Your bank details from your business profile go here.", note: b.invoiceNote, notes: null,
   };
   return (
-    <>
-      <AppCrumbs area="biz" trail={[{ label: "Your business" }, { label: "Invoice branding" }]} />
+    <BizShell here="branding">
       <div className="flex flex-col gap-2">
         <span className="text-sm font-semibold text-muted">Your business</span>
         <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold tracking-[-0.03em]">Invoice branding</h1>
         <p className="max-w-[680px] text-ink2">Your logo, colour, layout and typeface on every invoice, quote and credit note: the PDF, the preview and the email your customer gets. The tax details each document must show stay the same whichever you pick.</p>
       </div>
       <BrandingForm b={b} sample={sample} canEdit={b.role === "owner"} />
-    </>
+    </BizShell>
   );
 }
