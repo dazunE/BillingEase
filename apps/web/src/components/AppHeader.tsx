@@ -12,6 +12,8 @@ import { ICONS, Icon, Logo } from "./ui";
 const BELL = "M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0";
 const SPARK = "M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z";
 const BILL = "M3 6h18v12H3zM3 10h18M7 15h3";
+const CAR = "M5 16h14v-4l-2-5H7l-2 5zM5 16v2M19 16v2M7.5 13h.01M16.5 13h.01";
+const HOUSE = "M4 11 12 4l8 7v9h-5v-6H9v6H4z";
 
 async function unread(): Promise<number> {
   try {
@@ -36,7 +38,12 @@ function verbs(b: Business): Item[] {
     { label: "Upload a bank statement", hint: "Any bank's CSV or PDF: matched to your books", href: "/app/statements", icon: ICONS.bank, tint: "bg-going-tint" },
     { label: "Record an expense", hint: lk ? "Already paid: cash, cheque or transfer" : b.country === "us" ? "Already paid, in a Schedule C line" : "Already paid, in an HMRC category", href: "/app/out#expense", icon: ICONS.bill, tint: "bg-going-tint" },
     { label: "Enter a bill", hint: "Something you’ll pay later", href: "/app/out/bills/new", icon: BILL, tint: "bg-going-tint" },
+    ...(b.country === "uk" ? [{ label: "Log a trip", hint: "Business miles at 45p a mile", href: "/app/out/mileage#log", icon: CAR, tint: "bg-going-tint" }] : []),
+    ...(b.country === "uk" && (b.kind === "landlord" || b.kind === "both") ? [{ label: "Add a property cost or rent", hint: "Repairs, agent fees, mortgage interest", href: "/app/out/properties#add-entry", icon: HOUSE, tint: "bg-going-tint" }] : []),
     { label: "Write a quote", hint: "A price before you start", href: "/app/in/quotes/new", icon: ICONS.doc, tint: "bg-tint" },
+    lk
+      ? { label: "Run payroll", hint: "EPF, ETF and APIT worked out", href: "/app/out/payroll", icon: ICONS.people, tint: "bg-going-tint" }
+      : { label: "Enter a pay run", hint: "From your payroll software", href: "/app/out/payroll", icon: ICONS.people, tint: "bg-going-tint" },
     { label: "Add a customer", hint: "Name and email is enough", href: "/app/in/customers#new", icon: ICONS.people, tint: "bg-tint" },
   ];
 }
@@ -58,11 +65,13 @@ export async function AppHeader({ userName, email, business, businesses }: { use
   const account: Item[] = [
     { label: "Business profile", hint: lk ? "Name, TIN, VAT and SSCL" : business.country === "us" ? "Name and EIN" : "Name, UTR and VAT", href: "/app/settings/business" },
     { label: "Invoice branding", hint: "Logo, colour, layout and typeface", href: "/app/settings/branding" },
+    { label: lk ? "Your tax practitioner" : "Your accountant", hint: "Requests, messages and what they see", href: "/app/accountant" },
+    { label: "People and access", hint: lk ? "Invite your practitioner or team" : "Invite your accountant or team", href: "/app/settings/people" },
+    { label: "Security and data", hint: "Devices, import and export", href: "/app/settings/security" },
     { label: "Notifications", hint: count ? `${count} new` : "Nothing new", href: "/app/notifications" },
     { label: "For you to check", hint: "What the AI drafted, waiting for you", href: "/app/check" },
     { label: "AI and agents", hint: "Costs, caps and what ran", href: "/app/settings/ai" },
     { label: "Apps and API", hint: "Connect an AI assistant or your own software", href: "/app/settings/apps" },
-    { label: "Sign-in methods", hint: "Google and your password", href: "/app/settings/sign-in" },
     { label: "Everything BillingEase does", hint: "Every feature in plain words", href: "/features" },
     { label: "Help", hint: "Answers, and talk to a person", href: "/help" },
   ];

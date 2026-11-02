@@ -1,6 +1,6 @@
 import { agents } from "@billingease/contracts";
 import type { Metadata } from "next";
-import { AppCrumbs } from "@/components/app/AppCrumbs";
+import { BizShell } from "@/components/app/BizShell";
 import { ago } from "@/components/home/format";
 import { Badge } from "@/components/ui";
 import { load } from "@/lib/api";
@@ -17,9 +17,8 @@ export default async function AiSettingsPage() {
   const [usage, runs] = await Promise.all([load(agents.usage), load(agents.runs)]);
   const used = usage.budgetMicros ? Math.min(100, Math.round((usage.costMicros / usage.budgetMicros) * 100)) : 0;
   return (
-    <>
-      <AppCrumbs area="biz" trail={[{ label: "Your business" }, { label: "AI and agents" }]} />
-      <div className="mx-auto flex w-full max-w-[860px] flex-col gap-6">
+    <BizShell here="ai">
+      <div className="flex w-full max-w-[860px] flex-col gap-6">
         <div className="flex flex-col gap-2">
           <span className="text-sm font-semibold text-muted">Your business</span>
           <h1 className="font-display text-[clamp(30px,4vw,40px)] font-bold tracking-[-0.03em]">AI and agents</h1>
@@ -71,6 +70,6 @@ export default async function AiSettingsPage() {
           )}
         </section>
       </div>
-    </>
+    </BizShell>
   );
 }

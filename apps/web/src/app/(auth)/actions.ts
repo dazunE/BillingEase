@@ -14,7 +14,9 @@ function safeNext(next: string | undefined, fallback: string) {
 
 export async function signUp(_: FormState, fd: FormData): Promise<FormState> {
   const v = formValues(fd);
-  if (!isCty(v.country)) return { errors: { country: "Pick where your business is" }, values: v };
+  // Someone accepting an invitation joins those books: no country of their own yet.
+  const joining = !!v.next && v.next.startsWith("/invite/");
+  if (!joining && !isCty(v.country)) return { errors: { country: "Pick where your business is" }, values: v };
   if (v.terms !== "on") return { errors: { terms: "Please agree to the terms to continue" }, values: v };
   try {
     const s = await call(auth.signUp, { body: { name: v.name ?? "", email: v.email ?? "", password: v.password ?? "" }, token: null });
@@ -22,7 +24,7 @@ export async function signUp(_: FormState, fd: FormData): Promise<FormState> {
   } catch (err) {
     return failed(err, { ...v, password: "" });
   }
-  redirect(`/setup?country=${v.country}`);
+  redirect(joining ? safeNext(v.next, "/setup") : `/setup?country=${v.country}`);
 }
 
 export async function signIn(_: FormState, fd: FormData): Promise<FormState> {

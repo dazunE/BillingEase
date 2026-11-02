@@ -1,7 +1,7 @@
 import type { HomeSummary, NeedsItem, PeriodKey, SearchResult } from "@billingease/contracts";
 import { addDays, addMonths, daysBetween, formatDate, formatMoney, periodsFor, rulesFor, type Period } from "@billingease/core";
 import type { Exec } from "@billingease/db";
-import { activity, bills, customers, expenses, invoices, receipts, suppliers } from "@billingease/db/schema";
+import { activity, bills, customers, expenses, invoices, propertyEntries, receipts, suppliers } from "@billingease/db/schema";
 import { and, asc, between, desc, eq, ilike, inArray, isNull, lt, lte, ne, or, sql } from "drizzle-orm";
 import type { BusinessRow } from "../lib/context";
 import { comingIn, goingOut } from "./summary";
@@ -40,9 +40,23 @@ export async function threeNumbers(db: Exec, b: BusinessRow, key: PeriodKey | un
   const yearDays = daysBetween(year.from, year.to) + 1;
   const elapsedYear = Math.max(1, daysBetween(year.from, today) + 1);
   const projected = Math.round((ytdProfit * yearDays) / elapsedYear);
-  const est = rules.estimate(Math.max(0, projected), { year: Number(year.from.slice(0, 4)) });
+  // UK property is kept apart from the three numbers but taxed with them: its profit adds to Income
+  // Tax (not NI), and mortgage interest is a 20% reduction rather than a cost.
+  let propProfit = 0, propFinance = 0;
+  if (rules.features.landlord) {
+    const [pr] = await db.select({
+      rent: sql<string>`coalesce(sum(case when ${propertyEntries.kind} = 'rent' then ${propertyEntries.share} else 0 end), 0)`,
+      costs: sql<string>`coalesce(sum(case when ${propertyEntries.kind} = 'cost' and ${propertyEntries.categoryId} <> 'p-finance' then ${propertyEntries.share} else 0 end), 0)`,
+      finance: sql<string>`coalesce(sum(case when ${propertyEntries.categoryId} = 'p-finance' then ${propertyEntries.share} else 0 end), 0)`,
+    }).from(propertyEntries).where(and(eq(propertyEntries.businessId, b.id), isNull(propertyEntries.voidedAt), between(propertyEntries.on, year.from, today)));
+    propProfit = Math.round(((n(pr.rent) - n(pr.costs)) * yearDays) / elapsedYear);
+    propFinance = Math.round((n(pr.finance) * yearDays) / elapsedYear);
+  }
+  const est = propProfit || propFinance
+    ? rules.estimate(Math.max(0, projected + propProfit), { tradingProfit: Math.max(0, projected), financeCosts: propFinance, year: Number(year.from.slice(0, 4)) })
+    : rules.estimate(Math.max(0, projected), { year: Number(year.from.slice(0, 4)) });
   const periodElapsed = Math.max(0, daysBetween(period.from < year.from ? year.from : period.from, soFar) + 1);
-  const share = ytdProfit > 0 ? Math.round((est.total * Math.min(periodElapsed, yearDays)) / yearDays) : 0;
+  const share = ytdProfit > 0 || propProfit > 0 ? Math.round((est.total * Math.min(periodElapsed, yearDays)) / yearDays) : 0;
 
   return {
     key: chosen.key,
@@ -53,13 +67,13 @@ export async function threeNumbers(db: Exec, b: BusinessRow, key: PeriodKey | un
     tax: {
       label: est.label,
       share,
-      yearEstimate: ytdProfit > 0 ? est.total : 0,
+      yearEstimate: ytdProfit > 0 || propProfit > 0 ? est.total : 0,
       yearToDateProfit: ytdProfit,
       projectedProfit: projected,
       taxYear: year.label,
       lines: est.lines,
       instalments: est.instalments,
-      wording: ESTIMATE_WORDING,
+      wording: ESTIMATE_WORDING.replace("accountant", rules.wording.practitionerNoun),
       verified: rules.verified,
     },
     keep: inn.total - out.total - share,
@@ -67,7 +81,7 @@ export async function threeNumbers(db: Exec, b: BusinessRow, key: PeriodKey | un
 }
 
 /** Output VAT, input VAT and SSCL for a month (Sri Lanka's VAT and SSCL return). */
-async function vatFor(db: Exec, businessId: string, from: string, to: string) {
+export async function vatFor(db: Exec, businessId: string, from: string, to: string) {
   const sign = sql`case when ${invoices.kind} = 'credit_note' then -1 else 1 end`;
   const [o] = await db.select({
     vat: sql<string>`coalesce(sum(${invoices.vat} * ${sign}), 0)`,

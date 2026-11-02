@@ -67,7 +67,7 @@ export function ExpensePanel({ setup, suppliers, supplierCurrencies }: { setup: 
         {open && <ExpenseForm setup={setup} suppliers={suppliers} supplierCurrencies={supplierCurrencies} autoFocus onSaved={(m) => { setToast(m); close(); }} />}
       </section>
       {toast && (
-        <div role="status" className="fixed bottom-6 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2.5 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white shadow-lg">
+        <div role="status" className="fixed bottom-28 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2.5 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white shadow-lg">
           <span className="flex size-6 items-center justify-center rounded-full bg-violet text-ink"><Icon d={ICONS.check} size={14} strokeWidth={3} /></span>
           {toast}
         </div>

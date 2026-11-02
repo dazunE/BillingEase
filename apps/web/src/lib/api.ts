@@ -1,6 +1,6 @@
 import "server-only";
 import type { BodyOf, Endpoint, ResponseOf } from "@billingease/contracts";
-import { cookies } from "next/headers";
+import { cookies, headers as requestHeaders } from "next/headers";
 import { redirect } from "next/navigation";
 import { BUSINESS_COOKIE, SESSION_COOKIE } from "./cookies";
 
@@ -37,6 +37,9 @@ async function headers(token?: string | null) {
   if (t) h.authorization = `Bearer ${t}`;
   if (biz) h["x-business-id"] = biz;
   if (INTERNAL_KEY) h["x-internal-key"] = INTERNAL_KEY;
+  // The person's browser, so "Where you're signed in" can name the device.
+  const ua = (await requestHeaders()).get("user-agent");
+  if (ua) h["user-agent"] = ua.slice(0, 300);
   return h;
 }
 

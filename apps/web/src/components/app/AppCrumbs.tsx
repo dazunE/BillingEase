@@ -1,8 +1,7 @@
-import { home } from "@billingease/contracts";
 import { formatMoney, monthLabel } from "@billingease/core";
 import Link from "next/link";
 import { ICONS, Icon } from "@/components/ui";
-import { ApiFailure, call } from "@/lib/api";
+import { homeSummary } from "@/lib/counts";
 
 export type Area = "in" | "out" | "keep" | "biz";
 
@@ -13,14 +12,6 @@ function periodWords(p: { key: string; label: string; from: string }) {
   return "This year so far";
 }
 
-async function numbers() {
-  try {
-    return await call(home.summary);
-  } catch (err) {
-    if (err instanceof ApiFailure) return null;
-    throw err;
-  }
-}
 
 /**
  * Where you are, and your three numbers for the same period as Home (prototype AppCrumbs).
@@ -28,7 +19,7 @@ async function numbers() {
  * `trail` is everything after Home; the last item without an href is the current page.
  */
 export async function AppCrumbs({ area, trail }: { area?: Area; trail: { label: string; href?: string }[] }) {
-  const h = await numbers();
+  const h = await homeSummary();
   const pill = "inline-flex min-h-9 items-center gap-2 whitespace-nowrap rounded-full px-[11px] text-[12.5px] font-semibold";
   const on = (a: Area, bg: string, ring: string) => (area === a ? `${bg} border-2 ${ring}` : "bg-white border border-line");
   const money = (n: number) => (h ? formatMoney(n, h.currency, { decimals: "never" }) : "");
@@ -63,7 +54,7 @@ export async function AppCrumbs({ area, trail }: { area?: Area; trail: { label: 
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span aria-hidden className="font-display font-bold text-muted">=</span>
-            <Link href="/app" className={`${pill} bg-ink text-white ${area === "keep" ? "border-2 border-ink shadow-[0_0_0_2px_#B9A3FF]" : "border border-ink"}`}>
+            <Link href="/app/keep" aria-current={area === "keep" ? "page" : undefined} className={`${pill} bg-ink text-white ${area === "keep" ? "border-2 border-ink shadow-[0_0_0_2px_#B9A3FF]" : "border border-ink"}`}>
               <span className="size-2 rounded-full bg-violet" />Yours to keep <strong className="font-display tabular-nums text-violet">{money(h.keep)}</strong>
             </Link>
           </span>

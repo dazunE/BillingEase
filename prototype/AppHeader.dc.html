@@ -16,6 +16,24 @@
 @media (max-width: 640px){.be-hd-newlbl{display:none}.be-hd-new{padding:0 12px!important}.be-hd-asklbl{display:none}.be-hd-ask{padding:0 12px!important}}
 @media (max-width: 1100px){.be-hd-biz{display:none!important}}
 .be-hd-ask:hover{background:#E2DFE8!important}
+/* Bottom island: one dark pill that shows the sections, or the pages inside the section you're in. */
+body{padding-bottom:112px}
+[role="status"][style*="bottom: 24px"]{bottom:104px!important}
+.be-isl{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;width:max-content;max-width:calc(100% - 24px);box-sizing:border-box;border-radius:9999px;background:#18161F;border:1px solid #2C2935;box-shadow:0 18px 44px rgba(24,22,31,0.30),0 2px 6px rgba(24,22,31,0.18);font-family:DM Sans,system-ui,sans-serif}
+.be-isl-row{display:flex;align-items:center;gap:4px;padding:6px;overflow-x:auto;scrollbar-width:none;border-radius:9999px;animation:be-isl-in .24s cubic-bezier(.2,.8,.2,1)}
+.be-isl-row::-webkit-scrollbar{display:none}
+.be-isl-row a,.be-isl-row button{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:9999px;font:600 14px DM Sans,system-ui,sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,color .15s ease}
+.be-isl-off:hover{background:#2C2935!important;color:#FFFFFF!important}
+.be-isl-row a:focus-visible,.be-isl-row button:focus-visible{outline:2px solid #B9A3FF;outline-offset:2px}
+.be-isl-bdg{min-width:20px;height:20px;padding:0 6px;box-sizing:border-box;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font:700 11.5px DM Sans,sans-serif;font-variant-numeric:tabular-nums}
+@keyframes be-isl-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media (max-width:640px){
+  .be-isl-top{gap:0}
+  .be-isl-top a{flex:1 1 0!important;flex-direction:column;justify-content:center;gap:2px;min-width:0;max-width:72px;padding:6px 4px!important;font-size:10.5px!important;line-height:1.15;white-space:normal!important;text-align:center;position:relative}
+  .be-isl-top .be-isl-bdg{position:absolute;top:2px;right:6px;min-width:16px;height:16px;font-size:10px;padding:0 4px}
+  .be-isl-row a,.be-isl-row button{padding:0 12px;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){.be-isl-row{animation:none}.be-isl-row a,.be-isl-row button{transition:none}}
 </style>
 </helmet>
 <!-- One header for every signed-in screen: search, New, notifications, your business. -->
@@ -120,6 +138,38 @@
       <span>{{flash}}</span>
     </div>
   </sc-if>
+
+  <nav class="be-isl" aria-label="{{isl.label}}">
+    <sc-if value="{{isl.top}}" hint-placeholder-val="{{true}}">
+      <div class="be-isl-row be-isl-top">
+        <sc-for list="{{isl.secs}}" as="s" hint-placeholder-count="6">
+          <a href="{{s.href}}" class="{{s.cls}}" aria-current="{{s.cur}}" style="background: {{s.bg}}; color: {{s.fg}};">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{s.fg}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{s.icon}}"></path></svg>
+            <span>{{s.label}}</span>
+            <sc-if value="{{s.badge}}" hint-placeholder-val="{{false}}"><span class="be-isl-bdg" aria-label="{{s.badgeLabel}}" style="background: {{s.bBg}}; color: {{s.bFg}};">{{s.badge}}</span></sc-if>
+          </a>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{isl.sub}}" hint-placeholder-val="{{false}}">
+      <div class="be-isl-row">
+        <button type="button" class="be-isl-off" onClick="{{islAll}}" aria-label="Show all sections" title="All sections" style="width: 44px; padding: 0; justify-content: center; background: #2C2935; color: #FFFFFF;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        </button>
+        <a href="{{isl.sec.href}}" aria-current="{{isl.sec.cur}}" style="background: {{isl.sec.bg}}; color: {{isl.sec.fg}}; box-shadow: {{isl.sec.ring}};">
+          <span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 9999px; background: {{isl.sec.dot}}; flex: none;"></span>
+          <span style="font-family: Sora, sans-serif; font-weight: 700;">{{isl.sec.label}}</span>
+        </a>
+        <span aria-hidden="true" style="flex: none; width: 1px; height: 24px; margin: 0 4px; background: #3A3644;"></span>
+        <sc-for list="{{isl.items}}" as="it" hint-placeholder-count="5">
+          <a href="{{it.href}}" class="{{it.cls}}" aria-current="{{it.cur}}" style="background: {{it.bg}}; color: {{it.fg}};">
+            <span>{{it.label}}</span>
+            <sc-if value="{{it.badge}}" hint-placeholder-val="{{false}}"><span class="be-isl-bdg" aria-label="{{it.badgeLabel}}" style="background: {{it.bBg}}; color: {{it.bFg}};">{{it.badge}}</span></sc-if>
+          </a>
+        </sc-for>
+      </div>
+    </sc-if>
+  </nav>
 </header>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":80}}'>
@@ -128,7 +178,7 @@ class Component extends DCLogic {
     super(props);
     let flash = null;
     try { flash = sessionStorage.getItem('be.flash'); sessionStorage.removeItem('be.flash'); } catch (e) { flash = null; }
-    this.state = { newOpen: false, acctOpen: false, q: '', flash };
+    this.state = { newOpen: false, acctOpen: false, q: '', flash, islAll: false };
     if (flash) this._t = setTimeout(() => this.setState({ flash: null }), 3200);
   }
   componentDidMount() {
@@ -141,6 +191,13 @@ class Component extends DCLogic {
     this._esc = (e) => { if (e.key === 'Escape') this.setState({ newOpen: false, acctOpen: false, q: '' }); };
     document.addEventListener('click', this._doc);
     document.addEventListener('keydown', this._esc);
+    // On a narrow screen the island scrolls sideways: bring the lit page into view.
+    this._islT = setTimeout(() => {
+      const host = (this.__inst && this.__inst.host) || document;
+      const row = host.querySelector('.be-isl-row');
+      const on = row && row.querySelector('[aria-current="true"]');
+      if (row && on && row.scrollWidth > row.clientWidth) row.scrollLeft = Math.max(0, on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2);
+    }, 60);
   }
   renderVals() {
     const st = this.state;
@@ -217,6 +274,7 @@ class Component extends DCLogic {
       { label: 'Enter a bill', hint: 'Something you’ll pay later', href: 'SpendBill.dc.html#new', tint: OUT, icon: I.bill }
     ]);
     const other = lk ? 'uk' : 'lk';
+    const isl = this.island(p, lk, pr, shows, landlord);
     return {
       p, q: st.q, hasQ: !!q, results, noResults: !!q && results.length === 0,
       countryShort: pk.short || (lk ? 'Sri Lanka' : 'UK'), countryName: (pk.name || '') + ' business',
@@ -246,7 +304,127 @@ class Component extends DCLogic {
         { label: other === 'lk' ? 'Switch to the Sri Lanka sample' : 'Switch to the UK sample', hint: other === 'lk' ? 'Serendib Design Studio, Colombo' : 'Harper Studio, Leeds', href: 'ThreeHome.dc.html#sample-' + other },
         { label: 'Reset sample data', hint: 'Back to ' + (lk ? 'Serendib Design Studio' : 'Harper Studio') + ' on 11 October', href: 'ThreeHome.dc.html#reset' }
       ],
-      flash: st.flash
+      flash: st.flash,
+      isl,
+      islAll: () => this.setState({ islAll: true })
+    };
+  }
+  island(p, lk, pr, shows, landlord) {
+    // Which screen is this? The file name decides the section and which page in it is lit.
+    let file = '';
+    try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch (e) { file = ''; }
+    file = file.replace(/\.dc\.html$/, '').replace(/\.html$/, '');
+    const SEC_OF = {
+      ThreeHome: 'home', Notifications: 'home', Help: 'home', Everything: 'home',
+      ThreeIn: 'in', SellInvoices: 'in', SellInvoice: 'in', SellQuotes: 'in', SellQuote: 'in', SellRecurring: 'in', SellCustomers: 'in', SellCustomer: 'in', SellCatalog: 'in',
+      ThreeOut: 'out', SpendTransaction: 'out', SpendBill: 'out', SpendEveryMonth: 'out', SpendVendors: 'out', SpendVendor: 'out', Mileage: 'out', Properties: 'out',
+      ThreeKeep: 'keep', Quarters: 'keep', TaxPeriods: 'keep', SpendPayroll: 'keep', Payslip: 'keep', BooksReports: 'keep', BooksTax: 'keep', BooksReconcile: 'keep', BooksCategories: 'keep',
+      Accountant: 'acct', PracticeView: 'acct', Ask: 'acct',
+      BizProfile: 'biz', BizTeam: 'biz', BizSecurity: 'biz'
+    };
+    // A detail screen lights up the list it belongs to.
+    const PARENT = { SellInvoice: 'SellInvoices', SellQuote: 'SellQuotes', SellCustomer: 'SellCustomers', SpendVendor: 'SpendVendors', Payslip: 'SpendPayroll' };
+    const here = PARENT[file] || file;
+    const cur = SEC_OF[file] || 'home';
+
+    // Live counts for the badges.
+    const safe = (f) => { try { return f() || 0; } catch (e) { return 0; } };
+    const nOpenInv = safe(() => BE.all('invoices').filter((i) => !i.void && !i.draft && BE.invOpen(i) > 0).length);
+    const nLateInv = safe(() => BE.all('invoices').filter((i) => !i.void && !i.draft && BE.invOpen(i) > 0 && BE.invStatus(i) === 'late').length);
+    const nQuotes = safe(() => BE.all('quotes').filter((q) => q.state === 'waiting' || q.state === 'sent' || q.state === 'changes').length);
+    const nBills = safe(() => BE.all('bills').filter((b) => (typeof BE.billLeft === 'function' ? BE.billLeft(b) : b.amount - (b.paid || 0)) > 0).length);
+    const nUncat = safe(() => BE.all('expenses').filter((x) => x.needsCat || x.uncategorised || !x.cat || /^(uncategori[sz]ed|needs a category)$/i.test(x.cat || '')).length);
+    const nReq = safe(() => BE.all('requests').filter((r) => (r.dir || 'in') === 'in' && r.status !== 'done').length);
+
+    const I = {
+      home: 'M4 11 12 4l8 7v9h-5v-6H9v6H4z',
+      in: 'M12 19V5M5 12l7-7 7 7',
+      out: 'M12 5v14M5 12l7 7 7-7',
+      keep: 'M4 20V10M10 20V4M16 20v-7M2 20h20',
+      acct: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1',
+      biz: 'M3 9l2-5h14l2 5M4 9v11h16V9M3 9h18M9 20v-6h6v6'
+    };
+    // Section colours: violet for Coming in, orange for Going out, white for the rest.
+    const SECS = [
+      { k: 'home', label: 'Home', href: 'ThreeHome.dc.html', on: '#FFFFFF', dot: '#FFFFFF', chip: '#2C2935', chipFg: '#FFFFFF' },
+      { k: 'in', label: 'Coming in', href: 'ThreeIn.dc.html', on: '#B9A3FF', dot: '#B9A3FF', chip: '#B9A3FF', chipFg: '#18161F', badge: nLateInv || nOpenInv, badgeLabel: nLateInv ? nLateInv + ' late invoices' : nOpenInv + ' unpaid invoices' },
+      { k: 'out', label: 'Going out', href: 'ThreeOut.dc.html', on: '#E0752D', dot: '#E0752D', chip: '#E0752D', chipFg: '#18161F', badge: nBills, badgeLabel: nBills + ' bills to pay' },
+      { k: 'keep', label: 'Yours to keep', href: 'ThreeKeep.dc.html', on: '#FFFFFF', dot: '#B9A3FF', chip: '#2C2935', chipFg: '#B9A3FF' },
+      { k: 'acct', label: lk ? 'Practitioner' : 'Accountant', href: 'Accountant.dc.html', on: '#FFFFFF', dot: '#FFFFFF', chip: '#2C2935', chipFg: '#FFFFFF', badge: nReq, badgeLabel: nReq + ' open requests' },
+      { k: 'biz', label: 'Business', href: 'BizProfile.dc.html', on: '#FFFFFF', dot: '#FFFFFF', chip: '#2C2935', chipFg: '#FFFFFF' }
+    ];
+    const secOf = (k) => SECS.filter((s) => s.k === k)[0];
+    const showTop = cur === 'home' || this.state.islAll;
+    const secs = SECS.map((s) => {
+      const on = s.k === cur;
+      return {
+        href: s.href, label: s.label, icon: I[s.k],
+        cur: on ? 'true' : false, cls: on ? '' : 'be-isl-off',
+        bg: on ? s.on : 'transparent', fg: on ? '#18161F' : '#D9D6E0',
+        badge: s.badge || false, badgeLabel: s.badgeLabel || '',
+        bBg: on ? '#18161F' : (s.k === 'out' ? '#E0752D' : '#B9A3FF'), bFg: on ? '#FFFFFF' : '#18161F'
+      };
+    });
+
+    // The pages inside each section, as the app's tool cards group them.
+    const L = (f, label, badge, badgeLabel) => ({ f, label, badge, badgeLabel });
+    const SUB = {
+      in: [
+        L('SellInvoices', lk && p.vatRegistered ? 'Tax invoices' : 'Invoices', nOpenInv, nOpenInv + ' unpaid'),
+        L('SellQuotes', 'Quotes', nQuotes, nQuotes + ' waiting for an answer'),
+        L('SellRecurring', 'Repeating'),
+        L('SellCustomers', 'Customers'),
+        L('SellCatalog', 'Products and services')
+      ],
+      out: [
+        L('SpendTransaction', 'Transactions', nUncat, nUncat + ' need a category'),
+        L('SpendBill', 'Bills', nBills, nBills + ' to pay'),
+        L('SpendEveryMonth', 'Every month'),
+        L('SpendVendors', 'Suppliers')
+      ].concat(!lk && shows('mileage', true) ? [L('Mileage', 'Mileage')] : [])
+       .concat(!lk && landlord ? [L('Properties', 'Properties')] : []),
+      keep: (lk ? [
+        L('TaxPeriods', 'VAT and SSCL'),
+        L('SpendPayroll', 'Payroll')
+      ] : [L('Quarters', 'Quarters')]
+        .concat(p.vatRegistered ? [L('TaxPeriods', 'VAT summary')] : [])
+        .concat(safe(() => BE.all('employees').length || BE.all('payroll').length) ? [L('SpendPayroll', 'Payroll records')] : [])
+      ).concat([
+        L('BooksReports', 'Reports'),
+        L('BooksTax', 'Tax and year-end'),
+        L('BooksReconcile', 'Bank check'),
+        L('BooksCategories', 'Categories')
+      ]),
+      acct: [
+        L('Accountant', lk ? 'Your practitioner' : 'Your accountant', nReq, nReq + ' open requests'),
+        L('PracticeView', 'What they see'),
+        L('Ask', 'Ask')
+      ],
+      biz: [
+        L('BizProfile', 'Profile'),
+        L('BizTeam', 'People and access'),
+        L('BizSecurity', 'Security and data')
+      ]
+    };
+    const s = secOf(cur);
+    const overview = s.href.replace(/\.dc\.html$/, '');
+    // Business and Accountant have no overview page of their own: the first page is the overview.
+    const items = (SUB[cur] || []).filter((x) => x.f !== overview || cur === 'acct' || cur === 'biz').map((x) => {
+      const on = x.f === here;
+      return {
+        href: x.f + '.dc.html', label: x.label,
+        cur: on ? 'true' : false, cls: on ? '' : 'be-isl-off',
+        bg: on ? '#FFFFFF' : 'transparent', fg: on ? '#18161F' : '#D9D6E0',
+        badge: x.badge || false, badgeLabel: x.badgeLabel || '',
+        bBg: on ? '#18161F' : '#3A3644', bFg: '#FFFFFF'
+      };
+    });
+    const secCur = here === overview && cur !== 'acct' && cur !== 'biz';
+    return {
+      top: showTop, sub: !showTop,
+      label: showTop ? 'Sections' : s.label + ' pages',
+      secs, items,
+      sec: { href: s.href, label: s.label, dot: s.k === 'in' || s.k === 'out' ? '#18161F' : s.dot, bg: s.chip, fg: s.chipFg, cur: secCur ? 'true' : false, ring: secCur ? '0 0 0 2px #FFFFFF' : 'none' }
     };
   }
 }

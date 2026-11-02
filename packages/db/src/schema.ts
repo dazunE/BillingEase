@@ -61,6 +61,8 @@ export const sessions = pgTable(
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     userAgent: text("user_agent"),
     createdAt: createdAt(),
+    // When this session last made a request (updated at most every few minutes), for Security and data.
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
   },
   (t) => [index("sessions_user").on(t.userId)],
 );
@@ -176,6 +178,31 @@ export const memberships = pgTable(
   ],
 );
 
+/**
+ * An invitation to open a business's books (People and access): the owner invites an accountant
+ * or an office admin by email. Only a sha256 of the link's token is kept. Accepting adds a
+ * membership for whoever is signed in with that email.
+ */
+export const invites = pgTable(
+  "invites",
+  {
+    id: id(),
+    businessId: businessId(),
+    tokenHash: text("token_hash").notNull().unique(),
+    email: text("email").notNull(),
+    role: text("role").$type<Exclude<Role, "owner">>().notNull(),
+    invitedBy: uuid("invited_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("invites_business").on(t.businessId),
+    check("invites_role", sql`${t.role} in ('accountant','admin')`),
+  ],
+);
+
 // ---------------------------------------------------------------------------
 // Chart of accounts and the ledger
 
@@ -252,6 +279,207 @@ export const lockedPeriods = pgTable(
     lockedAt: timestamp("locked_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("locked_periods_business").on(t.businessId), check("locked_periods_range", sql`${t.fromDate} <= ${t.toDate}`)],
+);
+
+// ---------------------------------------------------------------------------
+// Payroll (Sri Lanka: worked out here; UK: records from the payroll software)
+
+export const employees = pgTable(
+  "employees",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    job: text("job"),
+    startedOn: date("started_on"),
+    endedOn: date("ended_on"),
+    // NIC in Sri Lanka, National Insurance number in the UK.
+    idNumber: text("id_number"),
+    // EPF member number (Sri Lanka).
+    epfNumber: text("epf_number"),
+    // PAYE tax code (UK), e.g. 1257L.
+    taxCode: text("tax_code"),
+    // Monthly basic pay and fixed allowances (Sri Lanka); the UK takes each run's figures from the software.
+    basic: money("basic").notNull().default(0),
+    allowances: jsonb("allowances").$type<{ name: string; amount: number; epf: boolean }[]>().notNull().default([]),
+    pension: boolean("pension").notNull().default(false),
+    bankDetails: text("bank_details"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("employees_business").on(t.businessId)],
+);
+
+export const payRuns = pgTable(
+  "pay_runs",
+  {
+    id: id(),
+    businessId: businessId(),
+    // YYYY-MM: the month the run pays for.
+    month: text("month").notNull(),
+    payDate: date("pay_date").notNull(),
+    status: text("status").$type<"draft" | "approved">().notNull().default("draft"),
+    gross: money("gross").notNull().default(0),
+    net: money("net").notNull().default(0),
+    // What the employer adds on top of gross (EPF 12% and ETF 3%, or employer NI and pension).
+    employer: money("employer").notNull().default(0),
+    entryId: uuid("entry_id"),
+    approvedBy: uuid("approved_by").references(() => users.id, { onDelete: "set null" }),
+    approvedAt: timestamp("approved_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("pay_runs_business_month").on(t.businessId, t.month),
+    check("pay_runs_status", sql`${t.status} in ('draft','approved')`),
+  ],
+);
+
+export const payRunLines = pgTable(
+  "pay_run_lines",
+  {
+    id: id(),
+    businessId: businessId(),
+    runId: uuid("run_id").notNull().references(() => payRuns.id, { onDelete: "cascade" }),
+    employeeId: uuid("employee_id").notNull().references(() => employees.id),
+    // As the person was when the run was made, so a payslip never changes.
+    name: text("name").notNull(),
+    job: text("job"),
+    basic: money("basic").notNull().default(0),
+    allowances: money("allowances").notNull().default(0),
+    overtime: money("overtime").notNull().default(0),
+    gross: money("gross").notNull(),
+    epfBase: money("epf_base").notNull().default(0),
+    epfEe: money("epf_ee").notNull().default(0),
+    epfEr: money("epf_er").notNull().default(0),
+    etf: money("etf").notNull().default(0),
+    apit: money("apit").notNull().default(0),
+    paye: money("paye").notNull().default(0),
+    eeNi: money("ee_ni").notNull().default(0),
+    erNi: money("er_ni").notNull().default(0),
+    pensionEe: money("pension_ee").notNull().default(0),
+    pensionEr: money("pension_er").notNull().default(0),
+    net: money("net").notNull(),
+  },
+  (t) => [index("pay_run_lines_run").on(t.runId)],
+);
+
+/** What an approved run owes: net pay, then the tax office and the funds. */
+export const payrollDues = pgTable(
+  "payroll_dues",
+  {
+    id: id(),
+    businessId: businessId(),
+    runId: uuid("run_id").notNull().references(() => payRuns.id, { onDelete: "cascade" }),
+    kind: text("kind").$type<"net" | "apit" | "epf" | "etf" | "hmrc" | "pension">().notNull(),
+    label: text("label").notNull(),
+    payTo: text("pay_to").notNull(),
+    amount: money("amount").notNull(),
+    dueOn: date("due_on").notNull(),
+    paidOn: date("paid_on"),
+    method: text("method"),
+    reference: text("reference"),
+    entryId: uuid("entry_id"),
+  },
+  (t) => [
+    index("payroll_dues_business").on(t.businessId, t.dueOn),
+    check("payroll_dues_kind", sql`${t.kind} in ('net','apit','epf','etf','hmrc','pension')`),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// UK property, mileage, and working with your accountant
+
+/** A home the business lets (UK). Its rent and costs are kept apart from the trade's. */
+export const properties = pgTable(
+  "properties",
+  {
+    id: id(),
+    businessId: businessId(),
+    name: text("name").notNull(),
+    address: text("address"),
+    // The owner's share, in percent: rent and costs are entered at their full amount and taken at this share.
+    sharePct: integer("share_pct").notNull().default(100),
+    monthlyRent: money("monthly_rent").notNull().default(0),
+    rentDay: integer("rent_day"),
+    agent: text("agent"),
+    archived: boolean("archived").notNull().default(false),
+    createdAt: createdAt(),
+  },
+  (t) => [index("properties_business").on(t.businessId), check("properties_share", sql`${t.sharePct} between 1 and 100`)],
+);
+
+/** Rent received and costs paid for a property, each posted to the ledger. */
+export const propertyEntries = pgTable(
+  "property_entries",
+  {
+    id: id(),
+    businessId: businessId(),
+    propertyId: uuid("property_id").notNull().references(() => properties.id, { onDelete: "cascade" }),
+    kind: text("kind").$type<"rent" | "cost">().notNull(),
+    on: date("on_date").notNull(),
+    description: text("description").notNull(),
+    payee: text("payee"),
+    // A UK property category (p-running, p-repairs, p-finance ...) for a cost.
+    categoryId: text("category_id"),
+    // The full amount; the owner's share of it is what's posted.
+    amount: money("amount").notNull(),
+    share: money("share").notNull(),
+    method: text("method").notNull(),
+    entryId: uuid("entry_id"),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("property_entries_property").on(t.propertyId, t.on), check("property_entries_kind", sql`${t.kind} in ('rent','cost')`)],
+);
+
+/** A business trip in your own vehicle, claimed at HMRC's flat rate per mile. */
+export const trips = pgTable(
+  "trips",
+  {
+    id: id(),
+    businessId: businessId(),
+    on: date("on_date").notNull(),
+    fromPlace: text("from_place").notNull(),
+    toPlace: text("to_place").notNull(),
+    purpose: text("purpose"),
+    // Tenths of a mile.
+    miles: integer("miles").notNull(),
+    vehicle: text("vehicle").$type<"car" | "motorcycle" | "bicycle">().notNull().default("car"),
+    amount: money("amount").notNull(),
+    entryId: uuid("entry_id"),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("trips_business_date").on(t.businessId, t.on), check("trips_vehicle", sql`${t.vehicle} in ('car','motorcycle','bicycle')`), check("trips_miles", sql`${t.miles} > 0`)],
+);
+
+/** Something the accountant asks the owner for, open until marked done. */
+export const practiceRequests = pgTable(
+  "practice_requests",
+  {
+    id: id(),
+    businessId: businessId(),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    title: text("title").notNull(),
+    body: text("body"),
+    link: text("link"),
+    status: text("status").$type<"open" | "done">().notNull().default("open"),
+    doneAt: timestamp("done_at", { withTimezone: true }),
+    doneBy: uuid("done_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("practice_requests_business").on(t.businessId, t.status), check("practice_requests_status", sql`${t.status} in ('open','done')`)],
+);
+
+export const practiceMessages = pgTable(
+  "practice_messages",
+  {
+    id: id(),
+    businessId: businessId(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    body: text("body").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("practice_messages_business").on(t.businessId, t.createdAt)],
 );
 
 // ---------------------------------------------------------------------------
