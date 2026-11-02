@@ -6,9 +6,9 @@ import { ago, inDays } from "./format";
 
 export function RecentActivity({ items, practitioner }: { items: HomeSummary["activity"]; practitioner: string }) {
   return (
-    <section aria-labelledby="recent-h" className="flex flex-col gap-3 rounded-3xl border border-line bg-white p-5">
+    <section aria-labelledby="recent-h" className="flex flex-col gap-3 rounded-3xl border border-line bg-white p-5 max-sm:rounded-[20px] max-sm:p-4">
       <div className="flex items-baseline justify-between gap-3">
-        <h2 id="recent-h" className="font-display text-lg font-bold tracking-[-0.02em]">Recent activity</h2>
+        <h2 id="recent-h" className="font-display text-lg font-bold tracking-[-0.02em] max-sm:text-[17px]">Recent activity</h2>
         <span className="text-xs text-muted">Latest first</span>
       </div>
       {items.length === 0 ? (
@@ -32,7 +32,7 @@ export function RecentActivity({ items, practitioner }: { items: HomeSummary["ac
 
 export function Deadlines({ items }: { items: HomeSummary["deadlines"] }) {
   return (
-    <section aria-labelledby="dl-h" className="flex flex-col gap-3 rounded-3xl border border-line bg-white p-5">
+    <section aria-labelledby="dl-h" className="flex flex-col gap-3 rounded-3xl border border-line bg-white p-5 max-sm:rounded-[20px] max-sm:p-4">
       <h2 id="dl-h" className="font-display text-lg font-bold tracking-[-0.02em]">Coming up</h2>
       {items.length === 0 ? <p className="text-sm text-ink2">No dates coming up.</p> : (
         <ul className="flex flex-col">
@@ -60,7 +60,7 @@ export function FirstSteps({ steps }: { steps: HomeSummary["firstSteps"] }) {
   return (
     <section aria-labelledby="start-h" className="flex min-w-0 flex-[999_1_480px] flex-col gap-3">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 id="start-h" className="font-display text-[22px] font-bold tracking-[-0.02em]">Get started <span className="font-semibold text-muted">{done} of {steps.length}</span></h2>
+        <h2 id="start-h" className="font-display text-[22px] font-bold tracking-[-0.02em] max-sm:text-xl">Get started <span className="font-semibold text-muted">{done} of {steps.length}</span></h2>
         <span className="text-[13px] text-muted">Do them in any order. Each one ticks itself off.</span>
       </div>
       <div className="flex flex-col overflow-hidden rounded-[20px] border border-line bg-white">

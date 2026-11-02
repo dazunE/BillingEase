@@ -6,7 +6,7 @@ import { whole } from "./format";
 
 function Bar({ parts, track = "bg-surface" }: { parts: { pct: number; className: string }[]; track?: string }) {
   return (
-    <span className={`flex h-2.5 gap-0.5 overflow-hidden rounded-full ${track}`} aria-hidden>
+    <span className={`flex h-2.5 gap-0.5 overflow-hidden rounded-full max-sm:col-span-2 max-sm:h-2 ${track}`} aria-hidden>
       {parts.map((p, i) => <span key={i} className={p.className} style={{ width: `${Math.max(0, Math.min(100, p.pct))}%` }} />)}
     </span>
   );
@@ -20,7 +20,11 @@ export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; cou
   const { comingIn: i, goingOut: o, tax } = s;
   const profit = i.total - o.total;
   const taxWords = country === "lk" ? tax.label.toLowerCase() : tax.label;
-  const card = "flex min-w-0 flex-[1_1_260px] flex-col gap-3.5 rounded-3xl p-6 no-underline";
+  // On a phone each card is one row, label left and number right, with the bar and words under it.
+  const card = "relative flex min-w-0 flex-[1_1_260px] flex-col gap-3.5 rounded-3xl p-6 no-underline max-sm:grid max-sm:grid-cols-[minmax(0,1fr)_auto] max-sm:items-center max-sm:gap-x-2 max-sm:gap-y-2.5 max-sm:rounded-[20px] max-sm:px-[18px] max-sm:py-4";
+  const big = "tabular font-display text-[clamp(30px,4vw,44px)] font-bold tracking-[-0.03em] [overflow-wrap:anywhere] max-sm:flex max-sm:items-center max-sm:gap-1.5 max-sm:text-[26px]";
+  const foot = "flex flex-wrap justify-between gap-x-3 gap-y-1 text-[13px] text-ink2 max-sm:col-span-2";
+  const chev = <Icon d="m9 6 6 6-6 6" size={18} className="shrink-0 sm:hidden" />;
   const op = "flex flex-[0_0_auto] items-center justify-center px-0.5 font-display text-[34px] font-bold text-muted max-[900px]:h-5 max-[900px]:basis-full max-[900px]:text-[26px]";
   return (
     <section aria-label="Your three numbers" className="flex flex-col gap-2.5">
@@ -31,38 +35,40 @@ export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; cou
         <Link href="/app/in" className={`${card} border border-line bg-white text-ink hover:border-input`}>
           <span className="flex items-center justify-between gap-2">
             <span className="flex items-center gap-2 text-[15px] font-bold"><span className="size-2.5 rounded-full bg-coming" />Coming in</span>
-            <Icon d={ICONS.arrowRight} />
+            <Icon d={ICONS.arrowRight} className="max-sm:hidden" />
           </span>
-          <span className="tabular font-display text-[clamp(30px,3.6vw,44px)] font-bold tracking-[-0.03em] [overflow-wrap:anywhere]" data-testid="coming-in">{m(i.total)}</span>
+          <span className={big} data-testid="coming-in">{m(i.total)}{chev}</span>
           <Bar parts={[{ pct: pct(i.received, i.total), className: "bg-coming" }, { pct: pct(i.onTheWay, i.total), className: "bg-coming-light" }]} />
           {i.total !== 0 ? (
-            <span className="flex flex-wrap justify-between gap-x-3 gap-y-1 text-[13px] text-ink2">
+            <span className={foot}>
               <span><strong className="text-ink">{m(i.received)}</strong> received</span>
               <span><strong className="text-ink">{m(i.onTheWay)}</strong> on the way</span>
             </span>
-          ) : <span className="text-[13px] text-ink2">Invoices you send and payments you record add up here.</span>}
+          ) : <span className="text-[13px] text-ink2 max-sm:col-span-2">Invoices you send and payments you record add up here.</span>}
         </Link>
         <div aria-hidden className={op}>−</div>
         <Link href="/app/out" className={`${card} border border-line bg-white text-ink hover:border-input`}>
           <span className="flex items-center justify-between gap-2">
             <span className="flex items-center gap-2 text-[15px] font-bold"><span className="size-2.5 rounded-full bg-going" />Going out</span>
-            <Icon d={ICONS.arrowRight} />
+            <Icon d={ICONS.arrowRight} className="max-sm:hidden" />
           </span>
-          <span className="tabular font-display text-[clamp(30px,3.6vw,44px)] font-bold tracking-[-0.03em] [overflow-wrap:anywhere]" data-testid="going-out">{m(o.total)}</span>
+          <span className={big} data-testid="going-out">{m(o.total)}{chev}</span>
           <Bar parts={[{ pct: pct(o.paid, o.total), className: "bg-going" }, { pct: pct(o.toPay, o.total), className: "bg-going-light" }]} />
           {o.total !== 0 ? (
-            <span className="flex flex-wrap justify-between gap-x-3 gap-y-1 text-[13px] text-ink2">
+            <span className={foot}>
               <span><strong className="text-ink">{m(o.paid)}</strong> paid</span>
               <span><strong className="text-ink">{m(o.toPay)}</strong> still to pay</span>
             </span>
-          ) : <span className="text-[13px] text-ink2">{{ uk: "Expenses, bills and property costs add up here.", lk: "Expenses, bills and payroll add up here.", us: "Expenses and bills add up here." }[country]}</span>}
+          ) : <span className="text-[13px] text-ink2 max-sm:col-span-2">{{ uk: "Expenses, bills and property costs add up here.", lk: "Expenses, bills and payroll add up here.", us: "Expenses and bills add up here." }[country]}</span>}
         </Link>
         <div aria-hidden className={op}>=</div>
         <div className={`${card} bg-ink text-white`}>
+          {/* On a phone the whole card opens Yours to keep, as the other two do. */}
+          <Link href="/app/keep" aria-label="Open Yours to keep" className="absolute inset-0 rounded-[20px] sm:hidden" />
           <span className="flex items-center gap-2 text-[15px] font-bold text-tint"><span className="size-2.5 rounded-full bg-violet" />Yours to keep</span>
-          <span className="tabular font-display text-[clamp(30px,3.6vw,44px)] font-bold tracking-[-0.03em] text-violet [overflow-wrap:anywhere]" data-testid="keep">{m(s.keep)}</span>
+          <span className={`${big} text-violet`} data-testid="keep">{m(s.keep)}{chev}</span>
           <Bar track="bg-tint/15" parts={[{ pct: profit > 0 ? pct(s.keep, profit) : 0, className: "bg-violet" }, { pct: profit > 0 ? pct(tax.share, profit) : 0, className: "bg-tint/45" }]} />
-          <span className="text-[13px] leading-[1.45] text-tint">
+          <span className="text-[13px] leading-[1.45] text-tint max-sm:col-span-2">
             {country === "us"
               ? <>Before tax. BillingEase doesn&apos;t estimate US tax yet, so ask your accountant what to set aside.</>
               : profit > 0
@@ -72,7 +78,7 @@ export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; cou
               : <>No profit yet, so no {taxWords} to set aside.</>}
           </span>
           {tax.yearEstimate > 0 && (
-            <details className="text-[13px] text-tint">
+            <details className="relative text-[13px] text-tint max-sm:col-span-2">
               <summary className="min-h-9 cursor-pointer font-semibold text-white">How the estimate works</summary>
               <ul className="mt-1 flex flex-col gap-1">
                 <li>{(country === "lk" ? "Year of assessment" : "Tax year")} {tax.taxYear} profit so far {m(tax.yearToDateProfit)}, about {m(tax.projectedProfit)} over a full year.</li>
@@ -80,7 +86,7 @@ export function ThreeNumbers({ s, country, practitioner }: { s: HomeSummary; cou
               </ul>
             </details>
           )}
-          {country !== "us" && <span className="mt-auto text-xs text-tint/80">{tax.wording.replace("your accountant", `your ${practitioner}`)}{tax.verified ? "" : " · rates to be checked"}</span>}
+          {country !== "us" && <span className="mt-auto text-xs text-tint/80 max-sm:hidden">{tax.wording.replace("your accountant", `your ${practitioner}`)}{tax.verified ? "" : " · rates to be checked"}</span>}
         </div>
       </div>
     </section>
