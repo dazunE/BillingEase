@@ -16,8 +16,8 @@ export function NeedsYou({ items }: { items: HomeSummary["needs"] }) {
   return (
     <section aria-labelledby="needs-h" className="flex min-w-0 flex-[999_1_480px] flex-col gap-3">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 id="needs-h" className="font-display text-[22px] font-bold tracking-[-0.02em]">Needs you <span className="font-semibold text-muted">{items.length}</span></h2>
-        <span className="text-[13px] text-muted">Late invoices, bills and things to finish</span>
+        <h2 id="needs-h" className="font-display text-[22px] font-bold tracking-[-0.02em] max-sm:text-xl">Needs you <span className="font-semibold text-muted">{items.length}</span></h2>
+        <span className="text-[13px] text-muted max-sm:text-xs">Late invoices, bills and things to finish</span>
       </div>
       {items.length === 0 && (
         <div className="flex flex-col gap-1 rounded-[20px] bg-pos-bg px-5 py-4 text-pos">
@@ -26,13 +26,13 @@ export function NeedsYou({ items }: { items: HomeSummary["needs"] }) {
         </div>
       )}
       {items.map((t) => (
-        <article key={t.id} className="flex flex-wrap items-center gap-x-[18px] gap-y-3.5 rounded-[20px] border border-line bg-white px-5 py-[18px]">
-          <span className={`flex size-11 flex-none items-center justify-center rounded-[14px] ${ICON[t.kind].tint}`}><Icon d={ICON[t.kind].d} size={22} /></span>
-          <div className="flex min-w-0 flex-[1_1_240px] flex-col gap-[3px]">
-            <span className="text-base font-bold">{t.title}</span>
+        <article key={t.id} className="flex flex-wrap items-center gap-x-[18px] gap-y-3.5 rounded-[20px] border border-line bg-white px-5 py-[18px] max-sm:items-start max-sm:gap-x-3 max-sm:gap-y-3 max-sm:p-4">
+          <span className={`flex size-11 flex-none items-center justify-center rounded-[14px] max-sm:size-10 max-sm:rounded-xl ${ICON[t.kind].tint}`}><Icon d={ICON[t.kind].d} size={22} className="max-sm:size-5" /></span>
+          <div className="flex min-w-0 flex-[1_1_240px] flex-col gap-[3px] max-sm:basis-0">
+            <span className="text-base font-bold max-sm:text-[15px]">{t.title}</span>
             <span className="text-sm leading-[1.45] text-ink2">{t.body}</span>
           </div>
-          <Link href={t.href} className="inline-flex min-h-11 items-center rounded-full bg-violet px-5 text-sm font-semibold text-ink hover:bg-[#a98ffb]">{t.cta}</Link>
+          <Link href={t.href} className="inline-flex min-h-11 items-center rounded-full bg-violet px-5 text-sm font-semibold text-ink hover:bg-[#a98ffb] max-sm:basis-full max-sm:justify-center">{t.cta}</Link>
         </article>
       ))}
     </section>

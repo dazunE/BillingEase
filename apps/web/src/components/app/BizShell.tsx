@@ -74,10 +74,10 @@ export async function BizShell({ here, sub, children }: { here: BizPage; sub?: s
             <Link href="/businesses" className="flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-sm font-semibold text-ink2 hover:bg-bg">
               <Icon d={I.business} size={16} /> Your businesses
             </Link>
-            <Link href="/features" className="flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-sm font-semibold text-ink2 hover:bg-bg">
+            <Link href="/app/everything" className="flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-sm font-semibold text-ink2 hover:bg-bg">
               <Icon d={I.list} size={16} /> Everything BillingEase does
             </Link>
-            <Link href="/help" className="flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-sm font-semibold text-ink2 hover:bg-bg">
+            <Link href="/app/help" className="flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-sm font-semibold text-ink2 hover:bg-bg">
               <Icon d={I.help} size={16} /> Help
             </Link>
           </div>

@@ -62,7 +62,7 @@ export function HeaderSearch({ placeholder, noHint }: { placeholder: string; noH
   };
 
   return (
-    <div ref={box} role="search" className="relative min-w-0 flex-[1_1_260px] max-w-[480px] max-sm:max-w-none max-sm:basis-full">
+    <div ref={box} role="search" className="relative min-w-0 flex-[1_1_260px] max-w-[480px] max-sm:order-last max-sm:max-w-none max-sm:basis-full">
       <label className="flex min-h-11 items-center gap-2.5 rounded-full bg-surface px-4 focus-within:shadow-[0_0_0_3px_#7A5AF8]">
         <Icon d={ICONS.search} size={18} className="shrink-0 text-ink2" />
         <span className="sr-only">Find anything</span>
