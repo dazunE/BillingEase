@@ -1,10 +1,11 @@
 import { payroll } from "@billingease/contracts";
-import { formatMoney, monthLabel, today } from "@billingease/core";
+import { formatMoney, monthLabel, rulesFor, today } from "@billingease/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AppCrumbs } from "@/components/app/AppCrumbs";
 import { Hero, longDate, Panel, shortDate } from "@/components/keep/parts";
-import { PayDue } from "@/components/out/PayrollForms";
+import { PayDue, UkCheck } from "@/components/out/PayrollForms";
+import { RunSchedulesView } from "@/components/out/PayrollTables";
 import { cx } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
@@ -20,6 +21,9 @@ export default async function RunPage({ params }: { params: Promise<{ id: string
   const cur = b.currency;
   const m = (n: number) => formatMoney(n, cur);
   const name = monthLabel(r.month + "-01");
+  const schedules = lk && r.status === "approved" ? await load(payroll.schedules, { params: { id } }) : null;
+  // UK: each person's tax code and pension, to check their line against.
+  const people = lk ? [] : (await load(payroll.overview)).employees;
   const cols = lk
     ? [["gross", "Earnings"], ["epfEe", "EPF 8%"], ["apit", "APIT"], ["net", "Net pay"], ["epfEr", "EPF 12%"], ["etf", "ETF 3%"]] as const
     : [["gross", "Gross"], ["paye", "PAYE"], ["eeNi", "Employee NI"], ["pensionEe", "Pension"], ["net", "Net pay"], ["erNi", "Employer NI"], ["pensionEr", "Employer pension"]] as const;
@@ -67,6 +71,19 @@ export default async function RunPage({ params }: { params: Promise<{ id: string
         </div>
         {!lk && <p className="text-xs text-muted">Payslips, RTI reports to HMRC and P60s come from your payroll software.</p>}
       </Panel>
+
+      {schedules && (
+        <Panel id="sch-h" title="Schedules to pay and file yourself" sub="BillingEase doesn't file these. Use them for the EPF and ETF returns, your APIT payment and the bank's salary upload.">
+          <RunSchedulesView data={schedules} />
+        </Panel>
+      )}
+
+      {!lk && r.lines.length > 0 && (
+        <UkCheck contact={`your ${rulesFor(b.country).wording.practitionerNoun}`} against={r.lines.map((l) => {
+          const e = people.find((p) => p.id === l.employeeId);
+          return { key: l.id, label: `${l.name}, ${name}`, gross: l.gross, paye: l.paye, eeNi: l.eeNi, erNi: l.erNi, pensionEe: l.pensionEe, pensionEr: l.pensionEr, net: l.net, taxCode: e?.taxCode ?? null, pension: e?.pension ?? l.pensionEe > 0 };
+        })} />
+      )}
 
       {r.dues.length > 0 && (
         <Panel id="dues-h" title="What it owes">

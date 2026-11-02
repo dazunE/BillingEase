@@ -1,7 +1,7 @@
 "use client";
 
 import type { Employee } from "@billingease/contracts";
-import { formatMoney, lkPay, minorToDecimal, parseMoney, ukLine } from "@billingease/core";
+import { formatMoney, lkPay, minorToDecimal, parseMoney, ukCheck, ukLine } from "@billingease/core";
 import { useActionState, useState } from "react";
 import { deleteRun, payDue, saveEmployee, saveRun } from "@/app/app/out/payroll/actions";
 import { Button, Field, Input, cx } from "@/components/ui";
@@ -111,6 +111,88 @@ function Stat({ label, value, strong }: { label: string; value: string; strong?:
   );
 }
 
+/** A pay run line from the payroll software to hold the check against. */
+export type CheckAgainst = { key: string; label: string; gross: number; paye: number; eeNi: number; erNi: number; pensionEe: number; pensionEr: number; net: number; taxCode: string | null; pension: boolean };
+
+const CHECK_ROWS = [
+  ["paye", "PAYE"], ["eeNi", "Employee NI"], ["pensionEe", "Employee pension"], ["net", "Net pay"], ["erNi", "Employer NI"], ["pensionEr", "Employer pension"], ["hmrc", "To HMRC"],
+] as const;
+const CHECK_STRONG = new Set(["net", "hmrc"]);
+const CHECK_DIFF = ["paye", "eeNi", "erNi", "pensionEe"] as const;
+const CHECK_NAMES: Record<string, string> = { paye: "PAYE", eeNi: "employee NI", erNi: "employer NI", pensionEe: "employee pension" };
+
+/**
+ * UK: a rough monthly PAYE, NI and pension for a gross amount (core `ukCheck`), held against a
+ * line from the payroll software when there is one. A check, not payroll.
+ */
+export function UkCheck({ against, contact }: { against: CheckAgainst[]; contact: string }) {
+  const first = against[0];
+  const [pick, setPick] = useState(first?.key ?? "");
+  const [gross, setGross] = useState(first ? minorToDecimal(first.gross) : "");
+  const [code, setCode] = useState(first?.taxCode ?? "1257L");
+  const [pension, setPension] = useState(first?.pension ?? true);
+  const g = money(gross);
+  const ck = ukCheck(g, code.trim() || "1257L", pension);
+  const line = against.find((a) => a.key === pick);
+  const cmp = line && line.gross === g ? { ...line, hmrc: line.paye + line.eeNi + line.erNi } : null;
+  const diffs = cmp ? CHECK_DIFF.filter((k) => Math.abs(cmp[k] - ck[k]) > 100) : [];
+  const choose = (key: string) => {
+    setPick(key);
+    const a = against.find((x) => x.key === key);
+    if (a) { setGross(minorToDecimal(a.gross)); setCode(a.taxCode ?? "1257L"); setPension(a.pension); }
+  };
+  const segBtn = (on: boolean) => cx("min-h-[38px] rounded-full px-3.5 text-sm font-semibold", on ? "bg-ink text-white" : "text-ink hover:bg-white/60");
+  return (
+    <section aria-labelledby="chk-h" className="flex min-w-0 flex-col gap-3.5 rounded-3xl border border-line bg-white p-5">
+      <div className="flex flex-col gap-1.5">
+        <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+          <h2 id="chk-h" className="font-display text-[19px] font-bold tracking-[-0.02em]">Check the figures</h2>
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-[#FFF0B8] px-2.5 py-0.5 text-xs font-semibold text-[#6B5000]"><i aria-hidden className="size-1.5 rounded-full bg-current" />A check, not payroll</span>
+        </span>
+        <span className="text-[13px] text-muted">A rough monthly sense check of a payroll summary. Your payroll software&apos;s figures are the record; use this to spot a typo.</span>
+      </div>
+      {against.length > 0 && (
+        <Field label="Compare with"><select value={pick} onChange={(e) => choose(e.target.value)} className="min-h-11 w-full rounded-[10px] border border-input bg-white px-3 text-[15px]">
+          {against.map((a) => <option key={a.key} value={a.key}>{a.label}</option>)}
+          <option value="">Nothing, just work it out</option>
+        </select></Field>
+      )}
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,120px),1fr))] gap-3">
+        <Field label="Gross pay for the month"><Input inputMode="decimal" value={gross} onChange={(e) => setGross(e.target.value)} placeholder="1,120" /></Field>
+        <Field label="Tax code"><Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="1257L" /></Field>
+      </div>
+      <div role="group" aria-label="Workplace pension" className="inline-flex max-w-full flex-wrap gap-1 self-start rounded-[22px] bg-surface p-1">
+        <button type="button" aria-pressed={pension} onClick={() => setPension(true)} className={segBtn(pension)}>Enrolled in a pension</button>
+        <button type="button" aria-pressed={!pension} onClick={() => setPension(false)} className={segBtn(!pension)}>Not enrolled</button>
+      </div>
+      {g > 0 ? (
+        <table className="w-full border-collapse text-sm tabular-nums" aria-label="Expected figures">
+          {cmp && <thead><tr className="text-xs text-muted"><th scope="col" className="py-1.5 text-left font-semibold"><span className="sr-only">Figure</span></th><th scope="col" className="py-1.5 text-right font-semibold">About</th><th scope="col" className="py-1.5 pl-3 text-right font-semibold">You entered</th></tr></thead>}
+          <tbody>
+            {CHECK_ROWS.map(([k, l]) => {
+              const off = cmp && (CHECK_DIFF as readonly string[]).includes(k) && Math.abs(cmp[k] - ck[k]) > 100;
+              return (
+                <tr key={k} className={cx("border-t border-surface first:border-0", CHECK_STRONG.has(k) && "font-bold")}>
+                  <th scope="row" className="py-2 text-left font-[inherit]">{l}{cmp ? "" : ", about"}</th>
+                  <td className="py-2 text-right">{formatMoney(ck[k], "GBP", { decimals: "always" })}</td>
+                  {cmp && <td className={cx("py-2 pl-3 text-right", off && "text-late")}>{formatMoney(cmp[k], "GBP", { decimals: "always" })}</td>}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      ) : <p className="text-sm text-muted">Type a gross amount to see rough figures.</p>}
+      {cmp && g > 0 && (
+        <span role="status" className={cx("rounded-xl px-3 py-2.5 text-[13.5px] leading-snug", diffs.length ? "bg-[#FFF0B8] text-[#6B5000]" : "bg-pos-bg text-pos")}>
+          {diffs.length ? `Your ${cmp.label} figures differ by more than £1 on ${diffs.map((k) => CHECK_NAMES[k]).join(", ")}. Worth a look, or ask ${contact}.` : `Close to your ${cmp.label} figures for ${formatMoney(g, "GBP", { decimals: "always" })} gross. Nothing stands out.`}
+        </span>
+      )}
+      {line && !cmp && g > 0 && <span className="text-[13px] text-muted">Set gross pay back to {formatMoney(line.gross, "GBP", { decimals: "always" })} to compare with {line.label}.</span>}
+      <span className="text-xs text-muted">Monthly, non-cumulative, no Employment Allowance, student loan or salary sacrifice. Rates are 2026/27 estimates.</span>
+    </section>
+  );
+}
+
 /** Mark something a run owes as paid. */
 export function PayDue({ id, today }: { id: string; today: string }) {
   const [state, action, pending] = useActionState(payDue, undefined);
@@ -152,8 +234,16 @@ export function EmployeeForm({ mode, employee, currency }: { mode: "full" | "rec
         {lk ? <Field label="EPF member number"><Input name="epfNumber" defaultValue={v("epfNumber", employee?.epfNumber)} /></Field>
           : <Field label="Tax code" hint="From your payroll software, like 1257L"><Input name="taxCode" defaultValue={v("taxCode", employee?.taxCode)} /></Field>}
         {lk && <Field label={`Basic pay a month (${currency})`} error={e.basic}><Input name="basic" inputMode="decimal" defaultValue={v("basic", employee ? minorToDecimal(employee.basic) : "")} /></Field>}
-        <Field label="Bank details" hint="For the bank transfer list"><Input name="bankDetails" defaultValue={v("bankDetails", employee?.bankDetails)} /></Field>
       </div>
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-1 text-[13px] font-semibold">Where their pay goes <span className="font-normal text-muted">· optional{lk ? ", for the bank transfer list" : ""}</span></legend>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field label="Bank"><Input name="bankName" defaultValue={v("bankName", employee?.bankName)} placeholder={lk ? "e.g. Commercial Bank" : "e.g. Barclays"} /></Field>
+          <Field label={lk ? "Branch" : "Sort code"}><Input name="bankBranch" defaultValue={v("bankBranch", employee?.bankBranch)} placeholder={lk ? "e.g. Kollupitiya" : "20-00-00"} /></Field>
+          <Field label="Account number"><Input name="bankAccount" defaultValue={v("bankAccount", employee?.bankAccount)} inputMode="numeric" /></Field>
+        </div>
+        {employee?.bankDetails && <Field label="Bank details noted earlier" hint="Shown on the transfer list until the fields above are filled in"><Input name="bankDetails" defaultValue={v("bankDetails", employee.bankDetails)} /></Field>}
+      </fieldset>
       {lk ? (
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-1 text-[13px] font-semibold">Fixed allowances a month</legend>

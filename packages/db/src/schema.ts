@@ -355,7 +355,12 @@ export const employees = pgTable(
     basic: money("basic").notNull().default(0),
     allowances: jsonb("allowances").$type<{ name: string; amount: number; epf: boolean }[]>().notNull().default([]),
     pension: boolean("pension").notNull().default(false),
+    // Free text from before the bank fields below; still shown when they're empty.
     bankDetails: text("bank_details"),
+    // Where net pay goes: for the bank transfer list (Sri Lanka) and your own reference.
+    bankName: text("bank_name"),
+    bankBranch: text("bank_branch"),
+    bankAccount: text("bank_account"),
     createdAt: createdAt(),
   },
   (t) => [index("employees_business").on(t.businessId)],

@@ -8,6 +8,7 @@ import { AppError, badRequest } from "../lib/errors";
 import { route } from "../lib/route";
 import { balanceSheet, categoryTotals, checks, lockable, lockFor, locks, profitAndLoss, quarters, taxPeriods, yearOf } from "../services/books";
 import { threeNumbers } from "../services/home";
+import { payrollYear } from "../services/payroll";
 
 export async function bookRoutes(app: FastifyInstance) {
   // Defaults to the tax year so far.
@@ -68,6 +69,7 @@ export async function bookRoutes(app: FastifyInstance) {
       taxYear: y, daysToEnd: daysBetween(t, y.to), profitAndLoss: pl,
       estimate, instalments: instalments.map((i, k) => ({ ...i, label: names[k] ?? `Payment ${k + 1}` })),
       checks: await checks(ctx.db, b, { from: y.from, to: soFar }, rules.wording.practitionerNoun), lock,
+      payroll: await payrollYear(ctx.db, b, y.from, y.to),
     };
   });
 

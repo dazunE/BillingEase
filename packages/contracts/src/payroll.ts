@@ -22,6 +22,9 @@ export const Employee = z.object({
   allowances: z.array(z.object({ name: z.string(), amount: Minor, epf: z.boolean() })),
   pension: z.boolean(),
   bankDetails: z.string().nullable(),
+  bankName: z.string().nullable(),
+  bankBranch: z.string().nullable(),
+  bankAccount: z.string().nullable(),
 });
 export type Employee = z.infer<typeof Employee>;
 
@@ -37,6 +40,9 @@ export const EmployeeBody = z.object({
   allowances: z.array(Allowance).max(10).default([]),
   pension: z.boolean().default(false),
   bankDetails: optionalText(200),
+  bankName: optionalText(80),
+  bankBranch: optionalText(80),
+  bankAccount: optionalText(40),
 });
 export type EmployeeBody = z.input<typeof EmployeeBody>;
 
@@ -111,6 +117,70 @@ export const RunBody = z.object({
 });
 export type RunBody = z.input<typeof RunBody>;
 
+/**
+ * Sri Lanka: what an approved run needs to be paid and filed by hand. One row per person, with
+ * their NIC, EPF member number and bank, for the EPF C form, the ETF return, the APIT payment
+ * and the bank's salary upload. BillingEase doesn't file any of them.
+ */
+export const ScheduleRow = z.object({
+  employeeId: z.string(),
+  name: z.string(),
+  nic: z.string().nullable(),
+  epfNumber: z.string().nullable(),
+  bankName: z.string().nullable(),
+  bankBranch: z.string().nullable(),
+  bankAccount: z.string().nullable(),
+  gross: Minor, epfBase: Minor, epfEe: Minor, epfEr: Minor, etf: Minor,
+  /** Taxable pay for APIT: the month's gross pay. */
+  taxable: Minor,
+  apit: Minor,
+  /** APIT deducted from them in the year of assessment so far, this run included. */
+  apitYear: Minor,
+  net: Minor,
+});
+export type ScheduleRow = z.infer<typeof ScheduleRow>;
+
+export const RunSchedules = z.object({
+  runId: z.string(),
+  month: z.string(),
+  label: z.string(),
+  payDate: IsoDate,
+  employer: z.object({ name: z.string(), tin: z.string().nullable() }),
+  yearLabel: z.string(),
+  due: z.object({ epf: IsoDate.nullable(), etf: IsoDate.nullable(), apit: IsoDate.nullable() }),
+  payTo: z.object({ epf: z.string(), etf: z.string(), apit: z.string() }),
+  rows: z.array(ScheduleRow),
+  totals: z.object({ gross: Minor, epfBase: Minor, epfEe: Minor, epfEr: Minor, etf: Minor, taxable: Minor, apit: Minor, net: Minor }),
+});
+export type RunSchedules = z.infer<typeof RunSchedules>;
+
+/** One person's year (or the year's total) for the year-end pack: Sri Lanka's EPF, ETF and APIT or the UK's PAYE, NI and pension. */
+export const PayrollYearRow = z.object({
+  employeeId: z.string().nullable(),
+  name: z.string(),
+  idNumber: z.string().nullable(),
+  runs: z.number().int(),
+  gross: Minor,
+  /** APIT (Sri Lanka) or PAYE (UK). */
+  tax: Minor,
+  epfEe: Minor, epfEr: Minor, etf: Minor,
+  eeNi: Minor, erNi: Minor,
+  pensionEe: Minor, pensionEr: Minor,
+  net: Minor,
+});
+export type PayrollYearRow = z.infer<typeof PayrollYearRow>;
+
+export const PayrollYear = z.object({
+  mode: z.enum(["full", "records"]),
+  /** Approved runs paid in the year. */
+  runs: z.number().int(),
+  people: z.array(PayrollYearRow),
+  total: PayrollYearRow,
+  /** Drafts paid in the year, not yet approved, which aren't counted. */
+  drafts: z.number().int(),
+});
+export type PayrollYear = z.infer<typeof PayrollYear>;
+
 export const payroll = {
   /** Everything the payroll page needs: people, runs, what's still to pay, and next month's suggestion. */
   overview: endpoint({
@@ -128,6 +198,8 @@ export const payroll = {
   createEmployee: endpoint({ method: "POST", path: "/payroll/employees", body: EmployeeBody, response: Employee }),
   updateEmployee: endpoint({ method: "PATCH", path: "/payroll/employees/:id", body: EmployeeBody, response: Employee }),
   run: endpoint({ method: "GET", path: "/payroll/runs/:id", response: PayRunDetail }),
+  /** Sri Lanka, approved runs: the EPF, ETF and APIT schedules and the bank transfer list. */
+  schedules: endpoint({ method: "GET", path: "/payroll/runs/:id/schedules", response: RunSchedules }),
   /** A draft run: Sri Lanka works each line out; the UK takes the figures given. */
   createRun: endpoint({ method: "POST", path: "/payroll/runs", body: RunBody, response: PayRunDetail }),
   updateRun: endpoint({ method: "PUT", path: "/payroll/runs/:id", body: RunBody, response: PayRunDetail }),

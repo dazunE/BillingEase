@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AppCrumbs } from "@/components/app/AppCrumbs";
 import { Checks, Hero, Lines, longDate, Panel, pence, signed, StatePill } from "@/components/keep/parts";
 import { LockForm } from "@/components/keep/LockForm";
+import { PayrollYearView } from "@/components/out/PayrollTables";
 import { cx, Icon, ICONS } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
@@ -44,6 +45,7 @@ export default async function YearEndPage({ searchParams }: { searchParams: Prom
   ];
   const done = steps.filter((s) => s.ok).length;
   const pl = r.profitAndLoss;
+  const pay = r.payroll;
 
   return (
     <>
@@ -79,7 +81,7 @@ export default async function YearEndPage({ searchParams }: { searchParams: Prom
         </Panel>
 
         <Panel id="pack-h" title={`${uk ? "Final-declaration" : "Year-end"} pack`} aside={<span className="rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold text-ink2">{ended ? "Final figures" : "So far"}</span>}
-          sub={`Everything your ${practitioner} needs for ${y.label}: the year by category and the tax estimate.`}>
+          sub={`Everything your ${practitioner} needs for ${y.label}: the year by category${pay && pay.runs > 0 ? ", payroll" : ""} and the tax estimate.`}>
           <Lines heading="Income" rows={pl.income.map((l) => ({ key: l.code, name: l.name, sub: l.official ?? undefined, amount: pence(l.amount, cur) }))} empty="No income recorded." />
           <Lines heading="Costs" rows={pl.expenses.map((l) => ({ key: l.code, name: l.name, sub: l.official ?? undefined, amount: signed(-l.amount, cur), tag: l.allowable === false ? { text: "Not allowable", tone: "neutral" as const } : undefined }))}
             empty="No costs recorded." total={{ label: "Profit", sub: "Income less allowable costs", amount: signed(pl.profit + pl.disallowed, cur) }} />
@@ -89,9 +91,32 @@ export default async function YearEndPage({ searchParams }: { searchParams: Prom
               ...r.instalments.map((i) => ({ key: i.due, name: i.label, sub: `Due ${longDate(i.due)}`, amount: pence(i.amount, cur) })),
             ]}
           />
+          {pay && pay.runs > 0 && (
+            <Lines heading={`Payroll (${pay.people.length} ${pay.people.length === 1 ? "person" : "people"})`}
+              rows={lk ? [
+                { key: "gross", name: "Gross pay", amount: pence(pay.total.gross, cur) },
+                { key: "epfEe", name: "EPF 8% (employees)", amount: pence(pay.total.epfEe, cur) },
+                { key: "er", name: "EPF 12% and ETF 3% (you)", amount: pence(pay.total.epfEr + pay.total.etf, cur) },
+                { key: "tax", name: "APIT deducted", sub: "Per person below, for their certificates", amount: pence(pay.total.tax, cur) },
+              ] : [
+                { key: "gross", name: "Gross pay", amount: pence(pay.total.gross, cur) },
+                { key: "tax", name: "PAYE", amount: pence(pay.total.tax, cur) },
+                { key: "ni", name: "Employee and employer NI", amount: pence(pay.total.eeNi + pay.total.erNi, cur) },
+                { key: "pen", name: "Workplace pension (both)", amount: pence(pay.total.pensionEe + pay.total.pensionEr, cur) },
+              ]} />
+          )}
           <a href={`/app/keep/reports/export?from=${y.from}&to=${ended ? y.to : t}`} download className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-ink/[0.07] px-5 text-[15px] font-semibold hover:bg-ink/[0.11]"><Icon d={ICONS.download} size={18} />Download as CSV</a>
         </Panel>
       </div>
+      {pay && (
+        <Panel id="payroll-h" title="Payroll for the year" aside={<Link href="/app/out/payroll" className="text-sm font-semibold underline underline-offset-4">Payroll</Link>}
+          sub={lk ? `Each person's ${y.label} from approved runs: gross pay, APIT deducted, EPF and ETF. These go on their employer certificates and in your ${returnName}.`
+            : `Each person's ${y.label} tax year from the pay runs you entered: gross pay, PAYE, NI and pension. Your payroll software's P60s are the record.`}>
+          {pay.runs === 0 ? <p className="text-sm text-muted">No approved pay runs paid in {y.label} yet.</p>
+            : <PayrollYearView data={pay} yearLabel={y.label} download={`/app/keep/year-end/payroll${year === "last" ? "?year=last" : ""}`} />}
+          {pay.drafts > 0 && <p className="text-[13px] text-muted">{pay.drafts} draft {pay.drafts === 1 ? "run isn't" : "runs aren't"} counted until approved.</p>}
+        </Panel>
+      )}
       <p className="text-[13px] text-muted">BillingEase doesn&apos;t file with {lk ? "the IRD" : uk ? "HMRC" : "the IRS"}. Your {practitioner} files {uk ? "the quarterly updates and the final declaration through their MTD software" : `your ${returnName}`}.</p>
     </>
   );
