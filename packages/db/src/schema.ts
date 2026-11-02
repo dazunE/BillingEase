@@ -314,6 +314,8 @@ export const invoices = pgTable(
     id: id(),
     businessId: businessId(),
     kind: text("kind").$type<"invoice" | "credit_note">().notNull().default("invoice"),
+    // How it's billed: items (quantity × price), time and materials, or one fixed price.
+    billing: text("billing").$type<"items" | "time_materials" | "fixed">().notNull().default("items"),
     number: text("number"),
     customerId: uuid("customer_id").notNull().references(() => customers.id),
     status: text("status").$type<InvoiceStatus>().notNull().default("draft"),
@@ -354,6 +356,7 @@ export const invoices = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [
+    check("invoices_billing", sql`${t.billing} in ('items','time_materials','fixed')`),
     uniqueIndex("invoices_business_number").on(t.businessId, t.number),
     index("invoices_business_status").on(t.businessId, t.status),
     index("invoices_customer").on(t.customerId),
@@ -377,6 +380,13 @@ const lineColumns = () => ({
   vatRateId: text("vat_rate_id"),
   vatBps: integer("vat_bps").notNull().default(0),
   ssclApplies: boolean("sscl_applies").notNull().default(true),
+  // Time and materials: which part of the invoice the line is in, when the work was done and by whom.
+  section: text("section").$type<"time" | "materials">(),
+  workDate: date("work_date"),
+  person: text("person"),
+  // Materials bought in: their cost and the markup on it (basis points). unit_price is cost plus markup.
+  costPrice: money("cost_price"),
+  markupBps: integer("markup_bps"),
   net: money("net").notNull(),
   sscl: money("sscl").notNull().default(0),
   vat: money("vat").notNull().default(0),

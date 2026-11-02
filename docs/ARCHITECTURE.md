@@ -51,6 +51,15 @@ Fixed codes from `chartOfAccounts` in core: 1000 bank, 1010 cash, 1100 receivabl
 
 A draft invoice posts nothing. Voiding a sent invoice reverses its entry.
 
+## Kinds of invoice
+
+New invoice first asks what kind (`/app/in/invoices/new`, then `?type=`). `invoices.billing` records it; credit notes take their invoice's.
+
+- **Items** (`items`, the default): lines of quantity × price, as before.
+- **Time and materials** (`time_materials`): each line has a `section`. Time lines carry `work_date` and `person`, with hours as the quantity and the hourly rate as the price. Materials can carry `cost_price` and `markup_bps`; the API then sets the price to cost plus markup (`markedUp` in core) and ignores any price sent. The editor, preview and PDF show a Time and a Materials section, each with a subtotal; the tax and totals work exactly as for items.
+- **Fixed price** (`fixed`): the scope (which can run over several lines) and an amount, quantity 1, with no quantity or price columns on the document.
+- **Recurring** is the existing repeating invoices (`/app/in/repeating`): the picker links there.
+
 ## Other currencies
 
 A business keeps its books in one home currency (GBP, LKR or USD, from its country). Quotes, invoices, credit notes, repeating invoices, bills and expenses can be written in any currency on core's list (`packages/core/src/currencies.ts`), for clients and suppliers abroad. Customers and suppliers can have a usual currency that new documents start in.

@@ -72,6 +72,11 @@ export function computeInvoice(inputs: TaxLineInput[], ctx: TaxContext): Invoice
   return { lines, net: total("net"), sscl: total("sscl"), vat: total("vat"), total: total("total"), vatByRate: [...byRate.values()] };
 }
 
+/** A price with a markup: cost × (1 + markup), to the nearest minor unit. Markup in basis points (15% = 1500). */
+export function markedUp(cost: number, markupBps: number): number {
+  return Math.round((cost * (10000 + markupBps)) / 10000);
+}
+
 /** The document title: "Invoice", "VAT invoice" (UK) or "Tax Invoice" (Sri Lanka); a registered business can choose plain "Invoice" (`style`). */
 export function invoiceTitle(country: CountryCode, vatRegistered: boolean, style: "tax" | "plain" = "tax"): string {
   const w = rulesFor(country).wording;

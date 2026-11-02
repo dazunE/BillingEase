@@ -1,4 +1,4 @@
-import { describeRate, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import { describeRate, formatDate, formatMoney, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import { BrandMark, cx } from "@/components/ui";
 import { qty } from "./bits";
 import { FONT_STACKS, readable, textOn, wash, type PreviewBrand } from "./brand";
@@ -18,7 +18,12 @@ export type PreviewData = {
   buyer: { name: string; address?: string | null; email?: string | null; taxId?: string | null; vatNumber?: string | null } | null;
   dates: [string, string][];
   vatRegistered: boolean;
-  lines: { description: string; quantityMilli: number; unitPrice: number; discount: number; vatRateId: string | null; net: number; vat: number; sscl: number }[];
+  /** Items, time and materials (shown in sections), or a fixed price (no quantities). Left out: items. */
+  billing?: "items" | "time_materials" | "fixed";
+  lines: {
+    description: string; quantityMilli: number; unitPrice: number; discount: number; vatRateId: string | null; net: number; vat: number; sscl: number;
+    section?: "time" | "materials" | null; workDate?: string | null; person?: string | null;
+  }[];
   net: number; vat: number; sscl: number; total: number; paid: number; credited: number;
   paymentDetails?: string | null;
   note?: string | null;
@@ -44,6 +49,16 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
     byRate.set(l.vatRateId, row);
   }
   const rates = [...byRate.values()];
+  // Time and materials: a section for each (time first), each with a subtotal. A fixed price: no quantities.
+  const fixedPrice = d.billing === "fixed";
+  type PLine = PreviewData["lines"][number];
+  const groups: { title: string | null; section: "time" | "materials" | null; lines: PLine[] }[] = d.billing === "time_materials"
+    ? [
+        { title: "Time", section: "time" as const, lines: d.lines.filter((l) => l.section === "time") },
+        { title: "Materials", section: "materials" as const, lines: d.lines.filter((l) => l.section === "materials") },
+        { title: "Other", section: null, lines: d.lines.filter((l) => l.section !== "time" && l.section !== "materials") },
+      ].filter((g) => g.lines.length > 0 || g.section !== null)
+    : [{ title: null, section: null, lines: d.lines }];
   const open = d.total - d.paid - d.credited;
   const sellerTax = lk
     ? [d.seller.taxId && `${rules.wording.taxIdLabel}: ${d.seller.taxId}`, d.seller.vatNumber && `${rules.wording.vatIdLabel}: ${d.seller.vatNumber}`]
@@ -126,40 +141,56 @@ export function DocPreview({ d, compact = false }: { d: PreviewData; compact?: b
         </dl>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[300px] border-collapse text-[13px]">
-          <thead>
-            <tr className="border-b text-left text-[10.5px] uppercase tracking-wide text-muted"
-              style={{ borderColor: t === "minimal" ? "#E2DFE8" : t === "modern" ? wash(brand.accent) : d.brand ? brand.accent : "#18161F", background: t === "modern" ? wash(brand.accent) : undefined }}>
-              <th className="py-1.5 pr-2 font-bold">Description</th>
-              <th className="py-1.5 pr-2 text-right font-bold">Qty</th>
-              <th className="py-1.5 pr-2 text-right font-bold">{lk ? "Unit price" : "Price"}</th>
-              {mode === "ukvat" && <th className="py-1.5 pr-2 text-right font-bold">VAT rate</th>}
-              <th className="py-1.5 text-right font-bold">{mode === "ukvat" ? "Net" : lk ? "Value" : "Amount"}</th>
-              {mode === "ukvat" && <th className="py-1.5 pl-2 text-right font-bold">VAT</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {d.lines.length === 0 && (
-              <tr><td colSpan={6} className="py-3 text-muted">No lines yet</td></tr>
-            )}
-            {d.lines.map((l, i) => (
-              <tr key={i} className="border-b border-divider align-top">
-                <td className="py-2 pr-2">
-                  <span className="block break-words">{l.description || "—"}</span>
-                  {l.discount > 0 && <span className="block text-[11px] text-muted">Less discount {m(l.discount)}</span>}
-                  {mode === "lktax" && d.vatRegistered && <span className="block text-[11px] text-muted">VAT {rateLabel(l.vatRateId)}{l.sscl > 0 ? " · SSCL" : ""}</span>}
-                </td>
-                <td className="tabular py-2 pr-2 text-right">{qty(l.quantityMilli)}</td>
-                <td className="tabular whitespace-nowrap py-2 pr-2 text-right">{m(l.unitPrice)}</td>
-                {mode === "ukvat" && <td className="tabular py-2 pr-2 text-right">{rateLabel(l.vatRateId)}</td>}
-                <td className="tabular whitespace-nowrap py-2 text-right">{m(l.net)}</td>
-                {mode === "ukvat" && <td className="tabular whitespace-nowrap py-2 pl-2 text-right">{m(l.vat)}</td>}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {groups.map((g) => (
+        <div key={g.title ?? "lines"} className="flex flex-col gap-1.5">
+          {g.title && (
+            <span className="font-display text-[15px] font-bold" style={t !== "classic" ? { color: accentText } : undefined}>{g.title}</span>
+          )}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[300px] border-collapse text-[13px]">
+              <thead>
+                <tr className="border-b text-left text-[10.5px] uppercase tracking-wide text-muted"
+                  style={{ borderColor: t === "minimal" ? "#E2DFE8" : t === "modern" ? wash(brand.accent) : d.brand ? brand.accent : "#18161F", background: t === "modern" ? wash(brand.accent) : undefined }}>
+                  <th className="py-1.5 pr-2 font-bold">Description</th>
+                  {!fixedPrice && <th className="py-1.5 pr-2 text-right font-bold">{g.section === "time" ? "Hours" : "Qty"}</th>}
+                  {!fixedPrice && <th className="py-1.5 pr-2 text-right font-bold">{g.section === "time" ? "Rate" : lk ? "Unit price" : "Price"}</th>}
+                  {mode === "ukvat" && <th className="py-1.5 pr-2 text-right font-bold">VAT rate</th>}
+                  <th className="py-1.5 text-right font-bold">{mode === "ukvat" ? "Net" : lk ? "Value" : "Amount"}</th>
+                  {mode === "ukvat" && <th className="py-1.5 pl-2 text-right font-bold">VAT</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {g.lines.length === 0 && (
+                  <tr><td colSpan={6} className="py-3 text-muted">No lines yet</td></tr>
+                )}
+                {g.lines.map((l, i) => {
+                  const when = [l.workDate ? formatDate(l.workDate, { year: true }) : null, l.person].filter(Boolean).join(" · ");
+                  return (
+                    <tr key={i} className="border-b border-divider align-top">
+                      <td className="py-2 pr-2">
+                        <span className={cx("block break-words", fixedPrice && "whitespace-pre-line")}>{l.description || "—"}</span>
+                        {when && <span className="block text-[11px] text-muted">{when}</span>}
+                        {l.discount > 0 && <span className="block text-[11px] text-muted">Less discount {m(l.discount)}</span>}
+                        {mode === "lktax" && d.vatRegistered && <span className="block text-[11px] text-muted">VAT {rateLabel(l.vatRateId)}{l.sscl > 0 ? " · SSCL" : ""}</span>}
+                      </td>
+                      {!fixedPrice && <td className="tabular py-2 pr-2 text-right">{qty(l.quantityMilli)}</td>}
+                      {!fixedPrice && <td className="tabular whitespace-nowrap py-2 pr-2 text-right">{m(l.unitPrice)}</td>}
+                      {mode === "ukvat" && <td className="tabular py-2 pr-2 text-right">{rateLabel(l.vatRateId)}</td>}
+                      <td className="tabular whitespace-nowrap py-2 text-right">{m(l.net)}</td>
+                      {mode === "ukvat" && <td className="tabular whitespace-nowrap py-2 pl-2 text-right">{m(l.vat)}</td>}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {g.title && (
+            <div className="ml-auto flex w-full max-w-[340px] justify-between gap-4 pt-0.5 font-bold" data-testid={`subtotal-${g.section ?? "other"}`}>
+              <span>{g.title} subtotal</span><span className="tabular">{m(g.lines.reduce((a, l) => a + l.net, 0))}</span>
+            </div>
+          )}
+        </div>
+      ))}
 
       <dl className="ml-auto grid w-full max-w-[340px] grid-cols-[1fr_auto] gap-x-4 gap-y-1.5">
         {mode === "plain" && <Row label="Total" value={m(d.total)} strong />}

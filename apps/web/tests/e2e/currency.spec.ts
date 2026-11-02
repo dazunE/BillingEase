@@ -14,6 +14,8 @@ async function continueUntil(page: Page, target: Locator) {
 async function openNew(page: Page, item: RegExp) {
   await page.locator("header summary", { hasText: "New" }).click();
   await page.locator("header a", { hasText: item }).click();
+  // A new invoice asks what kind first.
+  if (/Send a/.test(item.source)) await page.getByRole("link", { name: /^Items/ }).click();
 }
 
 const SHOTS = process.env.E2E_SHOTS_DIR;

@@ -1,13 +1,14 @@
 "use client";
 
 import type { Item } from "@billingease/contracts";
-import { addDays, computeInvoice, convertMinor, currencyDigits, currencySymbol, formatDate, formatMoney, invertRate, invoiceTitle, parseMoney, parseRate, rulesFor, type CountryCode, type Currency } from "@billingease/core";
+import type { Billing } from "@billingease/contracts";
+import { addDays, computeInvoice, convertMinor, currencyDigits, currencySymbol, formatDate, formatMoney, invertRate, invoiceTitle, markedUp, parseMoney, parseRate, rulesFor, type CountryCode, type Currency } from "@billingease/core";
 import Link from "next/link";
 import { useActionState, useMemo, useState } from "react";
 import { Button, Field, ICONS, Icon, Input, Select, Textarea, cx } from "@/components/ui";
 import type { FormState } from "@/lib/form";
 import { DocPreview, type PreviewData } from "./DocPreview";
-import { blankLine, decimal, lineFromItem, qtyMilli, type LineState } from "./lines";
+import { blankLine, decimal, lineFromItem, markupBps, qtyMilli, type LineState } from "./lines";
 import { CurrencyRate } from "@/components/fx/CurrencyRate";
 import type { PreviewBrand } from "./brand";
 
@@ -61,12 +62,16 @@ export type EditorPayload = {
   currency: string;
   /** Home currency per unit of `currency`, as typed. */
   fxRate: string;
+  /** Invoices: items, time and materials, or a fixed price. */
+  billing: Billing;
 };
 
 const TERMS = [0, 7, 14, 30, 60];
 
-export function DocEditor({ mode, business: b, customers, items, number, initial, action, cancelHref, today }: {
+export function DocEditor({ mode, billing = "items", business: b, customers, items, number, initial, action, cancelHref, today }: {
   mode: "invoice" | "quote" | "repeating";
+  /** How an invoice is billed: items (quantity × price), time and materials, or a fixed price. */
+  billing?: Billing;
   business: EditorBusiness;
   customers: EditorCustomer[];
   items: Item[];
@@ -91,7 +96,10 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
   const [expiryDate, setExpiryDate] = useState(initial.expiryDate ?? addDays(initial.issueDate, 30));
   const [notes, setNotes] = useState(initial.notes ?? "");
   const [reference, setReference] = useState(initial.reference ?? "");
-  const [lines, setLines] = useState<LineState[]>(initial.lines.length ? initial.lines : [blankLine(b.vatRegistered ? rules.defaultVatRateId : null)]);
+  const defVat = b.vatRegistered ? rules.defaultVatRateId : null;
+  const tm = billing === "time_materials";
+  const fixed = billing === "fixed";
+  const [lines, setLines] = useState<LineState[]>(initial.lines.length ? initial.lines : tm ? [blankLine(defVat, "time", today), blankLine(defVat, "materials")] : [blankLine(defVat)]);
   const [name, setName] = useState(initial.name ?? "");
   const [frequency, setFrequency] = useState(initial.frequency ?? "monthly");
   const [nextRun, setNextRun] = useState(initial.nextRun ?? today);
@@ -124,8 +132,10 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
   // Live totals, worked out the same way the API stores them.
   const calc = useMemo(() => {
     const parsed = lines.map((l) => {
-      const quantityMilli = qtyMilli(l.qty);
-      const unitPrice = parseMoney(l.price, digits) ?? 0;
+      const quantityMilli = fixed ? 1000 : qtyMilli(l.qty);
+      // Materials with a cost: cost plus markup, as the API works it out.
+      const cost = l.section === "materials" && l.cost?.trim() ? parseMoney(l.cost, digits) : null;
+      const unitPrice = cost != null ? markedUp(cost, markupBps(l.markup) ?? 0) : (parseMoney(l.price, digits) ?? 0);
       const gross = Math.round((quantityMilli * unitPrice) / 1000);
       const discount = Math.min(parseMoney(l.discount, digits) ?? 0, gross);
       return { quantityMilli: quantityMilli || 1000, unitPrice, discount, vatRateId: l.vatRateId, sscl: l.sscl };
@@ -135,18 +145,27 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
     } catch {
       return { parsed, totals: computeInvoice(parsed.map((p) => ({ ...p, vatRateId: null })), { country: b.country, vatRegistered: b.vatRegistered, ssclRegistered: sscl }) };
     }
-  }, [lines, b.country, b.vatRegistered, sscl, digits]);
+  }, [lines, b.country, b.vatRegistered, sscl, digits, fixed]);
   const t = calc.totals;
 
   const update = (i: number, patch: Partial<LineState>) => setLines((ls) => ls.map((l, j) => (j === i ? { ...l, ...patch } : l)));
   const remove = (i: number) => setLines((ls) => ls.filter((_, j) => j !== i));
+  /** Time lines stay ahead of materials, so the order sent matches the sections on screen. */
+  const addLine = (line: LineState) => setLines((ls) => {
+    if (line.section !== "time") return [...ls, line];
+    const at = ls.findLastIndex((l) => l.section === "time") + 1;
+    return [...ls.slice(0, at), line, ...ls.slice(at)];
+  });
 
   const payload: EditorPayload = {
     id, customerId, newCustomer: customerId === "__new" ? nc : null, issueDate, supplyDate, dueDate, expiryDate, notes, reference, termsDays, lines,
-    name, frequency, nextRun, endDate, recurMode, currency, fxRate: foreign ? fxRate : "1",
+    name, frequency, nextRun, endDate, recurMode, currency, fxRate: foreign ? fxRate : "1", billing,
   };
   /** A price-list item (priced in the home currency) at the document's rate. */
-  const itemLine = (it: Item) => (foreign && rateOk ? lineFromItem(it, decimal(convertMinor(it.unitPrice, b.currency, currency, invertRate(rateOk)), digits)) : lineFromItem(it));
+  const itemLine = (it: Item): LineState => ({
+    ...(foreign && rateOk ? lineFromItem(it, decimal(convertMinor(it.unitPrice, b.currency, currency, invertRate(rateOk)), digits)) : lineFromItem(it)),
+    ...(tm ? { section: "materials" as const } : {}),
+  });
 
   const title = mode === "quote" ? "Quote" : invoiceTitle(b.country, b.vatRegistered, b.titleStyle);
   const buyer = customer ?? (customerId === "__new" && nc.name ? { name: nc.name, email: nc.email || null, address: null, taxId: nc.taxId || null, vatNumber: nc.vatNumber || null } : null);
@@ -168,7 +187,11 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
           ["Due date", formatDate(dueDate, { year: true })],
         ],
     vatRegistered: b.vatRegistered,
-    lines: lines.map((l, i) => ({ description: l.description, quantityMilli: calc.parsed[i].quantityMilli, unitPrice: calc.parsed[i].unitPrice, discount: calc.parsed[i].discount, vatRateId: t.lines[i]?.vatRateId ?? null, net: t.lines[i]?.net ?? 0, vat: t.lines[i]?.vat ?? 0, sscl: t.lines[i]?.sscl ?? 0 })),
+    billing: mode === "invoice" ? billing : "items",
+    lines: lines.map((l, i) => ({
+      description: l.description, quantityMilli: calc.parsed[i].quantityMilli, unitPrice: calc.parsed[i].unitPrice, discount: calc.parsed[i].discount, vatRateId: t.lines[i]?.vatRateId ?? null, net: t.lines[i]?.net ?? 0, vat: t.lines[i]?.vat ?? 0, sscl: t.lines[i]?.sscl ?? 0,
+      section: l.section ?? null, workDate: l.workDate || null, person: l.person || null,
+    })),
     net: t.net, vat: t.vat, sscl: t.sscl, total: t.total, paid: 0, credited: 0,
     paymentDetails: b.paymentDetails, note: mode === "quote" ? null : b.invoiceNote, notes: notes || null,
     modeOfPayment: rules.receiveMethods.join(", "),
@@ -184,6 +207,104 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
       : b.country === "us"
       ? "No sales tax is added. The total is what your customer pays."
       : "You're not VAT registered, so no VAT is added. Change it in your business profile if you register.";
+
+  const money = `${foreign ? currency : currencySymbol(currency)}`;
+  /** One line's fields, laid out for its kind: items, a time entry, materials, or the fixed price. */
+  const lineCard = (l: LineState, i: number) => {
+    const tl = t.lines[i];
+    const err = (f: string) => e[`lines.${i}.${f}`];
+    const time = l.section === "time";
+    const mat = l.section === "materials";
+    const label = fixed ? (lines.length > 1 ? `Part ${i + 1}` : "What's included") : time ? "Task" : mat ? "Material" : `Line ${i + 1}`;
+    const costed = mat && !!l.cost?.trim();
+    const vatField = b.vatRegistered && (
+      <Field label="VAT rate" error={err("vatRateId")}>
+        <Select value={l.vatRateId ?? rules.defaultVatRateId} onChange={(ev) => update(i, { vatRateId: ev.target.value })}>
+          {rules.vatRates.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+        </Select>
+      </Field>
+    );
+    return (
+      <li key={l.key} className="flex flex-col gap-3 rounded-2xl bg-bg p-3.5">
+        <div className="flex items-start gap-2">
+          <Field label={label} error={err("description")} className="flex-1">
+            {fixed
+              ? <Textarea value={l.description} onChange={(ev) => update(i, { description: ev.target.value })} placeholder="The scope: what you'll deliver for this price" rows={3} />
+              : <Input value={l.description} onChange={(ev) => update(i, { description: ev.target.value })} placeholder={time ? "e.g. Site visit and survey" : mat ? "e.g. Copper pipe, 15 mm" : "What it's for"} />}
+          </Field>
+          {(lines.length > 1 || tm) && (
+            <button type="button" onClick={() => remove(i)} aria-label={`Remove ${label.toLowerCase()} ${i + 1}`} className="mt-7 flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-ink2 hover:text-late">
+              <Icon d="M6 6l12 12M18 6 6 18" size={18} />
+            </button>
+          )}
+        </div>
+        {fixed ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Field label={`Price (${money})`} error={err("unitPrice")}>
+              <Input inputMode="decimal" value={l.price} onChange={(ev) => update(i, { price: ev.target.value, qty: "1" })} placeholder={digits ? "0.00" : "0"} />
+            </Field>
+            {vatField}
+          </div>
+        ) : time ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Field label="Date" error={err("workDate")}>
+              <Input type="date" value={l.workDate ?? ""} onChange={(ev) => update(i, { workDate: ev.target.value })} />
+            </Field>
+            <Field label="Who" hint="Optional" error={err("person")}>
+              <Input value={l.person ?? ""} onChange={(ev) => update(i, { person: ev.target.value })} autoComplete="off" />
+            </Field>
+            <Field label="Hours" error={err("quantityMilli")}>
+              <Input inputMode="decimal" value={l.qty} onChange={(ev) => update(i, { qty: ev.target.value })} />
+            </Field>
+            <Field label={`Rate per hour (${money})`} error={err("unitPrice")}>
+              <Input inputMode="decimal" value={l.price} onChange={(ev) => update(i, { price: ev.target.value })} placeholder={digits ? "0.00" : "0"} />
+            </Field>
+            {vatField}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Field label={`Quantity${items.find((x) => x.id === l.itemId)?.unit ? ` (${items.find((x) => x.id === l.itemId)!.unit})` : ""}`} error={err("quantityMilli")}>
+              <Input inputMode="decimal" value={l.qty} onChange={(ev) => update(i, { qty: ev.target.value })} />
+            </Field>
+            {mat && (
+              <>
+                <Field label={`Cost (${money})`} hint="Optional: what you paid" error={err("costPrice")}>
+                  <Input inputMode="decimal" value={l.cost ?? ""} onChange={(ev) => update(i, { cost: ev.target.value })} placeholder={digits ? "0.00" : "0"} />
+                </Field>
+                <Field label="Markup %" hint={costed ? "On the cost" : "With a cost"} error={err("markupBps")}>
+                  <Input inputMode="decimal" value={l.markup ?? ""} onChange={(ev) => update(i, { markup: ev.target.value })} placeholder="0" disabled={!costed} />
+                </Field>
+              </>
+            )}
+            <Field label={`${mat ? "Unit price" : "Price"} (${money})`} hint={costed ? "Cost plus markup" : undefined} error={err("unitPrice")}>
+              {costed
+                ? <Input value={decimal(calc.parsed[i].unitPrice, digits)} readOnly aria-readonly className="bg-surface" />
+                : <Input inputMode="decimal" value={l.price} onChange={(ev) => update(i, { price: ev.target.value })} placeholder={digits ? "0.00" : "0"} />}
+            </Field>
+            {!mat && (
+              <Field label="Discount" hint="Optional" error={err("discount")}>
+                <Input inputMode="decimal" value={l.discount} onChange={(ev) => update(i, { discount: ev.target.value })} placeholder="0.00" />
+              </Field>
+            )}
+            {vatField}
+          </div>
+        )}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {sscl ? (
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold">
+              <input type="checkbox" checked={l.sscl} onChange={(ev) => update(i, { sscl: ev.target.checked })} className="size-5 accent-[#18161F]" />
+              SSCL applies <span className="font-normal text-muted">({rules.ssclBps / 100}%)</span>
+            </label>
+          ) : <span />}
+          <span className="tabular text-right text-sm">
+            {(tl?.sscl ?? 0) > 0 && <span className="text-muted">SSCL {fmt(tl!.sscl)} · </span>}
+            {(tl?.vat ?? 0) > 0 && <span className="text-muted">VAT {fmt(tl!.vat)} · </span>}
+            <strong className="text-[15px]">{fmt(tl?.net ?? 0)}</strong>
+          </span>
+        </div>
+      </li>
+    );
+  };
 
   return (
     <form action={formAction} noValidate className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
@@ -289,69 +410,53 @@ export function DocEditor({ mode, business: b, customers, items, number, initial
           <p className="flex gap-2.5 rounded-2xl bg-bg px-4 py-3 text-sm text-ink2"><Icon d={ICONS.doc} size={18} className="mt-0.5 shrink-0" />{explain}</p>
         </Section>
 
-        <Section title="What you're billing for">
+        <Section title={fixed ? "The agreed price" : tm ? "Time and materials" : "What you're billing for"}>
           {e.lines && <p className="text-sm font-semibold text-late">{e.lines}</p>}
-          <ul className="flex flex-col gap-3">
-            {lines.map((l, i) => {
-              const tl = t.lines[i];
-              const err = (f: string) => e[`lines.${i}.${f}`];
-              return (
-                <li key={l.key} className="flex flex-col gap-3 rounded-2xl bg-bg p-3.5">
-                  <div className="flex items-start gap-2">
-                    <Field label={`Line ${i + 1}`} error={err("description")} className="flex-1">
-                      <Input value={l.description} onChange={(ev) => update(i, { description: ev.target.value })} placeholder="What it's for" />
-                    </Field>
-                    <button type="button" onClick={() => remove(i)} aria-label={`Remove line ${i + 1}`} className="mt-7 flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-ink2 hover:text-late">
-                      <Icon d="M6 6l12 12M18 6 6 18" size={18} />
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    <Field label={`Quantity${items.find((x) => x.id === l.itemId)?.unit ? ` (${items.find((x) => x.id === l.itemId)!.unit})` : ""}`} error={err("quantityMilli")}>
-                      <Input inputMode="decimal" value={l.qty} onChange={(ev) => update(i, { qty: ev.target.value })} />
-                    </Field>
-                    <Field label={`Price (${foreign ? currency : currencySymbol(currency)})`} error={err("unitPrice")}>
-                      <Input inputMode="decimal" value={l.price} onChange={(ev) => update(i, { price: ev.target.value })} placeholder={digits ? "0.00" : "0"} />
-                    </Field>
-                    <Field label="Discount" hint="Optional" error={err("discount")}>
-                      <Input inputMode="decimal" value={l.discount} onChange={(ev) => update(i, { discount: ev.target.value })} placeholder="0.00" />
-                    </Field>
-                    {b.vatRegistered && (
-                      <Field label="VAT rate" error={err("vatRateId")}>
-                        <Select value={l.vatRateId ?? rules.defaultVatRateId} onChange={(ev) => update(i, { vatRateId: ev.target.value })}>
-                          {rules.vatRates.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+          {tm ? (
+            <>
+              {(["time", "materials"] as const).map((sec) => {
+                const idx = lines.map((l, i) => (l.section === sec ? i : -1)).filter((i) => i >= 0);
+                const sub = idx.reduce((a, i) => a + (t.lines[i]?.net ?? 0), 0);
+                return (
+                  <div key={sec} className="flex flex-col gap-3">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="text-[17px] font-bold">{sec === "time" ? "Time" : "Materials"}</h3>
+                      <span className="tabular text-sm text-ink2">{sec === "time" ? "Time" : "Materials"} subtotal <strong className="text-ink">{fmt(sub)}</strong></span>
+                    </div>
+                    {idx.length > 0 && <ul className="flex flex-col gap-3">{idx.map((i) => lineCard(lines[i], i))}</ul>}
+                    <div className="flex flex-wrap items-center gap-3">
+                      {sec === "materials" && items.length > 0 && (
+                        <Select aria-label="Add materials from products and services" value="" className="w-auto min-w-[240px] flex-1 sm:flex-none"
+                          onChange={(ev) => { const it = items.find((x) => x.id === ev.target.value); if (it) addLine(itemLine(it)); }}>
+                          <option value="">+ Add from products and services</option>
+                          {items.map((it) => <option key={it.id} value={it.id}>{it.name} · {formatMoney(it.unitPrice, b.currency)}{it.unit ? ` per ${it.unit}` : ""}</option>)}
                         </Select>
-                      </Field>
-                    )}
+                      )}
+                      <button type="button" onClick={() => addLine(blankLine(defVat, sec, today))} className="flex min-h-11 items-center gap-1.5 font-semibold underline underline-offset-4">
+                        <Icon d={ICONS.plus} size={16} /> {sec === "time" ? "Add time" : "Add materials"}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    {sscl ? (
-                      <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold">
-                        <input type="checkbox" checked={l.sscl} onChange={(ev) => update(i, { sscl: ev.target.checked })} className="size-5 accent-[#18161F]" />
-                        SSCL applies <span className="font-normal text-muted">({rules.ssclBps / 100}%)</span>
-                      </label>
-                    ) : <span />}
-                    <span className="tabular text-right text-sm">
-                      {(tl?.sscl ?? 0) > 0 && <span className="text-muted">SSCL {fmt(tl!.sscl)} · </span>}
-                      {(tl?.vat ?? 0) > 0 && <span className="text-muted">VAT {fmt(tl!.vat)} · </span>}
-                      <strong className="text-[15px]">{fmt(tl?.net ?? 0)}</strong>
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="flex flex-wrap items-center gap-3">
-            {items.length > 0 && (
-              <Select aria-label="Add from products and services" value="" className="w-auto min-w-[240px] flex-1 sm:flex-none"
-                onChange={(ev) => { const it = items.find((x) => x.id === ev.target.value); if (it) setLines((ls) => [...ls.filter((x) => x.description || x.price), itemLine(it)]); }}>
-                <option value="">+ Add from products and services</option>
-                {items.map((it) => <option key={it.id} value={it.id}>{it.name} · {formatMoney(it.unitPrice, b.currency)}{it.unit ? ` per ${it.unit}` : ""}{foreign && rateOk ? ` (in ${currency} at your rate)` : ""}</option>)}
-              </Select>
-            )}
-            <button type="button" onClick={() => setLines((ls) => [...ls, blankLine(b.vatRegistered ? rules.defaultVatRateId : null)])} className="flex min-h-11 items-center gap-1.5 font-semibold underline underline-offset-4">
-              <Icon d={ICONS.plus} size={16} /> Type your own line
-            </button>
-          </div>
+                );
+              })}
+            </>
+          ) : (
+            <>
+              <ul className="flex flex-col gap-3">{lines.map((l, i) => lineCard(l, i))}</ul>
+              <div className="flex flex-wrap items-center gap-3">
+                {items.length > 0 && !fixed && (
+                  <Select aria-label="Add from products and services" value="" className="w-auto min-w-[240px] flex-1 sm:flex-none"
+                    onChange={(ev) => { const it = items.find((x) => x.id === ev.target.value); if (it) setLines((ls) => [...ls.filter((x) => x.description || x.price), itemLine(it)]); }}>
+                    <option value="">+ Add from products and services</option>
+                    {items.map((it) => <option key={it.id} value={it.id}>{it.name} · {formatMoney(it.unitPrice, b.currency)}{it.unit ? ` per ${it.unit}` : ""}{foreign && rateOk ? ` (in ${currency} at your rate)` : ""}</option>)}
+                  </Select>
+                )}
+                <button type="button" onClick={() => addLine(blankLine(defVat))} className="flex min-h-11 items-center gap-1.5 font-semibold underline underline-offset-4">
+                  <Icon d={ICONS.plus} size={16} /> {fixed ? "Split into another part" : "Type your own line"}
+                </button>
+              </div>
+            </>
+          )}
           <dl className="ml-auto flex w-full max-w-[340px] flex-col gap-1 border-t border-line pt-3 text-[15px]">
             {(t.vat > 0 || t.sscl > 0) && <div className="flex justify-between text-ink2"><dt>{lk ? "Value of supply" : "Total excluding VAT"}</dt><dd className="tabular">{fmt(t.net)}</dd></div>}
             {t.sscl > 0 && <div className="flex justify-between text-ink2"><dt>SSCL</dt><dd className="tabular">{fmt(t.sscl)}</dd></div>}

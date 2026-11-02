@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import type { InvoiceDetail, InvoiceRow, LineInput } from "@billingease/contracts";
-import { addDays, computeInvoice, convertMinor, daysBetween, formatDate, formatMoney, homeCleared, invoiceTitle, posting, rulesFor, today, toHome, type InvoiceTotals, type Rate } from "@billingease/core";
+import { markedUp, addDays, computeInvoice, convertMinor, daysBetween, formatDate, formatMoney, homeCleared, invoiceTitle, posting, rulesFor, today, toHome, type InvoiceTotals, type Rate } from "@billingease/core";
 import { postEntry, reverseEntry, type Exec } from "@billingease/db";
 import {
   activity, customers, invoiceLines, invoices, items, outboxEmails, quoteLines, quotes, receipts, type InvoiceSnapshot,
@@ -33,19 +33,35 @@ export function taxContext(b: BusinessRow) {
   return { country: b.country, vatRegistered: b.vatRegistered, ssclRegistered: b.country === "lk" && b.ssclRegistered };
 }
 
-export type NormalLine = { itemId: string | null; description: string; quantityMilli: number; unitPrice: number; discount: number; vatRateId: string | null; sscl: boolean };
+/** The time-and-materials details a line can carry (see LineInput). */
+type LineExtras = { section?: "time" | "materials" | null; workDate?: string | null; person?: string | null; costPrice?: number | null; markupBps?: number | null };
+
+export type NormalLine = { itemId: string | null; description: string; quantityMilli: number; unitPrice: number; discount: number; vatRateId: string | null; sscl: boolean } & LineExtras;
 
 export function normalLines(lines: LineInput[], b: BusinessRow): NormalLine[] {
-  return lines.map((l) => ({
-    itemId: l.itemId ?? null,
-    description: l.description.trim(),
-    quantityMilli: l.quantityMilli,
-    unitPrice: l.unitPrice,
-    discount: l.discount ?? 0,
-    vatRateId: l.vatRateId || null,
-    sscl: b.country === "lk" ? l.sscl !== false : false,
-  }));
+  return lines.map((l) => {
+    // Materials with a cost and a markup: the price is the cost plus markup, worked out here.
+    const priced = l.costPrice != null && l.markupBps != null;
+    return {
+      itemId: l.itemId ?? null,
+      description: l.description.trim(),
+      quantityMilli: l.quantityMilli,
+      unitPrice: priced ? markedUp(l.costPrice!, l.markupBps!) : l.unitPrice,
+      discount: l.discount ?? 0,
+      vatRateId: l.vatRateId || null,
+      sscl: b.country === "lk" ? l.sscl !== false : false,
+      section: l.section ?? null,
+      workDate: l.workDate ?? null,
+      person: l.person ?? null,
+      costPrice: priced ? l.costPrice! : null,
+      markupBps: priced ? l.markupBps! : null,
+    };
+  });
 }
+
+const extrasOf = (l: LineExtras) => ({
+  section: l.section ?? null, workDate: l.workDate ?? null, person: l.person ?? null, costPrice: l.costPrice ?? null, markupBps: l.markupBps ?? null,
+});
 
 /** Works out each line's tax with core's computeInvoice. Errors come back against the line. */
 export function computeLines(b: BusinessRow, lines: NormalLine[]): { totals: InvoiceTotals; rows: Omit<typeof invoiceLines.$inferInsert, "invoiceId">[] } {
@@ -60,6 +76,7 @@ export function computeLines(b: BusinessRow, lines: NormalLine[]): { totals: Inv
     return {
       businessId: b.id, position: i, itemId: l.itemId, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice,
       discount: l.discount, vatRateId: t.vatRateId ?? l.vatRateId, vatBps: t.vatBps, ssclApplies: l.sscl, net: t.net, sscl: t.sscl, vat: t.vat, total: t.total,
+      ...extrasOf(l),
     };
   });
   return { totals, rows };
@@ -131,6 +148,7 @@ export function lineOut(l: LineDb | typeof quoteLines.$inferSelect) {
   return {
     id: l.id, position: l.position, itemId: l.itemId, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice,
     discount: l.discount, vatRateId: l.vatRateId, vatBps: l.vatBps, sscl: l.ssclApplies, net: l.net, ssclAmount: l.sscl, vat: l.vat, total: l.total,
+    ...extrasOf(l),
   };
 }
 
@@ -160,6 +178,7 @@ export async function invoiceDetail(db: Exec, b: BusinessRow, id: string): Promi
   return {
     ...toRow(r),
     title: i.kind === "credit_note" ? "Credit note" : (i.snapshot?.title ?? invoiceTitle(b.country, b.vatRegistered, b.titleStyle)),
+    billing: i.billing,
     supplyDate: i.supplyDate, reference: i.reference, notes: i.notes, vatRegistered: i.status === "draft" ? b.vatRegistered : i.vatRegistered,
     snapshot: i.snapshot ?? null,
     customer: { id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.address, taxId: c.taxId, vatNumber: c.vatNumber, currency: c.currency },
@@ -186,6 +205,8 @@ export async function writeDraft(
   data: {
     id?: string; customerId: string; issueDate: string; supplyDate?: string | null; dueDate?: string | null; reference?: string | null; notes?: string | null;
     lines: NormalLine[]; quoteId?: string | null; recurringId?: string | null;
+    /** Items, time and materials, or a fixed price. Left out: unchanged (items for a new one). */
+    billing?: "items" | "time_materials" | "fixed";
     /** The invoice's currency and its rate to home (see doc-currency's rateFor). */
     currency: string; fxRate: Rate;
   },
@@ -201,6 +222,7 @@ export async function writeDraft(
     net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total,
     homeNet: home.net, homeVat: home.vat, homeSscl: home.sscl, homeTotal: home.total,
     vatRegistered: b.vatRegistered, updatedAt: new Date(),
+    ...(data.billing ? { billing: data.billing } : {}),
   };
   let id = data.id;
   if (id) {
@@ -226,8 +248,8 @@ export async function invoiceFx(
   return { currency, fxRate: await rateFor(db, services, b, currency, body.issueDate, body.fxRate) };
 }
 
-export function storedLines(lines: Pick<LineDb, "itemId" | "description" | "quantityMilli" | "unitPrice" | "discount" | "vatRateId" | "ssclApplies">[]): NormalLine[] {
-  return lines.map((l) => ({ itemId: l.itemId, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, sscl: l.ssclApplies }));
+export function storedLines(lines: (Pick<LineDb, "itemId" | "description" | "quantityMilli" | "unitPrice" | "discount" | "vatRateId" | "ssclApplies"> & LineExtras)[]): NormalLine[] {
+  return lines.map((l) => ({ itemId: l.itemId, description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, sscl: l.ssclApplies, ...extrasOf(l) }));
 }
 
 function greeting(c: CustomerDb) {
@@ -404,7 +426,8 @@ export async function createCreditNote(
       // A whole line keeps its discount; part of a line takes its share of it.
       const gross = l.quantityMilli * l.unitPrice;
       const discount = gross ? Math.round((l.discount * x.quantityMilli * unitPrice) / gross) : 0;
-      return { itemId: l.itemId, description: l.description, quantityMilli: x.quantityMilli, unitPrice, discount, vatRateId: l.vatRateId, sscl: l.ssclApplies };
+      // A lowered price no longer follows the cost and markup, so those are left off.
+      return { itemId: l.itemId, description: l.description, quantityMilli: x.quantityMilli, unitPrice, discount, vatRateId: l.vatRateId, sscl: l.ssclApplies, ...extrasOf(l), ...(unitPrice !== l.unitPrice ? { costPrice: null, markupBps: null } : {}) };
     });
   }
   // Tax as on the original invoice.
@@ -425,7 +448,7 @@ export async function createCreditNote(
   const number = await nextNumber(tx, b.id, "credit");
   const snapshot = { ...snapshotFor(b, c, inv.vatRegistered), title: "Credit note" };
   const [cn] = await tx.insert(invoices).values({
-    businessId: b.id, kind: "credit_note", number, customerId: inv.customerId, status: "sent", issueDate, dueDate: issueDate,
+    businessId: b.id, kind: "credit_note", billing: inv.billing, number, customerId: inv.customerId, status: "sent", issueDate, dueDate: issueDate,
     reference: inv.number, notes: body.reason ?? null, currency: inv.currency, fxRate: inv.fxRate,
     net: totals.net, vat: totals.vat, sscl: totals.sscl, total: totals.total,
     homeNet: home.net, homeVat: home.vat, homeSscl: home.sscl, homeTotal: home.total,

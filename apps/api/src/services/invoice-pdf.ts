@@ -19,7 +19,11 @@ import { snapshotFor } from "./invoice-core";
  *   date of delivery, value of supply, SSCL as its own line, VAT, total and mode of payment.
  */
 
-export type DocLine = { description: string; quantityMilli: number; unitPrice: number; discount: number; vatRateId: string | null; vatBps: number; net: number; vat: number; sscl: number };
+export type DocLine = {
+  description: string; quantityMilli: number; unitPrice: number; discount: number; vatRateId: string | null; vatBps: number; net: number; vat: number; sscl: number;
+  /** Time and materials: the section, and for time, when and by whom. */
+  section?: "time" | "materials" | null; workDate?: string | null; person?: string | null;
+};
 export type Party = { name: string; legalName?: string | null; address?: string | null; taxId?: string | null; vatNumber?: string | null; email?: string | null; phone?: string | null };
 
 export type DocData = {
@@ -39,6 +43,8 @@ export type DocData = {
   buyer: Party;
   dates: [string, string][];
   vatRegistered: boolean;
+  /** Items (quantity × price), time and materials (in sections), or a fixed price (no quantities). Left out: items. */
+  billing?: "items" | "time_materials" | "fixed";
   lines: DocLine[];
   net: number; vat: number; sscl: number; total: number; paid: number; credited: number;
   paymentDetails?: string | null;
@@ -434,21 +440,37 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
   y = Math.min(y, dy) - 20;
 
   // --- Lines
+  // Items: quantity × price. Time: hours × rate, in a section. Fixed price: the scope and the amount only.
   type Col = { label: string; right: number; value: (l: DocLine) => string };
-  const cols: Col[] = mode === "ukvat"
-    ? [
-        { label: "QTY", right: RIGHT - 250, value: (l) => qty(l.quantityMilli) },
-        { label: "PRICE", right: RIGHT - 180, value: (l) => m(l.unitPrice) },
-        { label: "VAT RATE", right: RIGHT - 120, value: (l) => vatLabel(d.country, l.vatRateId) },
-        { label: "NET", right: RIGHT - 55, value: (l) => m(l.net) },
-        { label: "VAT", right: RIGHT, value: (l) => m(l.vat) },
-      ]
-    : [
-        { label: "QTY", right: RIGHT - 200, value: (l) => qty(l.quantityMilli) },
-        { label: lk ? "UNIT PRICE" : "PRICE", right: RIGHT - 95, value: (l) => m(l.unitPrice) },
-        { label: lk ? "VALUE" : "AMOUNT", right: RIGHT, value: (l) => m(l.net) },
-      ];
-  const descRight = cols[0].right - 40;
+  const billing = d.billing ?? "items";
+  const colsFor = (section: "time" | "materials" | null): Col[] => {
+    const q = section === "time" ? "HOURS" : "QTY";
+    const p = section === "time" ? "RATE" : lk ? "UNIT PRICE" : "PRICE";
+    if (billing === "fixed") {
+      return mode === "ukvat"
+        ? [
+            { label: "VAT RATE", right: RIGHT - 120, value: (l) => vatLabel(d.country, l.vatRateId) },
+            { label: "NET", right: RIGHT - 55, value: (l) => m(l.net) },
+            { label: "VAT", right: RIGHT, value: (l) => m(l.vat) },
+          ]
+        : [{ label: lk ? "VALUE" : "AMOUNT", right: RIGHT, value: (l) => m(l.net) }];
+    }
+    return mode === "ukvat"
+      ? [
+          { label: q, right: RIGHT - 250, value: (l) => qty(l.quantityMilli) },
+          { label: p, right: RIGHT - 180, value: (l) => m(l.unitPrice) },
+          { label: "VAT RATE", right: RIGHT - 120, value: (l) => vatLabel(d.country, l.vatRateId) },
+          { label: "NET", right: RIGHT - 55, value: (l) => m(l.net) },
+          { label: "VAT", right: RIGHT, value: (l) => m(l.vat) },
+        ]
+      : [
+          { label: q, right: RIGHT - 200, value: (l) => qty(l.quantityMilli) },
+          { label: p, right: RIGHT - 95, value: (l) => m(l.unitPrice) },
+          { label: lk ? "VALUE" : "AMOUNT", right: RIGHT, value: (l) => m(l.net) },
+        ];
+  };
+  let cols = colsFor(null);
+  let descRight = cols[0].right - 40;
   const rule = brand.template === "minimal" ? LINE : ACCENT;
   const header = () => {
     if (brand.template === "modern") page.drawRectangle({ x: M - 6, y: y - 5, width: RIGHT - M + 12, height: 18, color: tint(accentHex, 0.12) });
@@ -458,10 +480,29 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     page.drawLine({ start: { x: M, y }, end: { x: RIGHT, y }, thickness: brand.template === "minimal" ? 0.75 : 1, color: brand.template === "modern" ? tint(accentHex, 0.12) : rule });
     y -= 16;
   };
+  // Time and materials: a section for each, time first, each with its subtotal.
+  const groups: { title: string | null; section: "time" | "materials" | null; lines: DocLine[] }[] = billing === "time_materials"
+    ? [
+        { title: "Time", section: "time" as const, lines: d.lines.filter((l) => l.section === "time") },
+        { title: "Materials", section: "materials" as const, lines: d.lines.filter((l) => l.section === "materials") },
+        { title: "Other", section: null, lines: d.lines.filter((l) => l.section !== "time" && l.section !== "materials") },
+      ].filter((g) => g.lines.length > 0)
+    : [{ title: null, section: null, lines: d.lines }];
+  for (const [gi, g] of groups.entries()) {
+  cols = colsFor(g.section);
+  descRight = cols[0].right - 40;
+  if (g.title) {
+    if (y - 60 < M + 40) newPage();
+    if (gi > 0) y -= 6;
+    draw(page, D, g.title, M, y, 12, brand.template === "classic" ? INK : ACCENT_TEXT);
+    y -= 20;
+  }
   header();
-  for (const l of d.lines) {
+  for (const l of g.lines) {
     const desc = wrap(R, l.description, 10, descRight - M);
     const extra: string[] = [];
+    const when = [l.workDate ? formatDate(l.workDate, { year: true }) : null, l.person].filter(Boolean).join(" · ");
+    if (when) extra.push(when);
     if (l.discount > 0) extra.push(`Less discount ${m(l.discount)}`);
     if (mode === "lktax" && d.vatRegistered) extra.push(`VAT ${vatLabel(d.country, l.vatRateId)}${l.sscl > 0 ? " · SSCL" : ""}`);
     const h = desc.length * 13 + extra.length * 11 + 12;
@@ -475,6 +516,13 @@ export async function renderDocument(d: DocData): Promise<Uint8Array> {
     y -= h - 2;
     page.drawLine({ start: { x: M, y: y + 6 }, end: { x: RIGHT, y: y + 6 }, thickness: 0.75, color: DIVIDER });
     y -= 10;
+  }
+  if (g.title) {
+    const sub = g.lines.reduce((a, l) => a + l.net, 0);
+    draw(page, B, `${g.title} subtotal`, RIGHT - 250, y, 10);
+    drawRight(page, B, m(sub), RIGHT, y, 10);
+    y -= 26;
+  }
   }
 
   // --- Totals
@@ -679,8 +727,8 @@ export async function invoicePdfData(db: Exec, businessId: string, invoiceId: st
       currency: b.currency, rateLabel: `${describeRate(inv.currency, b.currency, parseRate(inv.fxRate) ?? "1")} (${day(inv.issueDate)})`,
       net: inv.homeNet, vat: inv.homeVat, sscl: inv.homeSscl, total: inv.homeTotal,
     },
-    seller: snap.seller, buyer: snap.buyer, dates, vatRegistered,
-    lines: lines.map((l) => ({ description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, vatBps: l.vatBps, net: l.net, vat: l.vat, sscl: l.sscl })),
+    seller: snap.seller, buyer: snap.buyer, dates, vatRegistered, billing: inv.billing,
+    lines: lines.map((l) => ({ description: l.description, quantityMilli: l.quantityMilli, unitPrice: l.unitPrice, discount: l.discount, vatRateId: l.vatRateId, vatBps: l.vatBps, net: l.net, vat: l.vat, sscl: l.sscl, section: l.section, workDate: l.workDate, person: l.person })),
     net: inv.net, vat: inv.vat, sscl: inv.sscl, total: inv.total, paid: inv.paid, credited: inv.credited,
     paymentDetails: snap.paymentDetails, note: inv.kind === "credit_note" ? null : snap.note, notes: inv.notes,
     modeOfPayment: methods.length ? methods.join(", ") : rulesFor(b.country).receiveMethods.join(", "),
