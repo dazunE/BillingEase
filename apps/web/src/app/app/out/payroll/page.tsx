@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AppCrumbs } from "@/components/app/AppCrumbs";
 import { longDate, Panel, shortDate } from "@/components/keep/parts";
-import { EmployeeForm, PayDue, RunForm, type RunPerson } from "@/components/out/PayrollForms";
+import { EmployeeForm, PayDue, RunForm, UkCheck, type RunPerson } from "@/components/out/PayrollForms";
 import { ButtonLink, cx, Icon, ICONS } from "@/components/ui";
 import { load } from "@/lib/api";
 import { requireBusiness } from "@/lib/session";
@@ -159,7 +159,15 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
               </ul>
             )}
             <p className="text-xs text-muted">Marking paid records the payment in your books. {lk ? "Pay through the EPF, ETF and IRD channels; BillingEase doesn't file." : "It doesn't pay or report anything to HMRC."}</p>
+            {lk && last && <Link href={`/app/out/payroll/${last.id}#sch-h`} className="inline-flex min-h-10 items-center gap-1.5 self-start rounded-full bg-ink/[0.07] px-4 text-sm font-semibold no-underline hover:bg-ink/[0.11]">Schedules for {monthLabel(last.month + "-01")}<Icon d={ICONS.arrowRight} size={16} /></Link>}
           </Panel>
+
+          {!lk && (
+            <UkCheck contact={`your ${practitioner}`} against={(lastDetail?.lines ?? []).map((l) => {
+              const e = o.employees.find((x) => x.id === l.employeeId);
+              return { key: l.id, label: `${l.name}, ${monthLabel(lastDetail!.month + "-01")}`, gross: l.gross, paye: l.paye, eeNi: l.eeNi, erNi: l.erNi, pensionEe: l.pensionEe, pensionEr: l.pensionEr, net: l.net, taxCode: e?.taxCode ?? null, pension: e?.pension ?? l.pensionEe > 0 };
+            })} />
+          )}
 
           {lk && (
             <Panel id="ytd-h" title="Year-end totals" sub={`Year of assessment ${o.yearToDate.label} so far (approved runs)`}>
