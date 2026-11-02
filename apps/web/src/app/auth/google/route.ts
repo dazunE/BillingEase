@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
-import { GOOGLE_COOKIE, googleEnabled, googleRedirectUri, safeNext, type GoogleAttempt } from "@/lib/google";
+import { GOOGLE_COOKIE, googleEnabled, googleRedirectUri, publicUrl, safeNext, type GoogleAttempt } from "@/lib/google";
 
 const random = () => randomBytes(32).toString("base64url");
 
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   const p = req.nextUrl.searchParams;
   const intent = p.get("intent") === "link" ? "link" : "signin";
   const back = intent === "link" ? "/app/settings/sign-in" : "/sign-in";
-  if (!googleEnabled()) return NextResponse.redirect(new URL(`${back}?google=google_off`, req.url));
+  if (!googleEnabled()) return NextResponse.redirect(publicUrl(`${back}?google=google_off`, req));
 
   const country = p.get("country");
   const attempt: GoogleAttempt = {
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   url.search = new URLSearchParams({
     client_id: process.env.GOOGLE_CLIENT_ID!,
-    redirect_uri: googleRedirectUri(req.nextUrl.origin),
+    redirect_uri: googleRedirectUri(req),
     response_type: "code",
     scope: "openid email profile",
     state: attempt.state,
