@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Budgets</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome"></dc-import>
+
+  <header class="m-top">
+    <a class="m-icon-btn" href="{{backHref}}" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.back}}"></path></svg></a>
+    <h1 class="m-grow" style="margin: 0; font: 700 24px var(--head); letter-spacing: -0.03em;">Budgets</h1>
+    <button type="button" class="m-btn sm" onClick="{{startNew}}" aria-label="Add a budget"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{I.plus}}"></path></svg>Add</button>
+  </header>
+
+  <main class="m-main" style="gap: 18px;">
+    <!-- Where we are in the month -->
+    <div class="m-stack" style="gap: 8px;">
+      <div class="m-row"><span class="m-grow" style="font-weight: 700;">October</span><span class="m-sub">Day {{day}} of {{days}} · repeats every month</span></div>
+      <div style="height: 6px; border-radius: 99px; background: #EFEDF3; overflow: hidden;" aria-hidden="true"><div style="height: 100%; width: {{pace}}%; background: #18161F; border-radius: 99px;"></div></div>
+    </div>
+
+    <!-- Goals: Yours to keep, Coming in -->
+    <sc-if value="{{hasGoals}}" hint-placeholder-val="{{true}}">
+      <section class="m-hero" aria-label="Goals" style="gap: 18px;">
+        <sc-for list="{{goals}}" as="g" hint-placeholder-count="2">
+          <button type="button" onClick="{{g.open}}" style="border: 0; background: transparent; color: #FFFFFF; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 8px;">
+            <span class="m-row"><span class="m-grow" style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);">{{g.name}}</span><span class="m-tag" style="background: {{g.tagBg}}; color: {{g.tagFg}};">{{g.tag}}</span></span>
+            <span class="m-row" style="align-items: baseline; gap: 8px;"><span class="m-amt" style="font-size: {{g.size}}px; color: {{g.color}}; white-space: nowrap;">{{g.spent}}</span><span style="font-size: 14px; color: rgba(255,255,255,0.65); white-space: nowrap;">of {{g.amount}}</span></span>
+            <span style="position: relative; display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: rgba(255,255,255,0.12); gap: 2px;"><span style="width: {{g.w1}}%; background: {{g.color}};"></span><span style="width: {{g.w2}}%; background: {{g.color2}};"></span><span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {{pace}}%; width: 2px; background: #FFFFFF; opacity: 0.6;"></span></span>
+            <span style="font-size: 13px; color: rgba(255,255,255,0.75);">{{g.words}}</span>
+          </button>
+        </sc-for>
+      </section>
+    </sc-if>
+
+    <!-- All spending -->
+    <sc-if value="{{total}}" hint-placeholder-val="{{true}}">
+      <button type="button" class="m-card" onClick="{{total.open}}" style="text-align: left; width: 100%; display: flex; flex-direction: column; gap: 10px;">
+        <span class="m-row"><span class="m-grow m-h3">All spending</span><span class="m-tag {{total.tone}}">{{total.tag}}</span></span>
+        <span class="m-row" style="align-items: baseline; gap: 8px;"><span class="m-amt" style="font-size: 26px; white-space: nowrap;">{{total.spent}}</span><span class="m-sub" style="white-space: nowrap;">spent of {{total.amount}}</span></span>
+        <span style="position: relative; display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: #EFEDF3; gap: 2px;"><span style="width: {{total.w1}}%; background: {{total.color}};"></span><span style="width: {{total.w2}}%; background: repeating-linear-gradient(135deg, #F2B48A 0 4px, #FDE6D6 4px 8px);"></span><span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {{pace}}%; width: 2px; background: #18161F; opacity: 0.5;"></span></span>
+        <span class="m-sub">{{total.words}}</span>
+      </button>
+    </sc-if>
+
+    <!-- Categories -->
+    <section class="m-stack" aria-labelledby="cats-h">
+      <div class="m-section-h"><h2 id="cats-h" class="m-h2">By category</h2><span class="m-sub">{{catSummary}}</span></div>
+      <sc-if value="{{noCats}}" hint-placeholder-val="{{false}}">
+        <p class="m-sub" style="margin: 0;">No category budgets yet. Pick one below to start.</p>
+      </sc-if>
+      <div class="m-card tight">
+        <ul class="m-list">
+          <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+            <li><button type="button" class="m-li" onClick="{{c.open}}" style="flex-direction: column; align-items: stretch; gap: 8px; padding: 14px 0;">
+              <span class="m-row" style="gap: 8px;"><span class="t m-grow">{{c.name}}</span><span class="m-tag {{c.tone}}">{{c.tag}}</span></span>
+              <span style="position: relative; display: flex; height: 8px; border-radius: 99px; overflow: hidden; background: #EFEDF3;"><span style="width: {{c.w}}%; background: {{c.color}}; border-radius: 99px;"></span><span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {{pace}}%; width: 2px; background: #18161F; opacity: 0.35;"></span></span>
+              <span class="m-row" style="gap: 8px; font-size: 13px;"><span class="m-grow" style="color: #47444F;"><strong class="m-num" style="color: #18161F;">{{c.spent}}</strong> of {{c.amount}}</span><span style="color: {{c.wordColor}}; font-weight: 600;">{{c.words}}</span></span>
+            </button></li>
+          </sc-for>
+        </ul>
+      </div>
+      <sc-if value="{{hasIdeas}}" hint-placeholder-val="{{true}}">
+        <div class="m-stack" style="gap: 8px;">
+          <span class="m-label">Add a budget for</span>
+          <div class="m-chips">
+            <sc-for list="{{ideas}}" as="i" hint-placeholder-count="3"><button type="button" class="m-chip" onClick="{{i.pick}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{I.plus}}"></path></svg>{{i.name}}<sc-if value="{{i.last}}" hint-placeholder-val="{{true}}"><span class="n">{{i.last}} last month</span></sc-if></button></sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </section>
+
+    <!-- Alerts -->
+    <section class="m-stack" aria-labelledby="al-h">
+      <h2 id="al-h" class="m-h2">Alerts</h2>
+      <div class="m-card tight">
+        <sc-for list="{{alerts}}" as="a" hint-placeholder-count="3">
+          <div class="m-li">
+            <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t">{{a.label}}</span><span class="s" style="white-space: normal;">{{a.hint}}</span></span>
+            <button type="button" class="m-toggle" role="switch" aria-checked="{{a.on}}" aria-label="{{a.label}}" onClick="{{a.toggle}}"></button>
+          </div>
+        </sc-for>
+      </div>
+      <button type="button" class="m-btn block ghost sm" onClick="{{previewWeekly}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.bell}}"></path></svg>Preview Monday’s summary</button>
+    </section>
+  </main>
+
+  <!-- One budget: change it, see what's behind it -->
+  <sc-if value="{{sheet}}" hint-placeholder-val="{{false}}">
+    <div class="m-scrim" aria-hidden="true" onClick="{{close}}" style="z-index: 60;"></div>
+    <section class="m-sheet" role="dialog" aria-modal="true" aria-labelledby="sh-h" style="z-index: 61;">
+      <span class="m-grab" aria-hidden="true"></span>
+      <div class="m-row">
+        <div class="m-grow"><h2 id="sh-h" class="m-h2">{{sheet.title}}</h2><span class="m-sub">{{sheet.sub}}</span></div>
+        <button type="button" class="m-icon-btn" onClick="{{close}}" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{I.close}}"></path></svg></button>
+      </div>
+
+      <sc-if value="{{sheet.isNew}}" hint-placeholder-val="{{false}}">
+        <div class="m-stack" style="gap: 8px;">
+          <span class="m-label">What for</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <sc-for list="{{kinds}}" as="k" hint-placeholder-count="4">
+              <button type="button" onClick="{{k.pick}}" aria-pressed="{{k.pressed}}" disabled="{{k.taken}}" style="text-align: left; padding: 12px; border-radius: 16px; border: 2px solid {{k.border}}; background: #FFFFFF; display: flex; flex-direction: column; gap: 2px; opacity: {{k.opacity}};">
+                <span style="font-weight: 700; font-size: 14.5px;">{{k.label}}</span><span style="font-size: 12px; color: #5F5B68;">{{k.hint}}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{sheet.pickCat}}" hint-placeholder-val="{{false}}">
+          <div class="m-chips" role="group" aria-label="Category">
+            <sc-for list="{{freeCats}}" as="c" hint-placeholder-count="5"><button type="button" class="m-chip" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.name}}</button></sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <div class="m-field">
+        <label for="bud-amt">{{sheet.amountLabel}}</label>
+        <div class="m-row" style="gap: 8px; border-bottom: 2px solid #E2DFE8; padding-bottom: 4px;">
+          <span class="m-amt" style="font-size: 34px;">{{sym}}</span>
+          <input id="bud-amt" class="m-amt" inputmode="numeric" style="border: 0; background: transparent; font-size: 34px; width: 100%; padding: 0; min-width: 0;" value="{{draft}}" onChange="{{setDraft}}" placeholder="0">
+        </div>
+        <div class="m-row" style="gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+          <sc-for list="{{sheet.suggest}}" as="s" hint-placeholder-count="3"><button type="button" class="m-chip" style="min-height: 32px; font-size: 13px;" onClick="{{s.pick}}">{{s.label}}</button></sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{sheet.has}}" hint-placeholder-val="{{true}}">
+        <div class="m-card" style="background: #F7F6F9; border: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+          <sc-for list="{{sheet.rows}}" as="r" hint-placeholder-count="3"><div class="m-row"><span class="m-grow m-sub" style="font-size: 13.5px;">{{r.label}}</span><span class="m-num" style="font-weight: 600;">{{r.value}}</span></div></sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{sheet.hasRecent}}" hint-placeholder-val="{{false}}">
+        <div class="m-stack" style="gap: 4px;">
+          <span class="m-label">This month</span>
+          <ul class="m-list">
+            <sc-for list="{{sheet.recent}}" as="x" hint-placeholder-count="3"><li class="m-row" style="padding: 8px 0; border-bottom: 1px solid #EFEDF3; font-size: 14px;"><span class="m-grow">{{x.who}} <span class="m-sub">· {{x.date}}</span></span><span class="m-num" style="font-weight: 600;">{{x.amt}}</span></li></sc-for>
+          </ul>
+        </div>
+      </sc-if>
+
+      <button type="button" class="m-btn block" onClick="{{save}}" disabled="{{cantSave}}">{{sheet.saveLabel}}</button>
+      <sc-if value="{{sheet.has}}" hint-placeholder-val="{{true}}"><button type="button" class="m-btn block ghost sm" onClick="{{remove}}" style="color: #A1281B;">Remove this budget</button></sc-if>
+    </section>
+  </sc-if>
+
+  <dc-import name="MobileTabBar" active="out"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const h = BE.hash();
+    this.state = { open: /^bud-/.test(h) ? h : h === 'new' ? 'new' : null, kind: 'cat', catId: null, draft: '' };
+    if (this.state.open && this.state.open !== 'new') { const b = BE.find('budgets', this.state.open); this.state.draft = b ? String(b.amount) : ''; }
+    BE.mobile.guard();
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I, BU = M.budgets;
+    const st = this.state;
+    const cur = (BE.get('profile') || {}).currency;
+    const W = (n) => BE.money(n, cur, { whole: true });
+    const S = BU.statuses();
+    const pace = Math.round(BU.day / BU.days * 100);
+    const openB = (s) => () => this.setState({ open: s.id, draft: String(s.amount) });
+    const clamp = (n) => Math.max(0, Math.min(100, n));
+    const barColor = (s) => (s.state === 'over' ? '#C2412F' : s.state === 'nearly' || s.state === 'fast' ? '#E0A100' : '#E0752D');
+
+    const goals = S.filter((s) => s.isGoal).map((s) => ({
+      name: s.name, tag: s.tag, words: s.words, spent: W(s.spent), amount: W(s.amount), size: M.fit(W(s.spent), 30, 10),
+      color: s.kind === 'keep' ? '#B9A3FF' : '#FFFFFF', color2: s.kind === 'keep' ? 'rgba(185,163,255,0.35)' : 'rgba(255,255,255,0.3)',
+      w1: clamp(s.pct), w2: clamp(s.withExtra) - clamp(s.pct),
+      tagBg: s.state === 'behind' ? 'rgba(255,255,255,0.12)' : '#E2F6D5', tagFg: s.state === 'behind' ? '#FFFFFF' : '#2F5711',
+      open: openB(s)
+    }));
+    const t = S.find((s) => s.kind === 'total');
+    const total = t ? {
+      tag: t.tag, tone: t.tone, spent: W(t.spent), amount: W(t.amount), color: barColor(t), w1: clamp(t.pct), w2: clamp(t.withExtra) - clamp(t.pct),
+      words: (t.left >= 0 ? W(t.left) + ' left' : W(-t.left) + ' over') + (t.extra ? ' · ' + W(t.extra) + ' more already due this month' : ''), open: openB(t)
+    } : false;
+    const rank = { over: 0, nearly: 1, fast: 2, ok: 3 };
+    const catS = S.filter((s) => s.kind === 'cat').sort((a, b) => rank[a.state] - rank[b.state] || b.pct - a.pct);
+    const cats = catS.map((s) => ({
+      name: s.name, tag: s.tag, tone: s.tone, spent: W(s.spent), amount: W(s.amount), w: clamp(s.pct), color: barColor(s),
+      words: s.left >= 0 ? W(s.left) + ' left' : W(-s.left) + ' over', wordColor: s.state === 'over' ? '#A1281B' : '#47444F', open: openB(s)
+    }));
+    const hot = catS.filter((s) => s.state === 'over' || s.state === 'nearly').length;
+    const all = BE.expenseCats();
+    const freeCatList = all.filter((c) => !BU.find('cat', c.id) && c.id !== 'capital' && c.id !== 'staff');
+    const ideas = freeCatList.map((c) => ({ c, h: BU.history(c.id) })).filter((x) => x.h.last + x.h.now > 0).sort((a, b) => b.h.last - a.h.last).slice(0, 4)
+      .map((x) => ({ name: x.c.name, last: x.h.last ? W(x.h.last) : false, pick: () => this.setState({ open: 'new', kind: 'cat', catId: x.c.id, draft: String(Math.ceil((x.h.last || x.h.now) * 1.1 / (cur === 'LKR' ? 1000 : 10)) * (cur === 'LKR' ? 1000 : 10)) }) }));
+
+    const s = M.get();
+    const alerts = [
+      { label: 'At 80% and when over', hint: 'A notification as a category gets close to its limit, and when it goes over', on: s.notif.budgets ? 'true' : 'false', toggle: () => M.setNotif('budgets', !s.notif.budgets) },
+      { label: 'Show what’s left as I record', hint: 'When you pick a category for an expense or a receipt', on: s.budgetWarn ? 'true' : 'false', toggle: () => M.set({ budgetWarn: !s.budgetWarn }) },
+      { label: 'Weekly summary', hint: 'Mondays at 8:00, one notification for all your budgets', on: s.budgetWeekly ? 'true' : 'false', toggle: () => M.set({ budgetWeekly: !s.budgetWeekly }) }
+    ];
+
+    // The sheet
+    let sheet = false, kinds = [], freeCats = [];
+    const round = (n) => { const step = cur === 'LKR' ? (n > 100000 ? 50000 : 5000) : (n > 1000 ? 100 : 10); return Math.max(step, Math.ceil(n / step) * step); };
+    const sug = (vals) => vals.filter((v) => v[1] > 0).map(([l, v]) => ({ label: l + ' ' + W(round(v)), pick: () => this.setState({ draft: String(round(v)) }) }));
+    if (st.open === 'new') {
+      const KIND = [['cat', 'A category', 'Travel, office, stock…'], ['total', 'All spending', 'One limit for Going out'], ['income', 'Coming in', 'A target to aim for'], ['keep', 'Yours to keep', 'A goal after tax']];
+      kinds = KIND.map(([k, l, h]) => {
+        const taken = k !== 'cat' && !!BU.find(k);
+        return { label: l, hint: taken ? 'Already set' : h, taken, opacity: taken ? 0.45 : 1, pressed: st.kind === k ? 'true' : 'false', border: st.kind === k ? '#18161F' : '#E2DFE8', pick: () => this.setState({ kind: k, catId: null, draft: '' }) };
+      });
+      freeCats = freeCatList.map((c) => ({ name: c.name, pressed: st.catId === c.id ? 'true' : 'false', pick: () => { const h = BU.history(c.id); this.setState({ catId: c.id, draft: h.last ? String(round(h.last)) : st.draft }); } }));
+      const T = BE.totals('month');
+      const h = st.kind === 'cat' && st.catId ? BU.history(st.catId) : null;
+      const suggest = st.kind === 'cat' ? (h ? sug([['Last month', h.last], ['So far', h.now]]) : [])
+        : st.kind === 'total' ? sug([['This month so far', T.out]])
+        : st.kind === 'income' ? sug([['This month', T.in]])
+        : sug([['This month', BE.keepTotals('month').keep]]);
+      sheet = {
+        isNew: true, has: false, hasRecent: false, title: 'New budget', sub: 'Every month, from October', pickCat: st.kind === 'cat',
+        amountLabel: st.kind === 'income' || st.kind === 'keep' ? 'Monthly goal' : 'Monthly limit', suggest, rows: [], recent: [],
+        saveLabel: 'Add budget'
+      };
+    } else if (st.open) {
+      const b = BE.find('budgets', st.open);
+      const x = b ? BU.status(b) : null;
+      if (x) {
+        const c = x.kind === 'cat' ? BE.catById(x.catId) : null;
+        const recent = c ? BE.all('expenses').filter((e) => e.inMonth && (e.catId ? e.catId === c.id : e.cat === c.name)).slice(0, 5).map((e) => ({ who: e.who, date: e.date, amt: W(e.amount) })) : [];
+        const rows = [
+          { label: x.isGoal ? 'So far this month' : 'Spent this month', value: W(x.spent) + ' · ' + x.pct + '%' },
+          x.extra ? { label: x.kind === 'income' ? 'Invoices on the way' : 'Bills and payroll still due', value: W(x.extra) } : null,
+          x.last != null ? { label: 'September', value: W(x.last) } : null,
+          !x.isGoal ? { label: 'At this pace by 31 Oct', value: W(x.spent / BU.day * BU.days) } : { label: 'Day ' + BU.day + ' of ' + BU.days, value: pace + '% of the month' }
+        ].filter(Boolean);
+        sheet = {
+          isNew: false, has: true, title: x.name, sub: x.official || (x.isGoal ? 'A monthly goal' : 'A monthly limit'), pickCat: false,
+          amountLabel: x.isGoal ? 'Monthly goal' : 'Monthly limit', rows, recent, hasRecent: recent.length > 0,
+          suggest: sug(x.last ? [['September', x.last], ['This pace', x.spent / BU.day * BU.days]] : x.isGoal ? [] : [['This pace', x.spent / BU.day * BU.days]]),
+          saveLabel: 'Save'
+        };
+      }
+    }
+    const amt = BE.num(st.draft);
+    const close = () => { this.setState({ open: null }); if (location.hash) history.replaceState(null, '', location.pathname); };
+    return {
+      I, day: BU.day, days: BU.days, pace, goals, hasGoals: goals.length > 0, total, cats, noCats: cats.length === 0,
+      catSummary: cats.length ? (hot ? hot + ' need a look' : 'All on track') : '', ideas, hasIdeas: ideas.length > 0, alerts,
+      backHref: document.referrer && /MobileHome/.test(document.referrer) ? 'MobileHome.dc.html' : 'MobileOut.dc.html',
+      previewWeekly: () => BU.weekly(),
+      startNew: () => this.setState({ open: 'new', kind: 'cat', catId: null, draft: '' }),
+      sheet, kinds, freeCats, sym: M.sym(cur).trim(), draft: st.draft ? Number(st.draft).toLocaleString('en-US') : '', setDraft: (e) => this.setState({ draft: e.target.value.replace(/[^0-9]/g, '') }),
+      close, cantSave: !(amt > 0) || (st.open === 'new' && st.kind === 'cat' && !st.catId),
+      save: () => {
+        if (!(amt > 0)) return;
+        if (st.open === 'new') {
+          BU.save({ kind: st.kind, catId: st.kind === 'cat' ? st.catId : null, amount: amt });
+          const nm = st.kind === 'cat' ? (BE.catById(st.catId) || {}).name : BU.names[st.kind];
+          M.did(nm + ' budget set · ' + W(amt) + ' a month');
+        } else {
+          BU.save({ id: st.open, amount: amt });
+          M.did('Budget changed to ' + W(amt) + ' a month');
+        }
+        close();
+      },
+      remove: () => { const b = BE.find('budgets', st.open); BU.remove(st.open); close(); M.did((b ? BU.status(b).name : 'Budget') + ' budget removed'); }
+    };
+  }
+}
+</script>
+</body>
+</html>

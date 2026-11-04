@@ -171,10 +171,10 @@ class Component extends DCLogic {
     const picked = rows.filter(isOn);
     const matches = picked.filter((x) => x.kind === 'match').length;
     const add = () => {
-      picked.forEach((x) => {
+      M.budgets.watch(() => picked.forEach((x) => {
         if (x.kind === 'match') BE.recordPayment(x.inv, x.amount, 'Bank transfer', { ref: 'Statement import' });
         else if (x.kind === 'expense') BE.recordExpense({ who: x.who, amount: x.amount, catId: x.cat.id, how: 'Bank transfer', note: 'From ' + st.file });
-      });
+      }));
       M.did(picked.length + ' lines added from your statement');
       this.setState({ stage: 'done', done: { n: picked.length, matches } });
     };

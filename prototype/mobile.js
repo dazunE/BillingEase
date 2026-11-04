@@ -19,7 +19,9 @@
     lockAfter: 'now',
     offline: false,
     queue: [],
-    notif: { paid: true, late: true, payroll: true, accountant: true, deadlines: true, drafts: true },
+    notif: { paid: true, late: true, payroll: true, accountant: true, deadlines: true, drafts: true, budgets: true },
+    budgetWarn: true,
+    budgetWeekly: true,
     pushShown: false,
     reviewed: []
   };
@@ -46,6 +48,11 @@
       live.toast = { text: carried.text, kind: carried.kind };
       timers.toast = setTimeout(function () { live.toast = null; ping(); }, 2600);
     }
+    var carriedPush = JSON.parse(sessionStorage.getItem('be.mobile.push') || 'null');
+    if (carriedPush && Date.now() - carriedPush.at < 3000) {
+      live.push = carriedPush.p;
+      timers.push = setTimeout(function () { live.push = null; ping(); }, 5000);
+    }
   } catch (e) { /* ignore */ }
 
   // Icons: 24×24 stroke paths, shared by every mobile screen.
@@ -58,6 +65,8 @@
     close: 'M6 6l12 12M18 6 6 18',
     back: 'M15 6l-6 6 6 6',
     chev: 'm9 6 6 6-6 6',
+    budget: 'M12 21a9 9 0 1 0-9-9M12 3v9l6.4 6.4M21 12h-9',
+    target: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01',
     down: 'm6 9 6 6 6-6',
     check: 'm5 12 5 5 9-10',
     camera: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
@@ -95,6 +104,7 @@
     [/^(ThreeOut|SpendBill|SpendTransaction|SpendVendors?)\.dc\.html/, 'MobileOut.dc.html'],
     [/^(SpendPayroll|Payslip)\.dc\.html/, 'MobilePayroll.dc.html'],
     [/^(Notifications|Accountant)\.dc\.html/, 'MobileInbox.dc.html'],
+    [/^MobileBudgets/, 'MobileBudgets.dc.html'],
     [/^(ThreeHome|ThreeMobile)\.dc\.html/, 'MobileHome.dc.html']
   ];
 
@@ -156,6 +166,7 @@
     push: function (title, body, href, kind) {
       if (kind && st.notif[kind] === false) return;
       live.push = { title: title, body: body || '', href: BE.mobile.href(href || 'MobileInbox.dc.html') };
+      try { sessionStorage.setItem('be.mobile.push', JSON.stringify({ p: live.push, at: Date.now() })); } catch (e) { /* ignore */ }
       clearTimeout(timers.push);
       timers.push = setTimeout(function () { live.push = null; ping(); }, 6000);
       ping();
@@ -211,5 +222,131 @@
     /** A font size (px) that keeps a figure on one line in a box of about `room` characters. */
     fit: function (text, base, room) { var n = String(text).length; return n <= room ? base : Math.max(14, Math.floor(base * room / n)); },
     W: function (n) { return BE.money(n, null, { whole: true }); }
+  };
+  // ---- budgets ---------------------------------------------------------------------------
+  // Monthly budgets that repeat every month. Kept with the books (so a second phone sees the
+  // same ones), seeded for both samples. kind: 'cat' (spending in one category), 'total' (all
+  // spending), 'income' (a Coming in target) or 'keep' (a Yours to keep goal).
+  BE.define('budgets', BE.perCountry({
+    uk: [
+      { id: 'bud-keep', kind: 'keep', amount: 4000 },
+      { id: 'bud-income', kind: 'income', amount: 8000 },
+      { id: 'bud-total', kind: 'total', amount: 1800 },
+      { id: 'bud-premises', kind: 'cat', catId: 'premises', amount: 200 },
+      { id: 'bud-office', kind: 'cat', catId: 'office', amount: 250 },
+      { id: 'bud-entertaining', kind: 'cat', catId: 'entertaining', amount: 30 },
+      { id: 'bud-travel', kind: 'cat', catId: 'travel', amount: 150 },
+      { id: 'bud-advertising', kind: 'cat', catId: 'advertising', amount: 100 }
+    ],
+    lk: [
+      { id: 'bud-keep', kind: 'keep', amount: 600000 },
+      { id: 'bud-income', kind: 'income', amount: 3000000 },
+      { id: 'bud-total', kind: 'total', amount: 900000 },
+      { id: 'bud-entertaining', kind: 'cat', catId: 'entertaining', amount: 12000 },
+      { id: 'bud-travel', kind: 'cat', catId: 'travel', amount: 25000 },
+      { id: 'bud-cogs', kind: 'cat', catId: 'cogs', amount: 150000 },
+      { id: 'bud-utilities', kind: 'cat', catId: 'utilities', amount: 30000 },
+      { id: 'bud-office', kind: 'cat', catId: 'office', amount: 15000 }
+    ]
+  }), []);
+
+  var MONTH_DAY = 11, MONTH_DAYS = 31; // the samples are on 11 October 2026
+  function inCat(x, c) { return x.catId ? x.catId === c.id : x.cat === c.name; }
+  function counts(x) { return x.kind !== 'personal' && x.kind !== 'transfer'; }
+  function catSpend(c, month) {
+    return BE.all('expenses').filter(function (x) {
+      if (!counts(x) || !inCat(x, c)) return false;
+      return month === 'last' ? / Sep$/.test(x.date || '') : !!x.inMonth;
+    }).reduce(function (a, x) { return a + (Number(x.amount) || 0); }, 0);
+  }
+  var BUDGET_NAMES = { total: 'All spending', income: 'Coming in target', keep: 'Yours to keep goal' };
+
+  /** How one budget is doing this month. */
+  function budgetStatus(b) {
+    var t = BE.totals('month');
+    var c = b.kind === 'cat' ? BE.catById(b.catId) : null;
+    var spent = 0, extra = 0, last = null, isGoal = b.kind === 'income' || b.kind === 'keep';
+    if (b.kind === 'cat') { spent = c ? catSpend(c) : 0; last = c ? catSpend(c, 'last') : null; }
+    if (b.kind === 'total') { spent = t.outPaid; extra = t.outSch; }
+    if (b.kind === 'income') { spent = t.inPaid; extra = t.inExp; }
+    if (b.kind === 'keep') { spent = Math.max(0, BE.keepTotals('month').keep); }
+    var amt = Number(b.amount) || 0;
+    var pct = amt > 0 ? Math.round(spent / amt * 100) : 0;
+    var withExtra = amt > 0 ? Math.round((spent + extra) / amt * 100) : 0;
+    var pace = Math.round(MONTH_DAY / MONTH_DAYS * 100);
+    var state;
+    if (isGoal) state = pct >= 100 ? 'met' : withExtra >= 100 ? 'onway' : pct >= pace ? 'ontrack' : 'behind';
+    else state = pct >= 100 ? 'over' : pct >= 80 ? 'nearly' : pct > pace + 20 ? 'fast' : 'ok';
+    var W = function (n) { return BE.money(n, null, { whole: true }); };
+    var words = {
+      over: W(spent - amt) + ' over', nearly: W(amt - spent) + ' left', fast: W(amt - spent) + ' left · spending fast', ok: W(amt - spent) + ' left',
+      met: 'Reached, ' + W(spent - amt) + ' above the goal', onway: 'On course with what’s on the way', ontrack: W(amt - spent) + ' to go · on track', behind: W(amt - spent) + ' to go'
+    }[state];
+    var tone = { over: 'late', nearly: 'warn', fast: 'warn', ok: 'ok', met: 'ok', onway: 'ok', ontrack: 'ok', behind: 'plain' }[state];
+    var tag = { over: 'Over', nearly: 'Nearly used', fast: 'Ahead of pace', ok: 'On track', met: 'Reached', onway: 'On course', ontrack: 'On track', behind: 'Behind' }[state];
+    return {
+      id: b.id, kind: b.kind, catId: b.catId || null, name: c ? c.name : BUDGET_NAMES[b.kind] || 'Budget', official: c ? (c.official || '') : '',
+      amount: amt, spent: Math.round(spent * 100) / 100, extra: Math.round(extra * 100) / 100, last: last, pct: pct, withExtra: withExtra,
+      pace: pace, state: state, tone: tone, tag: tag, words: words, isGoal: isGoal, left: amt - spent
+    };
+  }
+  var ORDER = { keep: 0, income: 1, total: 2, cat: 3 };
+
+  BE.mobile.budgets = {
+    day: MONTH_DAY, days: MONTH_DAYS,
+    names: BUDGET_NAMES,
+    all: function () { return BE.all('budgets').slice().sort(function (a, b) { return ORDER[a.kind] - ORDER[b.kind]; }); },
+    status: budgetStatus,
+    statuses: function () { return BE.mobile.budgets.all().map(budgetStatus); },
+    forCat: function (catId) { var b = BE.all('budgets').filter(function (x) { return x.kind === 'cat' && x.catId === catId; })[0]; return b ? budgetStatus(b) : null; },
+    find: function (kind, catId) { return BE.all('budgets').filter(function (x) { return x.kind === kind && (kind !== 'cat' || x.catId === catId); })[0] || null; },
+    /** A category's spending last month and this month, to suggest a sensible limit. */
+    history: function (catId) { var c = BE.catById(catId); return c ? { last: catSpend(c, 'last'), now: catSpend(c) } : { last: 0, now: 0 }; },
+    save: function (o) {
+      var have = o.id ? BE.find('budgets', o.id) : BE.mobile.budgets.find(o.kind, o.catId);
+      if (have) return BE.update('budgets', have.id, { amount: Number(o.amount) || 0 });
+      return BE.add('budgets', { id: 'bud-' + (o.kind === 'cat' ? o.catId : o.kind), kind: o.kind, catId: o.catId || null, amount: Number(o.amount) || 0 }, { end: true });
+    },
+    remove: function (id) { BE.remove('budgets', id); },
+    /**
+     * What saving `amount` under a category would do to its budget, for the line shown while
+     * recording. Null when the category has no budget or warnings are off.
+     */
+    preview: function (catId, amount) {
+      if (!st.budgetWarn || !catId) return null;
+      var s = BE.mobile.budgets.forCat(catId);
+      if (!s) return null;
+      var W = function (n) { return BE.money(n, null, { whole: true }); };
+      var after = s.spent + (Number(amount) || 0);
+      var pct = s.amount > 0 ? Math.round(after / s.amount * 100) : 0;
+      var text = !(amount > 0) ? s.name + ': ' + (s.left >= 0 ? W(s.left) + ' left of ' + W(s.amount) : W(-s.left) + ' over ' + W(s.amount)) + ' this month'
+        : after > s.amount ? 'This takes ' + s.name + ' to ' + W(after) + ', ' + W(after - s.amount) + ' over its ' + W(s.amount) + ' budget'
+        : 'After this, ' + W(s.amount - after) + ' left of ' + W(s.amount) + ' for ' + s.name;
+      return { text: text, pct: Math.min(100, pct), tone: pct >= 100 ? 'late' : pct >= 80 ? 'warn' : 'ok', before: Math.min(100, s.pct) };
+    },
+    /** Run a change to the books, then send a push for any budget it took past 80% or 100%. */
+    watch: function (fn) {
+      var before = {};
+      BE.mobile.budgets.statuses().forEach(function (s) { before[s.id] = s.pct; });
+      var out = fn();
+      BE.mobile.budgets.statuses().forEach(function (s) {
+        if (s.isGoal || before[s.id] == null) return;
+        var was = before[s.id], now = s.pct;
+        var W = function (n) { return BE.money(n, null, { whole: true }); };
+        if (was < 100 && now >= 100) BE.mobile.push(s.name + ' is over budget', W(s.spent) + ' of ' + W(s.amount) + ' this month, with ' + (MONTH_DAYS - MONTH_DAY) + ' days to go.', 'MobileBudgets.dc.html#' + s.id, 'budgets');
+        else if (was < 80 && now >= 80) BE.mobile.push(s.name + ': ' + now + '% used', W(s.amount - s.spent) + ' left of ' + W(s.amount) + ' for the rest of October.', 'MobileBudgets.dc.html#' + s.id, 'budgets');
+      });
+      return out;
+    },
+    /** The Monday summary, as one notification. */
+    weekly: function () {
+      var S = BE.mobile.budgets.statuses();
+      var spend = S.filter(function (s) { return !s.isGoal; });
+      var over = spend.filter(function (s) { return s.state === 'over'; }), near = spend.filter(function (s) { return s.state === 'nearly' || s.state === 'fast'; });
+      var keep = S.filter(function (s) { return s.kind === 'keep'; })[0];
+      var body = (over.length ? over.map(function (s) { return s.name; }).join(', ') + ' over. ' : '') + (near.length ? near.length + ' close to the limit. ' : '') +
+        (spend.length - over.length - near.length) + ' on track.' + (keep ? ' Yours to keep: ' + keep.pct + '% of your goal.' : '');
+      BE.mobile.push('Your budgets this week', body, 'MobileBudgets.dc.html', 'budgets');
+    }
   };
 })();

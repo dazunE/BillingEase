@@ -99,6 +99,25 @@
       </sc-for>
     </section>
 
+    <!-- Budgets -->
+    <sc-if value="{{bud}}" hint-placeholder-val="{{true}}">
+      <a href="MobileBudgets.dc.html" class="m-card" aria-labelledby="bud-h" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="m-section-h"><h2 id="bud-h" class="m-h2" style="font-size: 17px;">Budgets · October</h2><span class="m-link">{{bud.link}}</span></div>
+        <sc-for list="{{bud.rows}}" as="b" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span class="m-row" style="gap: 8px; font-size: 14px;"><span class="m-grow" style="font-weight: 600;">{{b.name}}</span><span class="m-num" style="color: {{b.wordColor}}; font-weight: 600;">{{b.words}}</span></span>
+            <span style="position: relative; display: flex; height: 7px; border-radius: 99px; overflow: hidden; background: #EFEDF3;"><span style="width: {{b.w}}%; background: {{b.color}}; border-radius: 99px;"></span><span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {{bud.pace}}%; width: 2px; background: #18161F; opacity: 0.35;"></span></span>
+          </div>
+        </sc-for>
+      </a>
+    </sc-if>
+    <sc-if value="{{noBud}}" hint-placeholder-val="{{false}}">
+      <a href="MobileBudgets.dc.html#new" class="m-card m-row">
+        <span class="m-ic" style="background: #FDE6D6;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.budget}}"></path></svg></span>
+        <span class="m-grow"><span class="m-h3" style="display: block;">Set a monthly budget</span><span class="m-sub">For a category, all spending, or what you want to keep.</span></span>
+      </a>
+    </sc-if>
+
     <!-- The period that matters: UK quarter, Sri Lanka this month -->
     <section class="m-card" aria-labelledby="pc-h" style="display: flex; flex-direction: column; gap: 10px;">
       <span class="m-eyebrow">{{pc.eyebrow}}</span>
@@ -218,13 +237,25 @@ class Component extends DCLogic {
       pc = { eyebrow: 'October 2026 · ' + (pk.taxYear ? pk.taxYear.label : ''), title: 'This month', rows };
     }
 
+    // Budgets: all spending first, then the categories that need a look
+    const BU = M.budgets, BS = BU.statuses();
+    const bTot = BS.find((x) => x.kind === 'total');
+    const bHot = BS.filter((x) => x.kind === 'cat' && (x.state === 'over' || x.state === 'nearly' || x.state === 'fast')).sort((a, b) => b.pct - a.pct);
+    const bKeep = BS.find((x) => x.kind === 'keep');
+    const bRow = (x) => ({ name: x.name, w: Math.max(0, Math.min(100, x.pct)),
+      color: x.isGoal ? '#7A5AF8' : x.state === 'over' ? '#C2412F' : x.state === 'nearly' || x.state === 'fast' ? '#E0A100' : '#E0752D',
+      words: x.isGoal ? x.pct + '% of ' + W(x.amount) : x.left >= 0 ? W(x.left) + ' left' : W(-x.left) + ' over', wordColor: x.state === 'over' ? '#A1281B' : '#47444F' });
+    const bRows = [bKeep, bTot].concat(bHot).filter(Boolean).slice(0, 3).map(bRow);
+    const okCount = BS.filter((x) => x.kind === 'cat' && x.state === 'ok').length;
+    const bud = BS.length ? { rows: bRows.length ? bRows : BS.slice(0, 3).map(bRow), pace: Math.round(BU.day / BU.days * 100), link: okCount ? okCount + ' more on track' : 'All budgets' } : false;
+
     const periods = P.map(([key, label]) => ({ label: label.replace('This year of assessment', 'Year so far').replace('This tax year', 'Tax year'), pressed: period === key ? 'true' : 'false', pick: () => this.setState({ period: key }) }));
     return {
       I, prof, biz: prof.business || 'Your business', hello: M.greeting() + ', ' + (prof.first && prof.first !== 'there' ? prof.first : 'there'),
       bizLabel: 'Business: ' + (prof.business || '') + '. Switch business or open settings',
       t, keepNote, periods, periodWords: BE.periodWords(period),
       quick, tasks, openCount: openCount || false, allClear: tasks.length === 0, pc,
-      activity: BE.all('activity').slice(0, 4)
+      activity: BE.all('activity').slice(0, 4), bud, noBud: !bud
     };
   }
 }

@@ -18,6 +18,7 @@
   <header class="m-top">
     <h1 class="m-h1">Going out</h1>
     <span class="m-row" style="gap: 8px;">
+      <a class="m-icon-btn" href="MobileBudgets.dc.html" aria-label="Budgets"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.budget}}"></path></svg></a>
       <a class="m-icon-btn" href="MobileImport.dc.html" aria-label="Import a bank statement"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.import}}"></path></svg></a>
       <a class="m-icon-btn" href="MobileScan.dc.html" aria-label="Scan a receipt" style="background: #18161F;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.camera}}"></path></svg></a>
     </span>
@@ -125,7 +126,7 @@
       <ul class="m-list">
         <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
           <li><button type="button" class="m-li" style="min-height: 54px;" onClick="{{c.pick}}">
-            <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t" style="font-weight: {{c.weight}};">{{c.name}}</span><span class="s">{{c.official}}</span></span>
+            <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t" style="font-weight: {{c.weight}};">{{c.name}}</span><span class="s">{{c.official}}</span><sc-if value="{{c.bud}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 600; color: {{c.budColor}};">{{c.bud}}</span></sc-if></span>
             <sc-if value="{{c.on}}" hint-placeholder-val="{{false}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></sc-if>
           </button></li>
         </sc-for>
@@ -182,7 +183,7 @@ class Component extends DCLogic {
         who: b.who, what: b.what || b.num || '', left: W(left(b)), open: true,
         when: late ? (-b.dueIn) + ' days overdue' : b.dueIn === 0 ? 'Due today' : 'Due ' + b.due, cls: late ? 'late' : b.dueIn <= 7 ? 'due' : 'plain',
         tint: late ? '#FBE3DF' : '#FDE6D6',
-        pay: () => M.confirm('Mark bill paid', () => { const r = BE.payBill(b.id, null, 'Bank transfer'); if (r) M.did(b.who + ' marked paid · ' + W(left(b))); })
+        pay: () => M.confirm('Mark bill paid', () => { const r = M.budgets.watch(() => BE.payBill(b.id, null, 'Bank transfer')); if (r) M.did(b.who + ' marked paid · ' + W(left(b))); })
       };
     });
     const pay = run ? {
@@ -196,8 +197,8 @@ class Component extends DCLogic {
     }));
     const cx = st.cat ? BE.find('expenses', st.cat) : null;
     const cats = cx ? BE.expenseCats().map((c) => ({
-      name: c.name, official: c.official || '', on: cx.catId === c.id || cx.cat === c.name, weight: cx.catId === c.id || cx.cat === c.name ? 700 : 600,
-      pick: () => { BE.update('expenses', cx.id, { catId: c.id, cat: c.name }); this.setState({ cat: null }); M.did(cx.who + ' moved to ' + c.name); }
+      name: c.name, official: c.official || '', bud: (() => { const b = M.budgets.forCat(c.id); return b ? (b.left >= 0 ? W(b.left) + ' left of ' + W(b.amount) + ' this month' : W(-b.left) + ' over its ' + W(b.amount) + ' budget') : false; })(), budColor: (() => { const b = M.budgets.forCat(c.id); return b && b.state === 'over' ? '#A1281B' : '#6B5000'; })(), on: cx.catId === c.id || cx.cat === c.name, weight: cx.catId === c.id || cx.cat === c.name ? 700 : 600,
+      pick: () => { M.budgets.watch(() => BE.update('expenses', cx.id, { catId: c.id, cat: c.name })); this.setState({ cat: null }); M.did(cx.who + ' moved to ' + c.name); }
     })) : [];
     return {
       I, stats, tabs, onSpent: st.tab === 'spent', onBills: st.tab === 'bills', onPay: st.tab === 'payroll',

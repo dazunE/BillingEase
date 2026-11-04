@@ -107,6 +107,9 @@
           <sc-for list="{{cats}}" as="c" hint-placeholder-count="5"><button type="button" class="m-chip" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.name}}</button></sc-for>
         </div>
         <span class="m-sub" style="line-height: 1.4;">{{catWhy}}</span>
+        <sc-if value="{{bud}}" hint-placeholder-val="{{false}}">
+          <span class="m-row" role="status" style="gap: 8px; padding: 10px 12px; border-radius: 12px; background: {{bud.bg}}; color: {{bud.fg}}; font-size: 13px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{I.budget}}"></path></svg>{{bud.text}}</span>
+        </sc-if>
       </section>
 
       <section class="m-card tight" aria-label="Details">
@@ -181,15 +184,18 @@ class Component extends DCLogic {
     const store = () => {
       const amt = BE.num(amount);
       if (!(amt > 0)) return false;
-      BE.recordExpense({ who: who.trim() || R.who, amount: amt, catId, how: 'Card', vat: vatReg ? R.vat : 0, bizPct: st.pct, attachment: { name: 'Receipt ' + R.when.split(' ')[0] + '.jpg', kind: 'photo', size: '1.2 MB' }, note: 'Scanned on the BillingEase app' });
+      M.budgets.watch(() => BE.recordExpense({ who: who.trim() || R.who, amount: amt, catId, how: 'Card', vat: vatReg ? R.vat : 0, bizPct: st.pct, attachment: { name: 'Receipt ' + R.when.split(' ')[0] + '.jpg', kind: 'photo', size: '1.2 MB' }, note: 'Scanned on the BillingEase app' }));
       M.did(BE.money(amt, cur) + ' to ' + (who.trim() || R.who) + ' saved with its receipt');
       return true;
     };
     const reset = (batch) => { this.setState({ stage: 'camera', found: false, who: null, amount: null, catId: null, pct: 100, batch }); this.arm(); };
     const catName = (all.find((c) => c.id === catId) || {}).name || '';
+    const pv = M.budgets.preview(catId, BE.num(amount) * st.pct / 100);
+    const TONE = { ok: ['#E2F6D5', '#2F5711'], warn: ['#FFF0B8', '#6B5000'], late: ['#FBE3DF', '#A1281B'] };
+    const bud = pv ? { text: pv.text, bg: TONE[pv.tone][0], fg: TONE[pv.tone][1] } : false;
     const stepWords = ['Finding the shop and the total…', 'Matching it to a category…', 'Checking it isn’t already in your books…'];
     return {
-      I, r, frameClass: st.stage === 'camera' ? 'dark' : '',
+      I, r, bud, frameClass: st.stage === 'camera' ? 'dark' : '',
       onCamera: st.stage === 'camera', onReading: st.stage === 'reading', onReview: st.stage === 'review', onQueued: st.stage === 'queued',
       closeHref: 'MobileHome.dc.html',
       found: st.found, cornerClass: st.found ? 'found' : '',

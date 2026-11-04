@@ -13,7 +13,7 @@ A tab bar with the equation in it, and one button to add anything:
 | Home | `MobileHome` | Yours to keep (period switch), Coming in and Going out, four quick actions, *Needs you*, the UK quarter or Sri Lanka month card, recent activity |
 | Coming in | `MobileIn` | Invoices by Late / Due / Drafts / Paid, search; tap one to record a payment, remind or share the PDF |
 | **+** | sheet in `MobileTabBar` | Scan a receipt and New invoice (large), then record money out, record money in, import a statement, run payroll |
-| Going out | `MobileOut` | Spent (with "no receipt" and "needs a category" flags, category picker), Bills (mark paid), Payroll (current run and what it owes) |
+| Going out | `MobileOut` | Budgets shortcut, Spent (with "no receipt" and "needs a category" flags, category picker), Bills (mark paid), Payroll (current run and what it owes) |
 | Inbox | `MobileInbox` | *To check*: AI drafts and accountant requests, each approved or dismissed by you. *Updates*: the same list that's sent as push notifications |
 
 The business name and initials on Home open `MobileMe` (switch business, Face ID, notifications, offline). Full-screen flows (invoice, record, scan, import, payroll) hide the tab bar and close back to where you came from.
@@ -30,6 +30,26 @@ The business name and initials on Home open `MobileMe` (switch business, Face ID
 | Import a statement | `MobileImport` | File, share from the banking app, or a photo of a paper statement → lines matched to invoices, new expenses with categories, duplicates and own transfers skipped → add the ticked lines |
 | Payroll, Sri Lanka | `MobilePayroll` | Check (overtime per person, EPF/ETF/APIT worked out) → approve with Face ID → mark net pay sent → mark APIT, EPF and ETF paid |
 | Payroll, UK | `MobilePayroll` | Record the run from the payroll software (gross per person, PAYE/NI/pension as a sense check) → mark net pay sent → mark HMRC and the pension paid |
+
+## Budgets
+
+Monthly budgets that repeat every month, in `MobileBudgets` (from the Budgets card on Home, or the gauge button in Going out). Four kinds:
+
+| Budget | What counts | Shown as |
+|---|---|---|
+| Yours to keep goal | Yours to keep this month, after the tax estimate | A goal: on track, behind, reached |
+| Coming in target | Money received, with invoices on the way as a lighter part of the bar | A goal: on course counts what's on the way |
+| All spending | Going out paid this month, with bills, payroll and every-month costs still due shown hatched | A limit |
+| One per category | Expenses in that HMRC or Inland Revenue category this month | A limit: on track, ahead of pace, nearly used (80%), over |
+
+Every bar carries a mark for today (day 11 of 31), so "ahead of pace" means spending faster than the month is passing. Tapping a budget opens a sheet with the limit, September's figure, the month's projected total at this pace, and this month's expenses; suggestions round last month's spending up. Categories with spending but no budget are offered as one-tap ideas.
+
+Alerts, each switchable on the Budgets screen:
+- **Push at 80% and when over**: sent by whatever adds spending (recording, scanning, a statement import, a bill marked paid, an expense moved to another category), for the budget it pushes over the line.
+- **What's left while recording**: picking a category in Record or on a scanned receipt shows what's left after this expense, amber near the limit and red when it would go over.
+- **Weekly summary**: Mondays at 8:00, one notification for every budget. The screen can preview it.
+
+Budgets are stored with the books (`budgets` in the prototype store), so they follow the business to another phone. On the server this is a `budgets` table (business, kind, category, monthly amount) and a scheduled job for the Monday summary; the 80% / 100% check runs after each write that posts an expense.
 
 ## The phone's own abilities
 
