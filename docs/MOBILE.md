@@ -71,10 +71,10 @@ Money figures shrink to stay on one line (Rs 3,749,450 fits the half-width tile)
 
 ## How it fits the code
 
-- **API**: the app uses the same `/v1` API as the public API and the web app, signed in with the user's session (stored in the secure store), never a personal access token. `packages/contracts` gives the app typed requests for free.
+- **API**: the app calls the web app's public address at `/app-api/*`, which forwards only the endpoints in `APP_ENDPOINTS` (`packages/contracts/src/mobile.ts`) to the private API with the internal key. It signs in with the person's own session (kept in the secure store), never a personal access token, and `packages/contracts` gives it typed requests.
 - **Shared code**: `packages/core` (money, dates, country rules, invoice tax, payroll) runs unchanged in React Native, so the invoice preview's VAT and SSCL and the payroll figures are worked out the same way as on the web.
 - **New API work**: device push tokens, an idempotency key on writes (for the offline outbox), and a receipt upload endpoint that accepts a photo from the camera.
-- **Suggested layout**: `apps/mobile` (Expo Router), with screens named after the prototype's.
+- **Where it is**: [`apps/mobile`](../apps/mobile) (Expo Router). Milestone 1 is built: sign-in, Face ID lock, Home, Coming in, Going out, Inbox, quick invoice and record money in or out. Scan, import, payroll, budgets, push and offline come next. Money in without an invoice needs a new API endpoint first.
 
 ## Open questions
 
