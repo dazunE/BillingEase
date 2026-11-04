@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { cx } from "@/components/ui";
 import { money, signUpHref, type SiteCountry } from "@/content/site/country";
-import type { Plan } from "@/content/site/plans";
+import { billingLine, type Plan } from "@/content/site/plans";
 import s from "./site.module.css";
 
 /*
@@ -449,7 +449,7 @@ export function PlanCard({ plan, country, index = 0 }: { plan: Plan; country: Si
           <span className="font-display text-[clamp(44px,4.6vw,56px)] font-bold leading-none tracking-[-0.04em]">{price}</span>
           {plan.per && <span className="text-base text-ink2">{plan.per}</span>}
         </span>
-        <span className="min-h-[21px] text-sm text-muted">{free ? "Free for as long as you like" : "Billed monthly · cancel any time"}</span>
+        <span className="min-h-[21px] text-sm text-muted">{billingLine(plan, country)}</span>
       </span>
       <span className="text-[15px] leading-normal text-ink2">{plan.line}</span>
       <ul className="flex flex-col gap-2.5 border-t border-divider pt-[18px] text-[15px]">

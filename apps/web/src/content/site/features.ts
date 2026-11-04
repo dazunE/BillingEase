@@ -18,7 +18,7 @@ export const FEATURES_HERO = {
     uk: "Invoices, expenses, bills, mileage, payroll records and your MTD quarters. Each one feeds what’s coming in, what’s going out, or what’s yours to keep, so you never have to go looking.",
     lk: "Tax Invoices, expenses, bills, payroll with EPF, ETF and APIT, and your VAT and SSCL periods. Each one feeds what’s coming in, what’s going out, or what’s yours to keep, so you never have to go looking.",
   } satisfies Copy,
-  small: "Free plan for as long as you like. Paid plans are still being priced.",
+  small: "Free plan for as long as you like. Pro from £10 or Rs 3,250 a month, billed yearly.",
 };
 
 /** The hero's live card: a sample business, a starting point, and what happens next. */

@@ -16,7 +16,7 @@ export const metadata: Metadata = { title: ACCT_META.title, description: ACCT_ME
 export default async function AccountantsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const country = await getSiteCountry(searchParams);
   const P = ACCT[country];
-  const base = PLANS[country].find((p) => p.id === "practice" || p.id === "practitioner")!;
+  const base = PLANS[country].find((p) => p.id === "practice")!;
   // plans.ts already marks what comes in the next phase.
   const plan = base;
   const tool = country === "uk" ? "the TaxWise practice workbench" : "TaxWise.lk";

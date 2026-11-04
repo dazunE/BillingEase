@@ -101,9 +101,9 @@ const UK: AcctPage = {
   },
   pricing: {
     title: "Priced per client.",
-    why: "Your practice pays for the clients you bring on, and each of them gets everything in MTD ready. A client who already has their own plan can invite you at no cost to you.",
+    why: "Your practice pays for the clients you bring on, and each of them gets everything in Pro. A client who already has their own plan can invite you at no cost to you.",
     rows: [
-      { name: "Each client you bring on", line: "Gets everything in MTD ready, with your practice name on their books.", value: "Per client" },
+      { name: "Each client you bring on", line: "Gets everything in Pro, with your practice name on their books.", value: "Per client" },
       { name: "Clients on their own plan", line: "They invite you; your seat is free.", value: "Free for you" },
     ],
   },

@@ -307,7 +307,7 @@ export const WHO = {
 
 export const PRICING_TEASER = {
   title: "Pricing",
-  lead: { uk: "Start free and stay free as long as it fits. Prices in pounds.", lk: "Start free and stay free as long as it fits. Prices in rupees." } satisfies Copy,
+  lead: { uk: "Start free and move to Pro when you need more. Prices in pounds.", lk: "Start free and move to Pro when you need more. Prices in rupees." } satisfies Copy,
   compare: { title: "Compare plans", body: "Every feature side by side, what practices pay, and what happens when you change plan.", cta: "See full pricing", href: ROUTES.pricing.href },
 };
 
@@ -319,14 +319,14 @@ export const HOME_FAQ: ByCountry<{ q: string; a: string }[]> = {
     { q: "Does it connect to my bank?", a: "No. You add income and expenses yourself, with a photo or PDF attached when you have one. Most sole traders and landlords have a handful of entries a week, and it keeps the books exactly as you meant them." },
     { q: "Will BillingEase file my MTD updates to HMRC?", a: "No. BillingEase keeps your records in HMRC’s categories and gets each quarter ready. Your accountant files the update from their practice software, and the quarter is locked once it’s filed." },
     { q: "Does it run payroll?", a: "In the UK, BillingEase keeps payroll records: you enter each pay run from your payroll software and the costs land in your books. Run payroll and report to HMRC through your payroll software." },
-    { q: "Is the free plan really free?", a: "Yes, with no time limit and no card needed. Prices for the paid plans are still being finalised; anything on the free plan stays free." },
+    { q: "Is the free plan really free?", a: "Yes, with no time limit and no card needed: 10 invoices and 20 attachments a month, unlimited quotes and your three numbers. Pro is £10 a month billed yearly, and your first business gets it free for 30 days." },
   ],
   lk: [
     { q: "Do I need to know accounting?", a: "No. You work with three numbers and plain words. Proper double-entry books are kept underneath for your practitioner (or for you) whenever you want to look." },
     { q: "Does it make Tax Invoices with VAT and SSCL?", a: "Yes. When you’re registered, invoices are titled Tax Invoice with your TIN and VAT number, VAT at 18% and SSCL at 2.5% on its own line. Rates are checked against ird.gov.lk before launch." },
     { q: "Will BillingEase file my VAT or payroll returns?", a: "No. You get VAT and SSCL summaries in the order of the return, and EPF, ETF and APIT schedules. You or your practitioner file them through the IRD, EPF and ETF channels." },
     { q: "Does it connect to my bank?", a: "No. You record payments yourself: bank transfer, cheque (with its number and bank), cash or LankaQR. Expenses and bills take a photo or PDF." },
-    { q: "Is the free plan really free?", a: "Yes, with no time limit and no card needed. Prices for the paid plans are still being finalised; anything on the free plan stays free." },
+    { q: "Is the free plan really free?", a: "Yes, with no time limit and no card needed: 10 invoices and 20 attachments a month, unlimited quotes and your three numbers. Pro is Rs 3,250 a month billed yearly, and your first business gets it free for 30 days." },
   ],
 };
 

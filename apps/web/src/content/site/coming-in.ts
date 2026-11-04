@@ -16,7 +16,7 @@ export const CI_HERO = {
     uk: "Write an invoice the way you’d say it out loud. Record the payment when the money arrives, by bank transfer, card machine, cash or cheque, and send a polite reminder when it doesn’t.",
     lk: "Write a Tax Invoice the way you’d say it out loud. Record the payment when it arrives, by bank transfer, cheque, cash or LankaQR, and send a polite reminder by email or WhatsApp when it doesn’t.",
   } satisfies Copy,
-  small: "Unlimited invoices and quotes on the free plan.",
+  small: "Unlimited quotes on every plan, and unlimited invoices on Pro.",
 };
 
 export type Customer = { id: string; name: string; email: string; what: string; amt: number };

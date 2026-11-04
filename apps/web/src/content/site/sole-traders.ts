@@ -169,8 +169,8 @@ const UK: SolePage = {
     ],
   },
   plan: {
-    title: "Most sole traders pick MTD ready.",
-    why: "Free covers invoices, expenses and your three numbers for as long as you like. MTD ready adds what Making Tax Digital asks of you: quarters with readiness checks, mileage, repeating invoices and the tax estimate.",
+    title: "Most sole traders pick Pro.",
+    why: "Free covers invoices, expenses and your three numbers, up to 10 invoices a month. Pro adds what Making Tax Digital asks of you: quarters with readiness checks, mileage, repeating invoices and the tax estimate.",
     rows: [
       { name: "Your accountant", line: "They sign in free and never count as a person on your plan.", value: "Free" },
       { name: "Through your practice", line: "If your accountant uses the TaxWise practice workbench, they may give you BillingEase as part of their service.", value: "Ask them" },
@@ -180,7 +180,7 @@ const UK: SolePage = {
   faq: [
     { q: "Does BillingEase send my MTD updates to HMRC?", a: "No. BillingEase keeps your records in HMRC’s categories and checks each quarter. Your accountant sends the update from their software. HMRC has paused new software for Making Tax Digital for Income Tax until at least early 2027, so filing from the app may come later." },
     { q: "When does Making Tax Digital start for me?", a: "It depends on your qualifying income (self-employment and property income before costs). Over £50,000 it started in April 2026, over £30,000 it starts in April 2027 and over £20,000 in April 2028. Your accountant can confirm which applies to you." },
-    { q: "Is Free enough for me?", a: "If you send a handful of invoices and want your three numbers, yes, for as long as you like. Move to MTD ready when you need quarters with readiness checks, mileage and the tax estimate." },
+    { q: "Is Free enough for me?", a: "If you send up to 10 invoices a month and want your three numbers, yes, for as long as you like. Move to Pro when you need quarters with readiness checks, mileage and the tax estimate." },
     { q: "Does it connect to my bank?", a: "No. You record payments and expenses yourself. It takes a few seconds each and nothing breaks when a bank changes its login." },
     { q: "Can customers pay by card through BillingEase?", a: "No. Customers pay you the way they already do (bank transfer, your card machine, cash) and you record the payment against the invoice." },
     { q: "I’m a sole trader and I let a flat. Can I do both?", a: "Yes. At sign-up choose sole trader, landlord or both. Your property gets its own income and costs, kept apart from your trade, in the same quarter." },
@@ -309,8 +309,8 @@ const LK: SolePage = {
     ],
   },
   plan: {
-    title: "Growing? Most move to Business.",
-    why: "Free covers invoices, expenses and your three numbers for as long as you like. Business adds Tax Invoices with VAT and SSCL, payroll, WhatsApp reminders and the year-end hand-off to TaxWise.lk.",
+    title: "Growing? Most move to Pro.",
+    why: "Free covers invoices, expenses and your three numbers, up to 10 invoices a month. Pro adds Tax Invoices with VAT and SSCL, payroll, WhatsApp reminders and the year-end hand-off to TaxWise.lk.",
     rows: [
       { name: "Your practitioner", line: "They sign in free and never count as a person on your plan.", value: "Free" },
       { name: "Your TaxWise.lk return", line: "Bought in TaxWise.lk, or done by your practitioner. BillingEase sends it the year’s figures.", value: "Separate" },
@@ -320,7 +320,7 @@ const LK: SolePage = {
   faq: [
     { q: "Does BillingEase file my return with the IRD?", a: "No. BillingEase keeps your books and estimates your income tax. At year end it sends the figures to your TaxWise.lk return, where you or your practitioner file." },
     { q: "I’m not VAT registered. Can I still use it?", a: "Yes. You send ordinary invoices. If you register later, turn on Tax Invoices and VAT and SSCL appear on their own lines. BillingEase warns you as turnover gets close to the threshold." },
-    { q: "Is Free enough for me?", a: "If you send a handful of invoices and want your three numbers, yes, for as long as you like. Move to Business for payroll, WhatsApp reminders and the TaxWise.lk hand-off." },
+    { q: "Is Free enough for me?", a: "If you send up to 10 invoices a month and want your three numbers, yes, for as long as you like. Move to Pro for payroll, WhatsApp reminders and the TaxWise.lk hand-off." },
     { q: "How do customers pay me?", a: "The way they already do: bank transfer, cheque, cash or LankaQR. You record the payment against the invoice. BillingEase doesn’t take payments online." },
     { q: "Does it connect to my bank?", a: "No. You record payments and expenses yourself; it takes a few seconds each." },
     { q: "Can my practitioner get in?", a: "Yes, free. Invite them from Your accountant and they see the same books, send requests and get the year-end figures in TaxWise.lk." },
