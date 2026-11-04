@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Mobile tab bar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+
+<!-- The capture sheet: everything you can add from anywhere -->
+<sc-if value="{{open}}" hint-placeholder-val="{{false}}">
+  <div class="m-scrim" aria-hidden="true" onClick="{{close}}"></div>
+  <section class="m-sheet above-tabs" role="dialog" aria-modal="true" aria-labelledby="cap-h">
+    <span class="m-grab" aria-hidden="true"></span>
+    <h2 id="cap-h" class="m-h2" style="padding: 0 4px;">Add something</h2>
+    <!-- The two big ones -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      <sc-for list="{{big}}" as="v" hint-placeholder-count="2">
+        <a href="{{v.href}}" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 20px; background: {{v.bg}}; color: {{v.fg}}; min-height: 128px;">
+          <span class="m-ic" style="background: {{v.icBg}};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{v.icFg}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg></span>
+          <span style="display: flex; flex-direction: column; gap: 2px; margin-top: auto;">
+            <span style="font-weight: 700; font-size: 16px;">{{v.label}}</span>
+            <span style="font-size: 12.5px; opacity: 0.75;">{{v.hint}}</span>
+          </span>
+        </a>
+      </sc-for>
+    </div>
+    <ul class="m-list">
+      <sc-for list="{{rest}}" as="v" hint-placeholder-count="4">
+        <li>
+          <a class="m-li" href="{{v.href}}" style="min-height: 60px;">
+            <span class="m-ic" style="background: {{v.tint}};"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg></span>
+            <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t">{{v.label}}</span><span class="s">{{v.hint}}</span></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8C8896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.chev}}"></path></svg>
+          </a>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+</sc-if>
+
+<nav class="m-tabbar" aria-label="Main">
+  <sc-for list="{{left}}" as="t" hint-placeholder-count="2">
+    <a class="m-tab" href="{{t.href}}" aria-current="{{t.current}}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="{{t.fill}}" stroke="currentColor" stroke-width="{{t.sw}}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+      {{t.label}}
+      <sc-if value="{{t.badge}}" hint-placeholder-val="{{false}}"><span class="m-badge" aria-label="{{t.badgeLabel}}">{{t.badge}}</span></sc-if>
+    </a>
+  </sc-for>
+  <button type="button" class="m-plus" onClick="{{toggle}}" aria-expanded="{{openStr}}" aria-label="{{plusLabel}}">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{I.plus}}"></path></svg>
+  </button>
+  <sc-for list="{{right}}" as="t" hint-placeholder-count="2">
+    <a class="m-tab" href="{{t.href}}" aria-current="{{t.current}}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="{{t.fill}}" stroke="currentColor" stroke-width="{{t.sw}}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+      {{t.label}}
+      <sc-if value="{{t.badge}}" hint-placeholder-val="{{false}}"><span class="m-badge" aria-label="{{t.badgeLabel}}">{{t.badge}}</span></sc-if>
+    </a>
+  </sc-for>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"default":"home"},"$preview":{"width":390,"height":88}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { open: false }; }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const lk = BE.is('lk');
+    const a = this.props.active;
+    const late = BE.lateInvoices().length;
+    const inbox = BE.unread() + BE.requestsOpen('in').length;
+    const tab = (key, label, icon, href, badge) => ({
+      label, icon, href, current: a === key ? 'page' : 'false',
+      fill: a === key && key === 'home' ? '#B9A3FF' : 'none', sw: a === key ? 2.4 : 1.9,
+      badge: badge || false, badgeLabel: badge ? badge + ' need you' : ''
+    });
+    const hasStaff = BE.all('employees').length > 0;
+    const big = [
+      { label: 'Scan a receipt', hint: 'We read it, you check it', href: 'MobileScan.dc.html', icon: I.camera, bg: '#18161F', fg: '#FFFFFF', icBg: '#B9A3FF', icFg: '#18161F' },
+      { label: lk && BE.get('profile').vatRegistered ? 'Tax invoice' : 'New invoice', hint: 'Sent in under a minute', href: 'MobileInvoice.dc.html', icon: I.invoice, bg: '#EEE8FF', fg: '#18161F', icBg: '#FFFFFF', icFg: '#18161F' }
+    ];
+    const rest = [
+      { label: 'Record money out', hint: 'Something you’ve already paid', href: 'MobileRecord.dc.html#out', icon: I.expense, tint: '#FDE6D6' },
+      { label: 'Record money in', hint: 'A payment, or income without an invoice', href: 'MobileRecord.dc.html#in', icon: I.in, tint: '#EEE8FF' },
+      { label: 'Import a bank statement', hint: 'CSV or PDF from any bank', href: 'MobileImport.dc.html', icon: I.import, tint: '#EFEDF3' }
+    ].concat(hasStaff ? [{ label: lk ? 'Run payroll' : 'Record a pay run', hint: lk ? 'EPF, ETF and APIT worked out' : 'From your payroll software', href: 'MobilePayroll.dc.html', icon: I.people, tint: '#FFF0B8' }] : []);
+    const open = this.state.open;
+    return {
+      I, big, rest, open, openStr: open ? 'true' : 'false',
+      toggle: () => this.setState({ open: !open }),
+      close: () => this.setState({ open: false }),
+      plusLabel: open ? 'Close' : 'Add: scan a receipt, new invoice, record money, import a statement',
+      left: [tab('home', 'Home', I.home, 'MobileHome.dc.html'), tab('in', 'Coming in', I.in, 'MobileIn.dc.html', late)],
+      right: [tab('out', 'Going out', I.out, 'MobileOut.dc.html'), tab('inbox', 'Inbox', I.inbox, 'MobileInbox.dc.html', inbox)]
+    };
+  }
+}
+</script>
+</body>
+</html>

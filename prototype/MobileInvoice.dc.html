@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · New invoice</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+
+  <sc-if value="{{inFlow}}" hint-placeholder-val="{{true}}">
+    <header class="m-top" style="flex-direction: column; align-items: stretch; gap: 12px;">
+      <div class="m-row">
+        <button type="button" class="m-icon-btn" onClick="{{back}}" aria-label="{{backLabel}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{backIcon}}"></path></svg></button>
+        <span class="m-grow" style="text-align: center; font-weight: 700; font-size: 16px;">{{docName}}</span>
+        <span style="width: 44px; font-size: 13px; color: #5F5B68; text-align: right;">{{step}}/3</span>
+      </div>
+      <div class="m-steps" aria-hidden="true"><span class="{{s1}}"></span><span class="{{s2}}"></span><span class="{{s3}}"></span></div>
+    </header>
+  </sc-if>
+
+  <!-- 1 · Who -->
+  <sc-if value="{{onWho}}" hint-placeholder-val="{{true}}">
+    <main class="m-main flush">
+      <h1 class="m-h1" style="font-size: 26px;">Who’s it for?</h1>
+      <label class="m-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{I.search}}"></path></svg>
+        <input type="search" placeholder="Search customers" aria-label="Search customers" value="{{query}}" onChange="{{setQuery}}">
+      </label>
+      <sc-if value="{{adding}}" hint-placeholder-val="{{false}}">
+        <section class="m-card m-stack" aria-label="New customer">
+          <h2 class="m-h3">New customer</h2>
+          <input class="m-input" placeholder="Business or person’s name" aria-label="Name" value="{{newName}}" onChange="{{setNewName}}">
+          <input class="m-input" type="email" placeholder="Email for the invoice" aria-label="Email" value="{{newEmail}}" onChange="{{setNewEmail}}">
+          <button type="button" class="m-btn block" onClick="{{addCust}}" disabled="{{noNewName}}">Add and continue</button>
+        </section>
+      </sc-if>
+      <sc-if value="{{notAdding}}" hint-placeholder-val="{{true}}">
+        <button type="button" class="m-card m-row" onClick="{{startAdd}}" style="text-align: left; width: 100%;">
+          <span class="m-ic" style="background: #EEE8FF;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="{{I.plus}}"></path></svg></span>
+          <span class="m-h3 m-grow">{{addLabel}}</span>
+        </button>
+      </sc-if>
+      <section class="m-stack" aria-labelledby="cust-h">
+        <h2 id="cust-h" class="m-eyebrow">{{custHeading}}</h2>
+        <div class="m-card tight">
+          <ul class="m-list">
+            <sc-for list="{{customers}}" as="c" hint-placeholder-count="6">
+              <li><button type="button" class="m-li" onClick="{{c.pick}}">
+                <span class="m-ic" style="background: #EEE8FF; font: 700 13px var(--ui);">{{c.initials}}</span>
+                <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t">{{c.name}}</span><span class="s">{{c.sub}}</span></span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8C8896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.chev}}"></path></svg>
+              </button></li>
+            </sc-for>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- 2 · What -->
+  <sc-if value="{{onWhat}}" hint-placeholder-val="{{false}}">
+    <main class="m-main" style="padding-bottom: 130px;">
+      <div>
+        <h1 class="m-h1" style="font-size: 26px;">What for?</h1>
+        <span class="m-sub">For {{who}}. Tap your services, or type a line.</span>
+      </div>
+      <section class="m-stack" aria-label="Your services">
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{catalog}}" as="c" hint-placeholder-count="6">
+            <button type="button" class="m-chip" onClick="{{c.add}}" style="min-height: 40px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{I.plus}}"></path></svg>{{c.name}} <span class="n">{{c.price}}</span></button>
+          </sc-for>
+        </div>
+      </section>
+      <sc-if value="{{hasLines}}" hint-placeholder-val="{{true}}">
+        <section class="m-card tight" aria-label="Lines">
+          <ul class="m-list">
+            <sc-for list="{{lines}}" as="l" hint-placeholder-count="2">
+              <li class="m-li" style="flex-wrap: wrap; gap: 10px;">
+                <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;"><span class="t">{{l.name}}</span><span class="s">{{l.rate}} a {{l.unit}}</span></span>
+                <span class="m-stepper" role="group" aria-label="{{l.qtyLabel}}">
+                  <button type="button" onClick="{{l.dec}}" aria-label="One fewer">−</button><span>{{l.qty}}</span><button type="button" onClick="{{l.inc}}" aria-label="One more">+</button>
+                </span>
+                <span class="a" style="min-width: 76px;">{{l.total}}</span>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+      </sc-if>
+      <section class="m-card m-stack" aria-label="Type a line">
+        <span class="m-label">Something else</span>
+        <input class="m-input" placeholder="What you did" aria-label="Description" value="{{customName}}" onChange="{{setCustomName}}">
+        <div class="m-row" style="gap: 8px;">
+          <input class="m-input" inputmode="decimal" placeholder="{{amountPh}}" aria-label="Amount" value="{{customAmt}}" onChange="{{setCustomAmt}}">
+          <button type="button" class="m-btn dark" onClick="{{addCustom}}" disabled="{{noCustom}}">Add</button>
+        </div>
+      </section>
+    </main>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; padding: 14px 16px 34px; background: #FFFFFF; border-top: 1px solid #E2DFE8; display: flex; align-items: center; gap: 12px;">
+      <span class="m-grow" style="display: flex; flex-direction: column;"><span class="m-sub">{{totalLabel}}</span><span class="m-amt" style="font-size: 24px;">{{tot.total}}</span></span>
+      <button type="button" class="m-btn" onClick="{{toReview}}" disabled="{{noLines}}">Review</button>
+    </div>
+  </sc-if>
+
+  <!-- 3 · Review and send -->
+  <sc-if value="{{onReview}}" hint-placeholder-val="{{false}}">
+    <main class="m-main" style="padding-bottom: 150px;">
+      <article class="m-card" aria-label="Invoice preview" style="padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 12px 30px rgba(24,22,31,0.08);">
+        <div class="m-row" style="align-items: flex-start;">
+          <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;"><span style="font: 700 16px var(--head);">{{biz}}</span><span class="m-sub">{{docName}} {{num}}</span></span>
+          <span class="m-tag ai">{{dueWords}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><span class="m-eyebrow">To</span><span style="font-weight: 600;">{{who}}</span><span class="m-sub">{{email}}</span></div>
+        <ul class="m-list" style="border-top: 1px solid #E2DFE8;">
+          <sc-for list="{{lines}}" as="l" hint-placeholder-count="2">
+            <li class="m-row" style="padding: 10px 0; border-bottom: 1px solid #EFEDF3; font-size: 14px;"><span class="m-grow">{{l.name}} <span class="m-sub">× {{l.qty}}</span></span><span class="m-num" style="font-weight: 600;">{{l.total}}</span></li>
+          </sc-for>
+        </ul>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px;">
+          <sc-if value="{{hasTax}}" hint-placeholder-val="{{false}}">
+            <div class="m-row"><span class="m-grow m-sub">Subtotal</span><span class="m-num">{{tot.net}}</span></div>
+            <sc-for list="{{taxRows}}" as="t" hint-placeholder-count="2"><div class="m-row"><span class="m-grow m-sub">{{t.label}}</span><span class="m-num">{{t.amount}}</span></div></sc-for>
+          </sc-if>
+          <div class="m-row" style="padding-top: 6px;"><span class="m-grow" style="font-weight: 700;">Total</span><span class="m-amt" style="font-size: 24px;">{{tot.total}}</span></div>
+        </div>
+      </article>
+
+      <section class="m-stack" aria-labelledby="due-h">
+        <h2 id="due-h" class="m-label">Payment due in</h2>
+        <div class="m-row" style="gap: 8px;">
+          <sc-for list="{{terms}}" as="t" hint-placeholder-count="4"><button type="button" class="m-chip" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
+        </div>
+      </section>
+      <section class="m-stack" aria-labelledby="via-h">
+        <h2 id="via-h" class="m-label">Send it by</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+          <sc-for list="{{vias}}" as="v" hint-placeholder-count="3">
+            <button type="button" aria-pressed="{{v.pressed}}" onClick="{{v.pick}}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border-radius: 16px; border: 2px solid {{v.border}}; background: #FFFFFF; font-size: 13px; font-weight: 600;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>{{v.label}}
+            </button>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; padding: 14px 16px 34px; background: #FFFFFF; border-top: 1px solid #E2DFE8; display: flex; flex-direction: column; gap: 8px;">
+      <button type="button" class="m-btn block" onClick="{{send}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.send}}"></path></svg>{{sendLabel}}</button>
+      <button type="button" class="m-btn block ghost sm" onClick="{{saveDraft}}">Save as a draft</button>
+    </div>
+  </sc-if>
+
+  <!-- Sent -->
+  <sc-if value="{{onDone}}" hint-placeholder-val="{{false}}">
+    <main class="m-main flush" style="justify-content: center; align-items: center; text-align: center; gap: 16px;">
+      <span class="m-ic" style="width: 96px; height: 96px; background: #B9A3FF;"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></span>
+      <h1 class="m-h1" style="font-size: 26px;">{{doneTitle}}</h1>
+      <p class="m-sub" style="margin: 0; font-size: 15px; max-width: 300px; line-height: 1.45;">{{doneBody}}</p>
+      <div class="m-stack" style="width: 100%; margin-top: 12px;">
+        <button type="button" class="m-btn block" onClick="{{share}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.share}}"></path></svg>Share the PDF</button>
+        <a class="m-btn block ghost" href="MobileIn.dc.html">See it in Coming in</a>
+        <button type="button" class="m-btn block line" onClick="{{again}}">Another invoice</button>
+      </div>
+    </main>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 'who', who: null, lines: [], query: '', adding: false, newName: '', newEmail: '', customName: '', customAmt: '', terms: null, via: 'email', done: null };
+    BE.mobile.guard();
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const st = this.state;
+    const prof = BE.get('profile') || {};
+    const lk = BE.is('lk');
+    const docName = lk && prof.vatRegistered ? 'Tax invoice' : BE.vatOn && BE.vatOn() ? 'VAT invoice' : 'Invoice';
+    const cur = prof.currency;
+    const money = (n) => BE.money(n, cur);
+    const step = { who: 1, what: 2, review: 3 }[st.step] || 3;
+
+    // Customers: the ones you invoice most recently first
+    const recent = {};
+    BE.all('invoices').forEach((i, n) => { if (!(i.who in recent)) recent[i.who] = n; });
+    const q = st.query.trim().toLowerCase();
+    const customers = BE.all('customers').slice()
+      .filter((c) => !q || (c.name + ' ' + (c.contact || '') + ' ' + (c.email || '')).toLowerCase().indexOf(q) >= 0)
+      .sort((a, b) => (a.name in recent ? recent[a.name] : 999) - (b.name in recent ? recent[b.name] : 999)).slice(0, 8)
+      .map((c) => ({ name: c.name, initials: BE.initials(c.name), sub: c.contact ? c.contact + (c.email ? ' · ' + c.email : '') : c.email || 'No email yet', pick: () => this.setState({ who: c.name, step: 'what' }) }));
+
+    // Lines
+    const setLines = (fn) => this.setState({ lines: fn(st.lines.slice()) });
+    const catalog = BE.catalog().slice(0, 8).map((c) => ({
+      name: c.name, price: BE.money(c.price, cur, { whole: true }),
+      add: () => setLines((L) => { const i = L.findIndex((l) => l.name === c.name); if (i >= 0) L[i] = Object.assign({}, L[i], { qty: L[i].qty + 1 }); else L.push({ name: c.name, qty: 1, unit: c.unit || 'job', rate: c.price, vat: c.vat }); return L; })
+    }));
+    const lines = st.lines.map((l, i) => ({
+      name: l.name, qty: l.qty, unit: l.unit, rate: BE.money(l.rate, cur), total: BE.money(l.qty * l.rate, cur, { whole: l.qty * l.rate % 1 === 0 }),
+      qtyLabel: 'Quantity of ' + l.name,
+      inc: () => setLines((L) => { L[i] = Object.assign({}, L[i], { qty: L[i].qty + 1 }); return L; }),
+      dec: () => setLines((L) => { if (L[i].qty <= 1) L.splice(i, 1); else L[i] = Object.assign({}, L[i], { qty: L[i].qty - 1 }); return L; })
+    }));
+    const t = BE.calcTax(st.lines, 0);
+    const tot = { total: money(t.total), net: money(t.net) };
+    const taxRows = BE.taxRows(t, cur).map((r) => ({ label: r.label, amount: r.amount }));
+
+    const termsDefault = BE.terms();
+    const termDays = st.terms == null ? termsDefault : st.terms;
+    const terms = [0, 7, 14, 30].map((d) => ({ label: d === 0 ? 'On receipt' : d + ' days', pressed: termDays === d ? 'true' : 'false', pick: () => this.setState({ terms: d }) }));
+    const cust = st.who ? BE.find('customers', st.who, 'name') : null;
+    const email = cust && cust.email ? cust.email : 'No email: share it instead';
+    const vias = [['email', 'Email', I.mail], ['whatsapp', 'WhatsApp', I.chat], ['link', 'Share link', I.share]]
+      .map(([k, l, ic]) => ({ label: l, icon: ic, pressed: st.via === k ? 'true' : 'false', border: st.via === k ? '#18161F' : '#E2DFE8', pick: () => this.setState({ via: k }) }));
+    const num = BE.nextNumber('INV');
+
+    const make = (draft) => {
+      const what = st.lines.length === 1 ? st.lines[0].name : st.lines[0].name + ' and ' + (st.lines.length - 1) + ' more';
+      const inv = BE.makeInvoice({ who: st.who, what, lines: st.lines.map((l) => Object.assign({}, l)), terms: termDays, draft: !!draft, email: cust && cust.email });
+      const how = { email: 'emailed to ' + (cust && cust.email ? cust.email : st.who), whatsapp: 'shared on WhatsApp', link: 'link copied' }[st.via];
+      M.did(draft ? inv.num + ' saved as a draft' : inv.num + ' ' + how);
+      this.setState({ step: 'done', done: { num: inv.num, draft: !!draft, how, total: money(BE.invTotal(inv)) } });
+    };
+
+    const d = st.done || {};
+    return {
+      I, docName, biz: prof.business, step, s1: 'on', s2: step >= 2 ? 'on' : '', s3: step >= 3 ? 'on' : '',
+      inFlow: st.step !== 'done', onWho: st.step === 'who', onWhat: st.step === 'what', onReview: st.step === 'review', onDone: st.step === 'done',
+      backIcon: st.step === 'who' ? I.close : I.back, backLabel: st.step === 'who' ? 'Close' : 'Back',
+      back: () => { if (st.step === 'who') location.href = 'MobileHome.dc.html'; else this.setState({ step: st.step === 'review' ? 'what' : 'who' }); },
+      query: st.query, setQuery: (e) => this.setState({ query: e.target.value }),
+      customers, custHeading: q ? customers.length + ' found' : 'Recent customers',
+      adding: st.adding, notAdding: !st.adding, addLabel: q ? 'Add “' + st.query + '” as a customer' : 'New customer',
+      startAdd: () => this.setState({ adding: true, newName: st.query }),
+      newName: st.newName, newEmail: st.newEmail, noNewName: !st.newName.trim(),
+      setNewName: (e) => this.setState({ newName: e.target.value }), setNewEmail: (e) => this.setState({ newEmail: e.target.value }),
+      addCust: () => { const c = BE.addCustomer({ name: st.newName, email: st.newEmail }); this.setState({ who: c.name, adding: false, step: 'what' }); },
+      who: st.who, email, catalog, lines, hasLines: lines.length > 0, noLines: lines.length === 0, tot, taxRows, hasTax: taxRows.length > 0,
+      totalLabel: lines.length ? lines.length + (lines.length === 1 ? ' line' : ' lines') + (t.tax ? ', with tax' : '') : 'Nothing added yet',
+      amountPh: 'Amount (' + M.sym(cur).trim() + ')',
+      customName: st.customName, customAmt: st.customAmt, noCustom: !st.customName.trim() || !(BE.num(st.customAmt) > 0),
+      setCustomName: (e) => this.setState({ customName: e.target.value }), setCustomAmt: (e) => this.setState({ customAmt: e.target.value }),
+      addCustom: () => setLines((L) => { L.push({ name: st.customName.trim(), qty: 1, unit: 'job', rate: BE.num(st.customAmt), vat: 'std' }); this.setState({ customName: '', customAmt: '' }); return L; }),
+      toReview: () => this.setState({ step: 'review' }),
+      num, dueWords: termDays === 0 ? 'Due on receipt' : 'Due in ' + termDays + ' days', terms, vias,
+      sendLabel: st.via === 'email' ? 'Send ' + tot.total + ' invoice' : 'Send on ' + (st.via === 'whatsapp' ? 'WhatsApp' : 'a link'),
+      send: () => make(false), saveDraft: () => make(true),
+      doneTitle: d.draft ? 'Saved as a draft' : d.num + ' is on its way',
+      doneBody: d.draft ? 'Find it under Coming in → Drafts, and send it when you’re ready.' : d.total + ' to ' + st.who + ', ' + d.how + '. We’ll tell you when they open it, and when it’s paid.',
+      share: () => M.toast((d.num || 'Invoice') + '.pdf ready to share'),
+      again: () => this.setState({ step: 'who', who: null, lines: [], terms: null, done: null, query: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Going out</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome"></dc-import>
+
+  <header class="m-top">
+    <h1 class="m-h1">Going out</h1>
+    <span class="m-row" style="gap: 8px;">
+      <a class="m-icon-btn" href="MobileImport.dc.html" aria-label="Import a bank statement"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.import}}"></path></svg></a>
+      <a class="m-icon-btn" href="MobileScan.dc.html" aria-label="Scan a receipt" style="background: #18161F;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.camera}}"></path></svg></a>
+    </span>
+  </header>
+
+  <main class="m-main">
+    <section aria-label="Totals" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+        <div style="padding: 12px; border-radius: 16px; background: {{s.bg}}; color: {{s.fg}}; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+          <span style="font-size: 12px; font-weight: 600; opacity: 0.8;">{{s.label}}</span>
+          <span class="m-amt" style="font-size: 18px; white-space: nowrap;">{{s.value}}</span>
+          <span style="font-size: 11.5px; opacity: 0.75;">{{s.sub}}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <div class="m-seg" role="group" aria-label="Show">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+        <button type="button" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <!-- Spent -->
+    <sc-if value="{{onSpent}}" hint-placeholder-val="{{true}}">
+      <sc-if value="{{noReceipt}}" hint-placeholder-val="{{true}}">
+        <a href="MobileScan.dc.html" class="m-row" style="padding: 12px 14px; border-radius: 16px; background: #FFF0B8; color: #6B5000; font-size: 14px; font-weight: 600;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B5000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.camera}}"></path></svg>
+          <span class="m-grow">{{noReceipt}} without a receipt. Snap them while you remember.</span>
+        </a>
+      </sc-if>
+      <section class="m-card tight" aria-label="Spent">
+        <ul class="m-list">
+          <sc-for list="{{spent}}" as="x" hint-placeholder-count="6">
+            <li style="border-bottom: 1px solid #E2DFE8;">
+              <button type="button" class="m-li" style="border: 0;" onClick="{{x.toggle}}" aria-expanded="{{x.exp}}">
+                <span class="m-ic" style="background: #FDE6D6;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{x.icon}}"></path></svg></span>
+                <span class="m-grow" style="display: flex; flex-direction: column; gap: 3px;">
+                  <span class="t">{{x.who}}</span>
+                  <span class="m-row" style="gap: 6px;"><sc-if value="{{x.flag}}" hint-placeholder-val="{{false}}"><span class="m-tag {{x.flagCls}}">{{x.flag}}</span></sc-if><span class="s">{{x.cat}} · {{x.date}}</span></span>
+                </span>
+                <span class="a">{{x.amt}}</span>
+              </button>
+              <sc-if value="{{x.selected}}" hint-placeholder-val="{{false}}">
+                <div class="m-row" style="gap: 8px; flex-wrap: wrap; padding: 0 0 14px 52px;">
+                  <button type="button" class="m-btn sm ghost" onClick="{{x.recat}}">Change category</button>
+                  <sc-if value="{{x.needsReceipt}}" hint-placeholder-val="{{true}}"><a class="m-btn sm" href="MobileScan.dc.html">Add receipt</a></sc-if>
+                </div>
+              </sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </sc-if>
+
+    <!-- Bills -->
+    <sc-if value="{{onBills}}" hint-placeholder-val="{{false}}">
+      <section class="m-card tight" aria-label="Bills">
+        <sc-if value="{{noBills}}" hint-placeholder-val="{{false}}"><p class="m-sub" style="padding: 18px 2px; margin: 0; text-align: center;">No bills waiting. Snap one when it arrives and we’ll remind you before it’s due.</p></sc-if>
+        <ul class="m-list">
+          <sc-for list="{{bills}}" as="b" hint-placeholder-count="4">
+            <li class="m-li">
+              <span class="m-ic" style="background: {{b.tint}};"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.bill}}"></path></svg></span>
+              <span class="m-grow" style="display: flex; flex-direction: column; gap: 3px;">
+                <span class="t">{{b.who}}</span>
+                <span class="m-row" style="gap: 6px;"><span class="m-tag {{b.cls}}">{{b.when}}</span><span class="s">{{b.what}}</span></span>
+              </span>
+              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                <span class="a">{{b.left}}</span>
+                <sc-if value="{{b.open}}" hint-placeholder-val="{{true}}"><button type="button" class="m-chip" style="min-height: 30px; font-size: 12.5px;" onClick="{{b.pay}}">Mark paid</button></sc-if>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </sc-if>
+
+    <!-- Payroll -->
+    <sc-if value="{{onPay}}" hint-placeholder-val="{{false}}">
+      <a href="MobilePayroll.dc.html" class="m-hero" style="gap: 10px;">
+        <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);">{{pay.eyebrow}}</span>
+        <span class="m-amt" style="font-size: 34px; color: #B9A3FF;">{{pay.net}}</span>
+        <span style="font-size: 14px; color: rgba(255,255,255,0.8);">{{pay.sub}}</span>
+        <span class="m-btn white sm" style="align-self: flex-start;">{{pay.cta}}</span>
+      </a>
+      <section class="m-card tight" aria-label="Payroll amounts owed">
+        <ul class="m-list">
+          <sc-for list="{{dues}}" as="d" hint-placeholder-count="3">
+            <li class="m-li">
+              <span class="m-grow" style="display: flex; flex-direction: column; gap: 3px;"><span class="t">{{d.label}}</span><span class="s">{{d.sub}}</span></span>
+              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;"><span class="a">{{d.amt}}</span><sc-if value="{{d.open}}" hint-placeholder-val="{{true}}"><button type="button" class="m-chip" style="min-height: 30px; font-size: 12.5px;" onClick="{{d.pay}}">Mark paid</button></sc-if><sc-if value="{{d.paid}}" hint-placeholder-val="{{false}}"><span class="m-tag ok">Paid</span></sc-if></span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </sc-if>
+  </main>
+
+  <!-- Category picker -->
+  <sc-if value="{{catFor}}" hint-placeholder-val="{{false}}">
+    <div class="m-scrim" aria-hidden="true" onClick="{{closeCat}}" style="z-index: 60;"></div>
+    <section class="m-sheet" role="dialog" aria-modal="true" aria-labelledby="cat-h" style="z-index: 61;">
+      <span class="m-grab" aria-hidden="true"></span>
+      <h2 id="cat-h" class="m-h2">{{catFor}}</h2>
+      <span class="m-sub">{{catHint}}</span>
+      <ul class="m-list">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
+          <li><button type="button" class="m-li" style="min-height: 54px;" onClick="{{c.pick}}">
+            <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t" style="font-weight: {{c.weight}};">{{c.name}}</span><span class="s">{{c.official}}</span></span>
+            <sc-if value="{{c.on}}" hint-placeholder-val="{{false}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></sc-if>
+          </button></li>
+        </sc-for>
+      </ul>
+    </section>
+  </sc-if>
+
+  <dc-import name="MobileTabBar" active="out"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const h = BE.hash();
+    this.state = { tab: ['bills', 'payroll'].indexOf(h) >= 0 ? h : 'spent', sel: null, cat: null };
+    BE.mobile.guard();
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I, W = M.W;
+    const st = this.state;
+    const lk = BE.is('lk');
+    const hasStaff = BE.all('employees').length > 0 || BE.payRuns().length > 0;
+    const exp = BE.all('expenses').filter((x) => x.kind !== 'personal' && x.kind !== 'transfer');
+    const month = exp.filter((x) => x.inMonth);
+    const left = (b) => (typeof BE.billLeft === 'function' ? BE.billLeft(b) : b.amount - (b.paid || 0));
+    const openBills = BE.all('bills').filter((b) => b.status !== 'paid' && left(b) > 0).sort((a, b) => (a.dueIn == null ? 99 : a.dueIn) - (b.dueIn == null ? 99 : b.dueIn));
+    const run = BE.payRuns()[0];
+    const stats = [
+      { label: 'Spent', value: M.short(month.reduce((a, x) => a + x.amount, 0)), sub: 'October', bg: '#FDE6D6', fg: '#18161F' },
+      { label: 'Bills to pay', value: M.short(openBills.reduce((a, b) => a + left(b), 0)), sub: openBills.length + ' open', bg: '#FFFFFF', fg: '#18161F' },
+      hasStaff && run ? { label: 'Payroll', value: M.short(run.net), sub: run.status === 'paid' ? 'Paid' : run.status === 'needs' ? 'To approve' : 'To pay', bg: '#18161F', fg: '#FFFFFF' }
+        : { label: 'No receipt', value: String(month.filter((x) => !x.receipt && !x.attachment && !x.payroll).length), sub: 'this month', bg: '#18161F', fg: '#FFFFFF' }
+    ];
+    const tabs = [['spent', 'Spent'], ['bills', 'Bills']].concat(hasStaff ? [['payroll', 'Payroll']] : [])
+      .map(([k, l]) => ({ label: l, pressed: st.tab === k ? 'true' : 'false', pick: () => this.setState({ tab: k, sel: null }) }));
+    const iconFor = (x) => (x.payroll ? I.people : x.bill ? I.bill : /travel|car|fuel|mile/i.test(x.cat || '') ? I.car : I.expense);
+    const spent = exp.slice(0, 25).map((x) => {
+      const needsReceipt = !x.receipt && !x.attachment && !x.payroll && !x.bill;
+      const uncategorised = !x.cat || /uncategor/i.test(x.cat);
+      return {
+        who: x.who, cat: uncategorised ? 'No category' : x.cat, date: x.date, amt: W(x.amount), icon: iconFor(x),
+        flag: uncategorised ? 'Needs a category' : x.isNew && x.attachment ? 'Receipt' : needsReceipt ? 'No receipt' : false,
+        flagCls: uncategorised ? 'warn' : x.attachment ? 'ok' : 'plain', needsReceipt,
+        selected: st.sel === x.id, exp: st.sel === x.id ? 'true' : 'false',
+        toggle: () => this.setState({ sel: st.sel === x.id ? null : x.id }),
+        recat: () => this.setState({ cat: x.id })
+      };
+    });
+    const noReceipt = month.filter((x) => !x.receipt && !x.attachment && !x.payroll && !x.bill).length;
+    const bills = openBills.map((b) => {
+      const late = b.dueIn != null && b.dueIn < 0;
+      return {
+        who: b.who, what: b.what || b.num || '', left: W(left(b)), open: true,
+        when: late ? (-b.dueIn) + ' days overdue' : b.dueIn === 0 ? 'Due today' : 'Due ' + b.due, cls: late ? 'late' : b.dueIn <= 7 ? 'due' : 'plain',
+        tint: late ? '#FBE3DF' : '#FDE6D6',
+        pay: () => M.confirm('Mark bill paid', () => { const r = BE.payBill(b.id, null, 'Bank transfer'); if (r) M.did(b.who + ' marked paid · ' + W(left(b))); })
+      };
+    });
+    const pay = run ? {
+      eyebrow: run.month + (lk ? ' payroll · ' + run.people.length + ' people' : ' pay run'),
+      net: W(run.net), sub: run.status === 'needs' ? 'Net pay to approve by ' + run.runBy : run.status === 'paid' ? 'Net pay sent on ' + (run.paidOn || run.date) : 'Approved · net pay still to send',
+      cta: run.status === 'needs' ? 'Check and approve' : 'Open payroll'
+    } : { eyebrow: 'Payroll', net: '—', sub: 'No pay runs yet', cta: 'Open payroll' };
+    const dues = BE.payDues().slice(0, 6).map((d) => ({
+      label: d.label, sub: d.payTo + ' · due ' + d.due, amt: W(d.amount), open: d.status !== 'paid', paid: d.status === 'paid',
+      pay: () => M.confirm('Mark ' + d.label + ' paid', () => { if (BE.payPayrollDue(d.id)) M.did(d.label + ' marked paid'); })
+    }));
+    const cx = st.cat ? BE.find('expenses', st.cat) : null;
+    const cats = cx ? BE.expenseCats().map((c) => ({
+      name: c.name, official: c.official || '', on: cx.catId === c.id || cx.cat === c.name, weight: cx.catId === c.id || cx.cat === c.name ? 700 : 600,
+      pick: () => { BE.update('expenses', cx.id, { catId: c.id, cat: c.name }); this.setState({ cat: null }); M.did(cx.who + ' moved to ' + c.name); }
+    })) : [];
+    return {
+      I, stats, tabs, onSpent: st.tab === 'spent', onBills: st.tab === 'bills', onPay: st.tab === 'payroll',
+      spent, noReceipt: noReceipt ? noReceipt + (noReceipt === 1 ? ' expense' : ' expenses') : false,
+      bills, noBills: bills.length === 0, pay, dues,
+      catFor: cx ? cx.who + ' · ' + W(cx.amount) : false,
+      catHint: lk ? 'Categories follow the Inland Revenue’s headings.' : 'Categories follow HMRC’s boxes on the Self Assessment form.',
+      cats, closeCat: () => this.setState({ cat: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -34,6 +34,7 @@ Then open http://localhost:8000/. The index offers both samples, both empty busi
 | Area | Screens |
 |---|---|
 | Get started | `AuthSignUp` (pick the country) → `SetupProfile` (the country's questions; sample or start empty) · `AuthSignIn`, `AuthRecover` (accountant invites), `NotFound` |
+| Mobile app | `MobileUnlock` (first run, Face ID) → `MobileHome`, `MobileIn`, `MobileOut`, `MobileInbox` (tab bar) · `MobileInvoice`, `MobileRecord`, `MobileScan`, `MobileImport`, `MobilePayroll`, `MobileMe`. Shared: `MobileChrome`, `MobileTabBar`, `mobile.css`, `mobile.js` (offline queue, Face ID, push). See `docs/MOBILE.md` |
 | Home | `ThreeHome` (UK quarter card or Sri Lanka VAT month, Needs you, accountant requests), `ThreeMobile`, `Ask` (answers with sources), `Everything`, `Notifications`, `Help` |
 | Coming in | `ThreeIn` → `SellInvoices`, `SellInvoice`, `SellQuotes`, `SellQuote`, `SellRecurring`, `SellCustomers`, `SellCustomer`, `SellCatalog` |
 | Going out | `ThreeOut` → `SpendBill`, `SpendTransaction`, `SpendEveryMonth`, `SpendVendors`, `SpendVendor`, `SpendPayroll` (UK records / Sri Lanka full payroll), `Payslip` (Sri Lanka) |

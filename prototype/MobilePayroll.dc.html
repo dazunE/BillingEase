@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Payroll</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+
+  <header class="m-top">
+    <a class="m-icon-btn" href="MobileOut.dc.html#payroll" aria-label="Back to Going out"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.back}}"></path></svg></a>
+    <span style="font-weight: 700; font-size: 16px;">{{title}}</span>
+    <span style="width: 44px;"></span>
+  </header>
+
+  <main class="m-main" style="padding-bottom: 150px; gap: 16px;">
+    <sc-if value="{{noStaff}}" hint-placeholder-val="{{false}}">
+      <section class="m-card m-stack" style="align-items: center; text-align: center; padding: 28px 18px;">
+        <span class="m-ic lg" style="background: #FFF0B8;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.people}}"></path></svg></span>
+        <h1 class="m-h2">No one on payroll yet</h1>
+        <p class="m-sub" style="margin: 0; line-height: 1.45;">Add people and their pay on the web once. After that, each month’s run takes a minute here.</p>
+        <a class="m-btn" href="SpendPayroll.dc.html">Add people on the web</a>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{hasRun}}" hint-placeholder-val="{{true}}">
+      <!-- The run -->
+      <section class="m-hero" aria-labelledby="run-h">
+        <div class="m-row">
+          <span id="run-h" class="m-grow" style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);">{{run.eyebrow}}</span>
+          <span class="m-tag" style="background: {{run.chipBg}}; color: {{run.chipFg}};">{{run.chip}}</span>
+        </div>
+        <div>
+          <span class="m-amt" style="display: block; font-size: {{run.netSize}}px; color: #B9A3FF; white-space: nowrap;">{{run.net}}</span>
+          <span style="font-size: 14px; color: rgba(255,255,255,0.75);">{{run.netWords}}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <sc-for list="{{run.parts}}" as="p" hint-placeholder-count="4">
+            <div style="padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: rgba(255,255,255,0.65);">{{p.label}}</span>
+              <span class="m-amt" style="font-size: 17px;">{{p.value}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Steps -->
+      <ol class="m-list m-row" style="gap: 6px;" aria-label="Steps">
+        <sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+          <li class="m-grow" style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="height: 4px; border-radius: 99px; background: {{s.bar}};"></span>
+            <span style="font-size: 12px; font-weight: {{s.weight}}; color: {{s.color}};">{{s.label}}</span>
+          </li>
+        </sc-for>
+      </ol>
+
+      <!-- People -->
+      <section class="m-stack" aria-labelledby="ppl-h">
+        <div class="m-section-h"><h2 id="ppl-h" class="m-h2">People</h2><span class="m-sub">{{peopleNote}}</span></div>
+        <div class="m-card tight">
+          <ul class="m-list">
+            <sc-for list="{{people}}" as="p" hint-placeholder-count="5">
+              <li style="border-bottom: 1px solid #E2DFE8;">
+                <button type="button" class="m-li" style="border: 0;" onClick="{{p.toggle}}" aria-expanded="{{p.exp}}">
+                  <span class="m-ic" style="background: #FFF0B8; font: 700 13px var(--ui);">{{p.initials}}</span>
+                  <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;"><span class="t">{{p.name}}</span><span class="s">{{p.job}}</span></span>
+                  <span style="display: flex; flex-direction: column; align-items: flex-end;"><span class="a">{{p.net}}</span><span class="s" style="font-size: 12px;">net</span></span>
+                </button>
+                <sc-if value="{{p.open}}" hint-placeholder-val="{{false}}">
+                  <div style="padding: 0 0 14px 52px; display: flex; flex-direction: column; gap: 6px; font-size: 14px;">
+                    <sc-for list="{{p.rows}}" as="r" hint-placeholder-count="5">
+                      <div class="m-row"><span class="m-grow m-sub" style="font-size: 13.5px;">{{r.label}}</span><span class="m-num" style="font-weight: {{r.weight}};">{{r.value}}</span></div>
+                    </sc-for>
+                    <sc-if value="{{p.canOt}}" hint-placeholder-val="{{false}}">
+                      <div class="m-row" style="margin-top: 4px;"><span class="m-grow" style="font-weight: 600;">{{p.otLabel}}</span>
+                        <span class="m-stepper"><button type="button" onClick="{{p.otDown}}" aria-label="Less overtime">−</button><span style="min-width: 70px; font-size: 13px;">{{p.ot}}</span><button type="button" onClick="{{p.otUp}}" aria-label="More overtime">+</button></span></div>
+                    </sc-if>
+                    <sc-if value="{{p.slip}}" hint-placeholder-val="{{false}}"><a class="m-link" href="{{p.slip}}" style="margin-top: 4px;">Open payslip</a></sc-if>
+                  </div>
+                </sc-if>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </section>
+
+      <!-- What the run owes -->
+      <sc-if value="{{hasDues}}" hint-placeholder-val="{{false}}">
+        <section class="m-stack" aria-labelledby="dues-h">
+          <h2 id="dues-h" class="m-h2">{{duesTitle}}</h2>
+          <div class="m-card tight">
+            <ul class="m-list">
+              <sc-for list="{{dues}}" as="d" hint-placeholder-count="3">
+                <li class="m-li">
+                  <span class="m-grow" style="display: flex; flex-direction: column; gap: 3px;"><span class="t">{{d.label}}</span><span class="s">{{d.sub}}</span></span>
+                  <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;"><span class="a">{{d.amt}}</span>
+                    <sc-if value="{{d.open}}" hint-placeholder-val="{{true}}"><button type="button" class="m-chip" style="min-height: 30px; font-size: 12.5px;" onClick="{{d.pay}}">Mark paid</button></sc-if>
+                    <sc-if value="{{d.paid}}" hint-placeholder-val="{{false}}"><span class="m-tag ok">Paid</span></sc-if></span>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </section>
+      </sc-if>
+      <p class="m-sub" style="margin: 0; line-height: 1.45; text-align: center;">{{footnote}}</p>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{action}}" hint-placeholder-val="{{true}}">
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; padding: 14px 16px 34px; background: #FFFFFF; border-top: 1px solid #E2DFE8; display: flex; flex-direction: column; gap: 8px;">
+      <button type="button" class="m-btn block {{action.cls}}" onClick="{{action.go}}">
+        <sc-if value="{{action.face}}" hint-placeholder-val="{{true}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.face}}"></path></svg></sc-if>
+        {{action.label}}
+      </button>
+      <sc-if value="{{action.undo}}" hint-placeholder-val="{{false}}"><button type="button" class="m-btn block ghost sm" onClick="{{action.undo}}">{{action.undoLabel}}</button></sc-if>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: null, ukGross: {} };
+    BE.mobile.guard();
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I, W = M.W;
+    const st = this.state;
+    const lk = BE.is('lk');
+    const emps = BE.all('employees');
+    const runs = BE.payRuns().filter((r) => r.country === (lk ? 'lk' : 'uk'));
+    const toggle = (id) => () => this.setState({ open: st.open === id ? null : id });
+    const step = (labels, at) => labels.map((l, i) => ({ label: l, bar: i <= at ? '#18161F' : '#E2DFE8', weight: i === at ? 700 : 500, color: i <= at ? '#18161F' : '#8C8896' }));
+    const dueRows = (runId) => BE.payDues(runId).map((d) => ({
+      label: d.label, sub: d.payTo + ' · due ' + d.due + (d.status === 'paid' ? '' : ' · ' + BE.inWords(d.dueIn)), amt: W(d.amount), open: d.status !== 'paid', paid: d.status === 'paid',
+      pay: () => M.confirm('Mark ' + d.label + ' paid', () => { if (BE.payPayrollDue(d.id)) M.did(d.label + ' marked paid'); })
+    }));
+
+    if (!emps.length && !runs.length) return { I, title: 'Payroll', noStaff: true, hasRun: false, action: false };
+
+    if (lk) {
+      let run = runs.find((r) => r.m === 10) || null;
+      if (!run) {
+        return {
+          I, title: 'October payroll', noStaff: false, hasRun: false,
+          action: { label: 'Work out October for ' + emps.length + ' people', cls: '', face: false, go: () => { BE.startLkRun(10); M.did('October worked out'); }, undo: false }
+        };
+      }
+      const s = run.status;
+      const at = s === 'needs' ? 0 : s === 'approved' ? 1 : 2;
+      const people = run.people.map((p) => {
+        const e = BE.find('employees', p.id) || {};
+        return {
+          name: p.name, job: p.job || e.job || '', initials: BE.initials(p.name), net: W(p.net),
+          open: st.open === p.id, exp: st.open === p.id ? 'true' : 'false', toggle: toggle(p.id),
+          rows: [
+            { label: 'Basic', value: W(p.basic), weight: 500 }, { label: 'Allowances', value: W(p.allow), weight: 500 },
+            { label: 'Gross', value: W(p.gross), weight: 700 }, { label: 'EPF 8% (their share)', value: '−' + W(p.epfEe), weight: 500 },
+            { label: 'APIT', value: p.apit ? '−' + W(p.apit) : 'None', weight: 500 }, { label: 'Net pay', value: W(p.net), weight: 700 }
+          ],
+          canOt: s === 'needs', otLabel: 'Overtime this month', ot: W(p.ot || 0),
+          otUp: () => BE.setOvertime(run.id, p.id, (p.ot || 0) + 5000),
+          otDown: () => BE.setOvertime(run.id, p.id, Math.max(0, (p.ot || 0) - 5000)),
+          slip: s !== 'needs' ? 'Payslip.dc.html#' + run.id + '-' + p.id : false
+        };
+      });
+      const action = s === 'needs' ? { label: 'Approve with Face ID', cls: 'dark', face: true, go: () => M.confirm('Approve ' + run.month + ' payroll', () => { BE.approvePayroll(run.id); M.did(run.month + ' payroll approved · EPF, ETF and APIT posted'); }), undo: false }
+        : s === 'approved' ? { label: 'Mark ' + W(run.net) + ' net pay sent', cls: '', face: true, go: () => M.confirm('Mark net pay sent', () => { BE.payPayroll(run.id, 'Bank transfer'); M.did('Net pay marked sent · payslips ready'); }), undo: () => { BE.unapprovePayroll(run.id); M.did('Back to check'); }, undoLabel: 'Not yet: unapprove' }
+        : { label: 'Share payslips with the team', cls: 'ghost', face: false, go: () => M.toast(run.people.length + ' payslips ready to share'), undo: false };
+      return {
+        I, title: run.month.replace(' 2026', '') + ' payroll', noStaff: false, hasRun: true,
+        run: {
+          eyebrow: run.people.length + ' people · pay day ' + run.date, net: W(run.net), netSize: M.fit(W(run.net), 44, 11),
+          netWords: 'Net pay to send' + (s === 'paid' ? ' · sent ' + run.paidOn : ' by ' + run.runBy),
+          chip: { needs: 'To check', approved: 'Approved', paid: 'Paid' }[s], chipBg: s === 'paid' ? '#E2F6D5' : s === 'approved' ? '#EEE8FF' : '#FFF0B8', chipFg: s === 'paid' ? '#2F5711' : s === 'approved' ? '#4B2FC2' : '#6B5000',
+          parts: [
+            { label: 'Gross pay', value: W(run.gross) }, { label: 'EPF 8% + APIT held back', value: W(run.taxes) },
+            { label: 'You add: EPF 12% + ETF 3%', value: W(run.employer) }, { label: 'Total cost', value: W(run.cost) }
+          ]
+        },
+        steps: step(['Check', 'Approve', 'Pay'], at), people,
+        peopleNote: s === 'needs' ? 'Tap to add overtime' : 'Tap for the breakdown',
+        dues: dueRows(run.id), hasDues: BE.payDues(run.id).length > 0, duesTitle: 'To pay the government',
+        footnote: 'EPF, ETF and APIT worked out from each person’s pay. APIT is due by the 15th, EPF and ETF by the last working day of next month.',
+        action
+      };
+    }
+
+    // UK: the payroll software runs payroll; record each run here.
+    const run = runs.find((r) => r.mon === 'Oct') || null;
+    const people = run ? run.people.map((p) => ({
+      name: p.name, job: 'Pay run recorded', initials: BE.initials(p.name), net: W(p.net), open: st.open === p.id, exp: st.open === p.id ? 'true' : 'false', toggle: toggle(p.id),
+      rows: [{ label: 'Gross', value: W(p.gross), weight: 700 }, { label: 'PAYE', value: '−' + W(p.paye), weight: 500 }, { label: 'Employee NI', value: '−' + W(p.eeNI), weight: 500 }, { label: 'Pension (theirs)', value: '−' + W(p.pension), weight: 500 }, { label: 'Net pay', value: W(p.net), weight: 700 }],
+      canOt: false, slip: false
+    })) : emps.map((e) => {
+      const last = runs[0] && runs[0].people.find((p) => p.id === e.id);
+      const gross = st.ukGross[e.id] != null ? st.ukGross[e.id] : last ? last.gross : 1000;
+      const c = BE.ukCheck(gross, e.taxCode, e.pension !== false);
+      return {
+        name: e.name, job: e.job || '', initials: BE.initials(e.name), net: W(c.net), open: st.open === e.id || emps.length === 1, exp: 'true', toggle: toggle(e.id),
+        rows: [{ label: 'Gross (from your payroll software)', value: W(gross), weight: 700 }, { label: 'PAYE', value: '−' + W(c.paye), weight: 500 }, { label: 'Employee NI', value: '−' + W(c.eeNI), weight: 500 }, { label: 'Pension (theirs, 5%)', value: '−' + W(c.pension), weight: 500 }, { label: 'Net pay', value: W(c.net), weight: 700 }],
+        canOt: true, otLabel: 'Gross this month', ot: W(gross), slip: false,
+        otUp: () => this.setState({ ukGross: Object.assign({}, st.ukGross, { [e.id]: gross + 5 }) }),
+        otDown: () => this.setState({ ukGross: Object.assign({}, st.ukGross, { [e.id]: Math.max(0, gross - 5) }) }),
+        _c: Object.assign({ id: e.id, name: e.name }, c)
+      };
+    });
+    const total = (k) => people.reduce((a, p) => a + (p._c ? p._c[k] : 0), 0);
+    const net = run ? run.net : total('net');
+    const s = run ? run.status : 'new';
+    const action = !run ? { label: 'Record October pay run', cls: 'dark', face: true, go: () => M.confirm('Record October pay run', () => { BE.addUkPayRun({ date: new Date(2026, 9, 30), people: people.map((p) => p._c), source: 'BillingEase app' }); M.did('October pay run recorded · HMRC due 22 Nov'); }), undo: false }
+      : s !== 'paid' ? { label: 'Mark ' + W(net) + ' net pay sent', cls: '', face: true, go: () => M.confirm('Mark net pay sent', () => { BE.payPayroll(run.id, 'Bank transfer'); M.did('Net pay marked sent'); }), undo: false }
+      : false;
+    return {
+      I, title: 'October pay run', noStaff: false, hasRun: true,
+      run: {
+        eyebrow: (run ? run.people.length : emps.length) + (emps.length === 1 ? ' person' : ' people') + ' · pay day 30 Oct', net: W(net), netSize: M.fit(W(net), 44, 11),
+        netWords: run ? (s === 'paid' ? 'Net pay sent' : 'Net pay to send on 30 Oct') : 'Check these match your payroll software',
+        chip: run ? (s === 'paid' ? 'Paid' : 'Recorded') : 'Not recorded', chipBg: run ? (s === 'paid' ? '#E2F6D5' : '#EEE8FF') : '#FFF0B8', chipFg: run ? (s === 'paid' ? '#2F5711' : '#4B2FC2') : '#6B5000',
+        parts: [
+          { label: 'Gross pay', value: W(run ? run.gross : total('gross')) }, { label: 'PAYE + NI held back', value: W(run ? run.taxes : total('paye') + total('eeNI')) },
+          { label: 'To HMRC by 22 Nov', value: W(run ? run.hmrc : total('hmrc')) }, { label: 'Your pension 3%', value: W(run ? run.erPension : total('erPension')) }
+        ]
+      },
+      steps: step(['Record', 'Pay staff', 'Pay HMRC'], !run ? 0 : s === 'paid' ? 2 : 1), people,
+      peopleNote: run ? 'Tap for the breakdown' : 'Use + and − to match the gross',
+      dues: run ? dueRows(run.id) : [], hasDues: !!run && BE.payDues(run.id).length > 0, duesTitle: 'To pay HMRC and the pension',
+      footnote: 'BillingEase keeps the records; your payroll software sends the RTI submission to HMRC. The figures above are a sense check.',
+      action
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · You and your business</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+
+  <header class="m-top">
+    <a class="m-icon-btn" href="MobileHome.dc.html" aria-label="Back to Home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.back}}"></path></svg></a>
+    <span style="font-weight: 700; font-size: 16px;">You and your business</span>
+    <span style="width: 44px;"></span>
+  </header>
+
+  <main class="m-main flush" style="gap: 22px;">
+    <!-- Business -->
+    <section class="m-stack" aria-labelledby="biz-h">
+      <h2 id="biz-h" class="m-eyebrow">Business</h2>
+      <div class="m-card" style="display: flex; flex-direction: column; gap: 4px;">
+        <div class="m-row">
+          <span class="m-ic lg" style="background: #18161F; color: #B9A3FF; font: 700 18px var(--ui);">{{prof.initials}}</span>
+          <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;"><span class="m-h3" style="font-size: 17px;">{{prof.business}}</span><span class="m-sub">{{prof.owner}} · {{place}}</span></span>
+        </div>
+        <ul class="m-list" style="margin-top: 8px; border-top: 1px solid #E2DFE8;">
+          <sc-for list="{{bizes}}" as="b" hint-placeholder-count="2">
+            <li><a class="m-li" href="{{b.href}}" style="min-height: 56px;">
+              <span class="m-ic sm" style="background: #EFEDF3; font: 700 11px var(--ui);">{{b.flag}}</span>
+              <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t" style="font-size: 14.5px;">{{b.name}}</span><span class="s">{{b.sub}}</span></span>
+              <sc-if value="{{b.on}}" hint-placeholder-val="{{false}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A5AF8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></sc-if>
+            </a></li>
+          </sc-for>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Security -->
+    <section class="m-stack" aria-labelledby="sec-h">
+      <h2 id="sec-h" class="m-eyebrow">Security</h2>
+      <div class="m-card tight">
+        <div class="m-li">
+          <span class="m-ic sm" style="background: #EEE8FF;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.face}}"></path></svg></span>
+          <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t">Face ID</span><span class="s" style="white-space: normal;">To open the app, and before you mark money as paid out</span></span>
+          <button type="button" class="m-toggle" role="switch" aria-checked="{{faceId}}" aria-label="Face ID" onClick="{{toggleFace}}"></button>
+        </div>
+        <div class="m-li" style="flex-wrap: wrap;">
+          <span class="m-ic sm" style="background: #EFEDF3;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.lock}}"></path></svg></span>
+          <span class="m-grow t">Lock again after</span>
+          <div class="m-row" style="gap: 6px; width: 100%; padding-left: 44px;">
+            <sc-for list="{{locks}}" as="l" hint-placeholder-count="3"><button type="button" class="m-chip" aria-pressed="{{l.pressed}}" onClick="{{l.pick}}" style="min-height: 32px; font-size: 13px;">{{l.label}}</button></sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notifications -->
+    <section id="notifications" class="m-stack" aria-labelledby="ntf-h">
+      <h2 id="ntf-h" class="m-eyebrow">Notifications</h2>
+      <div class="m-card tight">
+        <sc-for list="{{notifs}}" as="n" hint-placeholder-count="6">
+          <div class="m-li">
+            <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t">{{n.label}}</span><span class="s" style="white-space: normal;">{{n.hint}}</span></span>
+            <button type="button" class="m-toggle" role="switch" aria-checked="{{n.on}}" aria-label="{{n.label}}" onClick="{{n.toggle}}"></button>
+          </div>
+        </sc-for>
+      </div>
+      <button type="button" class="m-btn block ghost sm" onClick="{{testPush}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.bell}}"></path></svg>Send me a test notification</button>
+    </section>
+
+    <!-- Offline -->
+    <section class="m-stack" aria-labelledby="off-h">
+      <h2 id="off-h" class="m-eyebrow">Working without signal</h2>
+      <div class="m-card" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="m-row">
+          <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;"><span class="m-h3">Pretend I’m offline</span><span class="m-sub" style="line-height: 1.4;">Try it: everything you record is kept on the phone and sent when signal comes back.</span></span>
+          <button type="button" class="m-toggle" role="switch" aria-checked="{{offline}}" aria-label="Pretend I’m offline" onClick="{{toggleOffline}}"></button>
+        </div>
+        <sc-if value="{{hasQueue}}" hint-placeholder-val="{{false}}">
+          <ul class="m-list" style="border-top: 1px solid #E2DFE8;">
+            <sc-for list="{{queue}}" as="q" hint-placeholder-count="2">
+              <li class="m-row" style="padding: 10px 0; gap: 10px; font-size: 14px;"><span class="m-tag queued">Waiting</span><span class="m-grow">{{q.label}}</span></li>
+            </sc-for>
+          </ul>
+        </sc-if>
+        <span class="m-row m-sub" style="gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.sync}}"></path></svg>{{syncWords}}</span>
+      </div>
+    </section>
+
+    <section class="m-stack">
+      <a class="m-card m-row" href="ThreeHome.dc.html">
+        <span class="m-ic sm" style="background: #EFEDF3;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.web}}"></path></svg></span>
+        <span class="m-grow" style="display: flex; flex-direction: column;"><span class="m-h3">Open BillingEase on the web</span><span class="m-sub">Reports, tax returns, branding, people and access</span></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8C8896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.chev}}"></path></svg>
+      </a>
+      <button type="button" class="m-btn block line" onClick="{{lockNow}}">Lock the app</button>
+      <a class="m-btn block line" href="MobileUnlock.dc.html#welcome" onClick="{{signOut}}" style="color: #A1281B;">Sign out of this phone</a>
+      <span class="m-sub" style="text-align: center; font-size: 12px;">BillingEase for iPhone and Android · design prototype</span>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); BE.mobile.guard(); }
+  componentDidMount() {
+    if (BE.hash() === 'notifications') setTimeout(() => { const el = document.getElementById('notifications'); if (el) el.scrollIntoView({ block: 'start' }); }, 60);
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const s = M.get();
+    const prof = BE.get('profile') || {};
+    const lk = BE.is('lk');
+    const pr = BE.practice();
+    const bizes = [
+      { name: 'Harper Studio', sub: 'Leeds · United Kingdom · sample', flag: 'UK', href: 'MobileHome.dc.html#sample-uk', on: !lk && !BE.isEmpty() },
+      { name: 'Serendib Design Studio', sub: 'Colombo · Sri Lanka · sample', flag: 'LK', href: 'MobileHome.dc.html#sample-lk', on: lk && !BE.isEmpty() }
+    ];
+    const N = [
+      ['paid', 'Money in', 'When a customer pays, or opens an invoice'],
+      ['late', 'Late invoices', 'The day one goes late, with a reminder ready'],
+      ['payroll', 'Payroll', lk ? 'When the month’s run is ready, and EPF, ETF, APIT due dates' : 'Pay day, and when HMRC and the pension are due'],
+      ['accountant', lk ? 'Your tax practitioner' : 'Your accountant', 'Requests and messages from ' + (pr.short || 'them')],
+      ['deadlines', 'Tax deadlines', lk ? 'VAT, SSCL and income tax, a week before' : 'MTD updates and Self Assessment, a week before'],
+      ['drafts', 'Drafts to check', 'When the AI has read a receipt or drafted a reminder']
+    ];
+    const notifs = N.map(([k, l, h]) => ({ label: l, hint: h, on: s.notif[k] ? 'true' : 'false', toggle: () => M.setNotif(k, !s.notif[k]) }));
+    const q = M.queued();
+    return {
+      I, prof, place: (prof.city ? prof.city + ' · ' : '') + (prof.country || ''), bizes,
+      faceId: s.faceId ? 'true' : 'false', toggleFace: () => M.set({ faceId: !s.faceId }),
+      locks: [['now', 'Straight away'], ['1m', '1 minute'], ['5m', '5 minutes']].map(([k, l]) => ({ label: l, pressed: s.lockAfter === k ? 'true' : 'false', pick: () => M.set({ lockAfter: k }) })),
+      notifs,
+      testPush: () => { const late = BE.lateInvoices()[0]; M.push(late ? late.who + ' opened ' + late.num : 'Test from BillingEase', late ? 'They looked at it a minute ago. ' + BE.money(BE.invOpen(late), late.cur) + ' is still open.' : 'Notifications are working.', 'MobileIn.dc.html'); },
+      offline: s.offline ? 'true' : 'false', toggleOffline: () => M.setOffline(!s.offline),
+      queue: q.slice(0, 6), hasQueue: q.length > 0,
+      syncWords: s.offline ? (q.length ? q.length + ' waiting to sync' : 'Nothing waiting yet') : 'Everything synced · just now',
+      lockNow: () => { M.lock(); location.href = 'MobileUnlock.dc.html'; },
+      signOut: () => { M.lock(); M.set({ onboarded: false }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

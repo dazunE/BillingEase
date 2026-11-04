@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Record money</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+
+  <header class="m-top">
+    <a class="m-icon-btn" href="MobileHome.dc.html" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{I.close}}"></path></svg></a>
+    <div class="m-seg" role="group" aria-label="Money in or out" style="width: 230px;">
+      <button type="button" aria-pressed="{{outPressed}}" onClick="{{goOut}}">Money out</button>
+      <button type="button" aria-pressed="{{inPressed}}" onClick="{{goIn}}">Money in</button>
+    </div>
+    <a class="m-icon-btn" href="MobileScan.dc.html" aria-label="Scan a receipt instead"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.camera}}"></path></svg></a>
+  </header>
+
+  <main class="m-main flush" style="gap: 16px; padding-bottom: 20px;">
+    <!-- The amount -->
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0 2px;">
+      <span class="m-eyebrow">{{amountLabel}}</span>
+      <span class="m-amt" style="font-size: {{amtSize}}px; line-height: 1.1; color: {{amtColor}}; white-space: nowrap;" aria-live="polite">{{display}}</span>
+    </div>
+
+    <!-- Against an invoice (money in) -->
+    <sc-if value="{{isIn}}" hint-placeholder-val="{{false}}">
+      <section class="m-stack" aria-labelledby="for-h" style="gap: 8px;">
+        <h2 id="for-h" class="m-label">What’s it for?</h2>
+        <div class="m-chips">
+          <sc-for list="{{invChips}}" as="c" hint-placeholder-count="3">
+            <button type="button" class="m-chip" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="min-height: 44px; flex-direction: column; align-items: flex-start; gap: 0; padding: 4px 14px; justify-content: center;"><span>{{c.label}}</span><span style="font-size: 11.5px; font-weight: 500; opacity: 0.75;">{{c.sub}}</span></button>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Who + category -->
+    <sc-if value="{{showWho}}" hint-placeholder-val="{{true}}">
+      <div class="m-row" style="gap: 8px;">
+        <input class="m-input" placeholder="{{whoPh}}" aria-label="{{whoPh}}" value="{{who}}" onChange="{{setWho}}" list="who-list">
+        <datalist id="who-list"><sc-for list="{{whoSuggest}}" as="w" hint-placeholder-count="3"><option value="{{w}}"></option></sc-for></datalist>
+      </div>
+      <div class="m-chips" role="group" aria-label="Category">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+          <button type="button" class="m-chip" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.name}}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <div class="m-row" style="gap: 8px; justify-content: center;">
+      <sc-for list="{{whens}}" as="w" hint-placeholder-count="2"><button type="button" class="m-chip" aria-pressed="{{w.pressed}}" onClick="{{w.pick}}" style="min-height: 32px; font-size: 13px;">{{w.label}}</button></sc-for>
+      <span style="width: 1px; height: 20px; background: #E2DFE8;"></span>
+      <sc-for list="{{hows}}" as="h" hint-placeholder-count="3"><button type="button" class="m-chip" aria-pressed="{{h.pressed}}" onClick="{{h.pick}}" style="min-height: 32px; font-size: 13px;">{{h.label}}</button></sc-for>
+    </div>
+
+    <!-- Number pad -->
+    <div class="m-pad" style="margin-top: auto;" role="group" aria-label="Number pad">
+      <sc-for list="{{keys}}" as="k" hint-placeholder-count="12">
+        <button type="button" onClick="{{k.press}}" aria-label="{{k.aria}}">{{k.label}}</button>
+      </sc-for>
+    </div>
+    <button type="button" class="m-btn block" onClick="{{save}}" disabled="{{cantSave}}" style="min-height: 56px;">{{saveLabel}}</button>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { dir: BE.hash() === 'in' ? 'in' : 'out', amt: '', who: '', catId: null, inv: null, day: 0, how: 'Card' };
+    BE.mobile.guard();
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const st = this.state;
+    const lk = BE.is('lk');
+    const cur = (BE.get('profile') || {}).currency;
+    const sym = M.sym(cur);
+    const isIn = st.dir === 'in';
+    const n = Number(st.amt || 0);
+    const pretty = st.amt ? Number(st.amt.split('.')[0] || 0).toLocaleString('en-US') + (st.amt.indexOf('.') >= 0 ? '.' + st.amt.split('.')[1] : '') : '0';
+    const press = (k) => () => {
+      let a = st.amt;
+      if (k === 'del') a = a.slice(0, -1);
+      else if (k === '.') { if (a.indexOf('.') < 0) a = (a || '0') + '.'; }
+      else if (!(a.indexOf('.') >= 0 && a.split('.')[1].length >= 2) && a.replace('.', '').length < 9) a = a === '0' ? k : a + k;
+      this.setState({ amt: a });
+    };
+    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'].map((k) => ({ label: k === 'del' ? '⌫' : k, aria: k === 'del' ? 'Delete' : k === '.' ? 'Point' : k, press: press(k) }));
+
+    // Money in: open invoices first, then "other income"
+    const open = BE.all('invoices').filter((i) => ['late', 'open', 'part'].indexOf(BE.invStatus(i)) >= 0).sort((a, b) => a.dueIn - b.dueIn).slice(0, 6);
+    const invChips = open.map((i) => ({ label: i.who, sub: i.num + ' · ' + BE.money(BE.invOpen(i), i.cur, { whole: true }), pressed: st.inv === i.num ? 'true' : 'false', pick: () => this.setState({ inv: i.num, amt: String(BE.invOpen(i)), who: i.who }) }))
+      .concat([{ label: 'Not on an invoice', sub: 'Cash sale, interest, refund', pressed: isIn && !st.inv ? 'true' : 'false', pick: () => this.setState({ inv: null }) }]);
+
+    const allCats = BE.expenseCats();
+    const top = ['travel', 'office', 'phone', 'cogs', 'premises', 'rent', 'advert', 'utilities', 'other'];
+    const outCats = allCats.slice().sort((a, b) => { const ia = top.findIndex((t) => a.id.indexOf(t) === 0); const ib = top.findIndex((t) => b.id.indexOf(t) === 0); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib); }).slice(0, 8);
+    const inCats = [{ id: 'sales', name: 'Sales' }, { id: 'interest', name: 'Interest' }, { id: 'refund', name: 'Refund' }, { id: 'grant', name: 'Grant' }, { id: 'other-in', name: 'Other income' }];
+    const catList = isIn ? inCats : outCats;
+    const cats = catList.map((c) => ({ name: c.name, pressed: st.catId === c.id ? 'true' : 'false', pick: () => this.setState({ catId: c.id }) }));
+
+    const names = (isIn ? BE.all('customers').map((c) => c.name) : BE.all('expenses').map((x) => x.who)).filter((v, i, a) => v && a.indexOf(v) === i).slice(0, 12);
+    const whens = [[0, 'Today'], [-1, 'Yesterday']].map(([d, l]) => ({ label: l, pressed: st.day === d ? 'true' : 'false', pick: () => this.setState({ day: d }) }));
+    const hows = (isIn ? ['Bank', 'Cash'].concat(lk ? ['Cheque'] : []) : ['Card', 'Bank', 'Cash'])
+      .map((h) => ({ label: h, pressed: st.how === h ? 'true' : 'false', pick: () => this.setState({ how: h }) }));
+    const how = { Bank: 'Bank transfer', Card: 'Card', Cash: 'Cash', Cheque: 'Cheque' }[st.how] || 'Bank transfer';
+
+    const showWho = !isIn || !st.inv;
+    const cantSave = !(n > 0) || (showWho && !st.who.trim());
+    const W = (x) => BE.money(x, cur);
+    return {
+      I, isIn, outPressed: isIn ? 'false' : 'true', inPressed: isIn ? 'true' : 'false',
+      goOut: () => this.setState({ dir: 'out', inv: null, catId: null, how: 'Card' }),
+      goIn: () => this.setState({ dir: 'in', catId: null, how: 'Bank' }),
+      amountLabel: isIn ? 'Money in' : 'Money out',
+      display: sym + pretty, amtSize: M.fit(sym + pretty, 54, 9), amtColor: n > 0 ? (isIn ? '#7A5AF8' : '#18161F') : '#CBC7D3',
+      invChips, showWho, whoPh: isIn ? 'Who paid you?' : 'Who did you pay?', who: st.who, whoSuggest: names,
+      setWho: (e) => this.setState({ who: e.target.value }),
+      cats, whens, hows, keys, cantSave,
+      saveLabel: isIn ? (st.inv ? 'Record payment for ' + st.inv : 'Save money in') : 'Save expense',
+      save: () => {
+        if (cantSave) return;
+        if (isIn && st.inv) {
+          BE.recordPayment(st.inv, n, how);
+          M.did(W(n) + ' recorded against ' + st.inv);
+        } else if (isIn) {
+          const c = inCats.find((x) => x.id === st.catId);
+          M.recordIncome({ who: st.who.trim(), amount: n, how, cat: c ? c.name : 'Other income', dayOffset: st.day });
+          M.did(W(n) + ' from ' + st.who.trim() + ' saved');
+        } else {
+          BE.recordExpense({ who: st.who.trim(), amount: n, catId: st.catId, how, dayOffset: st.day });
+          M.did(W(n) + ' to ' + st.who.trim() + ' saved');
+        }
+        setTimeout(() => { location.href = isIn ? 'MobileIn.dc.html' : 'MobileOut.dc.html'; }, 900);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

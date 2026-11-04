@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Coming in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome"></dc-import>
+
+  <header class="m-top">
+    <h1 class="m-h1">Coming in</h1>
+    <a class="m-btn sm" href="MobileInvoice.dc.html" aria-label="New invoice"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{I.plus}}"></path></svg>Invoice</a>
+  </header>
+
+  <main class="m-main">
+    <!-- Where the money is -->
+    <section aria-label="Totals" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+        <div style="padding: 12px; border-radius: 16px; background: {{s.bg}}; color: {{s.fg}}; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+          <span style="font-size: 12px; font-weight: 600; opacity: 0.8;">{{s.label}}</span>
+          <span class="m-amt" style="font-size: 18px; white-space: nowrap;">{{s.value}}</span>
+          <span style="font-size: 11.5px; opacity: 0.75;">{{s.sub}}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <div class="m-stack" style="gap: 12px;">
+      <label class="m-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{I.search}}"></path></svg>
+        <input type="search" placeholder="Customer, invoice number or amount" aria-label="Search invoices" value="{{query}}" onChange="{{setQuery}}">
+      </label>
+      <div class="m-chips" role="group" aria-label="Show">
+        <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+          <button type="button" class="m-chip" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}<sc-if value="{{f.n}}" hint-placeholder-val="{{2}}"><span class="n">{{f.n}}</span></sc-if></button>
+        </sc-for>
+      </div>
+    </div>
+
+    <section class="m-card tight" aria-label="Invoices">
+      <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+        <p class="m-sub" style="padding: 18px 2px; margin: 0; text-align: center;">{{noneText}}</p>
+      </sc-if>
+      <ul class="m-list">
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+          <li style="border-bottom: 1px solid #E2DFE8;">
+            <button type="button" class="m-li" style="border: 0;" onClick="{{r.toggle}}" aria-expanded="{{r.exp}}">
+              <span class="m-ic" style="background: {{r.tint}}; font: 700 13px var(--ui); color: #18161F;">{{r.initials}}</span>
+              <span class="m-grow" style="display: flex; flex-direction: column; gap: 3px;">
+                <span class="t">{{r.who}}</span>
+                <span class="m-row" style="gap: 6px;"><span class="m-tag {{r.cls}}">{{r.state}}</span><span class="s">{{r.num}} · {{r.when}}</span></span>
+              </span>
+              <span class="a">{{r.amt}}</span>
+            </button>
+            <sc-if value="{{r.selected}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 0 14px 52px;">
+                <span class="m-sub" style="line-height: 1.4;">{{r.what}}</span>
+                <div class="m-row" style="gap: 8px; flex-wrap: wrap;">
+                  <sc-if value="{{r.canPay}}" hint-placeholder-val="{{true}}"><button type="button" class="m-btn sm" onClick="{{r.pay}}">Record payment</button></sc-if>
+                  <sc-if value="{{r.canRemind}}" hint-placeholder-val="{{true}}"><button type="button" class="m-btn sm ghost" onClick="{{r.remind}}">{{r.remindLabel}}</button></sc-if>
+                  <sc-if value="{{r.canSend}}" hint-placeholder-val="{{false}}"><button type="button" class="m-btn sm" onClick="{{r.send}}">Send now</button></sc-if>
+                  <button type="button" class="m-btn sm ghost" onClick="{{r.share}}" aria-label="Share the PDF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.share}}"></path></svg>PDF</button>
+                </div>
+              </div>
+            </sc-if>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <a href="MobileRecord.dc.html#in" class="m-card m-row">
+      <span class="m-ic" style="background: #EEE8FF;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.in}}"></path></svg></span>
+      <span class="m-grow"><span class="m-h3" style="display: block;">Money in without an invoice?</span><span class="m-sub">Cash sales, interest, a refund: record it here.</span></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8C8896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.chev}}"></path></svg>
+    </a>
+  </main>
+
+  <!-- Record a payment -->
+  <sc-if value="{{payInv}}" hint-placeholder-val="{{false}}">
+    <div class="m-scrim" aria-hidden="true" onClick="{{closePay}}" style="z-index: 60;"></div>
+    <section class="m-sheet" role="dialog" aria-modal="true" aria-labelledby="pay-h" style="z-index: 61;">
+      <span class="m-grab" aria-hidden="true"></span>
+      <div class="m-row">
+        <div class="m-grow">
+          <h2 id="pay-h" class="m-h2">Record a payment</h2>
+          <span class="m-sub">{{payInv.who}} · {{payInv.num}} · {{payInv.open}} open</span>
+        </div>
+        <button type="button" class="m-icon-btn" onClick="{{closePay}}" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{I.close}}"></path></svg></button>
+      </div>
+      <div class="m-field">
+        <label for="pay-amt">What reached your bank</label>
+        <div class="m-row" style="gap: 8px;">
+          <span class="m-amt" style="font-size: 30px;">{{sym}}</span>
+          <input id="pay-amt" class="m-input m-amt" inputmode="decimal" style="font-size: 30px; border: 0; padding: 0; min-height: 48px;" value="{{payAmt}}" onChange="{{setPayAmt}}">
+        </div>
+        <sc-if value="{{payPart}}" hint-placeholder-val="{{false}}"><span class="m-tag warn" style="align-self: flex-start;">Part payment · {{payLeft}} will stay open</span></sc-if>
+      </div>
+      <div class="m-field">
+        <span class="m-label">How they paid</span>
+        <div class="m-row" style="gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{hows}}" as="h" hint-placeholder-count="3">
+            <button type="button" class="m-chip" aria-pressed="{{h.pressed}}" onClick="{{h.pick}}">{{h.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <sc-if value="{{isCheque}}" hint-placeholder-val="{{false}}">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <input class="m-input" placeholder="Cheque no." aria-label="Cheque number" value="{{chqNo}}" onChange="{{setChqNo}}">
+          <input class="m-input" placeholder="Bank" aria-label="Bank" value="{{chqBank}}" onChange="{{setChqBank}}">
+        </div>
+      </sc-if>
+      <button type="button" class="m-btn block" onClick="{{savePay}}">Save payment</button>
+    </section>
+  </sc-if>
+
+  <dc-import name="MobileTabBar" active="in"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const h = BE.hash();
+    this.state = { filter: ['late', 'due', 'drafts', 'paid'].indexOf(h) >= 0 ? h : 'all', sel: null, query: '', pay: null, payAmt: '', how: 'Bank transfer', chqNo: '', chqBank: '' };
+    BE.mobile.guard();
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I, W = M.W;
+    const st = this.state;
+    const lk = BE.is('lk');
+    const inv = BE.all('invoices').filter((i) => !i.void);
+    const status = (i) => BE.invStatus(i);
+    const isDue = (i) => ['open', 'part'].indexOf(status(i)) >= 0;
+    const groups = {
+      all: inv, late: inv.filter((i) => status(i) === 'late'), due: inv.filter(isDue),
+      drafts: inv.filter((i) => status(i) === 'draft'), paid: inv.filter((i) => status(i) === 'paid')
+    };
+    const sum = (list, f) => list.reduce((a, x) => a + f(x), 0);
+    const stats = [
+      { label: 'Late', value: M.short(sum(groups.late, BE.invOpen)), sub: groups.late.length + ' invoice' + (groups.late.length === 1 ? '' : 's'), bg: '#FBE3DF', fg: '#18161F' },
+      { label: 'On the way', value: M.short(sum(groups.due, BE.invOpen)), sub: groups.due.length + ' open', bg: '#EEE8FF', fg: '#18161F' },
+      { label: 'Received', value: M.short(sum(BE.all('payments').filter((p) => p.inMonth), (p) => p.amount)), sub: 'October', bg: '#18161F', fg: '#FFFFFF' }
+    ];
+    const LBL = { all: 'All', late: 'Late', due: 'Due', drafts: 'Drafts', paid: 'Paid' };
+    const filters = Object.keys(LBL).map((k) => ({ label: LBL[k], n: k === 'all' ? false : groups[k].length || false, pressed: st.filter === k ? 'true' : 'false', pick: () => this.setState({ filter: k, sel: null }) }));
+    const q = (st.query || '').trim().toLowerCase();
+    const list = groups[st.filter].filter((i) => !q || (i.who + ' ' + i.num + ' ' + (i.what || '') + ' ' + BE.invTotal(i)).toLowerCase().indexOf(q) >= 0).slice(0, 30);
+    const rank = { late: 0, draft: 1, part: 2, open: 3, paid: 4 };
+    list.sort((a, b) => (rank[status(a)] - rank[status(b)]) || (a.dueIn - b.dueIn));
+    const today = (x) => (x.events || []).some((e) => /eminder/.test(e.label) && e.date === BE.today);
+    const rows = list.map((i) => {
+      const s = status(i);
+      const cls = { late: 'late', open: 'due', part: 'due', paid: 'paid', draft: 'draft' }[s];
+      const word = { late: (-i.dueIn) + ' days late', open: 'Due', part: 'Part paid', paid: 'Paid', draft: 'Draft' }[s];
+      const when = s === 'paid' ? 'paid ' + (i.paidOn || i.issued) : s === 'draft' ? 'not sent' : s === 'late' ? 'was due ' + i.due : 'due ' + i.due;
+      const reminded = today(i);
+      return {
+        who: i.who, num: i.num, initials: BE.initials(i.who), what: (i.what || '') + ' · ' + BE.money(BE.invTotal(i), i.cur) + ' total' + (i.paid ? ', ' + BE.money(i.paid, i.cur) + ' received' : ''),
+        amt: BE.money(s === 'paid' || s === 'draft' ? BE.invTotal(i) : BE.invOpen(i), i.cur, { whole: true }),
+        cls, state: word, when, tint: s === 'late' ? '#FBE3DF' : s === 'paid' ? '#E2F6D5' : '#EEE8FF',
+        selected: st.sel === i.num, exp: st.sel === i.num ? 'true' : 'false',
+        toggle: () => this.setState({ sel: st.sel === i.num ? null : i.num }),
+        canPay: s !== 'paid' && s !== 'draft', canRemind: s === 'late' || s === 'open' || s === 'part', canSend: s === 'draft',
+        remindLabel: reminded ? 'Reminded today' : 'Remind',
+        remind: () => { if (reminded) return; const r = BE.nudgeInvoice(i.num); if (r) M.did('Reminder sent to ' + r.to); },
+        send: () => { BE.sendInvoice(i.num, Number((BE.get('profile') || {}).terms) || 14); M.did(i.num + ' sent to ' + i.who); },
+        share: () => M.toast(i.num + '.pdf ready to share'),
+        pay: () => this.setState({ pay: i.num, payAmt: String(BE.invOpen(i)), how: 'Bank transfer' })
+      };
+    });
+    const p = st.pay ? BE.find('invoices', st.pay, 'num') : null;
+    const open = p ? BE.invOpen(p) : 0;
+    const amt = Number(String(st.payAmt).replace(/[^0-9.]/g, '')) || 0;
+    const hows = ['Bank transfer', 'Card', 'Cash'].concat(lk ? ['Cheque'] : []).map((h) => ({ label: h, pressed: st.how === h ? 'true' : 'false', pick: () => this.setState({ how: h }) }));
+    return {
+      I, stats, filters, rows, none: rows.length === 0,
+      noneText: q ? 'Nothing matches “' + st.query + '”.' : st.filter === 'late' ? 'Nothing is late. Nice.' : 'Nothing here yet.',
+      query: st.query, setQuery: (e) => this.setState({ query: e.target.value }),
+      payInv: p ? { who: p.who, num: p.num, open: BE.money(open, p.cur) } : false,
+      sym: p ? M.sym(p.cur) : '',
+      payAmt: st.payAmt, setPayAmt: (e) => this.setState({ payAmt: e.target.value }),
+      payPart: p && amt > 0 && amt < open, payLeft: p ? BE.money(open - amt, p.cur) : '',
+      hows, isCheque: st.how === 'Cheque',
+      chqNo: st.chqNo, chqBank: st.chqBank,
+      setChqNo: (e) => this.setState({ chqNo: e.target.value }), setChqBank: (e) => this.setState({ chqBank: e.target.value }),
+      closePay: () => this.setState({ pay: null }),
+      savePay: () => {
+        if (!p || amt <= 0) return;
+        BE.recordPayment(p.num, Math.min(amt, open), st.how, st.how === 'Cheque' ? { chequeNo: st.chqNo, chequeBank: st.chqBank } : {});
+        this.setState({ pay: null, sel: null });
+        M.did(BE.money(Math.min(amt, open), p.cur) + ' from ' + p.who + ' recorded');
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

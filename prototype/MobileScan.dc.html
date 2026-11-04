@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Scan a receipt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame {{frameClass}}">
+
+  <!-- Camera -->
+  <sc-if value="{{onCamera}}" hint-placeholder-val="{{true}}">
+    <div class="m-camera" aria-hidden="true">
+      <div class="m-receipt">
+        <div class="c" style="font-weight: 700; font-size: 14px;">{{r.shop}}</div>
+        <div class="c">{{r.addr}}</div>
+        <div class="c" style="margin-bottom: 8px;">{{r.vatNo}}</div>
+        <sc-for list="{{r.items}}" as="i" hint-placeholder-count="3"><div class="r"><span>{{i.name}}</span><span>{{i.price}}</span></div></sc-for>
+        <div style="border-top: 1px dashed #999; margin: 6px 0;"></div>
+        <div class="r" style="font-weight: 700;"><span>TOTAL</span><span>{{r.total}}</span></div>
+        <div class="r"><span>{{r.vatLine}}</span><span>{{r.vat}}</span></div>
+        <div class="r"><span>{{r.card}}</span><span></span></div>
+        <div class="c" style="margin-top: 8px;">{{r.when}}</div>
+      </div>
+      <div class="m-corners {{cornerClass}}"><span></span><span></span><span></span><span></span><sc-if value="{{found}}" hint-placeholder-val="{{false}}"><div class="m-scanline"></div></sc-if></div>
+    </div>
+    <dc-import name="MobileChrome" dark="{{true}}" tabs="{{false}}"></dc-import>
+    <header class="m-top" style="position: relative; z-index: 5;">
+      <a class="m-icon-btn glass" href="{{closeHref}}" aria-label="Close camera"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{I.close}}"></path></svg></a>
+      <span style="padding: 8px 14px; border-radius: 99px; background: rgba(0,0,0,0.45); color: #FFFFFF; font-size: 13.5px; font-weight: 600;" role="status">{{hint}}</span>
+      <button type="button" class="m-icon-btn glass" onClick="{{toggleFlash}}" aria-pressed="{{flash}}" aria-label="Flash"><svg width="20" height="20" viewBox="0 0 24 24" fill="{{flashFill}}" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.flash}}"></path></svg></button>
+    </header>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; padding: 18px 28px 46px; display: flex; flex-direction: column; gap: 18px; background: linear-gradient(transparent, rgba(0,0,0,0.65) 35%);">
+      <div class="m-seg" role="group" aria-label="What are you scanning" style="background: rgba(255,255,255,0.14); align-self: center; width: 260px;">
+        <sc-for list="{{kinds}}" as="k" hint-placeholder-count="2"><button type="button" aria-pressed="{{k.pressed}}" onClick="{{k.pick}}" style="color: {{k.color}};">{{k.label}}</button></sc-for>
+      </div>
+      <div class="m-row" style="justify-content: space-between;">
+        <button type="button" class="m-icon-btn glass" style="width: 52px; height: 52px; border-radius: 14px;" onClick="{{snap}}" aria-label="Choose a photo or PDF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.image}}"></path></svg></button>
+        <button type="button" class="m-shutter" onClick="{{snap}}" aria-label="Take the photo"><span></span></button>
+        <span style="width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,0.14); color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;" aria-label="{{batchLabel}}"><span class="m-amt" style="font-size: 18px;">{{batch}}</span>done</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Reading -->
+  <sc-if value="{{onReading}}" hint-placeholder-val="{{false}}">
+    <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+    <main class="m-main flush" style="align-items: center; justify-content: center; text-align: center; gap: 22px;">
+      <div style="position: relative; width: 150px; height: 200px; border-radius: 14px; background: #FBFAF6; box-shadow: 0 16px 36px rgba(24,22,31,0.18); overflow: hidden; transform: rotate(-3deg);" aria-hidden="true">
+        <div style="padding: 16px 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div class="m-shimmer" style="width: 70%; align-self: center;"></div><div class="m-shimmer" style="width: 50%; align-self: center; height: 8px;"></div>
+          <div class="m-shimmer" style="height: 8px;"></div><div class="m-shimmer" style="height: 8px;"></div><div class="m-shimmer" style="height: 8px; width: 80%;"></div>
+          <div class="m-shimmer" style="height: 12px; margin-top: 10px;"></div>
+        </div>
+        <div class="m-scanline"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 class="m-h2">Reading your receipt…</h1>
+        <span class="m-sub">{{readingStep}}</span>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- Saved for later (offline) -->
+  <sc-if value="{{onQueued}}" hint-placeholder-val="{{false}}">
+    <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+    <main class="m-main flush" style="align-items: center; justify-content: center; text-align: center; gap: 16px;">
+      <span class="m-ic" style="width: 88px; height: 88px; background: #E4E7F5;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2E3A73" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.clock}}"></path></svg></span>
+      <h1 class="m-h2" style="font-size: 22px;">Photo saved on your phone</h1>
+      <p class="m-sub" style="margin: 0; max-width: 290px; font-size: 15px; line-height: 1.45;">There’s no signal, so we’ll read it as soon as you’re back online. You’ll find the draft in Inbox → To check.</p>
+      <div class="m-stack" style="width: 100%; margin-top: 10px;">
+        <button type="button" class="m-btn block" onClick="{{again}}">Scan another</button>
+        <a class="m-btn block ghost" href="MobileHome.dc.html">Done</a>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- Check what we read -->
+  <sc-if value="{{onReview}}" hint-placeholder-val="{{false}}">
+    <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+    <header class="m-top">
+      <button type="button" class="m-icon-btn" onClick="{{again}}" aria-label="Retake"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.back}}"></path></svg></button>
+      <span class="m-tag ai"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.spark}}"></path></svg>Read from your receipt</span>
+      <span style="width: 44px;"></span>
+    </header>
+    <main class="m-main" style="padding-bottom: 130px; gap: 16px;">
+      <section class="m-row" style="gap: 14px; align-items: flex-start;">
+        <div style="width: 74px; height: 98px; border-radius: 10px; background: #FBFAF6; box-shadow: 0 6px 16px rgba(24,22,31,0.16); transform: rotate(-3deg); flex: none; padding: 8px 6px; display: flex; flex-direction: column; gap: 4px;" aria-label="Receipt photo">
+          <span style="height: 5px; width: 70%; align-self: center; background: #CFCAD8; border-radius: 3px;"></span><span style="height: 3px; background: #E2DFE8; border-radius: 3px;"></span><span style="height: 3px; background: #E2DFE8; border-radius: 3px;"></span><span style="height: 3px; width: 80%; background: #E2DFE8; border-radius: 3px;"></span><span style="height: 5px; margin-top: auto; background: #CFCAD8; border-radius: 3px;"></span>
+        </div>
+        <div class="m-grow" style="display: flex; flex-direction: column; gap: 4px;">
+          <input class="m-input" style="border: 0; padding: 0; min-height: 30px; font: 700 20px var(--head); background: transparent;" aria-label="Who you paid" value="{{who}}" onChange="{{setWho}}">
+          <span class="m-row" style="gap: {{symGap}}px;"><span class="m-amt" style="font-size: 34px;">{{sym}}</span><input class="m-amt" inputmode="decimal" style="border: 0; background: transparent; font-size: 34px; width: 100%; padding: 0;" aria-label="Amount" value="{{amount}}" onChange="{{setAmount}}"></span>
+          <span class="m-sub">{{r.when}} · {{r.card}}</span>
+        </div>
+      </section>
+
+      <section class="m-card m-stack" style="gap: 12px;" aria-labelledby="cat-h">
+        <div class="m-row"><h2 id="cat-h" class="m-label m-grow">Category</h2><sc-if value="{{suggested}}" hint-placeholder-val="{{true}}"><span class="m-tag ai">Suggested</span></sc-if></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{cats}}" as="c" hint-placeholder-count="5"><button type="button" class="m-chip" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.name}}</button></sc-for>
+        </div>
+        <span class="m-sub" style="line-height: 1.4;">{{catWhy}}</span>
+      </section>
+
+      <section class="m-card tight" aria-label="Details">
+        <ul class="m-list">
+          <li class="m-li" style="min-height: 52px;"><span class="m-grow s" style="font-size: 14px;">{{vatLabel}}</span><span class="m-num" style="font-weight: 600;">{{vat}}</span></li>
+          <li class="m-li" style="min-height: 52px;"><span class="m-grow s" style="font-size: 14px;">Items</span><span style="font-weight: 600; font-size: 14px; text-align: right;">{{itemWords}}</span></li>
+          <li class="m-li" style="min-height: 52px;"><span class="m-grow s" style="font-size: 14px;">Business use</span>
+            <span class="m-stepper"><button type="button" onClick="{{pctDown}}" aria-label="Less">−</button><span>{{pct}}%</span><button type="button" onClick="{{pctUp}}" aria-label="More">+</button></span></li>
+        </ul>
+      </section>
+    </main>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; padding: 14px 16px 34px; background: #FFFFFF; border-top: 1px solid #E2DFE8; display: flex; gap: 8px;">
+      <button type="button" class="m-btn ghost" onClick="{{saveAndAgain}}" style="flex: none;">Save + next</button>
+      <button type="button" class="m-btn m-grow" onClick="{{save}}">Save expense</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { stage: 'camera', found: false, flash: false, kind: 'receipt', who: null, amount: null, catId: null, pct: 100, batch: 0, readStep: 0 };
+    BE.mobile.guard();
+  }
+  componentDidMount() { this.arm(); }
+  arm() { clearTimeout(this._f); this._f = setTimeout(() => this.setState({ found: true }), 1300); }
+  receipt() {
+    const lk = BE.is('lk');
+    return lk ? {
+      shop: 'SARASAVI BOOKSHOP', addr: '30 Nawala Rd, Nugegoda', vatNo: 'VAT 114227590-7000', who: 'Sarasavi Bookshop',
+      items: [['A3 paper, 2 reams', 3450], ['Marker set, 24', 2800], ['Cutting mat A2', 2200]], total: 8450, vat: 1289,
+      when: '11 Oct 2026 10:12', card: 'VISA •••• 2214', catHint: /office|stationery|print/i
+    } : {
+      shop: 'RYMAN STATIONERY', addr: '52 Briggate, Leeds LS1 6HD', vatNo: 'VAT GB 226 4580 19', who: 'Ryman Stationery',
+      items: [['A3 sketchbook', 12.99], ['Fineliners x3', 6.95], ['Masking tape', 3.99]], total: 23.93, vat: 3.99,
+      when: '11/10/2026 09:48', card: 'VISA •••• 4417', catHint: /office|stationery|admin/i
+    };
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const st = this.state;
+    const prof = BE.get('profile') || {};
+    const lk = BE.is('lk');
+    const cur = prof.currency;
+    const R = this.receipt();
+    const money = (n) => BE.money(n, cur, { cents: !lk });
+    const r = {
+      shop: R.shop, addr: R.addr, vatNo: R.vatNo, when: R.when, card: R.card,
+      items: R.items.map(([n, p]) => ({ name: n, price: money(p) })), total: money(R.total),
+      vatLine: lk ? 'Incl. VAT 18%' : 'Incl. VAT 20%', vat: money(R.vat)
+    };
+    const all = BE.expenseCats();
+    const sug = all.find((c) => R.catHint.test(c.name) || R.catHint.test(c.id)) || all[0];
+    const catId = st.catId || (sug && sug.id);
+    const pick = all.filter((c) => c.id === (sug && sug.id)).concat(all.filter((c) => c.id !== (sug && sug.id)).slice(0, 5));
+    const cats = pick.map((c) => ({ name: c.name, pressed: catId === c.id ? 'true' : 'false', pick: () => this.setState({ catId: c.id }) }));
+    const who = st.who == null ? R.who : st.who;
+    const amount = st.amount == null ? String(R.total) : st.amount;
+    const vatReg = !!prof.vatRegistered;
+
+    const read = () => {
+      this.setState({ stage: 'reading', readStep: 0 });
+      setTimeout(() => this.setState({ readStep: 1 }), 700);
+      setTimeout(() => this.setState({ readStep: 2 }), 1400);
+      setTimeout(() => this.setState({ stage: 'review' }), 2100);
+    };
+    const snap = () => {
+      if (M.offline()) { M.did('Receipt photo'); this.setState({ stage: 'queued', batch: st.batch + 1 }); return; }
+      read();
+    };
+    const store = () => {
+      const amt = BE.num(amount);
+      if (!(amt > 0)) return false;
+      BE.recordExpense({ who: who.trim() || R.who, amount: amt, catId, how: 'Card', vat: vatReg ? R.vat : 0, bizPct: st.pct, attachment: { name: 'Receipt ' + R.when.split(' ')[0] + '.jpg', kind: 'photo', size: '1.2 MB' }, note: 'Scanned on the BillingEase app' });
+      M.did(BE.money(amt, cur) + ' to ' + (who.trim() || R.who) + ' saved with its receipt');
+      return true;
+    };
+    const reset = (batch) => { this.setState({ stage: 'camera', found: false, who: null, amount: null, catId: null, pct: 100, batch }); this.arm(); };
+    const catName = (all.find((c) => c.id === catId) || {}).name || '';
+    const stepWords = ['Finding the shop and the total…', 'Matching it to a category…', 'Checking it isn’t already in your books…'];
+    return {
+      I, r, frameClass: st.stage === 'camera' ? 'dark' : '',
+      onCamera: st.stage === 'camera', onReading: st.stage === 'reading', onReview: st.stage === 'review', onQueued: st.stage === 'queued',
+      closeHref: 'MobileHome.dc.html',
+      found: st.found, cornerClass: st.found ? 'found' : '',
+      hint: st.found ? (st.kind === 'bill' ? 'Bill found · tap to snap' : 'Receipt found · tap to snap') : 'Point at the whole ' + st.kind,
+      flash: st.flash ? 'true' : 'false', flashFill: st.flash ? '#FFFFFF' : 'none', toggleFlash: () => this.setState({ flash: !st.flash }),
+      kinds: [['receipt', 'Receipt'], ['bill', 'Bill to pay']].map(([k, l]) => ({ label: l, pressed: st.kind === k ? 'true' : 'false', color: st.kind === k ? '#18161F' : '#FFFFFF', pick: () => this.setState({ kind: k }) })),
+      batch: st.batch, batchLabel: st.batch + ' scanned so far',
+      snap, readingStep: stepWords[st.readStep] || stepWords[0],
+      who, setWho: (e) => this.setState({ who: e.target.value }),
+      amount, setAmount: (e) => this.setState({ amount: e.target.value }), sym: M.sym(cur).trim(), symGap: /[A-Za-z]/.test(M.sym(cur)) ? 10 : 2,
+      cats, suggested: !st.catId || st.catId === (sug && sug.id),
+      catWhy: (lk ? 'Stationery and printing usually go under ' : 'Stationery usually goes under ') + (sug ? sug.name : '') + '. You chose ' + catName + '.',
+      vatLabel: vatReg ? (lk ? 'Input VAT you can claim' : 'VAT you can reclaim') : 'VAT on the receipt (not reclaimable)',
+      vat: money(R.vat),
+      itemWords: R.items.length + ' items · ' + R.items[0][0] + '…',
+      pct: st.pct, pctDown: () => this.setState({ pct: Math.max(10, st.pct - 10) }), pctUp: () => this.setState({ pct: Math.min(100, st.pct + 10) }),
+      again: () => reset(st.batch),
+      save: () => { if (store()) setTimeout(() => { location.href = 'MobileOut.dc.html'; }, 700); },
+      saveAndAgain: () => { if (store()) reset(st.batch + 1); }
+    };
+  }
+}
+</script>
+</body>
+</html>

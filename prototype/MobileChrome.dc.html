@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase · Mobile chrome</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+
+<!-- Status bar: time, signal, battery. Offline swaps the Wi-Fi mark. -->
+<div class="m-status" style="color: {{fg}};">
+  <span>9:41</span>
+  <span class="icons" aria-label="{{signalLabel}}">
+    <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1" fill="{{fg}}"></rect><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="{{bar2}}"></rect><rect x="10" y="3" width="3" height="9" rx="1" fill="{{bar3}}"></rect><rect x="15" y="0" width="3" height="12" rx="1" fill="{{bar3}}"></rect></svg>
+    <sc-if value="{{online}}" hint-placeholder-val="{{true}}">
+      <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.5 6.9a6.4 6.4 0 0 1 9 0l-1.4 1.4a4.4 4.4 0 0 0-6.2 0zM1.3 4.7a9.5 9.5 0 0 1 13.4 0l-1.4 1.4a7.5 7.5 0 0 0-10.6 0z" fill="{{fg}}"></path></svg>
+    </sc-if>
+    <sc-if value="{{offline}}" hint-placeholder-val="{{false}}">
+      <span style="font-size: 12px; font-weight: 700;">No service</span>
+    </sc-if>
+    <svg width="27" height="13" viewBox="0 0 27 13" aria-hidden="true"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="{{fg}}" stroke-opacity="0.4"></rect><rect x="2" y="2" width="17" height="9" rx="2" fill="{{fg}}"></rect><rect x="25" y="4.5" width="1.6" height="4" rx="0.8" fill="{{fg}}" fill-opacity="0.45"></rect></svg>
+  </span>
+</div>
+
+<!-- Offline: what's waiting on this phone -->
+<sc-if value="{{showOffline}}" hint-placeholder-val="{{false}}">
+  <div class="m-offline" role="status">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E3A73" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.wifiOff}}"></path></svg>
+    <span>{{offlineText}}</span>
+    <button type="button" onClick="{{goOnline}}">Back online</button>
+  </div>
+</sc-if>
+
+<!-- Push notification banner -->
+<sc-if value="{{push}}" hint-placeholder-val="{{false}}">
+  <a class="m-push" href="{{push.href}}" onClick="{{tapPush}}" role="alert">
+    <svg class="app" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#18161F"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg>
+    <span class="m-grow" style="display: flex; flex-direction: column; gap: 1px;">
+      <span class="m-row" style="gap: 6px;"><span style="font-size: 12.5px; font-weight: 600; color: #5F5B68; letter-spacing: 0.02em;">BILLINGEASE</span><span class="when">now</span></span>
+      <span style="font-weight: 700; font-size: 15px;">{{push.title}}</span>
+      <span style="font-size: 14px; color: #47444F; line-height: 1.35;">{{push.body}}</span>
+    </span>
+  </a>
+</sc-if>
+
+<!-- Face ID -->
+<sc-if value="{{face}}" hint-placeholder-val="{{false}}">
+  <div class="m-faceid" role="alertdialog" aria-label="{{face.label}}">
+    <div class="box">
+      <sc-if value="{{face.scanning}}" hint-placeholder-val="{{true}}">
+        <svg class="scan" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.face}}"></path></svg>
+      </sc-if>
+      <sc-if value="{{face.ok}}" hint-placeholder-val="{{false}}">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#2F7D1F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="m7.5 12.5 3 3 6-6.5"></path></svg>
+      </sc-if>
+      <span>Face ID</span>
+    </div>
+  </div>
+</sc-if>
+
+<!-- Toast -->
+<sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+  <div class="m-toast {{toast.kind}}" role="status" aria-live="polite" style="bottom: {{toastBottom}}px;">
+    <span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{toast.icon}}"></path></svg></span>
+    <span>{{toast.text}}</span>
+  </div>
+</sc-if>
+
+<span class="m-homebar {{homebarClass}}" aria-hidden="true"></span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"default":false},"tabs":{"default":true},"$preview":{"width":390,"height":120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const M = BE.mobile;
+    const s = M.get();
+    const L = M.live();
+    const q = M.queued();
+    const dark = !!this.props.dark;
+    const fg = dark ? '#FFFFFF' : '#18161F';
+    const toast = L.toast ? { text: L.toast.text, kind: L.toast.kind, icon: L.toast.kind === 'queued' ? M.I.clock : M.I.check } : false;
+    return {
+      I: M.I, fg,
+      bar2: s.offline ? (dark ? 'rgba(255,255,255,.3)' : 'rgba(24,22,31,.25)') : fg,
+      bar3: s.offline ? (dark ? 'rgba(255,255,255,.3)' : 'rgba(24,22,31,.25)') : fg,
+      online: !s.offline, offline: s.offline,
+      signalLabel: s.offline ? 'No signal' : 'Signal, Wi-Fi, battery',
+      showOffline: s.offline,
+      offlineText: q.length ? 'Offline · ' + q.length + (q.length === 1 ? ' change' : ' changes') + ' saved on this phone' : 'Offline · you can keep working',
+      goOnline: () => M.setOffline(false),
+      push: L.push || false,
+      tapPush: () => M.dismissPush(),
+      face: L.faceid ? { scanning: L.faceid.stage === 'scan', ok: L.faceid.stage === 'ok', label: 'Face ID: ' + L.faceid.reason } : false,
+      toast, toastBottom: this.props.tabs === false ? 40 : 104,
+      homebarClass: dark ? 'light' : ''
+    };
+  }
+}
+</script>
+</body>
+</html>
