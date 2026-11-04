@@ -174,7 +174,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
       <Section id="pricing" tone="white" labelledBy="price-h">
         <SectionHeading id="price-h" title={PRICING_TEASER.title} lead={pick(PRICING_TEASER.lead, country)} />
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] items-stretch gap-4">
-          {PLANS[country].map((p, i) => (
+          {PLANS[country].filter((p) => p.id !== "practice").map((p, i) => (
             <PlanCard key={p.id} plan={p} country={country} index={i} />
           ))}
         </div>

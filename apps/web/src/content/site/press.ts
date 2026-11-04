@@ -32,7 +32,7 @@ export const PRESS = {
     { k: "In the UK", v: "Sole traders and landlords, mainly through accountants" },
     { k: "In Sri Lanka", v: "Small businesses, through tax practitioners and direct" },
     { k: "What it doesn’t do", v: "Bank feeds, online card payments, or filing to HMRC or the IRD" },
-    { k: "Pricing", v: "A free plan; paid prices are still being set" },
+    { k: "Pricing", v: "A free plan, then Pro from £10 or Rs 3,250 a month, billed yearly" },
   ],
 };
 

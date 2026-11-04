@@ -139,8 +139,8 @@ const UK: SmallPage = {
     ],
   },
   plan: {
-    title: "Businesses with staff pick MTD ready.",
-    why: "Free covers invoices, expenses and your three numbers. MTD ready adds VAT invoices, quarters with readiness checks, mileage and repeating invoices. Payroll records are included.",
+    title: "Businesses with staff pick Pro.",
+    why: "Free covers invoices, expenses and your three numbers, up to 10 invoices a month. Pro adds VAT invoices, quarters with readiness checks, mileage and repeating invoices. Payroll records are included.",
     rows: [
       { name: "Payroll records", line: "For everyone your payroll software pays. No per-person fee.", value: "Included" },
       { name: "Your accountant", line: "They sign in free and never count.", value: "Free" },
@@ -259,8 +259,8 @@ const LK: SmallPage = {
     ],
   },
   plan: {
-    title: "Businesses with staff pick Business.",
-    why: "Business has Tax Invoices with VAT and SSCL, payroll with EPF, ETF, APIT and payslips, WhatsApp reminders and the year-end hand-off to TaxWise.lk.",
+    title: "Businesses with staff pick Pro.",
+    why: "Pro has Tax Invoices with VAT and SSCL, payroll with EPF, ETF, APIT and payslips for 5 people (Pro Plus for bigger teams), WhatsApp reminders and the year-end hand-off to TaxWise.lk.",
     rows: [
       { name: "People who sign in", line: `Up to ${TEAM_LIMIT}: you, office admins and others. Your practitioner never counts.`, value: `Up to ${TEAM_LIMIT}` },
       { name: "Payroll", line: "Pay runs, payslips and schedules for everyone you pay.", value: "Included" },

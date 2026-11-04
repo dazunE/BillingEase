@@ -91,4 +91,4 @@ The switch sets the `be_site_country` cookie and refreshes, so server components
 
 Illustrations: the cash jar is `@/components/CashJar` (pass `sym={COUNTRY_META[country].sym}`); the home page scenes are in `@/components/landing/Illustrations`. Decorative SVGs get `aria-hidden`; animations stop under `prefers-reduced-motion` (globally in `globals.css`).
 
-Shared content: `routes.ts` (site map, nav, footer), `country.ts`, `plans.ts` (placeholder prices + `PRICE_NOTE`), `company.ts` (emails only, no invented facts), `samples.ts` (sample businesses), `home.ts`.
+Shared content: `routes.ts` (site map, nav, footer), `country.ts`, `plans.ts` (plans, prices, `FREE_LIMITS` and `PRICE_NOTE`), `company.ts` (emails only, no invented facts), `samples.ts` (sample businesses), `home.ts`.

@@ -14,7 +14,7 @@ import type { FetchClientDocument } from "../src/services/client-document";
 /** A fresh API on an in-memory database, with optional (fake) models for Ask and the agents. */
 export async function homeTestApp(opts: { models?: Models | null; config?: (c: ReturnType<typeof loadConfig>) => ReturnType<typeof loadConfig>; clientDocument?: FetchClientDocument } = {}) {
   const h = await connect({ pgliteDir: "memory://" });
-  const base = { ...loadConfig({ NODE_ENV: "test" }), storage: { dir: mkdtempSync(path.join(tmpdir(), "be-files-")) } };
+  const base = { ...loadConfig({ NODE_ENV: "test" }), storage: { dir: mkdtempSync(path.join(tmpdir(), "be-files-")), s3: null } };
   const config = opts.config ? opts.config(base) : base;
   const services = createServices(config, { transport: null, models: opts.models ?? null, clientDocument: opts.clientDocument });
   const app = await buildApp({ db: h.db, config, services, logger: false });

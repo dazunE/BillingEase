@@ -1,6 +1,7 @@
 import { outboxEmails, type OutboxStatus } from "@billingease/db/schema";
 import type { Exec } from "@billingease/db";
 import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
+import nodemailer from "nodemailer";
 import type { Config } from "../config";
 import type { InlineImage } from "./email-html";
 
@@ -40,13 +41,45 @@ class PostmarkTransport implements EmailTransport {
   }
 }
 
+/** Any SMTP server that takes a login on its submission port, such as Stalwart. */
+export class SmtpTransport implements EmailTransport {
+  private mailer: nodemailer.Transporter;
+  /** `plain` is for tests against a local fake server only. */
+  constructor(o: NonNullable<Config["email"]["smtp"]>, test: { plain?: boolean } = {}) {
+    this.mailer = nodemailer.createTransport({
+      host: o.host, port: o.port, secure: o.secure,
+      // Never send a password in the clear: STARTTLS is required when the connection doesn't start in TLS.
+      requireTLS: !o.secure && !test.plain, ignoreTLS: !!test.plain,
+      auth: o.user ? { user: o.user, pass: o.password ?? "" } : undefined,
+      pool: true, maxConnections: 3,
+      connectionTimeout: 20_000, greetingTimeout: 20_000, socketTimeout: 60_000,
+    });
+  }
+  async send(m: Parameters<EmailTransport["send"]>[0]) {
+    await this.mailer.sendMail({
+      from: m.from, to: m.to, replyTo: m.replyTo ?? undefined, subject: m.subject, text: m.text, html: m.html ?? undefined,
+      attachments: [
+        ...m.attachments.map((a) => ({ filename: a.filename, contentType: a.contentType, content: Buffer.from(a.content) })),
+        ...(m.inline ?? []).map((a) => ({ filename: a.filename, contentType: a.contentType, content: Buffer.from(a.content), cid: a.contentId, contentDisposition: "inline" as const })),
+      ],
+    });
+  }
+}
+
+function defaultTransport(config: Config): EmailTransport | null {
+  const e = config.email;
+  if (e.provider === "smtp" && e.smtp) return new SmtpTransport(e.smtp);
+  if (e.provider === "postmark" && e.postmarkToken) return new PostmarkTransport(e.postmarkToken);
+  return null;
+}
+
 /**
  * Email goes through the outbox table. Queue it inside the transaction that caused it, then
- * deliver after commit. With no provider set up, emails are kept in the outbox (status
+ * deliver after commit. SMTP (SMTP_HOST) wins over Postmark (POSTMARK_TOKEN). With neither set up, emails are kept in the outbox (status
  * "kept") so development and demos never send real mail.
  */
 export function createEmail(config: Config, opts: { transport?: EmailTransport | null; render?: (db: Exec, m: typeof outboxEmails.$inferSelect) => Promise<Attachment[]> } = {}) {
-  const transport = opts.transport !== undefined ? opts.transport : config.email.provider === "postmark" && config.email.postmarkToken ? new PostmarkTransport(config.email.postmarkToken) : null;
+  const transport = opts.transport !== undefined ? opts.transport : defaultTransport(config);
   let render = opts.render ?? (async () => []);
   // The HTML version and inline logo of an email to a customer, in the business's branding.
   let extras: (db: Exec, m: typeof outboxEmails.$inferSelect) => Promise<{ html: string | null; inline: InlineImage[] }> = async () => ({ html: null, inline: [] });

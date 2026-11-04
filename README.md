@@ -22,7 +22,7 @@ npm run dev
 # web app on http://localhost:3000 (the API runs on :4000); Ctrl+C stops both
 ```
 
-With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, so there is nothing else to install. Emails are kept in the `outbox_emails` table instead of being sent until `POSTMARK_TOKEN` is set. Ask and the agents need Gemini on Vertex AI (`GOOGLE_CLOUD_PROJECT`, signed in with `gcloud auth application-default login`). All settings are in [`.env.example`](.env.example).
+With no `DATABASE_URL`, the API uses an embedded PostgreSQL in `.data/pglite`, so there is nothing else to install. Emails are kept in the `outbox_emails` table instead of being sent until `SMTP_HOST` (or `POSTMARK_TOKEN`) is set, and files go to `.data/files` until `S3_BUCKET` is set. Hosting on Dokploy with Stalwart mail and S3 storage: [`docs/DEPLOY-DOKPLOY.md`](docs/DEPLOY-DOKPLOY.md). Ask and the agents need Gemini on Vertex AI (`GOOGLE_CLOUD_PROJECT`, signed in with `gcloud auth application-default login`). All settings are in [`.env.example`](.env.example).
 
 ## Try it locally
 

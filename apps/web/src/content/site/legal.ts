@@ -56,7 +56,7 @@ export const LEGAL: Record<LegalDoc, LegalDocument> = {
       "BillingEase keeps your books. It doesn’t file returns to HMRC or the IRD, and it isn’t tax advice.",
       "Tax figures, including Yours to keep and Ask’s answers, are estimates. Check them with your accountant or tax practitioner.",
       "Your books are yours. You’re responsible for what you enter; we’re responsible for keeping it safe.",
-      "The free plan stays free. Paid plans can be cancelled at any time.",
+      "The free plan stays free, within its monthly limits. Paid plans can be cancelled at any time.",
     ],
     sections: [
       {
@@ -109,7 +109,7 @@ export const LEGAL: Record<LegalDoc, LegalDocument> = {
         id: "plans",
         h: "Plans and payment",
         blocks: [
-          p("There is a free plan, and it stays free. Prices for paid plans are still being set; when they are, they will be shown on the pricing page before you choose one, with any tax that applies. Paid plans renew until you cancel, and you can cancel at any time; the plan then runs to the end of the period you’ve paid for."),
+          p("There is a free plan, and it stays free, within the monthly limits shown on the pricing page. Your first business can use Pro free for 30 days, with no card needed; afterwards it stays on the free plan unless you choose a paid one. Prices are shown on the pricing page and at checkout before you pay, with any tax that applies. Founding prices, where offered, are kept for as long as the subscription continues without a break. Moving to a lower plan never deletes your records. Paid plans renew until you cancel, and you can cancel at any time; the plan then runs to the end of the period you’ve paid for."),
           { link: { label: "See pricing", href: ROUTES.pricing.href } },
         ],
       },

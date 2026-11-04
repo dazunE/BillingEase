@@ -15,7 +15,7 @@ export type Sent = Parameters<EmailTransport["send"]>[0];
 /** A fresh API on an in-memory database. Emails are captured in `sent`. */
 export async function testApp(opts: { email?: boolean; rates?: RateSource | null; google?: GoogleSignIn | null } = {}) {
   const h: DbHandle = await connect({ pgliteDir: "memory://" });
-  const config = { ...loadConfig({ NODE_ENV: "test" }), storage: { dir: mkdtempSync(path.join(tmpdir(), "be-files-")) } };
+  const config = { ...loadConfig({ NODE_ENV: "test" }), storage: { dir: mkdtempSync(path.join(tmpdir(), "be-files-")), s3: null } };
   const sent: Sent[] = [];
   const transport: EmailTransport | null = opts.email === false ? null : { send: async (m) => { sent.push(m); } };
   const services = createServices(config, { transport, rates: opts.rates ?? null, google: opts.google ?? null });

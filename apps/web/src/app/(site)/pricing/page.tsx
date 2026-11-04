@@ -7,7 +7,7 @@ import { CompareTable, PlanCalc } from "@/components/site/illustrations/product/
 import { cx } from "@/components/ui";
 import { COMPANY } from "@/content/site/company";
 import { money, pick, signUpHref } from "@/content/site/country";
-import { PLANS, PRICE_NOTE } from "@/content/site/plans";
+import { billingLine, foundingLine, PLANS, PRICE_NOTE } from "@/content/site/plans";
 import { PRICING_CALC, PRICING_COMPARE, PRICING_CTA, PRICING_FAQ, PRICING_HERO, PRICING_INCLUDED, PRICING_META, PRICING_QUOTES, PRICING_SALES } from "@/content/site/pricing";
 import { ROUTES } from "@/content/site/routes";
 import { getSiteCountry } from "@/lib/site-country";
@@ -17,6 +17,7 @@ export const metadata: Metadata = { title: PRICING_META.title, description: PRIC
 const LOOK = [
   { tag: "bg-surface text-ink", cta: "soft" as const, check: "bg-surface" },
   { tag: "bg-ink text-white", cta: "primary" as const, check: "bg-tint" },
+  { tag: "bg-tint text-ink", cta: "soft" as const, check: "bg-tint" },
   { tag: "bg-going-tint text-ink", cta: "dark" as const, check: "bg-going-tint" },
 ];
 
@@ -39,19 +40,19 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
               <p className="max-w-[640px] text-pretty text-[clamp(17px,1.6vw,20px)] leading-normal text-ink2">{pick(PRICING_HERO.lead, country)}</p>
               <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2.5 pt-1.5">
                 <CountrySwitch />
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-due-bg px-3 py-1.5 text-[13px] font-bold text-due">{PRICING_HERO.draft}</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-tint px-3 py-1.5 text-[13px] font-bold text-ink">{PRICING_HERO.draft}</span>
               </div>
             </div>
-            <PriceTags mid={money(plans[1].price, country)} right={money(plans[2].price, country)} note={lk ? "prices in rupees" : "prices in pounds"} />
+            <PriceTags mid={money(plans[1].price, country)} right={money(plans[3].price, country)} note={lk ? "prices in rupees" : "prices in pounds"} />
           </div>
 
-          <div className="grid items-stretch gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))" }}>
+          <div className="grid items-stretch gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))" }}>
             {plans.map((p, i) => {
               const L = LOOK[i] ?? LOOK[0];
               const href = p.href === "signup" ? signUpHref(country) : p.href;
               return (
                 <article key={p.id} aria-labelledby={`plan-${p.id}`} className={cx("relative box-border flex flex-col gap-[22px] rounded-3xl bg-white", p.popular ? "border-2 border-ink p-[27px]" : "border border-line p-7")}>
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
                     <h2 id={`plan-${p.id}`} className="font-display text-[22px] font-bold tracking-[-0.02em]">
                       {p.name}
                     </h2>
@@ -59,10 +60,11 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
                   </div>
                   <div className="flex flex-col gap-2">
                     <span className="flex flex-wrap items-baseline gap-2">
-                      <span className="font-display text-[clamp(44px,4.6vw,60px)] font-bold leading-none tracking-[-0.04em] tabular-nums">{money(p.price, country)}</span>
+                      <span className="whitespace-nowrap font-display text-[clamp(32px,2.9vw,46px)] font-bold leading-none tracking-[-0.04em] tabular-nums">{money(p.price, country)}</span>
                       {p.per && <span className="text-base text-ink2">{p.per}</span>}
                     </span>
-                    <span className="min-h-5 text-sm text-muted">{p.price === 0 ? "Free for as long as you like" : "Placeholder price · not final"}</span>
+                    <span className="min-h-5 text-sm text-muted">{billingLine(p, country)}</span>
+                    {foundingLine(p, country) && <span className="self-start rounded-full bg-tint px-3 py-1 text-[13px] font-bold text-ink">{foundingLine(p, country)}</span>}
                   </div>
                   <p className="min-h-12 text-[15px] leading-[1.55] text-ink2">{p.line}</p>
                   <Pill href={href} variant={L.cta} className="min-h-12 text-[15px]">
@@ -85,7 +87,7 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
             })}
           </div>
           <p className="text-center text-sm text-muted">
-            {PRICE_NOTE} Prices in {lk ? "rupees" : "pounds"}. No card needed for Free.
+            {PRICE_NOTE} Prices in {lk ? "rupees" : "pounds"}.
           </p>
         </Container>
       </section>

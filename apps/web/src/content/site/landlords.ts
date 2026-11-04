@@ -99,8 +99,8 @@ export const LANDLORD_UK = {
     ],
   },
   plan: {
-    title: "Landlords pick MTD ready.",
-    why: "Free covers rent, costs and your three numbers. MTD ready adds landlord mode with properties and shares, quarters with readiness checks and the Income Tax estimate with the finance-cost reduction.",
+    title: "Landlords pick Pro.",
+    why: "Free covers rent, costs and your three numbers, up to 10 invoices a month. Pro adds landlord mode with properties and shares, quarters with readiness checks and the Income Tax estimate with the finance-cost reduction.",
     rows: [
       { name: "Your accountant", line: "They sign in free and never count as a person on your plan.", value: "Free" },
       { name: "A trade as well?", line: "Sole trader and landlord in one set of books, each kept apart in the quarter.", value: "Same plan" },

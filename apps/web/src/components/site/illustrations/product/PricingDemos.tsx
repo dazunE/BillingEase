@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fragment, useState, type ReactNode } from "react";
 import { cx } from "@/components/ui";
 import { money, signUpHref, type SiteCountry } from "@/content/site/country";
-import type { Plan } from "@/content/site/plans";
+import { FREE_LIMITS, type Plan } from "@/content/site/plans";
 import type { CompareGroup } from "@/content/site/pricing";
 import { ROUTES } from "@/content/site/routes";
 import { SEG, SEG_BTN } from "./cls";
@@ -61,36 +61,40 @@ function Row({ id, title, hint, children }: { id: string; title: string; hint: s
   );
 }
 
-/** "Which plan fits?" (prototype calculator, without payment fees or yearly billing). */
+/** "Which plan fits?" (prototype calculator, without payment fees). Prices are per month, billed yearly. */
 export function PlanCalc({ country, plans, presets, maxPeople, note }: { country: SiteCountry; plans: Plan[]; presets: { label: string; v: UkV | LkV }[]; maxPeople: number; note: string }) {
   const lk = country === "lk";
   const [v, setV] = useState<UkV & LkV>({ mtd: false, landlord: false, vat: false, staff: 0, people: 1, practice: false, clients: 20, ...(presets[0].v as Partial<UkV & LkV>) });
   const set = (p: Partial<UkV & LkV>) => setV({ ...v, ...p });
-  const [free, paid, practice] = plans;
+  const [free, pro, plus, practice] = plans;
+  const clients = Math.max(v.clients, practice.minClients ?? 1);
+  // A month, billed yearly, with payroll beyond the people a plan includes.
+  const cost = (p: Plan) => p.price + (p.staff && lk ? Math.max(0, v.staff - p.staff.included) * p.staff.each : 0);
   let rec: Plan;
   let why: string;
   if (v.practice) {
     rec = practice;
-    why = `${v.clients} clients at ${money(practice.price, country)} each. Every client gets everything in ${paid.name}.`;
+    why = `${clients} clients at ${money(practice.price, country)} each${v.clients < clients ? ` (the plan starts at ${clients} clients)` : ""}. Every client gets everything in ${pro.name}.`;
   } else if (lk ? v.vat || v.staff > 0 || v.people > 1 : v.mtd || v.landlord || v.vat || v.people > 1) {
-    rec = paid;
+    // Pro Plus when more people sign in than Pro allows, or when it's cheaper for a bigger payroll.
+    rec = v.people > pro.people || cost(plus) < cost(pro) ? plus : pro;
     const r: string[] = [];
     if (lk) {
       if (v.vat) r.push("Tax Invoices with VAT and SSCL");
       if (v.staff > 0) r.push(`payroll for ${v.staff} ${v.staff === 1 ? "person" : "people"}`);
-      if (v.people > 1) r.push("your practitioner on the same books");
     } else {
       if (v.mtd) r.push("MTD quarters");
       if (v.landlord) r.push("landlord mode");
       if (v.vat) r.push("VAT invoices");
-      if (v.people > 1) r.push("your accountant on the same books");
     }
+    if (v.people > 1) r.push(`${v.people} people signing in`);
     why = `You’ll want ${r.join(", ").replace(/, ([^,]*)$/, " and $1")}.`;
   } else {
     rec = free;
-    why = "Free covers it. Upgrade the day you need more.";
+    why = `${free.name} covers it, up to ${FREE_LIMITS.invoices} invoices a month. Move up the day you need more.`;
   }
-  const total = rec.id === practice.id ? practice.price * v.clients : rec.price;
+  const extraStaff = rec.staff && lk && !v.practice ? Math.max(0, v.staff - rec.staff.included) : 0;
+  const total = rec.id === practice.id ? practice.price * clients : cost(rec);
   const big = v.people > maxPeople;
   const href = rec.href === "signup" ? signUpHref(country) : rec.href;
   const presetOn = (p: UkV | LkV) => Object.entries(p).every(([k, val]) => (v as Record<string, unknown>)[k] === val);
@@ -140,7 +144,7 @@ export function PlanCalc({ country, plans, presets, maxPeople, note }: { country
         {!v.practice && (
           <>
             <div className="h-px bg-divider" />
-            <Row id="c-people" title="People who’ll sign in" hint={`Everyone, you included${lk ? " and your practitioner" : " and your accountant"}.`}>
+            <Row id="c-people" title="People who’ll sign in" hint={`You included. Your ${lk ? "practitioner" : "accountant"} doesn’t count.`}>
               <Stepper id="c-people" label="people who sign in" value={v.people} min={1} max={25} onChange={(n) => set({ people: n })} />
             </Row>
           </>
@@ -169,18 +173,28 @@ export function PlanCalc({ country, plans, presets, maxPeople, note }: { country
         </div>
         <dl className="flex flex-col gap-2.5 border-t border-tint/[0.16] pt-4 text-[15px]">
           <div className="flex justify-between gap-3">
-            <dt className="text-tint">{rec.id === practice.id ? `${v.clients} clients × ${money(practice.price, country)}` : `${rec.name} plan`}</dt>
-            <dd className="whitespace-nowrap font-bold tabular-nums">{money(total, country)}</dd>
+            <dt className="text-tint">{rec.id === practice.id ? `${clients} clients × ${money(practice.price, country)}` : `${rec.name} plan`}</dt>
+            <dd className="whitespace-nowrap font-bold tabular-nums">{money(rec.id === practice.id ? total : rec.price, country)}</dd>
           </div>
+          {extraStaff > 0 && (
+            <div className="flex justify-between gap-3">
+              <dt className="text-tint">{`${extraStaff} more ${extraStaff === 1 ? "person" : "people"} on payroll × ${money(rec.staff!.each, country)}`}</dt>
+              <dd className="whitespace-nowrap font-bold tabular-nums">{money(extraStaff * rec.staff!.each, country)}</dd>
+            </div>
+          )}
           <div className="flex items-baseline justify-between gap-3 border-t border-tint/[0.16] pt-3">
-            <dt className="font-bold">Each month</dt>
+            <dt className="font-bold">{total === 0 ? "Each month" : "Each month, billed yearly"}</dt>
             <dd className="font-display text-[32px] font-bold tracking-[-0.03em] tabular-nums">{money(total, country)}</dd>
+          </div>
+          <div className={cx("flex justify-between gap-3 text-tint", total === 0 && "hidden")}>
+            <dt>A year</dt>
+            <dd className="whitespace-nowrap font-bold tabular-nums">{money(total * 12, country)}</dd>
           </div>
         </dl>
         <span className="rounded-[14px] bg-tint/10 px-3.5 py-3 text-[13px] leading-normal text-tint">{note}</span>
         {big && (
           <span className="text-sm leading-normal">
-            Paid plans cover up to {maxPeople} people signing in. For more,{" "}
+            {plus.name} covers up to {maxPeople} people signing in, not counting your {lk ? "practitioner" : "accountant"}. For more,{" "}
             <Link href={ROUTES.contact.href} className="font-bold underline">
               talk to sales
             </Link>{" "}
@@ -202,7 +216,8 @@ export function CompareTable({ country, plans, groups }: { country: SiteCountry;
   const [diff, setDiff] = useState(false);
   const [closed, setClosed] = useState<Record<string, boolean>>({});
   const anyOpen = groups.some((g) => !closed[g.id]);
-  const colBg = ["bg-white", "bg-[#FBFAFF]", "bg-white"];
+  const colBg = (p: Plan) => (p.popular ? "bg-[#FBFAFF]" : "bg-white");
+  const width = `${Math.floor(60 / plans.length)}%`;
   return (
     <>
       <div className="flex flex-wrap items-center gap-2">
@@ -224,16 +239,16 @@ export function CompareTable({ country, plans, groups }: { country: SiteCountry;
           <caption className="sr-only">Features in {plans.map((p) => p.name).join(", ")}</caption>
           <colgroup>
             <col style={{ width: "40%" }} />
-            <col style={{ width: "20%" }} />
-            <col style={{ width: "20%" }} />
-            <col style={{ width: "20%" }} />
+            {plans.map((p) => (
+              <col key={p.id} style={{ width }} />
+            ))}
           </colgroup>
           <thead>
             <tr>
               <th scope="col" className="bg-white text-left text-[13px] font-semibold text-muted">
-                Prices per month · placeholders
+                A month, billed yearly
               </th>
-              {plans.map((p, i) => (
+              {plans.map((p) => (
                 <th key={p.id} scope="col" className={p.popular ? "bg-[#F4F0FF]" : "bg-white"}>
                   <span className="flex flex-col items-center gap-1.5 pt-1.5">
                     <span className="font-display text-lg font-bold">{p.name}</span>
@@ -242,7 +257,7 @@ export function CompareTable({ country, plans, groups }: { country: SiteCountry;
                       {p.per ? ` ${p.per}` : ""}
                     </span>
                     <Link href={p.href === "signup" ? signUpHref(country) : p.href} className={cx("inline-flex min-h-11 items-center rounded-full px-3.5 text-[13px] font-bold", p.popular ? "bg-violet" : "bg-ink/[0.07]")}>
-                      {i === 0 ? "Start free" : p.href === "signup" ? "Try free" : "Talk to us"}
+                      {p.price === 0 ? "Start free" : p.href === "signup" ? "Try free" : "Talk to us"}
                     </Link>
                   </span>
                 </th>
@@ -250,12 +265,12 @@ export function CompareTable({ country, plans, groups }: { country: SiteCountry;
             </tr>
           </thead>
           {groups.map((g) => {
-            const rows = diff ? g.rows.filter((r) => !(r[2] === r[3] && r[3] === r[4])) : g.rows;
+            const rows = diff ? g.rows.filter((r) => new Set(r.slice(2)).size > 1) : g.rows;
             const open = !closed[g.id];
             return (
               <tbody key={g.id}>
                 <tr>
-                  <th scope="colgroup" colSpan={4} className="!static border-b-0 bg-white !px-4 !pb-1.5 !pt-[18px] text-left !shadow-none">
+                  <th scope="colgroup" colSpan={plans.length + 1} className="!static border-b-0 bg-white !px-4 !pb-1.5 !pt-[18px] text-left !shadow-none">
                     <button type="button" aria-expanded={open} onClick={() => setClosed({ ...closed, [g.id]: open })} className="inline-flex min-h-11 items-center gap-2.5 font-display text-lg font-bold">
                       <span aria-hidden className="size-3 flex-none rounded-full" style={{ background: g.dot }} />
                       {g.name}
@@ -277,8 +292,8 @@ export function CompareTable({ country, plans, groups }: { country: SiteCountry;
                           {r[1] && <span className="text-[13px] font-normal text-muted">{r[1]}</span>}
                         </span>
                       </th>
-                      {[r[2], r[3], r[4]].map((c, i) => (
-                        <td key={i} className={colBg[i]}>
+                      {r.slice(2).map((c, i) => (
+                        <td key={i} className={colBg(plans[i])}>
                           {c === true ? (
                             <Fragment>
                               <span aria-hidden className="inline-flex size-[26px] items-center justify-center rounded-full bg-tint">
