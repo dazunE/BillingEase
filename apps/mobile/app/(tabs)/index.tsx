@@ -7,7 +7,7 @@ import { Amount, Bar, Button, Card, ErrorNote, H2, Loading, Row, Screen, Seg, St
 import { API_URL, problem } from "@/lib/api";
 import { ago, greeting, shortDate } from "@/lib/dates";
 import { fit, money, shortMoney } from "@/lib/money";
-import { useBills, useHome, useToday, useWrite } from "@/lib/queries";
+import { useBills, useBudgets, useHome, useToday, useWrite } from "@/lib/queries";
 import { useSession } from "@/lib/session";
 import { color, font } from "@/theme";
 
@@ -110,6 +110,8 @@ export default function Home() {
             ))}
           </Stack>
 
+          <BudgetsCard currency={h.currency} />
+
           <PeriodCard h={h} />
 
           {h.activity.length ? (
@@ -164,6 +166,45 @@ function Tile({ label, dot, value, note, a, b, colorA, colorB, empty }: { label:
       <Bar a={empty ? 0 : a} b={empty ? 0 : b} colorA={colorA} colorB={colorB} track="rgba(255,255,255,0.12)" height={5} />
       <Text style={s.tileNote}>{note}</Text>
     </View>
+  );
+}
+
+/** The goal, all spending, and whichever categories need a look. */
+function BudgetsCard({ currency }: { currency: string }) {
+  const router = useRouter();
+  const q = useBudgets();
+  const v = q.data;
+  if (!v) return null;
+  if (!v.budgets.length) {
+    return (
+      <Card onPress={() => router.push("/budgets")} label="Set a monthly budget">
+        <Row><View style={[s.needIc, { backgroundColor: color.orangeTint }]}><Icon name="clock" /></View>
+          <View style={{ flex: 1 }}><Text style={s.needTitle}>Set a monthly budget</Text><Sub>For a category, all spending, or what you want to keep.</Sub></View></Row>
+      </Card>
+    );
+  }
+  const W = (n: number) => money(n, currency, "never");
+  const keep = v.budgets.find((b) => b.kind === "keep");
+  const total = v.budgets.find((b) => b.kind === "spending");
+  const hot = v.budgets.filter((b) => b.kind === "category" && ["over", "nearly", "fast"].includes(b.state)).sort((a, b) => b.pct - a.pct);
+  const rows = [keep, total, ...hot].filter(Boolean).slice(0, 3) as typeof v.budgets;
+  const shown = rows.length ? rows : v.budgets.slice(0, 3);
+  const rest = v.budgets.length - shown.length;
+  return (
+    <Card onPress={() => router.push("/budgets")} label="Budgets" style={{ gap: 12 }}>
+      <Row style={{ justifyContent: "space-between" }}><Text style={s.needTitle}>Budgets · {v.month.label.split(" ")[0]}</Text><Text style={{ fontFamily: font.semi, fontSize: 14, color: color.violetInk }}>{rest > 0 ? `${rest} more` : "All budgets"}</Text></Row>
+      {shown.map((b) => (
+        <View key={b.id} style={{ gap: 6 }}>
+          <Row style={{ justifyContent: "space-between" }}>
+            <Text style={{ fontFamily: font.semi, fontSize: 14, color: color.ink, flexShrink: 1 }} numberOfLines={1}>{b.name}</Text>
+            <Text style={{ fontFamily: font.semi, fontSize: 14, color: b.state === "over" ? color.red : color.ink2, fontVariant: ["tabular-nums"] }}>
+              {b.isGoal ? `${b.pct}% of ${W(b.amount)}` : b.actual <= b.amount ? `${W(b.amount - b.actual)} left` : `${W(b.actual - b.amount)} over`}
+            </Text>
+          </Row>
+          <Bar a={b.pct} colorA={b.isGoal ? color.violetInk : b.state === "over" ? "#C2412F" : b.state === "ok" ? color.orange : "#E0A100"} height={7} />
+        </View>
+      ))}
+    </Card>
   );
 }
 

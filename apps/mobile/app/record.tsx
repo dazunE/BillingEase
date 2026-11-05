@@ -9,7 +9,9 @@ import { problem } from "@/lib/api";
 import { quickCategories } from "@/lib/categories";
 import { addDays } from "@/lib/dates";
 import { CURRENCY_OF, fit, money, padDisplay, padPress, padToMinor, symbol } from "@/lib/money";
-import { useInvoices, useOutSetup, useToday, useWrite } from "@/lib/queries";
+import { useBudgets, useInvoices, useOutSetup, useToday, useWrite } from "@/lib/queries";
+import { leftAfter } from "@/lib/budgets";
+import { LeftLine } from "@/components/LeftLine";
 import { useSession } from "@/lib/session";
 import { color, font } from "@/theme";
 
@@ -30,6 +32,7 @@ export default function Record() {
   const { api, business } = useSession();
   const toast = useToast();
   const setup = useOutSetup();
+  const budgets = useBudgets();
   const today = useToday();
   const open = useInvoices("unpaid");
   const cur = setup.data?.currency ?? CURRENCY_OF[business?.country ?? "uk"];
@@ -82,6 +85,7 @@ export default function Record() {
               <Chip title="Sort later" on={cat === null} onPress={() => setCat(null)} />
               {cats.map((c) => <Chip key={c.id} title={c.name} on={cat === c.id} onPress={() => setCat(c.id)} />)}
             </Chips>
+            <LeftLine line={leftAfter(budgets.data?.budgets.find((b) => b.kind === "category" && b.categoryId === cat), minor, (n) => money(n, cur, "never"))} />
           </Stack>
         ) : (
           <Stack gap={8}>

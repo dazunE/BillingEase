@@ -10,6 +10,7 @@ describe("links in notifications", () => {
     expect(phoneRoute("/app/out?sort=1")).toBe("/out");
     expect(phoneRoute("/app")).toBe("/");
     expect(phoneRoute("/app/check")).toBe("/inbox?tab=check");
+    expect(phoneRoute("/app/budgets")).toBe("/budgets");
   });
   it("stay put for pages the phone doesn't have", () => {
     expect(phoneRoute("/app/settings/people")).toBeNull();

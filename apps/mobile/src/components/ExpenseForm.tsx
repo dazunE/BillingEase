@@ -5,12 +5,17 @@ import { quickCategories } from "@/lib/categories";
 import { addDays, shortDate } from "@/lib/dates";
 import type { ExpenseDraft } from "@/lib/expense";
 export { bodyFrom, draftFrom, type ExpenseDraft } from "@/lib/expense";
-import { useOutSetup, useToday } from "@/lib/queries";
+import { useBudgets, useOutSetup, useToday } from "@/lib/queries";
+import { leftAfter } from "@/lib/budgets";
+import { CURRENCY_OF, money } from "@/lib/money";
+import { LeftLine } from "./LeftLine";
+import { currencyDigits, parseMoney } from "@billingease/core";
 import { color, font } from "@/theme";
 
 /** Who, how much, VAT, when, category and how it was paid. */
 export function ExpenseForm({ value, onChange, readDate }: { value: ExpenseDraft; onChange: (d: ExpenseDraft) => void; readDate?: string | null }) {
   const setup = useOutSetup();
+  const budgets = useBudgets();
   const today = useToday();
   const s = setup.data;
   const set = (patch: Partial<ExpenseDraft>) => onChange({ ...value, ...patch });
@@ -48,6 +53,8 @@ export function ExpenseForm({ value, onChange, readDate }: { value: ExpenseDraft
           </Chips>
         )}
       </Stack>
+      <LeftLine line={leftAfter(budgets.data?.budgets.find((b) => b.kind === "category" && b.categoryId === value.categoryId),
+        (parseMoney(value.gross, currencyDigits(s?.currency ?? "GBP")) ?? 0) * value.bizPct / 100, (n) => money(n, s?.currency ?? CURRENCY_OF.uk, "never"))} />
       <Stack gap={8}>
         <Label>Paid by</Label>
         <Row gap={8} style={{ flexWrap: "wrap" }}>

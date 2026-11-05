@@ -5,6 +5,7 @@ import { drain, requeueStale } from "./agents/platform/queue";
 import { tidyApi } from "./public/access";
 import { purgeClosed } from "./services/purge";
 import { runDueRecurring } from "./services/recurring-run";
+import { budgetAlertsJob, budgetWeeklyJob } from "./services/budget-jobs";
 
 /**
  * Background work, run in the API process on a timer. Each job is safe to run twice
@@ -23,6 +24,10 @@ export const JOBS: Job[] = [
   { name: "api-tidy", everyMs: 24 * 60 * 60_000, run: (app) => tidyApi(app) },
   // Closed businesses are deleted 30 days after closing.
   { name: "purge-closed", everyMs: 60 * 60_000, run: (app) => purgeClosed(app.be.db, app.be.services.storage) },
+  // Budgets: an alert at 80% and when over, for businesses whose books changed in the last few minutes.
+  { name: "budget-alerts", everyMs: 60_000, run: (app) => budgetAlertsJob(app.be.db) },
+  // The Monday morning summary, in each country's own time.
+  { name: "budget-weekly", everyMs: 15 * 60_000, run: (app) => budgetWeeklyJob(app.be.db, new Date()) },
 ];
 
 export function startJobs(app: FastifyInstance) {

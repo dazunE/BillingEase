@@ -20,6 +20,7 @@ export function useData() {
     expenses: (from: string) => q({ queryKey: [b, "expenses", from], queryFn: () => api("expenses", { query: { from, limit: 100 } }) }),
     bills: () => q({ queryKey: [b, "bills"], queryFn: () => api("bills", { query: { status: "open" } }) }),
     notifications: () => q({ queryKey: [b, "notifications"], queryFn: () => api("notifications", { query: { filter: "all" } }) }),
+    budgets: () => q({ queryKey: [b, "budgets"], queryFn: () => api("budgets") }),
     proposals: () => q({ queryKey: [b, "proposals"], queryFn: () => api("proposals", { query: { status: "pending" } }) }),
     proposal: (id: string) => q({ queryKey: [b, "proposal", id], queryFn: () => api("proposal", { params: { id } }) }),
   };
@@ -39,6 +40,7 @@ export function useOutSetup() { return useQuery(useData().outSetup()); }
 export function useExpenses(from: string) { return useQuery(useData().expenses(from)); }
 export function useBills() { return useQuery(useData().bills()); }
 export function useNotifications() { return useQuery(useData().notifications()); }
+export function useBudgets() { return useQuery(useData().budgets()); }
 export function useProposals() { return useQuery(useData().proposals()); }
 export function useProposal(id: string) { return useQuery(useData().proposal(id)); }
 

@@ -1,6 +1,7 @@
 import { agents } from "./agents";
 import type { Endpoint } from "./endpoint";
 import { auth } from "./auth";
+import { budgetsApi } from "./budgets";
 import { business } from "./business";
 import { comingIn } from "./coming-in";
 import { goingOut } from "./going-out";
@@ -68,6 +69,12 @@ export const APP_ENDPOINTS = {
   updatePayRun: payroll.updateRun,
   approvePayRun: payroll.approveRun,
   payPayrollDue: payroll.payDue,
+
+  /** Monthly budgets and their alerts. */
+  budgets: budgetsApi.list,
+  saveBudget: budgetsApi.save,
+  removeBudget: budgetsApi.remove,
+  budgetSettings: budgetsApi.settings,
 } satisfies Record<string, Endpoint>;
 
 export type AppEndpointName = keyof typeof APP_ENDPOINTS;

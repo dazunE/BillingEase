@@ -1472,3 +1472,25 @@ export const apiUsageDaily = pgTable(
   },
   (t) => [primaryKey({ columns: [t.businessId, t.day] })],
 );
+
+/**
+ * Monthly budgets, the same every month: a limit for one spending category or all spending, a
+ * Coming in target, or a Yours to keep goal. `alertMonth`/`alertLevel` remember the highest alert
+ * sent this month (80 or 100) so each is only sent once.
+ */
+export const budgets = pgTable(
+  "budgets",
+  {
+    id: id(),
+    businessId: businessId(),
+    kind: text("kind").$type<"category" | "spending" | "income" | "keep">().notNull(),
+    // The country's category id, for kind = category; empty otherwise.
+    categoryId: text("category_id").notNull().default(""),
+    amount: money("amount").notNull(),
+    alertMonth: text("alert_month"),
+    alertLevel: integer("alert_level").notNull().default(0),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex("budgets_business_kind_category").on(t.businessId, t.kind, t.categoryId)],
+);
