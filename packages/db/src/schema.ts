@@ -1516,3 +1516,22 @@ export const pushDevices = pgTable(
   },
   (t) => [index("push_devices_user").on(t.userId)],
 );
+
+/**
+ * Writes that carry an Idempotency-Key (the phone app's, sent again after a dropped connection):
+ * the first answer is kept for a week, so a repeat returns it instead of saving twice.
+ */
+export const idempotencyKeys = pgTable(
+  "idempotency_keys",
+  {
+    // The person's id and the key they sent, so keys can't collide between people.
+    key: text("key").primaryKey(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    method: text("method").notNull(),
+    path: text("path").notNull(),
+    status: text("status").$type<"pending" | "done">().notNull().default("pending"),
+    response: jsonb("response"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("idempotency_keys_created").on(t.createdAt)],
+);

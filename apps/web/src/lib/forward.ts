@@ -15,7 +15,7 @@ const PASS_OUT = ["content-type", "www-authenticate", "retry-after", "cache-cont
 const CORS = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-  "access-control-allow-headers": "authorization, content-type, accept, mcp-protocol-version, mcp-session-id, last-event-id, x-business-id",
+  "access-control-allow-headers": "authorization, content-type, accept, mcp-protocol-version, mcp-session-id, last-event-id, x-business-id, idempotency-key",
   "access-control-expose-headers": "www-authenticate, mcp-session-id, retry-after, x-ratelimit-limit, x-ratelimit-remaining, x-ratelimit-reset",
   "access-control-max-age": "86400",
 };

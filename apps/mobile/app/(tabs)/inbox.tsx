@@ -8,6 +8,7 @@ import { problem } from "@/lib/api";
 import { ago } from "@/lib/dates";
 import { phoneRoute } from "@/lib/links";
 import { useNotifications, useProposals, useWrite } from "@/lib/queries";
+import { useOffline } from "@/lib/offline";
 import { useSession } from "@/lib/session";
 import { color, font } from "@/theme";
 
@@ -26,18 +27,19 @@ export default function Inbox() {
   const checks = useProposals();
   const pending = checks.data?.proposals ?? [];
   const [tab, setTab] = useState<"check" | "updates">(params.tab === "updates" || (!params.tab && checks.data && pending.length === 0) ? "updates" : "check");
-  const read = useWrite((id: string) => api("markRead", { params: { id }, body: { read: true } }));
+  const { write } = useOffline();
+  const read = useWrite((id: string) => write("markRead", { params: { id }, body: { read: true } }, "Marked read"));
   const readAll = useWrite(() => api("markAllRead", {}));
-  const approve = useWrite((id: string) => api("approve", { params: { id }, body: {} }));
-  const reject = useWrite((id: string) => api("reject", { params: { id }, body: {} }));
+  const approve = useWrite((p: Proposal) => write("approve", { params: { id: p.id }, body: {} }, `Approve: ${p.title}`));
+  const reject = useWrite((p: Proposal) => write("reject", { params: { id: p.id }, body: {} }, `Turn down: ${p.title}`));
   const items = notes.data?.items ?? [];
   const unread = notes.data?.unread ?? 0;
 
   async function quickApprove(p: Proposal) {
     if (p.kind === "expense.create") { router.push(`/check?id=${p.id}`); return; }
     try {
-      const r = await approve.mutateAsync(p.id);
-      toast(r.status === "failed" ? r.error ?? "That didn’t go through" : r.result?.emailed ? "Reminder emailed" : "Done");
+      const r = await approve.mutateAsync(p);
+      toast(r.queued ? "Saved on this phone · sent when you’re back online" : r.result.status === "failed" ? r.result.error ?? "That didn’t go through" : r.result.result?.emailed ? "Reminder emailed" : "Done");
     } catch (e) { toast(problem(e)); }
   }
 
@@ -73,9 +75,9 @@ export default function Inbox() {
                   </View>
                 </Row>
                 <Row gap={8}>
-                  <Button title={APPROVE[p.kind]} small busy={approve.isPending && approve.variables === p.id} onPress={() => quickApprove(p)} />
-                  <Button title="Turn down" small kind="ghost" busy={reject.isPending && reject.variables === p.id}
-                    onPress={async () => { try { await reject.mutateAsync(p.id); toast("Turned down"); } catch (e) { toast(problem(e)); } }} />
+                  <Button title={APPROVE[p.kind]} small busy={approve.isPending && approve.variables?.id === p.id} onPress={() => quickApprove(p)} />
+                  <Button title="Turn down" small kind="ghost" busy={reject.isPending && reject.variables?.id === p.id}
+                    onPress={async () => { try { await reject.mutateAsync(p); toast("Turned down"); } catch (e) { toast(problem(e)); } }} />
                 </Row>
               </Card>
             ))}

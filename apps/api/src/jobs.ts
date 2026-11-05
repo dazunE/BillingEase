@@ -7,6 +7,7 @@ import { purgeClosed } from "./services/purge";
 import { runDueRecurring } from "./services/recurring-run";
 import { budgetAlertsJob, budgetWeeklyJob } from "./services/budget-jobs";
 import { deliverPushes } from "./services/push";
+import { tidyIdempotencyKeys } from "./lib/route";
 
 /**
  * Background work, run in the API process on a timer. Each job is safe to run twice
@@ -25,6 +26,7 @@ export const JOBS: Job[] = [
   { name: "chaser-scan", everyMs: 6 * 60 * 60_000, run: (app) => scanForLate(app) },
   { name: "agent-queue-stale", everyMs: 5 * 60_000, run: (app) => requeueStale(app.be.db) },
   { name: "api-tidy", everyMs: 24 * 60 * 60_000, run: (app) => tidyApi(app) },
+  { name: "idempotency-tidy", everyMs: 6 * 60 * 60_000, run: (app) => tidyIdempotencyKeys(app.be.db) },
   // Closed businesses are deleted 30 days after closing.
   { name: "purge-closed", everyMs: 60 * 60_000, run: (app) => purgeClosed(app.be.db, app.be.services.storage) },
   // Budgets: an alert at 80% and when over, for businesses whose books changed in the last few minutes.

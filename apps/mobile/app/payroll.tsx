@@ -11,6 +11,7 @@ import { problem } from "@/lib/api";
 import { shortDate } from "@/lib/dates";
 import { CURRENCY_OF, fit, money } from "@/lib/money";
 import { useRefreshAll, useToday } from "@/lib/queries";
+import { useOffline } from "@/lib/offline";
 import { useSession } from "@/lib/session";
 import { color, font } from "@/theme";
 
@@ -22,6 +23,7 @@ export default function Payroll() {
   const router = useRouter();
   const { api, business, confirm } = useSession();
   const toast = useToast();
+  const { write } = useOffline();
   const refresh = useRefreshAll();
   const today = useToday();
   const b = business?.id ?? "none";
@@ -189,9 +191,9 @@ export default function Payroll() {
 
                 {/* What the run owes */}
                 {run?.status === "approved" ? <Dues title={full ? "To pay" : "To pay staff, HMRC and the pension"} dues={run.dues} W={W} busy={busy}
-                  onPay={(d) => act(d.id, () => api("payPayrollDue", { params: { id: d.id }, body: { paidOn: today, method: "Bank transfer" } }), `${d.label} marked paid`, `Mark ${d.label} paid`)} /> : null}
+                  onPay={(d) => act(d.id, () => write("payPayrollDue", { params: { id: d.id }, body: { paidOn: today, method: "Bank transfer" } }, `${d.label} marked paid`), `${d.label} marked paid`, `Mark ${d.label} paid`)} /> : null}
                 {otherDues.length ? <Dues title="Still to pay from earlier months" dues={otherDues} W={W} busy={busy}
-                  onPay={(d) => act(d.id, () => api("payPayrollDue", { params: { id: d.id }, body: { paidOn: today, method: "Bank transfer" } }), `${d.label} marked paid`, `Mark ${d.label} paid`)} /> : null}
+                  onPay={(d) => act(d.id, () => write("payPayrollDue", { params: { id: d.id }, body: { paidOn: today, method: "Bank transfer" } }, `${d.label} marked paid`), `${d.label} marked paid`, `Mark ${d.label} paid`)} /> : null}
                 {error ? <Text style={s.err}>{error}</Text> : null}
                 <Sub style={{ textAlign: "center" }}>{full ? "EPF, ETF and APIT figures follow the rules in BillingEase and haven’t been checked against the IRD yet." : "BillingEase keeps the records; your payroll software sends the RTI submission to HMRC."}</Sub>
               </>

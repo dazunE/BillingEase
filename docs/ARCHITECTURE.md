@@ -146,6 +146,14 @@ A business chooses how its invoices, quotes and credit notes look in **Account â
 - **US businesses** get every agent: dollars, month-first statement dates, checks and ACH, and sales tax kept in what was paid.
 - **Ask** is the first agent: read-only tools on this business's books and a fixed list of official sources per country. Answers are labelled as AI and say to check with the accountant.
 
+## The phone app
+
+`apps/mobile` (Expo) reaches the API through the web app at `/app-api/*`, which forwards only the endpoints in `APP_ENDPOINTS` (`packages/contracts/src/mobile.ts`) with the internal key, plus the session token, `X-Business-Id` and `Idempotency-Key`. Anything else is refused before it reaches the API. The app has its own install (it needs React 19.3; the web app is on 19.2), so it isn't in the npm workspace.
+
+- **Idempotency.** Any write may carry an `Idempotency-Key` (8â€“100 letters, numbers, `-`, `_`). `route()` claims the key in `idempotency_keys` (per person) before running the handler and keeps the answer, so a repeat returns the first answer instead of saving twice; a repeat while the first is still running gets 409 `still_saving`; a failed write releases the key; a key left pending over two minutes (the server stopped mid-way) is tried again. Keys are kept a week. The phone's offline outbox depends on this.
+- **Budgets.** `budgets` holds monthly limits (one category, or all spending) and goals (Coming in, Yours to keep), the same every month. `GET /budgets` works them out from the books (`categoryTotals`, `goingOut`, `comingIn`, `threeNumbers`), so they agree with Home and the reports. The `budget-alerts` job checks businesses whose ledger changed in the last few minutes and notifies once per month at 80% and once over; `budget-weekly` sends a Monday 8am summary in the country's time. Settings live in `businesses.settings.budgets`.
+- **Push notifications.** Phones register an Expo push token in `push_devices` with the kinds they want. The `deliver-push` job claims new notifications (`notifications.pushed_at`), works out each one's kind from its link (`kindOf`), and sends it through Expo to the phones of the people it's for; tokens Expo reports gone are disabled. Off unless `EXPO_PUSH=on`, like email without Postmark.
+
 ## Public API and MCP server
 
 Outside apps (scripts, other software, AI assistants) reach a business's books at the web app's public address: `/v1` (REST), `/mcp` (MCP over Streamable HTTP), `/oauth/*` and `/.well-known/oauth-*`. The web app forwards these to the API (`apps/web/src/lib/forward.ts`) with the internal key, passing only a short list of headers each way and adding CORS. Code is in `apps/api/src/public`.

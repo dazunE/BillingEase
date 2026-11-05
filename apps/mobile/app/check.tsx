@@ -7,6 +7,7 @@ import { Button, Card, ErrorNote, Footer, H1, IconButton, Loading, Row, Sub, Tag
 import { problem } from "@/lib/api";
 import { useOutSetup, useProposal, useRefreshAll, useToday } from "@/lib/queries";
 import { useSession } from "@/lib/session";
+import { useOffline } from "@/lib/offline";
 import { color, font } from "@/theme";
 
 /** One draft an agent made: check it, change it if needed, then approve or turn it down. */
@@ -15,6 +16,7 @@ export default function Check() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { api } = useSession();
   const toast = useToast();
+  const { write } = useOffline();
   const refresh = useRefreshAll();
   const setup = useOutSetup();
   const today = useToday();
@@ -33,17 +35,17 @@ export default function Check() {
     try {
       const payload = editable && draft ? bodyFrom(draft, cur, !!setup.data?.vatRegistered) : undefined;
       if (editable && !payload) { setError("Add who you paid and the amount."); setBusy(null); return; }
-      const r = await api("approve", { params: { id: p.id }, body: payload ? { payload: { ...p.payload, ...payload } } : {} });
+      const r = await write("approve", { params: { id: p.id }, body: payload ? { payload: { ...p.payload, ...payload } } : {} }, `Approve: ${payload?.payee ?? p.title}`);
       refresh();
-      if (r.status === "failed") { setError(r.error ?? "That didn’t go through."); setBusy(null); return; }
-      toast(p.kind === "expense.create" ? `${payload?.payee ?? "Expense"} added to Going out` : "Approved");
+      if (!r.queued && r.result.status === "failed") { setError(r.result.error ?? "That didn’t go through."); setBusy(null); return; }
+      toast(r.queued ? "Saved on this phone · added when you’re back online" : p.kind === "expense.create" ? `${payload?.payee ?? "Expense"} added to Going out` : "Approved");
       router.back();
     } catch (e) { setError(problem(e)); setBusy(null); }
   }
   async function reject() {
     if (!p) return;
     setBusy("reject");
-    try { await api("reject", { params: { id: p.id }, body: {} }); refresh(); toast("Turned down"); router.back(); }
+    try { await write("reject", { params: { id: p.id }, body: {} }, `Turn down: ${p.title}`); refresh(); toast("Turned down"); router.back(); }
     catch (e) { setError(problem(e)); setBusy(null); }
   }
 

@@ -12,7 +12,7 @@ async function handler(req: Request, ctx: { params: Promise<{ path?: string[] }>
   if (!isAppEndpoint(req.method, target)) {
     return Response.json({ error: { code: "not_found", message: "The app can't call that." } }, { status: 404, headers: { "access-control-allow-origin": "*" } });
   }
-  return forward(req, target, { passIn: ["x-business-id"] });
+  return forward(req, target, { passIn: ["x-business-id", "idempotency-key"] });
 }
 
 export const GET = handler;

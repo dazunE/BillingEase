@@ -8,6 +8,7 @@ import { problem } from "@/lib/api";
 import { shortDate } from "@/lib/dates";
 import { money, shortMoney } from "@/lib/money";
 import { useHome, useInvoices, useToday, useWrite } from "@/lib/queries";
+import { useOffline } from "@/lib/offline";
 import { useSession } from "@/lib/session";
 import { color, font, type Tone } from "@/theme";
 
@@ -27,7 +28,8 @@ export default function ComingIn() {
   const toast = useToast();
   const q = useInvoices(filter);
   const home = useHome();
-  const remind = useWrite((id: string) => api("remind", { params: { id }, body: { email: true } }));
+  const { write } = useOffline();
+  const remind = useWrite((inv: InvoiceRow) => write("remind", { params: { id: inv.id }, body: { email: true } }, `Reminder to ${inv.customerName} about ${inv.number}`));
   const send = useWrite((id: string) => api("issueInvoice", { params: { id }, body: { email: true } }));
   const cur = home.data?.currency ?? "GBP";
   const c = home.data?.comingIn;
@@ -84,8 +86,8 @@ export default function ComingIn() {
                     <Sub>{inv.summary || "Invoice"} · {money(inv.total, inv.currency)} total{inv.paid ? `, ${money(inv.paid, inv.currency)} received` : ""}{inv.remindersSent ? ` · ${inv.remindersSent} reminder${inv.remindersSent === 1 ? "" : "s"} sent` : ""}</Sub>
                     <Row gap={8} style={{ flexWrap: "wrap" }}>
                       {owed ? <Button title="Record payment" small onPress={() => setPaying(inv)} /> : null}
-                      {owed ? <Button title="Remind" small kind="ghost" busy={remind.isPending && remind.variables === inv.id}
-                        onPress={async () => { try { const r = await remind.mutateAsync(inv.id); toast(r.emailed ? `Reminder emailed to ${inv.customerName}` : "Reminder ready"); } catch (e) { toast(problem(e)); } }} /> : null}
+                      {owed ? <Button title="Remind" small kind="ghost" busy={remind.isPending && remind.variables?.id === inv.id}
+                        onPress={async () => { try { const r = await remind.mutateAsync(inv); toast(r.queued ? "Reminder saved on this phone · sent when you’re back online" : r.result.emailed ? `Reminder emailed to ${inv.customerName}` : "Reminder ready"); } catch (e) { toast(problem(e)); } }} /> : null}
                       {inv.shown === "draft" ? <Button title="Send now" small busy={send.isPending && send.variables === inv.id}
                         onPress={async () => { try { const r = await send.mutateAsync(inv.id); toast(`${r.number ?? "Invoice"} ${r.emailed ? "emailed" : "sent"}`); } catch (e) { toast(problem(e)); } }} /> : null}
                     </Row>
@@ -114,7 +116,6 @@ function Stat({ label, value, sub, bg, dark }: { label: string; value: string; s
 
 /** What reached the bank, how they paid. */
 function PaymentSheet({ inv, lk, onClose }: { inv: InvoiceRow; lk: boolean; onClose: () => void }) {
-  const { api } = useSession();
   const toast = useToast();
   const digits = currencyDigits(inv.currency);
   const [amount, setAmount] = useState((inv.open / 10 ** digits).toFixed(digits));
@@ -122,10 +123,11 @@ function PaymentSheet({ inv, lk, onClose }: { inv: InvoiceRow; lk: boolean; onCl
   const [cheque, setCheque] = useState("");
   const [error, setError] = useState<string | null>(null);
   const today = useToday();
-  const pay = useWrite((minor: number) => api("recordPayment", {
+  const { write } = useOffline();
+  const pay = useWrite((minor: number) => write("recordPayment", {
     params: { id: inv.id },
     body: { amount: minor, receivedOn: today, method, chequeNumber: method === "Cheque" ? cheque || null : null },
-  }));
+  }, `${money(minor, inv.currency)} from ${inv.customerName}`));
   const minor = parseMoney(amount, digits) ?? 0;
   const part = minor > 0 && minor < inv.open;
   return (
@@ -143,7 +145,7 @@ function PaymentSheet({ inv, lk, onClose }: { inv: InvoiceRow; lk: boolean; onCl
       <Button title="Save payment" busy={pay.isPending} disabled={minor <= 0 || minor > inv.open}
         onPress={async () => {
           setError(null);
-          try { await pay.mutateAsync(minor); toast(`${money(minor, inv.currency)} from ${inv.customerName} recorded`); onClose(); }
+          try { const r = await pay.mutateAsync(minor); toast(`${money(minor, inv.currency)} from ${inv.customerName} ${r.queued ? "· saved on this phone" : "recorded"}`); onClose(); }
           catch (e) { setError(problem(e)); }
         }} />
     </Sheet>

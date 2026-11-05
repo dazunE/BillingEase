@@ -32,4 +32,5 @@ export const KEYS = {
   pushToken: "be.push.token",
   pushKinds: "be.push.kinds",
   pushAsked: "be.push.asked",
+  me: "be.me",
 } as const;

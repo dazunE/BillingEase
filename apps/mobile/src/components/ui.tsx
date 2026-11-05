@@ -6,6 +6,8 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { color, font, radius, tone as tones, type Tone } from "@/theme";
 import { Icon, type IconName } from "./Icon";
+import { useOfflineMaybe } from "@/lib/offline";
+import { useRouter } from "expo-router";
 
 // ---- type -------------------------------------------------------------------------------
 
@@ -29,6 +31,7 @@ export function Screen({ header, children, refreshing, onRefresh, footer, padBot
   return (
     <SafeAreaView edges={["top"]} style={s.screen}>
       {header}
+      <OfflineBanner />
       {scroll ? (
         <ScrollView
           contentContainerStyle={[s.body_, { paddingBottom: padBottom }]}
@@ -159,6 +162,28 @@ export function ErrorNote({ message, onRetry }: { message: string; onRetry?: () 
   );
 }
 
+// ---- offline -----------------------------------------------------------------------------
+
+/** No signal, changes waiting to send, or one the server turned down: one line, tap for the list. */
+export function OfflineBanner() {
+  const o = useOfflineMaybe();
+  const router = useRouter();
+  if (!o) return null;
+  const n = o.waiting.length, f = o.failed.length;
+  if (o.online && !n && !f) return null;
+  const text = f ? `${f} change${f === 1 ? "" : "s"} couldn’t be saved. Tap to see why`
+    : !o.online ? (n ? `Offline · ${n} change${n === 1 ? "" : "s"} saved on this phone` : "Offline · you can keep recording")
+    : o.syncing ? `Saving ${n} change${n === 1 ? "" : "s"}…` : `${n} change${n === 1 ? "" : "s"} waiting to save`;
+  return (
+    <Pressable accessibilityRole="button" accessibilityLiveRegion="polite" onPress={() => router.push("/outbox")}
+      style={[s.banner, f ? { backgroundColor: color.redTint } : null]}>
+      <Icon name={f ? "warn" : "clock"} size={18} stroke={f ? color.red : "#2E3A73"} />
+      <Text style={[s.bannerText, f ? { color: color.red } : null]}>{text}</Text>
+      {o.online && n && !o.syncing ? <Text style={s.bannerAct} onPress={() => o.syncNow()}>Save now</Text> : null}
+    </Pressable>
+  );
+}
+
 // ---- sheets -----------------------------------------------------------------------------
 
 export function Sheet({ open, onClose, title, sub, children }: { open: boolean; onClose: () => void; title: string; sub?: string; children: ReactNode }) {
@@ -241,6 +266,9 @@ const s = StyleSheet.create({
   error: { fontFamily: font.semi, fontSize: 13, color: color.red },
   sheet: { backgroundColor: color.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, padding: 16, paddingTop: 10, gap: 14, maxHeight: "88%" },
   grab: { alignSelf: "center", width: 40, height: 5, borderRadius: 99, backgroundColor: color.line },
+  banner: { flexDirection: "row", alignItems: "center", gap: 10, marginHorizontal: 16, marginBottom: 8, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 14, backgroundColor: "#E4E7F5" },
+  bannerText: { flex: 1, fontFamily: font.semi, fontSize: 13, color: "#2E3A73" },
+  bannerAct: { fontFamily: font.bold, fontSize: 13, color: "#2E3A73", paddingHorizontal: 6 },
   toastWrap: { position: "absolute", left: 0, right: 0, alignItems: "center", paddingHorizontal: 16 },
   toast: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 12, paddingLeft: 14, paddingRight: 20, borderRadius: 99, backgroundColor: color.ink, maxWidth: "100%" },
   tick: { width: 24, height: 24, borderRadius: 99, backgroundColor: color.violet, alignItems: "center", justifyContent: "center" },

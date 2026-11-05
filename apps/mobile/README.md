@@ -2,9 +2,17 @@
 
 The phone app: Expo (SDK 58) with Expo Router, written in TypeScript. It's the on-the-go companion to the web app. The design is in [`docs/MOBILE.md`](../../docs/MOBILE.md) and the clickable screens in `prototype/Mobile*.dc.html`.
 
-**In this first milestone:** sign in (with two-step codes), pick a business, Face ID lock, Home (the three numbers, Needs you, the UK quarter or Sri Lanka VAT month), Coming in (invoices by status, record a payment, remind, send a draft), Going out (this month's spending, change a category, mark a bill paid), Inbox (notifications), a quick invoice (customer → services → review with VAT and SSCL → send), and Record money out or in with a number pad.
-
-**Later milestones:** receipt scanning, statement import, payroll, budgets, push notifications and working offline.
+**What it does:**
+- Sign in (with two-step codes), pick a business, Face ID lock.
+- Home: the three numbers, Needs you, budgets, the UK quarter or Sri Lanka VAT month.
+- Coming in: invoices by status; record a payment, remind, send a draft. Quick invoice with VAT and SSCL worked out by `core`.
+- Going out: this month's spending, categories, bills to mark paid. Record money out or in with a number pad.
+- Scan a receipt (camera, photos or a PDF): the capture agent reads it and the draft waits in Inbox → To check. Without Vertex AI the expense is filled in by hand and the photo attached.
+- Import a bank statement (CSV or PDF) and add the matched and suggested lines.
+- Payroll: work out, approve (Face ID) and pay a Sri Lanka month; record a UK month from the payroll software.
+- Budgets: category and all-spending limits, Coming in and Yours to keep goals, what's left shown while recording, alerts at 80% and over, a Monday summary.
+- Push notifications, by kind; tapping one opens the right screen in the right business.
+- Offline: writes made without signal wait on the phone (with a banner) and are sent in order when signal returns, each with an Idempotency-Key so nothing is saved twice. What the screens last showed is kept for a week, so they open without signal. Creating an invoice, importing a statement and running payroll need signal.
 
 ## How it reaches BillingEase
 
@@ -38,6 +46,14 @@ EXPO_PUBLIC_API_URL=http://192.168.1.20:3000/app-api npm --prefix apps/mobile st
 
 Scan the QR code with Expo Go, or press `w` to open it in a browser (Face ID is skipped there). Sign in with an account you made on the web.
 
+## Push notifications
+
+Push needs two things:
+1. The app's Expo project ID. Run `npx eas init` in `apps/mobile` once; it adds `extra.eas.projectId` to `app.json`. Without it the app says notifications can't be turned on.
+2. On the API, `EXPO_PUSH=on` (and `EXPO_ACCESS_TOKEN` if push security is on for the Expo project). Without it, notifications still show in Inbox but aren't pushed.
+
+Notifications only work on a real phone, not a simulator or the web build.
+
 ## Checks
 
 ```bash
@@ -48,7 +64,7 @@ npm --prefix apps/mobile run typecheck
 npm --prefix apps/mobile test
 ```
 
-The unit tests cover the number pad, money formatting, the API client and notification links. The screens were checked by running the web build against a local API in both countries.
+The unit tests cover the number pad, money formatting, the API client, notification links, expense drafts, budgets and the offline outbox. The screens were checked by running the web build against a local API in both countries.
 
 ## Layout
 

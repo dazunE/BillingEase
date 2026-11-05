@@ -10,6 +10,7 @@ import { API_URL, problem } from "@/lib/api";
 import { ago, greeting, shortDate } from "@/lib/dates";
 import { fit, money, shortMoney } from "@/lib/money";
 import { useBills, useBudgets, useHome, useToday, useWrite } from "@/lib/queries";
+import { useOffline } from "@/lib/offline";
 import { useSession } from "@/lib/session";
 import { color, font } from "@/theme";
 
@@ -29,9 +30,10 @@ export default function Home() {
   const bills = useBills();
   const toast = useToast();
   const today = useToday();
-  const remind = useWrite((id: string) => api("remind", { params: { id }, body: { email: true } }));
+  const { write } = useOffline();
+  const remind = useWrite((n: NeedsItem) => write("remind", { params: { id: n.id.replace(/^[a-z]+-/, "") }, body: { email: true } }, `Reminder: ${n.title}`));
   const send = useWrite((id: string) => api("issueInvoice", { params: { id }, body: { email: true } }));
-  const payBill = useWrite((b: { id: string; amount: number }) => api("payBill", { params: { id: b.id }, body: { amount: b.amount, paidOn: today, method: "Bank transfer" } }));
+  const payBill = useWrite((b: { id: string; amount: number; who: string }) => write("payBill", { params: { id: b.id }, body: { amount: b.amount, paidOn: today, method: "Bank transfer" } }, `${b.who} marked paid`));
 
   const h = q.data;
   const first = (me?.user.name ?? "").split(" ")[0];
@@ -39,14 +41,14 @@ export default function Home() {
   async function act(n: NeedsItem) {
     const id = n.id.replace(/^[a-z]+-/, "");
     try {
-      if (n.kind === "late" && n.id !== "late-more") { const r = await remind.mutateAsync(id); toast(r.emailed ? "Reminder emailed" : "Reminder ready to send"); }
+      if (n.kind === "late" && n.id !== "late-more") { const r = await remind.mutateAsync(n); toast(r.queued ? "Reminder saved on this phone" : r.result.emailed ? "Reminder emailed" : "Reminder ready to send"); }
       else if (n.kind === "draft") { await send.mutateAsync(id); toast("Invoice sent"); }
       else if (n.kind === "bill") {
         const b = bills.data?.bills.find((x) => x.id === id);
         if (!b) { router.push("/out?tab=bills"); return; }
         if (!(await confirm(`Mark ${b.supplierName} paid`))) return;
-        await payBill.mutateAsync({ id, amount: b.left });
-        toast(`${b.supplierName} marked paid`);
+        const r = await payBill.mutateAsync({ id, amount: b.left, who: b.supplierName });
+        toast(`${b.supplierName} marked paid${r.queued ? " · saved on this phone" : ""}`);
       } else if (n.kind === "uncategorised") router.push("/out");
       else if (n.kind === "late") router.push("/in?status=late");
       else Linking.openURL(WEB + n.href);
@@ -108,7 +110,7 @@ export default function Home() {
                   {n.amount != null ? <Text style={s.needAmt}>{money(n.amount, h.currency, "never")}</Text> : null}
                 </Row>
                 <Button title={actLabel(n)} small kind={n.kind === "late" || n.kind === "draft" || n.kind === "bill" ? "primary" : "ghost"} style={{ alignSelf: "flex-start" }}
-                  busy={(remind.isPending && remind.variables === n.id.slice(5)) || (send.isPending && send.variables === n.id.slice(6))} onPress={() => act(n)} />
+                  busy={(remind.isPending && remind.variables?.id === n.id) || (send.isPending && send.variables === n.id.slice(6))} onPress={() => act(n)} />
               </Card>
             ))}
           </Stack>

@@ -1,6 +1,10 @@
 import { DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold, DMSans_700Bold } from "@expo-google-fonts/dm-sans";
 import { Sora_600SemiBold, Sora_700Bold } from "@expo-google-fonts/sora";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { OfflineProvider } from "@/lib/offline";
 import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -8,7 +12,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ToastProvider } from "@/components/ui";
+import { ToastProvider, useToast } from "@/components/ui";
 import { SessionProvider, useSession, type Stage } from "@/lib/session";
 import { phoneRoute } from "@/lib/links";
 import { setUpPush } from "@/lib/push";
@@ -76,25 +80,39 @@ function Gate() {
       <Stack.Screen name="payroll" />
       <Stack.Screen name="budgets" />
       <Stack.Screen name="notifications" />
+      <Stack.Screen name="outbox" />
     </Stack>
   );
 }
 
+/** What the screens last showed is kept on the phone for a week, so they open without signal. */
+const WEEK = 7 * 24 * 60 * 60_000;
+const persister = createAsyncStoragePersister({ storage: AsyncStorage, key: "be.cache" });
+
+function Offline({ children }: { children: React.ReactNode }) {
+  const toast = useToast();
+  return <OfflineProvider onSynced={(n) => toast(`Saved ${n} change${n === 1 ? "" : "s"} made offline`)}>{children}</OfflineProvider>;
+}
+
 export default function Root() {
   const [fonts] = useFonts({ Sora_600SemiBold, Sora_700Bold, DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold, DMSans_700Bold });
-  const [qc] = useState(() => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } }));
+  const [qc] = useState(() => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, gcTime: WEEK, retry: 1, networkMode: "offlineFirst" },
+    // Writes always run: offline, write() keeps them on the phone itself (React Query would pause them).
+    mutations: { networkMode: "always" } } }));
   if (!fonts) return <View style={{ flex: 1, backgroundColor: color.bg }} />;
   return (
     <SafeAreaProvider>
-      <QueryClientProvider client={qc}>
-        <SessionProvider>
+      <PersistQueryClientProvider client={qc} persistOptions={{ persister, maxAge: WEEK, buster: "1" }}>
+        <SessionProvider onSignOut={() => persister.removeClient()}>
           <ToastProvider>
-            <StatusBar style="dark" />
-            <Gate />
-            <PushTaps />
+            <Offline>
+              <StatusBar style="dark" />
+              <Gate />
+              <PushTaps />
+            </Offline>
           </ToastProvider>
         </SessionProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </SafeAreaProvider>
   );
 }

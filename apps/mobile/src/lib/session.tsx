@@ -33,13 +33,15 @@ type Session = {
   confirm(reason: string): Promise<boolean>;
   /** Sends a photo or file (with any other form fields) to an upload endpoint. */
   send<N extends UploadName>(name: N, file: PickedFile, fields?: Record<string, string>): ReturnType<typeof upload<N>>;
+  /** The session to send a write with, for a business (the outbox sends writes made in another). */
+  authFor(businessId: string): { token: string | null; businessId: string };
   /** Calls the API as the signed-in person in the chosen business. */
   api<N extends AppEndpointName>(name: N, opts?: CallOpts<N>): ReturnType<typeof call<N>>;
 };
 
 const Ctx = createContext<Session | null>(null);
 
-export function SessionProvider({ children }: { children: ReactNode }) {
+export function SessionProvider({ children, onSignOut }: { children: ReactNode; onSignOut?: () => unknown }) {
   const qc = useQueryClient();
   const [stage, setStage] = useState<Stage>("starting");
   const [token, setToken] = useState<string | null>(null);
@@ -47,20 +49,33 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [faceId, setFaceIdState] = useState({ on: false, available: false, label: "Face ID" });
   const [push, setPushState] = useState<PushState>({ on: false, kinds: [], token: null });
+  const onSignOutRef = useRef(onSignOut);
+  onSignOutRef.current = onSignOut;
   const authRef = useRef({ token: null as string | null, businessId: null as string | null });
   authRef.current = { token, businessId };
 
   const clear = useCallback(async () => {
     await storage.set(KEYS.token, null);
+    await storage.set(KEYS.me, null);
     await storage.set(KEYS.business, null);
     setToken(null); setMe(null); setBusinessId(null);
     qc.clear();
+    // Nothing of the books stays on the phone after signing out.
+    await onSignOutRef.current?.();
     setStage("signedOut");
   }, [qc]);
 
-  /** After a session token: who is this, and which business. */
+  /** After a session token: who is this, and which business. Offline, the last known answer. */
   const begin = useCallback(async (t: string, lockFirst: boolean) => {
-    const who = await call("me", {}, { token: t, businessId: null });
+    let who: Me;
+    try {
+      who = await call("me", {}, { token: t, businessId: null });
+      await storage.set(KEYS.me, JSON.stringify(who));
+    } catch (e) {
+      const cached = await storage.get(KEYS.me);
+      if (!(e instanceof ApiFailure && e.code === "offline") || !cached) throw e;
+      who = JSON.parse(cached) as Me;
+    }
     const saved = await storage.get(KEYS.business);
     const pick = who.businesses.find((b) => b.id === saved) ?? (who.businesses.length === 1 ? who.businesses[0] : null);
     setToken(t); setMe(who); setBusinessId(pick?.id ?? null);
@@ -83,7 +98,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       if (!t) { setStage("signedOut"); return; }
       try { await begin(t, true); } catch (e) {
         if (e instanceof ApiFailure && e.status === 401) await clear();
-        else { setToken(t); setStage("signedOut"); }
+        else setStage("signedOut");
       }
     })();
   }, [begin, clear]);
@@ -162,6 +177,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       return checkBiometrics(reason);
     },
     api,
+    authFor(id) { return { token: authRef.current.token, businessId: id }; },
     async send(name, file, fields) {
       const form = await fileForm(file, fields, Platform.OS === "web");
       return upload(name, form, authRef.current);

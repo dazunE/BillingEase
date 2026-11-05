@@ -44,6 +44,8 @@ export async function call<N extends AppEndpointName>(
   opts: CallOpts<N>,
   auth: Auth,
   fetcher: typeof fetch = fetch,
+  /** Sent as Idempotency-Key, so a repeat after a dropped connection isn't saved twice. */
+  key?: string,
 ): Promise<ResponseOf<Endpoints[N]>> {
   const e = APP_ENDPOINTS[name];
   const url = buildUrl(API_URL, fillPath(e.path, opts.params), opts.query as Record<string, unknown>);
@@ -52,6 +54,7 @@ export async function call<N extends AppEndpointName>(
   if (auth.businessId) headers["x-business-id"] = auth.businessId;
   const hasBody = e.method !== "GET" && e.method !== "DELETE";
   if (hasBody) headers["content-type"] = "application/json";
+  if (key) headers["idempotency-key"] = key;
   let res: Response;
   try {
     res = await fetcher(url, { method: e.method, headers, body: hasBody ? JSON.stringify(opts.body ?? {}) : undefined });
@@ -94,11 +97,13 @@ export async function upload<N extends UploadName>(
   form: FormData,
   auth: Auth,
   fetcher: typeof fetch = fetch,
+  key?: string,
 ): Promise<ResponseOf<Endpoints[N]>> {
   const e = APP_ENDPOINTS[name];
   const headers: Record<string, string> = { accept: "application/json" };
   if (auth.token) headers.authorization = `Bearer ${auth.token}`;
   if (auth.businessId) headers["x-business-id"] = auth.businessId;
+  if (key) headers["idempotency-key"] = key;
   let res: Response;
   try {
     res = await fetcher(API_URL + e.path, { method: "POST", headers, body: form });

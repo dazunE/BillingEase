@@ -9,7 +9,8 @@ import { problem } from "@/lib/api";
 import { quickCategories } from "@/lib/categories";
 import { addDays } from "@/lib/dates";
 import { CURRENCY_OF, fit, money, padDisplay, padPress, padToMinor, symbol } from "@/lib/money";
-import { useBudgets, useInvoices, useOutSetup, useToday, useWrite } from "@/lib/queries";
+import { useBudgets, useInvoices, useOutSetup, useToday } from "@/lib/queries";
+import { useOffline } from "@/lib/offline";
 import { leftAfter } from "@/lib/budgets";
 import { LeftLine } from "@/components/LeftLine";
 import { useSession } from "@/lib/session";
@@ -29,7 +30,7 @@ export default function Record() {
   const [method, setMethod] = useState<string | null>(null);
   const [inv, setInv] = useState<InvoiceRow | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { api, business } = useSession();
+  const { business } = useSession();
   const toast = useToast();
   const setup = useOutSetup();
   const budgets = useBudgets();
@@ -44,23 +45,25 @@ export default function Record() {
   const methods = dir === "out" ? (setup.data?.payMethods ?? ["Card", "Bank transfer", "Cash"]).slice(0, 4) : ["Bank transfer", "Card", "Cash", ...(business?.country === "lk" ? ["Cheque"] : [])];
   const how = method ?? methods[0];
 
-  const saveOut = useWrite(() => api("createExpense", { body: { spentOn: addDays(today, day), payee: payee.trim(), categoryId: cat, gross: minor, method: how } }));
-  const saveIn = useWrite(() => api("recordPayment", { params: { id: inv!.id }, body: { amount: minor, receivedOn: addDays(today, day), method: how } }));
-  const busy = saveOut.isPending || saveIn.isPending;
+  const { write } = useOffline();
+  const [busy, setBusy] = useState(false);
   const can = minor > 0 && (dir === "out" ? payee.trim().length > 0 : !!inv && minor <= inv.open);
 
   async function save() {
     setError(null);
     try {
+      setBusy(true);
       if (dir === "out") {
-        await saveOut.mutateAsync(undefined);
-        toast(`${money(minor, cur)} to ${payee.trim()} saved`);
+        const label = `${money(minor, cur)} to ${payee.trim()}`;
+        const r = await write("createExpense", { body: { spentOn: addDays(today, day), payee: payee.trim(), categoryId: cat, gross: minor, method: how } }, label);
+        toast(r.queued ? `${label} · saved on this phone` : `${label} saved`);
       } else {
-        await saveIn.mutateAsync(undefined);
-        toast(`${money(minor, curOf)} from ${inv!.customerName} recorded`);
+        const label = `${money(minor, curOf)} from ${inv!.customerName}`;
+        const r = await write("recordPayment", { params: { id: inv!.id }, body: { amount: minor, receivedOn: addDays(today, day), method: how } }, label);
+        toast(r.queued ? `${label} · saved on this phone` : `${label} recorded`);
       }
       router.back();
-    } catch (e) { setError(problem(e)); }
+    } catch (e) { setError(problem(e)); } finally { setBusy(false); }
   }
 
   const shown = symbol(curOf) + padDisplay(typed);

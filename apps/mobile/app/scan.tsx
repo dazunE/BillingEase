@@ -11,6 +11,8 @@ import { Button, Card, Footer, H1, IconButton, Row, Sub, useToast } from "@/comp
 import { ApiFailure, problem, type PickedFile } from "@/lib/api";
 import { useOutSetup, useRefreshAll, useToday } from "@/lib/queries";
 import { useSession } from "@/lib/session";
+import { useOffline } from "@/lib/offline";
+import { money } from "@/lib/money";
 import { color, font } from "@/theme";
 
 type Stage = "pick" | "sending" | "reading" | "manual" | "failed";
@@ -31,6 +33,7 @@ async function prepare(f: PickedFile, width?: number, height?: number): Promise<
 export default function Scan() {
   const router = useRouter();
   const { api, send } = useSession();
+  const { online, write, queueCapture } = useOffline();
   const toast = useToast();
   const refresh = useRefreshAll();
   const setup = useOutSetup();
@@ -47,7 +50,10 @@ export default function Scan() {
 
   async function picked(f: PickedFile, w?: number, h?: number) {
     const ready = await prepare(f, w, h);
-    setFile(ready); setError(null); setStage("sending");
+    setFile(ready); setError(null);
+    // No signal: keep the photo on the phone; it's sent to be read when there's signal again.
+    if (!online) { await queueCapture(ready, `Receipt photo, ${ready.name}`); toast("Photo saved on this phone · read when you’re back online"); router.back(); return; }
+    setStage("sending");
     try {
       const c = await send("capture", ready);
       setCaptureId(c.id); started.current = Date.now(); setStage("reading");
@@ -55,6 +61,7 @@ export default function Scan() {
       // Reading isn't available (no Vertex AI, the agent is off, or this month's AI budget is used):
       // the photo still goes on the expense you fill in.
       if (e instanceof ApiFailure && ["ai_not_set_up", "agent_off", "agent_budget_reached"].includes(e.code)) { setNote(e.message); setStage("manual"); return; }
+      if (e instanceof ApiFailure && e.code === "offline") { await queueCapture(ready, `Receipt photo, ${ready.name}`); toast("Photo saved on this phone · read when you’re back online"); router.back(); return; }
       setError(problem(e)); setStage("pick");
     }
   }
@@ -99,7 +106,9 @@ export default function Scan() {
     if (!body) return;
     setBusy(true); setError(null);
     try {
-      const x = await api("createExpense", { body });
+      const r = await write("createExpense", { body }, `${money(body.gross, setup.data?.currency ?? "GBP")} to ${body.payee}`);
+      if (r.queued) { refresh(); toast(`${body.payee} saved on this phone · ${file ? "add the photo on the web later" : "sent when you’re back online"}`); router.back(); return; }
+      const x = r.result;
       if (file) {
         try { await send("uploadAttachment", file, { ownerType: "expense", ownerId: x.id }); }
         catch { toast("Saved, but the photo didn’t attach. Add it on the web."); }

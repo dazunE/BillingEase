@@ -8,6 +8,7 @@ import { problem } from "@/lib/api";
 import { monthStart, shortDate } from "@/lib/dates";
 import { money, shortMoney } from "@/lib/money";
 import { useBills, useExpenses, useHome, useOutSetup, useToday, useWrite } from "@/lib/queries";
+import { useOffline } from "@/lib/offline";
 import { useSession } from "@/lib/session";
 import { color, font } from "@/theme";
 
@@ -16,14 +17,17 @@ export default function GoingOut() {
   const params = useLocalSearchParams<{ tab?: string }>();
   const [tab, setTab] = useState<"spent" | "bills">(params.tab === "bills" ? "bills" : "spent");
   const [sorting, setSorting] = useState<Expense | null>(null);
-  const { api, confirm } = useSession();
+  const { confirm, business } = useSession();
   const toast = useToast();
   const home = useHome();
   const today = useToday();
   const from = monthStart(today);
   const exp = useExpenses(from);
   const bills = useBills();
-  const pay = useWrite((b: Bill) => api("payBill", { params: { id: b.id }, body: { amount: b.left, paidOn: today, method: "Bank transfer" } }));
+  const { write, waiting, failed } = useOffline();
+  // Expenses recorded without signal: shown at the top until they're sent.
+  const pending = [...failed, ...waiting].filter((p) => p.kind === "call" && p.name === "createExpense" && p.businessId === business?.id);
+  const pay = useWrite((b: Bill) => write("payBill", { params: { id: b.id }, body: { amount: b.left, paidOn: today, method: "Bank transfer" } }, `${b.supplierName} marked paid · ${money(b.left, b.currency)}`));
   const cur = home.data?.currency ?? "GBP";
   const g = home.data?.goingOut;
   const unsorted = exp.data?.expenses.filter((x) => !x.categoryId).length ?? 0;
@@ -37,7 +41,7 @@ export default function GoingOut() {
           <Row gap={8}>
             <IconButton name="people" label="Payroll" onPress={() => router.push("/payroll")} />
             <IconButton name="import" label="Import a bank statement" onPress={() => router.push("/import")} />
-            <Button title="Money out" icon="plus" small onPress={() => router.push("/record?dir=out")} />
+            <IconButton name="plus" label="Record money out" dark onPress={() => router.push("/record?dir=out")} />
           </Row>
         </Row>
       }
@@ -59,7 +63,17 @@ export default function GoingOut() {
               <View style={s.banner}><Icon name="warn" stroke={color.amber} /><Text style={s.bannerText}>{unsorted} need{unsorted === 1 ? "s" : ""} a category. Tap one to sort it.</Text></View>
             ) : null}
             <Card style={{ paddingVertical: 4 }}>
-              {exp.data?.expenses.length === 0 ? <Sub style={{ textAlign: "center", paddingVertical: 18 }}>Nothing spent yet this month.</Sub> : null}
+              {exp.data?.expenses.length === 0 && !pending.length ? <Sub style={{ textAlign: "center", paddingVertical: 18 }}>Nothing spent yet this month.</Sub> : null}
+              {pending.map((p) => (
+                <Pressable key={p.id} accessibilityRole="button" accessibilityLabel={`${p.label}, waiting to send`} onPress={() => router.push("/outbox")} style={s.row}>
+                  <View style={[s.ic, { backgroundColor: "#E4E7F5" }]}><Icon name="clock" size={18} stroke="#2E3A73" /></View>
+                  <View style={{ flex: 1, gap: 3 }}>
+                    <Text numberOfLines={1} style={s.who}>{(p.body as { payee?: string }).payee ?? p.label}</Text>
+                    <Row gap={6}><Tag title={p.error ? "Not saved" : "Waiting to send"} kind={p.error ? "late" : "plain"} /><Sub numberOfLines={1} style={{ flexShrink: 1 }}>{shortDate((p.body as { spentOn: string }).spentOn)}</Sub></Row>
+                  </View>
+                  <Text style={s.amt}>{money((p.body as { gross: number }).gross, cur, "never")}</Text>
+                </Pressable>
+              ))}
               {exp.data?.expenses.map((x, i, all) => (
                 <Pressable key={x.id} accessibilityRole="button" accessibilityLabel={`${x.payee}, ${money(x.businessShare, cur)}. Change category`} onPress={() => setSorting(x)}
                   style={[s.row, i === all.length - 1 && { borderBottomWidth: 0 }]}>
@@ -97,7 +111,7 @@ export default function GoingOut() {
                   <Button title="Mark paid" small kind="ghost" busy={pay.isPending && pay.variables?.id === b.id} style={{ minHeight: 32, paddingHorizontal: 12 }}
                     onPress={async () => {
                       if (!(await confirm(`Mark ${b.supplierName} paid`))) return;
-                      try { await pay.mutateAsync(b); toast(`${b.supplierName} marked paid · ${money(b.left, b.currency)}`); } catch (e) { toast(problem(e)); }
+                      try { const r = await pay.mutateAsync(b); toast(`${b.supplierName} marked paid${r.queued ? " · saved on this phone" : ` · ${money(b.left, b.currency)}`}`); } catch (e) { toast(problem(e)); }
                     }} />
                 </View>
               </View>
@@ -123,10 +137,10 @@ function Stat({ label, value, sub, bg, dark, border }: { label: string; value: s
 
 /** Pick the HMRC or Inland Revenue category for an expense. */
 function CategorySheet({ x, onClose }: { x: Expense; onClose: () => void }) {
-  const { api } = useSession();
+  const { write } = useOffline();
   const toast = useToast();
   const setup = useOutSetup();
-  const save = useWrite((categoryId: string) => api("categoriseExpense", { params: { id: x.id }, body: { categoryId } }));
+  const save = useWrite((c: { id: string; name: string }) => write("categoriseExpense", { params: { id: x.id }, body: { categoryId: c.id } }, `${x.payee} moved to ${c.name}`));
   const cats = (setup.data?.categories ?? []).filter((c) => c.scope === "business");
   return (
     <Sheet open onClose={onClose} title={x.payee} sub={setup.data?.categorySource ?? "Pick a category"}>
@@ -136,7 +150,7 @@ function CategorySheet({ x, onClose }: { x: Expense; onClose: () => void }) {
             const on = c.id === x.categoryId;
             return (
               <Pressable key={c.id} accessibilityRole="button" accessibilityState={{ selected: on }} style={s.catRow}
-                onPress={async () => { try { await save.mutateAsync(c.id); toast(`${x.payee} moved to ${c.name}`); onClose(); } catch (e) { toast(problem(e)); } }}>
+                onPress={async () => { try { const r = await save.mutateAsync(c); toast(`${x.payee} moved to ${c.name}${r.queued ? " · saved on this phone" : ""}`); onClose(); } catch (e) { toast(problem(e)); } }}>
                 <View style={{ flex: 1 }}>
                   <Text style={[s.who, on && { fontFamily: font.bold }]}>{c.name}</Text>
                   <Sub>{c.official}{!c.allowable ? " · not allowable" : ""}</Sub>
