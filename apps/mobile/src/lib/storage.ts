@@ -29,4 +29,7 @@ export const KEYS = {
   token: "be.session",
   business: "be.business",
   faceId: "be.faceid",
+  pushToken: "be.push.token",
+  pushKinds: "be.push.kinds",
+  pushAsked: "be.push.asked",
 } as const;

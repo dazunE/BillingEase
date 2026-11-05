@@ -10,12 +10,40 @@ import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ToastProvider } from "@/components/ui";
 import { SessionProvider, useSession, type Stage } from "@/lib/session";
+import { phoneRoute } from "@/lib/links";
+import { setUpPush } from "@/lib/push";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
 import { color } from "@/theme";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+setUpPush();
 
 /** Where each session stage belongs. Anything inside the app needs "ready". */
 const HOME_OF: Record<Exclude<Stage, "starting" | "ready">, string> = { signedOut: "sign-in", pickBusiness: "businesses", locked: "lock" };
+
+/**
+ * Tapping a push notification opens the screen it's about, in the business it's from. If the app
+ * is locked, it waits until it's unlocked.
+ */
+function PushTaps() {
+  const { stage, business, me, pickBusiness } = useSession();
+  const router = useRouter();
+  const last = Platform.OS === "web" ? null : Notifications.useLastNotificationResponse();
+  const [done, setDone] = useState<string | null>(null);
+  useEffect(() => {
+    if (!last || stage !== "ready") return;
+    const id = last.notification.request.identifier;
+    if (done === id) return;
+    setDone(id);
+    const data = last.notification.request.content.data as { link?: string | null; businessId?: string };
+    (async () => {
+      if (data.businessId && data.businessId !== business?.id && me?.businesses.some((b) => b.id === data.businessId)) await pickBusiness(data.businessId);
+      router.push((phoneRoute(data.link ?? null) ?? "/inbox?tab=updates") as never);
+    })();
+  }, [last, stage]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
 
 function Gate() {
   const { stage } = useSession();
@@ -47,6 +75,7 @@ function Gate() {
       <Stack.Screen name="import" options={{ presentation: "modal" }} />
       <Stack.Screen name="payroll" />
       <Stack.Screen name="budgets" />
+      <Stack.Screen name="notifications" />
     </Stack>
   );
 }
@@ -62,6 +91,7 @@ export default function Root() {
           <ToastProvider>
             <StatusBar style="dark" />
             <Gate />
+            <PushTaps />
           </ToastProvider>
         </SessionProvider>
       </QueryClientProvider>

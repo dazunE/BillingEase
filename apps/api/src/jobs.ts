@@ -6,6 +6,7 @@ import { tidyApi } from "./public/access";
 import { purgeClosed } from "./services/purge";
 import { runDueRecurring } from "./services/recurring-run";
 import { budgetAlertsJob, budgetWeeklyJob } from "./services/budget-jobs";
+import { deliverPushes } from "./services/push";
 
 /**
  * Background work, run in the API process on a timer. Each job is safe to run twice
@@ -16,6 +17,8 @@ export type Job = { name: string; everyMs: number; run: (app: FastifyInstance) =
 
 export const JOBS: Job[] = [
   { name: "deliver-email", everyMs: 30_000, run: (app) => app.be.services.email.deliver(app.be.db) },
+  // Push notifications to phones, when Expo push is turned on (EXPO_PUSH=on).
+  { name: "deliver-push", everyMs: 10_000, run: async (app) => (app.be.services.push ? deliverPushes(app.be.db, app.be.services.push) : 0) },
   { name: "repeating-invoices", everyMs: 10 * 60_000, run: (app) => runDueRecurring(app.be.db, app.be.services) },
   // Agent work waits in the jobs table, so it survives a restart and runs on one instance.
   { name: "agent-queue", everyMs: 2_000, run: (app) => drain(app, `${hostname()}:${process.pid}`, 5) },

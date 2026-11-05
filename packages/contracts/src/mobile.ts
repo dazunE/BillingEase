@@ -7,6 +7,7 @@ import { comingIn } from "./coming-in";
 import { goingOut } from "./going-out";
 import { home } from "./home";
 import { payroll } from "./payroll";
+import { push } from "./push";
 
 /**
  * Every API endpoint the phone app may call. The web app forwards these (and only these) from
@@ -75,6 +76,10 @@ export const APP_ENDPOINTS = {
   saveBudget: budgetsApi.save,
   removeBudget: budgetsApi.remove,
   budgetSettings: budgetsApi.settings,
+
+  /** This phone's push notifications. */
+  registerPush: push.register,
+  unregisterPush: push.unregister,
 } satisfies Record<string, Endpoint>;
 
 export type AppEndpointName = keyof typeof APP_ENDPOINTS;

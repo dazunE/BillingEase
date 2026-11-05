@@ -10,7 +10,7 @@ const COUNTRY = { uk: "United Kingdom", lk: "Sri Lanka", us: "United States" } a
 
 export default function Me() {
   const router = useRouter();
-  const { me, business, pickBusiness, faceId, setFaceId, signOut } = useSession();
+  const { me, business, pickBusiness, faceId, setFaceId, signOut, push } = useSession();
   return (
     <Screen padBottom={40} header={
       <Row style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 10 }}>
@@ -49,6 +49,17 @@ export default function Me() {
           </View>
         </Card>
       </View>
+
+      <Card onPress={() => router.push("/notifications")} label="Notifications">
+        <Row>
+          <Icon name="bell" />
+          <View style={{ flex: 1 }}>
+            <Text style={s.name}>Notifications</Text>
+            <Sub>{push.on ? `On · ${push.kinds.length} kinds` : "Off on this phone"}</Sub>
+          </View>
+          <Icon name="chev" stroke={color.faint} />
+        </Row>
+      </Card>
 
       <Card onPress={() => Linking.openURL(API_URL.replace(/\/app-api$/, "") + "/app")} label="Open BillingEase on the web">
         <Row>

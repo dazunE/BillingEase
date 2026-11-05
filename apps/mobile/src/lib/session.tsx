@@ -6,6 +6,9 @@ import { ApiFailure, call, fileForm, upload, type CallOpts, type PickedFile, typ
 import { Platform } from "react-native";
 import { biometricsAvailable, checkBiometrics } from "./biometrics";
 import { KEYS, storage } from "./storage";
+import { getPushToken, rememberPush, savedPush, type PushState } from "./push";
+import type { PushKind } from "@billingease/contracts";
+import * as Device from "expo-device";
 import type { AppEndpointName } from "@billingease/contracts";
 
 export type Stage = "starting" | "signedOut" | "pickBusiness" | "locked" | "ready";
@@ -16,6 +19,9 @@ type Session = {
   me: Me | null;
   business: Business | null;
   faceId: { on: boolean; available: boolean; label: string };
+  push: PushState;
+  /** Turns push notifications on (with the kinds chosen) or off for this phone. Throws a plain-words Error. */
+  setPush(on: boolean, kinds: PushKind[]): Promise<void>;
   /** Email and password. Returns a ticket when two-step sign-in is on. */
   signIn(email: string, password: string): Promise<{ ticket: string } | null>;
   finishTwoStep(ticket: string, code: string): Promise<void>;
@@ -40,6 +46,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [me, setMe] = useState<Me | null>(null);
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [faceId, setFaceIdState] = useState({ on: false, available: false, label: "Face ID" });
+  const [push, setPushState] = useState<PushState>({ on: false, kinds: [], token: null });
   const authRef = useRef({ token: null as string | null, businessId: null as string | null });
   authRef.current = { token, businessId };
 
@@ -57,6 +64,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const saved = await storage.get(KEYS.business);
     const pick = who.businesses.find((b) => b.id === saved) ?? (who.businesses.length === 1 ? who.businesses[0] : null);
     setToken(t); setMe(who); setBusinessId(pick?.id ?? null);
+    // Keep this phone's push registration with whoever is signed in on it now.
+    const p = await savedPush();
+    setPushState(p);
+    if (p.token) call("registerPush", { body: { token: p.token, platform: Platform.OS === "ios" ? "ios" : "android", name: Device.deviceName ?? null, kinds: p.kinds } }, { token: t, businessId: null }).catch(() => {});
     const bio = await biometricsAvailable();
     const pref = await storage.get(KEYS.faceId);
     const on = bio.ok && pref !== "off";
@@ -96,7 +107,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [clear]);
 
   const value = useMemo<Session>(() => ({
-    stage, me, faceId,
+    stage, me, faceId, push,
     business: me?.businesses.find((b) => b.id === businessId) ?? null,
     async signIn(email, password) {
       const r = await call("signIn", { body: { email, password } }, { token: null, businessId: null });
@@ -117,6 +128,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setStage("ready");
     },
     async signOut() {
+      // Stop pushes to this phone first, while the session can still say so.
+      if (push.token) { try { await call("unregisterPush", { body: { token: push.token } }, authRef.current); } catch { /* the token stays until it's replaced */ } }
+      await rememberPush(null, push.kinds);
+      setPushState((x) => ({ ...x, on: false, token: null }));
       try { await call("signOut", {}, authRef.current); } catch { /* signed out here either way */ }
       await clear();
     },
@@ -130,6 +145,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       await storage.set(KEYS.faceId, on ? "on" : "off");
       setFaceIdState((f) => ({ ...f, on }));
     },
+    async setPush(on, kinds) {
+      if (!on) {
+        if (push.token) await call("unregisterPush", { body: { token: push.token } }, authRef.current).catch(() => {});
+        await rememberPush(null, kinds);
+        setPushState({ on: false, kinds, token: null });
+        return;
+      }
+      const token = push.token ?? (await getPushToken());
+      await call("registerPush", { body: { token, platform: Platform.OS === "ios" ? "ios" : "android", name: Device.deviceName ?? null, kinds } }, authRef.current);
+      await rememberPush(token, kinds);
+      setPushState({ on: true, kinds, token });
+    },
     async confirm(reason) {
       if (!faceId.on) return true;
       return checkBiometrics(reason);
@@ -139,7 +166,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       const form = await fileForm(file, fields, Platform.OS === "web");
       return upload(name, form, authRef.current);
     },
-  }), [stage, me, faceId, businessId, begin, clear, api, qc]);
+  }), [stage, me, faceId, push, businessId, begin, clear, api, qc]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

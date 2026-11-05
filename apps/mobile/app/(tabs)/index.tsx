@@ -1,6 +1,8 @@
 import type { HomeSummary, NeedsItem, PeriodKey } from "@billingease/contracts";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ALL_KINDS, pushPossible } from "@/lib/push";
+import { KEYS, storage } from "@/lib/storage";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { Icon, type IconName } from "@/components/Icon";
 import { Amount, Bar, Button, Card, ErrorNote, H2, Loading, Row, Screen, Seg, Stack, Sub, Tag, useToast } from "@/components/ui";
@@ -73,6 +75,7 @@ export default function Home() {
       {q.isLoading ? <Loading /> : q.error ? <ErrorNote message={problem(q.error)} onRetry={() => q.refetch()} /> : h ? (
         <>
           <Hero h={h} onPeriod={setPeriod} />
+          <AskForPush />
 
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             {([
@@ -166,6 +169,36 @@ function Tile({ label, dot, value, note, a, b, colorA, colorB, empty }: { label:
       <Bar a={empty ? 0 : a} b={empty ? 0 : b} colorA={colorA} colorB={colorB} track="rgba(255,255,255,0.12)" height={5} />
       <Text style={s.tileNote}>{note}</Text>
     </View>
+  );
+}
+
+/** Once, after signing in on a phone: offer notifications, with what they're for. */
+function AskForPush() {
+  const { push, setPush } = useSession();
+  const toast = useToast();
+  const [asked, setAsked] = useState(true);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { storage.get(KEYS.pushAsked).then((v) => setAsked(v === "1")); }, []);
+  if (asked || push.on || !pushPossible()) return null;
+  const done = () => { storage.set(KEYS.pushAsked, "1"); setAsked(true); };
+  return (
+    <Card style={{ gap: 12, backgroundColor: color.violetTint, borderColor: color.violetTint }}>
+      <Row style={{ alignItems: "flex-start" }}>
+        <View style={[s.needIc, { backgroundColor: "#FFFFFF" }]}><Icon name="bell" /></View>
+        <View style={{ flex: 1, gap: 3 }}>
+          <Text style={s.needTitle}>Know the moment you’re paid</Text>
+          <Sub>Payments, late invoices, payroll and tax dates, and budgets. A few a week; change them any time.</Sub>
+        </View>
+      </Row>
+      <Row gap={8}>
+        <Button title="Turn on" small busy={busy} onPress={async () => {
+          setBusy(true);
+          try { await setPush(true, ALL_KINDS); toast("Notifications are on"); } catch (e) { toast(e instanceof Error ? e.message : "That didn’t work"); }
+          finally { setBusy(false); done(); }
+        }} />
+        <Button title="Not now" small kind="ghost" onPress={done} />
+      </Row>
+    </Card>
   );
 }
 

@@ -1,3 +1,4 @@
+import { pushTransport, type PushTransport } from "./push";
 import { vertexModels, type Models } from "../agents/platform/models";
 import type { Config } from "../config";
 import { createEmail, type EmailService, type EmailTransport } from "./email";
@@ -11,11 +12,12 @@ import { googleSignIn, type GoogleSignIn } from "./google";
  * `clientDocument` reads an OAuth app's metadata document from its URL.
  * `google` is null when Google sign-in isn't configured.
  */
-export type Services = { email: EmailService; storage: Storage; models: Models | null; clientDocument: FetchClientDocument; fx: FxService; google: GoogleSignIn | null };
+export type Services = { email: EmailService; storage: Storage; models: Models | null; clientDocument: FetchClientDocument; fx: FxService; google: GoogleSignIn | null; push: PushTransport | null };
 
-export function createServices(config: Config, overrides: { transport?: EmailTransport | null; storage?: Storage; models?: Models | null; clientDocument?: FetchClientDocument; rates?: RateSource | null; google?: GoogleSignIn | null } = {}): Services {
+export function createServices(config: Config, overrides: { transport?: EmailTransport | null; push?: PushTransport | null; storage?: Storage; models?: Models | null; clientDocument?: FetchClientDocument; rates?: RateSource | null; google?: GoogleSignIn | null } = {}): Services {
   return {
     email: createEmail(config, { transport: overrides.transport }),
+    push: overrides.push !== undefined ? overrides.push : pushTransport(config),
     storage: overrides.storage ?? diskStorage(config.storage.dir),
     models: overrides.models !== undefined ? overrides.models : vertexModels(config),
     clientDocument: overrides.clientDocument ?? fetchClientDocument,

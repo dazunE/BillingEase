@@ -16,6 +16,8 @@ export type Config = {
     postmarkToken: string | null;
   };
   storage: { dir: string };
+  /** Push notifications to the phone app, through Expo. Off unless EXPO_PUSH=on, so development never pushes. */
+  push: { enabled: boolean; accessToken: string | null };
   /**
    * Gemini on Vertex AI, for Ask and the agents. Null when GOOGLE_CLOUD_PROJECT isn't set:
    * Ask and the agents then say they aren't set up. Model IDs are config, not code, because
@@ -51,6 +53,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     port: Number(env.API_PORT ?? env.PORT ?? 4000),
     appUrl: (env.APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     internalKey,
+    push: { enabled: env.EXPO_PUSH === "on", accessToken: env.EXPO_ACCESS_TOKEN || null },
     email: {
       provider: env.POSTMARK_TOKEN ? "postmark" : "outbox",
       from: env.EMAIL_FROM ?? "BillingEase <hello@billingease.local>",
