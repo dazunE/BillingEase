@@ -5,6 +5,7 @@ import { business } from "./business";
 import { comingIn } from "./coming-in";
 import { goingOut } from "./going-out";
 import { home } from "./home";
+import { payroll } from "./payroll";
 
 /**
  * Every API endpoint the phone app may call. The web app forwards these (and only these) from
@@ -59,6 +60,14 @@ export const APP_ENDPOINTS = {
   approve: agents.approve,
   reject: agents.reject,
   approveMany: agents.approveMany,
+
+  /** Payroll: run a month (Sri Lanka works it out; the UK records the software's figures), approve, pay what it owes. */
+  payroll: payroll.overview,
+  payRun: payroll.run,
+  createPayRun: payroll.createRun,
+  updatePayRun: payroll.updateRun,
+  approvePayRun: payroll.approveRun,
+  payPayrollDue: payroll.payDue,
 } satisfies Record<string, Endpoint>;
 
 export type AppEndpointName = keyof typeof APP_ENDPOINTS;

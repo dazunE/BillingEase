@@ -35,6 +35,7 @@ export default function GoingOut() {
         <Row style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 10, justifyContent: "space-between" }}>
           <H1>Going out</H1>
           <Row gap={8}>
+            <IconButton name="people" label="Payroll" onPress={() => router.push("/payroll")} />
             <IconButton name="import" label="Import a bank statement" onPress={() => router.push("/import")} />
             <Button title="Money out" icon="plus" small onPress={() => router.push("/record?dir=out")} />
           </Row>
