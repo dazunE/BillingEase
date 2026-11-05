@@ -39,3 +39,6 @@ jobs:
         working-directory: apps/mobile
       - run: npm test
         working-directory: apps/mobile
+      # Typecheck doesn't catch a module Metro can't resolve; bundling does.
+      - run: npx expo export --platform web --output-dir dist
+        working-directory: apps/mobile

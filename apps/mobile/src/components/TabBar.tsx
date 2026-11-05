@@ -15,8 +15,9 @@ const TABS: Record<string, { label: string; icon: IconName }> = {
 
 type Add = { label: string; hint: string; icon: IconName; href: string; tint: string; big?: boolean };
 const ADD: Add[] = [
+  { label: "Scan a receipt", hint: "We read it, you check it", icon: "camera", href: "/scan", tint: "#18161F", big: true },
   { label: "New invoice", hint: "Sent in under a minute", icon: "invoice", href: "/invoice", tint: color.violetTint, big: true },
-  { label: "Record money out", hint: "Something you’ve already paid", icon: "expense", href: "/record?dir=out", tint: "#18161F", big: true },
+  { label: "Record money out", hint: "Something you’ve already paid", icon: "expense", href: "/record?dir=out", tint: color.orangeTint },
   { label: "Record money in", hint: "A customer paid an invoice", icon: "in", href: "/record?dir=in", tint: color.violetTint },
 ];
 
@@ -45,7 +46,7 @@ export function TabBar({ state, navigateToTab, badges }: BottomTabBarProps & { b
     <>
       <View style={[s.bar, { paddingBottom: Math.max(10, inset.bottom) }]}>
         {routes.slice(0, 2).map((r, i) => tab(r, i))}
-        <Pressable accessibilityRole="button" accessibilityLabel="Add: new invoice, record money out or in" onPress={() => setOpen(true)} style={s.plus}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Add: scan a receipt, new invoice, record money out or in" onPress={() => setOpen(true)} style={s.plus}>
           <Icon name="plus" size={28} width={2.6} />
         </Pressable>
         {routes.slice(2).map((r, i) => tab(r, i + 2))}

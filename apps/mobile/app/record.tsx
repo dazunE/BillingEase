@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Chip, Chips, Field, IconButton, Label, Row, Seg, Stack, Sub, useToast } from "@/components/ui";
 import { problem } from "@/lib/api";
+import { quickCategories } from "@/lib/categories";
 import { addDays } from "@/lib/dates";
 import { CURRENCY_OF, fit, money, padDisplay, padPress, padToMinor, symbol } from "@/lib/money";
 import { useInvoices, useOutSetup, useToday, useWrite } from "@/lib/queries";
@@ -13,8 +14,6 @@ import { useSession } from "@/lib/session";
 import { color, font } from "@/theme";
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "del"];
-/** The categories people pick most often, first. */
-const COMMON = ["travel", "office", "phone", "premises", "rent", "utilities", "cogs", "advertising", "repairs", "professional", "entertaining", "other"];
 
 /** Money out (an expense already paid) or money in (a customer paying an invoice), number pad first. */
 export default function Record() {
@@ -38,11 +37,7 @@ export default function Record() {
   const digits = currencyDigits(curOf);
   const minor = Math.round(padToMinor(typed) / 10 ** (2 - digits));
 
-  const cats = useMemo(() => {
-    const list = (setup.data?.categories ?? []).filter((c) => c.scope === "business" && !c.capital);
-    const rank = (id: string) => { const i = COMMON.findIndex((p) => id.startsWith(p)); return i < 0 ? 99 : i; };
-    return list.sort((a, b) => rank(a.id) - rank(b.id)).slice(0, 8);
-  }, [setup.data]);
+  const cats = useMemo(() => quickCategories(setup.data?.categories ?? []).slice(0, 8), [setup.data]);
   const methods = dir === "out" ? (setup.data?.payMethods ?? ["Card", "Bank transfer", "Cash"]).slice(0, 4) : ["Bank transfer", "Card", "Cash", ...(business?.country === "lk" ? ["Cheque"] : [])];
   const how = method ?? methods[0];
 

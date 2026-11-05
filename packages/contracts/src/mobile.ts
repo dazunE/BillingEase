@@ -1,3 +1,4 @@
+import { agents } from "./agents";
 import type { Endpoint } from "./endpoint";
 import { auth } from "./auth";
 import { business } from "./business";
@@ -40,6 +41,24 @@ export const APP_ENDPOINTS = {
   categoriseExpense: goingOut.categoriseExpense,
   bills: goingOut.bills,
   payBill: goingOut.payBill,
+  /** Multipart: a receipt photo on an expense the phone just saved. */
+  uploadAttachment: goingOut.uploadAttachment,
+
+  /** Multipart: a receipt or bill photo for the capture agent to read. */
+  capture: agents.upload,
+  captures: agents.captures,
+  retryCapture: agents.retryCapture,
+  /** Multipart: a bank statement (CSV or PDF). */
+  uploadStatement: agents.uploadStatement,
+  statements: agents.statements,
+  statement: agents.statement,
+  retryStatement: agents.retryStatement,
+  /** For you to check: what the agents drafted, approved or turned down by a person. */
+  proposals: agents.proposals,
+  proposal: agents.proposal,
+  approve: agents.approve,
+  reject: agents.reject,
+  approveMany: agents.approveMany,
 } satisfies Record<string, Endpoint>;
 
 export type AppEndpointName = keyof typeof APP_ENDPOINTS;

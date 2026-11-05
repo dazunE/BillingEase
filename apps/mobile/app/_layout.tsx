@@ -42,6 +42,8 @@ function Gate() {
       <Stack.Screen name="record" options={{ presentation: "modal" }} />
       <Stack.Screen name="invoice" options={{ presentation: "modal" }} />
       <Stack.Screen name="me" />
+      <Stack.Screen name="scan" options={{ presentation: "modal" }} />
+      <Stack.Screen name="check" options={{ presentation: "modal" }} />
     </Stack>
   );
 }

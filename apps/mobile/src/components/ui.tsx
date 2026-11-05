@@ -62,12 +62,12 @@ export function Footer({ children }: { children: ReactNode }) {
 
 // ---- controls ---------------------------------------------------------------------------
 
-type BtnKind = "primary" | "dark" | "ghost" | "line" | "white";
+type BtnKind = "primary" | "dark" | "ghost" | "line" | "white" | "glass";
 export function Button({ title, onPress, kind = "primary", small, icon, disabled, busy, style, label }: {
   title: string; onPress?: () => void; kind?: BtnKind; small?: boolean; icon?: IconName; disabled?: boolean; busy?: boolean; style?: StyleProp<ViewStyle>; label?: string;
 }) {
-  const bg = { primary: color.violet, dark: color.ink, ghost: color.chip, line: "transparent", white: "#FFFFFF" }[kind];
-  const fg = kind === "dark" ? "#FFFFFF" : color.ink;
+  const bg = { primary: color.violet, dark: color.ink, ghost: color.chip, line: "transparent", white: "#FFFFFF", glass: "rgba(255,255,255,0.12)" }[kind];
+  const fg = kind === "dark" || kind === "glass" ? "#FFFFFF" : color.ink;
   return (
     <Pressable
       accessibilityRole="button" accessibilityLabel={label ?? title} accessibilityState={{ disabled: !!disabled || !!busy }}

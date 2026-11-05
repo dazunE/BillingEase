@@ -76,10 +76,10 @@ export default function Home() {
 
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             {([
+              ["Scan", "camera", "/scan", color.ink, color.violet],
               ["Invoice", "invoice", "/invoice", color.violetTint, color.ink],
               ["Money out", "expense", "/record?dir=out", color.orangeTint, color.ink],
-              ["Money in", "in", "/record?dir=in", color.ink, color.violet],
-              ["Inbox", "inbox", "/inbox", color.chip, color.ink],
+              ["Money in", "in", "/record?dir=in", color.greenTint, color.ink],
             ] as const).map(([label, icon, href, bg, fg]) => (
               <Pressable key={label} accessibilityRole="button" onPress={() => router.push(href)} style={s.quick}>
                 <View style={[s.quickIc, { backgroundColor: bg }]}><Icon name={icon} size={24} stroke={fg} /></View>

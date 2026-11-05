@@ -2,7 +2,8 @@ import type { Me } from "@billingease/contracts";
 import { useQueryClient } from "@tanstack/react-query";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AppState } from "react-native";
-import { ApiFailure, call, type CallOpts } from "./api";
+import { ApiFailure, call, fileForm, upload, type CallOpts, type PickedFile, type UploadName } from "./api";
+import { Platform } from "react-native";
 import { biometricsAvailable, checkBiometrics } from "./biometrics";
 import { KEYS, storage } from "./storage";
 import type { AppEndpointName } from "@billingease/contracts";
@@ -24,6 +25,8 @@ type Session = {
   setFaceId(on: boolean): Promise<void>;
   /** Face ID before money is marked as paid out. True to go ahead. */
   confirm(reason: string): Promise<boolean>;
+  /** Sends a photo or file (with any other form fields) to an upload endpoint. */
+  send<N extends UploadName>(name: N, file: PickedFile, fields?: Record<string, string>): ReturnType<typeof upload<N>>;
   /** Calls the API as the signed-in person in the chosen business. */
   api<N extends AppEndpointName>(name: N, opts?: CallOpts<N>): ReturnType<typeof call<N>>;
 };
@@ -132,6 +135,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       return checkBiometrics(reason);
     },
     api,
+    async send(name, file, fields) {
+      const form = await fileForm(file, fields, Platform.OS === "web");
+      return upload(name, form, authRef.current);
+    },
   }), [stage, me, faceId, businessId, begin, clear, api, qc]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
