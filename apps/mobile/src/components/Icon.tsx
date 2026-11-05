@@ -28,6 +28,7 @@ export const ICONS = {
   people: "M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M21 20v-1a4 4 0 0 0-3-3.8",
   car: "M5 16h14v-4l-2-5H7l-2 5zM5 16v2M19 16v2M7.5 13h.01M16.5 13h.01",
   warn: "M12 7v6M12 17h.01",
+  import: "M12 3v12M7 10l5 5 5-5M4 17v3h16v-3",
 } as const;
 export type IconName = keyof typeof ICONS;
 

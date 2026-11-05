@@ -19,6 +19,7 @@ const ADD: Add[] = [
   { label: "New invoice", hint: "Sent in under a minute", icon: "invoice", href: "/invoice", tint: color.violetTint, big: true },
   { label: "Record money out", hint: "Something you’ve already paid", icon: "expense", href: "/record?dir=out", tint: color.orangeTint },
   { label: "Record money in", hint: "A customer paid an invoice", icon: "in", href: "/record?dir=in", tint: color.violetTint },
+  { label: "Import a bank statement", hint: "CSV or PDF from any bank", icon: "import", href: "/import", tint: color.chip },
 ];
 
 /** The tab bar: Home, Coming in, ＋, Going out, Inbox. Badges for late invoices and unread notifications. */

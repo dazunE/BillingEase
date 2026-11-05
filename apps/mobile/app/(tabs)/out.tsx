@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Icon } from "@/components/Icon";
-import { Button, Card, ErrorNote, H1, Loading, Row, Screen, Seg, Sheet, Sub, Tag, useToast } from "@/components/ui";
+import { Button, Card, ErrorNote, H1, IconButton, Loading, Row, Screen, Seg, Sheet, Sub, Tag, useToast } from "@/components/ui";
 import { problem } from "@/lib/api";
 import { monthStart, shortDate } from "@/lib/dates";
 import { money, shortMoney } from "@/lib/money";
@@ -34,7 +34,10 @@ export default function GoingOut() {
       header={
         <Row style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 10, justifyContent: "space-between" }}>
           <H1>Going out</H1>
-          <Button title="Money out" icon="plus" small onPress={() => router.push("/record?dir=out")} />
+          <Row gap={8}>
+            <IconButton name="import" label="Import a bank statement" onPress={() => router.push("/import")} />
+            <Button title="Money out" icon="plus" small onPress={() => router.push("/record?dir=out")} />
+          </Row>
         </Row>
       }
     >

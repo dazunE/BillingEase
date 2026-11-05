@@ -44,6 +44,7 @@ function Gate() {
       <Stack.Screen name="me" />
       <Stack.Screen name="scan" options={{ presentation: "modal" }} />
       <Stack.Screen name="check" options={{ presentation: "modal" }} />
+      <Stack.Screen name="import" options={{ presentation: "modal" }} />
     </Stack>
   );
 }
