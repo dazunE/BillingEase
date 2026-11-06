@@ -5,11 +5,13 @@ Bookkeeping, invoicing and payroll you enter by hand, for two countries: sole tr
 | Folder | What it is |
 |---|---|
 | [`apps/web`](apps/web) | The web app: Next.js 16. The marketing site (`src/app/(site)`, with a UK / Sri Lanka switch), sign-up and setup, and the app itself (`src/app/app`). It only talks to the API. |
+| [`apps/mobile`](apps/mobile) | The phone app: Expo (iPhone and Android). Its own install; talks to the web app's `/app-api`, which forwards a fixed list of API endpoints. |
 | [`apps/api`](apps/api) | The API: Fastify 5. Every read and write, the ledger, PDFs, email, files, Ask, background jobs. |
 | [`packages/core`](packages/core) | Money, dates, the UK and Sri Lanka rules, invoice tax (VAT, SSCL) and ledger postings. Pure TypeScript with tests. |
 | [`packages/db`](packages/db) | PostgreSQL schema (Drizzle), migrations and ledger posting. |
 | [`packages/contracts`](packages/contracts) | The API's endpoints as zod schemas, shared by the API and the web app. |
 | [`prototype`](prototype) | The clickable design prototype every screen is built from. |
+| [`docs/MOBILE.md`](docs/MOBILE.md) | The mobile app's design (iPhone and Android, Expo): screens, flows, offline, Face ID and push. The clickable screens are `prototype/Mobile*.dc.html`. |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | How it fits together and the rules every change follows. |
 
 ## Run it locally

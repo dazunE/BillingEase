@@ -15,7 +15,7 @@ const PASS_OUT = ["content-type", "www-authenticate", "retry-after", "cache-cont
 const CORS = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-  "access-control-allow-headers": "authorization, content-type, accept, mcp-protocol-version, mcp-session-id, last-event-id",
+  "access-control-allow-headers": "authorization, content-type, accept, mcp-protocol-version, mcp-session-id, last-event-id, x-business-id, idempotency-key",
   "access-control-expose-headers": "www-authenticate, mcp-session-id, retry-after, x-ratelimit-limit, x-ratelimit-remaining, x-ratelimit-reset",
   "access-control-max-age": "86400",
 };
@@ -26,10 +26,10 @@ export const preflight = () => new Response(null, { status: 204, headers: CORS }
  * Sends an outside app's request on to the API: the public API, the MCP server and OAuth all
  * live at the web app's address, and only the web app holds the internal key.
  */
-export async function forward(req: Request, path: string): Promise<Response> {
+export async function forward(req: Request, path: string, opts: { passIn?: string[] } = {}): Promise<Response> {
   const url = new URL(req.url);
   const headers = new Headers();
-  for (const h of PASS_IN) {
+  for (const h of [...PASS_IN, ...(opts.passIn ?? [])]) {
     const v = req.headers.get(h);
     if (v) headers.set(h, v);
   }

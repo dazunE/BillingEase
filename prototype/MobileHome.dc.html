@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome"></dc-import>
+
+  <header class="m-top">
+    <a href="MobileMe.dc.html" class="m-grow" style="display: flex; flex-direction: column; gap: 2px;" aria-label="{{bizLabel}}">
+      <span class="m-eyebrow">{{hello}}</span>
+      <span class="m-row" style="gap: 6px;"><span style="font: 700 22px var(--head); letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz}}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{I.down}}"></path></svg></span>
+    </a>
+    <a href="MobileMe.dc.html" aria-label="Account and settings" style="width: 44px; height: 44px; border-radius: 9999px; background: #18161F; color: #B9A3FF; font: 700 15px var(--ui); display: flex; align-items: center; justify-content: center; flex: none;">{{prof.initials}}</a>
+  </header>
+
+  <main class="m-main">
+
+    <!-- The equation: Yours to keep, with Coming in and Going out under it -->
+    <section class="m-hero" aria-labelledby="keep-h">
+      <span aria-hidden="true" style="position: absolute; right: -40px; top: -50px; width: 180px; height: 180px; border-radius: 9999px; background: radial-gradient(circle, rgba(185,163,255,0.35), transparent 70%);"></span>
+      <div class="m-seg" role="group" aria-label="Period">
+        <sc-for list="{{periods}}" as="p" hint-placeholder-count="2">
+          <button type="button" aria-pressed="{{p.pressed}}" onClick="{{p.pick}}">{{p.label}}</button>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; position: relative;">
+        <span id="keep-h" style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);">Yours to keep · {{periodWords}}</span>
+        <span class="m-amt" style="font-size: {{t.keepSize}}px; line-height: 1.05; color: #B9A3FF; white-space: nowrap;">{{t.keep}}</span>
+        <span style="font-size: 13.5px; color: rgba(255,255,255,0.75);">{{keepNote}}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <a href="MobileIn.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 16px; background: rgba(255,255,255,0.08);">
+          <span class="m-row" style="gap: 6px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8);"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #B9A3FF;"></span>Coming in</span>
+          <span class="m-amt" style="font-size: {{t.inSize}}px; white-space: nowrap;">{{t.in}}</span>
+          <span style="display: flex; height: 5px; border-radius: 9999px; overflow: hidden; background: rgba(255,255,255,0.12); gap: 2px;"><span style="width: {{t.inPaidPct}}%; background: #B9A3FF;"></span><span style="width: {{t.inExpPct}}%; background: rgba(185,163,255,0.4);"></span></span>
+          <span style="font-size: 12px; color: rgba(255,255,255,0.65);">{{t.inExp}} on the way</span>
+        </a>
+        <a href="MobileOut.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 16px; background: rgba(255,255,255,0.08);">
+          <span class="m-row" style="gap: 6px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8);"><span style="width: 8px; height: 8px; border-radius: 9999px; background: #E0752D;"></span>Going out</span>
+          <span class="m-amt" style="font-size: {{t.outSize}}px; white-space: nowrap;">{{t.out}}</span>
+          <span style="display: flex; height: 5px; border-radius: 9999px; overflow: hidden; background: rgba(255,255,255,0.12); gap: 2px;"><span style="width: {{t.outPaidPct}}%; background: #E0752D;"></span><span style="width: {{t.outSchPct}}%; background: rgba(224,117,45,0.4);"></span></span>
+          <span style="font-size: 12px; color: rgba(255,255,255,0.65);">{{t.outSch}} still to pay</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Quick actions -->
+    <nav aria-label="Quick actions" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;">
+      <sc-for list="{{quick}}" as="q" hint-placeholder-count="4">
+        <a href="{{q.href}}" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 4px 0; font-size: 12.5px; font-weight: 600; text-align: center;">
+          <span class="m-ic lg" style="background: {{q.bg}};"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{q.fg}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{q.icon}}"></path></svg></span>
+          {{q.label}}
+        </a>
+      </sc-for>
+    </nav>
+
+    <!-- Needs you -->
+    <section aria-labelledby="needs-h" class="m-stack">
+      <div class="m-section-h">
+        <h2 id="needs-h" class="m-h2">Needs you <sc-if value="{{openCount}}" hint-placeholder-val="{{3}}"><span style="font: 700 14px var(--ui); color: #5F5B68;">· {{openCount}}</span></sc-if></h2>
+        <a href="MobileInbox.dc.html">Inbox</a>
+      </div>
+      <sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
+        <div class="m-card m-row">
+          <span class="m-ic" style="background: #E2F6D5;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></span>
+          <span class="m-grow"><span class="m-h3" style="display: block;">All clear</span><span class="m-sub">Nothing needs you right now. We’ll send a notification when something does.</span></span>
+        </div>
+      </sc-if>
+      <sc-for list="{{tasks}}" as="n" hint-placeholder-count="3">
+        <article class="m-card" style="display: flex; flex-direction: column; gap: 12px; opacity: {{n.opacity}};">
+          <div class="m-row" style="align-items: flex-start;">
+            <span class="m-ic" style="background: {{n.tint}};"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg></span>
+            <span class="m-grow" style="display: flex; flex-direction: column; gap: 3px;">
+              <span class="m-h3">{{n.title}}</span>
+              <span class="m-sub" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">{{n.body}}</span>
+            </span>
+          </div>
+          <sc-if value="{{n.open}}" hint-placeholder-val="{{true}}">
+            <div class="m-row" style="gap: 8px;">
+              <sc-if value="{{n.isBtn}}" hint-placeholder-val="{{true}}"><button type="button" class="m-btn sm" onClick="{{n.act}}">{{n.ctaShort}}</button></sc-if>
+              <sc-if value="{{n.ctaLink}}" hint-placeholder-val="{{false}}"><a class="m-btn sm" href="{{n.ctaLink}}">{{n.ctaShort}}</a></sc-if>
+              <sc-if value="{{n.altHref}}" hint-placeholder-val="{{true}}"><a class="m-btn sm ghost" href="{{n.altHref}}">{{n.alt}}</a></sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{n.done}}" hint-placeholder-val="{{false}}">
+            <span class="m-tag ok" style="align-self: flex-start;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg>{{n.doneShort}}</span>
+          </sc-if>
+        </article>
+      </sc-for>
+    </section>
+
+    <!-- Budgets -->
+    <sc-if value="{{bud}}" hint-placeholder-val="{{true}}">
+      <a href="MobileBudgets.dc.html" class="m-card" aria-labelledby="bud-h" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="m-section-h"><h2 id="bud-h" class="m-h2" style="font-size: 17px;">Budgets · October</h2><span class="m-link">{{bud.link}}</span></div>
+        <sc-for list="{{bud.rows}}" as="b" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span class="m-row" style="gap: 8px; font-size: 14px;"><span class="m-grow" style="font-weight: 600;">{{b.name}}</span><span class="m-num" style="color: {{b.wordColor}}; font-weight: 600;">{{b.words}}</span></span>
+            <span style="position: relative; display: flex; height: 7px; border-radius: 99px; overflow: hidden; background: #EFEDF3;"><span style="width: {{b.w}}%; background: {{b.color}}; border-radius: 99px;"></span><span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {{bud.pace}}%; width: 2px; background: #18161F; opacity: 0.35;"></span></span>
+          </div>
+        </sc-for>
+      </a>
+    </sc-if>
+    <sc-if value="{{noBud}}" hint-placeholder-val="{{false}}">
+      <a href="MobileBudgets.dc.html#new" class="m-card m-row">
+        <span class="m-ic" style="background: #FDE6D6;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.budget}}"></path></svg></span>
+        <span class="m-grow"><span class="m-h3" style="display: block;">Set a monthly budget</span><span class="m-sub">For a category, all spending, or what you want to keep.</span></span>
+      </a>
+    </sc-if>
+
+    <!-- The period that matters: UK quarter, Sri Lanka this month -->
+    <section class="m-card" aria-labelledby="pc-h" style="display: flex; flex-direction: column; gap: 10px;">
+      <span class="m-eyebrow">{{pc.eyebrow}}</span>
+      <h2 id="pc-h" class="m-h2" style="font-size: 17px;">{{pc.title}}</h2>
+      <ul class="m-list">
+        <sc-for list="{{pc.rows}}" as="r" hint-placeholder-count="2">
+          <li><a class="m-li" href="{{r.href}}" style="min-height: 52px;">
+            <span class="m-ic sm" style="background: {{r.bg}};"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{r.fg}}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.icon}}"></path></svg></span>
+            <span class="m-grow" style="display: flex; flex-direction: column;"><span class="t" style="font-size: 14.5px;">{{r.text}}</span><span class="s">{{r.sub}}</span></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8C8896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.chev}}"></path></svg>
+          </a></li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <!-- What happened -->
+    <section aria-labelledby="act-h" class="m-stack">
+      <h2 id="act-h" class="m-h2">Lately</h2>
+      <div class="m-card tight">
+        <ul class="m-list">
+          <sc-for list="{{activity}}" as="a" hint-placeholder-count="4">
+            <li class="m-li" style="min-height: 52px; align-items: flex-start;">
+              <span style="width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #B9A3FF; flex: none;"></span>
+              <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; line-height: 1.4;">{{a.t}}</span><span class="s">{{a.when}}</span></span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+      <a href="ThreeHome.dc.html" class="m-row" style="justify-content: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: #5F5B68;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.web}}"></path></svg>Reports, tax and settings are on the web</a>
+    </section>
+  </main>
+
+  <dc-import name="MobileTabBar" active="home"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { period: null };
+    this.ok = BE.mobile.guard();
+  }
+  componentDidMount() {
+    if (!this.ok) return;
+    let pushed = false;
+    try { pushed = sessionStorage.getItem('be.mobile.pushed') === '1'; sessionStorage.setItem('be.mobile.pushed', '1'); } catch (e) { /* ignore */ }
+    if (pushed) return;
+    setTimeout(() => {
+      const late = BE.lateInvoices()[0];
+      const run = BE.payRuns().filter((r) => r.status === 'needs')[0];
+      if (BE.is('lk') && run) BE.mobile.push(run.month + ' payroll is ready', run.people.length + ' people · ' + BE.money(run.net, null, { whole: true }) + ' net pay. Check it and approve by ' + run.runBy + '.', 'MobilePayroll.dc.html', 'payroll');
+      else if (late) BE.mobile.push(late.who + ' is ' + (-late.dueIn) + ' days late', BE.money(BE.invOpen(late), late.cur) + ' for ' + (late.what || late.num) + '. Tap to send a friendly reminder.', 'MobileIn.dc.html#late', 'late');
+    }, 2200);
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const prof = BE.get('profile') || {};
+    const pk = BE.pack();
+    const lk = BE.is('lk');
+    const W = M.W;
+    const P = BE.homePeriods();
+    const period = P.some((x) => x[0] === this.state.period) ? this.state.period : P[0][0];
+    const k = BE.keepTotals(period);
+    const taxWords = lk ? 'income tax' : 'Income Tax and NI';
+    const inPaidPct = k.in > 0 ? k.inPaidPct : 0, outPaidPct = k.out > 0 ? k.outPaidPct : 0;
+    const t = {
+      keep: k.fmt.keep, in: W(k.in), out: W(k.out), inExp: W(k.inExp), outSch: W(k.outSch),
+      inPaidPct, inExpPct: k.in > 0 ? 100 - inPaidPct : 0, outPaidPct, outSchPct: k.out > 0 ? 100 - outPaidPct : 0
+    };
+    t.inSize = M.fit(t.in, 21, 10); t.outSize = M.fit(t.out, 21, 10); t.keepSize = M.fit(t.keep, 46, 11);
+    const keepNote = k.profit > 0 ? (k.tax > 0 ? 'After about ' + k.fmt.tax + ' ' + taxWords + ' (estimate)' : 'No ' + taxWords + ' expected yet') : 'No profit yet, so no ' + taxWords;
+
+    const hasStaff = BE.all('employees').length > 0;
+    const quick = [
+      { label: 'Scan', href: 'MobileScan.dc.html', icon: I.camera, bg: '#18161F', fg: '#B9A3FF' },
+      { label: 'Invoice', href: 'MobileInvoice.dc.html', icon: I.invoice, bg: '#EEE8FF', fg: '#18161F' },
+      { label: 'Record', href: 'MobileRecord.dc.html#out', icon: I.expense, bg: '#FDE6D6', fg: '#18161F' },
+      hasStaff ? { label: 'Payroll', href: 'MobilePayroll.dc.html', icon: I.people, bg: '#FFF0B8', fg: '#18161F' }
+        : { label: 'Import', href: 'MobileImport.dc.html', icon: I.import, bg: '#EFEDF3', fg: '#18161F' }
+    ];
+
+    const pr = BE.practice();
+    const tasks = BE.homeNeeds().slice(0, 4).map((n) => {
+      let act = null;
+      if (n.kind === 'request') act = () => { if (BE.completeRequest(n.reqId)) M.did('Marked done · ' + pr.short + ' can see it'); };
+      if (n.kind === 'late') act = () => { const r = BE.nudgeInvoice(n.num); if (r) M.did('Reminder sent to ' + r.to); };
+      if (n.kind === 'dues') act = () => M.confirm('Mark payroll amounts paid', () => { const tot = BE.payHomeDues(n.dueIds); if (tot) M.did('Marked paid · ' + W(tot)); });
+      if (n.kind === 'bill') act = () => M.confirm('Mark bill paid', () => { const b = BE.payBill(n.billId, null, 'Bank transfer'); if (b) M.did('Marked paid · ' + BE.money(b.amount)); });
+      return {
+        title: n.title, body: n.body, icon: n.icon, tint: n.tint, open: !n.done, done: !!n.done, opacity: n.done ? 0.7 : 1,
+        isBtn: !!act, act, ctaLink: !act && n.href ? M.href(n.href) : false, ctaShort: n.ctaShort || n.cta,
+        alt: n.alt || '', altHref: n.alt ? M.href(n.altHref) : false, doneShort: 'Done today'
+      };
+    });
+    const openCount = tasks.filter((x) => x.open).length;
+
+    // The period card
+    const okI = 'm5 12 5 5 9-10', warnI = 'M12 7v6M12 17h.01', goI = 'M5 12h14';
+    const row = (text, href, state, sub) => ({ text, href, sub: sub || '', icon: state === 'ok' ? okI : state === 'warn' ? warnI : goI, bg: state === 'ok' ? '#E2F6D5' : state === 'warn' ? '#FFF0B8' : '#EFEDF3', fg: state === 'ok' ? '#2F5711' : state === 'warn' ? '#6B5000' : '#18161F' });
+    let pc;
+    if (!lk) {
+      const hq = BE.homeQuarter();
+      const L = hq.last, C = hq.cur;
+      pc = {
+        eyebrow: 'Making Tax Digital · ' + (pk.taxYear ? pk.taxYear.label : ''),
+        title: hq.empty ? C.label + ' is open' : L.label + ' closed · ' + (hq.filed ? 'sent' : (pr.has ? pr.short + ' files by ' : 'due ') + L.due.replace(/ 20\d\d$/, '')),
+        rows: hq.empty ? [row('Record income and expenses as they happen', 'MobileRecord.dc.html#out', 'go')]
+          : hq.checks.filter((c) => !c.ok).slice(0, 2).map((c) => row(c.text, 'Quarters.dc.html', 'warn', 'Opens on the web')).concat(hq.left ? [] : [row('Ready to send', 'Quarters.dc.html', 'ok')])
+      };
+    } else {
+      const hm = BE.homeMonth();
+      const per = hm.period || {};
+      const rows = [];
+      if (prof.vatRegistered && !BE.isEmpty()) rows.push(row((per.label || '').split(' ')[0] + ' VAT and SSCL return', 'TaxPeriods.dc.html', hm.filed ? 'ok' : 'warn', hm.filed ? 'Filed' : 'Due ' + String(per.due || '').replace(/ 20\d\d$/, '') + ' · ' + BE.inWords(hm.dueDays)));
+      if (hm.hasPayroll) rows.push(row('October payroll · ' + hm.people + ' people', 'MobilePayroll.dc.html', hm.run ? 'warn' : 'ok', hm.run ? 'Run by ' + hm.payDue + ' · ' + BE.inWords(hm.payDays) : 'Paid'));
+      if (!rows.length) rows.push(row('Nothing due this month', 'MobileHome.dc.html', 'ok'));
+      pc = { eyebrow: 'October 2026 · ' + (pk.taxYear ? pk.taxYear.label : ''), title: 'This month', rows };
+    }
+
+    // Budgets: all spending first, then the categories that need a look
+    const BU = M.budgets, BS = BU.statuses();
+    const bTot = BS.find((x) => x.kind === 'total');
+    const bHot = BS.filter((x) => x.kind === 'cat' && (x.state === 'over' || x.state === 'nearly' || x.state === 'fast')).sort((a, b) => b.pct - a.pct);
+    const bKeep = BS.find((x) => x.kind === 'keep');
+    const bRow = (x) => ({ name: x.name, w: Math.max(0, Math.min(100, x.pct)),
+      color: x.isGoal ? '#7A5AF8' : x.state === 'over' ? '#C2412F' : x.state === 'nearly' || x.state === 'fast' ? '#E0A100' : '#E0752D',
+      words: x.isGoal ? x.pct + '% of ' + W(x.amount) : x.left >= 0 ? W(x.left) + ' left' : W(-x.left) + ' over', wordColor: x.state === 'over' ? '#A1281B' : '#47444F' });
+    const bRows = [bKeep, bTot].concat(bHot).filter(Boolean).slice(0, 3).map(bRow);
+    const okCount = BS.filter((x) => x.kind === 'cat' && x.state === 'ok').length;
+    const bud = BS.length ? { rows: bRows.length ? bRows : BS.slice(0, 3).map(bRow), pace: Math.round(BU.day / BU.days * 100), link: okCount ? okCount + ' more on track' : 'All budgets' } : false;
+
+    const periods = P.map(([key, label]) => ({ label: label.replace('This year of assessment', 'Year so far').replace('This tax year', 'Tax year'), pressed: period === key ? 'true' : 'false', pick: () => this.setState({ period: key }) }));
+    return {
+      I, prof, biz: prof.business || 'Your business', hello: M.greeting() + ', ' + (prof.first && prof.first !== 'there' ? prof.first : 'there'),
+      bizLabel: 'Business: ' + (prof.business || '') + '. Switch business or open settings',
+      t, keepNote, periods, periodWords: BE.periodWords(period),
+      quick, tasks, openCount: openCount || false, allClear: tasks.length === 0, pc,
+      activity: BE.all('activity').slice(0, 4), bud, noBud: !bud
+    };
+  }
+}
+</script>
+</body>
+</html>

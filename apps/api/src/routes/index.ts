@@ -10,6 +10,8 @@ import { goingOutRoutes } from "./going-out";
 import { homeRoutes } from "./home";
 import { peopleRoutes } from "./people";
 import { bookRoutes } from "./books";
+import { budgetRoutes } from "./budgets";
+import { pushRoutes } from "./push";
 import { payrollRoutes } from "./payroll";
 import { practiceRoutes } from "./practice";
 import { publicRoutes } from "../public";
@@ -20,6 +22,8 @@ export async function registerRoutes(app: FastifyInstance) {
   await businessRoutes(app);
   await peopleRoutes(app);
   await bookRoutes(app);
+  await budgetRoutes(app);
+  await pushRoutes(app);
   await payrollRoutes(app);
   await practiceRoutes(app);
   await comingInRoutes(app);

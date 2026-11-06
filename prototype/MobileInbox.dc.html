@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Inbox</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome"></dc-import>
+
+  <header class="m-top">
+    <h1 class="m-h1">Inbox</h1>
+    <sc-if value="{{canMarkAll}}" hint-placeholder-val="{{true}}"><button type="button" class="m-btn sm ghost" onClick="{{markAll}}">Mark all read</button></sc-if>
+  </header>
+
+  <main class="m-main" style="gap: 14px;">
+    <div class="m-seg" role="group" aria-label="Show">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button type="button" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
+    </div>
+
+    <!-- To check: drafts the AI made and requests from your accountant -->
+    <sc-if value="{{onCheck}}" hint-placeholder-val="{{true}}">
+      <p class="m-sub" style="margin: 0; line-height: 1.45;">Nothing here happens until you say so. Approve, change on the web, or let it go.</p>
+      <sc-if value="{{noChecks}}" hint-placeholder-val="{{false}}">
+        <div class="m-card m-row"><span class="m-ic" style="background: #E2F6D5;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F5711" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></span><span class="m-grow m-h3">You’ve checked everything</span></div>
+      </sc-if>
+      <sc-for list="{{checks}}" as="c" hint-placeholder-count="3">
+        <article class="m-card" style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="m-row" style="align-items: flex-start;">
+            <span class="m-ic" style="background: {{c.tint}};"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span>
+            <span class="m-grow" style="display: flex; flex-direction: column; gap: 4px;">
+              <span class="m-tag {{c.tagCls}}" style="align-self: flex-start;">{{c.tag}}</span>
+              <span class="m-h3">{{c.title}}</span>
+              <span class="m-sub" style="line-height: 1.4;">{{c.body}}</span>
+            </span>
+          </div>
+          <sc-if value="{{c.quote}}" hint-placeholder-val="{{false}}">
+            <blockquote style="margin: 0; padding: 12px 14px; border-radius: 14px; background: #F7F6F9; font-size: 14px; line-height: 1.5; color: #47444F;">{{c.quote}}</blockquote>
+          </sc-if>
+          <div class="m-row" style="gap: 8px;">
+            <button type="button" class="m-btn sm" onClick="{{c.ok}}">{{c.okLabel}}</button>
+            <sc-if value="{{c.altHref}}" hint-placeholder-val="{{true}}"><a class="m-btn sm ghost" href="{{c.altHref}}">{{c.alt}}</a></sc-if>
+            <button type="button" class="m-btn sm line" onClick="{{c.skip}}" aria-label="{{c.skipLabel}}" style="margin-left: auto; padding: 0 12px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{I.close}}"></path></svg></button>
+          </div>
+        </article>
+      </sc-for>
+    </sc-if>
+
+    <!-- Updates: the same list that's sent as push notifications -->
+    <sc-if value="{{onUpdates}}" hint-placeholder-val="{{false}}">
+      <section class="m-card tight" aria-label="Updates">
+        <sc-if value="{{noUpdates}}" hint-placeholder-val="{{false}}"><p class="m-sub" style="padding: 18px 2px; margin: 0; text-align: center;">No updates yet.</p></sc-if>
+        <ul class="m-list">
+          <sc-for list="{{updates}}" as="u" hint-placeholder-count="6">
+            <li><a class="m-li" href="{{u.href}}" onClick="{{u.read}}" style="align-items: flex-start;">
+              <span style="width: 8px; height: 8px; margin-top: 8px; border-radius: 99px; background: {{u.dot}}; flex: none;"></span>
+              <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: {{u.weight}}; font-size: 15px;">{{u.title}}</span>
+                <span class="m-sub" style="line-height: 1.4;">{{u.body}}</span>
+                <span style="font-size: 12px; color: #8C8896;">{{u.when}}</span>
+              </span>
+            </a></li>
+          </sc-for>
+        </ul>
+      </section>
+      <a href="MobileMe.dc.html#notifications" class="m-row" style="justify-content: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: #5F5B68;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5F5B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.bell}}"></path></svg>Choose what sends a notification</a>
+    </sc-if>
+  </main>
+
+  <dc-import name="MobileTabBar" active="inbox"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: BE.hash() === 'updates' ? 'updates' : 'check' };
+    BE.mobile.guard();
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const st = this.state;
+    const prof = BE.get('profile') || {};
+    const pr = BE.practice();
+    const seen = M.get().reviewed || [];
+    const dismiss = (id, msg) => () => { M.set({ reviewed: seen.concat([id]) }); if (msg) M.toast(msg); };
+    const first = (s) => String(s || '').split(' ')[0];
+    const checks = [];
+    BE.lateInvoices().forEach((inv) => {
+      const id = 'remind-' + inv.num;
+      if (seen.indexOf(id) >= 0) return;
+      const reminded = (inv.events || []).some((e) => /eminder/.test(e.label) && e.date === BE.today);
+      if (reminded) return;
+      const c = BE.find('customers', inv.who, 'name') || {};
+      checks.push({
+        tag: 'AI draft · reminder', tagCls: 'ai', icon: I.spark, tint: '#EEE8FF',
+        title: 'Reminder to ' + inv.who, body: inv.num + ' · ' + BE.money(BE.invOpen(inv), inv.cur) + ' · ' + (-inv.dueIn) + ' days late',
+        quote: 'Hi ' + (first(c.contact) || 'there') + ', just a friendly nudge that ' + inv.num + ' for ' + BE.money(BE.invOpen(inv), inv.cur) + ' was due on ' + inv.due + '. The PDF is attached. Thanks so much! ' + first(prof.owner),
+        okLabel: 'Send it', ok: () => { const r = BE.nudgeInvoice(inv.num); if (r) M.did('Reminder sent to ' + r.to); },
+        alt: 'Edit', altHref: 'SellInvoices.dc.html#' + inv.num, skip: dismiss(id, 'Draft dismissed'), skipLabel: 'Dismiss this draft'
+      });
+    });
+    BE.requestsOpen('in').forEach((r) => {
+      const id = 'req-' + r.id;
+      if (seen.indexOf(id) >= 0) return;
+      checks.push({
+        tag: 'From ' + (pr.short || 'your accountant'), tagCls: 'plain', icon: r.kind === 'upload' ? I.import : I.chat, tint: '#EFEDF3',
+        title: r.title, body: r.body || r.detail || '', quote: false,
+        okLabel: 'Mark done', ok: () => { if (BE.completeRequest(r.id)) M.did('Marked done · ' + pr.short + ' can see it'); },
+        alt: r.kind === 'upload' ? 'Snap it' : 'Open', altHref: r.kind === 'upload' ? 'MobileScan.dc.html' : M.href(r.href || 'Accountant.dc.html'),
+        skip: dismiss(id, 'Hidden here · still open on the web'), skipLabel: 'Hide this request'
+      });
+    });
+    const updates = BE.all('notifications').slice(0, 20).map((n) => ({
+      title: n.title, body: n.body, when: n.when, href: M.href(n.href) || '#', dot: n.read ? 'transparent' : '#E0752D', weight: n.read ? 500 : 700,
+      read: () => BE.update('notifications', n.id, { read: true })
+    }));
+    const unread = BE.unread();
+    return {
+      I, checks, noChecks: checks.length === 0, updates, noUpdates: updates.length === 0,
+      onCheck: st.tab === 'check', onUpdates: st.tab === 'updates',
+      tabs: [['check', 'To check' + (checks.length ? ' · ' + checks.length : '')], ['updates', 'Updates' + (unread ? ' · ' + unread : '')]]
+        .map(([k, l]) => ({ label: l, pressed: (st.tab === k) ? 'true' : 'false', pick: () => this.setState({ tab: k }) })),
+      canMarkAll: st.tab === 'updates' && unread > 0,
+      markAll: () => BE.change((s) => { s.notifications = (s.notifications || []).map((n) => Object.assign({}, n, { read: true })); })
+    };
+  }
+}
+</script>
+</body>
+</html>

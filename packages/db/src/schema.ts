@@ -1011,6 +1011,8 @@ export const notifications = pgTable(
     body: text("body"),
     link: text("link"),
     readAt: timestamp("read_at", { withTimezone: true }),
+    // When the push-notifications job picked it up (sent, or nothing to send it to).
+    pushedAt: timestamp("pushed_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
   (t) => [index("notifications_business").on(t.businessId, t.createdAt)],
@@ -1471,4 +1473,65 @@ export const apiUsageDaily = pgTable(
     calls: integer("calls").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.businessId, t.day] })],
+);
+
+/**
+ * Monthly budgets, the same every month: a limit for one spending category or all spending, a
+ * Coming in target, or a Yours to keep goal. `alertMonth`/`alertLevel` remember the highest alert
+ * sent this month (80 or 100) so each is only sent once.
+ */
+export const budgets = pgTable(
+  "budgets",
+  {
+    id: id(),
+    businessId: businessId(),
+    kind: text("kind").$type<"category" | "spending" | "income" | "keep">().notNull(),
+    // The country's category id, for kind = category; empty otherwise.
+    categoryId: text("category_id").notNull().default(""),
+    amount: money("amount").notNull(),
+    alertMonth: text("alert_month"),
+    alertLevel: integer("alert_level").notNull().default(0),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex("budgets_business_kind_category").on(t.businessId, t.kind, t.categoryId)],
+);
+
+/**
+ * Phones that get push notifications: one row per Expo push token, for the person signed in on
+ * it, with the kinds of notification they want. A token the push service says is gone is disabled.
+ */
+export const pushDevices = pgTable(
+  "push_devices",
+  {
+    id: id(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    platform: text("platform").$type<"ios" | "android">().notNull(),
+    name: text("name"),
+    kinds: jsonb("kinds").$type<string[]>().notNull().default([]),
+    disabledAt: timestamp("disabled_at", { withTimezone: true }),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("push_devices_user").on(t.userId)],
+);
+
+/**
+ * Writes that carry an Idempotency-Key (the phone app's, sent again after a dropped connection):
+ * the first answer is kept for a week, so a repeat returns it instead of saving twice.
+ */
+export const idempotencyKeys = pgTable(
+  "idempotency_keys",
+  {
+    // The person's id and the key they sent, so keys can't collide between people.
+    key: text("key").primaryKey(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    method: text("method").notNull(),
+    path: text("path").notNull(),
+    status: text("status").$type<"pending" | "done">().notNull().default("pending"),
+    response: jsonb("response"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("idempotency_keys_created").on(t.createdAt)],
 );

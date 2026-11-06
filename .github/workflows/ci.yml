@@ -18,3 +18,27 @@ jobs:
       - run: npm test
         env:
           BILLINGEASE_TODAY: "2026-10-11"
+
+  # The phone app has its own install (it needs a different React from the web app) and
+  # reads @billingease/contracts and @billingease/core from the root install.
+  mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/mobile/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: apps/mobile
+      - run: npm run typecheck
+        working-directory: apps/mobile
+      - run: npm test
+        working-directory: apps/mobile
+      # Typecheck doesn't catch a module Metro can't resolve; bundling does.
+      - run: npx expo export --platform web --output-dir dist
+        working-directory: apps/mobile

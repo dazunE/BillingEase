@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Import a statement</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame">
+  <dc-import name="MobileChrome" tabs="{{false}}"></dc-import>
+
+  <header class="m-top">
+    <button type="button" class="m-icon-btn" onClick="{{back}}" aria-label="{{backLabel}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{backIcon}}"></path></svg></button>
+    <span style="font-weight: 700; font-size: 16px;">Import a statement</span>
+    <span style="width: 44px;"></span>
+  </header>
+
+  <!-- Pick a file -->
+  <sc-if value="{{onPick}}" hint-placeholder-val="{{true}}">
+    <main class="m-main flush">
+      <div>
+        <h1 class="m-h1" style="font-size: 26px;">Bring in a month in one go</h1>
+        <p class="m-sub" style="margin: 6px 0 0; font-size: 15px; line-height: 1.45;">Any bank’s CSV or PDF statement. We match payments to your invoices, suggest a category for the rest, and skip anything already in your books.</p>
+      </div>
+      <section class="m-stack" aria-label="Where from">
+        <sc-for list="{{sources}}" as="s" hint-placeholder-count="3">
+          <button type="button" class="m-card m-row" onClick="{{s.pick}}" style="text-align: left; width: 100%;">
+            <span class="m-ic" style="background: {{s.tint}};"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{s.icon}}"></path></svg></span>
+            <span class="m-grow" style="display: flex; flex-direction: column; gap: 2px;"><span class="m-h3">{{s.label}}</span><span class="m-sub">{{s.hint}}</span></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8C8896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.chev}}"></path></svg>
+          </button>
+        </sc-for>
+      </section>
+      <section class="m-card" style="background: #EEE8FF; border-color: #EEE8FF; display: flex; gap: 12px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4B2FC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;"><path d="{{I.share}}"></path></svg>
+        <span style="font-size: 14px; line-height: 1.45;"><strong>Tip:</strong> {{shareTip}}</span>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- Reading -->
+  <sc-if value="{{onReading}}" hint-placeholder-val="{{false}}">
+    <main class="m-main flush" style="align-items: center; justify-content: center; text-align: center; gap: 18px;">
+      <span class="m-ic" style="width: 88px; height: 88px; background: #EEE8FF;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation: m-pulse 1s ease-in-out infinite;"><path d="{{I.file}}"></path></svg></span>
+      <div><h1 class="m-h2">{{file}}</h1><span class="m-sub">{{readingWords}}</span></div>
+      <div style="width: 220px; height: 6px; border-radius: 99px; background: #EFEDF3; overflow: hidden;"><div style="height: 100%; width: {{progress}}%; background: #7A5AF8; transition: width .6s;"></div></div>
+    </main>
+  </sc-if>
+
+  <!-- Review -->
+  <sc-if value="{{onReview}}" hint-placeholder-val="{{false}}">
+    <main class="m-main" style="padding-bottom: 130px; gap: 14px;">
+      <div>
+        <span class="m-eyebrow">{{file}}</span>
+        <h1 class="m-h2" style="font-size: 22px; margin-top: 2px;">{{rows.length}} lines · {{dupes}} already in your books</h1>
+      </div>
+      <div class="m-chips" role="group" aria-label="Show">
+        <sc-for list="{{filters}}" as="f" hint-placeholder-count="3"><button type="button" class="m-chip" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}} <span class="n">{{f.n}}</span></button></sc-for>
+      </div>
+      <section class="m-card tight" aria-label="Statement lines">
+        <ul class="m-list">
+          <sc-for list="{{shown}}" as="x" hint-placeholder-count="6">
+            <li class="m-li" style="opacity: {{x.opacity}}; align-items: flex-start;">
+              <button type="button" role="checkbox" aria-checked="{{x.on}}" aria-label="{{x.aria}}" onClick="{{x.toggle}}" disabled="{{x.dupe}}" style="width: 26px; height: 26px; margin-top: 4px; border-radius: 8px; border: 2px solid {{x.box}}; background: {{x.boxBg}}; display: flex; align-items: center; justify-content: center; flex: none; padding: 0;">
+                <sc-if value="{{x.checked}}" hint-placeholder-val="{{true}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></sc-if>
+              </button>
+              <span class="m-grow" style="display: flex; flex-direction: column; gap: 4px;">
+                <span class="t">{{x.desc}}</span>
+                <span class="m-row" style="gap: 6px; flex-wrap: wrap;"><span class="m-tag {{x.cls}}">{{x.tag}}</span><span class="s">{{x.date}}</span></span>
+              </span>
+              <span class="a" style="color: {{x.color}};">{{x.amt}}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </main>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; padding: 14px 16px 34px; background: #FFFFFF; border-top: 1px solid #E2DFE8; display: flex; flex-direction: column; gap: 4px;">
+      <button type="button" class="m-btn block" onClick="{{add}}" disabled="{{none}}">{{addLabel}}</button>
+    </div>
+  </sc-if>
+
+  <!-- Done -->
+  <sc-if value="{{onDone}}" hint-placeholder-val="{{false}}">
+    <main class="m-main flush" style="align-items: center; justify-content: center; text-align: center; gap: 16px;">
+      <span class="m-ic" style="width: 96px; height: 96px; background: #B9A3FF;"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.check}}"></path></svg></span>
+      <h1 class="m-h1" style="font-size: 26px;">{{doneTitle}}</h1>
+      <p class="m-sub" style="margin: 0; max-width: 300px; font-size: 15px; line-height: 1.45;">{{doneBody}}</p>
+      <div class="m-stack" style="width: 100%; margin-top: 10px;">
+        <a class="m-btn block" href="MobileHome.dc.html">See your numbers</a>
+        <a class="m-btn block ghost" href="MobileOut.dc.html">Open Going out</a>
+      </div>
+    </main>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { stage: 'pick', file: '', progress: 0, off: {}, filter: 'all', done: null };
+    BE.mobile.guard();
+  }
+  lines() {
+    if (this._lines) return this._lines;
+    const lk = BE.is('lk');
+    const cats = BE.expenseCats();
+    const cat = (re) => (cats.find((c) => re.test(c.id) || re.test(c.name)) || cats[cats.length - 1] || {});
+    // Money in: the open invoices a customer has just paid
+    const paidIn = BE.all('invoices').filter((i) => ['open', 'part', 'late'].indexOf(BE.invStatus(i)) >= 0).slice(0, 2)
+      .map((i, n) => ({ id: 'in' + n, kind: 'match', desc: i.who.toUpperCase().slice(0, 22) + (lk ? ' CEFT' : ' FPS'), date: n ? '8 Oct' : '10 Oct', amount: BE.invOpen(i), inv: i.num, who: i.who }));
+    const outs = lk ? [
+      ['DIALOG AXIATA PLC', 'Dialog Axiata', 6840, /phone|tele|comm/i, '9 Oct'],
+      ['KEELLS SUPER COL 03', 'Keells Super', 4215, /office|general|other/i, '7 Oct'],
+      ['PICKME TRIP 2291', 'PickMe', 1860, /travel|transport/i, '6 Oct'],
+      ['LECO ONLINE PAY', 'Lanka Electricity Co', 22650, /util|electric|rent/i, '5 Oct'],
+      ['ADOBE *CREATIVE CLD', 'Adobe', 21400, /software|subscr|office/i, '3 Oct']
+    ] : [
+      ['ADOBE *CREATIVE CLOUD', 'Adobe', 56.98, /office|software|admin/i, '9 Oct'],
+      ['TRAINLINE.COM', 'Trainline', 38.4, /travel/i, '8 Oct'],
+      ['EE LIMITED', 'EE', 24, /phone|office/i, '6 Oct'],
+      ['SCREWFIX LEEDS', 'Screwfix', 42.17, /repair|premises|cogs|other/i, '4 Oct'],
+      ['WIX.COM', 'Wix', 13.5, /advert|market/i, '2 Oct']
+    ];
+    const out = outs.map((o, n) => ({ id: 'out' + n, kind: 'expense', desc: o[0], who: o[1], amount: o[2], cat: cat(o[3]), date: o[4] }));
+    const dupe = BE.all('expenses').filter((x) => x.inMonth && x.amount > 0)[0];
+    const dupes = dupe ? [{ id: 'dupe', kind: 'dupe', desc: String(dupe.who).toUpperCase().slice(0, 22), who: dupe.who, amount: dupe.amount, date: dupe.date }] : [];
+    const transfer = [{ id: 'xfer', kind: 'transfer', desc: lk ? 'TFR TO SAVINGS A/C' : 'TO SAVINGS 20-45-77', amount: lk ? 100000 : 500, date: '1 Oct' }];
+    this._lines = paidIn.concat(out, dupes, transfer);
+    return this._lines;
+  }
+  renderVals() {
+    const M = BE.mobile, I = M.I, W = (n) => BE.money(n, null, { cents: !BE.is('lk') });
+    const st = this.state;
+    const lk = BE.is('lk');
+    const bank = lk ? 'Commercial Bank' : 'Starling';
+    const start = (file) => {
+      this.setState({ stage: 'reading', file, progress: 10 });
+      setTimeout(() => this.setState({ progress: 55 }), 600);
+      setTimeout(() => this.setState({ progress: 100 }), 1200);
+      setTimeout(() => this.setState({ stage: 'review' }), 1700);
+    };
+    const sources = [
+      { label: 'Choose a file', hint: 'From Files, iCloud Drive or Google Drive', icon: I.file, tint: '#EFEDF3', pick: () => start(bank + ' · October 2026.' + (lk ? 'pdf' : 'csv')) },
+      { label: 'From your banking app', hint: 'Export, then share it to BillingEase', icon: I.share, tint: '#EEE8FF', pick: () => start(bank + ' statement shared from the app.pdf') },
+      { label: 'Photo of a paper statement', hint: 'We read each line', icon: I.camera, tint: '#FDE6D6', pick: () => start('Statement photo, 2 pages') }
+    ];
+    const rows = this.lines();
+    const isOn = (x) => x.kind !== 'dupe' && x.kind !== 'transfer' ? !st.off[x.id] : !!st.off[x.id] && x.kind === 'transfer';
+    const show = { all: () => true, match: (x) => x.kind === 'match', expense: (x) => x.kind === 'expense', skip: (x) => x.kind === 'dupe' || x.kind === 'transfer' };
+    const n = (k) => rows.filter(show[k]).length;
+    const filters = [['all', 'All'], ['match', 'Matched'], ['expense', 'New'], ['skip', 'Skipped']].map(([k, l]) => ({ label: l, n: n(k), pressed: st.filter === k ? 'true' : 'false', pick: () => this.setState({ filter: k }) }));
+    const shown = rows.filter(show[st.filter]).map((x) => {
+      const on = isOn(x);
+      const isIn = x.kind === 'match';
+      const tag = x.kind === 'match' ? 'Pays ' + x.inv : x.kind === 'expense' ? (x.cat.name || 'Expense') : x.kind === 'dupe' ? 'Already recorded' : 'Your own transfer · skipped';
+      return {
+        desc: x.desc, date: x.date, amt: (isIn ? '+' : '−') + W(x.amount), color: isIn ? '#4B2FC2' : '#18161F',
+        tag, cls: { match: 'ok', expense: 'ai', dupe: 'plain', transfer: 'plain' }[x.kind],
+        on: on ? 'true' : 'false', checked: on, dupe: x.kind === 'dupe', opacity: x.kind === 'dupe' ? 0.55 : 1,
+        box: on ? '#7A5AF8' : '#CBC7D3', boxBg: on ? '#7A5AF8' : '#FFFFFF',
+        aria: (on ? 'Will add: ' : 'Will skip: ') + x.desc,
+        toggle: () => this.setState({ off: Object.assign({}, st.off, { [x.id]: !st.off[x.id] }) })
+      };
+    });
+    const picked = rows.filter(isOn);
+    const matches = picked.filter((x) => x.kind === 'match').length;
+    const add = () => {
+      M.budgets.watch(() => picked.forEach((x) => {
+        if (x.kind === 'match') BE.recordPayment(x.inv, x.amount, 'Bank transfer', { ref: 'Statement import' });
+        else if (x.kind === 'expense') BE.recordExpense({ who: x.who, amount: x.amount, catId: x.cat.id, how: 'Bank transfer', note: 'From ' + st.file });
+      }));
+      M.did(picked.length + ' lines added from your statement');
+      this.setState({ stage: 'done', done: { n: picked.length, matches } });
+    };
+    const d = st.done || {};
+    return {
+      I, sources, file: st.file, progress: st.progress,
+      readingWords: st.progress < 50 ? 'Reading the lines…' : st.progress < 100 ? 'Matching to your invoices…' : 'Suggesting categories…',
+      shareTip: lk ? 'In the Commercial Bank or Sampath app, export a statement and tap Share → BillingEase. It lands straight here.' : 'In your banking app, export a statement and tap Share → BillingEase. It lands straight here.',
+      onPick: st.stage === 'pick', onReading: st.stage === 'reading', onReview: st.stage === 'review', onDone: st.stage === 'done',
+      backIcon: st.stage === 'pick' || st.stage === 'done' ? I.close : I.back, backLabel: st.stage === 'pick' ? 'Close' : 'Back',
+      back: () => { if (st.stage === 'pick' || st.stage === 'done') location.href = 'MobileOut.dc.html'; else this.setState({ stage: 'pick' }); },
+      rows, dupes: rows.filter((x) => x.kind === 'dupe').length, filters, shown,
+      none: picked.length === 0, addLabel: 'Add ' + picked.length + ' to your books' + (matches ? ' · ' + matches + ' paid invoice' + (matches === 1 ? '' : 's') : ''), add,
+      doneTitle: d.n + ' lines added',
+      doneBody: (d.matches ? d.matches + ' invoice' + (d.matches === 1 ? ' is' : 's are') + ' now paid, and ' : '') + 'the rest are in Going out with their categories. Change any of them from the list.'
+    };
+  }
+}
+</script>
+</body>
+</html>

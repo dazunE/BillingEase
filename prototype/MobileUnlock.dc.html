@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BillingEase app · Unlock</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="mobile.css">
+</helmet>
+<div class="m-frame {{frameClass}}">
+  <dc-import name="MobileChrome" dark="{{dark}}" tabs="{{false}}"></dc-import>
+
+  <!-- Welcome -->
+  <sc-if value="{{onWelcome}}" hint-placeholder-val="{{true}}">
+    <span aria-hidden="true" style="position: absolute; left: -80px; top: 60px; width: 360px; height: 360px; border-radius: 99px; background: radial-gradient(circle, rgba(185,163,255,0.35), transparent 65%);"></span>
+    <main class="m-main flush" style="position: relative; justify-content: space-between; padding-top: 30px; padding-bottom: 46px;">
+      <div style="display: flex; flex-direction: column; gap: 26px;">
+        <svg width="64" height="64" viewBox="0 0 48 48" aria-label="BillingEase"><rect width="48" height="48" rx="13" fill="#FFFFFF"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#18161F"></rect></svg>
+        <h1 class="m-h1" style="font-size: 38px; color: #FFFFFF;">Your business,<br><span style="color: #B9A3FF;">in your pocket.</span></h1>
+        <ul class="m-list" style="display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{points}}" as="p" hint-placeholder-count="4">
+            <li class="m-row" style="color: rgba(255,255,255,0.88); font-size: 15.5px;">
+              <span class="m-ic sm" style="background: rgba(255,255,255,0.1);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B9A3FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg></span>{{p.text}}
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+      <div class="m-stack">
+        <span style="font-size: 13px; color: rgba(255,255,255,0.6); text-align: center;">Sign in with the account you use on the web</span>
+        <sc-for list="{{accounts}}" as="a" hint-placeholder-count="2">
+          <button type="button" class="m-btn block {{a.cls}}" onClick="{{a.go}}" style="justify-content: flex-start; padding: 0 8px 0 8px; gap: 12px;">
+            <span class="m-ic sm" style="background: #18161F; color: #B9A3FF; font: 700 12px var(--ui);">{{a.initials}}</span>
+            <span class="m-grow" style="text-align: left; display: flex; flex-direction: column; line-height: 1.2;"><span>{{a.name}}</span><span style="font-size: 12px; font-weight: 500; opacity: 0.7;">{{a.sub}}</span></span>
+          </button>
+        </sc-for>
+        <a href="AuthSignUp.dc.html" style="text-align: center; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); padding: 8px;">New to BillingEase? Create an account</a>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- Face ID setup -->
+  <sc-if value="{{onFaceSetup}}" hint-placeholder-val="{{false}}">
+    <main class="m-main flush" style="justify-content: space-between; padding-top: 50px; padding-bottom: 46px;">
+      <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;">
+        <span class="m-ic" style="width: 120px; height: 120px; border-radius: 34px; background: #EEE8FF;"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#18161F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{I.face}}"></path></svg></span>
+        <h1 class="m-h1" style="font-size: 28px;">Open BillingEase with Face ID</h1>
+        <p class="m-sub" style="margin: 0; font-size: 15.5px; line-height: 1.5; max-width: 310px;">Your books stay locked when your phone is in someone else’s hand. We also ask for Face ID before you approve payroll or mark money as paid out.</p>
+      </div>
+      <div class="m-stack">
+        <button type="button" class="m-btn block dark" onClick="{{faceYes}}">Use Face ID</button>
+        <button type="button" class="m-btn block ghost" onClick="{{faceNo}}">Not now</button>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- Notifications setup -->
+  <sc-if value="{{onNotify}}" hint-placeholder-val="{{false}}">
+    <main class="m-main flush" style="justify-content: space-between; padding-top: 30px; padding-bottom: 46px;">
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <h1 class="m-h1" style="font-size: 28px;">Know the moment you’re paid</h1>
+        <p class="m-sub" style="margin: 0; font-size: 15.5px; line-height: 1.5;">A few notifications a week, never marketing. Change them any time.</p>
+        <div class="m-stack" style="gap: 8px;" aria-label="Examples">
+          <sc-for list="{{examples}}" as="e" hint-placeholder-count="3">
+            <div class="m-row" style="padding: 12px 14px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E2DFE8; align-items: flex-start; transform: scale({{e.scale}}); opacity: {{e.opacity}};">
+              <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true" style="flex: none;"><rect width="48" height="48" rx="11" fill="#18161F"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#FFFFFF"></rect></svg>
+              <span class="m-grow" style="display: flex; flex-direction: column; gap: 1px;"><span style="font-weight: 700; font-size: 14.5px;">{{e.title}}</span><span class="m-sub" style="font-size: 13.5px;">{{e.body}}</span></span>
+              <span style="font-size: 12px; color: #8C8896;">{{e.when}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div class="m-stack">
+        <button type="button" class="m-btn block" onClick="{{notifyYes}}">Turn on notifications</button>
+        <button type="button" class="m-btn block ghost" onClick="{{notifyNo}}">Not now</button>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- Locked -->
+  <sc-if value="{{onLocked}}" hint-placeholder-val="{{false}}">
+    <main class="m-main flush" style="justify-content: space-between; align-items: center; text-align: center; padding-top: 70px; padding-bottom: 50px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
+        <svg width="56" height="56" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#FFFFFF"></rect><rect x="9" y="11" width="30" height="7" rx="3.5" fill="#B9A3FF"></rect><rect x="22" y="20.5" width="17" height="7" rx="3.5" fill="#E0752D"></rect><rect x="9" y="30" width="13" height="7" rx="3.5" fill="#18161F"></rect></svg>
+        <h1 class="m-h2" style="color: #FFFFFF; font-size: 22px;">{{prof.business}}</h1>
+        <span style="color: rgba(255,255,255,0.65); font-size: 14px;">{{prof.owner}}</span>
+      </div>
+      <sc-if value="{{showPad}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%;">
+          <span style="color: #FFFFFF; font-weight: 600;">Enter your BillingEase passcode</span>
+          <span class="m-row" style="gap: 14px;" aria-label="{{pinLabel}}"><sc-for list="{{dots}}" as="d" hint-placeholder-count="4"><span style="width: 14px; height: 14px; border-radius: 99px; border: 2px solid #FFFFFF; background: {{d}};"></span></sc-for></span>
+          <div class="m-pad" style="width: 280px; color: #FFFFFF;">
+            <sc-for list="{{keys}}" as="k" hint-placeholder-count="12"><button type="button" onClick="{{k.press}}" aria-label="{{k.aria}}" style="color: #FFFFFF;">{{k.label}}</button></sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{showFace}}" hint-placeholder-val="{{true}}">
+        <button type="button" onClick="{{scan}}" aria-label="Unlock with Face ID" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 16px; color: #FFFFFF;">
+          <span style="width: 110px; height: 110px; border-radius: 32px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="{{faceColor}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation: {{faceAnim}};"><path d="{{faceIcon}}"></path></svg>
+          </span>
+          <span style="font-weight: 600; font-size: 16px;">{{faceWords}}</span>
+        </button>
+      </sc-if>
+      <button type="button" onClick="{{togglePad}}" style="border: 0; background: transparent; color: rgba(255,255,255,0.8); font-weight: 600; font-size: 15px; min-height: 44px;">{{padToggle}}</button>
+    </main>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const M = BE.mobile;
+    const h = BE.hash();
+    this.next = /^Mobile\w+\.dc\.html/.test(h) && !/MobileUnlock/.test(h) ? h : 'MobileHome.dc.html';
+    this.state = { stage: h === 'welcome' || !M.get().onboarded ? 'welcome' : 'locked', face: 'idle', pad: false, pin: '' };
+  }
+  componentDidMount() { if (this.state.stage === 'locked' && BE.mobile.get().faceId) setTimeout(() => this.scan(), 500); }
+  scan() {
+    if (this.state.face !== 'idle') return;
+    this.setState({ face: 'scan' });
+    setTimeout(() => this.setState({ face: 'ok' }), 1000);
+    setTimeout(() => this.go(), 1500);
+  }
+  go() { BE.mobile.unlock(); location.href = this.next; }
+  renderVals() {
+    const M = BE.mobile, I = M.I;
+    const st = this.state;
+    const s = M.get();
+    const prof = BE.get('profile') || {};
+    const lk = BE.is('lk');
+    const login = (c) => () => { BE.startSample(c); this.setState({ stage: 'face' }); };
+    const finish = () => { M.set({ onboarded: true }); this.go(); };
+    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) => ({
+      label: k === 'del' ? '⌫' : k, aria: k === 'del' ? 'Delete' : k || 'Blank',
+      press: () => { if (!k) return; const pin = k === 'del' ? st.pin.slice(0, -1) : (st.pin + k).slice(0, 4); this.setState({ pin }); if (pin.length === 4) setTimeout(() => this.go(), 250); }
+    }));
+    const examples = lk ? [
+      { title: 'Colombo Dental Clinic paid Rs 338,660', body: 'SDS-0212 is paid in full.', when: 'now', scale: 1, opacity: 1 },
+      { title: 'October payroll is ready', body: '5 people · approve by 31 Oct.', when: '2h', scale: 0.97, opacity: 0.85 },
+      { title: 'VAT and SSCL due in 7 days', body: 'September return · due 20 Oct.', when: 'Mon', scale: 0.94, opacity: 0.7 }
+    ] : [
+      { title: 'Kirkstall Brewing paid £3,950', body: 'HS-0047 is paid in full.', when: 'now', scale: 1, opacity: 1 },
+      { title: 'Ochre Café is 19 days late', body: 'A reminder is drafted for you.', when: '2h', scale: 0.97, opacity: 0.85 },
+      { title: 'Priya Shaw sent a request', body: 'Upload the letting agent statement.', when: 'Mon', scale: 0.94, opacity: 0.7 }
+    ];
+    const dark = st.stage === 'welcome' || st.stage === 'locked';
+    return {
+      I, prof, dark, frameClass: dark ? 'dark' : '',
+      onWelcome: st.stage === 'welcome', onFaceSetup: st.stage === 'face', onNotify: st.stage === 'notify', onLocked: st.stage === 'locked',
+      points: [
+        { icon: I.camera, text: 'Snap a receipt; we fill in the rest' },
+        { icon: I.invoice, text: 'Send an invoice in under a minute' },
+        { icon: I.people, text: 'Run payroll and approve with Face ID' },
+        { icon: I.wifiOff, text: 'Keep recording with no signal' }
+      ],
+      accounts: [
+        { name: 'Ellie Harper', sub: 'Harper Studio · United Kingdom', initials: 'EH', cls: 'white', go: login('uk') },
+        { name: 'Ayesha Fernando', sub: 'Serendib Design Studio · Sri Lanka', initials: 'AF', cls: '', go: login('lk') }
+      ],
+      faceYes: () => { M.set({ faceId: true }); this.setState({ stage: 'notify' }); },
+      faceNo: () => { M.set({ faceId: false }); this.setState({ stage: 'notify' }); },
+      examples,
+      notifyYes: () => { M.set({ notif: { paid: true, late: true, payroll: true, accountant: true, deadlines: true, drafts: true } }); finish(); },
+      notifyNo: () => { M.set({ notif: { paid: false, late: false, payroll: false, accountant: false, deadlines: false, drafts: false } }); finish(); },
+      showFace: !st.pad && s.faceId, showPad: st.pad || !s.faceId,
+      scan: () => this.scan(),
+      faceIcon: st.face === 'ok' ? 'M12 21.5a9.5 9.5 0 1 0 0-19 9.5 9.5 0 0 0 0 19zM7.5 12.5l3 3 6-6.5' : I.face,
+      faceColor: st.face === 'ok' ? '#9BE37A' : '#FFFFFF', faceAnim: st.face === 'scan' ? 'm-pulse .9s ease-in-out infinite' : 'none',
+      faceWords: st.face === 'scan' ? 'Looking for you…' : st.face === 'ok' ? 'Unlocked' : 'Tap to unlock with Face ID',
+      togglePad: () => this.setState({ pad: !st.pad, pin: '' }),
+      padToggle: st.pad || !s.faceId ? (s.faceId ? 'Use Face ID instead' : '') : 'Use your passcode',
+      keys, dots: [0, 1, 2, 3].map((i) => (i < st.pin.length ? '#FFFFFF' : 'transparent')), pinLabel: st.pin.length + ' of 4 digits entered'
+    };
+  }
+}
+</script>
+</body>
+</html>
