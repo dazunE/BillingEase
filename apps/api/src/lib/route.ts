@@ -89,8 +89,10 @@ export function route<E extends Endpoint>(app: FastifyInstance, e: E, handler: H
     handler: async (req, reply) => {
       const ctx = await authenticate(app, req, e);
       const { body, query } = parseInput(e, { body: req.body, query: req.query });
-      const run = async () => {
-        const result = await handler({ body, query, params: (req.params ?? {}) as Record<string, string>, raw: { body: req.body }, ctx, req, reply } as never);
+      // `db` is a transaction when the write carries an Idempotency-Key (see once()).
+      const run = async (db: Ctx["db"] = ctx.db) => {
+        const c = db === ctx.db ? ctx : { ...ctx, db };
+        const result = await handler({ body, query, params: (req.params ?? {}) as Record<string, string>, raw: { body: req.body }, ctx: c, req, reply } as never);
         return reply.sent ? reply : parseOutput(e, result, req);
       };
       const key = req.headers["idempotency-key"];
@@ -104,11 +106,13 @@ const KEY = /^[A-Za-z0-9_-]{8,100}$/;
 
 /**
  * Runs a write once per Idempotency-Key. The key is claimed before the write runs, so two copies
- * of the same request can't both save. A repeat gets the first answer back; a repeat that arrives
- * while the first is still running is told to try again. A failed write gives the key back, so it
- * can be tried again.
+ * of the same request can't both save. The write and the key's answer are committed in one
+ * transaction, so a key still pending means nothing was saved: if the server stopped mid-way, the
+ * key is taken again after two minutes and the write runs as if for the first time. A repeat gets
+ * the first answer back; a repeat while the first is still running is told to try again. A failed
+ * write gives the key back.
  */
-async function once(ctx: Ctx, userId: string, key: string, method: string, path: string, run: () => Promise<unknown>) {
+async function once(ctx: Ctx, userId: string, key: string, method: string, path: string, run: (db: Ctx["db"]) => Promise<unknown>) {
   if (!KEY.test(key)) throw new AppError(400, "invalid", "The Idempotency-Key should be 8–100 letters, numbers, - or _.");
   const id = `${userId}:${key}`;
   const [claimed] = await ctx.db.insert(idempotencyKeys).values({ key: id, userId, method, path }).onConflictDoNothing().returning();
@@ -117,7 +121,7 @@ async function once(ctx: Ctx, userId: string, key: string, method: string, path:
     if (!had) return once(ctx, userId, key, method, path, run);
     if (had.method !== method || had.path !== path) throw new AppError(422, "key_reused", "That Idempotency-Key was used for a different request.");
     if (had.status === "pending") {
-      // Left pending by a write that never finished (the server stopped mid-way): try it again.
+      // Left pending by a write that never committed (the server stopped mid-way): run it again.
       if (Date.now() - had.createdAt.getTime() > 2 * 60_000) {
         await ctx.db.delete(idempotencyKeys).where(and(eq(idempotencyKeys.key, id), eq(idempotencyKeys.status, "pending")));
         return once(ctx, userId, key, method, path, run);
@@ -127,11 +131,14 @@ async function once(ctx: Ctx, userId: string, key: string, method: string, path:
     return had.response;
   }
   try {
-    const out = await run();
-    // A reply sent directly (a file) has no answer to keep; a repeat then gets null.
-    const kept = out && typeof out === "object" && "sent" in out ? null : out;
-    await ctx.db.update(idempotencyKeys).set({ status: "done", response: kept as object }).where(eq(idempotencyKeys.key, id));
-    return out;
+    return await ctx.db.transaction(async (tx) => {
+      // The handler writes through this transaction (its own transactions nest as savepoints).
+      const out = await run(tx as unknown as Ctx["db"]);
+      // A reply sent directly (a file) has no answer to keep; a repeat then gets null.
+      const kept = out && typeof out === "object" && "sent" in out ? null : out;
+      await tx.update(idempotencyKeys).set({ status: "done", response: kept as object }).where(eq(idempotencyKeys.key, id));
+      return out;
+    });
   } catch (err) {
     await ctx.db.delete(idempotencyKeys).where(and(eq(idempotencyKeys.key, id), eq(idempotencyKeys.status, "pending")));
     throw err;

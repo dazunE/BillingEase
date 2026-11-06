@@ -68,6 +68,19 @@ describe("push notifications", () => {
     expect(await t.db.select().from(pushDevices).where(eq(pushDevices.token, token("bye")))).toHaveLength(0);
   });
 
+  it("hands notifications back when Expo can't be reached, so the next run sends them", async () => {
+    const o = await signUpWithBusiness(t.app, "uk");
+    await o.api.put("/push/devices", { token: token("retry"), platform: "ios", kinds: ["paid"] });
+    await notify(t.db, o.business.id, "Halden & Co paid £1,200", { link: "/app/in/invoices/r" });
+    const down: PushTransport = { send: async () => { throw new Error("Expo push said 503"); } };
+    await expect(deliverPushes(t.db, down)).rejects.toThrow("503");
+    const [n] = await t.db.select().from(notifications).where(eq(notifications.businessId, o.business.id));
+    expect(n.pushedAt).toBeNull();
+    const fake = new FakePush();
+    await deliverPushes(t.db, fake);
+    expect(fake.sent.filter((m) => m.to === token("retry")).map((m) => m.title)).toEqual(["Halden & Co paid £1,200"]);
+  });
+
   it("knows a notification's kind from its link", () => {
     expect(kindOf("/app/budgets", "x")).toBe("budgets");
     expect(kindOf("/app/check", "3 lines to check")).toBe("drafts");

@@ -69,9 +69,19 @@ export async function deliverPushes(db: Exec, transport: PushTransport, limit = 
     }
   }
   // Expo takes up to 100 messages a request.
+  const sent = new Set<string>();
   for (let i = 0; i < out.length; i += 100) {
     const batch = out.slice(i, i + 100);
-    const tickets = await transport.send(batch.map((b) => b.message));
+    let tickets: Awaited<ReturnType<PushTransport["send"]>>;
+    try { tickets = await transport.send(batch.map((b) => b.message)); }
+    catch (err) {
+      // Expo didn't take it: hand back the notifications that reached no phone yet, so the next
+      // run tries them again. One already pushed to some phones stays claimed, so none gets it twice.
+      const back = claimed.map((n) => n.id).filter((id) => !sent.has(id));
+      if (back.length) await db.update(notifications).set({ pushedAt: null }).where(inArray(notifications.id, back));
+      throw err;
+    }
+    for (const b of batch) sent.add(b.message.data.notificationId as string);
     const gone = batch.filter((_, j) => tickets[j]?.status === "error" && (tickets[j] as { details?: { error?: string } }).details?.error === "DeviceNotRegistered").map((b) => b.deviceId);
     if (gone.length) await db.update(pushDevices).set({ disabledAt: new Date() }).where(inArray(pushDevices.id, gone));
   }

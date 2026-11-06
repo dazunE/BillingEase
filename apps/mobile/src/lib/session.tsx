@@ -87,8 +87,9 @@ export function SessionProvider({ children, onSignOut }: { children: ReactNode; 
     const pref = await storage.get(KEYS.faceId);
     const on = bio.ok && pref !== "off";
     setFaceIdState({ on, available: bio.ok, label: bio.label });
-    if (!pick) setStage("pickBusiness");
-    else setStage(lockFirst && on ? "locked" : "ready");
+    // A saved session opens behind Face ID, even when the business is still to be picked.
+    if (lockFirst && on) setStage("locked");
+    else setStage(pick ? "ready" : "pickBusiness");
   }, []);
 
   // On launch: a saved session opens behind Face ID.
@@ -106,7 +107,7 @@ export function SessionProvider({ children, onSignOut }: { children: ReactNode; 
   // Back from the background: lock again straight away.
   useEffect(() => {
     const sub = AppState.addEventListener("change", (s) => {
-      if (s === "background" && faceId.on) setStage((st) => (st === "ready" ? "locked" : st));
+      if (s === "background" && faceId.on) setStage((st) => (st === "ready" || st === "pickBusiness" ? "locked" : st));
     });
     return () => sub.remove();
   }, [faceId.on]);
@@ -152,7 +153,7 @@ export function SessionProvider({ children, onSignOut }: { children: ReactNode; 
     },
     async unlock() {
       const ok = await checkBiometrics("Open BillingEase");
-      if (ok) setStage("ready");
+      if (ok) setStage(authRef.current.businessId ? "ready" : "pickBusiness");
       return ok;
     },
     async setFaceId(on) {

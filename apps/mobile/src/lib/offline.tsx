@@ -118,7 +118,9 @@ export function OfflineProvider({ children, onSynced }: { children: ReactNode; o
           refresh();
           return { queued: false, result } as never;
         } catch (e) {
-          if (!(e instanceof ApiFailure && e.code === "offline")) throw e;
+          // No answer, or the server failed mid-way: keep it with the same key, so a retry that
+          // finds it already saved returns that instead of saving it twice.
+          if (!(e instanceof ApiFailure && (e.code === "offline" || e.code === "still_saving" || e.status >= 500))) throw e;
         }
       }
       // No signal (or older writes still waiting, which go first): keep it for later.

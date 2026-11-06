@@ -58,6 +58,22 @@ describe("Idempotency-Key", () => {
     expect((await api.get("/out/expenses")).body.expenses).toHaveLength(1);
   });
 
+  it("commits the write and its key together: a pending key means nothing was saved", async () => {
+    const { token, business, api } = await signUpWithBusiness(t.app, "uk");
+    const me = (await api.get("/auth/me")).body.user.id as string;
+    await post(token, business.id, "/out/expenses", expense, "together-0001");
+    const [k] = await t.db.select().from(idempotencyKeys).where(eq(idempotencyKeys.key, `${me}:together-0001`));
+    expect(k.status).toBe("done");
+    expect((k.response as { payee: string }).payee).toBe("Royal Mail");
+    // A write refused part-way (paying more than a bill owes) leaves no key and nothing saved.
+    const bill = await api.post("/out/bills", { supplierName: "Footprint Print", billDate: "2026-10-02", dueDate: "2026-10-16", lines: [{ description: "Posters", categoryId: "office", net: 42000 }] });
+    const over = await post(token, business.id, `/out/bills/${bill.body.id}/payments`, { amount: 99999999, paidOn: "2026-10-10", method: "Bank transfer" }, "together-0002");
+    expect(over.status).toBe(400);
+    expect(await t.db.select().from(idempotencyKeys).where(eq(idempotencyKeys.key, `${me}:together-0002`))).toHaveLength(0);
+    const paid = await post(token, business.id, `/out/bills/${bill.body.id}/payments`, { amount: 42000, paidOn: "2026-10-10", method: "Bank transfer" }, "together-0002");
+    expect(paid.body.status).toBe("paid");
+  });
+
   it("forgets keys after a week, and turns down a key that isn't one", async () => {
     const { token, business } = await signUpWithBusiness(t.app, "uk");
     expect((await post(token, business.id, "/out/expenses", expense, "x")).status).toBe(400);
