@@ -1,6 +1,7 @@
 import { outboxEmails, type OutboxStatus } from "@billingease/db/schema";
 import type { Exec } from "@billingease/db";
 import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
+import nodemailer from "nodemailer";
 import type { Config } from "../config";
 import type { InlineImage } from "./email-html";
 
@@ -40,13 +41,42 @@ class PostmarkTransport implements EmailTransport {
   }
 }
 
+class SmtpTransport implements EmailTransport {
+  private t;
+  constructor(url: string, tlsInsecure: boolean) {
+    const u = new URL(url); // smtp://user:pass@host:587 (STARTTLS) or smtps://...:465
+    this.t = nodemailer.createTransport({
+      host: u.hostname, port: Number(u.port || (u.protocol === "smtps:" ? 465 : 587)), secure: u.protocol === "smtps:", requireTLS: u.protocol === "smtp:",
+      auth: u.username ? { user: decodeURIComponent(u.username), pass: decodeURIComponent(u.password) } : undefined,
+      // ponytail: SMTP_TLS_INSECURE is for the internal Docker hop to Stalwart (self-signed cert); use a real cert if SMTP leaves the host.
+      tls: tlsInsecure ? { rejectUnauthorized: false } : undefined,
+    });
+  }
+  async send(m: Parameters<EmailTransport["send"]>[0]) {
+    await this.t.sendMail({
+      from: m.from, to: m.to, replyTo: m.replyTo ?? undefined, subject: m.subject, text: m.text, html: m.html ?? undefined,
+      attachments: [
+        ...m.attachments.map((a) => ({ filename: a.filename, contentType: a.contentType, content: Buffer.from(a.content) })),
+        ...(m.inline ?? []).map((a) => ({ filename: a.filename, contentType: a.contentType, content: Buffer.from(a.content), cid: a.contentId })),
+      ],
+    });
+  }
+}
+
+function defaultTransport(config: Config): EmailTransport | null {
+  const e = config.email;
+  if (e.provider === "smtp" && e.smtpUrl) return new SmtpTransport(e.smtpUrl, e.smtpTlsInsecure);
+  if (e.provider === "postmark" && e.postmarkToken) return new PostmarkTransport(e.postmarkToken);
+  return null;
+}
+
 /**
  * Email goes through the outbox table. Queue it inside the transaction that caused it, then
  * deliver after commit. With no provider set up, emails are kept in the outbox (status
  * "kept") so development and demos never send real mail.
  */
 export function createEmail(config: Config, opts: { transport?: EmailTransport | null; render?: (db: Exec, m: typeof outboxEmails.$inferSelect) => Promise<Attachment[]> } = {}) {
-  const transport = opts.transport !== undefined ? opts.transport : config.email.provider === "postmark" && config.email.postmarkToken ? new PostmarkTransport(config.email.postmarkToken) : null;
+  const transport = opts.transport !== undefined ? opts.transport : defaultTransport(config);
   let render = opts.render ?? (async () => []);
   // The HTML version and inline logo of an email to a customer, in the business's branding.
   let extras: (db: Exec, m: typeof outboxEmails.$inferSelect) => Promise<{ html: string | null; inline: InlineImage[] }> = async () => ({ html: null, inline: [] });
