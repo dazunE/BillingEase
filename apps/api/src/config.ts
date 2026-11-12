@@ -1,3 +1,5 @@
+import type { S3Config } from "./services/storage";
+
 /** deep: hardest reasoning (Ask, reviews) · fast: reading documents · lite: quick checks. */
 export type ModelTier = "deep" | "fast" | "lite";
 
@@ -11,11 +13,16 @@ export type Config = {
   /** Shared secret the web server sends so only it can call the API (optional in development). */
   internalKey: string | null;
   email: {
-    provider: "outbox" | "postmark";
+    provider: "outbox" | "postmark" | "smtp";
     from: string;
     postmarkToken: string | null;
+    /** e.g. smtps://user:pass@stalwart:465. Wins over Postmark when set. */
+    smtpUrl: string | null;
+    /** Accept the SMTP server's self-signed certificate (internal network only). */
+    smtpTlsInsecure: boolean;
   };
-  storage: { dir: string };
+  /** Attachments go to S3 (Silo) when s3 is set, else to dir on local disk. */
+  storage: { dir: string; s3?: S3Config | null };
   /**
    * Gemini on Vertex AI, for Ask and the agents. Null when GOOGLE_CLOUD_PROJECT isn't set:
    * Ask and the agents then say they aren't set up. Model IDs are config, not code, because
@@ -52,11 +59,18 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     appUrl: (env.APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     internalKey,
     email: {
-      provider: env.POSTMARK_TOKEN ? "postmark" : "outbox",
+      provider: env.SMTP_URL ? "smtp" : env.POSTMARK_TOKEN ? "postmark" : "outbox",
       from: env.EMAIL_FROM ?? "BillingEase <hello@billingease.local>",
       postmarkToken: env.POSTMARK_TOKEN ?? null,
+      smtpUrl: env.SMTP_URL || null,
+      smtpTlsInsecure: env.SMTP_TLS_INSECURE === "true",
     },
-    storage: { dir: env.STORAGE_DIR ?? ".data/files" },
+    storage: {
+      dir: env.STORAGE_DIR ?? ".data/files",
+      s3: env.S3_ENDPOINT && env.S3_BUCKET && env.S3_ACCESS_KEY && env.S3_SECRET_KEY
+        ? { endpoint: env.S3_ENDPOINT, bucket: env.S3_BUCKET, accessKey: env.S3_ACCESS_KEY, secretKey: env.S3_SECRET_KEY, region: env.S3_REGION ?? "us-east-1" }
+        : null,
+    },
     ai: {
       vertex: env.GOOGLE_CLOUD_PROJECT ? { project: env.GOOGLE_CLOUD_PROJECT, location: env.GOOGLE_CLOUD_LOCATION ?? "europe-west2" } : null,
       models: {
